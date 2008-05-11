@@ -1,0 +1,12 @@
+<!--[include file="pagemaster_admin_header.htm"]-->
+<br/><br/>
+<!--[if $mode eq 'input']-->
+	code in 'pagemaster/pntemplates/input/pubedit_<!--[$pubtype.formname]-->_all.htm' kopieren
+<!--[elseif $mode eq 'outputlist']-->
+	code in pagemaster/pntemplates/output/publist_<!--[$pubtype.filename]-->.htm kopieren
+<!--[elseif $mode eq 'outputfull']-->
+	code in pagemaster/pntemplates/output/viewpub_<!--[$pubtype.filename]-->.htm kopieren
+<!--[/if]-->
+<br/><hr/>
+
+<!--[$code]-->

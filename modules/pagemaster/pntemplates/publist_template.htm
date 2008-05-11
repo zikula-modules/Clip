@@ -1,0 +1,14 @@
+<!--[pnml name=_PAGEMASTER_NOTUSERDEFINED]--><br /><br />
+<!--[pngetstatusmsg]--><br />
+<!--[pager  show="page" rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1]-->
+<a href="<!--[pnmodurl modname="pagemaster" type=user func="pubedit" tid=$tid]-->"><!--[pnml name=_NEW]--></a>
+<hr />
+<table >
+<!--[foreach from=$publist item=pubitem]-->
+	<tr>
+	<td><!--[$pubitem.$core_titlefield]--> </td>
+	<td><a href="<!--[pnmodurl modname="pagemaster" type=user func="pubedit" tid=$tid id=$pubitem.id]-->"><!--[pnml name=_EDIT]--></a> </td>
+	<td><a href="<!--[pnmodurl modname="pagemaster" type=user func="viewpub" tid=$tid pid=$pubitem.core_pid]-->"><!--[pnml name=_VIEW]--></a> </td>
+	</tr>
+<!--[/foreach]-->
+</table>

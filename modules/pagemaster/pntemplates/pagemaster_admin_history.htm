@@ -1,0 +1,24 @@
+<!--[include file="pagemaster_admin_header.htm"]-->
+<!--[pngetstatusmsg]-->
+
+<table>
+	<tr>
+	<td>pid</td>
+	<td>revision</td>
+	<td>state</td>
+	<td>author</td>
+	<td>online</td>
+	<td>indepot</td>
+	</tr>
+
+<!--[foreach from=$publist item=pubitem]-->
+	<tr>
+	<td><!--[$pubitem.core_pid]--></td>
+	<td><!--[$pubitem.id]--></td>
+	<td><!--[$pubitem.__WORKFLOW__.state]--> </td>
+	<td><!--[pnusergetvar name="uname" uid=$pubitem.cr_uid]--> </td>
+	<td><!--[$pubitem.core_online]--></td>
+	<td><!--[$pubitem.core_indepot]--></td>  
+	</tr>
+<!--[/foreach]-->
+</table>

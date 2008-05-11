@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<workflow>
+
+  <title>None</title>
+  <description>This is an almost non-existing workflow. Everything is online immediately after creation.</description>
+
+  <states>
+    <state id="approved">
+      <title>Approved</title>
+      <description>Content has been approved is available online</description>
+    </state>
+    <state id="deleted">
+      <title>Deleted</title>
+      <description>Content has been deleted</description>
+    </state>
+  </states>
+
+
+  <actions>
+    <!-- From initial state -->
+    <action id="submit">
+      <title>Submit</title>
+      <description>Submit new content</description>
+      <permission>editor</permission>
+      <nextState>approved</nextState>
+     <operation online="1">createPub</operation>
+    </action>
+
+      <!-- State: approved -->
+
+    <action id="update">
+      <title>Update</title>
+      <description>Update content</description>
+      <permission>editor</permission>
+      <state>approved</state>
+      <operation>moveToDepot</operation>
+      <operation nextState="approved" online="1">createNewRevision</operation>
+    </action>
+
+    <action id="delete">
+      <title>Delete</title>
+      <description>Delete content</description>
+      <permission>editor</permission>
+      <state>approved</state>
+
+      <operation online="0">updateOnlineState</operation>
+      <operation nextState="deleted">moveToDepot</operation>
+      <operation>deletePub</operation>
+    </action>
+
+  </actions>
+
+
+</workflow>

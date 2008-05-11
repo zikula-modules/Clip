@@ -1,0 +1,28 @@
+<!--[include file="pagemaster_admin_header.htm"]-->
+<!--[pngetstatusmsg]-->
+
+<table>
+	<tr>
+	<td>pid</td>
+	<td>revision</td>
+	<td>state</td>
+	<td>author</td>
+	<td>online</td>
+	<td>edit</td>
+	<td>view</td>
+	<td>history</td>
+	</tr>
+
+<!--[foreach from=$publist item=pubitem]-->
+	<tr>
+	<td><!--[$pubitem.core_pid]--></td>
+	<td><!--[$pubitem.id]--></td>
+	<td><!--[$pubitem.__WORKFLOW__.state]--> </td>
+	<td><!--[pnusergetvar name="uname" uid=$pubitem.cr_uid]--> </td>
+	<td><!--[$pubitem.core_online]--></td> 
+	<td><a href="<!--[pnmodurl modname="pagemaster" type=user func="pubedit" tid=$core_tid id=$pubitem.id]-->"><!--[pnml name=_EDIT]--></a> </td>
+	<td><a href="<!--[pnmodurl modname="pagemaster" type=user func="viewpub" tid=$core_tid id=$pubitem.id]-->"><!--[pnml name=_VIEW]--></a> </td>
+	<td><a href="<!--[pnmodurl modname="pagemaster" type=admin func="history" tid=$core_tid pid=$pubitem.core_pid]-->"><!--[pnml name=_PAGEMASTER_HISTORY]--></a> </td>
+	</tr>
+<!--[/foreach]-->
+</table>
