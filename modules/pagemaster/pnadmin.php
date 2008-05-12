@@ -9,6 +9,14 @@ class pagemaster_admin_modifyconfigHandler {
 	function initialize(& $render) {
 		$uploadpath = pnModGetVar('pagemaster', 'uploadpath');
 		$render->assign('uploadpath', $uploadpath);
+		
+		// Check taken from MediaAttach
+        if (is_dir($$uploadpath . '/') &&  is_writable($uploadpath . '/'))
+        {        
+        	$render->assign('updirok', '1');
+        }else{
+        	$render->assign('updirok', '0');
+        }
 		return true;
 	}
 	function handleCommand(& $pnRender, & $args) {
