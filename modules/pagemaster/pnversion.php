@@ -44,7 +44,7 @@ $modversion['securityschema'] =
 //---- Module depedencies
 $modversion['dependencies'] = array(
                                     array('modname'    => 'scribite', 
-                                          'minversion' => '1.3', 
+                                          'minversion' => '2.0', 
                                           'maxversion' => '', 
                                           'status'     => PNMODULE_DEPENDENCY_RECOMMENDED),
                                     array('modname'    => 'Thumbnail', 
