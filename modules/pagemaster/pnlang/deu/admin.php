@@ -51,6 +51,8 @@ define('_PAGEMASTER_PUBFIELD_ACTIONS', 'Aktionen');
 
 define('_PAGEMASTER_UPLOADPATH', 'Uploadpfad');
 define('_PAGEMASTER_UPLOADPATH_HELP', 'Pfad in dem Dateien der Uploadfelder hochgeladen werden sollen');
+define('_PAGEMASTER_UPLOADPATH_WRITEABLE', 'Der angegebene Pfad ist beschreibbar');
+define('_PAGEMASTER_UPLOADPATH_NONWRITEABLE', 'Der angegebene Pfad ist nicht beschreibbar');
 
 define('_PAGEMASTER_NAMEUNIQUE', 'Name muss eindeutig sein');
 

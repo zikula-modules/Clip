@@ -51,6 +51,8 @@ define('_PAGEMASTER_PUBFIELD_ACTIONS', 'Actions');
 
 define('_PAGEMASTER_UPLOADPATH', 'Uploadpath');
 define('_PAGEMASTER_UPLOADPATH_HELP', 'Path where uploaded Files should be stored');
+define('_PAGEMASTER_UPLOADPATH_WRITEABLE', 'The given path is writeable');
+define('_PAGEMASTER_UPLOADPATH_NONWRITEABLE', 'The given path is not writeable');
 
 define('_PAGEMASTER_NAMEUNIQUE', 'Name has to be unique');
 
