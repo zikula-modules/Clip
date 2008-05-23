@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Updates the database tables (DDL), based on pubfields.
  * @author kundi
