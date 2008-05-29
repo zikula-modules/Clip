@@ -55,17 +55,21 @@ class pagemaster_user_dynHandler {
 			'schema' => str_replace('.xml', '', $this->pubtype['workflow'])
 		));
 		if ($this->goto == '')
-		{$this->goto = pnModURL('pagemaster', 'user', 'viewpub', array (
+		{
+			$this->goto = pnModURL('pagemaster', 'user', 'viewpub', array (
 			'tid' => $this->tid,'pid' => $data['core_pid']
-		));}
+			));
+		}
 		elseif ($this->goto == 'stepmode') //stepmode can be used to go automaticaly from one workflowstep to the next
-		{$this->goto = pnModURL('pagemaster', 'user', 'pubedit', array (
+		{
+			$this->goto = pnModURL('pagemaster', 'user', 'pubedit', array (
 			'tid' => $this->tid,'pid' => $data['core_pid'],'goto' => 'stepmode'
-			));}
-			if (empty($data))
-			return false;
-			else
-			return $pnRender->pnFormRedirect($this->goto);
+			));
+		}
+		if (empty($data))
+		return false;
+		else
+		return $pnRender->pnFormRedirect($this->goto);
 	}
 
 }
@@ -106,13 +110,13 @@ function pagemaster_user_executecommand() {
 	return LogUtil :: registerError("Publication not found");
 
 	WorkflowUtil :: executeAction($schema, $pub, $commandName, "pagemaster_pubdata" . $tid, 'pagemaster');
-	
+
 	if ($goto <> ''){
 		if ($goto == 'edit'){
-			return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',array('tid'=>$tid,'id'=>$id)));
+			return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',array('tid'=>$tid,'id'=>$pub['id'])));
 		}
 		elseif ($goto == 'show')
-			return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',array('tid'=>$tid,'id'=>$id)));
+		return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',array('tid'=>tid,'id'=>$pub['id'])));
 		else{
 			return pnRedirect($goto);
 		}
@@ -199,15 +203,18 @@ function pagemaster_user_main($args) {
 	$startnum = isset ($args['startnum']) ? $args['startnum'] : FormUtil :: getPassedValue('startnum');
 	$filter = isset ($args['filter']) ? $args['filter'] : FormUtil :: getPassedValue('filter');
 	$orderby = isset ($args['orderby']) ? $args['orderby'] : FormUtil :: getPassedValue('orderby');
+	$justOwn = isset ($args['justOwn']) ? $args['justOwn'] : FormUtil :: getPassedValue('justOwn');
 	$template = isset ($args['template']) ? $args['template'] : FormUtil :: getPassedValue('template');
 	$getApprovalState = isset ($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil :: getPassedValue('getApprovalState');
 	$handlePluginFields = isset ($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil :: getPassedValue('handlePluginFields');
-		
+
+	if ($justOwn == '')
+	$justOwn = false;
 	if ($getApprovalState == '')
-		$getApprovalState = true;	
+	$getApprovalState = true;
 	if ($handlePluginFields == '')
-		$handlePluginFields = true;
-		
+	$handlePluginFields = true;
+
 	if ($tid == '')
 	return LogUtil :: registerError("Missing argument 'tid'");
 
@@ -282,7 +289,9 @@ function pagemaster_user_main($args) {
 		'itemsperpage' => $itemsperpage,
 		'checkPerm' => false, //allready checked
 		'handlePluginFields' => $handlePluginFields,
-		'getApprovalState' => $getApprovalState
+		'getApprovalState' => $getApprovalState,
+		'justOwn' => $justOwn
+
 	));
 
 	$publist = $pubarr['publist'];

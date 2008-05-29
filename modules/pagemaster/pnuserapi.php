@@ -109,12 +109,11 @@ function pagemaster_userapi_getPub($args) {
 	$tablename = "pagemaster_pubdata" . $tid;
 	$pubtype = DBUtil :: selectObjectByID("pagemaster_pubtypes", $tid, 'tid');
 	$uid = pnUserGetVar('uid');
-	if ($uid <> '' and $pubtype['enableeditown'] == 1 and $obj['pm_cr_uid'] == $uid)
-	$where .= '( pm_cr_uid = '.$uid.' or pm_online = 1 )';
+	if ($uid <> '' and $pubtype['enableeditown'] == 1)
+	$where .= ' ( pm_cr_uid = '.$uid.' or pm_online = 1 )';
 	else
-	$where .= ' pm_online = 1 ';
+	$where .= ' AND pm_online = 1 ';
 
-	$where .= ' AND pm_showinlist = 1 ';
 	$where .= ' AND pm_indepot = 0 ';
 	$where .= " AND (pm_language = '' or pm_language = '".language_current()."')";
 	$where .= " AND (pm_publishdate <= NOW() or pm_publishdate is null) AND (pm_expiredate >= NOW() or pm_expiredate is null)";
@@ -159,6 +158,7 @@ function pagemaster_userapi_getPub($args) {
  * @param bool $args['checkperm']
  * @param bool $args['handlePluginFields']
  * @param bool $args['getApprovalState']
+ * @param bool $args['justOwn']
  * @return array publication or count
  */
 function pagemaster_userapi_pubList($args) {
@@ -167,6 +167,7 @@ function pagemaster_userapi_pubList($args) {
 	return LogUtil :: registerError("Missing argument 'tid'");
 
 	$handlePluginFields = isset ($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
+	$justOwn = isset ($args['justOwn']) ? $args['justOwn'] : false;
 	$checkPerm = isset ($args['checkPerm']) ? $args['checkPerm'] : false;
 	$getApprovalState = isset ($args['getApprovalState']) ? $args['getApprovalState'] : false;
 	if ($checkPerm){
@@ -270,25 +271,33 @@ function pagemaster_userapi_pubList($args) {
 		'table' => $tablename,
 		'plugins' => $filterPlugins
 	));
+	
 	if ($filter <> '')
 	$fu->setFilter($filter);
 	else
 	if ($pubtype['defaultfilter'] <> '')
 	$fu->setFilter($pubtype['defaultfilter']);
-
 	$filter_where = $fu->GetSQL();
+	
 	$uid = pnUserGetVar('uid');
 
-	if ($uid <> '' and $pubtype['enableeditown'] == 1 and $obj['pm_cr_uid'] == $uid)
+	if ($uid <> '' and $pubtype['enableeditown'] == 1)
 	$where .= '( '.$tbl_alias.'pm_cr_uid = '.$uid.' or '.$tbl_alias.'pm_online = 1 )';
 	else
 	$where .= ' '.$tbl_alias.'pm_online = 1 ';
 
+	if ($uid <> '' and $pubtype['enableeditown'] == 1)
+	$where .= ' AND ( '.$tbl_alias.'pm_cr_uid = '.$uid.' or '.$tbl_alias.'pm_showinlist = 1 )';
+	else
 	$where .= ' AND '.$tbl_alias.'pm_showinlist = 1 ';
+
+
 	$where .= ' AND '.$tbl_alias.'pm_indepot = 0 ';
 	$where .= " AND ( ".$tbl_alias."pm_language = '' or ".$tbl_alias."pm_language = '".language_current()."')";
 	$where .= " AND ( ".$tbl_alias."pm_publishdate <= NOW() or ".$tbl_alias."pm_publishdate is null) AND ( ".$tbl_alias."pm_expiredate >= NOW() or ".$tbl_alias."pm_expiredate is null)";
-
+	if ( $justOwn and $uid <> '')
+		$where .= ' AND '.$tbl_alias.'pm_cr_uid = '.$uid;
+	
 	if ($filter_where['where'] <> '')
 	$where .= ' AND ' . $filter_where['where'];
 

@@ -10,6 +10,7 @@
  * @param $args['count'] optional count available pubs in this category
  * @param $args['multiselect'] are more selection in one browser allowed (makes only sense for multilist fields)
  * @param $args['globalmultiselect'] are more then one selections in all available browsers allowed
+*  @param $args['togglediv'] this div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus)
  * @param $args['assign'] optional
 
  * @return html of category tree
@@ -21,6 +22,7 @@ function smarty_function_category_browser($params, & $smarty) {
 	$field = $params['field'];
 	$template = isset ($params['template']) ? $params['template'] : 'pagemaster_category_browser.htm';
 	$count = isset ($params['count']) ? $params['count'] : false;
+	$togglediv = isset ($params['togglediv']) ? $params['togglediv'] : false;
 	$assign = isset ($params['assign']) ? $params['assign'] : null;
 	$multiselect = isset ($params['multiselect']) ? $params['multiselect'] : false;
 	$globalmultiselect = isset ($params['globalmultiselect']) ? $params['globalmultiselect'] : false;
@@ -51,7 +53,7 @@ function smarty_function_category_browser($params, & $smarty) {
 			$pubtype = DBUtil :: selectObjectByID("pagemaster_pubtypes", $tid, 'tid');
 				
 		}
-		
+		$one_selected = false;
 		foreach ($cats as $k => $v) {
 			$path = $v['path'];
 			$old_filter = '';
@@ -64,10 +66,12 @@ function smarty_function_category_browser($params, & $smarty) {
 			$depth = $depth-7;
 
 			//check if this cat is filtered
+			
 			foreach($filter_arr as $fkey => $fv)
 			{
 				if ($fv == $filter_act){
 					$v['selected'] = 1;
+					$one_selected = true;
 				}
 				else{
 					if ($multiselect)
@@ -135,7 +139,14 @@ function smarty_function_category_browser($params, & $smarty) {
 
 	$pnRender = pnRender :: getInstance('pagemaster');
 	$pnRender->assign('cats', $cat_arr);
+	
 	$html = $pnRender->fetch($template);
+	if ($togglediv <> false and $one_selected){
+		$html .= "<script type='text/javascript'>";
+		//$html .= "Effect.toggle('".$setup['field']."', 'blind', {duration:0.0});";
+		$html .= "document.getElementById('".$togglediv."').style.display = 'block';";
+		$html .= "</script>";
+	}
 
 	if ($assign) {
 		$smarty->assign($params['assign'], $html);

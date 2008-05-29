@@ -4,7 +4,6 @@ function pagemaster_operation_createNewRevision(&$obj, $params)
 {
     $online = isset($params['online']) ? $params['online'] : false;
     $obj['core_online'] = $online;
-    
 	if (!isset($params['nextstate']))
     	return;
     	
