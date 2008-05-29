@@ -5,7 +5,7 @@ function pagemaster_operation_copyPub(&$obj, $params)
 	if (isset($params['copyonline'])) 
     	$obj['core_online'] = $params['copyonline'];
     	
-	$copystate = isset($params['copystate']) ? $params['copystate'] : 'initial';	
+	$copystate = isset($params['copystate']) ? $params['copystate'] : 'initial';
 	
 	unset($obj['id']);
 	$maxpid = DBUtil :: selectFieldMax($obj['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');

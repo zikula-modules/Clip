@@ -48,22 +48,24 @@ class pagemaster_user_dynHandler {
 		$data['tid'] = $this->tid;
 		$data['id'] = $this->id;
 		$data['core_pid'] = $this->core_pid;
+		
 		$data = pnModAPIFunc('pagemaster', 'user', 'editPub', array (
 			'data' => $data,
 			'commandName' => $args['commandName'],
 			'pubfields' => $this->pubfields,
 			'schema' => str_replace('.xml', '', $this->pubtype['workflow'])
 		));
+
 		if ($this->goto == '')
 		{
 			$this->goto = pnModURL('pagemaster', 'user', 'viewpub', array (
-			'tid' => $this->tid,'pid' => $data['core_pid']
+			'tid' => $this->tid,'id' => $data['id']
 			));
 		}
 		elseif ($this->goto == 'stepmode') //stepmode can be used to go automaticaly from one workflowstep to the next
 		{
 			$this->goto = pnModURL('pagemaster', 'user', 'pubedit', array (
-			'tid' => $this->tid,'pid' => $data['core_pid'],'goto' => 'stepmode'
+			'tid' => $this->tid,'id' => $data['id'],'goto' => 'stepmode'
 			));
 		}
 		if (empty($data))
@@ -110,10 +112,12 @@ function pagemaster_user_executecommand() {
 	return LogUtil :: registerError("Publication not found");
 
 	WorkflowUtil :: executeAction($schema, $pub, $commandName, "pagemaster_pubdata" . $tid, 'pagemaster');
-
 	if ($goto <> ''){
 		if ($goto == 'edit'){
 			return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',array('tid'=>$tid,'id'=>$pub['id'])));
+		}elseif ($goto == 'stepmode'){
+
+			return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',array('tid'=>$tid,'id'=>$pub['id'],'goto' => 'stepmode')));
 		}
 		elseif ($goto == 'show')
 		return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',array('tid'=>tid,'id'=>$pub['id'])));
@@ -138,6 +142,7 @@ function pagemaster_user_pubedit() {
 	$id = FormUtil :: getPassedValue('id');
 	$pid = FormUtil :: getPassedValue('pid');
 
+	
 	if ($tid == '')
 	return LogUtil :: registerError("Missing argument 'tid'");
 
@@ -174,8 +179,9 @@ function pagemaster_user_pubedit() {
 	}
 
 	$user_defined_template = 'input/pubedit_' . $pubtype['formname'] . '_' . $stepname . '.htm';
-	if ($pnRender->get_template_path($user_defined_template))
+	if ($pnRender->get_template_path($user_defined_template)){
 	return $pnRender->pnFormExecute($user_defined_template, $dynHandler);
+	}
 	else {
 		LogUtil :: registerStatus('template not found: ' . $user_defined_template);
 		$user_defined_template = 'input/pubedit_' . $pubtype['formname'] . '_all.htm';
