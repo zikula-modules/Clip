@@ -3,7 +3,7 @@ require_once ('system/pnForm/plugins/function.pnformdateinput.php');
 
 class pmformdateinput extends pnFormDateInput {
 	
-	var $columnDef = 'D';
+	var $columnDef = 'T';
 	var $title = 'Date';
 	
 	function getFilename() {

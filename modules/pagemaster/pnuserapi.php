@@ -300,7 +300,6 @@ function pagemaster_userapi_pubList($args) {
 	
 	if ($filter_where['where'] <> '')
 	$where .= ' AND ' . $filter_where['where'];
-
 	if ($args['countmode'] <> 'just'){
 		if (isset($joinInfo)){
 			$publist = DBUtil :: selectExpandedObjectArray($tablename, $joinInfo, $where, $orderby, $args['startnum'] - 1, $args['itemsperpage']);

@@ -23,6 +23,7 @@ class pagemaster_user_dynHandler {
 			$pubdata = DBUtil :: selectObjectByID($this->tablename, $this->id, 'id');
 			$this->core_pid = $pubdata['core_pid'];
 			$actions = WorkflowUtil :: getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
+			print_r($actions);
 		} else {
 			$actions = WorkflowUtil :: getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
 		}
@@ -119,14 +120,12 @@ function pagemaster_user_executecommand() {
 
 			return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',array('tid'=>$tid,'id'=>$pub['id'],'goto' => 'stepmode')));
 		}
-		elseif ($goto == 'show')
-		return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',array('tid'=>tid,'id'=>$pub['id'])));
 		else{
 			return pnRedirect($goto);
 		}
 	}
 	else
-	return false ;
+		return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',array('tid'=>$tid,'id'=>$pub['id'])));
 }
 
 /**
@@ -217,7 +216,7 @@ function pagemaster_user_main($args) {
 	if ($justOwn == '')
 	$justOwn = false;
 	if ($getApprovalState == '')
-	$getApprovalState = true;
+	$getApprovalState = false;
 	if ($handlePluginFields == '')
 	$handlePluginFields = true;
 

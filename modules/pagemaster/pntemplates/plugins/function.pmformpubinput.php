@@ -28,6 +28,10 @@ class pmformpubinput extends pnFormDropdownList {
 		'handlePluginFields' => false
 		));
 		$titleField = getTitleField($pubfields_pub);
+		$items[] = array (
+				'text' => '- - -',
+				'value' => ''
+			);
 		foreach ($pubarr['publist'] as $pub ) {
 			$items[] = array (
 				'text' => $pub[$titleField],

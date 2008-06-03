@@ -177,9 +177,9 @@ function pagemaster_pntables() {
 		$tablecolumncore['core_showinlist'] = 'pm_showinlist';
 		$tabledefcore['core_showinlist'] = 'I4 NOTNULL DEFAULT 1';
 		$tablecolumncore['core_publishdate'] = 'pm_publishdate';
-		$tabledefcore['core_publishdate'] = 'D';
+		$tabledefcore['core_publishdate'] = 'T';
 		$tablecolumncore['core_expiredate'] = 'pm_expiredate';
-		$tabledefcore['core_expiredate'] = 'D';
+		$tabledefcore['core_expiredate'] = 'T';
 		$tablecolumncore['core_language'] = 'pm_language';
 		$tabledefcore['core_language'] = 'C(3) NOTNULL';
 		$tablecolumncore['core_hitcount'] = 'pm_hitcount';

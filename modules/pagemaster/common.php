@@ -77,13 +77,13 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype) {
 								<tr><td>
 						  			<!--[pnformlabel for="core_publishdate" text="_PAGEMASTER_PUBLISHDATE" ]-->:
 								</td><td>
-									<!--[pmformdateinput id="core_publishdate" ]-->
+									<!--[pmformdateinput id="core_publishdate" includeTime="1" ]-->
 								</td></tr>';
 	$template_code .= '
 								<tr><td>
 						  			<!--[pnformlabel for="core_expiredate" text="_PAGEMASTER_EXPIREDATE" ]-->:
 								</td><td>
-									<!--[pmformdateinput id="core_expiredate" ]-->
+									<!--[pmformdateinput id="core_expiredate" includeTime="1"  ]-->
 								</td></tr>';
 	$template_code .= '
 								<tr><td>
