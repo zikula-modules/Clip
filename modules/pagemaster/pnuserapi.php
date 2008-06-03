@@ -112,7 +112,7 @@ function pagemaster_userapi_getPub($args) {
 	if ($uid <> '' and $pubtype['enableeditown'] == 1)
 	$where .= ' ( pm_cr_uid = '.$uid.' or pm_online = 1 )';
 	else
-	$where .= ' AND pm_online = 1 ';
+	$where .= ' pm_online = 1 ';
 
 	$where .= ' AND pm_indepot = 0 ';
 	$where .= " AND (pm_language = '' or pm_language = '".language_current()."')";
