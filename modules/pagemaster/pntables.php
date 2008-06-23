@@ -155,6 +155,7 @@ function pagemaster_pntables()
         ObjectUtil::addStandardFieldsToTableDataDefinition($pntable[$tablename . '_column_def']);
     }
 
+    list ($dbconn) = pnDBGetConn();
     $sql = 'SELECT ' . $pntable['pagemaster_pubfields_column']['tid']
               . ', ' . $pntable['pagemaster_pubfields_column']['id']
               . ', ' . $pntable['pagemaster_pubfields_column']['name']
@@ -162,8 +163,8 @@ function pagemaster_pntables()
               . ' FROM ' . $pntable['pagemaster_pubfields']
               . ' ORDER BY ' . $pntable['pagemaster_pubfields_column']['tid'];
 
-    $result = DBUtil::executeSQL($sql);
-    if ($result === false) {
+    $result = $dbconn->execute($sql); 
+    if ($dbconn->errorNo() != 0) {
         //installation
     } else {
         $old_tid = null;
