@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * PageMaster
+ *
+ * @copyright (c) 2008, PageMaster Team
+ * @link        http://code.zikula.org/projects/pagemaster/
+ * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package     Zikula_3rd_party_Modules
+ * @subpackage  pagemaster
+ */
 
 /**
  * Increase Hit Counter
@@ -9,22 +17,19 @@
  * @param $args['tid'] tid
  * @param $args['pid'] pid
  */
-function smarty_function_hitcount($params, & $smarty) {
+function smarty_function_hitcount($params, &$smarty)
+{
+    $tid = $params['tid'];
+    $pid = $params['pid'];
 
+    if (!$tid)
+        return 'Required parameter [tid] not provided in smarty_function_hitcount';
 
-	$tid = $params['tid'];
-	$pid = $params['pid'];
+    if (!$pid)
+        return 'Required parameter [pid] not provided in smarty_function_hitcount';
 
-	if (!$tid)
-	return 'Required parameter [tid] not provided in smarty_function_hitcount';
-	if (!$pid)
-	return 'Required parameter [pid] not provided in smarty_function_hitcount';
-	
-	$tablename = 'pn_pagemaster_pubdata' . $tid;
-	
-	$sql = "update $tablename set pm_hitcount = pm_hitcount + 1 where pm_pid = $pid ";  
-	DBUtil :: executeSQL($sql);
-	
+    $tablename = 'pn_pagemaster_pubdata'.$tid;
 
-
+    $sql ='UPDATE '.$tablename.' SET pm_hitcount = pm_hitcount + 1 WHERE pm_pid = '.$pid;  
+    DBUtil::executeSQL($sql);
 }

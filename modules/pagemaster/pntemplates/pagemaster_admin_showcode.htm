@@ -1,12 +1,19 @@
 <!--[include file="pagemaster_admin_header.htm"]-->
-<br/><br/>
-<!--[if $mode eq 'input']-->
-	code in 'pagemaster/pntemplates/input/pubedit_<!--[$pubtype.formname]-->_all.htm' kopieren
-<!--[elseif $mode eq 'outputlist']-->
-	code in pagemaster/pntemplates/output/publist_<!--[$pubtype.filename]-->.htm kopieren
-<!--[elseif $mode eq 'outputfull']-->
-	code in pagemaster/pntemplates/output/viewpub_<!--[$pubtype.filename]-->.htm kopieren
-<!--[/if]-->
-<br/><hr/>
+<div class="pn-admincontainer">
+	<div class="pn-adminpageicon"><!--[pnimg modname=core src=configure.gif set=icons/large alt='_MODIFYCONFIG' altml=true]--></div>
+	<h2><!--[pnml name=_PAGEMASTER_SHOWCODE]--></h2>
 
-<!--[$code]-->
+	<br/>
+	<!--[if $mode eq 'input']-->
+		<!--[assign var="pathcopy" value="input/pubedit_"|cat:$pubtype.formname|cat:"_all.htm"]-->
+	<!--[elseif $mode eq 'outputlist']-->
+		<!--[assign var="pathcopy" value="output/publist_"|cat:$pubtype.filename|cat:".htm"]-->
+	<!--[elseif $mode eq 'outputfull']-->
+		<!--[assign var="pathcopy" value="output/viewpub_"|cat:$pubtype.filename|cat:".htm"]-->
+	<!--[/if]-->
+	<b><!--[pnml name="_PAGEMASTER_COPYTHECODEIN" l="pagemaster/pntemplates/"|cat:$pathcopy]--></b>
+	<br/>
+	<hr/>
+	<!--[$code]-->
+
+</div>

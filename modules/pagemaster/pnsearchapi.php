@@ -1,93 +1,100 @@
 <?php
+/**
+ * PageMaster
+ *
+ * @copyright (c) 2008, PageMaster Team
+ * @link        http://code.zikula.org/projects/pagemaster/
+ * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package     Zikula_3rd_party_Modules
+ * @subpackage  pagemaster
+ */
 
 /**
  * Search plugin info
- **/
+ */
 function pagemaster_searchapi_info()
 {
-
-	return array('title' => 'pagemaster',
+    return array('title'     => 'pagemaster',
                  'functions' => array('pagemaster' => 'search'));
 }
 
 /**
  * Search form component
- **/
+ */
 function pagemaster_searchapi_options($args)
 {
-	if (SecurityUtil::checkPermission( 'pagemaster::', '::', ACCESS_READ)) {
-		$pnRender = pnRender::getInstance('pagemaster');
-		return $pnRender->fetch('pagemaster_search_options.htm');
-	}
-
-	return '';
+    if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
+        $render = pnRender::getInstance('pagemaster');
+        return $render->fetch('pagemaster_search_options.htm');
+    }
+    return '';
 }
 
 /**
  * Search plugin main function
- **/
+ */
 function pagemaster_searchapi_search($args)
 {
-	include_once ('modules/pagemaster/common.php');
-	pnModDBInfoLoad('Search');
-	pnModDBInfoLoad('pagemaster');
-	$pntable = pnDBGetTables();
-	$searchTable = $pntable['search_result'];
-	$searchColumn = $pntable['search_result_column'];
-	$where_arr = '';
+    Loader::includeOnce('modules/pagemaster/common.php');
+    pnModDBInfoLoad('Search');
+    pnModDBInfoLoad('pagemaster');
 
-	$sessionId = session_id();
-	$insertSql = "INSERT INTO $searchTable
-	($searchColumn[title],
-	$searchColumn[text],
-	$searchColumn[extra],
-	$searchColumn[created],
-	$searchColumn[module],
-	$searchColumn[session])
-	VALUES ";
-	$pubtypes = DBUtil :: selectObjectArray("pagemaster_pubtypes");
-	foreach ($pubtypes as $pubtype)
-	{
-		$pubfields = DBUtil :: selectObjectArray("pagemaster_pubfields",'pm_issearchable = 1 and pm_tid = ' . $pubtype['tid']);
-		$tablename = "pagemaster_pubdata" . $pubtype['tid'];
-		$columnname = $pntable[$tablename.'_column'];
+    $pntable = pnDBGetTables();
+    $searchTable  = $pntable['search_result'];
+    $searchColumn = $pntable['search_result_column'];
+    $where_arr = '';
 
-		foreach ($pubfields as $pubfield)
-		{
-			$where_arr[] = $columnname[$pubfield['name']];
-		}
-		if (is_array($where_arr))
-		{
-			$where = search_construct_where($args,$where_arr);
-			$where .= ' AND pm_showinlist = 1 ';
-			$where .= ' AND pm_online = 1 ';
-			$where .= ' AND pm_indepot = 0 ';
-			$where .= " AND (pm_language = '' or pm_language = '".language_current()."')";
-			$where .= " AND (pm_publishdate <= NOW() or pm_publishdate is null) AND (pm_expiredate >= NOW() or pm_expiredate is null)";
+    $sessionId = session_id();
+    $insertSql = "INSERT INTO $searchTable
+                     ($searchColumn[title],
+                      $searchColumn[text],
+                      $searchColumn[extra],
+                      $searchColumn[created],
+                      $searchColumn[module],
+                      $searchColumn[session])
+                  VALUES ";
 
-			$tablename = "pagemaster_pubdata" . $pubtype['tid'];
-			$publist = DBUtil :: selectObjectArray($tablename, $where);
-			$core_title = getTitleField($pubfields);
+    $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+    foreach ($pubtypes as $pubtype)
+    {
+        $pubfields  = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']);
+        $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
+        $columnname = $pntable[$tablename.'_column'];
 
-			foreach ($publist as $pub){
-				$extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
-				$sql = $insertSql . '('
-				. '\'' . DataUtil::formatForStore($pub[$core_title]) . '\', '
-				. '\'' . DataUtil::formatForStore('') . '\', '
-				. '\'' . DataUtil::formatForStore($extra) . '\', '
-				. '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '
-				. '\'' . 'pagemaster' . '\', '
-				. '\'' . DataUtil::formatForStore($sessionId) . '\')';
-				$insertResult = DBUtil::executeSQL($sql);
-				if (!$insertResult) {
-					return LogUtil::registerError (_GETFAILED);
-				}
-			}
-		}
-		$where_arr = '';
-			
-	}
-	return true;
+        foreach ($pubfields as $pubfield) {
+            $where_arr[] = $columnname[$pubfield['name']];
+        }
+
+        if (is_array($where_arr)) {
+            $where = search_construct_where($args,$where_arr);
+            $where .= ' AND pm_showinlist = 1 ';
+            $where .= ' AND pm_online = 1 ';
+            $where .= ' AND pm_indepot = 0 ';
+            $where .= " AND (pm_language = '' or pm_language = '".language_current()."')";
+            $where .= " AND (pm_publishdate <= NOW() or pm_publishdate is null) AND (pm_expiredate >= NOW() or pm_expiredate is null)";
+
+            $tablename = 'pagemaster_pubdata'.$pubtype['tid'];
+            $publist = DBUtil::selectObjectArray($tablename, $where);
+            $core_title = getTitleField($pubfields);
+
+            foreach ($publist as $pub) {
+                $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
+                $sql = $insertSql . '('
+                . '\'' . DataUtil::formatForStore($pub[$core_title]) . '\', '
+                . '\'' . DataUtil::formatForStore('') . '\', '
+                . '\'' . DataUtil::formatForStore($extra) . '\', '
+                . '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '
+                . '\'' . 'pagemaster' . '\', '
+                . '\'' . DataUtil::formatForStore($sessionId) . '\')';
+                $insertResult = DBUtil::executeSQL($sql);
+                if (!$insertResult) {
+                    return LogUtil::registerError (_GETFAILED);
+                }
+            }
+        }
+        $where_arr = '';
+    }
+    return true;
 }
 
 /**
@@ -98,9 +105,10 @@ function pagemaster_searchapi_search($args)
  */
 function pagemaster_searchapi_search_check(&$args)
 {
-	$datarow = &$args['datarow'];
-	$extra = unserialize($datarow['extra']);
-	$datarow['url'] = pnModUrl('pagemaster', 'user', 'viewpub', array('tid' => $extra['tid'], 'pid' => $extra['pid']));
-
-	return true;
+    $datarow = &$args['datarow'];
+    $extra   = unserialize($datarow['extra']);
+    $datarow['url'] = pnModUrl('pagemaster', 'user', 'viewpub',
+                               array('tid' => $extra['tid'],
+                                     'pid' => $extra['pid']));
+    return true;
 }

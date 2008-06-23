@@ -1,4 +1,14 @@
 <?php
+/**
+ * PageMaster
+ *
+ * @copyright (c) 2008, PageMaster Team
+ * @link        http://code.zikula.org/projects/pagemaster/
+ * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package     Zikula_3rd_party_Modules
+ * @subpackage  pagemaster
+ */
+
 define('_PAGEMASTER', 'Pagemaster');
 define('_PAGEMASTER_IMPORTFROMPAGESETTER', 'Import von Pagesetter Publikationen');
 
@@ -11,6 +21,7 @@ define('_PAGEMASTER_PUBTYPE_EDITFIELDS', 'Publikationsfelder editieren');
 define('_PAGEMASTER_PUBTYPE_PUBLIST', 'Pub. Liste anzeigen');
 define('_PAGEMASTER_PUBTYPE_PUBLISTADMIN', 'Admin Pub. Liste anzeigen');
 
+define('_PAGEMASTER_SHOWCODE', 'Show Code');
 define('_PAGEMASTER_PUBTYPE_SHOWINPUTCODE', 'pnForm Code anzeigen');
 define('_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODELIST', 'PubList Code anzeigen');
 define('_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODEFULL', 'Kompletten Code anzeigen');
@@ -92,3 +103,6 @@ define('_PAGEMASTER_CREATOR', 'Ersteller');
 define('_PAGEMASTER_UPDATER', 'Updater');
 define('_PAGEMASTER_HISTORY', 'History');
 
+define('_PAGEMASTER_VARNOTSET', '%var% no set');
+define('_PAGEMASTER_MISSINGARG', 'Missing argument [%arg%]');
+define('_PAGEMASTER_COPYTHECODEIN', 'Code in %l% kopieren');

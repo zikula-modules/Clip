@@ -1,9 +1,19 @@
 <?php
+/**
+ * PageMaster
+ *
+ * @copyright (c) 2008, PageMaster Team
+ * @link        http://code.zikula.org/projects/pagemaster/
+ * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package     Zikula_3rd_party_Modules
+ * @subpackage  pagemaster
+ */
+
 define('_PAGEMASTER', 'Pagemaster');
 define('_PAGEMASTER_IMPORTFROMPAGESETTER', 'Import Pagesetter Publications');
 
 define('_PAGEMASTER_PUBTYPES', 'Publicationtypes');
-define('_PAGEMASTER_PUBTYPE_TITLE', 'Titel');
+define('_PAGEMASTER_PUBTYPE_TITLE', 'Title');
 define('_PAGEMASTER_PUBTYPE_DESCRIPTION', 'Description');
 define('_PAGEMASTER_PUBTYPE_EXISTING', 'Existing Publicationtypes');
 define('_PAGEMASTER_PUBTYPE_NEWARTICLE', 'New Article');
@@ -11,6 +21,7 @@ define('_PAGEMASTER_PUBTYPE_EDITFIELDS', 'Edit Publicationfields');
 define('_PAGEMASTER_PUBTYPE_PUBLIST', 'Show Publicationlist');
 define('_PAGEMASTER_PUBTYPE_PUBLISTADMIN', 'Show PubList Administration');
 
+define('_PAGEMASTER_SHOWCODE', 'Show Code');
 define('_PAGEMASTER_PUBTYPE_SHOWINPUTCODE', 'Show pnForm Code');
 define('_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODELIST', 'Show PubList Code');
 define('_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODEFULL', 'Show full Code');
@@ -33,7 +44,7 @@ define('_PAGEMASTER_PUBFIELD_TITLE_HELP', 'Titel (is shown e.g. in the Automatic
 define('_PAGEMASTER_PUBFIELD_DESCRIPTION', 'Description');
 define('_PAGEMASTER_PUBFIELD_DESCRIPTION_HELP', 'Description of this Field');
 define('_PAGEMASTER_PUBFIELD_FIELDPLUGIN', 'Fieldtype (Plugin)');
-define('_PAGEMASTER_PUBFIELD_FIELDPLUGIN_HELP', 'Which kind of Fieldtype is used. (Can be extended by Plugins). Detailed informations about the individual Plugins can be found in the Documantation.');
+define('_PAGEMASTER_PUBFIELD_FIELDPLUGIN_HELP', 'Which kind of Fieldtype is used. (Can be extended by Plugins). Detailed informations about the individual Plugins can be found in the Documentation.');
 define('_PAGEMASTER_PUBFIELD_ISTITLE', 'Titlefield');
 define('_PAGEMASTER_PUBFIELD_ISTITLE_HELP', 'The Content of this Field will be shown in the title');
 define('_PAGEMASTER_PUBFIELD_ISPAGEABLE', 'Pageable');
@@ -91,3 +102,8 @@ define('_PAGEMASTER_EDITDATE', 'Edit date');
 define('_PAGEMASTER_CREATOR', 'Creator');
 define('_PAGEMASTER_UPDATER', 'Updater');
 define('_PAGEMASTER_HISTORY', 'History');
+
+define('_PAGEMASTER_VARNOTSET', '%var% no set');
+define('_PAGEMASTER_MISSINGARG', 'Missing argument [%arg%]');
+define('_PAGEMASTER_COPYTHECODEIN', 'Copy the code in %l%');
+

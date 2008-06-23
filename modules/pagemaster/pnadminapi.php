@@ -1,24 +1,36 @@
 <?php
+/**
+ * PageMaster
+ *
+ * @copyright (c) 2008, PageMaster Team
+ * @link        http://code.zikula.org/projects/pagemaster/
+ * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package     Zikula_3rd_party_Modules
+ * @subpackage  pagemaster
+ */
 
 /**
  * Updates the database tables (DDL), based on pubfields.
+ * 
  * @author kundi
  * @param $args['tid'] tid of publication
  * @return true or false
  */
-function pagemaster_adminapi_updatetabledef($args) {
-	if (!isset ($args['tid'])) {
-		LogUtil :: registerError('tid no set');
-		return false;
-	}
-	$tablename = 'pagemaster_pubdata' . $args['tid'];
-	$pntable = & pnDBGetTables();
-	if (!isset ($pntable[$tablename]))
-		return LogUtil :: registerError(_PAGEMASTER_TABLEDEFNOTFOUND);
+function pagemaster_adminapi_updatetabledef($args)
+{
+    if (!isset($args['tid'])) {
+        return LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'tid')));
+    }
 
-	DBUtil :: createTable($tablename);
+    $tablename = 'pagemaster_pubdata' . $args['tid'];
 
-	return true;
+    $pntable = &pnDBGetTables();
+    if (!isset ($pntable[$tablename])) {
+        return LogUtil::registerError(_PAGEMASTER_TABLEDEFNOTFOUND);
+    }
+
+    DBUtil::createTable($tablename);
+    return true;
 }
 
 /**
@@ -27,56 +39,47 @@ function pagemaster_adminapi_updatetabledef($args) {
  * @author       gf
  * @return       array      array of admin links
  */
+function pagemaster_adminapi_getlinks()
+{
+    pnModLangLoad('pagemaster', 'admin');
 
-function pagemaster_adminapi_getlinks() {
-	$links = array ();
-
-	pnModLangLoad('pagemaster', 'admin');
-
-	if (SecurityUtil :: checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-		$links[] = array (
-			'url' => pnModURL('pagemaster', 'admin', 'main'),
-			'text' => pnML('_PAGEMASTER_PUBTYPES')
-		);
-	}
-
-	if (SecurityUtil :: checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-		$links[] = array (
-			'url' => pnModURL('pagemaster', 'admin', 'modifyconfig'),
-			'text' => pnML('_MODIFYCONFIG')
-		);
-	}
-	if (SecurityUtil :: checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-		$links[] = array (
-			'url' => pnModURL('pagemaster', 'admin', 'create_tid'),
-			'text' => pnML('_PAGEMASTER_CREATEPUBTYPE')
-		);
-	}
-	if (SecurityUtil :: checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-		$links[] = array (
-			'url' => pnModURL('pagemaster', 'import', 'importps'),
-			'text' => pnML('_PAGEMASTER_IMPORTFROMPAGESETTER')
-		);
-	}
-	return $links;
+    $links = array ();
+    if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        $links[] = array (
+            'url'  => pnModURL('pagemaster', 'admin', 'main'),
+            'text' => pnML('_PAGEMASTER_PUBTYPES')
+        );
+        $links[] = array (
+            'url'  => pnModURL('pagemaster', 'admin', 'modifyconfig'),
+            'text' => pnML('_MODIFYCONFIG')
+        );
+        $links[] = array (
+            'url'  => pnModURL('pagemaster', 'admin', 'create_tid'),
+            'text' => pnML('_PAGEMASTER_CREATEPUBTYPE')
+        );
+        $links[] = array (
+            'url'  => pnModURL('pagemaster', 'import', 'importps'),
+            'text' => pnML('_PAGEMASTER_IMPORTFROMPAGESETTER')
+        );
+    }
+    return $links;
 }
 
-function pagemaster_adminapi_moveToDepot($args, $direction) {
-	if (!isset ($args['tid'])) {
-		LogUtil :: registerError('tid no set');
-		return false;
-	}
-	if (!isset ($args['id'])) {
-		LogUtil :: registerError('id no set');
-		return false;
-	}
-	$tid = $args['tid'];
-	$id = $args['id'];
+function pagemaster_adminapi_moveToDepot($args, $direction)
+{
+    if (!isset($args['tid'])) {
+        return LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'tid')));
+    }
 
-	$pubtype = DBUtil :: selectObjectByID("pagemaster_pubtypes", $tid, 'tid');
-	
-	if ($pubtype['enablerevisions'])
-		return pagesetterDepotTransportReal($args, $direction);
-	else
-		return pagesetterDepotTransportDelete($args);
+    if (!isset($args['id'])) {
+        return LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'id')));
+    }
+
+    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $args['tid'], 'tid');
+
+    if ($pubtype['enablerevisions']) {
+        return pagesetterDepotTransportReal($args, $direction);
+    } else {
+        return pagesetterDepotTransportDelete($args);
+    }
 }

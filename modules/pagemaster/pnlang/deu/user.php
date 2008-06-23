@@ -1,4 +1,14 @@
 <?php
+/**
+ * PageMaster
+ *
+ * @copyright (c) 2008, PageMaster Team
+ * @link        http://code.zikula.org/projects/pagemaster/
+ * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package     Zikula_3rd_party_Modules
+ * @subpackage  pagemaster
+ */
+
 define('_PAGEMASTER_NOTUSERDEFINED', 'Dies ist ein generisches Template. Sie können im Verzeichnis \'/pntemplates/output/publist_{TEMPLATENAME}.htm\' ein eigenes Template erstellen. Nehmen Sie dazu publist_template.htm als Vorlage.');
 define('_PAGEMASTER_PUBLISHDATE', 'Veröffentlicht');
 define('_PAGEMASTER_EXPIREDATE', 'Ablaufdatum');
