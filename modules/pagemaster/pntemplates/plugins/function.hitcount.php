@@ -28,7 +28,7 @@ function smarty_function_hitcount($params, &$smarty)
     if (!$pid)
         return 'Required parameter [pid] not provided in smarty_function_hitcount';
 
-    $tablename = 'pn_pagemaster_pubdata'.$tid;
+    $tablename = DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid);
 
     $sql ='UPDATE '.$tablename.' SET pm_hitcount = pm_hitcount + 1 WHERE pm_pid = '.$pid;  
     DBUtil::executeSQL($sql);
