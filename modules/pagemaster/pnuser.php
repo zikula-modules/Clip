@@ -239,7 +239,7 @@ function pagemaster_user_main($args)
     $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState');
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields');
-	$rss = isset ($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
+	$rss 				= isset ($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
 
     if ($justOwn == '') {
         $justOwn = false;
@@ -251,10 +251,6 @@ function pagemaster_user_main($args)
         $handlePluginFields = true;
     }
     
-    if ($rss == '') {
-        $rss = false;
-    }
-
     if ($tid == '') {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
@@ -359,7 +355,7 @@ function pagemaster_user_main($args)
     
     if ($rss == true)
 	{
-		echo $pnRender->display($template, $cacheid);
+		echo $render->display($template, $cacheid);
 		pnShutDown();
 	}
 
