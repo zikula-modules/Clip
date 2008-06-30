@@ -239,6 +239,7 @@ function pagemaster_user_main($args)
     $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState');
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields');
+	$rss = isset ($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
 
     if ($justOwn == '') {
         $justOwn = false;
@@ -248,6 +249,10 @@ function pagemaster_user_main($args)
     }
     if ($handlePluginFields == '') {
         $handlePluginFields = true;
+    }
+    
+    if ($rss == '') {
+        $rss = false;
     }
 
     if ($tid == '') {
@@ -351,6 +356,12 @@ function pagemaster_user_main($args)
         LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $template)));
         $template = 'publist_template.htm';
     }
+    
+    if ($rss == true)
+	{
+		echo $pnRender->display($template, $cacheid);
+		pnShutDown();
+	}
 
     return $render->fetch($template, $cacheid);
 }
