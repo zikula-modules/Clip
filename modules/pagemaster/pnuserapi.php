@@ -367,3 +367,99 @@ function pagemaster_userapi_pubList($args)
         'pubcount' => $pubcount
     );
 }
+
+/**
+ * form custom url string
+ * 
+ * @author Philipp Niethammer <webmaster@nochwer.de>
+ * @param array $args Arguments given by pnModUrl
+ * @return custom url string
+ */
+function pagemaster_userapi_encodeurl($args) {
+    if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
+        return LogUtil::registerError (_MODARGSERROR);
+    }
+	
+	$supportedfunctions = array('main', 'viewpub');
+	if (!in_array($args['func'], $supportedfunctions)) {
+        return '';
+    }
+    if (!isset($args['args']['tid'])) {
+        return false;
+    } else {
+        $tid = $args['args']['tid'];
+        unset($args['args']['tid']);
+        $pubTypeTitle = DataUtil::formatPermalink(DBUtil::selectFieldByID('pagemaster_pubtypes', 'urltitle', $tid, 'tid'));
+    }
+    
+    if (isset($args['args']['pid'])) {
+        $tables =& pnDBGetTables();
+        $column = $tables['pagemaster_pubfields_column'];
+        $where = "$column[tid] = $tid AND $column[istitle] = 1";
+        $titlefield = DBUtil::selectField('pagemaster_pubfields', 'id', $where);
+        $pid = $args['args']['pid'];
+        unset($args['args']['pid']);
+        $pubTitle = DBUtil::selectFieldById('pagemaster_pubdata'.$tid, $titlefield, $pid, 'pid');
+        $pubTitle = "/".DataUtil::formatPermalink($pubTitle).".$pid";
+    }
+    
+    if (count($args['args']) > 0) {
+        $paramarray = array();
+        foreach($args['args'] as $k => $v) {
+            $paramarray[] = "$k=".DataUtil::formatPermalink($v);
+        }
+        $params = "/". implode("/", $paramarray);
+    }
+    
+    return $args['modname']."/".$pubTypeTitle.$pubTitle.$params;    
+}
+
+/**
+ * decode custom url string
+ *
+ * @author Philipp Niethammer
+ * @return bool true if succeded false otherwise
+ */
+function pagemaster_userapi_decodeurl($args) {
+    $_ =& $args['vars'];
+    
+    $functions = array('executecommand', 'pubedit', 'main', 'viewpub');
+	$argsnum = count($_);
+    if (!isset($_[2]) || empty($_[2])) {
+        pnQueryStringSetVar('func', 'main');
+        return true;
+    }
+    
+    if (in_array($_[2], $supportedfunctions))
+		return false;
+		
+    $nextvar = 3;
+		
+    $tid = DBUtil::selectFieldByID('pagemaster_pubtypes', 'tid', $_[2], 'urltitle');
+    if ($tid === false) {
+        return false;
+    } else {
+        pnQueryStringSetVar('func', 'main');
+        pnQueryStringSetVar('tid', $tid);
+    }
+    
+    if (isset($_[3]) && !empty($_[3])) {
+        $permalinksseparator = pnConfigGetVar('shorturlsseparator');
+        $isPub = (bool) preg_match('~^[a-z0-9_{$permalinksseparator}]+\.(\d)+$~i', $_[3], $res);
+        if ($isPub) {
+            $pid = $res[1];
+            pnQueryStringSetVar('pid', $pid);
+            pnQueryStringSetVar('func', 'viewpub');
+            $nextvar = 4;
+        }
+    }
+    
+    if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
+        for ($i=$nextvar; $i<$argsnum; $i++) {
+            list($k, $v) = explode("=", $_[$i], 1);
+            pnQueryStringSetVar($k, $v);
+        }
+    }
+    
+    return true;
+}

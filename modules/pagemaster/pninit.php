@@ -21,6 +21,11 @@ function pagemaster_init()
     if (!DBUtil::createTable('pagemaster_pubtypes')) {
         return false;
     }
+    
+    if (!DBUtil::createIndex('urltitle', 'pagemaster_pubtypes', array('urltitle'))) {
+        return LogUtil::registerError(_CREATEINDEXFAILED);
+    }
+    
     if (!DBUtil::createTable('pagemaster_revisions')) {
         return false;
     }
@@ -52,9 +57,15 @@ function pagemaster_upgrade($oldversion)
     $from_version = $oldversion;
 
     switch ($from_version) {
-        case '0.1' :
-            return true;
-            break;
+    case '0.1' :
+        if (!DBUtil::changeTable('pagemaster_pubtypes')) {
+            return LogUtil::registerError(_CHANGETABLEFAILED);
+        }
+        if (!DBUtil::createIndex('urltitle', 'pagemaster_pubtypes', array('urltitle'))) {
+            return LogUtil::registerError(_CREATEINDEXFAILED);
+        }
+    case '0.2':
+        break;
     }
 
     return true;

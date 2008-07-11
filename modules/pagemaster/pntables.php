@@ -82,6 +82,7 @@ function pagemaster_pntables()
     $pntable['pagemaster_pubtypes_column'] = array (
         'tid'             => 'pm_tid',
         'title'           => 'pm_title',
+        'urltitle'		  => 'pm_urltitle',
         'filename'        => 'pm_filename',
         'formname'        => 'pm_formname',
         'description'     => 'pm_description',
@@ -102,6 +103,7 @@ function pagemaster_pntables()
     $pntable['pagemaster_pubtypes_column_def'] = array (
         'tid'             => 'I PRIMARY AUTO',
         'title'           => "C(255) NOTNULL DEFAULT ''",
+    	'urltitle'        => "C(255) NOTNULL DEFAULT ''",
         'filename'        => "C(255) NOTNULL DEFAULT ''",
         'formname'        => "C(255) NOTNULL DEFAULT ''",
         'description'     => "C(255) NOTNULL DEFAULT ''",

@@ -125,6 +125,10 @@ class pagemaster_admin_pubtypesHandler
             if (!$render->pnFormIsValid()) {
                 return false;
             }
+            if (!isset($data['urltitle']) || empty($data['urltitle'])) {
+                $data['urltitle'] = DataUtil::formatPermalink($data['title']);
+            }
+            
             if ($data['filename'] == '' ) {
                 $data['filename'] = $data['title'];
             }
