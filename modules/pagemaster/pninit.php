@@ -64,6 +64,13 @@ function pagemaster_upgrade($oldversion)
         if (!DBUtil::createIndex('urltitle', 'pagemaster_pubtypes', array('urltitle'))) {
             return LogUtil::registerError(_CREATEINDEXFAILED);
         }
+        $types = DBUtil::selectObjectArray('pagemaster_pubtypes');
+        foreach (array_keys($types) as $k) {
+            $types[$k]['urltitle'] = DataUtil::formatPermalink($types[$k]['title']);
+        }
+        if (!DBUtil::updateObjectArray($types, 'pagemaster_pubtypes')) {
+            return LogUtil::registerError(_UPDATEFAILED);
+        }
     case '0.2':
         break;
     }
