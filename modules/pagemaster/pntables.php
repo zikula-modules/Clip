@@ -88,7 +88,7 @@ function pagemaster_pntables()
         'description'     => 'pm_description',
         'itemsperpage'    => 'pm_itemsperpage',
         'sortfield1'      => 'pm_sortfield1',
-        'sortdesc1'          => 'pm_sortdesc1',
+        'sortdesc1'       => 'pm_sortdesc1',
         'sortfield2'      => 'pm_sortfield2',
         'sortdesc2'       => 'pm_sortdesc2',
         'sortfield3'      => 'pm_sortfield3',
