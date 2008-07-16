@@ -74,7 +74,7 @@ class pagemaster_user_dynHandler
         if ($this->goto == '') {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $this->tid,
-                                         'id' => $data['id']
+                                         'id'  => $data['id']
                                    ));
 
         } elseif ($this->goto == 'stepmode') {
@@ -352,12 +352,11 @@ function pagemaster_user_main($args)
         LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $template)));
         $template = 'publist_template.htm';
     }
-    
-    if ($rss == true)
-	{
-		echo $render->display($template, $cacheid);
-		pnShutDown();
-	}
+
+    if ($rss == true) {
+        echo $render->display($template, $cacheid);
+        pnShutDown();
+    }
 
     return $render->fetch($template, $cacheid);
 }
