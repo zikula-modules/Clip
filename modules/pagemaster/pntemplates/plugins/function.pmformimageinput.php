@@ -71,6 +71,9 @@ class pmformimageinput extends pnFormUploadInput
             );
 
             return serialize($arrTypeData);
+        } else {
+            // return the old image if no new is selected
+            return DBUtil::selectFieldByID('pagemaster_pubdata'.$field['tid'], $field['name'], $field['id'], 'id');
         }
     }
 
