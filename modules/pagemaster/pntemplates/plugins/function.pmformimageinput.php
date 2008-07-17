@@ -42,7 +42,7 @@ class pmformimageinput extends pnFormUploadInput
     }
 
     function preSave($data, $field)
-    {LogUtil::log(serialize('$$data:   '.$data));LogUtil::log(serialize($data[$field['name']]));
+    {
         $id   = $data['id'];
         $tid  = $data['tid'];
         $data = $data[$field['name']];
@@ -77,17 +77,14 @@ class pmformimageinput extends pnFormUploadInput
                 'orig_name' => $data['name'],
                 'tmb_name'  => $new_filenameTmb,
                 'file_name' => $new_filename
-            );LogUtil::log('$arrTypeData:   '.serialize($arrTypeData));
+            );
 
             return serialize($arrTypeData);
 
         } elseif ($id != NULL) {
             // if it's not a new pub
             // return the old image if no new is selected
-            $data = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
-            LogUtil::log('Data:   '.serialize($data));
-            return $data;
-
+            return DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');;
         }
 
         return NULL;
