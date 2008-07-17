@@ -393,13 +393,14 @@ function pagemaster_userapi_encodeurl($args)
         $pubTypeTitle = DataUtil::formatPermalink(DBUtil::selectFieldByID('pagemaster_pubtypes', 'urltitle', $tid, 'tid'));
     }
 
-    if (isset($args['args']['pid'])) {
+    if (isset($args['args']['pid']) || isset($args['args']['id'])) {
         $tables =& pnDBGetTables();
         $column = $tables['pagemaster_pubfields_column'];
         $where  = "$column[tid] = $tid AND $column[istitle] = 1";
         $titlefield = DBUtil::selectField('pagemaster_pubfields', 'name', $where);
 
-        $pid = $args['args']['pid'];
+        $pid = (isset($args['args']['pid'])) ? $args['args']['pid'] : $args['args']['id'];
+        unset($args['args']['id']);
         unset($args['args']['pid']);
 
         $pubTitle = DBUtil::selectFieldById('pagemaster_pubdata'.$tid, $titlefield, $pid, 'core_pid');
