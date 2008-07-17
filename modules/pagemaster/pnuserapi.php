@@ -49,7 +49,7 @@ function pagemaster_userapi_editPub($args)
     foreach ($pubfields as $field) {
         $plugin = pagemasterGetPlugin($field['fieldplugin']);
         if (method_exists($plugin, 'preSave')) {
-            $data[$field['name']] = $plugin->preSave($data[$field['name']], $field);
+            $data[$field['name']] = $plugin->preSave($data, $field);
         }
     }
 

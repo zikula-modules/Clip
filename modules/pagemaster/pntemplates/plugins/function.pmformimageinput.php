@@ -23,21 +23,30 @@ class pmformimageinput extends pnFormUploadInput
 
     function postRead($data, $field)
     {
-        $arrTypeData = unserialize($data);
+        if (!empty($data)) {
+            $arrTypeData = @unserialize($data);
 
-        if (!is_array($arrTypeData))
-            return LogUtil :: registerError('error in pmformimageinput: stored data is invalid');
+            if (!is_array($arrTypeData)) {
+                return LogUtil::registerError('error in pmformimageinput: stored data is invalid');
+            }
 
-        $DirPM = pnModGetVar('pagemaster', 'uploadpath');
-        return array (
-                      'orig_name'    => $arrTypeData['orig_name'],
-                      'thumbnailUrl' => $DirPM.'/'.$arrTypeData['tmb_name'],
-                      'url'          => $DirPM.'/'.$arrTypeData['file_name']
-                     );
+            $DirPM = pnModGetVar('pagemaster', 'uploadpath');
+            return array(
+                         'orig_name'    => $arrTypeData['orig_name'],
+                         'thumbnailUrl' => $DirPM.'/'.$arrTypeData['tmb_name'],
+                         'url'          => $DirPM.'/'.$arrTypeData['file_name']
+                        );
+        } else {
+            return NULL;
+        }
     }
 
     function preSave($data, $field)
-    {
+    {LogUtil::log(serialize('$$data:   '.$data));LogUtil::log(serialize($data[$field['name']]));
+        $id   = $data['id'];
+        $tid  = $data['tid'];
+        $data = $data[$field['name']];
+
         if ($data['name'] <> '' && !empty($_FILES)) {
             $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
 
@@ -62,19 +71,26 @@ class pmformimageinput extends pnFormUploadInput
             copy($srcTempFilename, $dstFilename);
 
             $dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail',
-                                    array_merge($wh, array('filename' => $dstFilename,
+                                    array_merge($wh, array('filename'    => $dstFilename,
                                                            'dstFilename' => $dstFilenameTmb)));
-            $arrTypeData = array (
+            $arrTypeData = array(
                 'orig_name' => $data['name'],
                 'tmb_name'  => $new_filenameTmb,
                 'file_name' => $new_filename
-            );
+            );LogUtil::log('$arrTypeData:   '.serialize($arrTypeData));
 
             return serialize($arrTypeData);
-        } else {
+
+        } elseif ($id != NULL) {
+            // if it's not a new pub
             // return the old image if no new is selected
-            return DBUtil::selectFieldByID('pagemaster_pubdata'.$field['tid'], $field['name'], $field['id'], 'id');
+            $data = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
+            LogUtil::log('Data:   '.serialize($data));
+            return $data;
+
         }
+
+        return NULL;
     }
 
     function getSaveTypeDataFunc($field)

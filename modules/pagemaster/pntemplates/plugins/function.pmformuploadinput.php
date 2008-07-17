@@ -28,6 +28,10 @@ class pmformuploadinput extends pnFormUploadInput
 
     function preSave($data, $field)
     {
+        $id   = $data['id'];
+        $tid  = $data['tid'];
+        $data = $data[$field['name']];
+
         if ($data <> '' and !empty ($_FILES)) {
             $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
             // TODO: delete the old file
@@ -44,7 +48,15 @@ class pmformuploadinput extends pnFormUploadInput
                 'file_name' => $dstFilename
             );
             return serialize($arrTypeData);
+
+        } elseif ($id != NULL) {
+            // if it's not a new pub
+            // return the old image if no new is selected
+            return DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
+
         }
+
+        return NULL;
     }
 }
 
