@@ -57,7 +57,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
 {
     $template_code = '
         <h1><!--[pnml name="' . $pubtype[title] . '"]--></h1>
-
+<!--[pndebug]-->
         <!--[pnsecauthaction_block component="pagemaster::" instance="::" level=ACCESS_ADMIN]-->
             <!--[pnml name=_PAGEMASTER_GENERIC_EDITPUB"]--><br />
         <!--[/pnsecauthaction_block]-->
@@ -84,10 +84,13 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
         } else {
             $toolTip = '';
         }
-
+		if ($fieldplugin[1] == 'pmformtextinput')
+			$linecol = ' rows="20" cols="70" ';
+		else
+			$linecol = '';
         $template_code .= "\n".'<tr>
                                     <td><!--[pnformlabel for="' . $pubfield[name] . '" text="' . $pubfield[title] . '" ]-->:</td>
-                                    <td><!--[' . $fieldplugin[1] . ' id="' . $pubfield[name] . '" ' . $maxlength . $toolTip . ' mandatory="' . $pubfield[ismandatory] . '"]--></td>
+                                    <td><!--[' . $fieldplugin[1] . ' id="' . $pubfield[name] . '" ' . $maxlength . $linecol . $toolTip . ' mandatory="' . $pubfield[ismandatory] . '"]--></td>
                                 </tr>'."\n";
     }
 
