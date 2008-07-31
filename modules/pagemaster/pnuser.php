@@ -210,14 +210,15 @@ function pagemaster_user_pubedit()
         return $render->pnFormExecute($user_defined_template, $dynHandler);
 
     } else {
-        LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template)));
+        
         $user_defined_template = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
 
         if ($render->get_template_path($user_defined_template)) {
             return $render->pnFormExecute($user_defined_template, $dynHandler);
 
         } else {
-            global $editpub_template_code;
+            LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template)));
+        	global $editpub_template_code;
             $editpub_template_code = generate_editpub_template_code($tid, $pubfields, $pubtype);
             // TODO delete all the time, even if it's not needed
             $render->force_compile = true;

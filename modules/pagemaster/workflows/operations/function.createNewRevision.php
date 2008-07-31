@@ -28,6 +28,7 @@ function pagemaster_operation_createNewRevision(&$obj, $params)
     }
     $new_rev = $obj;
     unset($new_rev['id']);
+    $new_rev['core_revision'] = $new_rev['core_revision']  + 1 ; 
     DBUtil::insertObject($new_rev, $obj['__WORKFLOW__']['obj_table'], 'id');
     
     $new_rev['__WORKFLOW__']['obj_id'] = $new_rev['id'];

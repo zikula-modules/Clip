@@ -9,7 +9,7 @@
  * @subpackage  pagemaster
  */
 
-function pagemaster_operation_moveToDepot(& $obj, $params)
+function pagemaster_operation_moveToDepot($obj, $params)
 {
     $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $obj['tid'], 'tid');
 

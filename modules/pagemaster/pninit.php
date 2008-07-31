@@ -24,10 +24,6 @@ function pagemaster_init()
         return LogUtil::registerError(_CREATEINDEXFAILED);
     }
     
-    if (!DBUtil::createTable('pagemaster_revisions')) {
-        return false;
-    }
-
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
 
@@ -94,9 +90,7 @@ function pagemaster_delete()
     if (!DBUtil::dropTable('pagemaster_pubtypes')) {
         return false;
     }
-    if (!DBUtil::dropTable('pagemaster_revisions')) {
-        return false;
-    }
+ 
 
     Loader::loadClass('CategoryUtil');
     CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/pagemaster', 'path');

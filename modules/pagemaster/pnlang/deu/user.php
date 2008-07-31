@@ -15,3 +15,5 @@ define('_PAGEMASTER_EXPIREDATE', 'Ablaufdatum');
 define('_PAGEMASTER_SHOWINLIST', 'In Listenansicht anzeigen');
 define('_PAGEMASTER_GENERIC_EDITPUB', 'Dies ist ein generisches Template. Sie k�nnen im Verzeichnis \'/pntemplates/input/pubedit_{FORMNAME}_{STEPNAME}.htm\' oder \'/pntemplates/input/pubedit_{TID}_all.htm\' (f�r alle Steps) ein eigenes Template erstellen.');
 define('_PAGEMASTER_GENERIC_VIEWPUB', 'Dies ist ein generisches Template. Sie k�nnen im Verzeichnis \'/pntemplates/output/viewpub_{TEMPLATENAME}.htm\' ein eigenes Template erstellen.');
+
+define('_PAGEMASTER_TEMPLATENOTFOUND', 'Template [%tpl%] nicht gefunden');

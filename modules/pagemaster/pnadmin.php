@@ -305,7 +305,7 @@ function pagemaster_admin_publist()
         $publist[$key] = $pub;
     }
 
-    $render = FormUtil::newpnForm('pagemaster');
+    $render = pnRender::getInstance('pagemaster');
     $render->assign('core_tid', $tid);
     $render->assign('publist', $publist);
 
@@ -329,13 +329,13 @@ function pagemaster_admin_history()
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
-    $publist = DBUtil::selectObjectArray($tablename, 'pm_pid = '.$pid, 'pm_id');
+    $publist = DBUtil::selectObjectArray($tablename, 'pm_pid = '.$pid, 'pm_revision desc');
     foreach ($publist as $key => $pub) {
         $workflow = WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
         $publist[$key] = $pub;
     }
 
-    $render = FormUtil::newpnForm('pagemaster');
+    $render = pnRender::getInstance('pagemaster');
     $render->assign('core_tid', $tid);
     $render->assign('publist', $publist);
 

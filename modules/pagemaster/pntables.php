@@ -126,7 +126,7 @@ function pagemaster_pntables()
 
 
     //////////////////
-    $pntable['pagemaster_revisions'] = DBUtil::getLimitedTablename('pagemaster_revisions');
+ /*   $pntable['pagemaster_revisions'] = DBUtil::getLimitedTablename('pagemaster_revisions');
     $pntable['pagemaster_revisions_column'] = array (
         'tid'         => 'pm_tid',
         'id'          => 'pm_id',
@@ -140,7 +140,7 @@ function pagemaster_pntables()
         'prevversion' => 'I NOTNULL'
     );
     ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_revisions_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_revisions_column_def']);
+    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_revisions_column_def']);*/
 
     //-------------------------------------------------------------------------
     // dynamic pubdata tables
