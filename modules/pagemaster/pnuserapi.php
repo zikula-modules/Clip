@@ -134,6 +134,7 @@ function pagemaster_userapi_getPub($args)
     $id  = $args['id'];
 
     $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    
     $uid = pnUserGetVar('uid');
     if ($uid <> '' and $pubtype['enableeditown'] == 1) {
         $where .= ' ( pm_cr_uid = '.$uid.' or pm_online = 1 )';
@@ -153,16 +154,18 @@ function pagemaster_userapi_getPub($args)
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
+    
     $publist   = DBUtil::selectObjectArray($tablename, $where);
+    
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
 
     if ($handlePluginFields){
         include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
         $publist = handlePluginFields($publist, $pubfields);
     }
-
+	
     $pubdata = $publist[0];
-
+	
     if (count($publist) == 0) {
         return LogUtil::registerError(pnML('_NOFOUND', array('i' => _PAGEMASTER_PUBLICATION)));
     } elseif (count($publist) > 1) {
@@ -174,7 +177,7 @@ function pagemaster_userapi_getPub($args)
     }
 
     if ($getApprovalState) {
-        WorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'pagemaster');
+       WorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'pagemaster');
     }
 
     return ($pubdata);

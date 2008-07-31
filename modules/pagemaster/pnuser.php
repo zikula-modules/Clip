@@ -186,6 +186,9 @@ function pagemaster_user_pubedit()
         $id = pnModAPIFunc('pagemaster', 'user', 'getId',
                            array('tid' => $tid,
                                  'pid' => $pid));
+    	if ($id == '') {
+        	return LogUtil::registerError("pid $pid not found");
+    }
     }
     $dynHandler->tid       = $tid;
     $dynHandler->id        = $id;

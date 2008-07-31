@@ -37,7 +37,13 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
         }
         return $cat_arr;
     }
-
+    
+	function create(&$render, &$params)
+	{
+		$this->saveAsString = 1;
+		parent::create($render, $params);
+	}
+	
     function load(&$render, $params)
     {
         $pubfields = $render->pnFormEventHandler->pubfields;

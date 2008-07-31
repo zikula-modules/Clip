@@ -18,6 +18,7 @@ function pagemaster_operation_moveToDepot(& $obj, $params)
         $obj['core_online'] = 0;
         return (bool) DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
     } else {
-        return (bool) DBUtil::deleteObject($obj, $obj['__WORKFLOW__']['obj_table']);
+        return WorkflowUtil::deleteWorkflow($obj);
+    	//return (bool) DBUtil::deleteObject($obj, $obj['__WORKFLOW__']['obj_table']);
     }
 }
