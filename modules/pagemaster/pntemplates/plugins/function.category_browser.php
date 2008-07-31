@@ -50,7 +50,7 @@ function smarty_function_category_browser($params, &$smarty)
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
     foreach ($pubfields as $pubfield) {
         if ($pubfield['name'] == $field) {
-            $id = $pubfield['typedata'];
+        	$id = $pubfield['typedata'];
         }
     }
     $cats = CategoryUtil::getSubCategories($id);

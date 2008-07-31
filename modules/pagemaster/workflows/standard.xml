@@ -78,7 +78,6 @@
       <description>Update content and approve for immediate publishing</description>
       <permission>moderator</permission>
       <state>approved</state>
-      <operation online="0">updateOnlineState</operation>
       <operation>moveToDepot</operation>
       <operation nextState="approved" online="1">createNewRevision</operation>
     </action>
@@ -88,8 +87,7 @@
       <description>Update content for later publishing</description>
       <permission>moderator</permission>
       <state>approved</state>
-
-      <operation nextState="waiting">createNewRevision</operation>
+      <operation nextstate="waiting">createNewRevision</operation>
     </action>
 
     <action id="delete">
@@ -97,8 +95,6 @@
       <description>Delete publication</description>
       <permission>moderator</permission>
       <state>approved</state>
-
-      <operation online="0">updateOnlineState</operation>
       <operation>moveToDepot</operation>
       <operation>deletePub</operation>
     </action>
@@ -108,7 +104,6 @@
       <description>Set publication online</description>
       <permission>moderator</permission>
       <state>approved</state>
-
       <operation online="1">updateOnlineState</operation>
     </action>
 
@@ -117,7 +112,6 @@
       <description>Set publication offline</description>
       <permission>moderator</permission>
       <state>approved</state>
-
       <operation online="0">updateOnlineState</operation>
     </action>
 

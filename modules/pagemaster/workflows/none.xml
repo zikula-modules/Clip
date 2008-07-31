@@ -43,9 +43,7 @@
       <description>Delete content</description>
       <permission>editor</permission>
       <state>approved</state>
-
-      <operation online="0">updateOnlineState</operation>
-      <operation nextState="deleted">moveToDepot</operation>
+      <operation>moveToDepot</operation>
       <operation>deletePub</operation>
     </action>
 
