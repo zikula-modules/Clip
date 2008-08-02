@@ -222,6 +222,7 @@ function pagemaster_userapi_pubList($args)
     if (!isset($args['itemsperpage']) || !is_numeric($args['itemsperpage'])) {
         $args['itemsperpage'] = -1;
     }
+
     if (!isset($args['justcount']) || !is_numeric($args['justcount'])) {
         $args['justcount'] = 'no';
     }

@@ -65,7 +65,7 @@ function pagemaster_listblock_display($blockinfo)
                       array('tid'                => $tid,
                             'filter'             => $filterStr,
                             'orderby'            => $orderBy,
-                            'numitems'           => $listCount,
+                            'itemsperpage'           => $listCount,
                             'startnum'           => $listOffset,
                             'checkPerm'          => true,
                             'template'           => $template,

@@ -275,7 +275,7 @@ function pagemaster_importapi_importps4()
                 SELECT pg_tid, pg_id, pg_pid, pg_prevversion, 'A', pg_timestamp , pg_user, null, null  FROM $pntable[pagesetter_revisions] )";
     $result = DBUtil::executeSQL($sql);*/
 
-    $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes', 'pg_id=3'); //, 'pg_id=11'
+    $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes'); //, 'pg_id=11'
     foreach ($pubtypes as $pubtype) {
         $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$pubtype['id']);
 
