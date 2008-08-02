@@ -15,6 +15,7 @@ class pmformdateinput extends pnFormDateInput
 {
 	var $columnDef = 'T';
 	var $title     = 'Date';
+	var $filterClass = 'Date';
 
 	function getFilename()
 	{

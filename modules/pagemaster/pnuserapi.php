@@ -297,7 +297,7 @@ function pagemaster_userapi_pubList($args)
             }
         }
     }
-
+	
     if (isset($joinInfo)) {
         $tbl_alias = 'tbl.';
     } else {
