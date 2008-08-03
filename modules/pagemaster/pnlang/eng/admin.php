@@ -89,10 +89,8 @@ define('_PAGEMASTER_FORMNAME', 'Input Template Name');
 define('_PAGEMASTER_FORMNAME_HELP', 'Name of the Template for the Formular');
 define('_PAGEMASTER_EDITOWN', 'Edit own');
 define('_PAGEMASTER_EDITOWN_HELP', 'Allow editing of own Publications');
-define('_PAGEMASTER_CACHETID', 'Caching');
-define('_PAGEMASTER_CACHETID_HELP', 'With this option, you can switch the Caching of the Publications on or off. This option is not affectet by the pnRender setrings.');
 define('_PAGEMASTER_CACHESECONDS', 'Caching Time');
-define('_PAGEMASTER_CACHESECONDS_HELP', 'How long Should the Publications be cached');
+define('_PAGEMASTER_CACHESECONDS_HELP', 'How long Should the Publications be cached. Empty for no cache.');
 
 
 define('_PAGEMASTER_MANDATORY', 'This Field is mandatory');

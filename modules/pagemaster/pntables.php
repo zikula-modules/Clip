@@ -97,7 +97,6 @@ function pagemaster_pntables()
         'workflow'        => 'pm_workflow',
         'enablerevisions' => 'pm_enablerevisions',
         'enableeditown'   => 'pm_enableeditown',
-        'cachetid'        => 'pm_cachetid',
         'cachelifetime'   => 'pm_cachelifetime'
     );
     $pntable['pagemaster_pubtypes_column_def'] = array (
@@ -118,7 +117,6 @@ function pagemaster_pntables()
         'defaultfilter'   => "C(255)",
         'enablerevisions' => 'I4 NOTNULL',
         'enableeditown'   => 'I4 NOTNULL',
-        'cachetid'        => 'I4 NOTNULL DEFAULT 0',
         'cachelifetime'   => 'I8 NULL'
     );
     ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_pubtypes_column'], 'pm_');
