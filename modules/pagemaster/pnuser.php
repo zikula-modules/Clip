@@ -173,7 +173,7 @@ function pagemaster_user_pubedit()
 	}
 
 	// overview permission check, to hide input fields for disallowed users
-	if (!SecurityUtil::checkPermission('pagemaster:input:', 'tid::', ACCESS_EDIT)) {
+	if (!SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_EDIT)) {
 		return LogUtil::registerError(_NOT_AUTHORIZED);
 	}
 
