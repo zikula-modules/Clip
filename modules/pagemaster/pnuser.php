@@ -20,6 +20,7 @@ class pagemaster_user_dynHandler
 {
 	var $tid;
 	var $core_pid;
+	var $core_revision;
 	var $id;
 	var $pubfields;
 	var $pubtype;
@@ -32,6 +33,7 @@ class pagemaster_user_dynHandler
 		if ($this->id <> '') {
 			$pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
 			$this->core_pid = $pubdata['core_pid'];
+			$this->core_revision = $pubdata['core_revision'];
 			$actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
 			//            print_r($actions);
 		} else {
@@ -63,6 +65,7 @@ class pagemaster_user_dynHandler
 		$data['tid']      = $this->tid;
 		$data['id']       = $this->id;
 		$data['core_pid'] = $this->core_pid;
+		$data['core_revision'] = $this->core_revision;
 
 		$data = pnModAPIFunc('pagemaster', 'user', 'editPub',
 		array('data'        => $data,
@@ -74,7 +77,7 @@ class pagemaster_user_dynHandler
 		if ($this->goto == '') {
 			$this->goto = pnModURL('pagemaster', 'user', 'viewpub',
 			array('tid' => $this->tid,
-                                         'id'  => $data['id']
+                                         'pid'  => $data['core_pid']
 			));
 
 		} elseif ($this->goto == 'stepmode') {
@@ -393,7 +396,7 @@ function pagemaster_user_viewpub($args)
 	if ($tid == '') {
 		return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
 	}
-	if (!isset($pid) && !isset($id)) {
+	if ($pid == '' && $id == '') {
 		return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id | pid')));
 	}
 
@@ -455,6 +458,8 @@ function pagemaster_user_viewpub($args)
                                   'getApprovalState'   => true,
                                   'handlePluginFields' => true
 	));
+	if (!$pubdata)
+		return false;
 
 	$core_title = getTitleField($pubfields);
 
