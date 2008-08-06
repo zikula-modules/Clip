@@ -38,7 +38,10 @@ function pagemaster_operation_createNewRevision(&$obj, $params)
     $new_rev['__WORKFLOW__']['obj_id'] = $new_rev['id'];
     unset($new_rev['__WORKFLOW__']['id']);
     $workflow = new pnWorkflow($obj['__WORKFLOW__']['schemaname'],'pagemaster');
-    return $workflow->registerWorkflow($new_rev, $nextState);
+    $workflow->registerWorkflow($new_rev, $nextState);
+    pnModCallHooks('item', 'update', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
+    return true;
+    
     /*$revision = array('tid' => $obj['tid'],
                       'id'  => $new_rev['id'],
                       'pid' => $obj['core_pid'],

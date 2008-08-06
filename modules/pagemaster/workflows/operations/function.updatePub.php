@@ -17,5 +17,8 @@ function pagemaster_operation_updatePub(&$obj, $params)
 	
     $obj['core_revision'] = $obj['core_revision']  + 1 ;
 
-    return (bool)DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table'],null, 'id');
+    DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table'],null, 'id');
+    pnModCallHooks('item', 'update', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
+    return true;
+    
 }

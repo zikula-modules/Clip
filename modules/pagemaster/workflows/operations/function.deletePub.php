@@ -11,5 +11,6 @@
 
 function pagemaster_operation_deletePub(&$obj, $params)
 {
-    return (bool)WorkflowUtil::deleteWorkflow($obj);
+    pnModCallHooks('item', 'delete', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
+	return (bool)WorkflowUtil::deleteWorkflow($obj);
 }
