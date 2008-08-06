@@ -17,6 +17,7 @@ class pmformdateinput extends pnFormDateInput
 	var $title     = 'Date';
 	var $filterClass = 'Date';
 
+	
 	function getFilename()
 	{
 		return __FILE__; // FIXME: may be found in smarty's data???

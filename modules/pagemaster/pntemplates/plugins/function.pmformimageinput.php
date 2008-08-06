@@ -15,11 +15,31 @@ class pmformimageinput extends pnFormUploadInput
 {
 	var $columnDef = 'C(256)';
 	var $title     = 'Image Upload';
+	var $upl_arr;
 
 	function getFilename()
 	{
 		return __FILE__; // FIXME: may be found in smarty's data???
 	}
+	function render(&$render)
+	{
+		$input_html = parent::render($render);
+		return $input_html.' '.$this->upl_arr['orig_name'];
+	}
+
+	function load(&$render, &$params)
+	{
+		$this->loadValue($render, $render->get_template_vars());
+	}
+
+	function loadValue(&$render, &$values)
+	{
+		if (array_key_exists($this->dataField, $values))
+		$value = $values[$this->dataField];
+		if ($value !== null)
+		$this->upl_arr = unserialize($value);
+	}
+
 
 	function postRead($data, $field)
 	{
@@ -32,34 +52,42 @@ class pmformimageinput extends pnFormUploadInput
 
 			$DirPM = pnModGetVar('pagemaster', 'uploadpath');
 			if ($arrTypeData['tmb_name'] <> ''){
-				$img_arr =  array(
+				$this->upl_arr =  array(
                          'orig_name'    => $arrTypeData['orig_name'],
                          'thumbnailUrl' => $DirPM.'/'.$arrTypeData['tmb_name'],
                          'url'          => $DirPM.'/'.$arrTypeData['file_name']
 				);
 			}else{
-				$img_arr = array(
+				$this->upl_arr = array(
                          'orig_name'    => '',
                          'thumbnailUrl' => '',
                          'url'          => ''
-				);}
-			return $img_arr;
-				 
+                         );}
+                         return $this->upl_arr;
+
 		} else {
 			return NULL;
 		}
 	}
 
-	function preSave($data, $field)
+	function preSave($data, $field, &$render)
 	{
 		$id   = $data['id'];
 		$tid  = $data['tid'];
 		$data = $data[$field['name']];
-
-		if ($data['name'] <> '' && !empty($_FILES)) {
+		
+		//ugly to get old image from DB
+		if ($id != NULL) 
+			$old_image = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
+		
+		if ($data['name'] <> '') {
 			$uploadpath = pnModGetVar('pagemaster', 'uploadpath');
-
-			//TODO: delete the old file
+			//delete the old file
+			if ($id != NULL) {
+				$old_image_arr = unserialize($old_image); 
+				unlink($uploadpath. '/' .$old_image_arr['tmb_name']);
+				unlink($uploadpath. '/' .$old_image_arr['file_name']);
+			}
 			list ($x, $y) = explode(':', $field['typedata']);
 			$wh = array();
 			if ($x > 0 and $y > 0) {
@@ -93,7 +121,7 @@ class pmformimageinput extends pnFormUploadInput
 		} elseif ($id != NULL) {
 			// if it's not a new pub
 			// return the old image if no new is selected
-			return DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');;
+			return $old_image;
 		}
 
 		return NULL;
