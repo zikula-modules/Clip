@@ -22,6 +22,7 @@ Loader::includeOnce('modules/pagemaster/common.php');
  */
 function pagemaster_userapi_editPub($args)
 {
+
 	if (!isset($args['data'])) {
 		return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'data')));
 	}
@@ -29,6 +30,7 @@ function pagemaster_userapi_editPub($args)
 		return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'commandName')).' - '._PAGEMASTER_WORKFLOWACTIONCN);
 	}
 
+	include_once('includes/pnForm.php');
 	$commandName = $args['commandName'];
 	$data        = $args['data'];
 	$tid         = $data['tid'];
@@ -52,12 +54,10 @@ function pagemaster_userapi_editPub($args)
 			$data[$field['name']] = $plugin->preSave($data, $field);
 		}
 	}
-
 	$ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
 	if (!$ret) {
 		return LogUtil::registerError(_PAGEMASTER_WORKFLOWACTIONERROR);
 	}
-
 	return $data;
 }
 
