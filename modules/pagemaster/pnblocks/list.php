@@ -73,7 +73,9 @@ function pagemaster_listblock_display($blockinfo)
                             'handlePluginFields' => true,
 							'cachelifetime' 	 => $cachelifetime	
 	));
-
+	if ($html == '')
+		return false;
+		
 	$blockinfo['content'] = $html;
 
 	return pnBlockThemeBlock($blockinfo);
