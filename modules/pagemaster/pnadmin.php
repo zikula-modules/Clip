@@ -87,7 +87,23 @@ class pagemaster_admin_pubtypesHandler
                 'text'  => _PAGEMASTER_UPDATER,
                 'value' => 'lu_uid'
             );
-
+           $pubarr[] = array (
+                'text'  => _PAGEMASTER_PUBLISHDATE,
+                'value' => 'pm_publishdate'
+            );
+            $pubarr[] = array (
+                'text'  => _PAGEMASTER_EXPIREDATE,
+                'value' => 'pm_expiredate'
+            );
+            $pubarr[] = array (
+                'text'  => _PAGEMASTER_LANGUAGE,
+                'value' => 'pm_language'
+            );
+            $pubarr[] = array (
+                'text'  => _PAGEMASTER_HITCOUNT,
+                'value' => 'pm_hitcount'
+            );
+            
             foreach ($pubfields as $pubfield) {
                 $pubarr[] = array (
                     'text' => $pubfield['name'],

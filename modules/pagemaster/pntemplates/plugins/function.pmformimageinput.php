@@ -75,7 +75,7 @@ class pmformimageinput extends pnFormUploadInput
 		$id   = $data['id'];
 		$tid  = $data['tid'];
 		$data = $data[$field['name']];
-		
+
 		//ugly to get old image from DB
 		if ($id != NULL) 
 			$old_image = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
