@@ -3,7 +3,7 @@
  * PageMaster
  *
  * @copyright (c) 2008, PageMaster Team
- * @link        http://code.zikula.org/projects/pagemaster/
+ * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
@@ -82,7 +82,7 @@ function pagemaster_pntables()
     $pntable['pagemaster_pubtypes_column'] = array (
         'tid'             => 'pm_tid',
         'title'           => 'pm_title',
-        'urltitle'		  => 'pm_urltitle',
+        'urltitle'          => 'pm_urltitle',
         'filename'        => 'pm_filename',
         'formname'        => 'pm_formname',
         'description'     => 'pm_description',
@@ -102,7 +102,7 @@ function pagemaster_pntables()
     $pntable['pagemaster_pubtypes_column_def'] = array (
         'tid'             => 'I PRIMARY AUTO',
         'title'           => "C(255) NOTNULL DEFAULT ''",
-    	'urltitle'        => "C(255) NOTNULL DEFAULT ''",
+        'urltitle'        => "C(255) NOTNULL DEFAULT ''",
         'filename'        => "C(255) NOTNULL DEFAULT ''",
         'formname'        => "C(255) NOTNULL DEFAULT ''",
         'description'     => "C(255) NOTNULL DEFAULT ''",

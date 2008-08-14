@@ -3,7 +3,7 @@
  * PageMaster
  *
  * @copyright (c) 2008, PageMaster Team
- * @link        http://code.zikula.org/projects/pagemaster/
+ * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
@@ -50,7 +50,7 @@ function smarty_function_category_browser($params, &$smarty)
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
     foreach ($pubfields as $pubfield) {
         if ($pubfield['name'] == $field) {
-        	$id = $pubfield['typedata'];
+            $id = $pubfield['typedata'];
         }
     }
     $cats = CategoryUtil::getSubCategories($id);

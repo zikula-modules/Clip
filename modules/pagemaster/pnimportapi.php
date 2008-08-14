@@ -3,7 +3,7 @@
  * PageMaster
  *
  * @copyright (c) 2008, PageMaster Team
- * @link        http://code.zikula.org/projects/pagemaster/
+ * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
@@ -37,12 +37,12 @@ function pagemaster_importapi_importps1()
     if ($rootcat == '' or !$rootcat) {
         return LogUtil :: registerError('Category /__SYSTEM__/Modules/pagemaster/lists not found');
     }
-	
+    
     $temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
     $lang  = pnUserGetLang();
     $lists = DBUtil::selectObjectArray('pagesetter_lists');
     foreach ($lists as $list) {
-    	$cat = new PNCategory();
+        $cat = new PNCategory();
         $cat->setDataField('parent_id', $rootcat['id']);
         $cat->setDataField('name', $list['title']);
         $cat->setDataField('is_leaf', 0);
@@ -54,20 +54,22 @@ function pagemaster_importapi_importps1()
         $items = DBUtil::selectObjectArray('pagesetter_listitems', 'pg_lid = '.$list['id'], 'pg_id');
         foreach ($items as $item) {
             //TODO Lists are "flat" after import, means only one hirachical step
-        	$cat = new PNCategory();
+            $cat = new PNCategory();
             $cat->setDataField('name', $item['title']);
             if ($item['parentID'] == -1){
-            	$cat->setDataField('parent_id', $dr);
-            	if ($item['lval']-$item['rval'] < -1)
-            		$cat->setDataField('is_leaf', 0);
-            	else
-            		$cat->setDataField('is_leaf', 1);
-            }else{
-            	$cat->setDataField('parent_id', $temp_arr[$item['parentID']]);
-            	if ($item['lval']-$item['rval'] < -1)
-            		$cat->setDataField('is_leaf', 0);
-            	else
-            		$cat->setDataField('is_leaf', 1);
+                $cat->setDataField('parent_id', $dr);
+                if ($item['lval']-$item['rval'] < -1) {
+                    $cat->setDataField('is_leaf', 0);
+                } else {
+                    $cat->setDataField('is_leaf', 1);
+                }
+            } else {
+                $cat->setDataField('parent_id', $temp_arr[$item['parentID']]);
+                if ($item['lval']-$item['rval'] < -1) {
+                    $cat->setDataField('is_leaf', 0);
+                } else {
+                    $cat->setDataField('is_leaf', 1);
+                }
             }  
             
             $cat->setDataField('sort_value', $item['lineno']);
@@ -348,7 +350,7 @@ function pagemaster_importapi_importps4()
                                     LogUtil :: registerError('List: '.$listitem[lid].' not found in pagesetter field: '.$key);
                                 
                                 $catitem = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists/' . str_replace('/', '&#47;', mysql_escape_string($list['title'])) . '/' . str_replace('/', '&#47;', mysql_escape_string($listitem['title'])));
-								*/
+                                */
                                 $catitem['id'] = $temp_arr[$field];
                                 $field = $catitem['id'];
                             } else {
@@ -363,8 +365,8 @@ function pagemaster_importapi_importps4()
                             if ($listId <> '') {
                                 //$listitem = DBUtil::selectObjectByID('pagesetter_listitems', $listId);
                                 //$list     = DBUtil::selectObjectByID('pagesetter_lists', $listitem['lid']);
-								//$catitem  = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists/' . str_replace('/', '&#47;', mysql_escape_string($list['title'])) . '/' . str_replace('/', '&#47;', mysql_escape_string($listitem['title'])));
-                            	$catitem['id'] = $temp_arr[$listId];
+                                //$catitem  = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists/' . str_replace('/', '&#47;', mysql_escape_string($list['title'])) . '/' . str_replace('/', '&#47;', mysql_escape_string($listitem['title'])));
+                                $catitem['id'] = $temp_arr[$listId];
                                 if ($catitem['id'] <> '')
                                     $field .= $catitem['id'] . ':';
                             }

@@ -9,49 +9,49 @@
 		<legend><!--[pnml name=_PAGEMASTER_PUBTYPE_EXISTING]--></legend>
 		<table summary="<!--[pnml name=_PAGEMASTER_PUBTYPE_EXISTING]-->" class="pn-admintable">
 			<thead>
-		    <tr>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_TITLE"]--></th>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_DESCRIPTION"]--></th>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_EDITFIELDS"]--></th>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_PUBLIST"]--></th>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_PUBLISTADMIN"]--></th>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_NEWARTICLE"]--></th>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_SHOWINPUTCODE"]--></th>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODELIST"]--></th>
-		        <th><!--[pnml name="_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODEFULL"]--></th>
-		    </tr>
+			<tr>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_TITLE"]--></th>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_DESCRIPTION"]--></th>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_EDITFIELDS"]--></th>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_PUBLIST"]--></th>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_PUBLISTADMIN"]--></th>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_NEWARTICLE"]--></th>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_SHOWINPUTCODE"]--></th>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODELIST"]--></th>
+				<th><!--[pnml name="_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODEFULL"]--></th>
+			</tr>
 			</thead>
 			<tbody>
-		    <!--[foreach from=$pubtypes item=pubtype]-->
-		    <tr class="pn-defaulttablerow">
-		        <td><a href="<!--[pnmodurl modname="pagemaster" type=admin func="create_tid" tid=$pubtype.tid ]-->"><!--[$pubtype.title]--></a></td>
-		        <td><!--[$pubtype.description]--></td>
-		        <td>
+			<!--[foreach from=$pubtypes item=pubtype]-->
+			<tr class="pn-defaulttablerow">
+				<td><a href="<!--[pnmodurl modname="pagemaster" type=admin func="create_tid" tid=$pubtype.tid ]-->"><!--[$pubtype.title]--></a></td>
+				<td><!--[$pubtype.description]--></td>
+				<td>
 					<a href="<!--[pnmodurl modname="pagemaster" type=admin func="editpubfields" tid=$pubtype.tid]-->"><!--[pnimg modname=core src=edit.gif set=icons/extrasmall]--></a>
 				</td>
-		        <td>
+				<td>
 					<a href="<!--[pnmodurl modname="pagemaster" type=user func="main" tid=$pubtype.tid]-->"><!--[pnimg modname=core src=14_layer_visible.gif set=icons/extrasmall]--></a>
 
-		        </td>
-		        <td>
+				</td>
+				<td>
 					<a href="<!--[pnmodurl modname="pagemaster" type=admin func="publist" tid=$pubtype.tid]-->"><!--[pnimg modname=core src=14_layer_visible.gif set=icons/extrasmall]--></a>
 
-		        </td>
-		        <td>
+				</td>
+				<td>
 					<a href="<!--[pnmodurl modname="pagemaster" type=user func="pubedit" tid=$pubtype.tid]-->"><!--[pnimg modname=core src=edit_add.gif set=icons/extrasmall]--></a>
-		        </td>
-		        <td>
+				</td>
+				<td>
 					<a href="<!--[pnmodurl modname="pagemaster" type=admin func="showcode" mode="input" tid=$pubtype.tid]-->"><!--[pnimg modname=core src=14_layer_visible.gif set=icons/extrasmall]--></a>
 
-		        </td>
-		        <td>
+				</td>
+				<td>
 					<a href="<!--[pnmodurl modname="pagemaster" type=admin func="showcode" mode="outputlist" tid=$pubtype.tid]-->"><!--[pnimg modname=core src=14_layer_visible.gif set=icons/extrasmall]--></a>
-		        </td>		        
-		         <td>
+				</td>				
+				 <td>
 					<a href="<!--[pnmodurl modname="pagemaster" type=admin func="showcode" mode="outputfull" tid=$pubtype.tid]-->"><!--[pnimg modname=core src=14_layer_visible.gif set=icons/extrasmall]--></a>
-		        </td>
-		    </tr>
-		    <!--[/foreach]-->
+				</td>
+			</tr>
+			<!--[/foreach]-->
 			</tbody>
 		</table>
 	</fieldset>

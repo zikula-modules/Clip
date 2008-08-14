@@ -11,55 +11,55 @@
 	<fieldset id="pubfields">
 		<legend><!--[pnml name=_PAGEMASTER_EXISTINGPUBFIELDS]--></legend>
 		<ol id="pubfieldlist">
-	        <li id="pubfieldlistheader" class="pubfieldlistheader pn-clearfix">
-	            <span class="smallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_NAME"]--></strong></span>
-	            <span class="smallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_TITLE"]--></strong></span>
-	            <span class="normalplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_DESCRIPTION"]--></strong></span>
-	            <span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_ISSEARCHABLE"]--></strong></span>
-	            <span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_ISTITLE"]--></strong></span>
-	            <span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_ISMANDATORY"]--></strong></span>
-	            <span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_MAXLENGTH"]--></strong></span>
-	            <span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_ACTIONS"]--></strong></span>
-	        </li>
-	        <!--[foreach from=$pubfields item=pubfield name=pubfields]-->
-	        <li id="pubfield_<!--[$pubfield.id]-->" class="<!--[ cycle name=pubfieldlist values="pn-odd,pn-even" ]--> pn-sortable pn-clearfix moveable">
+			<li id="pubfieldlistheader" class="pubfieldlistheader pn-clearfix">
+				<span class="smallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_NAME"]--></strong></span>
+				<span class="smallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_TITLE"]--></strong></span>
+				<span class="normalplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_DESCRIPTION"]--></strong></span>
+				<span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_ISSEARCHABLE"]--></strong></span>
+				<span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_ISTITLE"]--></strong></span>
+				<span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_ISMANDATORY"]--></strong></span>
+				<span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_MAXLENGTH"]--></strong></span>
+				<span class="extrasmallplace"><strong><!--[pnml name="_PAGEMASTER_PUBFIELD_ACTIONS"]--></strong></span>
+			</li>
+			<!--[foreach from=$pubfields item=pubfield name=pubfields]-->
+			<li id="pubfield_<!--[$pubfield.id]-->" class="<!--[ cycle name=pubfieldlist values="pn-odd,pn-even" ]--> pn-sortable pn-clearfix moveable">
 				<span id="pubfielddrag_<!--[$pubfield.id]-->" class="smallplace"><!--[pnml name=$pubfield.name]--></span>
 				<span class="smallplace"><!--[$pubfield.title]-->&nbsp;</span>
-	            <span class="normalplace"><!--[$pubfield.description|truncate:45]-->&nbsp;</span> 
-	            <span class="extrasmallplace">
-	            	<!--[if $pubfield.issearchable]-->
-				    	<!--[pnimg modname=core src=ok.gif set=icons/extrasmall]-->
-				    <!--[else]-->
-				    	<!--[pnimg modname=core src=cancel.gif set=icons/extrasmall]-->
-				    <!--[/if]-->
-				</span>
-	            <span class="extrasmallplace">
-	            	<!--[if $pubfield.istitle]-->
-				    	<!--[pnimg modname=core src=ok.gif set=icons/extrasmall]-->
+				<span class="normalplace"><!--[$pubfield.description|truncate:45]-->&nbsp;</span> 
+				<span class="extrasmallplace">
+					<!--[if $pubfield.issearchable]-->
+						<!--[pnimg modname=core src=ok.gif set=icons/extrasmall]-->
 					<!--[else]-->
-				        <!--[pnimg modname=core src=cancel.gif set=icons/extrasmall]-->
+						<!--[pnimg modname=core src=cancel.gif set=icons/extrasmall]-->
 					<!--[/if]-->
-	            </span>
-	            <span class="extrasmallplace">
+				</span>
+				<span class="extrasmallplace">
+					<!--[if $pubfield.istitle]-->
+						<!--[pnimg modname=core src=ok.gif set=icons/extrasmall]-->
+					<!--[else]-->
+						<!--[pnimg modname=core src=cancel.gif set=icons/extrasmall]-->
+					<!--[/if]-->
+				</span>
+				<span class="extrasmallplace">
 					<!--[if $pubfield.ismandatory]-->
-				    	<!--[pnimg modname=core src=ok.gif set=icons/extrasmall]-->
-				    <!--[else]-->
-				        <!--[pnimg modname=core src=cancel.gif set=icons/extrasmall]-->
+						<!--[pnimg modname=core src=ok.gif set=icons/extrasmall]-->
+					<!--[else]-->
+						<!--[pnimg modname=core src=cancel.gif set=icons/extrasmall]-->
 					<!--[/if]-->
 				</span>
 				<span class="extrasmallplace">
 					<!--[if $pubfield.fieldmaxlength]-->
-				    	<!--[$pubfield.fieldmaxlength]-->
-				    <!--[else]-->
-				        <!--[pnimg modname=core src=cancel.gif set=icons/extrasmall]-->
+						<!--[$pubfield.fieldmaxlength]-->
+					<!--[else]-->
+						<!--[pnimg modname=core src=cancel.gif set=icons/extrasmall]-->
 					<!--[/if]-->
 				</span>
-	            <span class="extrasmallplace">
-			        	<a href="<!--[pnmodurl modname="pagemaster" type=admin func="editpubfields" id=$pubfield.id tid=$pubfield.tid]-->"><!--[pnimg modname=core src=edit.gif set=icons/extrasmall]--></a>
-	            </span>
-	        </li>
-	        <!--[ /foreach ]-->
-	    </ol>
+				<span class="extrasmallplace">
+						<a href="<!--[pnmodurl modname="pagemaster" type=admin func="editpubfields" id=$pubfield.id tid=$pubfield.tid]-->"><!--[pnimg modname=core src=edit.gif set=icons/extrasmall]--></a>
+				</span>
+			</li>
+			<!--[ /foreach ]-->
+		</ol>
 	</fieldset>
 	<!--[pnform]-->
 	<fieldset>
