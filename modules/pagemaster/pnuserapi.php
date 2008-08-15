@@ -459,7 +459,7 @@ function pagemaster_userapi_decodeurl($args)
 
     if (isset($_[3]) && !empty($_[3])) {
         $permalinksseparator = pnConfigGetVar('shorturlsseparator');
-        $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d)+$~i', $_[3], $res);
+        $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+$~i', $_[3], $res);
         if ($isPub) {
             $pid = $res[1];
             pnQueryStringSetVar('func', 'viewpub');
