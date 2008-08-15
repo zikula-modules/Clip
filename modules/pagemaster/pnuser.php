@@ -77,7 +77,7 @@ class pagemaster_user_dynHandler
         if ($this->goto == '') {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
             array('tid' => $this->tid,
-                                         'pid'  => $data['core_pid']
+                                         'id'  => $data['id']
             ));
 
         } elseif ($this->goto == 'stepmode') {
