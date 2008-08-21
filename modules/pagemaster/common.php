@@ -110,7 +110,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
 
     $template_code .= "\n".'<tr>
                                 <td><!--[pnformlabel for="core_showinlist" text="_PAGEMASTER_SHOWINLIST" ]-->:</td>
-                                <td><!--[pmformcheckboxinput id="core_showinlist" ]--></td>
+                                <td><!--[pmformcheckboxinput id="core_showinlist" checked="checked"]--></td>
                             </tr>'."\n";
 
     $template_code .= '
