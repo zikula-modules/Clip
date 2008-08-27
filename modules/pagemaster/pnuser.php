@@ -269,11 +269,11 @@ function pagemaster_user_main($args)
     } elseif (FormUtil::getPassedValue('itemsperpage') <> '') {
         $itemsperpage = FormUtil::getPassedValue('itemsperpage');
     } else {
-        $itemsperpage = $pubtype['itemsperpage'];
+        $itemsperpage = ((int)$pubtype['itemsperpage'] > 0 ? (int)$pubtype['itemsperpage'] : -1 );
     }
 
     if ($cachelifetime == '')
-    $cachelifetime = $pubtype['cachelifetime'];
+        $cachelifetime = $pubtype['cachelifetime'];
 
     if ($cachelifetime <> ''){
         $cachetid = true;
@@ -282,7 +282,6 @@ function pagemaster_user_main($args)
         } else {
             $cacheid = 'publist'.$tid.'|nofilter';
         }
-
     } else {
         $cachetid = false;
         $cacheid = false;
@@ -334,7 +333,7 @@ function pagemaster_user_main($args)
     }
 
     $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
-    array('tid'                => $tid,
+                           array('tid'                => $tid,
                                  'pubfields'          => $pubfields,
                                  'pubtype'            => $pubtype,
                                  'countmode'          => $countmode,
@@ -342,7 +341,7 @@ function pagemaster_user_main($args)
                                  'filter'             => $filter,
                                  'orderby'            => $orderby,
                                  'itemsperpage'       => $itemsperpage,
-                                 'checkPerm'          => false, //allready checked
+                                 'checkPerm'          => false, // already checked
                                  'handlePluginFields' => $handlePluginFields,
                                  'getApprovalState'   => $getApprovalState,
                                  'justOwn'            => $justOwn
@@ -354,7 +353,7 @@ function pagemaster_user_main($args)
     $core_title = getTitleField($pubfields);
 
     if ($itemsperpage <> 0) {
-        $render->assign('pager', array('numitems' => $pubcount,
+        $render->assign('pager', array('numitems'     => $pubcount,
                                        'itemsperpage' => $itemsperpage));
     }
     $render->assign('publist', $publist);

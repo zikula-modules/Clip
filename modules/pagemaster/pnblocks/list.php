@@ -63,7 +63,7 @@ function pagemaster_listblock_display($blockinfo)
     }
 
     $html = pnModFunc('pagemaster', 'user', 'main',
-    array('tid'                => $tid,
+                      array('tid'                => $tid,
                             'filter'             => $filterStr,
                             'orderby'            => $orderBy,
                             'itemsperpage'           => $listCount,
