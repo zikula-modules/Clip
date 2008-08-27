@@ -20,8 +20,9 @@ define('_PAGEMASTER_GENERIC_VIEWPUB', 'This is a generic Template. Your can crea
 define('_PAGEMASTER_PUBLICATION', 'Publication');
 
 // Error and warnings
+define('_PAGEMASTER_NOPUBLICATIONSFOUND', 'No publications found');
+define('_PAGEMASTER_MISSINGARG', 'Missing argument [%arg%]');
 define('_PAGEMASTER_TEMPLATENOTFOUND', 'Template [%tpl%] not found');
+define('_PAGEMASTER_TOOMANYPUBS', 'Too many pubs found');
 define('_PAGEMASTER_WORKFLOWACTIONERROR', 'Workflow action error');
 define('_PAGEMASTER_WORKFLOWACTIONCN', 'commandName has to be a valid workflow action for the currenct state');
-define('_PAGEMASTER_TOOMANYPUBS', 'Too many pubs found');
-define('_PAGEMASTER_MISSINGARG', 'Missing argument [%arg%]');

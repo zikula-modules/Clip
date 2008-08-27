@@ -16,4 +16,13 @@ define('_PAGEMASTER_SHOWINLIST', 'In Listenansicht anzeigen');
 define('_PAGEMASTER_GENERIC_EDITPUB', 'Dies ist ein generisches Template. Sie k�nnen im Verzeichnis \'/pntemplates/input/pubedit_{FORMNAME}_{STEPNAME}.htm\' oder \'/pntemplates/input/pubedit_{TID}_all.htm\' (f�r alle Steps) ein eigenes Template erstellen.');
 define('_PAGEMASTER_GENERIC_VIEWPUB', 'Dies ist ein generisches Template. Sie k�nnen im Verzeichnis \'/pntemplates/output/viewpub_{TEMPLATENAME}.htm\' ein eigenes Template erstellen.');
 
+// Common items
 define('_PAGEMASTER_TEMPLATENOTFOUND', 'Template [%tpl%] nicht gefunden');
+
+// Error and warnings
+define('_PAGEMASTER_NOPUBLICATIONSFOUND', 'No publications found');
+define('_PAGEMASTER_MISSINGARG', 'Missing argument [%arg%]');
+define('_PAGEMASTER_TEMPLATENOTFOUND', 'Template [%tpl%] not found');
+define('_PAGEMASTER_TOOMANYPUBS', 'Too many pubs found');
+define('_PAGEMASTER_WORKFLOWACTIONERROR', 'Workflow action error');
+define('_PAGEMASTER_WORKFLOWACTIONCN', 'commandName has to be a valid workflow action for the currenct state');

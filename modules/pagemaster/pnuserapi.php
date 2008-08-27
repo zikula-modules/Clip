@@ -171,7 +171,7 @@ function pagemaster_userapi_getPub($args)
     $pubdata = $publist[0];
 
     if (count($publist) == 0) {
-        return LogUtil::registerError(pnML('_NOFOUND', array('i' => _PAGEMASTER_PUBLICATION)));
+        return LogUtil::registerError(_PAGEMASTER_NOPUBLICATIONSFOUND);
     } elseif (count($publist) > 1) {
         return LogUtil::registerError(_PAGEMASTER_TOOMANYPUBS);
     }
