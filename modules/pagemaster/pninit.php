@@ -20,9 +20,9 @@ function pagemaster_init()
         return false;
     }
     
-    if (!DBUtil::createIndex('urltitle', 'pagemaster_pubtypes', array('urltitle'))) {
+ /*   if (!DBUtil::createIndex('urltitle', 'pagemaster_pubtypes', array('urltitle'))) {
         return LogUtil::registerError(_CREATEINDEXFAILED);
-    }
+    }*/
     
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
@@ -95,6 +95,8 @@ function pagemaster_delete()
     Loader::loadClass('CategoryUtil');
     CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/pagemaster', 'path');
     pnModDelVar('pagemaster', 'uploadpath');
+    pnModDelVar('pagemaster', 'temp_arr');
+    
 
     return true;
 }

@@ -54,7 +54,7 @@ function smarty_function_category_browser($params, &$smarty)
         }
     }
     $cats = CategoryUtil::getSubCategories($id);
-
+  
     if ($cats) {
         if ($count) {
             // get it only once

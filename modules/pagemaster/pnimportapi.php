@@ -38,7 +38,8 @@ function pagemaster_importapi_importps1()
         return LogUtil :: registerError('Category /__SYSTEM__/Modules/pagemaster/lists not found');
     }
     
-    $temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
+    //$temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
+    $temp_arr = array();
     $lang  = pnUserGetLang();
     $lists = DBUtil::selectObjectArray('pagesetter_lists');
     foreach ($lists as $list) {
@@ -272,11 +273,6 @@ function pagemaster_importapi_importps4()
     $DirPM = pnModGetVar('pagemaster', 'uploadpath');
     $DirPS = pnModGetVar('pagesetter', 'uploadDirDocs');
 
-    /* insert revisions
-    $sql = "INSERT INTO $pntable[pagemaster_revisions] (
-                SELECT pg_tid, pg_id, pg_pid, pg_prevversion, 'A', pg_timestamp , pg_user, null, null  FROM $pntable[pagesetter_revisions] )";
-    $result = DBUtil::executeSQL($sql);*/
-
     $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes'); //, 'pg_id=11'
     foreach ($pubtypes as $pubtype) {
         $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$pubtype['id']);
@@ -341,16 +337,6 @@ function pagemaster_importapi_importps4()
                     } elseif (isset ($listfields[$DBid])) {
                         if ($field <> ''){
                             if ($field <> 0){
-                                /*$listitem = DBUtil::selectObjectByID('pagesetter_listitems', $field);
-                                if (!$listitem)
-                                    LogUtil::registerError('Listitem: '.$field.' not found in pagesetter field: '.$key);
-                                
-                                $list = DBUtil::selectObjectByID('pagesetter_lists', $listitem['lid']);
-                                if (!$list)
-                                    LogUtil :: registerError('List: '.$listitem[lid].' not found in pagesetter field: '.$key);
-                                
-                                $catitem = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists/' . str_replace('/', '&#47;', mysql_escape_string($list['title'])) . '/' . str_replace('/', '&#47;', mysql_escape_string($listitem['title'])));
-                                */
                                 $catitem['id'] = $temp_arr[$field];
                                 $field = $catitem['id'];
                             } else {
@@ -363,9 +349,6 @@ function pagemaster_importapi_importps4()
                         $field = ':';
                         foreach ($listArr as $listId) {
                             if ($listId <> '') {
-                                //$listitem = DBUtil::selectObjectByID('pagesetter_listitems', $listId);
-                                //$list     = DBUtil::selectObjectByID('pagesetter_lists', $listitem['lid']);
-                                //$catitem  = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists/' . str_replace('/', '&#47;', mysql_escape_string($list['title'])) . '/' . str_replace('/', '&#47;', mysql_escape_string($listitem['title'])));
                                 $catitem['id'] = $temp_arr[$listId];
                                 if ($catitem['id'] <> '')
                                     $field .= $catitem['id'] . ':';
