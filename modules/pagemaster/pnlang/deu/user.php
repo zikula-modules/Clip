@@ -9,6 +9,8 @@
  * @subpackage  pagemaster
  */
 
+
+define('_PAGEMASTER_DISPLAYNAME', 'Publikationen');
 define('_PAGEMASTER_NOTUSERDEFINED', 'Dies ist ein generisches Template. Sie k�nnen im Verzeichnis \'/pntemplates/output/publist_{TEMPLATENAME}.htm\' ein eigenes Template erstellen. Nehmen Sie dazu publist_template.htm als Vorlage.');
 define('_PAGEMASTER_PUBLISHDATE', 'Ver�ffentlicht');
 define('_PAGEMASTER_EXPIREDATE', 'Ablaufdatum');

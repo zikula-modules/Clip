@@ -23,7 +23,7 @@ $modversion['changelog']      = 'pndocs/changelog.txt';
 $modversion['help']           = 'pndocs/help.txt';
 $modversion['license']        = 'pndocs/license.txt';
 $modversion['official']       = 0;
-$modversion['author']         = 'kundi';
+$modversion['author']         = 'spax';
 $modversion['contact']        = 'mk@sexyandfamous.com';
 
 // Module security:

@@ -1,4 +1,12 @@
 <div>
 	<input type="checkbox" id="active_pagemaster" name="active[pagemaster]" value="1" checked="checked" />
-	<label for="active_pagemaster"><!--[pnmodgetinfo modname="pagemaster" info="displayname"]--></label>
+	<label for="active_pagemaster"><!--[pnml name="_PAGEMASTER_SEARCH_TITLE]--></label>
+	<ul>
+	<!--[foreach from=$pubtypes item=pubtype]-->
+	<li>
+				<input type="checkbox" id="pagemaster<!--[$pubtype.tid]-->" name="search_tid[<!--[$pubtype.tid]-->]" value="1" checked="checked" />
+				<label for="pagemaster<!--[$pubtype.tid]-->"><!--[pnml name=$pubtype.title]--></label>
+	</li>
+	<!--[/foreach]-->
+	</ul>
 </div>
