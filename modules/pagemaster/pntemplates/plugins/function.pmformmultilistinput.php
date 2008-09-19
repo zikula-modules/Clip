@@ -24,12 +24,11 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
 
     function postRead($data, $field)
     {
-        $data   = substr($data, 1);
+    	$data   = substr($data, 1);
         $data   = substr($data, 0, -1);
         $catIds = explode(':', $data);
         $lang   = SessionUtil::getVar('lang', null);
         Loader::loadClass('CategoryUtil');
-
         foreach ($catIds as $catId) {
             $cat = CategoryUtil::getCategoryByID($catId);
             $cat['fullTitle'] = $cat['display_name'][$lang];
