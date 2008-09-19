@@ -187,7 +187,7 @@ function pagemaster_user_pubedit()
 
     if ($id == '' and $pid <>'') {
         $id = pnModAPIFunc('pagemaster', 'user', 'getId',
-        array('tid' => $tid,
+                           array('tid' => $tid,
                                  'pid' => $pid));
         if ($id == '') {
             return LogUtil::registerError("pid $pid not found");
@@ -403,7 +403,7 @@ function pagemaster_user_viewpub($args)
 
     if ($pid == '') {
         $pid = pnModAPIFunc('pagemaster', 'user', 'getPid',
-        array('tid' => $tid,
+                            array('tid' => $tid,
                                   'id' => $id));
     }
 
@@ -448,7 +448,7 @@ function pagemaster_user_viewpub($args)
         }
     }
     $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
-    array('tid'                => $tid,
+                            array('tid'                => $tid,
                                   'id'                 => $id,
                                   'pid'                => $pid,
                                   'checkPerm'          => false, //check later, together with template
