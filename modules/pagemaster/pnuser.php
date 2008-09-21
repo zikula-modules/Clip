@@ -32,8 +32,6 @@ class pagemaster_user_dynHandler
         $this->goto = FormUtil::getPassedValue('goto', '');
         if ($this->id <> '') {
             $pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
-            print_r($pubdata);
-            exit;
             $this->core_pid = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');

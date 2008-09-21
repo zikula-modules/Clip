@@ -33,7 +33,6 @@ function pagemaster_userapi_editPub($args)
     $commandName = $args['commandName'];
     $data        = $args['data'];
     $tid         = $data['tid'];
-
     if (!isset ($args['pubfields'])) {
         $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
     } else {
