@@ -145,7 +145,7 @@ function pagemaster_userapi_getPub($args)
             $where .= ' pm_online = 1 ';
         }
         $where .= ' AND pm_indepot = 0 ';
-        $where .= ' AND (pm_language = \'\' OR pm_language = \''.language_current().'\')';
+        $where .= ' AND (pm_language = \'\' OR pm_language = \''.pnUserGetLang().'\')';
         $where .= ' AND (pm_publishdate <= NOW() or pm_publishdate is null)';
         $where .= ' AND (pm_expiredate >= NOW() or pm_expiredate is null)';
     } else {
@@ -337,7 +337,7 @@ function pagemaster_userapi_pubList($args)
     }
 
     $where .= ' AND '.$tbl_alias.'pm_indepot = 0 ';
-    $where .= ' AND ( '.$tbl_alias.'pm_language = \'\' OR '.$tbl_alias.'pm_language = \''.language_current().'\')';
+    $where .= ' AND ( '.$tbl_alias.'pm_language = \'\' OR '.$tbl_alias.'pm_language = \''.pnUserGetLang().'\')';
     $where .= ' AND ( '.$tbl_alias.'pm_publishdate <= NOW() OR '.$tbl_alias.'pm_publishdate IS NULL)';
     $where .= ' AND ( '.$tbl_alias.'pm_expiredate >= NOW() OR '.$tbl_alias.'pm_expiredate IS NULL)';
 
