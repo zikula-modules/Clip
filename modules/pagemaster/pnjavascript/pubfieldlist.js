@@ -4,28 +4,29 @@
  * @copyright (c) 2008, PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id: pubfieldlist.css 220 2007-08-11 15:23:48Z mateo $
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
  */
 
 Event.observe(window, 'load', pubfieldlistsortinit, false);
 function pubfieldlistsortinit() {
-	Sortable.create("pubfieldlist",
+	Sortable.create('pubfieldlist',
 		{ 
 	    	dropOnEmpty: true,
 	        only: 'pn-sortable',
 	        constraint: false,
-	        containment:["pubfieldlist"],
+	        containment:['pubfieldlist'],
 	        onUpdate: pubfieldlistorderchanged
 	});
 }
 
 function pubfieldlistorderchanged() {
-    var params = "module=pagemaster&func=changedlistorder&authid=" + $F('pnFormAuthid')
-                   + "&tid=" + $F('tid')
-                   + "&" + Sortable.serialize('pubfieldlist');
+    var params = 'module=pagemaster&func=changedlistorder&authid=' + $F('pnFormAuthid')
+                   + '&tid=' + $F('tid')
+                   + '&' + Sortable.serialize('pubfieldlist');
     var myAjax = new Ajax.Request(
-        "ajax.php", 
+        'ajax.php', 
         {
             method: 'get', 
             parameters: params, 

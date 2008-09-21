@@ -82,7 +82,7 @@ function pagemaster_pntables()
     $pntable['pagemaster_pubtypes_column'] = array (
         'tid'             => 'pm_tid',
         'title'           => 'pm_title',
-        'urltitle'          => 'pm_urltitle',
+        'urltitle'        => 'pm_urltitle',
         'filename'        => 'pm_filename',
         'formname'        => 'pm_formname',
         'description'     => 'pm_description',

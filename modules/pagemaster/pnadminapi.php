@@ -50,16 +50,12 @@ function pagemaster_adminapi_getlinks()
             'text' => pnML('_PAGEMASTER_PUBTYPES')
         );
         $links[] = array (
-            'url'  => pnModURL('pagemaster', 'admin', 'modifyconfig'),
-            'text' => pnML('_MODIFYCONFIG')
-        );
-        $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'create_tid'),
             'text' => pnML('_PAGEMASTER_CREATEPUBTYPE')
         );
         $links[] = array (
-            'url'  => pnModURL('pagemaster', 'import', 'importps'),
-            'text' => pnML('_PAGEMASTER_IMPORTFROMPAGESETTER')
+            'url'  => pnModURL('pagemaster', 'admin', 'modifyconfig'),
+            'text' => pnML('_MODIFYCONFIG')
         );
     }
     return $links;

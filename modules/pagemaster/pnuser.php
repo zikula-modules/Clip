@@ -429,7 +429,7 @@ function pagemaster_user_viewpub($args)
     }
 
     if ($cachelifetime == '')
-    $cachelifetime = $pubtype['cachelifetime'];
+        $cachelifetime = $pubtype['cachelifetime'];
 
     if ($cachelifetime <> ''){
         $cachetid = true;

@@ -1,19 +1,35 @@
-<!--[include file="pagemaster_admin_header.htm"]-->
-<div class="pn-admincontainer">
-	<div class="pn-adminpageicon"><!--[pnimg modname=core src=configure.gif set=icons/large alt='_MODIFYCONFIG' altml=true]--></div>
-	<h2><!--[pnml name=_PAGEMASTER_SHOWCODE]--></h2>
+<!--[* $Id$ *]-->
 
-	<br/>
-	<!--[if $mode eq 'input']-->
-		<!--[assign var="pathcopy" value="input/pubedit_"|cat:$pubtype.formname|cat:"_all.htm"]-->
-	<!--[elseif $mode eq 'outputlist']-->
-		<!--[assign var="pathcopy" value="output/publist_"|cat:$pubtype.filename|cat:".htm"]-->
-	<!--[elseif $mode eq 'outputfull']-->
-		<!--[assign var="pathcopy" value="output/viewpub_"|cat:$pubtype.filename|cat:".htm"]-->
-	<!--[/if]-->
-	<b><!--[pnml name="_PAGEMASTER_COPYTHECODEIN" l="pagemaster/pntemplates/"|cat:$pathcopy]--></b>
-	<br/>
-	<hr/>
-	<!--[$code]-->
+<!--[include file='pagemaster_admin_header.htm']-->
+
+<div class="pn-admincontainer">
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='exec.gif' set='icons/large' alt='_PAGEMASTER_SHOWCODE' altml=true]--></div>
+
+<h2><!--[pnml name=_PAGEMASTER_SHOWCODE]--></h2>
+
+<div class="pn-menu pm-menu">
+	<span class="pn-menuitem-title">
+	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$pubtype.tid]-->"><!--[pnml name='_PAGEMASTER_LIST']--></a> | 
+	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->"><!--[pnml name='_PAGEMASTER_PUBTYPE_NEWARTICLE']--></a> |
+	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' tid=$pubtype.tid]-->"><!--[pnml name='_PAGEMASTER_EDIT_FIELDS']--></a>
+	|
+	<!--[if $mode eq 'input']--><a><!--[else]--><a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid]-->"><!--[/if]--><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWINPUTCODE']--></a> | 
+	<!--[if $mode eq 'outputlist']--><a><!--[else]--><a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid]-->"><!--[/if]--><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODELIST']--></a> | 
+	<!--[if $mode eq 'outputfull']--><a><!--[else]--><a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid]-->"><!--[/if]--><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODEFULL']--></a> 
+	</span>
+</div>
+
+<!--[if $mode eq 'input']-->
+	<!--[assign var='pathcopy' value='input/pubedit_'|cat:$pubtype.formname|cat:'_all.htm']-->
+<!--[elseif $mode eq 'outputlist']-->
+	<!--[assign var='pathcopy' value='output/publist_'|cat:$pubtype.filename|cat:'.htm']-->
+<!--[elseif $mode eq 'outputfull']-->
+	<!--[assign var='pathcopy' value='output/viewpub_'|cat:$pubtype.filename|cat:'.htm']-->
+<!--[/if]-->
+
+<div class="pn-warningmsg"><!--[pnml name='_PAGEMASTER_COPYTHECODEIN' l='pagemaster/pntemplates/'|cat:$pathcopy]--></div>
+<br />
+
+<!--[$code]-->
 
 </div>

@@ -1,28 +1,49 @@
-<!--[include file="pagemaster_admin_header.htm"]-->
-<!--[pngetstatusmsg]-->
+<!--[* $Id$ *]-->
 
-<table>
-	<tr>
-	<td>pid</td>
-	<td>revision</td>
-	<td>state</td>
-	<td>author</td>
-	<td>online</td>
-	<td>edit</td>
-	<td>view</td>
-	<td>history</td>
-	</tr>
+<!--[include file='pagemaster_admin_header.htm']-->
 
-<!--[foreach from=$publist item=pubitem]-->
-	<tr>
-	<td><!--[$pubitem.core_pid]--></td>
-	<td><!--[$pubitem.id]--></td>
-	<td><!--[$pubitem.__WORKFLOW__.state]--> </td>
-	<td><!--[pnusergetvar name="uname" uid=$pubitem.cr_uid]--> </td>
-	<td><!--[$pubitem.core_online]--></td> 
-	<td><a href="<!--[pnmodurl modname="pagemaster" type=user func="pubedit" tid=$core_tid id=$pubitem.id]-->"><!--[pnml name=_EDIT]--></a> </td>
-	<td><a href="<!--[pnmodurl modname="pagemaster" type=user func="viewpub" tid=$core_tid id=$pubitem.id]-->"><!--[pnml name=_VIEW]--></a> </td>
-	<td><a href="<!--[pnmodurl modname="pagemaster" type=admin func="history" tid=$core_tid pid=$pubitem.core_pid]-->"><!--[pnml name=_PAGEMASTER_HISTORY]--></a> </td>
+<div class="pn-admincontainer">
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='folder_documents.gif' set='icons/large' alt='_PAGEMASTER_LIST' altml=true]--></div>
+
+<h2><!--[pnml name='_PAGEMASTER_LIST']--></h2>
+
+<div class="pn-menu pm-menu">
+	<span class="pn-menuitem-title">
+	<a><!--[pnml name='_PAGEMASTER_LIST']--></a> | 
+	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$core_tid]-->"><!--[pnml name='_PAGEMASTER_PUBTYPE_NEWARTICLE']--></a> |
+	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' tid=$core_tid]-->"><!--[pnml name='_PAGEMASTER_EDIT_FIELDS']--></a>
+	</span>
+</div>
+
+<table class="pn-admintable">
+  <thead>
+  <tr>
+    <th><!--[pnml name='_PAGEMASTER_PID']--></th>
+    <th><!--[pnml name='_PAGEMASTER_REVISION']--></th>
+    <th><!--[pnml name='_STATE']--></th>
+    <th><!--[pnml name='_PAGEMASTER_AUTHOR']--></th>
+    <th><!--[pnml name='_PAGEMASTER_ONLINE']--></th>
+    <th><!--[pnml name='_OPTIONS']--></th>
+  </tr>
+  </thead>
+  <tbody>
+  <!--[foreach from=$publist item=pubitem]-->
+    <tr class="<!--[cycle values='pn-odd,pn-even']-->">
+      <td><!--[$pubitem.core_pid]--></td>
+	  <td><!--[$pubitem.core_revision]--></td>
+	  <td><!--[$pubitem.__WORKFLOW__.state]--> </td>
+	  <td><!--[pnusergetvar name="uname" uid=$pubitem.cr_uid]--> </td>
+	  <td><!--[$pubitem.core_online]--></td>
+	  <td>
+        <a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='xedit.gif' set='icons/extrasmall' alt='_EDIT' altml=true]--></a>&nbsp; 
+	    <a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' alt='_VIEW' altml=true]--></a>&nbsp; 
+	    <a href="<!--[pnmodurl modname='pagemaster' type='admin' func='history' tid=$core_tid pid=$pubitem.core_pid]-->"><!--[pnimg modname='core' src='clock.gif' set='icons/extrasmall' alt='_PAGEMASTER_HISTORY' altml=true]--></a>
+      </td>
 	</tr>
-<!--[/foreach]-->
+  <!--[foreachelse]-->
+    <tr><td colspan="6"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
+  <!--[/foreach]-->
+  </tbody>
 </table>
+
+</div>

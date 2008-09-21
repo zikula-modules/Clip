@@ -1,28 +1,38 @@
-<!--[include file="pagemaster_admin_header.htm"]-->
+<!--[* $Id$ *]-->
+
+<!--[include file='pagemaster_admin_header.htm']-->
+
 <div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname=core src=configure.gif set=icons/large alt='_MODIFYCONFIG' altml=true]--></div>
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='configure.gif' set='icons/large' alt='_MODIFYCONFIG' altml=true]--></div>
+
 <h2><!--[pnml name="_MODIFYCONFIG"]--></h2>
-<!--[pngetstatusmsg]-->
+
+<div class="pn-menu pm-menu">
+	<span class="pn-menuitem-title"><a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps']-->"><!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER']--></a></span>
+</div>
+
 <!--[pnform]-->
-	<!--[pnformvalidationsummary]-->
-	<fieldset>
-		<legend><!--[pnml name="_PAGEMASTER_UPLOADPATH"]--></legend>
-			<div class="pn-adminformrow">
-  				<!--[pnformlabel for="uploadpath" text=_PAGEMASTER_UPLOADPATH]-->:
-  				<!--[pnformtextinput maxLength=200 id="uploadpath" ]-->
-				<span class="pmhelp"><!--[pnml name="_PAGEMASTER_UPLOADPATH_HELP"]--></span>
-			</div>
-			<div class="pn-adminformrow">
-				<!--[if $updirok == 1]-->
-					<span style="margin-left: 23em; color: #00d900;"><!--[pnml name="_PAGEMASTER_UPLOADPATH_WRITEABLE"]--></span>
-				<!--[else]-->
-					<span style="margin-left: 23em; color: #ff0000;"><!--[pnml name="_PAGEMASTER_UPLOADPATH_NONWRITEABLE"]--></span>
-				<!--[/if]-->
-			</div>
-	</fieldset>
-  	<div class="pn-adminformrow pn-adminformbuttons">
-		<!--[pnformbutton commandName="modify" text=_SAVE]-->
-		<!--[pnformbutton commandName="cancel" text=_CANCEL]-->
+<!--[pnformvalidationsummary]-->
+<fieldset>
+	<legend><!--[pnml name='_PAGEMASTER_UPLOADPATH']--></legend>
+	<div class="pn-adminformrow">
+		<!--[pnformlabel for='uploadpath' text='_PAGEMASTER_UPLOADPATH']-->:
+  		<!--[pnformtextinput maxLength='200' id='uploadpath']-->
+		<span class="pmhelp"><!--[pnml name='_PAGEMASTER_UPLOADPATH_HELP']--></span>
 	</div>
+	<div class="pn-adminformrow">
+		<!--[if $updirok == 1]-->
+		<span style="margin-left: 26.5em; color: #00d900;"><!--[pnml name='_PAGEMASTER_UPLOADPATH_WRITEABLE']--></span>
+		<!--[else]-->
+		<span style="margin-left: 26.5em; color: #ff0000;"><!--[pnml name='_PAGEMASTER_UPLOADPATH_NONWRITEABLE']--></span>
+		<!--[/if]-->
+	</div>
+</fieldset>
+
+<div class="pn-adminformrow pn-adminformbuttons">
+	<!--[pnformbutton commandName='modify' text='_SAVE']-->
+	<!--[pnformbutton commandName='cancel' text='_CANCEL']-->
+</div>
 <!--[/pnform]-->
+
 </div>

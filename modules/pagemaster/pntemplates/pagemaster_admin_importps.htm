@@ -1,15 +1,23 @@
-<h2><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER"]--></h2>
-	<!--[pngetstatusmsg]-->
-<!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_INFO" noprocess="1"]-->
-<br /><br />
+<!--[* $Id$ *]-->
 
-<a href="index.php?module=pagemaster&amp;type=import&amp;func=importps&amp;step=1">
-<!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTCAT"]--></a><br />
+<h2><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER"]--></h2>
+
+<!--[insert name='getstatusmsg']-->
+
+<p><!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER_INFO' noprocess=1]--></p>
+
+<a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='1']-->">
+
+<!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTCAT']--></a>
+<br />
 <!--[if $allreadyexists > 0]-->
-<!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_EXISTINGPUBS"]--><br />
+	<!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER_EXISTINGPUBS']-->
 <!--[else]-->	
-	<a href="index.php?module=pagemaster&amp;type=import&amp;func=importps&amp;step=2"><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTDB"]--></a><br />
+	<a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='2']-->"><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTDB"]--></a>
 <!--[/if]-->
-	<a href="index.php?module=pagemaster&amp;type=import&amp;func=importps&amp;step=3">
-<!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_CREATETABLES"]--></a><br />
-	<a href="index.php?module=pagemaster&amp;type=import&amp;func=importps&amp;step=4"><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTDATA"]--></a><br />
+<br />
+<a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='3']-->">
+
+<!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_CREATETABLES"]--></a>
+<br />
+<a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='3']-->"><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTDATA"]--></a>

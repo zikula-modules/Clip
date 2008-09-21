@@ -9,4 +9,4 @@
  * @subpackage  pagemaster
  */
 
-define('_PAGEMASTER_TABLEDEFNOTFOUND', 'No tabledefinitions found. Please define fields for your publication.');
+define('_PAGEMASTER_TABLEDEFNOTFOUND', 'No table definitions found. Please define fields for your publication.');

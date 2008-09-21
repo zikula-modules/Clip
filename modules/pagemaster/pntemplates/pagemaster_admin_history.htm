@@ -1,24 +1,45 @@
-<!--[include file="pagemaster_admin_header.htm"]-->
-<!--[pngetstatusmsg]-->
+<!--[* $Id$ *]-->
 
-<table>
-	<tr>
-	<td>pid</td>
-	<td>revision</td>
-	<td>state</td>
-	<td>author</td>
-	<td>online</td>
-	<td>indepot</td>
-	</tr>
+<!--[include file='pagemaster_admin_header.htm']-->
 
-<!--[foreach from=$publist item=pubitem]-->
-	<tr>
-	<td><!--[$pubitem.core_pid]--></td>
-	<td><!--[$pubitem.core_revision]--></td>
-	<td><!--[$pubitem.__WORKFLOW__.state]--> </td>
-	<td><!--[pnusergetvar name="uname" uid=$pubitem.cr_uid]--> </td>
-	<td><!--[$pubitem.core_online]--></td>
-	<td><!--[$pubitem.core_indepot]--></td>  
+<div class="pn-admincontainer">
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='clock.gif' set='icons/large' alt='_MODIFYCONFIG' altml=true]--></div>
+
+<h2><!--[pnml name='_PAGEMASTER_HISTORY']--></h2>
+
+<div class="pn-menu pm-menu">
+	<span class="pn-menuitem-title">
+	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid]-->"><!--[pnml name='_PAGEMASTER_LIST']--></a> | 
+	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$core_tid]-->"><!--[pnml name='_PAGEMASTER_PUBTYPE_NEWARTICLE']--></a> |
+	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' tid=$core_tid]-->"><!--[pnml name='_PAGEMASTER_EDIT_FIELDS']--></a>
+	</span>
+</div>
+
+<table class="pn-admintable">
+  <thead>
+  <tr>
+    <th><!--[pnml name='_PAGEMASTER_PID']--></th>
+    <th><!--[pnml name='_PAGEMASTER_REVISION']--></th>
+    <th><!--[pnml name='_STATE']--></th>
+    <th><!--[pnml name='_PAGEMASTER_AUTHOR']--></th>
+    <th><!--[pnml name='_PAGEMASTER_ONLINE']--></th>
+    <th><!--[pnml name='_PAGEMASTER_INDEPOT']--></th>
+  </tr>
+  </thead>
+  <tbody>
+  <!--[foreach from=$publist item=pubitem]-->
+    <tr class="<!--[cycle values='pn-odd,pn-even']-->">
+      <td><!--[$pubitem.core_pid]--></td>
+	  <td><!--[$pubitem.core_revision]--></td>
+	  <td><!--[$pubitem.__WORKFLOW__.state]--> </td>
+	  <td><!--[pnusergetvar name='uname' uid=$pubitem.cr_uid]--> </td>
+	  <td><!--[$pubitem.core_online]--></td>
+	  <td><!--[$pubitem.core_indepot]--></td>
 	</tr>
-<!--[/foreach]-->
+  <!--[foreachelse]-->
+    <tr><td colspan="6"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
+  <!--[/foreach]-->
+  </tbody>
 </table>
+
+</div>

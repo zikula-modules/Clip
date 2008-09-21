@@ -3,41 +3,63 @@
  *
  * @copyright (c) 2008, PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
- * @license	    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package	    Zikula_3rd_party_Modules
+ * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id: style.css 220 2007-08-11 15:23:48Z mateo $
+ * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
  */
 
-ol#pubfieldlist {
+div.pn-menu {
+    width: 100%;
+	text-align: left;
+}
+div.pm-menu {
+    margin-bottom: 1.5em;
+}
+
+.pn-menuitem-title {
+	width: 99%;
+	background: url(../../../system/Admin/pnimages/button_bkg.gif) repeat;
+    line-height: 23px;
+    min-height: 23px;
+    height: auto !important;
+    height: 23px;
+	display: block;
+	padding-left: 5px;
+	border-left: 1px solid #ccc; 
+	border-right: 1px solid #ccc;
+}
+
+#pubfieldlist {
 	border: 1px solid #ccc;
-	padding: 0;
-	margin: 0;
 	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
-ol#pubfieldlist li {
-	line-height: 2em;
-	padding-top: 0.4em;
+#pubfieldlist li {
 	font-size: 1em;
-	padding-left: 1em;
+	line-height: 2em;
+	margin: 0;
+	padding: 0.4em 0 0 1em;
 }
 
-ol#pubfieldlist span.extrasmallplace {
+#pubfieldlist span {
+	float: left;
+	overflow: hidden;
+	text-align: left;
+}
+
+.extrasmallplace {
 	width: 10%;
 }
 
-ol#pubfieldlist span.smallplace {
+.smallplace {
 	width: 15%;
 }
 
-ol#pubfieldlist span.normalplace {
+.normalplace {
 	width: 20%;
-}
-
-ol#pubfieldlist span {
-	float: left;
-	text-align: left;
-	overflow: hidden;
 }
 
 .moveable {
@@ -45,8 +67,8 @@ ol#pubfieldlist span {
 }
 
 .pmhelp {
-	color: #0074B0;
-	padding-left: 25px;
 	background: url(../../../images/icons/extrasmall/agt_support.gif) no-repeat;
 	background-position: 5px center;
+	color: #0074B0;
+	padding-left: 25px;
 }
