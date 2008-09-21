@@ -305,6 +305,8 @@ function pagemaster_admin_editpubfields()
 function pagemaster_admin_publist()
 {
     $tid = FormUtil::getPassedValue('tid');
+    $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
+    $itemsperpage = 50;
 
     if ($tid == '') {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
@@ -315,7 +317,8 @@ function pagemaster_admin_publist()
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
-    $publist   = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', 'pm_pid, pm_id');
+    $publist   = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', 'pm_pid, pm_id', $startnum-1, $itemsperpage);
+    $pubcount = DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
     foreach ($publist as $key => $pub) {
         $workflow = WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
         $publist[$key] = $pub;
@@ -324,6 +327,9 @@ function pagemaster_admin_publist()
     $render = pnRender::getInstance('pagemaster');
     $render->assign('core_tid', $tid);
     $render->assign('publist', $publist);
+    
+    $render->assign('pager', array('numitems'     => $pubcount,
+                                       'itemsperpage' => $itemsperpage));
 
     return $render->fetch('pagemaster_admin_publist.htm');
 }
