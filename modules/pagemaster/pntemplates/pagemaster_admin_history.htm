@@ -19,6 +19,7 @@
   <thead>
   <tr>
     <th><!--[pnml name='_PAGEMASTER_PID']--></th>
+    <th><!--[pnml name='_TITLE']--></th>
     <th><!--[pnml name='_PAGEMASTER_REVISION']--></th>
     <th><!--[pnml name='_STATE']--></th>
     <th><!--[pnml name='_PAGEMASTER_AUTHOR']--></th>
@@ -30,6 +31,7 @@
   <!--[foreach from=$publist item=pubitem]-->
     <tr class="<!--[cycle values='pn-odd,pn-even']-->">
       <td><!--[$pubitem.core_pid]--></td>
+      <td><!--[$pubitem.$core_title]--></td>
 	  <td><!--[$pubitem.core_revision]--></td>
 	  <td><!--[$pubitem.__WORKFLOW__.state]--> </td>
 	  <td><!--[pnusergetvar name='uname' uid=$pubitem.cr_uid]--> </td>
@@ -37,7 +39,7 @@
 	  <td><!--[$pubitem.core_indepot]--></td>
 	</tr>
   <!--[foreachelse]-->
-    <tr><td colspan="6"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
+    <tr><td colspan="7"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
   <!--[/foreach]-->
   </tbody>
 </table>

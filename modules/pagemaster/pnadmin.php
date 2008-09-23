@@ -304,9 +304,9 @@ function pagemaster_admin_editpubfields()
 
 function pagemaster_admin_publist()
 {
-    $tid = FormUtil::getPassedValue('tid');
-    $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
-    $itemsperpage = 50;
+    $tid          = FormUtil::getPassedValue('tid');
+    $startnum     = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
+    $itemsperpage = isset($args['itemsperpage']) ? $args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', 50);
 
     if ($tid == '') {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
@@ -318,18 +318,20 @@ function pagemaster_admin_publist()
 
     $tablename = 'pagemaster_pubdata'.$tid;
     $publist   = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', 'pm_pid, pm_id', $startnum-1, $itemsperpage);
-    $pubcount = DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
+    $pubcount  = DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
     foreach ($publist as $key => $pub) {
         $workflow = WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
         $publist[$key] = $pub;
     }
+    $core_title = DBUtil::selectField('pagemaster_pubfields', 'name', "pm_tid = '$tid' AND pm_istitle = '1'");
 
     $render = pnRender::getInstance('pagemaster');
     $render->assign('core_tid', $tid);
+    $render->assign('core_title', $core_title);
     $render->assign('publist', $publist);
     
-    $render->assign('pager', array('numitems'     => $pubcount,
-                                       'itemsperpage' => $itemsperpage));
+    $render->assign('pager', array('numitems'     => (int)$pubcount,
+                                   'itemsperpage' => $itemsperpage));
 
     return $render->fetch('pagemaster_admin_publist.htm');
 }
@@ -356,9 +358,11 @@ function pagemaster_admin_history()
         $workflow = WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
         $publist[$key] = $pub;
     }
+    $core_title = DBUtil::selectField('pagemaster_pubfields', 'name', "pm_tid = '$tid' AND pm_istitle = '1'");
 
     $render = pnRender::getInstance('pagemaster');
     $render->assign('core_tid', $tid);
+    $render->assign('core_title', $core_title);
     $render->assign('publist', $publist);
 
     return $render->fetch('pagemaster_admin_history.htm');
