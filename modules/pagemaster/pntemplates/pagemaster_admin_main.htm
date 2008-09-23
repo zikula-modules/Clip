@@ -5,7 +5,7 @@
 <div class="pn-admincontainer">
 <div class="pn-adminpageicon"><!--[pnimg modname='core' src='editcopy.gif' set='icons/large' alt='_PAGEMASTER_PUBTYPES' altml=true]--></div>
 	<h2><!--[pnml name='_PAGEMASTER_PUBTYPES']--></h2>
-	<p><!--[pnml name='_PAGEMASTER_PUBTYPE_EXISTING']--></p>
+	<p><!--[pnml name='_PAGEMASTER_PUBTYPE_EXISTING' html=true]--></p>
 	<table class="pn-admintable" summary="<!--[pnml name='_PAGEMASTER_PUBTYPE_EXISTING']-->">
 		<thead>
 		<tr>
@@ -30,7 +30,7 @@
 				<!--[$pubtype.description]-->
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='db_update.gif' set='icons/extrasmall']--></a>
 			</td>
 			<td>
 				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='main' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall']--></a>
@@ -39,16 +39,16 @@
 				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall']--></a>
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='edit_add.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='db_add.gif' set='icons/extrasmall']--></a>
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall']--></a>
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall']--></a>
 			</td>				
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall']--></a>
 			</td>
 		</tr>
 		<!--[foreachelse]-->
