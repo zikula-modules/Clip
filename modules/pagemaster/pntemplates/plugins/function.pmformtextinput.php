@@ -42,10 +42,11 @@ class pmformtextinput extends pnFormTextInput
         return parent::render($render);
     }
 
-    function getSaveTypeDataFunc($field) {
+    function getSaveTypeDataFunc($field)
+    {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 if ($F(\'pagemaster_scribite\') == \'on\') {
+                                 if ($F(\'pmplugin_usescribite\') == \'on\') {
                                      $(\'typedata\').value = 1;
                                  } else {
                                      $(\'typedata\').value = 0;
@@ -55,14 +56,16 @@ class pmformtextinput extends pnFormTextInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render) {
+    function getTypeHtml($field, $render)
+    {
         if ($render->_tpl_vars['typedata'] == 1) {
             $checked = 'checked="checked"';
         } else {
             $checked = '';
         }
+
         $html = '<div class="pn-formrow">
-                '._PAGEMASTER_USESCRIBITE.': <input type="checkbox" id="pagemaster_scribite" name="pagemaster_scribite" '.$checked.' />
+                 <label for="pmplugin_usescribite">'._PAGEMASTER_USESCRIBITE.':</label><input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />
                  </div>';
         return $html;
     }

@@ -60,7 +60,7 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pagemaster_list\') ;
+                                 $(\'typedata\').value = $F(\'pmplugin_categorylist\') ;
                                  closeTypeData();
                              }';
         return $saveTypeDataFunc;
@@ -76,7 +76,7 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
         $html .= '<div class="pn-formrow">
-                  <select name="pagemaster_list" id="pagemaster_list">';
+                  <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         foreach ($cats as $cat) {
             $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
@@ -84,6 +84,7 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
 
         $html .= '</select>
                   </div>';
+
         return $html;
     }
 }

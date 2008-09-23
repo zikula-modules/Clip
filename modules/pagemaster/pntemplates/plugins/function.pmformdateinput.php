@@ -24,10 +24,11 @@ class pmformdateinput extends pnFormDateInput
         return __FILE__; // FIXME: may be found in smarty's data???
     }
 
-    function getSaveTypeDataFunc($field) {
+    function getSaveTypeDataFunc($field)
+    {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 if ($F(\'pagemaster_datetime\') == \'on\') {
+                                 if ($F(\'pmplugin_usedatetime\') == \'on\') {
                                      $(\'typedata\').value = 1;
                                  } else {
                                      $(\'typedata\').value = 0;
@@ -37,14 +38,15 @@ class pmformdateinput extends pnFormDateInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render) {
+    function getTypeHtml($field, $render)
+    {
         if ($render->_tpl_vars['typedata'] == 1) {
             $checked = 'checked="checked"';
         } else {
             $checked = '';
         }
         $html .= '<div class="pn-formrow">
-                  '._PAGEMASTER_USEDATETIME.': <input type="checkbox" id="pagemaster_datetime" name="pagemaster_datetime" '.$checked.' />
+                  <label for="pmplugin_usedatetime">'._PAGEMASTER_USEDATETIME.':</label><input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
                   </div>';
         return $html;
     }

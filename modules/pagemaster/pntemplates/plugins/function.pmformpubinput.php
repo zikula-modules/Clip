@@ -81,7 +81,7 @@ class pmformpubinput extends pnFormDropdownList
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
         $html = '<div class="pn-formrow">
-                 '._PAGEMASTER_PUBLICATION.': <select id="pmplugin_pubtid" name="pmplugin_pubtid">';
+                 <label for="pmplugin_pubtid">'._PAGEMASTER_PUBLICATION.':</label><br /><select id="pmplugin_pubtid" name="pmplugin_pubtid">';
         foreach ($pubtypes as $pubtype) {
             if ($pubtype['tid'] == $tid) {
                 $selected = 'selected="selected"';
@@ -93,13 +93,13 @@ class pmformpubinput extends pnFormDropdownList
         $html .= '</select>
                   </div>';
         $html .= '<div class="pn-formrow">
-                 '._PAGEMASTER_PUBFILTER.': <input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$filter.'" />
+                  <label for="pmplugin_pubfilter">'._PAGEMASTER_PUBFILTER.':</label><br /><input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$filter.'" />
                  </div>';
         $html .= '<div class="pn-formrow">
-                 '._PAGEMASTER_PUBJOIN.': <input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.$checked.' />
+                  <label for="pmplugin_pubjoin">'._PAGEMASTER_PUBJOIN.':</label><input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.$checked.' />
                  </div>';
         $html .= '<div class="pn-formrow">
-                 '._PAGEMASTER_PUBJOINFIELDS.': <input type="text name="pmplugin_pubjoinfields" id="pmplugin_pubjoinfields"  value="'.$join_fields.'" >
+                  <label for="pmplugin_pubjoinfields">'._PAGEMASTER_PUBJOINFIELDS.':</label><br /><input type="text" id="pmplugin_pubjoinfields" name="pmplugin_pubjoinfields" value="'.$join_fields.'" >
                  </div>';
         return $html;
     }

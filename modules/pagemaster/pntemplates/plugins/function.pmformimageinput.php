@@ -135,7 +135,7 @@ class pmformimageinput extends pnFormUploadInput
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pagemaster_x_px\')+\':\'+$F(\'pagemaster_y_px\');
+                                 $(\'typedata\').value = $F(\'pmplugin_x_px\')+\':\'+$F(\'pmplugin_y_px\');
                                  closeTypeData();
                              }';
         return $saveTypeDataFunc;
@@ -144,9 +144,9 @@ class pmformimageinput extends pnFormUploadInput
     function getTypeHtml($field, $render)
     {
         $html = '<div class="pn-formrow">
-                 x: <input type="text" id="pagemaster_x_px" name="pagemaster_x_px" />
+                 <label for="pmplugin_x_px">x:</label><input type="text" id="pmplugin_x_px" name="pmplugin_x_px" />
                  <br />
-                 y: <input type="text" id="pagemaster_y_px" name="pagemaster_y_px" />
+                 <label for="pmplugin_y_px">y:</label><input type="text" id="pmplugin_y_px" name="pmplugin_y_px" />
                  </div>';
         return $html;
     }
