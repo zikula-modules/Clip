@@ -10,7 +10,32 @@
  */
 
 function showTypeDiv(id) {
-	{
-		document.getElementById('typeDataDiv').style.display = 'block';
-	}
+	$('Modalcontainer').appear({ to: 0.5 });
+	$('typeDataDiv').appear({ to: 1 });
+	Event.observe(window, 'resize', resizeModalcontainer, false);
 }
+
+function closeTypeData() {
+	$('Modalcontainer').fade({ from: 0.5 });
+	$('typeDataDiv').fade({ from: 1 });
+	Event.stopObserving(window, 'resize', resizeModalcontainer);
+}
+
+function resizeModalcontainer() {
+	var dimensions = document.viewport.getDimensions();
+	var offset = $('Modalcontainer').viewportOffset();
+	var styles = {'width': dimensions['width']+'px',
+				  'height': dimensions['height']+'px'};
+	if (offset[0] > 0)
+		styles['margin-left'] = '-'+offset[0]+'px';
+	if (offset[1] > 0)
+		styles['margin-top'] = '-'+offset[1]+'px';
+	$('Modalcontainer').setStyle(styles);
+}
+
+Event.observe(window, 'load', function() {
+	if ($('Modalcontainer')) {
+		$(document.body).insert($('Modalcontainer'));
+		resizeModalcontainer();
+	}
+}, false);

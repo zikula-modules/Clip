@@ -5,6 +5,7 @@
  * @copyright (c) 2008, PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id $
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
  */
@@ -59,8 +60,8 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 document.getElementById(\'typedata\').value = document.getElementById(\'pagemaster_list\').value ;
-                                 document.getElementById(\'typeDataDiv\').style.display = \'none\';
+                                 $(\'typedata\').value = $F(\'pagemaster_list\') ;
+                                 closeTypeData();
                              }';
         return $saveTypeDataFunc;
     }
@@ -70,14 +71,19 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
+        // TODO: Work based on a Category Registry
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
-        $html .= '<select name="pagemaster_list" id="pagemaster_list">';
+        $html .= '<div class="pn-formrow">
+                  <select name="pagemaster_list" id="pagemaster_list">';
+
         foreach ($cats as $cat) {
             $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
         }
-        $html .= '</select>';
+
+        $html .= '</select>
+                  </div>';
         return $html;
     }
 }

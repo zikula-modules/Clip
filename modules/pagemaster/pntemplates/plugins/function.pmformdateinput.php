@@ -5,6 +5,7 @@
  * @copyright (c) 2008, PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id $
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
  */
@@ -22,15 +23,16 @@ class pmformdateinput extends pnFormDateInput
     {
         return __FILE__; // FIXME: may be found in smarty's data???
     }
+
     function getSaveTypeDataFunc($field) {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 if (document.getElementById(\'pagemaster_datetime\').checked == true) {
-                                     document.getElementById(\'typedata\').value = 1;
+                                 if ($F(\'pagemaster_datetime\') == \'on\') {
+                                     $(\'typedata\').value = 1;
                                  } else {
-                                     document.getElementById(\'typedata\').value = 0;
+                                     $(\'typedata\').value = 0;
                                  } 
-                                 document.getElementById(\'typeDataDiv\').style.display = \'none\';
+                                 closeTypeData();
                              }';
         return $saveTypeDataFunc;
     }
@@ -41,7 +43,9 @@ class pmformdateinput extends pnFormDateInput
         } else {
             $checked = '';
         }
-        $html .= 'use datetime!: <input type="checkbox" id="pagemaster_datetime" name="pagemaster_datetime" '.$checked.' />';
+        $html .= '<div class="pn-formrow">
+                  '._PAGEMASTER_USEDATETIME.': <input type="checkbox" id="pagemaster_datetime" name="pagemaster_datetime" '.$checked.' />
+                  </div>';
         return $html;
     }
 

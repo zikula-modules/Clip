@@ -297,8 +297,6 @@ function pagemaster_admin_editpubfields()
 
     $render = FormUtil::newpnForm('pagemaster');
 
-    PageUtil::setVar('javascript', "modules/pagemaster/pnjavascript/handletypedata.js");
-
     return $render->pnFormExecute('pagemaster_admin_edit_pubfields.htm', new pagemaster_admin_pubfieldsHandler());
 }
 

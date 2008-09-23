@@ -30,10 +30,10 @@ div.pm-menu {
 	border-right: 1px solid #ccc;
 }
 
-#newpubfield button {
-	background: #DDDDDD;
-	border: 2px outset #DDDDDD;
+#newpubfield {
+	position: relative;
 }
+
 #pubfieldlist {
 	border: 1px solid #ccc;
 	list-style: none;
@@ -75,4 +75,31 @@ div.pm-menu {
 	background-position: 5px center;
 	color: #0074B0;
 	padding-left: 25px;
+}
+
+/* Admin modalbox */
+#Modalcontainer {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	z-index: 999;
+	background: #333333;
+	opacity: 0.5;
+	left: 0px; top: 0px;
+}
+#typeDataDiv {
+	position: absolute;
+	width: 450px;
+	height: auto !important;
+	height: 100px;
+	min-height: 100px;
+	z-index: 1000;
+	left: 50%;
+	top: 10px;
+	margin-left: -225px;
+	background-color: #FFFFFF;
+	padding:10px;
+}
+#typeDataContent {
+	padding: 10px 10px 0;
 }

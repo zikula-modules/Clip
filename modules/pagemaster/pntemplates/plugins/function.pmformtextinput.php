@@ -5,6 +5,7 @@
  * @copyright (c) 2008, PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id $
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
  */
@@ -44,12 +45,12 @@ class pmformtextinput extends pnFormTextInput
     function getSaveTypeDataFunc($field) {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 if (document.getElementById(\'pagemaster_scribite\').checked == true) {
-                                     document.getElementById(\'typedata\').value = 1;
+                                 if ($F(\'pagemaster_scribite\') == \'on\') {
+                                     $(\'typedata\').value = 1;
                                  } else {
-                                     document.getElementById(\'typedata\').value = 0;
+                                     $(\'typedata\').value = 0;
                                  } 
-                                 document.getElementById(\'typeDataDiv\').style.display = \'none\';
+                                 closeTypeData();
                              }';
         return $saveTypeDataFunc;
     }
@@ -60,7 +61,9 @@ class pmformtextinput extends pnFormTextInput
         } else {
             $checked = '';
         }
-        $html .= 'use scribite!: <input type="checkbox" id="pagemaster_scribite" name="pagemaster_scribite" '.$checked.' />';
+        $html = '<div class="pn-formrow">
+                '._PAGEMASTER_USESCRIBITE.': <input type="checkbox" id="pagemaster_scribite" name="pagemaster_scribite" '.$checked.' />
+                 </div>';
         return $html;
     }
 }

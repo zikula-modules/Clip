@@ -38,3 +38,10 @@ define('_PAGEMASTER_TEMPLATENOTFOUND', 'Template [%tpl%] not found');
 define('_PAGEMASTER_TOOMANYPUBS', 'Too many pubs found');
 define('_PAGEMASTER_WORKFLOWACTIONERROR', 'Workflow action error');
 define('_PAGEMASTER_WORKFLOWACTIONCN', 'commandName has to be a valid workflow action for the currenct state');
+
+// Plugins defines
+define('_PAGEMASTER_PUBFILTER', 'Filter');
+define('_PAGEMASTER_PUBJOIN', 'Join');
+define('_PAGEMASTER_PUBJOINFIELDS', 'Join fields (fieldname:alias,fieldname:alias..)');
+define('_PAGEMASTER_USEDATETIME', 'Use datetime');
+define('_PAGEMASTER_USESCRIBITE', 'Use scribite!');

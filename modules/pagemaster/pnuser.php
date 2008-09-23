@@ -141,11 +141,11 @@ function pagemaster_user_executecommand()
     if ($goto <> ''){
         if ($goto == 'edit') {
             return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
-            array('tid' => $tid,
+                                       array('tid' => $tid,
                                              'id'  => $pub['id'])));
         } elseif ($goto == 'stepmode'){
             return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
-            array('tid'  => $tid,
+                                       array('tid'  => $tid,
                                              'id'   => $pub['id'],
                                              'goto' => 'stepmode')));
         } else {
@@ -153,7 +153,7 @@ function pagemaster_user_executecommand()
         }
     } else {
         return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',
-        array('tid' => $tid,
+                                   array('tid' => $tid,
                                          'id'  => $pub['id'])));
     }
 }

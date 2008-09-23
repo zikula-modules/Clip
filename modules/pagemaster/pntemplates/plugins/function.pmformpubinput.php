@@ -5,6 +5,7 @@
  * @copyright (c) 2008, PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id $
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
  */
@@ -56,8 +57,8 @@ class pmformpubinput extends pnFormDropdownList
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 document.getElementById(\'typedata\').value = document.getElementById(\'publication_tid\').value+\';\'+document.getElementById(\'publication_filter\').value+';'+document.getElementById(\'pub_join\').value+\';\'+document.getElementById(\'pub_joinfields\').value;  
-                                 document.getElementById(\'typeDataDiv\').style.display = \'none\';
+                                 $(\'typedata\').value = $F(\'pmplugin_pubtid\')+\';\'+$F(\'pmplugin_pubfilter\')+\';\'+$F(\'pmplugin_pubjoin\')+\';\'+$F(\'pmplugin_pubjoinfields\');  
+                                 closeTypeData();
                              }';
         return $saveTypeDataFunc;
     }
@@ -79,19 +80,27 @@ class pmformpubinput extends pnFormDropdownList
 
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
-        $html .= 'publication: <select name="publication_tid" id="publication_tid">';
+        $html = '<div class="pn-formrow">
+                 '._PAGEMASTER_PUBLICATION.': <select id="pmplugin_pubtid" name="pmplugin_pubtid">';
         foreach ($pubtypes as $pubtype) {
             if ($pubtype['tid'] == $tid) {
                 $selected = 'selected="selected"';
             } else {
                 $selected = '';
             }
-            $html .= '<option value="' . $pubtype['tid'] . '" '.$selected.' >' . $pubtype['title'] . '</option>';
+            $html .= '<option value="'.$pubtype['tid'].'" '.$selected.' >'.$pubtype['title'].'</option>';
         }
-        $html .= '</select>';
-        $html .= 'filter: <input type="text" name="publication_filter" value="'.$filter.'" id="publication_filter" /><br />';
-        $html .= 'join: <input type="checkbox" name="pub_join" id="pub_join" '.$checked.'><br />';
-        $html .= 'fields: (fieldname:alias,fieldname:alias..): <input type="text name="pub_joinfields" id="pub_joinfields"  value="'.$join_fields.'" ><br />';
+        $html .= '</select>
+                  </div>';
+        $html .= '<div class="pn-formrow">
+                 '._PAGEMASTER_PUBFILTER.': <input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$filter.'" />
+                 </div>';
+        $html .= '<div class="pn-formrow">
+                 '._PAGEMASTER_PUBJOIN.': <input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.$checked.' />
+                 </div>';
+        $html .= '<div class="pn-formrow">
+                 '._PAGEMASTER_PUBJOINFIELDS.': <input type="text name="pmplugin_pubjoinfields" id="pmplugin_pubjoinfields"  value="'.$join_fields.'" >
+                 </div>';
         return $html;
     }
 }

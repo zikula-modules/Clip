@@ -5,6 +5,7 @@
  * @copyright (c) 2008, PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id $
  * @package     Zikula_3rd_party_Modules
  * @subpackage  pagemaster
  */
@@ -21,6 +22,7 @@ class pmformimageinput extends pnFormUploadInput
     {
         return __FILE__; // FIXME: may be found in smarty's data???
     }
+
 	function render(&$render)
 	{
 		$input_html = parent::render($render);
@@ -35,9 +37,10 @@ class pmformimageinput extends pnFormUploadInput
 	function loadValue(&$render, &$values)
 	{
 		if (array_key_exists($this->dataField, $values))
-		$value = $values[$this->dataField];
+		    $value = $values[$this->dataField];
+
 		if ($value !== null)
-		$this->upl_arr = unserialize($value);
+		    $this->upl_arr = unserialize($value);
 	}
 
     function postRead($data, $field)
@@ -132,16 +135,19 @@ class pmformimageinput extends pnFormUploadInput
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 document.getElementById(\'typedata\').value = document.getElementById(\'pagemaster_x_px\').value+\':\'+document.getElementById(\'pagemaster_y_px\').value;
-                                 document.getElementById(\'typeDataDiv\').style.display = \'none\';
+                                 $(\'typedata\').value = $F(\'pagemaster_x_px\')+\':\'+$F(\'pagemaster_y_px\');
+                                 closeTypeData();
                              }';
         return $saveTypeDataFunc;
     }
 
     function getTypeHtml($field, $render)
     {
-        $html .= 'x: <input type="text" id="pagemaster_x_px" name="pagemaster_x_px" />';
-        $html .= 'y: <input type="text" id="pagemaster_y_px" name="pagemaster_y_px" />';
+        $html = '<div class="pn-formrow">
+                 x: <input type="text" id="pagemaster_x_px" name="pagemaster_x_px" />
+                 <br />
+                 y: <input type="text" id="pagemaster_y_px" name="pagemaster_y_px" />
+                 </div>';
         return $html;
     }
 }
