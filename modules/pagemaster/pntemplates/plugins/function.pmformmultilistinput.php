@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
 class pmformmultilistinput extends pnFormCategoryCheckboxList
 {
     var $columnDef   = 'C(512)';
-    var $title       = 'MultiList';
+    var $title       = _PAGEMASTER_PLUGIN_MULTILIST;
     var $filterClass = 'pmList';
 
     function getFilename()

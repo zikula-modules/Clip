@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformuploadinput.php');
 class pmformuploadinput extends pnFormUploadInput
 {
 	var $columnDef = 'C(512)';
-	var $title     = 'Any Upload';
+	var $title     = _PAGEMASTER_PLUGIN_UPLOAD;
 	var $upl_arr;
 
 	function getFilename()

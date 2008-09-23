@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformdropdownlist.php');
 class pmformpubinput extends pnFormDropdownList
 {
     var $columnDef = 'I';
-    var $title     = 'Publication';
+    var $title     = _PAGEMASTER_PLUGIN_PUBLICATION;
 
     function getFilename()
     {

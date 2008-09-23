@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformtextinput.php');
 class pmformtextinput extends pnFormTextInput
 {
     var $columnDef = 'X';
-    var $title     = 'Text';
+    var $title     = _PAGEMASTER_PLUGIN_TEXT;
 
     function getFilename()
     {

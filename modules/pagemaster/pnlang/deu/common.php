@@ -39,6 +39,21 @@ define('_PAGEMASTER_TOOMANYPUBS', 'Too many pubs found');
 define('_PAGEMASTER_WORKFLOWACTIONERROR', 'Workflow action error');
 define('_PAGEMASTER_WORKFLOWACTIONCN', 'commandName has to be a valid workflow action for the currenct state');
 
+// Plugin titles
+define('_PAGEMASTER_PLUGIN_CHECKBOX', 'Checkbox');
+define('_PAGEMASTER_PLUGIN_DATE', 'Date');
+define('_PAGEMASTER_PLUGIN_EMAIL', 'Email');
+define('_PAGEMASTER_PLUGIN_FLOAT', 'Float Value');
+define('_PAGEMASTER_PLUGIN_IMAGE', 'Image Upload');
+define('_PAGEMASTER_PLUGIN_INTEGER', 'Integer Value');
+define('_PAGEMASTER_PLUGIN_LIST', 'List');
+define('_PAGEMASTER_PLUGIN_MULTILIST', 'MultiList');
+define('_PAGEMASTER_PLUGIN_PUBLICATION', 'Publication');
+define('_PAGEMASTER_PLUGIN_STRING', 'String');
+define('_PAGEMASTER_PLUGIN_TEXT', 'Text');
+define('_PAGEMASTER_PLUGIN_UPLOAD', 'Any Upload');
+define('_PAGEMASTER_PLUGIN_URL', 'Url');
+
 // Plugins defines
 define('_PAGEMASTER_PUBFILTER', 'Filter');
 define('_PAGEMASTER_PUBJOIN', 'Join');

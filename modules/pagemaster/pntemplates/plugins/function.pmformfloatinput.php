@@ -15,7 +15,7 @@ require_once ('system/pnForm/plugins/function.pnformfloatinput.php');
 class pmformfloatinput extends pnFormFloatInput {
     
     var $columnDef = 'F';
-    var $title     = 'Float Value';
+    var $title     = _PAGEMASTER_PLUGIN_FLOAT;
 
     function getFilename()
     {

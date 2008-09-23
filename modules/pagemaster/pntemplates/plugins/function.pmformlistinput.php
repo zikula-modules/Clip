@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
 class pmformlistinput extends pnFormCategorySelector
 {
     var $columnDef   = 'I (9,0)';
-    var $title       = 'List';
+    var $title       = _PAGEMASTER_PLUGIN_LIST;
     var $filterClass = 'pmList';
 
     function getFilename()

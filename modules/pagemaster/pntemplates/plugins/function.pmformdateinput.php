@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformdateinput.php');
 class pmformdateinput extends pnFormDateInput
 {
     var $columnDef = 'T';
-    var $title     = 'Date';
+    var $title     = _PAGEMASTER_PLUGIN_DATE;
     var $filterClass = 'Date';
 
 	

@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformemailinput.php');
 class pmformemailinput extends pnFormEMailInput
 {
     var $columnDef = 'C(100)';
-    var $title     = 'Email';
+    var $title     = _PAGEMASTER_PLUGIN_EMAIL;
 
     function getFilename()
     {
