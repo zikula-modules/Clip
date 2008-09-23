@@ -30,6 +30,10 @@ div.pm-menu {
 	border-right: 1px solid #ccc;
 }
 
+#newpubfield button {
+	background: #DDDDDD;
+	border: 2px outset #DDDDDD;
+}
 #pubfieldlist {
 	border: 1px solid #ccc;
 	list-style: none;
