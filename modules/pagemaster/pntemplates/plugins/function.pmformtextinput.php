@@ -32,9 +32,9 @@ class pmformtextinput extends pnFormTextInput
                     static $scribite_arr;
                     $scribite_arr[] = $this->id;
                     $scribite = pnModFunc('scribite', 'user', 'loader',
-                                          array('modname' => 'pagemaster',
-                                                'editor'  => 'xinha',
-                                                'areas'   => $scribite_arr));
+                                          array('modulename' => 'pagemaster',
+                                                'editor'     => 'xinha',
+                                                'areas'      => $scribite_arr));
                     PageUtil::setVar('rawtext', $scribite);
                 }
             }
