@@ -35,12 +35,12 @@ class pagemaster_user_dynHandler
             $this->core_pid = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
-            //            print_r($actions);
+            // print_r($actions);
         } else {
             $actions = WorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
 
-        //check for set_ default values
+        // check for set_ default values
         foreach ($this->pubfields as $field)
         {
             $fieldName = 'set_'.$field['name'];
@@ -68,7 +68,7 @@ class pagemaster_user_dynHandler
         $data['core_revision'] = $this->core_revision;
 
         $data = pnModAPIFunc('pagemaster', 'user', 'editPub',
-        array('data'        => $data,
+                             array('data'        => $data,
                                    'commandName' => $args['commandName'],
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])
@@ -76,14 +76,14 @@ class pagemaster_user_dynHandler
 
         if ($this->goto == '') {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
-            array('tid' => $this->tid,
-                                         'id'  => $data['id']
+                                   array('tid' => $this->tid,
+                                         'pid' => $data['pid']
             ));
 
         } elseif ($this->goto == 'stepmode') {
             // stepmode can be used to go automaticaly from one workflowstep to the next
             $this->goto = pnModURL('pagemaster', 'user', 'pubedit',
-            array('tid'  => $this->tid,
+                                   array('tid'  => $this->tid,
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'
                                          ));
@@ -154,7 +154,7 @@ function pagemaster_user_executecommand()
     } else {
         return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $tid,
-                                         'id'  => $pub['id'])));
+                                         'pid' => $pub['pid'])));
     }
 }
 
@@ -245,8 +245,8 @@ function pagemaster_user_main($args)
     $template           = isset($args['template']) ? $args['template'] : '';
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState');
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields');
-    $rss                 = isset ($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
-    $cachelifetime = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
+    $rss                = isset ($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
+    $cachelifetime      = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
 
     if ($justOwn == '') {
         $justOwn = false;
