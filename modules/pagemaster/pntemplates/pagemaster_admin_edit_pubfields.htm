@@ -37,33 +37,29 @@
 		<span id="pubfielddrag_<!--[$pubfield.id]-->" class="smallplace"><!--[pnml name=$pubfield.name]--></span>
 		<span class="smallplace"><!--[$pubfield.title]-->&nbsp;</span>
 		<span class="normalplace"><!--[$pubfield.description|truncate:45]-->&nbsp;</span> 
-		<span class="extrasmallplace">
+		<span class="extrasmallplace" style="text-align:center">
 			<!--[if $pubfield.issearchable]-->
-				<!--[pnimg modname='core' src='ok.gif' set='icons/extrasmall']-->
-			<!--[else]-->
-				<!--[pnimg modname='core' src='cancel.gif' set='icons/extrasmall']-->
+				<!--[pnimg modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall']-->
 			<!--[/if]-->
+			&nbsp;
 		</span>
-		<span class="extrasmallplace">
+		<span class="extrasmallplace" style="text-align:center">
 			<!--[if $pubfield.istitle]-->
-				<!--[pnimg modname='core' src='ok.gif' set='icons/extrasmall']-->
-			<!--[else]-->
-				<!--[pnimg modname='core' src='cancel.gif' set='icons/extrasmall']-->
+				<!--[pnimg modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall']-->
 			<!--[/if]-->
+			&nbsp;
 		</span>
-		<span class="extrasmallplace">
+		<span class="extrasmallplace" style="text-align:center">
 			<!--[if $pubfield.ismandatory]-->
-				<!--[pnimg modname='core' src='ok.gif' set='icons/extrasmall']-->
-			<!--[else]-->
-				<!--[pnimg modname='core' src='cancel.gif' set='icons/extrasmall']-->
+				<!--[pnimg modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall']-->
 			<!--[/if]-->
+			&nbsp;
 		</span>
-		<span class="extrasmallplace">
+		<span class="extrasmallplace" style="text-align:center">
 			<!--[if $pubfield.fieldmaxlength]-->
 				<!--[$pubfield.fieldmaxlength]-->
-			<!--[else]-->
-				<!--[pnimg modname='core' src='cancel.gif' set='icons/extrasmall']-->
 			<!--[/if]-->
+			&nbsp;
 		</span>
 		<span class="extrasmallplace">
 			<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' id=$pubfield.id tid=$pubfield.tid]-->"><!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall']--></a>
