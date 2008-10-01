@@ -49,8 +49,9 @@ class pagemaster_user_dynHandler
             $pubdata[$field['name']] = $val;
         }
 
-        if (count($pubdata > 0))
-        $render->assign($pubdata);
+        if (count($pubdata > 0)) {
+            $render->assign($pubdata);
+        }
         $render->assign('actions', $actions);
         return true;
     }
@@ -71,22 +72,19 @@ class pagemaster_user_dynHandler
                              array('data'        => $data,
                                    'commandName' => $args['commandName'],
                                    'pubfields'   => $this->pubfields,
-                                   'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])
-        ));
+                                   'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         if ($this->goto == '') {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $this->tid,
-                                         'pid' => $data['pid']
-            ));
+                                         'pid' => $data['pid']));
 
         } elseif ($this->goto == 'stepmode') {
             // stepmode can be used to go automaticaly from one workflowstep to the next
             $this->goto = pnModURL('pagemaster', 'user', 'pubedit',
                                    array('tid'  => $this->tid,
                                          'id'   => $data['id'],
-                                         'goto' => 'stepmode'
-                                         ));
+                                         'goto' => 'stepmode'));
         }
 
         if (empty($data)) {
@@ -207,6 +205,15 @@ function pagemaster_user_pubedit()
     }
 
     $render = FormUtil::newpnForm('pagemaster');
+
+    // assign the pubfields indexed by name
+    $indexes = array();
+    foreach ($pubfields as $field) {
+        $indexes[] = $field['name'];
+    }
+    $render->assign('pubfields', array_combine($indexes, $pubfields));
+
+    // resolve the template to use
     $user_defined_template = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
 
     if ($render->get_template_path($user_defined_template)) {
@@ -344,8 +351,7 @@ function pagemaster_user_main($args)
                                  'checkPerm'          => false, // already checked
                                  'handlePluginFields' => $handlePluginFields,
                                  'getApprovalState'   => $getApprovalState,
-                                 'justOwn'            => $justOwn
-    ));
+                                 'justOwn'            => $justOwn));
 
     $publist  = $pubarr['publist'];
     $pubcount = $pubarr['pubcount'];
@@ -453,8 +459,7 @@ function pagemaster_user_viewpub($args)
                                   'pid'                => $pid,
                                   'checkPerm'          => false, //check later, together with template
                                   'getApprovalState'   => true,
-                                  'handlePluginFields' => true
-    ));
+                                  'handlePluginFields' => true));
 
     if (!$pubdata) {
         return false;
