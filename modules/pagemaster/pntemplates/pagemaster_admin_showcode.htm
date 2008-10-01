@@ -7,17 +7,7 @@
 
 <h2><!--[pnml name=_PAGEMASTER_SHOWCODE]--></h2>
 
-<div class="pn-menu pm-menu">
-	<span class="pn-menuitem-title">
-	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$pubtype.tid]-->"><!--[pnml name='_PAGEMASTER_LIST']--></a> | 
-	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->"><!--[pnml name='_PAGEMASTER_PUBTYPE_NEWARTICLE']--></a> |
-	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' tid=$pubtype.tid]-->"><!--[pnml name='_PAGEMASTER_EDIT_FIELDS']--></a>
-	|
-	<!--[if $mode eq 'input']--><a><!--[else]--><a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid]-->"><!--[/if]--><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWINPUTCODE']--></a> | 
-	<!--[if $mode eq 'outputlist']--><a><!--[else]--><a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid]-->"><!--[/if]--><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODELIST']--></a> | 
-	<!--[if $mode eq 'outputfull']--><a><!--[else]--><a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid]-->"><!--[/if]--><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODEFULL']--></a> 
-	</span>
-</div>
+<!--[pmadminsubmenu tid=$pubtype.tid mode=$mode]-->
 
 <!--[if $mode eq 'input']-->
 	<!--[assign var='pathcopy' value='input/pubedit_'|cat:$pubtype.formname|cat:'_all.htm']-->

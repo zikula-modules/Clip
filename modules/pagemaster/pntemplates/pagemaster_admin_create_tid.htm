@@ -8,13 +8,7 @@
 <h2><!--[pnml name='_PAGEMASTER_CREATEEDIT_TID']--></h2>
 
 <!--[if isset($tid)]-->
-<div class="pn-menu pm-menu">
-	<span class="pn-menuitem-title">
-	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$tid]-->"><!--[pnml name='_PAGEMASTER_LIST']--></a> | 
-	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$tid]-->"><!--[pnml name='_PAGEMASTER_PUBTYPE_NEWARTICLE']--></a> |
-	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' tid=$tid]-->"><!--[pnml name='_PAGEMASTER_EDIT_FIELDS']--></a>
-	</span>
-</div>
+<!--[pmadminsubmenu tid=$tid]-->
 <!--[/if]-->
 
 <!--[pnform]-->
