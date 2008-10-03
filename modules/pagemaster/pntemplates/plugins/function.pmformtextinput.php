@@ -25,19 +25,14 @@ class pmformtextinput extends pnFormTextInput
     function render(&$render)
     {
         $this->textMode = 'multiline';
-        if (pnModAvailable('scribite')) {
-            $pubfields = $render->pnFormEventHandler->pubfields;
-            foreach ($pubfields as $key => $pubfield) {
-                if ($pubfield['name'] == $this->id and $pubfield['typedata'] == 1) {
-                    static $scribite_arr;
-                    $scribite_arr[] = $this->id;
-                    $scribite = pnModFunc('scribite', 'user', 'loader',
-                                          array('modulename' => 'pagemaster',
-                                                'editor'     => 'xinha',
-                                                'areas'      => $scribite_arr));
-                    PageUtil::setVar('rawtext', $scribite);
-                }
-            }
+        if ($render->pnFormEventHandler->pubfields[$this->id]['typedata'] == 1 && pnModAvailable('scribite')) {
+            static $scribite_arr;
+            $scribite_arr[] = $this->id;
+            $scribite = pnModFunc('scribite', 'user', 'loader',
+                                  array('modulename' => 'pagemaster',
+                                        'editor'     => 'xinha',
+                                        'areas'      => $scribite_arr));
+            PageUtil::setVar('rawtext', $scribite);
         }
         return parent::render($render);
     }

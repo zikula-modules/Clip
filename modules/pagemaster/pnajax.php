@@ -24,7 +24,7 @@ function pagemaster_ajax_changedlistorder()
 
     foreach($pubfieldlist as $key => $value)
     {
-        $data[lineno] = $key;
+        $data['lineno'] = $key;
         $result = DBUtil::updateObject($data, 'pagemaster_pubfields', 'pm_id = '.DataUtil::formatForStore($value).' AND pm_tid = '.DataUtil::formatForStore($tid));
         if (!$result) {
             AjaxUtil::error(_UPDATEFAILED);

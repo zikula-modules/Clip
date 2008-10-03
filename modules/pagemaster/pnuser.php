@@ -41,12 +41,12 @@ class pagemaster_user_dynHandler
         }
 
         // check for set_ default values
-        foreach ($this->pubfields as $field)
+        $fieldnames = array_keys($this->pubfields);
+        foreach ($fieldnames as $fieldname)
         {
-            $fieldName = 'set_'.$field['name'];
-            $val = FormUtil::getPassedValue($fieldName, '');
+            $val = FormUtil::getPassedValue('set_'.$fieldname, '');
             if ($val <> '') {
-                $pubdata[$field['name']] = $val;
+                $pubdata[$fieldname] = $val;
             }
         }
 
@@ -184,7 +184,7 @@ function pagemaster_user_pubedit()
 
     $dynHandler = new pagemaster_user_dynHandler();
 
-    if ($id == '' and $pid <>'') {
+    if ($id == '' && $pid <>'') {
         $id = pnModAPIFunc('pagemaster', 'user', 'getId',
                            array('tid' => $tid,
                                  'pid' => $pid));
@@ -325,7 +325,7 @@ function pagemaster_user_main($args)
     }
 
     $orderby   = createOrderBy($orderby);
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
+    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
 
     if ($itemsperpage <> 0) {
         $countmode = 'both';
@@ -399,7 +399,7 @@ function pagemaster_user_viewpub($args)
     }
 
     $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
+    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
 
     if ($pid == '') {
         $pid = pnModAPIFunc('pagemaster', 'user', 'getPid',

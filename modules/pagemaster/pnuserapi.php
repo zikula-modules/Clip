@@ -34,7 +34,7 @@ function pagemaster_userapi_editPub($args)
     $data        = $args['data'];
     $tid         = $data['tid'];
     if (!isset ($args['pubfields'])) {
-        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
+        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
     } else {
         $pubfields = $args['pubfields'];
     }
@@ -46,10 +46,10 @@ function pagemaster_userapi_editPub($args)
         $schema = $args['schema'];
     }
 
-    foreach ($pubfields as $field) {
+    foreach ($pubfields as $fieldname => $field) {
         $plugin = pagemasterGetPlugin($field['fieldplugin']);
         if (method_exists($plugin, 'preSave')) {
-            $data[$field['name']] = $plugin->preSave($data, $field);
+            $data[$fieldname] = $plugin->preSave($data, $field);
         }
     }
 
@@ -161,7 +161,7 @@ function pagemaster_userapi_getPub($args)
 
     $publist   = DBUtil::selectObjectArray($tablename, $where);
 
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
+    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
 
     if ($handlePluginFields){
         include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
@@ -231,7 +231,7 @@ function pagemaster_userapi_pubList($args)
         $args['justcount'] = 'no';
     }
     if (!isset($args['pubfields'])) {
-        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
+        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
     } else {
         $pubfields = $args['pubfields'];
     }
@@ -271,11 +271,11 @@ function pagemaster_userapi_pubList($args)
 
     Loader::LoadClass("FilterUtil");
 
-    foreach ($pubfields as $key => $field) {
+    foreach ($pubfields as $fieldname => $field) {
         $plugin = pagemasterGetPlugin($field['fieldplugin']);
 
         if (isset ($plugin->filterClass)) {
-            $filterPlugins[$plugin->filterClass]['fields'][] = $field['name'];
+            $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
         }
         // check for tables to join
         if ($args['countmode'] <> 'just'){
@@ -296,7 +296,7 @@ function pagemaster_userapi_pubList($args)
                     $joinInfo[] = array('join_table'         =>  'pagemaster_pubdata'.$join_tid,
                                         'join_field'         =>  $join_field_arr,
                                         'object_field_name'  =>  $object_field_name_arr,
-                                        'compare_field_table'=>  $field['name'],
+                                        'compare_field_table'=>  $fieldname,
                                         'compare_field_join' =>  'core_pid');
                 }
             }
@@ -310,7 +310,7 @@ function pagemaster_userapi_pubList($args)
     }
 
     // check if some plugin specific orderby has to be done
-    $orderby = handlePluginOrderBy($orderby, $pubfields,$tbl_alias);
+    $orderby = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
 
     $tablename = 'pagemaster_pubdata'.$tid;
     $fu = & new FilterUtil(array('table' => $tablename,

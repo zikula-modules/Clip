@@ -66,7 +66,7 @@ class pagemaster_admin_pubtypesHandler
         if ($tid <> "") {
             $this->tid = $tid;
             $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
-            $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
+            $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
             $pubarr[] = array (
                 'text'  => '',
                 'value' => ''
@@ -104,20 +104,24 @@ class pagemaster_admin_pubtypesHandler
                 'value' => 'pm_hitcount'
             );
             
-            foreach ($pubfields as $pubfield) {
+            $fieldnames = array_keys($pubfields);
+            foreach ($fieldnames as $fieldname) {
                 $pubarr[] = array (
-                    'text' => $pubfield['name'],
-                    'value' => $pubfield['name']
+                    'text'  => $fieldname,
+                    'value' => $fieldname
                 );
             }
 
             $render->assign($pubtype);
             $render->assign('pubfields', $pubarr);
         }
-        $pubtypes = DBUtil :: selectObjectArray("pagemaster_pubtypes");
+
+        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
         $render->assign('pubtypes', $pubtypes);
+
         $workflows = pagemasterGetWorkflowsOptionList();
         $render->assign('pmWorkflows', $workflows);
+
         return true;
     }
 
@@ -145,13 +149,13 @@ class pagemaster_admin_pubtypesHandler
                 $data['urltitle'] = DataUtil::formatPermalink($data['title']);
             }
             
-            if ($data['filename'] == '' ) {
+            if ($data['filename'] == '') {
                 $data['filename'] = $data['title'];
             }
-            if ($data['formname'] == '' ) {
+            if ($data['formname'] == '') {
                 $data['formname'] = $data['title'];
             }
-            if ($this->tid == "") {
+            if ($this->tid == '') {
                 DBUtil::insertObject($data, 'pagemaster_pubtypes');
             } else {
                 DBUtil::updateObject($data, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
@@ -164,6 +168,7 @@ class pagemaster_admin_pubtypesHandler
             DBUtil::dropTable('pagemaster_pubdata' . $this->tid);
             LogUtil::registerStatus(_DELETESUCCEDED);
         }
+
         return $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'main'));
     }
 }
@@ -186,13 +191,13 @@ class pagemaster_admin_pubfieldsHandler
         $id  = FormUtil::getPassedValue('id');
         $this->tid = $tid;
 
-        if ($id <> "") {
+        if ($id <> '') {
             $this->id = $id;
             $pubfield = DBUtil::selectObjectByID('pagemaster_pubfields', $id);
             $render->assign($pubfield);
         }
 
-        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno');
+        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
         $render->assign('pubfields', $pubfields);
         $render->assign('tid', $tid);
         if ($tid == '') {
@@ -209,10 +214,10 @@ class pagemaster_admin_pubfieldsHandler
     {
         $data = $render->pnFormGetValues();
 
-        $data[id]  = $this->id;
-        $data[tid] = $this->tid;
-        $file   = $data['fieldplugin'];
-        $plugin = pagemasterGetPlugin($file);
+        $data['id']        = $this->id;
+        $data['tid']       = $this->tid;
+        $file              = $data['fieldplugin'];
+        $plugin            = pagemasterGetPlugin($file);
         $data['fieldtype'] = $plugin->columnDef;
 
         if ($args['commandName'] == 'delete') {
@@ -224,13 +229,11 @@ class pagemaster_admin_pubfieldsHandler
                 return false;
             }
             if ($data['istitle'] == 1) {
-                $istitle = array (
-                    'istitle' => '0'
-                );
+                $istitle = array ('istitle' => '0');
                 DBUtil::updateObject($istitle, 'pagemaster_pubfields', 'pm_tid = '.$data['tid']);
             }
 
-            if ($this->id == "") {
+            if ($this->id == '') {
                 $where = 'pm_name = \''.$data['name'].'\' AND pm_tid = '.$data['tid'];
             } else {
                 $where = 'pm_id <> '.$this->id.' AND pm_name = \''.$data['name'].'\' AND pm_tid = '.$data['tid'];
@@ -238,12 +241,12 @@ class pagemaster_admin_pubfieldsHandler
 
             $nameUnique = DBUtil::selectFieldMax('pagemaster_pubfields', 'id', 'COUNT', $where);
             if ($nameUnique > 0) {
-                return LogUtil :: registerError(_PAGEMASTER_NAMEUNIQUE);
+                return LogUtil::registerError(_PAGEMASTER_NAMEUNIQUE);
             }
 
-            if ($this->id == "") {
+            if ($this->id == '') {
                 $max_rowID = DBUtil::selectFieldMax('pagemaster_pubfields', 'id', 'MAX', 'pm_tid = '.$data['tid']);
-                $data['lineno'] = $max_rowID +1;
+                $data['lineno'] = $max_rowID + 1;
                 if ($max_rowID == 1) {
                     $data['istitle'] = 1;
                 }
@@ -257,7 +260,7 @@ class pagemaster_admin_pubfieldsHandler
         }
 
         $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'editpubfields',
-                                         array ('tid' => $data['tid'])));
+                                         array('tid' => $data['tid'])));
         return true;
     }
 }
@@ -392,7 +395,7 @@ function pagemaster_admin_showcode()
     }
 
     $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = $tid", 'pm_lineno');
+    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = $tid", 'pm_lineno', -1, -1, 'name');
 
     /* get the code depending of the mode */
     if ($mode == 'input') {
@@ -402,12 +405,12 @@ function pagemaster_admin_showcode()
         include_once('includes/pnForm.php');
         $tablename = 'pagemaster_pubdata'.$tid;
         $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
-        if (!($id > 0)) {
+        if ($id <= 0) {
             return LogUtil::registerError(_PAGEMASTER_ATLEASTONE);
         }
         $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
                                 array('tid' => $tid,
-                                      'id' => $id));
+                                      'id'  => $id));
         $code = generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields);
 
     } elseif ($mode == 'outputlist') {
@@ -419,7 +422,7 @@ function pagemaster_admin_showcode()
     $code = str_replace("\n", '<br/>',$code);
 
     /* generate the output */
-    $render = pnRender :: getInstance('pagemaster');
+    $render = pnRender::getInstance('pagemaster');
     $render->assign('mode', $mode);
     $render->assign('pubtype', $pubtype);
     $render->assign('pubfields', $pubfields);

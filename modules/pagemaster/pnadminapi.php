@@ -22,7 +22,7 @@ function pagemaster_adminapi_updatetabledef($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'tid')));
     }
 
-    $tablename = 'pagemaster_pubdata' . $args['tid'];
+    $tablename = 'pagemaster_pubdata'.$args['tid'];
 
     $pntable = &pnDBGetTables();
     if (!isset ($pntable[$tablename])) {

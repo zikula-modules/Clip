@@ -29,13 +29,10 @@ function pagemaster_searchapi_options($args)
         // Looking for pubtype with at least one searchable field
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
         foreach ($pubtypes as $key => $pubtype) {
-            $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']);
-            $found = false;
-            foreach ($pubfields as $pubfield) {
-                $found = true;
-            }
-            if (!$found)
+            $pubfields = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']); 
+            if ($pubfields === false) {
                 unset ($pubtypes[$key]);
+            }
         }
 
         $render->assign('pubtypes', $pubtypes);
@@ -75,12 +72,12 @@ function pagemaster_searchapi_search($args)
     foreach ($pubtypes as $pubtype)
     {
         if ($search_tid[$pubtype['tid']] == 1){
-            $pubfields  = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']);
+            $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']);
             $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
             $columnname = $pntable[$tablename.'_column'];
 
-            foreach ($pubfields as $pubfield) {
-                $where_arr[] = $columnname[$pubfield['name']];
+            foreach ($pubfieldnames as $pubfieldname) {
+                $where_arr[] = $columnname[$pubfieldname];
             }
 
             if (is_array($where_arr)) {
@@ -91,10 +88,11 @@ function pagemaster_searchapi_search($args)
                 $where .= " AND (pm_language = '' or pm_language = '".pnUserGetLang()."')";
                 $where .= ' AND (pm_publishdate <= NOW() or pm_publishdate is null) AND (pm_expiredate >= NOW() or pm_expiredate is null)';
 
-                $tablename = 'pagemaster_pubdata'.$pubtype['tid'];
-                $publist = DBUtil::selectObjectArray($tablename, $where);
+                $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
+                $publist    = DBUtil::selectObjectArray($tablename, $where);
                 $core_title = getTitleField($pubfields);
-                $type_name = pnML($pubtype['title']); 
+                $type_name  = pnML($pubtype['title']); 
+
                 foreach ($publist as $pub) {
                     $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
                     $sql = $insertSql . '('

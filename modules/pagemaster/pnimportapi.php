@@ -119,7 +119,7 @@ function pagemaster_importapi_importps2()
         $datatype['enablerevisions'] = $pubtype['enableRevisions'];
         $datatype['enableeditown']   = $pubtype['enableEditOwn'];
         DBUtil::insertObject($datatype, 'pagemaster_pubtypes');
-        //$pubfields = DBUtil::selectObjectArray('pagesetter_pubfields', 'pg_tid = '.$pubtype['id']);
+        //$pubfields = DBUtil::selectObjectArray('pagesetter_pubfields', 'pg_tid = '.$pubtype['id'], '', -1, -1, 'name');
 
         $sql = 'SELECT pn_pagesetter_pubfields.pg_id AS "id",
                        pn_pagesetter_pubfields.pg_tid AS "tid",

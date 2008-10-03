@@ -72,7 +72,6 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
                       ';
 
     foreach ($pubfields as $pubfield) {
-        $fieldplugin = explode('.', $pubfield['fieldplugin']);
         if ($pubfield['fieldmaxlength'] <> '') {
             $maxlength = ' maxLength=\'' . $pubfield['fieldmaxlength'] . '\' ';
         } else {
@@ -84,6 +83,9 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
         } else {
             $toolTip = '';
         }
+
+        // specific plugins
+        $fieldplugin = explode('.', $pubfield['fieldplugin']);
         if ($fieldplugin[1] == 'pmformtextinput') {
             $linecol = ' rows=\'20\' cols=\'70\' ';
         } else {
@@ -91,8 +93,8 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
         }
         $template_code .= '
                             <tr>
-                                <td><!--[pnformlabel for=\'' . $pubfield[name] . '\' text=\'' . $pubfield[title] . '\']-->:</td>
-                                <td><!--[' . $fieldplugin[1] . ' id=\'' . $pubfield[name] . '\' ' . $maxlength . $linecol . $toolTip . ' mandatory=\'' . $pubfield[ismandatory] . '\']--></td>
+                                <td><!--[pnformlabel for=\'' . $pubfield['name'] . '\' text=\'' . $pubfield['title'] . '\']-->:</td>
+                                <td><!--[' . $fieldplugin[1] . ' id=\'' . $pubfield['name'] . '\' ' . $maxlength . $linecol . $toolTip . ' mandatory=\'' . $pubfield['ismandatory'] . '\']--></td>
                             </tr>
                             ';
     }
@@ -146,19 +148,13 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
 
                 ';
 
-    // build an index of the plugin names in $pubfields
-    $index = array();
-    foreach($pubfields as $key => $field) {
-        $index[$field['name']] = $key ;
-    }
-
     foreach ($pubdata as $key => $pubfield) {
         $template_code_add = '';
         $template_code_fielddesc = '';
 
         // check if field is to handle special
-        if (isset($index[$key])) {
-            $field = $pubfields[$index[$key]];
+        if (isset($pubfields[$key])) {
+            $field = $pubfields[$key];
 
             $template_code_fielddesc = '<!--[pnml name=\''.$field['name'].'\']-->: ';
             if ($field['fieldplugin'] == 'function.pmformimageinput.php') {
@@ -265,13 +261,13 @@ function pagemasterloadPluginType($pluginType)
 
 function handlePluginFields($publist, $pubfields)
 {
-    foreach ($pubfields as $field) {
+    foreach ($pubfields as $fieldname => $field) {
         $plugin = pagemasterGetPlugin($field['fieldplugin']);
 
         if (method_exists($plugin, 'postRead')) {
             foreach ($publist as $key => $pub) {
-                if ($pub[$field['name']] <> '' and isset($pub[$field['name']]))
-                    $publist[$key][$field['name']] = $plugin->postRead($pub[$field['name']], $field);
+                if ($pub[$fieldname] <> '' and isset($pub[$fieldname]))
+                    $publist[$key][$fieldname] = $plugin->postRead($pub[$fieldname], $field);
             }
         }
     }
@@ -296,8 +292,8 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
             list($orderby_col, $orderby_dir) = explode(' ', trim($orderby_field));
             $plugin_name = '';
             $field_name  = '';
-            foreach ($pubfields as $key => $field) {
-                if (strtolower($field['name']) == strtolower($orderby_col)) {
+            foreach ($pubfields as $fieldname => $field) {
+                if (strtolower($fieldname) == strtolower($orderby_col)) {
                     $plugin_name = $field['fieldplugin'];
                     $field_name  = $field['name'];
                     break;
@@ -324,8 +320,10 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
 function getTitleField($pubfields)
 {
     foreach ($pubfields as $field) {
-        if ($field['istitle'] == 1)
+        if ($field['istitle'] == 1) {
             $core_title = $field['name'];
+            break;
+        }
     }
     return $core_title;
 }
