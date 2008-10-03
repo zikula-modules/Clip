@@ -7,11 +7,11 @@
 
 <hr />
 
-<table >
-<!--[foreach from=$publist item=pubitem]-->
+<table>
+<!--[foreach from=$publist item='pubitem']-->
 	<tr>
 	<td><!--[$pubitem.$core_titlefield]--> </td>
-	<td><a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$tid id=$pubitem.id]-->"><!--[pnml name='_EDIT']--></a></td>
+	<td><a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$tid pid=$pubitem.core_pid]-->"><!--[pnml name='_EDIT']--></a></td>
 	<td><a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$tid pid=$pubitem.core_pid]-->"><!--[pnml name='_VIEW']--></a></td>
 	</tr>
 <!--[/foreach]-->

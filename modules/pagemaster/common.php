@@ -56,72 +56,75 @@ function getExtension($filename, $keepDot = false)
 function generate_editpub_template_code($tid, $pubfields, $pubtype)
 {
     $template_code = '
-        <h1><!--[pnml name="' . $pubtype['title'] . '"]--></h1>
+                      <h1><!--[pnml name=\''. $pubtype['title'] .'\']--></h1>
 
-        <!--[pnsecauthaction_block component="pagemaster::" instance="::" level=ACCESS_ADMIN]-->
-            <!--[pnml name=_PAGEMASTER_GENERIC_EDITPUB"]--><br />
-        <!--[/pnsecauthaction_block]-->
+                      <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
+                          <!--[pnml name=\'_PAGEMASTER_GENERIC_EDITPUB\']--><br />
+                      <!--[/pnsecauthaction_block]-->
 
-        <!--[pngetstatusmsg]-->
+                      <!--[insert name=\'getstatusmsg\']-->
 
-        <!--[pnml name="' . $pubtype['description'] . '"]--><br />
+                      <!--[pnml name=\''. $pubtype['description'] .'\']--><br />
         
-        <!--[pnform enctype="multipart/form-data"]-->
-        <!--[pnformvalidationsummary]-->
-        <table>
-        ';
+                      <!--[pnform enctype=\'multipart/form-data\']-->
+                      <!--[pnformvalidationsummary]-->
+                      <table>
+                      ';
 
     foreach ($pubfields as $pubfield) {
         $fieldplugin = explode('.', $pubfield['fieldplugin']);
         if ($pubfield['fieldmaxlength'] <> '') {
-            $maxlength = ' maxLength="' . $pubfield['fieldmaxlength'] . '" ';
+            $maxlength = ' maxLength=\'' . $pubfield['fieldmaxlength'] . '\' ';
         } else {
-            $maxlength = ' maxLength="255" '; //TODO Not a clean solution. MaxLength is not needed for ever plugin
+            $maxlength = ' maxLength=\'255\' '; //TODO Not a clean solution. MaxLength is not needed for ever plugin
         }
 
         if ($pubfield['description'] <> '') {
-            $toolTip = ' toolTip="' . $pubfield['description'] . '" ';
+            $toolTip = ' toolTip=\'' . $pubfield['description'] . '\' ';
         } else {
             $toolTip = '';
         }
         if ($fieldplugin[1] == 'pmformtextinput') {
-            $linecol = ' rows="20" cols="70" ';
+            $linecol = ' rows=\'20\' cols=\'70\' ';
         } else {
             $linecol = '';
         }
-        $template_code .= "\n".'<tr>
-                                    <td><!--[pnformlabel for="' . $pubfield[name] . '" text="' . $pubfield[title] . '" ]-->:</td>
-                                    <td><!--[' . $fieldplugin[1] . ' id="' . $pubfield[name] . '" ' . $maxlength . $linecol . $toolTip . ' mandatory="' . $pubfield[ismandatory] . '"]--></td>
-                                </tr>'."\n";
+        $template_code .= '
+                            <tr>
+                                <td><!--[pnformlabel for=\'' . $pubfield[name] . '\' text=\'' . $pubfield[title] . '\']-->:</td>
+                                <td><!--[' . $fieldplugin[1] . ' id=\'' . $pubfield[name] . '\' ' . $maxlength . $linecol . $toolTip . ' mandatory=\'' . $pubfield[ismandatory] . '\']--></td>
+                            </tr>
+                            ';
     }
-
-    $template_code .= "\n".'<tr>
-                                <td><!--[pnformlabel for="core_publishdate" text="_PAGEMASTER_PUBLISHDATE" ]-->:</td>
-                                <td><!--[pmformdateinput id="core_publishdate" includeTime="1" ]--></td>
-                            </tr>'."\n";
-    $template_code .= "\n".'<tr>
-                                <td><!--[pnformlabel for="core_expiredate" text="_PAGEMASTER_EXPIREDATE" ]-->:</td>
-                                <td><!--[pmformdateinput id="core_expiredate" includeTime="1"  ]--></td>
-                            </tr>'."\n";
-    $template_code .= "\n".'<tr>
-                                <td><!--[pnformlabel for="core_language" text="_LANGUAGE" ]-->:</td>
-                                <td><!--[pnformlanguageselector id="core_language" mandatory="1" ]--></td>
-                            </tr>'."\n";
-
-    $template_code .= "\n".'<tr>
-                                <td><!--[pnformlabel for="core_showinlist" text="_PAGEMASTER_SHOWINLIST" ]-->:</td>
-                                <td><!--[pmformcheckboxinput id="core_showinlist" checked="checked"]--></td>
-                            </tr>'."\n";
-
     $template_code .= '
-                </table>
-                <br/>
+                            <tr>
+                                <td><!--[pnformlabel for=\'core_publishdate\' text=\'_PAGEMASTER_PUBLISHDATE\']-->:</td>
+                                <td><!--[pmformdateinput id=\'core_publishdate\' includeTime=\'1\']--></td>
+                            </tr>
 
-                <!--[foreach item=action from=$actions]-->
-                    <!--[pnformbutton commandName=$action text=$action]-->
-                <!--[/foreach]-->
-                <!--[/pnform]-->
-                ';
+                            <tr>
+                                <td><!--[pnformlabel for=\'core_expiredate\' text=\'_PAGEMASTER_EXPIREDATE\']-->:</td>
+                                <td><!--[pmformdateinput id=\'core_expiredate\' includeTime=\'1\']--></td>
+                            </tr>
+
+                            <tr>
+                                <td><!--[pnformlabel for=\'core_language\' text=\'_LANGUAGE\']-->:</td>
+                                <td><!--[pnformlanguageselector id=\'core_language\' mandatory=\'1\']--></td>
+                            </tr>
+
+                            <tr>
+                                <td><!--[pnformlabel for=\'core_showinlist\' text=\'_PAGEMASTER_SHOWINLIST\']-->:</td>
+                                <td><!--[pmformcheckboxinput id=\'core_showinlist\' checked=\'checked\']--></td>
+                            </tr>
+                        </table>
+
+                        <br/>
+
+                        <!--[foreach item=action from=$actions]-->
+                            <!--[pnformbutton commandName=$action text=$action]-->
+                        <!--[/foreach]-->
+                        <!--[/pnform]-->
+                        ';
 
     return $template_code;
 }
@@ -131,14 +134,15 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
     $template_code = '<!--[pndebug]-->
                 
                 <!--[hitcount pid=$core_pid tid=$core_tid]-->
-                <h1><!--[pnml name="' . $pubtype['title'] . '"]--></h1>
-                
-                <!--[pngetstatusmsg]-->
-                <!--[pnsecauthaction_block component="pagemaster::" instance="::" level=ACCESS_ADMIN]-->
-                    <!--[pnml name=_PAGEMASTER_GENERIC_VIEWPUB"]--><br />
+                <h1><!--[pnml name=\'' . $pubtype['title'] . '\']--></h1>
+
+                <!--[insert name=\'getstatusmsg\']-->
+
+                <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
+                    <!--[pnml name=\'_PAGEMASTER_GENERIC_VIEWPUB\']--><br />
                 <!--[/pnsecauthaction_block]-->
 
-                <!--[pnml name="' . $pubtype['description'] . '"]--><br />
+                <!--[pnml name=\'' . $pubtype['description'] . '\']--><br />
 
                 ';
 
@@ -156,15 +160,15 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
         if (isset($index[$key])) {
             $field = $pubfields[$index[$key]];
 
-            $template_code_fielddesc = '<!--[pnml name='.$field['name'].']-->: ';
+            $template_code_fielddesc = '<!--[pnml name=\''.$field['name'].'\']-->: ';
             if ($field['fieldplugin'] == 'function.pmformimageinput.php') {
-                $template_code_add = '<!--[if $'.$field['name'].'.url neq "" ]-->'."\n".$template_code_fielddesc.'<!--[$' . $field['name'] . '.orig_name ]--><br/>'."\n";
-                $template_code_add .= '<img src="<!--[$' . $field['name'] . '.thumbnailUrl ]-->" /><br/>'."\n";
-                $template_code_add .= '<img src="<!--[$' . $field['name'] . '.url ]-->" /><br/>'."\n".'<!--[/if]-->'."\n\n";
+                $template_code_add = '<!--[if $'.$field['name'].'.url neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $field['name'] .'.orig_name]--><br/>'."\n";
+                $template_code_add .= '<img src="<!--[$' . $field['name'] . '.thumbnailUrl]-->" /><br/>'."\n";
+                $template_code_add .= '<img src="<!--[$' . $field['name'] . '.url]-->" /><br/>'."\n".'<!--[/if]-->'."\n\n";
             } elseif ($field['fieldplugin'] == 'function.pmformlistinput.php') {
-                $template_code_add = '<!--[if $'.$field['name'].'.fullTitle neq "" ]-->'."\n".$template_code_fielddesc.'<!--[$' . $field['name'] . '.fullTitle ]--><br/>'."\n".'<!--[/if]-->'."\n\n";
+                $template_code_add = '<!--[if $'.$field['name'].'.fullTitle neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $field['name'] .'.fullTitle]--><br/>'."\n".'<!--[/if]-->'."\n\n";
             } elseif ($field['fieldplugin'] == 'function.pmformpubinput.php') {
-                $template_code_add = '<!--[if $'.$key.' neq "" ]-->'."\n".$template_code_fielddesc.'<!--[pnmodapifunc modname="pagemaster" checkPerm="true" handlePluginFields="true" getApprovalState="true" func="getPub" tid='.$field['typedata'].' pid=$'.$key.' assign="'.$key.'_publication"]-->'."\n".'<!--[/if]-->'."\n\n";
+                $template_code_add = '<!--[if $'.$key.' neq \'\']-->'."\n".$template_code_fielddesc.'<!--[pnmodapifunc modname=\'pagemaster\' checkPerm=true handlePluginFields=true getApprovalState=true func=\'getPub\' tid=\''.$field['typedata'].'\' pid=$'.$key.' assign=\''.$key.'_publication\']-->'."\n".'<!--[/if]-->'."\n\n";
             }
         }
 
@@ -175,10 +179,10 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
             }
             if (is_array($pubfield)) {
                 foreach ($pubfield as $a => $b) {
-                    $template_code_add = '<!--[$' . $key . '.' . $a . ']--><br/>'."\n\n";
+                    $template_code_add = '<!--[$'. $key .'.'. $a .']--><br/>'."\n\n";
                 }
             } else {
-                $template_code_add = '<!--[if $'.$key.' neq "" ]-->'."\n".$template_code_fielddesc.'<!--[$' . $key . '|pnvarprephtmldisplay]--><br/>'."\n".'<!--[/if]-->'."\n\n";
+                $template_code_add = '<!--[if $'.$key.' neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $key .'|pnvarprephtmldisplay]--><br/>'."\n".'<!--[/if]-->'."\n\n";
             }
         }
         $template_code = $template_code . $template_code_add;
