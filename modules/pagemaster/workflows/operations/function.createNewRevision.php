@@ -29,19 +29,17 @@ function pagemaster_operation_createNewRevision(&$obj, $params)
     $new_rev = $obj;
     unset($new_rev['id']);
     $new_rev['core_revision'] = $new_rev['core_revision']  + 1 ; 
-    
-    
-    DBUtil::insertObject($new_rev, $obj['__WORKFLOW__']['obj_table'], 'id');
-    
-    $obj = $new_rev;
-    
+
+    $obj = $new_rev = DBUtil::insertObject($new_rev, $obj['__WORKFLOW__']['obj_table'], 'id');
+
     $new_rev['__WORKFLOW__']['obj_id'] = $new_rev['id'];
     unset($new_rev['__WORKFLOW__']['id']);
     $workflow = new pnWorkflow($obj['__WORKFLOW__']['schemaname'],'pagemaster');
     $workflow->registerWorkflow($new_rev, $nextState);
+
     pnModCallHooks('item', 'update', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
-    return true;
-    
+    return $obj;
+
     /*$revision = array('tid' => $obj['tid'],
                       'id'  => $new_rev['id'],
                       'pid' => $obj['core_pid'],

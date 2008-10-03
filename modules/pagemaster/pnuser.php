@@ -45,8 +45,9 @@ class pagemaster_user_dynHandler
         {
             $fieldName = 'set_'.$field['name'];
             $val = FormUtil::getPassedValue($fieldName, '');
-            if ($val <> '')
-            $pubdata[$field['name']] = $val;
+            if ($val <> '') {
+                $pubdata[$field['name']] = $val;
+            }
         }
 
         if (count($pubdata > 0)) {
@@ -63,9 +64,9 @@ class pagemaster_user_dynHandler
         }
 
         $data = $render->pnFormGetValues();
-        $data['tid']      = $this->tid;
-        $data['id']       = $this->id;
-        $data['core_pid'] = $this->core_pid;
+        $data['tid']           = $this->tid;
+        $data['id']            = $this->id;
+        $data['core_pid']      = $this->core_pid;
         $data['core_revision'] = $this->core_revision;
 
         $data = pnModAPIFunc('pagemaster', 'user', 'editPub',
@@ -76,13 +77,13 @@ class pagemaster_user_dynHandler
 
         if ($this->goto == '') {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
-                                   array('tid' => $this->tid,
-                                         'pid' => $data['pid']));
+                                   array('tid' => $data['tid'],
+                                         'pid' => $data['core_pid']));
 
         } elseif ($this->goto == 'stepmode') {
             // stepmode can be used to go automaticaly from one workflowstep to the next
             $this->goto = pnModURL('pagemaster', 'user', 'pubedit',
-                                   array('tid'  => $this->tid,
+                                   array('tid'  => $data['tid'],
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
         }
@@ -178,7 +179,7 @@ function pagemaster_user_pubedit()
         return LogUtil::registerError(_NOT_AUTHORIZED);
     }
 
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno');
+    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
     $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
 
     $dynHandler = new pagemaster_user_dynHandler();
@@ -205,13 +206,6 @@ function pagemaster_user_pubedit()
     }
 
     $render = FormUtil::newpnForm('pagemaster');
-
-    // assign the pubfields indexed by name
-    $indexes = array();
-    foreach ($pubfields as $field) {
-        $indexes[] = $field['name'];
-    }
-    $render->assign('pubfields', array_combine($indexes, $pubfields));
 
     // resolve the template to use
     $user_defined_template = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';

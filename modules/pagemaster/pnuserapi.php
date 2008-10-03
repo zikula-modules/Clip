@@ -52,11 +52,12 @@ function pagemaster_userapi_editPub($args)
             $data[$field['name']] = $plugin->preSave($data, $field);
         }
     }
+
     $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
     if (!$ret) {
         return LogUtil::registerError(_PAGEMASTER_WORKFLOWACTIONERROR);
     }
-    return $data;
+    return array_merge($data, $ret);
 }
 
 

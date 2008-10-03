@@ -13,9 +13,13 @@ function pagemaster_operation_createPub(&$obj, $params)
 {
 	$online = isset($params['online']) ? $params['online'] : false;
 	$obj['core_online'] = $online;
+
 	$maxpid = DBUtil::selectFieldMax($obj['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
 	$obj['core_pid'] = $maxpid + 1;
-	DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id');
+
+	$obj = DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id');
+
 	pnModCallHooks('item', 'create', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
-	return true;
+
+	return $obj;
 }

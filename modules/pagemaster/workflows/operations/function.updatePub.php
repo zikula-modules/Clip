@@ -12,13 +12,13 @@
 
 function pagemaster_operation_updatePub(&$obj, $params)
 {
-    if (isset($params['online'])) 
+    if (isset($params['online'])) { 
         $obj['core_online'] = $params['online'];
+    }
+    $obj['core_revision']++;
 
-    $obj['core_revision'] = $obj['core_revision']  + 1 ;
-
-    DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table'],null, 'id');
+    $obj = DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table'], null, 'id');
     pnModCallHooks('item', 'update', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
-    return true;
-    
+
+    return $obj;
 }
