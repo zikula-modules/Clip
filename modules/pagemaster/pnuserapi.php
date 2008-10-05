@@ -362,14 +362,15 @@ function pagemaster_userapi_pubList($args)
             }
         }
         if ($handlePluginFields){
+            
             $publist = handlePluginFields($publist, $pubfields);
+            
         }
     }
 
     if ($args['countmode'] == 'just' or $args['countmode'] == 'both') {
         $pubcount = DBUtil::selectObjectCount($tablename, str_replace(' tbl.', ' ', $where));
     }
-
     return array (
         'publist'  => $publist,
         'pubcount' => $pubcount

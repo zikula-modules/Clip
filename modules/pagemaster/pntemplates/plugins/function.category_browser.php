@@ -19,7 +19,8 @@
  * @param $args['count'] optional count available pubs in this category
  * @param $args['multiselect'] are more selection in one browser allowed (makes only sense for multilist fields)
  * @param $args['globalmultiselect'] are more then one selections in all available browsers allowed
-*  @param $args['togglediv'] this div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus)
+ * @param $args['togglediv'] this div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus)
+ * @param $args['cache'] enable cache
  * @param $args['assign'] optional
 
  * @return html of category tree
@@ -34,17 +35,27 @@ function smarty_function_category_browser($params, &$smarty)
     $assign            = isset($params['assign']) ? $params['assign'] : null;
     $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;
     $globalmultiselect = isset($params['globalmultiselect']) ? $params['globalmultiselect'] : false;
+    $cache             = isset($params['cache']) ? $params['cache'] : false;
 
     $filter = FormUtil::getPassedValue('filter');
     $filter_arr = explode(',', $filter);
     $lang = SessionUtil::getVar('lang', null);
 
     if (!$tid)
-        return 'Required parameter [tid] not provided in smarty_function_category_browser';
+    return 'Required parameter [tid] not provided in smarty_function_category_browser';
 
     if (!$field)
-        return 'Required parameter [field] not provided in smarty_function_category_browser';
+    return 'Required parameter [field] not provided in smarty_function_category_browser';
 
+    $cacheid = $tid . '-' . $field;
+    $render  = pnRender::getInstance('pagemaster',$cache, $cacheid);
+    
+    if ($cache){
+        if ( $render->is_cached($template,$cacheid)) {
+            return $render->fetch($template,$cacheid);
+        }
+    }
+    
     Loader::loadClass('CategoryUtil');
 
     $result = null;
@@ -83,7 +94,7 @@ function smarty_function_category_browser($params, &$smarty)
                     $one_selected = true;
                 } else{
                     if ($multiselect)
-                        $old_filter = $old_filter.','.$fv;
+                    $old_filter = $old_filter.','.$fv;
                     else{
                         // just add if from another browser
                         if ($globalmultiselect)
@@ -93,13 +104,13 @@ function smarty_function_category_browser($params, &$smarty)
                             foreach ($cats as $k2 => $v2)
                             {
                                 if ($v2['id'] == $idx)
-                                    $found = true;
+                                $found = true;
                             }
                             if (!$found) {
                                 $old_filter = $old_filter.','.$fv;
                             }
                         }
-                    }                        
+                    }
                 }
             }
 
@@ -107,7 +118,7 @@ function smarty_function_category_browser($params, &$smarty)
             $old_filter = substr($old_filter, 1);
 
             if ($v['selected'] == 1) {
-                    $new_filter = $old_filter;
+                $new_filter = $old_filter;
             } else {
                 if ($old_filter <> '') {
                     $new_filter = $old_filter.','.$filter_act;
@@ -118,16 +129,16 @@ function smarty_function_category_browser($params, &$smarty)
 
             if ($new_filter == '') {
                 $url = pnModURL('pagemaster', 'user', 'main',
-                                array('tid' => $tid));
+                array('tid' => $tid));
             } else {
                 $url = pnModURL('pagemaster', 'user', 'main',
-                                array('tid' => $tid,
+                array('tid' => $tid,
                                       'filter' => $new_filter));
             }
 
             if ($count) {
                 $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
-                                       array('tid'                => $tid,
+                array('tid'                => $tid,
                                              'countmode'          => 'just',
                                              'filter'             => $filter_act,
                                              'checkPerm'          => false,
@@ -146,10 +157,10 @@ function smarty_function_category_browser($params, &$smarty)
         return "No category for id [$id] in smarty_function_category_browser";
     }
 
-    $render = pnRender::getInstance('pagemaster');
+    
     $render->assign('cats', $cat_arr);
 
-    $html = $render->fetch($template);
+    $html = $render->fetch($template, $cacheid);
     if ($togglediv <> false and $one_selected) {
         $html .= '<script type=\'text/javascript\'>';
         //$html .= 'Effect.toggle(\''.$setup['field'].'\', \'blind\', {duration:0.0});';

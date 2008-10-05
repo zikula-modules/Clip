@@ -153,7 +153,7 @@ function pagemaster_user_executecommand()
     } else {
         return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $tid,
-                                         'pid' => $pub['pid'])));
+                                         'id' => $pub['id'])));
     }
 }
 
@@ -208,19 +208,21 @@ function pagemaster_user_pubedit()
     $render = FormUtil::newpnForm('pagemaster');
 
     // resolve the template to use
-    $user_defined_template = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
+    $user_defined_template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
 
-    if ($render->get_template_path($user_defined_template)) {
-        return $render->pnFormExecute($user_defined_template, $dynHandler);
+    if ($render->get_template_path($user_defined_template_step)) {
+        return $render->pnFormExecute($user_defined_template_step, $dynHandler);
 
     } else {
-        $user_defined_template = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
+          
+        $user_defined_template_all = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
 
-        if ($render->get_template_path($user_defined_template)) {
-            return $render->pnFormExecute($user_defined_template, $dynHandler);
+        if ($render->get_template_path($user_defined_template_all)) {
+            return $render->pnFormExecute($user_defined_template_all, $dynHandler);
 
         } else {
-            LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template)));
+            LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_step)));
+            LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_all)));
             global $editpub_template_code;
             $editpub_template_code = generate_editpub_template_code($tid, $pubfields, $pubtype);
             // TODO delete all the time, even if it's not needed
@@ -332,7 +334,7 @@ function pagemaster_user_main($args)
     } else {
         $countmode = 'no';
     }
-
+            
     $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
                            array('tid'                => $tid,
                                  'pubfields'          => $pubfields,
@@ -346,7 +348,7 @@ function pagemaster_user_main($args)
                                  'handlePluginFields' => $handlePluginFields,
                                  'getApprovalState'   => $getApprovalState,
                                  'justOwn'            => $justOwn));
-
+    
     $publist  = $pubarr['publist'];
     $pubcount = $pubarr['pubcount'];
 
@@ -370,7 +372,6 @@ function pagemaster_user_main($args)
         echo $render->display($template, $cacheid);
         pnShutDown();
     }
-
     return $render->fetch($template, $cacheid);
 }
 
