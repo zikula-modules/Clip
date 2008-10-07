@@ -59,12 +59,10 @@ function smarty_function_category_browser($params, &$smarty)
     Loader::loadClass('CategoryUtil');
 
     $result = null;
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
-    foreach ($pubfields as $pubfield) {
-        if ($pubfield['name'] == $field) {
-            $id = $pubfield['typedata'];
-        }
-    }
+    
+    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+    $id = $pubfields[$field]['typedata'];
+    
     $cats = CategoryUtil::getSubCategories($id);
 
     if ($cats) {
@@ -137,6 +135,7 @@ function smarty_function_category_browser($params, &$smarty)
             }
 
             if ($count) {
+                
                 $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
                 array('tid'                => $tid,
                                              'countmode'          => 'just',
