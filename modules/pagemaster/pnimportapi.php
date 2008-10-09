@@ -121,19 +121,20 @@ function pagemaster_importapi_importps2()
         DBUtil::insertObject($datatype, 'pagemaster_pubtypes');
         //$pubfields = DBUtil::selectObjectArray('pagesetter_pubfields', 'pg_tid = '.$pubtype['id'], '', -1, -1, 'name');
 
-        $sql = 'SELECT pn_pagesetter_pubfields.pg_id AS "id",
-                       pn_pagesetter_pubfields.pg_tid AS "tid",
-                       pn_pagesetter_pubfields.pg_name AS "name", 
-                       pn_pagesetter_pubfields.pg_title AS "title",
-                       pn_pagesetter_pubfields.pg_description AS "description",
-                       pn_pagesetter_pubfields.pg_type AS "type", 
-                       pn_pagesetter_pubfields.pg_typedata AS "typeData",
-                       pn_pagesetter_pubfields.pg_istitle AS "isTitle",
-                       pn_pagesetter_pubfields.pg_ispageable AS "isPageable",
-                       pn_pagesetter_pubfields.pg_issearchable AS "isSearchable",
-                       pn_pagesetter_pubfields.pg_ismandatory AS "isMandatory",
-                       pn_pagesetter_pubfields.pg_lineno AS "lineno"
-                FROM pn_pagesetter_pubfields where pg_tid = '.$pubtype['id'];
+		$prefix = pnConfigGetVar('prefix');
+        $sql = 'SELECT '.$prefix.'_pagesetter_pubfields.pg_id AS "id",
+                       '.$prefix.'_pagesetter_pubfields.pg_tid AS "tid",
+                       '.$prefix.'_pagesetter_pubfields.pg_name AS "name", 
+                       '.$prefix.'_pagesetter_pubfields.pg_title AS "title",
+                       '.$prefix.'_pagesetter_pubfields.pg_description AS "description",
+                       '.$prefix.'_pagesetter_pubfields.pg_type AS "type", 
+                       '.$prefix.'_pagesetter_pubfields.pg_typedata AS "typeData",
+                       '.$prefix.'_pagesetter_pubfields.pg_istitle AS "isTitle",
+                       '.$prefix.'_pagesetter_pubfields.pg_ispageable AS "isPageable",
+                       '.$prefix.'_pagesetter_pubfields.pg_issearchable AS "isSearchable",
+                       '.$prefix.'_pagesetter_pubfields.pg_ismandatory AS "isMandatory",
+                       '.$prefix.'_pagesetter_pubfields.pg_lineno AS "lineno"
+                FROM '.$prefix.'_pagesetter_pubfields where pg_tid = '.$pubtype['id'];
         $result = DBUtil::executeSQL($sql);
         if (!$result) {
             LogUtil::registerError('Error' . $sql);
