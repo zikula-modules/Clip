@@ -308,6 +308,8 @@ function pagemaster_admin_publist()
     $tid          = FormUtil::getPassedValue('tid');
     $startnum     = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
     $itemsperpage = isset($args['itemsperpage']) ? $args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', 50);
+    $orderby = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
+    
 
     if ($tid == '') {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
@@ -318,16 +320,22 @@ function pagemaster_admin_publist()
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
-    $publist   = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', 'pm_pid, pm_id', $startnum-1, $itemsperpage);
+    $old_orderby = $orderby;
+    $core_title = DBUtil::selectField('pagemaster_pubfields', 'name', "pm_tid = '$tid' AND pm_istitle = '1'");
+    if (substr($orderby,0,10) == 'core_title')
+        $orderby = str_replace('core_title',$core_title,$orderby);
+        
+    $publist   = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', str_replace(':',' ', $orderby), $startnum-1, $itemsperpage);
     $pubcount  = DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
     foreach ($publist as $key => $pub) {
         $workflow = WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
         $publist[$key] = $pub;
     }
-    $core_title = DBUtil::selectField('pagemaster_pubfields', 'name', "pm_tid = '$tid' AND pm_istitle = '1'");
+    
 
     $render = pnRender::getInstance('pagemaster');
     $render->assign('core_tid', $tid);
+    $render->assign('orderby', $old_orderby);
     $render->assign('core_title', $core_title);
     $render->assign('publist', $publist);
     

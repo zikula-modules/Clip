@@ -216,6 +216,7 @@ function pagemaster_userapi_pubList($args)
     }
 
     $filter  = $args['filter'];
+    
     $orderby = $args['orderby'];
     $tid     = $args['tid'];
 
@@ -271,16 +272,18 @@ function pagemaster_userapi_pubList($args)
 
     Loader::LoadClass("FilterUtil");
 
+    
     foreach ($pubfields as $fieldname => $field) {
         $plugin = pagemasterGetPlugin($field['fieldplugin']);
 
         if (isset ($plugin->filterClass)) {
+            
             $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
         }
         // check for tables to join
-        if ($args['countmode'] <> 'just'){
+    if ($args['countmode'] <> 'just'){
             // do not join for just
-            if ($field['fieldplugin'] == 'function.pmformpubinput.php'){
+           if ($field['fieldplugin'] == 'function.pmformpubinput.php'){
                 $vars        = explode(';', $field['typedata']);
                 $join_tid    = $vars[0];
                 $join_filter = $vars[1];
@@ -315,14 +318,15 @@ function pagemaster_userapi_pubList($args)
     $tablename = 'pagemaster_pubdata'.$tid;
     $fu = & new FilterUtil(array('table' => $tablename,
                                  'plugins' => $filterPlugins));
-
+    
     if ($filter <> '') {
         $fu->setFilter($filter);
     } elseif ($pubtype['defaultfilter'] <> '') {
         $fu->setFilter($pubtype['defaultfilter']);
     }
+    
     $filter_where = $fu->GetSQL();
-
+    
     $uid = pnUserGetVar('uid');
     if ($uid <> '' and $pubtype['enableeditown'] == 1) {
         $where .= '( '.$tbl_alias.'pm_cr_uid = '.$uid.' or '.$tbl_alias.'pm_online = 1 )';
@@ -371,6 +375,7 @@ function pagemaster_userapi_pubList($args)
     if ($args['countmode'] == 'just' or $args['countmode'] == 'both') {
         $pubcount = DBUtil::selectObjectCount($tablename, str_replace(' tbl.', ' ', $where));
     }
+    
     return array (
         'publist'  => $publist,
         'pubcount' => $pubcount

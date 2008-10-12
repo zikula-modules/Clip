@@ -15,6 +15,7 @@ define('_PAGEMASTER_PUBLICATION', 'Publication');
 // Common publication fields
 define('_PAGEMASTER_AUTHOR', 'Author');
 define('_PAGEMASTER_CREATIONDATE', 'Creation date');
+define('_PAGEMASTER_UPDDATE', 'Update date');
 define('_PAGEMASTER_CREATOR', 'Creator');
 define('_PAGEMASTER_EXPIREDATE', 'Expire Date');
 define('_PAGEMASTER_HISTORY', 'History');
