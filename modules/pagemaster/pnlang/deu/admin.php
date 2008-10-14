@@ -94,7 +94,7 @@ define('_PAGEMASTER_COPYTHECODEIN', 'Code in %l% kopieren');
 /* modify config */
 define('_PAGEMASTER_IMPORTFROMPAGESETTER', 'Import von Pagesetter Publikationen');
 define('_PAGEMASTER_UPLOADPATH', 'Uploadpfad');
-define('_PAGEMASTER_UPLOADPATH_HELP', 'Pfad in dem Dateien der Uploadfelder hochgeladen werden sollen');
+define('_PAGEMASTER_UPLOADPATH_HELP', 'Pfad in dem Dateien der Uploadfelder hochgeladen werden sollen relativ zum Installationsverzeichnis von Zikula aus gesehen');
 define('_PAGEMASTER_UPLOADPATH_WRITEABLE', 'Der angegebene Pfad ist beschreibbar');
 define('_PAGEMASTER_UPLOADPATH_NONWRITEABLE', 'Der angegebene Pfad ist nicht beschreibbar');
 
