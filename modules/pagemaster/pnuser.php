@@ -34,6 +34,7 @@ class pagemaster_user_dynHandler
             $pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
             $this->core_pid = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
+            print "...";
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
             // print_r($actions);
         } else {
@@ -175,7 +176,7 @@ function pagemaster_user_pubedit()
     }
 
     // overview permission check, to hide input fields for disallowed users
-    if (!SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_EDIT)) {
+    if (!SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_EDIT) && (!(isset($tid) && ($tid > 0) && !isset($pid) && SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_ADD)))) {
         return LogUtil::registerError(_NOT_AUTHORIZED);
     }
 
