@@ -11,10 +11,12 @@
 
 // Common items
 define('_PAGEMASTER_PUBLICATION', 'Publication');
+define('_NOT_AUTHORIZED',	'Zugriff verwehrt');
 
 // Common publication fields
 define('_PAGEMASTER_AUTHOR', 'Author');
 define('_PAGEMASTER_CREATIONDATE', 'Erstelldatum');
+
 define('_PAGEMASTER_UPDDATE', 'Updatedatum');
 define('_PAGEMASTER_CREATOR', 'Ersteller');
 define('_PAGEMASTER_EXPIREDATE', 'Ablaufdatum');
