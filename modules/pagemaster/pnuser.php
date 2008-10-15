@@ -176,8 +176,12 @@ function pagemaster_user_pubedit()
     }
 
     // overview permission check, to hide input fields for disallowed users
-    if (!SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_EDIT) && (!(isset($tid) && ($tid > 0) && !isset($pid) && SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_ADD)))) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+    if (!SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_EDIT)) {
+      	if (!(	isset($tid) && 
+		  		($tid > 0) && 
+				SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_ADD))) {
+	        return LogUtil::registerError(_NOT_AUTHORIZED);
+	    }
     }
 
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
