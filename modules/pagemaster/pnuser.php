@@ -34,7 +34,6 @@ class pagemaster_user_dynHandler
             $pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
             $this->core_pid = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
-            print "...";
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
             // print_r($actions);
         } else {
