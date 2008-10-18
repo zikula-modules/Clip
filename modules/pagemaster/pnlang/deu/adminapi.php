@@ -9,4 +9,4 @@
  * @subpackage  pagemaster
  */
 
-define('_PAGEMASTER_TABLEDEFNOTFOUND', 'Keine Tabellen definition gefunden. Bitte definieren Sie zuerst Felder für Ihre Publikation.');
+define('_PAGEMASTER_TABLEDEFNOTFOUND', 'Keine Tabellendefinition gefunden. Bitte definieren Sie zuerst Felder für Ihre Publikation.');
