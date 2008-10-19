@@ -1,0 +1,13 @@
+Some things you should know for using pagemaster:
+
+workflow: "none"
+- all users can add new publications to the publicaiton type 
+  if they own the ACCESS_COMMENT permission in zikula
+
+general:
+- if you are using the file upload possibility of pagemaster
+  there will be thumbnails created by the Thumbnail module.
+  The Thumbnail module needs at least the permission
+  ACCESS_EDIT to create Thumbnails. So - do not forget to
+  give this permission to the user group that should be able
+  to upload image files.
