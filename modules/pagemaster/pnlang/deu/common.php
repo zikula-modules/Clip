@@ -12,6 +12,7 @@
 // Common items
 define('_PAGEMASTER_PUBLICATION', 'Publication');
 define('_NOT_AUTHORIZED', 'Zugriff verwehrt');
+define('_PAGEMASTER_NO_WORKFLOW_ACTIONS_FOUND', 'Es wurden keine Workflowaktionen gefunden, zu welchen eine Berechtigung besteht.');
 
 // Common publication fields
 define('_PAGEMASTER_AUTHOR', 'Author');
