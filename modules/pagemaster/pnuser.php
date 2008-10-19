@@ -37,10 +37,17 @@ class pagemaster_user_dynHandler
             $this->cr_uid = $pubdata['cr_uid'];
             $this->core_revision = $pubdata['core_revision'];
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
-            // print_r($actions);
         } else {
             $actions = WorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
+        if ($pubtype['tid'] > 0) $tid = $pubtype['tid'];
+        else $tid = FormUtil::getPassedValue('tid');
+        // if there are no actions the user is not allowed to change / submit / delete something. We will 
+		// redirect the user to the overview page
+        if (count($actions) < 1) {
+		  	LogUtil::registerError(_NOT_AUTHORIZED);
+		  	return pnRedirect(pnModURL('pagemaster','user','main',array('tid' => $tid)));
+		}
 
         // check for set_ default values
         $fieldnames = array_keys($this->pubfields);
