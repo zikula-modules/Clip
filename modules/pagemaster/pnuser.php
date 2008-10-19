@@ -180,6 +180,9 @@ function pagemaster_user_pubedit()
     $id  = FormUtil::getPassedValue('id');
     $pid = FormUtil::getPassedValue('pid');
 
+	// No security check needed - the security check will be done by the handler class.
+	// see the init-part of the handler class for details...
+
     if ($tid == '') {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
