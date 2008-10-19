@@ -391,6 +391,8 @@ function pagemaster_userapi_pubList($args)
  */
 function pagemaster_userapi_encodeurl($args)
 {	
+  	// deactivated because there are some bugs with en- and decoding short urls
+  	// when pagers filters etc. are used. to be fixed later :-)
   	return false;
     if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
         return LogUtil::registerError (_MODARGSERROR);
@@ -441,6 +443,8 @@ function pagemaster_userapi_encodeurl($args)
  */
 function pagemaster_userapi_decodeurl($args)
 {
+  	// deactivated because there are some bugs with en- and decoding short urls
+  	// when pagers filters etc. are used. to be fixed later :-)
   	return false;
     $_ =& $args['vars'];
 
