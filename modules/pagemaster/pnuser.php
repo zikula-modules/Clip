@@ -42,12 +42,12 @@ class pagemaster_user_dynHandler
         }
         if ($pubtype['tid'] > 0) $tid = $pubtype['tid'];
         else $tid = FormUtil::getPassedValue('tid');
-        // if there are no actions the user is not allowed to change / submit / delete something. We will 
-		// redirect the user to the overview page
+        // if there are no actions the user is not allowed to change / submit / delete something. We will
+        // redirect the user to the overview page
         if (count($actions) < 1) {
-		  	LogUtil::registerError(_NOT_AUTHORIZED);
-		  	return $render->pnFormRedirect(pnModURL('pagemaster','user','main',array('tid' => $tid)));
-		}
+         LogUtil::registerError(_NOT_AUTHORIZED);
+         return $render->pnFormRedirect(pnModURL('pagemaster','user','main',array('tid' => $tid)));
+         }
 
         // check for set_ default values
         $fieldnames = array_keys($this->pubfields);
@@ -80,24 +80,23 @@ class pagemaster_user_dynHandler
         $data['core_revision'] = $this->core_revision;
 
         $data = pnModAPIFunc('pagemaster', 'user', 'editPub',
-                             array('data'        => $data,
+        array('data'        => $data,
                                    'commandName' => $args['commandName'],
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         if ($this->goto == '') {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
-                                   array('tid' => $data['tid'],
+            array('tid' => $data['tid'],
                                          'pid' => $data['core_pid']));
 
         } elseif ($this->goto == 'stepmode') {
             // stepmode can be used to go automaticaly from one workflowstep to the next
             $this->goto = pnModURL('pagemaster', 'user', 'pubedit',
-                                   array('tid'  => $data['tid'],
+            array('tid'  => $data['tid'],
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
         }
-
         if (empty($data)) {
             return false;
         } else {
@@ -147,14 +146,15 @@ function pagemaster_user_executecommand()
     }
 
     WorkflowUtil::executeAction($schema, $pub, $commandName, 'pagemaster_pubdata'.$tid, 'pagemaster');
+    
     if ($goto <> ''){
         if ($goto == 'edit') {
             return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
-                                       array('tid' => $tid,
+            array('tid' => $tid,
                                              'id'  => $pub['id'])));
         } elseif ($goto == 'stepmode'){
             return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
-                                       array('tid'  => $tid,
+            array('tid'  => $tid,
                                              'id'   => $pub['id'],
                                              'goto' => 'stepmode')));
         } else {
@@ -162,7 +162,7 @@ function pagemaster_user_executecommand()
         }
     } else {
         return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',
-                                   array('tid' => $tid,
+        array('tid' => $tid,
                                          'id' => $pub['id'])));
     }
 }
@@ -180,8 +180,8 @@ function pagemaster_user_pubedit()
     $id  = FormUtil::getPassedValue('id');
     $pid = FormUtil::getPassedValue('pid');
 
-	// No security check needed - the security check will be done by the handler class.
-	// see the init-part of the handler class for details...
+    // No security check needed - the security check will be done by the handler class.
+    // see the init-part of the handler class for details...
 
     if ($tid == '') {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
@@ -194,7 +194,7 @@ function pagemaster_user_pubedit()
 
     if ($id == '' && $pid <>'') {
         $id = pnModAPIFunc('pagemaster', 'user', 'getId',
-                           array('tid' => $tid,
+        array('tid' => $tid,
                                  'pid' => $pid));
         if ($id == '') {
             return LogUtil::registerError("pid $pid not found");
@@ -222,7 +222,7 @@ function pagemaster_user_pubedit()
         return $render->pnFormExecute($user_defined_template_step, $dynHandler);
 
     } else {
-          
+
         $user_defined_template_all = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
 
         if ($render->get_template_path($user_defined_template_all)) {
@@ -284,7 +284,7 @@ function pagemaster_user_main($args)
     }
 
     if ($cachelifetime == '')
-        $cachelifetime = $pubtype['cachelifetime'];
+    $cachelifetime = $pubtype['cachelifetime'];
 
     if ($cachelifetime <> ''){
         $cachetid = true;
@@ -342,9 +342,9 @@ function pagemaster_user_main($args)
     } else {
         $countmode = 'no';
     }
-            
+
     $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
-                           array('tid'                => $tid,
+    array('tid'                => $tid,
                                  'pubfields'          => $pubfields,
                                  'pubtype'            => $pubtype,
                                  'countmode'          => $countmode,
@@ -356,7 +356,7 @@ function pagemaster_user_main($args)
                                  'handlePluginFields' => $handlePluginFields,
                                  'getApprovalState'   => $getApprovalState,
                                  'justOwn'            => $justOwn));
-    
+
     $publist  = $pubarr['publist'];
     $pubcount = $pubarr['pubcount'];
 
@@ -412,7 +412,7 @@ function pagemaster_user_viewpub($args)
 
     if ($pid == '') {
         $pid = pnModAPIFunc('pagemaster', 'user', 'getPid',
-                            array('tid' => $tid,
+        array('tid' => $tid,
                                   'id' => $id));
     }
 
@@ -438,7 +438,7 @@ function pagemaster_user_viewpub($args)
     }
 
     if ($cachelifetime == '')
-        $cachelifetime = $pubtype['cachelifetime'];
+    $cachelifetime = $pubtype['cachelifetime'];
 
     if ($cachelifetime <> ''){
         $cachetid = true;
@@ -457,7 +457,7 @@ function pagemaster_user_viewpub($args)
         }
     }
     $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
-                            array('tid'                => $tid,
+    array('tid'                => $tid,
                                   'id'                 => $id,
                                   'pid'                => $pid,
                                   'checkPerm'          => false, //check later, together with template

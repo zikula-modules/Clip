@@ -40,6 +40,7 @@ class pmformlistinput extends pnFormCategorySelector
     function load(&$render, $params)
     {
         $params['category'] = $render->pnFormEventHandler->pubfields[$this->id]['typedata'];
+        $params['dummyEntry'] = true;
         parent::load(&$render, $params);
     }
 
