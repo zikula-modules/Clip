@@ -21,12 +21,12 @@
 function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
     if (!empty($obj)) {
-        // process $obj and calculate an instance
+        // process	 $obj and calculate an instance
         $pid = $obj['core_pid'];
         $tid = getTidFromTablename($obj['__WORKFLOW__']['obj_table']);
 
         $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
-        if ($pubtype['enableeditown'] == 1 and $obj['pm_cr_uid'] == pnUserGetVar('uid')) {
+        if ($pubtype['enableeditown'] == 1 and $obj['cr_uid'] == pnUserGetVar('uid')) {
             return true;
         } else {
             return SecurityUtil :: checkPermission('pagemaster:input:', "$tid:$pid:$obj[__WORKFLOW__][state]", $permLevel, $currentUser);
@@ -35,7 +35,6 @@ function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
     } else {
       	// no object passed - user wants to create a new one
         $tid = FormUtil::getPassedValue('tid');
-        if (SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_COMMENT)) return true;
-        else return SecurityUtil::checkPermission('pagemaster:input:', "$tid::", $permLevel, $currentUser);
+        return SecurityUtil::checkPermission('pagemaster:input:', "$tid::", $permLevel, $currentUser);
     }
 }

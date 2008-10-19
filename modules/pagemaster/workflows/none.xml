@@ -22,7 +22,7 @@
     <action id="submit">
       <title>Submit</title>
       <description>Submit new content</description>
-      <permission>editor</permission>
+      <permission>comment</permission>
       <nextState>approved</nextState>
      <operation online="1">createPub</operation>
     </action>

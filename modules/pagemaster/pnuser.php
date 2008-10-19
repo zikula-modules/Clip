@@ -19,6 +19,7 @@ Loader::includeOnce('modules/pagemaster/common.php');
 class pagemaster_user_dynHandler
 {
     var $tid;
+    var $cr_uid;
     var $core_pid;
     var $core_revision;
     var $id;
@@ -33,6 +34,7 @@ class pagemaster_user_dynHandler
         if ($this->id <> '') {
             $pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
             $this->core_pid = $pubdata['core_pid'];
+            $this->cr_uid = $pubdata['cr_uid'];
             $this->core_revision = $pubdata['core_revision'];
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
             // print_r($actions);
@@ -66,6 +68,7 @@ class pagemaster_user_dynHandler
         $data = $render->pnFormGetValues();
         $data['tid']           = $this->tid;
         $data['id']            = $this->id;
+        $data['cr_uid']        = $this->cr_uid;
         $data['core_pid']      = $this->core_pid;
         $data['core_revision'] = $this->core_revision;
 
@@ -175,25 +178,6 @@ function pagemaster_user_pubedit()
     }
 
     $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
-
-    // overview permission check, to hide input fields for disallowed users
-    // add has more permissions then edit...
-    // edit should be enough for 
-    if (!SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_ADD)) {
-      	if (	// the owner of a publication wants to edit the own publication
-		  		(!$pubtype['enableeditown'] == 1 && 
-		  		$obj['pm_cr_uid'] == pnUserGetVar('uid'))
-      		||	// the editor hast edit permissions
-      			SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_EDIT)
-      		||	// a user wants to add a publication to a publication type. We cannot chosse the ADD permission
-      			// here because ADD is a higher permission elvel than EDIT
-      			(!(	isset($tid) && 
-		  		($tid > 0) && 
-				SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_COMMENT)))) {
-	        return LogUtil::registerError(_NOT_AUTHORIZED);
-	    }
-    }
-
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
 
     $dynHandler = new pagemaster_user_dynHandler();
