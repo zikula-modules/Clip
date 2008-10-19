@@ -476,7 +476,7 @@ function pagemaster_userapi_decodeurl($args)
 
     if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
         for ($i=$nextvar; $i<$argsnum; $i++) {
-            list($k, $v) = explode('=', $_[$i], 1);
+            list($k, $v) = explode('=', $_[$i], 2);
             pnQueryStringSetVar($k, $v);
         }
     }
