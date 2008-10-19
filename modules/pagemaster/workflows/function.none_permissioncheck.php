@@ -33,7 +33,9 @@ function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
         }
 
     } else {
+      	// no object passed - user wants to create a new one
         $tid = FormUtil::getPassedValue('tid');
-        return SecurityUtil::checkPermission('pagemaster:input:', "$tid::", $permLevel, $currentUser);
+        if (SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_COMMENT)) return true;
+        else return SecurityUtil::checkPermission('pagemaster:input:', "$tid::", $permLevel, $currentUser);
     }
 }

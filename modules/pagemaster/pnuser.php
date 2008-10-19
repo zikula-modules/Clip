@@ -174,17 +174,27 @@ function pagemaster_user_pubedit()
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
+    $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+
     // overview permission check, to hide input fields for disallowed users
-    if (!SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_EDIT)) {
-      	if (!(	isset($tid) && 
+    // add has more permissions then edit...
+    // edit should be enough for 
+    if (!SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_ADD)) {
+      	if (	// the owner of a publication wants to edit the own publication
+		  		(!$pubtype['enableeditown'] == 1 && 
+		  		$obj['pm_cr_uid'] == pnUserGetVar('uid'))
+      		||	// the editor hast edit permissions
+      			SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_EDIT)
+      		||	// a user wants to add a publication to a publication type. We cannot chosse the ADD permission
+      			// here because ADD is a higher permission elvel than EDIT
+      			(!(	isset($tid) && 
 		  		($tid > 0) && 
-				SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_ADD))) {
+				SecurityUtil::checkPermission('pagemaster:input:', $tid.'::', ACCESS_COMMENT)))) {
 	        return LogUtil::registerError(_NOT_AUTHORIZED);
 	    }
     }
 
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
-    $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
 
     $dynHandler = new pagemaster_user_dynHandler();
 
