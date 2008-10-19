@@ -390,7 +390,8 @@ function pagemaster_userapi_pubList($args)
  * @return custom url string
  */
 function pagemaster_userapi_encodeurl($args)
-{
+{	
+  	return false;
     if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
         return LogUtil::registerError (_MODARGSERROR);
     }
@@ -440,6 +441,7 @@ function pagemaster_userapi_encodeurl($args)
  */
 function pagemaster_userapi_decodeurl($args)
 {
+  	return false;
     $_ =& $args['vars'];
 
     $functions = array('executecommand', 'pubedit', 'main', 'viewpub');
