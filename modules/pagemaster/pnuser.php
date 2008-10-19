@@ -46,7 +46,7 @@ class pagemaster_user_dynHandler
 		// redirect the user to the overview page
         if (count($actions) < 1) {
 		  	LogUtil::registerError(_NOT_AUTHORIZED);
-		  	return pnRedirect(pnModURL('pagemaster','user','main',array('tid' => $tid)));
+		  	return $render->pnFormRedirect(pnModURL('pagemaster','user','main',array('tid' => $tid)));
 		}
 
         // check for set_ default values
