@@ -184,7 +184,7 @@ function pagemaster_user_pubedit()
     $id  = FormUtil::getPassedValue('id');
     $pid = FormUtil::getPassedValue('pid');
 
- 	if (empty($tid)) {
+    if (empty($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
@@ -192,7 +192,7 @@ function pagemaster_user_pubedit()
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
 
     // No security check needed - the security check will be done by the handler class. 
- 	// see the init-part of the handler class for details. 
+    // see the init-part of the handler class for details. 
     $dynHandler = new pagemaster_user_dynHandler();
 
     if ($id == '' && $pid <>'') {
