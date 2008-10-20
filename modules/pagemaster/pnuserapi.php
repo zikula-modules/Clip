@@ -375,7 +375,7 @@ function pagemaster_userapi_pubList($args)
     if ($args['countmode'] == 'just' or $args['countmode'] == 'both') {
         $pubcount = DBUtil::selectObjectCount($tablename, str_replace(' tbl.', ' ', $where));
     }
-    
+
     return array (
         'publist'  => $publist,
         'pubcount' => $pubcount
@@ -390,10 +390,7 @@ function pagemaster_userapi_pubList($args)
  * @return custom url string
  */
 function pagemaster_userapi_encodeurl($args)
-{	
-  	// deactivated because there are some bugs with en- and decoding short urls
-  	// when pagers filters etc. are used. to be fixed later :-)
-  	return false;
+{
     if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
         return LogUtil::registerError (_MODARGSERROR);
     }
@@ -427,7 +424,7 @@ function pagemaster_userapi_encodeurl($args)
     if (count($args['args']) > 0) {
         $paramarray = array();
         foreach ($args['args'] as $k => $v) {
-            $paramarray[] = $k.'='.DataUtil::formatPermalink($v);
+            $paramarray[] = $k.'/'.DataUtil::formatPermalink($v);
         }
         $params = '/'. implode('/', $paramarray);
     }
@@ -443,9 +440,6 @@ function pagemaster_userapi_encodeurl($args)
  */
 function pagemaster_userapi_decodeurl($args)
 {
-  	// deactivated because there are some bugs with en- and decoding short urls
-  	// when pagers filters etc. are used. to be fixed later :-)
-  	return false;
     $_ =& $args['vars'];
 
     $functions = array('executecommand', 'pubedit', 'main', 'viewpub');
@@ -481,9 +475,8 @@ function pagemaster_userapi_decodeurl($args)
     }
 
     if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
-        for ($i=$nextvar; $i<$argsnum; $i++) {
-            list($k, $v) = explode('=', $_[$i], 2);
-            pnQueryStringSetVar($k, $v);
+        for ($i = $nextvar; $i < $argsnum; $i+=2) {
+            pnQueryStringSetVar($_[$i], $_[$i+1]);
         }
     }
 
