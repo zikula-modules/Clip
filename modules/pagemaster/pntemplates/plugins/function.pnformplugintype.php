@@ -44,6 +44,14 @@ class pnFormPluginType extends pnFormDropdownList
                 $this->selectedValue = $this->items[0]['value'];
             }
 
+            if (!file_exists('javascript/livepipe/livepipe.js') || !file_exists('javascript/livepipe/livepipe.css') ||  !file_exists('javascript/livepipe/window.js')) {
+                LogUtil::registerError(pnML('_PAGEMASTER_LIVEPIPE_NOTFOUND', null, true));
+            } else {
+                PageUtil::addVar('javascript', 'javascript/livepipe/livepipe.js');
+                PageUtil::addVar('javascript', 'javascript/livepipe/window.js');
+                PageUtil::addVar('stylesheet', 'javascript/livepipe/livepipe.css');
+            }
+
             $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
 
             $plugin = pagemasterGetPlugin($this->selectedValue);
@@ -54,24 +62,35 @@ class pnFormPluginType extends pnFormDropdownList
                 } else {
                     $script .= 'function saveTypeData(){ closeTypeData(); }';
                 }
-                // unobtrusive buttons functions 
-                $script .= "\nfunction pm_enablebuttons(){
-                    $('showTypeButton').observe('click', showTypeDiv);
-                    $('saveTypeButton').observe('click', saveTypeData);
-                    $('cancelTypeButton').observe('click', closeTypeData);
-                }";
-                $script .= "\nEvent.observe( window, 'load', pm_enablebuttons, false);";
+                // init functions for modalbox and unobtrusive buttons 
+                $script .= '
+                function closeTypeData() {
+                    pm_modalbox.close();
+                }
+                function pm_enablePluginConfig(){
+                    $(\'saveTypeButton\').observe(\'click\', saveTypeData);
+                    $(\'cancelTypeButton\').observe(\'click\', closeTypeData);
+                    pm_modalbox = new Control.Modal($(\'showTypeButton\'), {
+                        overlayOpacity: 0.6,
+                        className: \'modal\',
+                        fade: true,
+                        iframeshim: false,
+                        closeOnClick: false
+                    });
+                    $(document.body).insert($(\'typeDataDiv\'));
+                }
+                Event.observe( window, \'load\', pm_enablePluginConfig, false);
+                ';
 
-                $typeDataHtml  = '<button type="button" id="showTypeButton" name="showTypeButton"><img src="images/icons/extrasmall/utilities.gif" alt="' . _MODIFYCONFIG .'" /></button>';
-
-                $typeDataHtml .= '<div id="typeDataDiv" name="typeDataDiv" style="display:none;">';
-                $typeDataHtml .= '<div id="typeDataContent">'.$plugin->getTypeHtml($this, $render).'</div>';
-                $typeDataHtml .= '<div class="pn-formrow">
-                                      <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/extrasmall/filesave.gif" alt="' . _SAVE . '" /></button>&nbsp;
-                                      <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/extrasmall/button_cancel.gif" alt="' . _CANCEL . '" /></button>';
-                $typeDataHtml .= '</div></div>';
-
-                $typeDataHtml .= '<div id="Modalcontainer" style="display:none">&nbsp;</div>';
+                $typeDataHtml  = '
+                <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/utilities.gif" alt="' . _MODIFYCONFIG .'" /></a>
+                <div id="typeDataDiv" class="modal">
+                    <div>'.$plugin->getTypeHtml($this, $render).'</div>
+                    <div>
+                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/extrasmall/filesave.gif" alt="' . _SAVE . '" /></button>&nbsp;
+                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/extrasmall/button_cancel.gif" alt="' . _CANCEL . '" /></button>
+                    </div>
+                </div>';
             } else {
                 $script .= 'Event.observe( window, \'load\', function() { $(\'typedata\').hide(); }, false);';
             }

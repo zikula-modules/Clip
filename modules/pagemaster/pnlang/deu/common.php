@@ -11,8 +11,6 @@
 
 // Common items
 define('_PAGEMASTER_PUBLICATION', 'Publication');
-define('_NOT_AUTHORIZED', 'Zugriff verwehrt');
-define('_PAGEMASTER_NO_WORKFLOW_ACTIONS_FOUND', 'Es wurden keine Workflowaktionen gefunden, zu welchen eine Berechtigung besteht.');
 
 // Common publication fields
 define('_PAGEMASTER_AUTHOR', 'Author');
@@ -35,12 +33,15 @@ define('_PAGEMASTER_GENERIC_VIEWPUB', 'Dies ist ein generisches Template. Sie kï
 define('_PAGEMASTER_NOTUSERDEFINED', 'Dies ist ein generisches Template. Sie kï¿½nnen im Verzeichnis \'/pntemplates/output/publist_{TEMPLATENAME}.htm\' ein eigenes Template erstellen. Nehmen Sie dazu publist_template.htm als Vorlage.');
 
 // Error and warnings
+define('_NOT_AUTHORIZED', 'Zugriff verwehrt');
+define('_PAGEMASTER_LIVEPIPE_NOTFOUND', 'Javascript livepipe package was not found or it\'s incomplete. It\'s required for the plugin configuration modalbox. Please <a href="http://code.zikula.org/pagemaster/downloads">download it</a> and copy into your site.');
 define('_PAGEMASTER_NOPUBLICATIONSFOUND', 'No publications found');
 define('_PAGEMASTER_MISSINGARG', 'Missing argument [%arg%]');
 define('_PAGEMASTER_TEMPLATENOTFOUND', 'Template [%tpl%] not found');
 define('_PAGEMASTER_TOOMANYPUBS', 'Too many pubs found');
-define('_PAGEMASTER_WORKFLOWACTIONERROR', 'Workflow action error');
-define('_PAGEMASTER_WORKFLOWACTIONCN', 'commandName has to be a valid workflow action for the currenct state');
+define('_PAGEMASTER_WORKFLOW_ACTIONERROR', 'Workflow action error');
+define('_PAGEMASTER_WORKFLOW_ACTIONCN', 'commandName has to be a valid workflow action for the currenct state');
+define('_PAGEMASTER_WORKFLOW_NOACTIONSFOUND', 'Es wurden keine Workflowaktionen gefunden, zu welchen eine Berechtigung besteht.');
 
 // Plugin titles
 define('_PAGEMASTER_PLUGIN_CHECKBOX', 'Checkbox');

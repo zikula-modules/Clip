@@ -78,28 +78,111 @@ div.pm-menu {
 }
 
 /* Admin modalbox */
-#Modalcontainer {
-	position: fixed;
-	height: 100%;
-	width: 100%;
-	z-index: 999;
-	background: #333333;
-	opacity: 0.5;
-	left: 0px; top: 0px;
-}
 #typeDataDiv {
-	position: absolute;
-	width: 450px;
+	width: 550px;
 	height: auto !important;
-	height: 100px;
-	min-height: 100px;
-	z-index: 1000;
+	height: 75px;
+	min-height: 75px;
+	z-index: 9999;
 	left: 50%;
-	top: 10px;
-	margin-left: -225px;
+	margin-left: -275px;
 	background-color: #FFFFFF;
 	padding:10px;
 }
-#typeDataContent {
-	padding: 10px 10px 0;
+
+/* itemlist styles */
+.itemlist {
+	border: 1px solid #ccc;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.itemlist li {
+	font-size: 1em;
+	margin: 0;
+	padding: 0.3em 0 0.3em 1em;
+}
+
+.itemlist li input {
+	width: 90%;
+}
+
+.itemlist li  * {
+	vertical-align: middle;
+}
+
+.itemlist .itemlistcell {
+	float: left;
+	text-align: left;
+}
+
+.itemlist .width88 {
+	width: 88%;
+}
+.itemlist .width44 {
+	width: 44%;
+}
+.itemlist .width40 {
+	width: 40%;
+}
+.itemlist .width22 {
+	width: 22%;
+}
+.itemlist .width20 {
+	width: 20%;
+}
+.itemlist .width15 {
+	width: 15%;
+}
+.itemlist .width10 {
+	width: 10%;
+}
+.itemlist .width7 {
+	width: 7%;
+}
+.itemlist .width6 {
+	width: 6%;
+}
+.itemlist .width5 {
+	width: 5%;
+}
+.itemlist .width4 {
+	width: 4%;
+}
+
+.itemlist .width10,
+.itemlist .width15,
+.itemlist .width20,
+.itemlist .width22,
+.itemlist .width40,
+.itemlist .width44,
+.itemlist .width88 {
+	text-align: left;
+}
+.itemlist .width5,
+.itemlist .width6,
+.itemlist .width7 {
+	white-space: nowrap;
+}
+.itemlist .width5 input,
+.itemlist .width6 input,
+.itemlist .width7 input {
+	width: auto;
+}
+.itemlist .width4,
+.itemlist .width5 {
+	text-align: center;
+}
+
+.itemlist button {
+	cursor: pointer;
+}
+
+.itemlist .buttondelete {
+	/* don't remove this */
+}
+
+.newitemlistdiv {
+	margin: 1em 0 1em 1em;
 }

@@ -26,7 +26,7 @@ function pagemaster_userapi_editPub($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'data')));
     }
     if (!isset($args['commandName'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'commandName')).' - '._PAGEMASTER_WORKFLOWACTIONCN);
+        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'commandName')).' - '._PAGEMASTER_WORKFLOW_ACTIONCN);
     }
 
     include_once('includes/pnForm.php');    
@@ -55,7 +55,7 @@ function pagemaster_userapi_editPub($args)
 
     $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
     if (!$ret) {
-        return LogUtil::registerError(_PAGEMASTER_WORKFLOWACTIONERROR);
+        return LogUtil::registerError(_PAGEMASTER_WORKFLOW_ACTIONERROR);
     }
     return array_merge($data, $ret);
 }

@@ -48,7 +48,7 @@ class pagemaster_user_dynHandler
             // if there are no actions the user is not allowed to change / submit / delete something.
             // We will redirect the user to the overview page
             if (count($actions) < 1) {
-                LogUtil::registerError(_PAGEMASTER_NO_WORKFLOW_ACTIONS_FOUND);
+                LogUtil::registerError(_PAGEMASTER_WORKFLOW_NOACTIONSFOUND);
                 return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid))); 
             }
         }

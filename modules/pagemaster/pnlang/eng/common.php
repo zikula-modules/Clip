@@ -11,13 +11,10 @@
 
 // Common items
 define('_PAGEMASTER_PUBLICATION', 'Publication');
-define('_NOT_AUTHORIZED',	'No permission');
-define('_PAGEMASTER_NO_WORKFLOW_ACTIONS_FOUND', 'No workflow actions with permission found.');
 
 // Common publication fields
 define('_PAGEMASTER_AUTHOR', 'Author');
 define('_PAGEMASTER_CREATIONDATE', 'Creation date');
-
 define('_PAGEMASTER_UPDDATE', 'Update date');
 define('_PAGEMASTER_CREATOR', 'Creator');
 define('_PAGEMASTER_EXPIREDATE', 'Expire Date');
@@ -36,12 +33,15 @@ define('_PAGEMASTER_GENERIC_VIEWPUB', 'This is a generic Template. Your can crea
 define('_PAGEMASTER_NOTUSERDEFINED', 'This is a generic Template. Your can create individual Templates in the the directory  \'/pntemplates/pubdata/publist_{$tid}.html\'. Take publist_template.htm as a template.');
 
 // Error and warnings
+define('_NOT_AUTHORIZED',	'No permission');
+define('_PAGEMASTER_LIVEPIPE_NOTFOUND', 'Javascript livepipe package was not found or it\'s incomplete. It\'s required for the plugin configuration modalbox. Please <a href="http://code.zikula.org/pagemaster/downloads">download it</a> and copy into your site.');
 define('_PAGEMASTER_NOPUBLICATIONSFOUND', 'No publications found');
 define('_PAGEMASTER_MISSINGARG', 'Missing argument [%arg%]');
 define('_PAGEMASTER_TEMPLATENOTFOUND', 'Template [%tpl%] not found');
 define('_PAGEMASTER_TOOMANYPUBS', 'Too many pubs found');
-define('_PAGEMASTER_WORKFLOWACTIONERROR', 'Workflow action error');
-define('_PAGEMASTER_WORKFLOWACTIONCN', 'commandName has to be a valid workflow action for the currenct state');
+define('_PAGEMASTER_WORKFLOW_ACTIONERROR', 'Workflow action error');
+define('_PAGEMASTER_WORKFLOW_ACTIONCN', 'commandName has to be a valid workflow action for the currenct state');
+define('_PAGEMASTER_WORKFLOW_NOACTIONSFOUND', 'No workflow actions with permission found.');
 
 // Plugin titles
 define('_PAGEMASTER_PLUGIN_CHECKBOX', 'Checkbox');
