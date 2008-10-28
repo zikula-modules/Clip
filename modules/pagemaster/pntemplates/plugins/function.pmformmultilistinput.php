@@ -25,70 +25,75 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
 
     function postRead($data, $field)
     {
-    	$data   = substr($data, 1);
+        $data   = substr($data, 1);
         $data   = substr($data, 0, -1);
-        $catIds = explode(':', $data);
-        $lang   = SessionUtil::getVar('lang', null);
-        Loader::loadClass('CategoryUtil');
-        foreach ($catIds as $catId) {
-            $cat = CategoryUtil::getCategoryByID($catId);
-            $cat['fullTitle'] = $cat['display_name'][$lang];
-            $cat_arr[] = $cat;
+        $cat_arr = null;
+        if ($data <> ''){
+            $catIds = explode(':', $data);
+            $lang   = SessionUtil::getVar('lang', null);
+            Loader::loadClass('CategoryUtil');
+
+            foreach ($catIds as $catId) {
+                $cat = CategoryUtil::getCategoryByID($catId);
+                $cat['fullTitle'] = $cat['display_name'][$lang];
+                $cat_arr[] = $cat;
+            }
+            
         }
         return $cat_arr;
     }
-    
-    function create(&$render, &$params)
-    {
-        $this->saveAsString = 1;
-        parent::create($render, $params);
-    }
 
-    function load(&$render, $params)
-    {
-        $pubfields = $render->pnFormEventHandler->pubfields;
-        foreach ($pubfields as $key => $pubfield) {
-            if ($pubfield['name'] == $this->id) {
-                $catid = $pubfield['typedata'];
-            }
+        function create(&$render, &$params)
+        {
+            $this->saveAsString = 1;
+            parent::create($render, $params);
         }
-        $params['category'] = $catid;
-        parent::load(&$render, $params);
-    }
 
-    function getSaveTypeDataFunc($field)
-    {
-        $saveTypeDataFunc = 'function saveTypeData()
+        function load(&$render, $params)
+        {
+            $pubfields = $render->pnFormEventHandler->pubfields;
+            foreach ($pubfields as $key => $pubfield) {
+                if ($pubfield['name'] == $this->id) {
+                    $catid = $pubfield['typedata'];
+                }
+            }
+            $params['category'] = $catid;
+            parent::load(&$render, $params);
+        }
+
+        function getSaveTypeDataFunc($field)
+        {
+            $saveTypeDataFunc = 'function saveTypeData()
                              {
                                  $(\'typedata\').value = $F(\'pmplugin_categorylist\') ;
                                  closeTypeData();
                              }';
-        return $saveTypeDataFunc;
-    }
-
-    function getTypeHtml($field)
-    {
-        Loader::loadClass('CategoryUtil');
-        Loader::loadClass('CategoryRegistryUtil');
-
-        // TODO: Work based on a Category Registry
-        $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
-        $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
-
-        $html .= '<div class="pn-formrow">
-                  <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
-
-        foreach ($cats as $cat) {
-            $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
+            return $saveTypeDataFunc;
         }
 
-        $html .= '</select>
+        function getTypeHtml($field)
+        {
+            Loader::loadClass('CategoryUtil');
+            Loader::loadClass('CategoryRegistryUtil');
+
+            // TODO: Work based on a Category Registry
+            $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
+            $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
+
+            $html .= '<div class="pn-formrow">
+                  <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+
+            foreach ($cats as $cat) {
+                $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
+            }
+
+            $html .= '</select>
                   </div>';
 
-        return $html;
+            return $html;
+        }
     }
-}
 
-function smarty_function_pmformmultilistinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformmultilistinput', $params);
-}
+    function smarty_function_pmformmultilistinput($params, &$render) {
+        return $render->pnFormRegisterPlugin('pmformmultilistinput', $params);
+    }

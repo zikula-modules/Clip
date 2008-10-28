@@ -31,9 +31,12 @@ class pmformlistinput extends pnFormCategorySelector
         $lang = SessionUtil::getVar('lang', null);
 
         // compatible mode to pagesetter
-        $cat['fullTitle'] = $cat['display_name'][$lang];
-        $cat['value']     = $cat['name'];
-        $cat['title']     = $cat['name'];
+        
+        if (isset($cat['display_name'][$lang])){
+            $cat['fullTitle'] = $cat['display_name'][$lang];
+            $cat['value']     = $cat['name'];
+            $cat['title']     = $cat['name'];
+        }
         return $cat;
     }
 

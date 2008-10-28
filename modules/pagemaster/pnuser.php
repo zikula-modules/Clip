@@ -49,7 +49,7 @@ class pagemaster_user_dynHandler
             // We will redirect the user to the overview page
             if (count($actions) < 1) {
                 LogUtil::registerError(_PAGEMASTER_WORKFLOW_NOACTIONSFOUND);
-                return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid))); 
+               // return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid))); 
             }
         }
 
@@ -101,7 +101,6 @@ class pagemaster_user_dynHandler
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
         }
-
         if (empty($data)) {
             return false;
         } else {

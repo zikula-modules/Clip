@@ -52,7 +52,6 @@ function pagemaster_userapi_editPub($args)
             $data[$fieldname] = $plugin->preSave($data, $field);
         }
     }
-
     $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
     if (!$ret) {
         return LogUtil::registerError(_PAGEMASTER_WORKFLOW_ACTIONERROR);
