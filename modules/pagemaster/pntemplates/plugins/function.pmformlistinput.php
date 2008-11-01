@@ -31,12 +31,10 @@ class pmformlistinput extends pnFormCategorySelector
         $lang = SessionUtil::getVar('lang', null);
 
         // compatible mode to pagesetter
-        
-        if (isset($cat['display_name'][$lang])){
-            $cat['fullTitle'] = $cat['display_name'][$lang];
-            $cat['value']     = $cat['name'];
-            $cat['title']     = $cat['name'];
-        }
+        $cat['fullTitle'] = (isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name']);
+        $cat['value']     = $cat['name'];
+        $cat['title']     = $cat['name'];
+
         return $cat;
     }
 
@@ -66,8 +64,9 @@ class pmformlistinput extends pnFormCategorySelector
         $html = '<div class="pn-formrow">
                   <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
-        foreach ($cats as $cat) {
-            $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
+        $ak = array_keys($cats);
+        foreach ($ak as $key) {
+            $html .= '<option value="'.$cats[$key]['id'].'">'.$cats[$key]['name'].'</option>';
         }
 
         $html .= '</select>
