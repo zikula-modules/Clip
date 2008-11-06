@@ -64,3 +64,6 @@ define('_PAGEMASTER_PUBJOIN', 'Join');
 define('_PAGEMASTER_PUBJOINFIELDS', 'Join fields (fieldname:alias,fieldname:alias..)');
 define('_PAGEMASTER_USEDATETIME', 'Use datetime');
 define('_PAGEMASTER_USESCRIBITE', 'Use scribite!');
+
+// zikula search api plugin
+define('_PAGEMASTER_SEARCH_TITLE', 'Include the following content types');
