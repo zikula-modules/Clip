@@ -38,11 +38,11 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
 
                 $where = array();
                 foreach ($catIds as $catId) {
-                    $where[] = $category_column['id'].' = \''.DataUtil::formatForStore($path).'\'';
+                    $where[] = $category_column['id'].' = \''.DataUtil::formatForStore($catId).'\'';
                 }
-
                 $cat_arr = CategoryUtil::getCategories(implode(' OR ', $where), '', 'id');
                 $lang   = SessionUtil::getVar('lang', null);
+                
                 foreach ($catIds as $catId) {
                     $cat_arr[$catId]['fullTitle'] = (isset($cat_arr[$catId]['display_name'][$lang]) ? $cat_arr[$catId]['display_name'][$lang] : $cat_arr[$catId]['name']);
                 }

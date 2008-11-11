@@ -29,8 +29,10 @@ function pagemaster_searchapi_options($args)
         // Looking for pubtype with at least one searchable field
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
         foreach ($pubtypes as $key => $pubtype) {
-            $pubfields = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']); 
-            if ($pubfields === false) {
+            $pubfields = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']);
+            
+            if (count($pubfields) == 0 ) {
+                
                 unset ($pubtypes[$key]);
             }
         }
@@ -89,9 +91,11 @@ function pagemaster_searchapi_search($args)
                 $where .= ' AND (pm_publishdate <= NOW() or pm_publishdate is null) AND (pm_expiredate >= NOW() or pm_expiredate is null)';
 
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
+
                 $publist    = DBUtil::selectObjectArray($tablename, $where);
+                $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$pubtype['tid'], '', -1, -1, 'name');
                 $core_title = getTitleField($pubfields);
-                $type_name  = pnML($pubtype['title']); 
+                $type_name  = pnML($pubtype['title'].'_SEARCH'); 
 
                 foreach ($publist as $pub) {
                     $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));

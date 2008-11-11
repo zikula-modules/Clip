@@ -1,14 +1,13 @@
 <!--[* $Id$ *]-->
 
+<input type="hidden" id="active_pagemaster" name="active[pagemaster]" value="1" checked="checked" />
+
 <div>
-	<input type="checkbox" id="active_pagemaster" name="active[pagemaster]" value="1" checked="checked" />
-	<label for="active_pagemaster"><!--[pnml name="_PAGEMASTER_SEARCH_TITLE]--></label>
-	<ul>
 	<!--[foreach from=$pubtypes item=pubtype]-->
-	<li>
+	<ul>
 				<input type="checkbox" id="pagemaster<!--[$pubtype.tid]-->" name="search_tid[<!--[$pubtype.tid]-->]" value="1" checked="checked" />
-				<label for="pagemaster<!--[$pubtype.tid]-->"><!--[pnml name=$pubtype.title]--></label>
-	</li>
-	<!--[/foreach]-->
+				<label for="pagemaster<!--[$pubtype.tid]-->"><!--[pnml name=$pubtype.title|cat:"_SEARCH"]--></label>
 	</ul>
+	<!--[/foreach]-->
+	
 </div>
