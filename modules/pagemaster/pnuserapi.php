@@ -161,13 +161,16 @@ function pagemaster_userapi_getPub($args)
     $publist   = DBUtil::selectObjectArray($tablename, $where);
 
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
-
+    
     if ($handlePluginFields){
         include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
         $publist = handlePluginFields($publist, $pubfields);
     }
 
     $pubdata = $publist[0];
+    
+    $core_title = getTitleField($pubfields);
+    $pubdata['core_title'] = $pubdata[$core_title];
 
     if (count($publist) == 0) {
         return LogUtil::registerError(_PAGEMASTER_NOPUBLICATIONSFOUND);

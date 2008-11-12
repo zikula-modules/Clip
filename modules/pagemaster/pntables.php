@@ -201,6 +201,7 @@ function pagemaster_pntables()
             $id        = $result->fields[1];
             $name      = $result->fields[2];
             $fieldtype = $result->fields[3];
+
             if ($tid <> $old_tid and $old_tid <> null) {
                 put_def($pntable, $old_tid, array_merge($tablecolumncore, $tablecolumn), array_merge($tabledefcore, $tabledef), $prefix);
                 $tablecolumn = array ();
