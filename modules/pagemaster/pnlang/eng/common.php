@@ -62,6 +62,7 @@ define('_PAGEMASTER_PLUGIN_URL', 'Url');
 define('_PAGEMASTER_PUBFILTER', 'Filter');
 define('_PAGEMASTER_PUBJOIN', 'Join');
 define('_PAGEMASTER_PUBJOINFIELDS', 'Join fields (fieldname:alias,fieldname:alias..)');
+define('_PAGEMASTER_PUBORDERBY', 'Orderby field');
 define('_PAGEMASTER_USEDATETIME', 'Use datetime');
 define('_PAGEMASTER_USESCRIBITE', 'Use scribite!');
 

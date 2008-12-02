@@ -292,6 +292,7 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
             list($orderby_col, $orderby_dir) = explode(' ', trim($orderby_field));
             $plugin_name = '';
             $field_name  = '';
+
             foreach ($pubfields as $fieldname => $field) {
                 if (strtolower($fieldname) == strtolower($orderby_col)) {
                     $plugin_name = $field['fieldplugin'];
@@ -299,7 +300,6 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
                     break;
                 }
             }
-
             if ($plugin_name <> '') {
                 $plugin =  pagemasterGetPlugin($plugin_name);
                 if (method_exists($plugin, 'orderBy')) {
@@ -308,7 +308,7 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
                     $orderby_col = $tbl_alias.$orderby_col;
                 }
             } else {
-                $orderby_col = $tbl_alias.$orderby_col;
+                $orderby_col = $orderby_col;
             }
             $orderby_new .= $orderby_col.' '.$orderby_dir.',';
         }

@@ -25,9 +25,10 @@ class pmformpubinput extends pnFormDropdownList
     function load($render)
     {
         $pubfields = $render->pnFormEventHandler->pubfields;
+        
         foreach ($pubfields as $key => $pubfield) {
             if ($pubfield['name'] == $this->id) {
-                list($tid,$filter) = explode(';', $pubfield['typedata']);
+                list($tid,$filter,$join,$joinfields,$orderby) = explode(';', $pubfield['typedata']);
             }
         }
         $pubfields_pub = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
@@ -36,6 +37,7 @@ class pmformpubinput extends pnFormDropdownList
                                      'countmode'          => 'no',
                                      'filter'             => $filter,
                                      'pubfields'          => $pubfields_pub,
+                                     'orderby' 			  => $orderby,
                                      'checkPerm'          => true,
                                      'handlePluginFields' => false));
 
@@ -57,7 +59,7 @@ class pmformpubinput extends pnFormDropdownList
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pmplugin_pubtid\')+\';\'+$F(\'pmplugin_pubfilter\')+\';\'+$F(\'pmplugin_pubjoin\')+\';\'+$F(\'pmplugin_pubjoinfields\');  
+                                 $(\'typedata\').value = $F(\'pmplugin_pubtid\')+\';\'+$F(\'pmplugin_pubfilter\')+\';\'+$F(\'pmplugin_pubjoin\')+\';\'+$F(\'pmplugin_pubjoinfields\')+\';\'+$F(\'pmplugin_puborderbyfield\');  
                                  closeTypeData();
                              }';
         return $saveTypeDataFunc;
@@ -71,6 +73,7 @@ class pmformpubinput extends pnFormDropdownList
         $filter      = $vars[1];
         $join        = $vars[2];
         $join_fields = $vars[3];
+        $orderby_field = $vars[4];
 
         if ($join == 'on') {
             $checked = 'checked="checked"';
@@ -100,6 +103,9 @@ class pmformpubinput extends pnFormDropdownList
                  </div>';
         $html .= '<div class="pn-formrow">
                   <label for="pmplugin_pubjoinfields">'._PAGEMASTER_PUBJOINFIELDS.':</label><br /><input type="text" id="pmplugin_pubjoinfields" name="pmplugin_pubjoinfields" value="'.$join_fields.'" >
+                 </div>';
+        $html .= '<div class="pn-formrow">
+                  <label for="pmplugin_puborderbyfield">'._PAGEMASTER_PUBORDERBY.':</label><br /><input type="text" id="pmplugin_puborderbyfield" name="pmplugin_puborderbyfield" value="'.$orderby_field.'" >
                  </div>';
         return $html;
     }
