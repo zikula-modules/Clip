@@ -22,11 +22,11 @@ function pagemaster_importapi_importps1()
 
     function guppy_translate($str) {
         if (strlen($str) > 0 && $str[0] != '_')
-            return $str;
+        return $str;
         if (constant($str) <> false)
-            return constant($str);
+        return constant($str);
         else
-            return $str;
+        return $str;
     }
 
     Loader::loadClass('CategoryUtil');
@@ -37,7 +37,7 @@ function pagemaster_importapi_importps1()
     if ($rootcat == '' or !$rootcat) {
         return LogUtil :: registerError('Category /__SYSTEM__/Modules/pagemaster/lists not found');
     }
-    
+
     //$temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
     $temp_arr = array();
     $lang  = pnUserGetLang();
@@ -71,8 +71,8 @@ function pagemaster_importapi_importps1()
                 } else {
                     $cat->setDataField('is_leaf', 1);
                 }
-            }  
-            
+            }
+
             $cat->setDataField('sort_value', $item['lineno']);
             $cat->setDataField('display_name', array ($lang => guppy_translate($item['title'])));
             $cat->setDataField('display_desc', array ($lang => guppy_translate($item['fullTitle'])));
@@ -121,7 +121,7 @@ function pagemaster_importapi_importps2()
         DBUtil::insertObject($datatype, 'pagemaster_pubtypes');
         //$pubfields = DBUtil::selectObjectArray('pagesetter_pubfields', 'pg_tid = '.$pubtype['id'], '', -1, -1, 'name');
 
-		$prefix = pnConfigGetVar('prefix');
+        $prefix = pnConfigGetVar('prefix');
         $sql = 'SELECT '.$prefix.'_pagesetter_pubfields.pg_id AS "id",
                        '.$prefix.'_pagesetter_pubfields.pg_tid AS "tid",
                        '.$prefix.'_pagesetter_pubfields.pg_name AS "name", 
@@ -175,7 +175,8 @@ function pagemaster_importapi_importps2()
             } elseif ($pubfield['type'] == '0') {
                 $datafield['fieldplugin'] = 'function.pmformstringinput.php';
 
-            } elseif ($pubfield['type'] == '1') {
+            }
+            elseif ($pubfield['type'] == '1') {
                 $datafield['fieldplugin'] = 'function.pmformtextinput.php';
                 $datafield['typedata'] = '0';
 
@@ -208,7 +209,14 @@ function pagemaster_importapi_importps2()
             } elseif ($pubfield['type'] == '10') {
                 $datafield['fieldplugin'] = 'function.pmformuploadinput.php';
 
-            } elseif (is_numeric($pubfield['type']) and $pubfield['type'] > 100) {
+            } elseif ($pubfield['type']  == 'plz' ) {
+                $datafield['fieldplugin'] = 'function.pmformplzinput.php';
+
+            } elseif ($pubfield['type']  == 'latlng' ) {
+                $datafield['fieldplugin'] = 'function.pmformlatlnginput.php';
+            }
+            
+            elseif (is_numeric($pubfield['type']) and $pubfield['type'] > 100) {
                 //has to be a list
                 $datafield['fieldplugin'] = 'function.pmformlistinput.php';
                 $pubfield['type'] = $pubfield['type'] -100;
@@ -246,9 +254,9 @@ function pagemaster_importapi_importps3()
 
     foreach ($pubtypes as $pubtype) {
         $ret = pnModAPIFunc('pagemaster', 'admin', 'updatetabledef',
-                            array('tid' => $pubtype['tid']));
+        array('tid' => $pubtype['tid']));
         if (!$ret)
-            LogUtil::registerError(_PAGEMASTER_CANNOTCREATEDBFORTID.' '.$pubtype['tid']);
+        LogUtil::registerError(_PAGEMASTER_CANNOTCREATEDBFORTID.' '.$pubtype['tid']);
     }
     return LogUtil :: registerStatus(_PAGEMASTER_IMPORTFROMPAGESETTER_INSERTSUCCEDED);
 }
@@ -266,9 +274,9 @@ function pagemaster_importapi_importps4()
 
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
-    
+
     $temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
-   
+     
 
     $pntable = &pnDBGetTables();
     $DirPM = pnModGetVar('pagemaster', 'uploadpath');
@@ -352,13 +360,13 @@ function pagemaster_importapi_importps4()
                             if ($listId <> '') {
                                 $catitem['id'] = $temp_arr[$listId];
                                 if ($catitem['id'] <> '')
-                                    $field .= $catitem['id'] . ':';
+                                $field .= $catitem['id'] . ':';
                             }
                         }
                     }
 
                     if ($field == ':')
-                        $field = '';
+                    $field = '';
                     $data[] = $field;
                     $sql .= ', ' . $fieldname;
                 }
@@ -369,7 +377,7 @@ function pagemaster_importapi_importps4()
             $data[] = $item['pg_lastUpdatedDate'];
             $data[] = $item['pg_creator'];
 
-            $sql .= ', pm_cr_date, pm_cr_uid, pm_lu_date, pm_lu_uid ';
+            $sql .= ', pm_cr_date, pm_author, pm_lu_date, pm_lu_uid ';
             $sql .= ') VALUES ( ' . $data[1];
             unset ($data[1]);
 
@@ -395,8 +403,8 @@ function pagemaster_importapi_importps4()
             $ret = DBUtil :: insertObject($wfData, 'workflows', 'id');
             $sdf = $sdf +1;
             /*if ($sdf > 10) {
-                exit;
-            }*/
+             exit;
+             }*/
         }
 
         $sql = 'UPDATE '.$tablenamePM.' SET pm_publishdate = null WHERE pm_publishdate = \'0000-00-00\';';

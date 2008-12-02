@@ -12,10 +12,10 @@
 <!--[else]-->
 	<!--[assign var="orderby_core_title" value="core_title"]-->
 <!--[/if]-->
-<!--[if $orderby eq "cr_uid"]-->
-	<!--[assign var="orderby_cr_uid" value="cr_uid:desc"]-->
+<!--[if $orderby eq "author"]-->
+	<!--[assign var="orderby_author" value="author:desc"]-->
 <!--[else]-->
-	<!--[assign var="orderby_cr_uid" value="cr_uid"]-->
+	<!--[assign var="orderby_author" value="author"]-->
 <!--[/if]-->
 <!--[if $orderby eq "cr_date"]-->
 	<!--[assign var="orderby_cr_date" value="cr_date:desc"]-->
@@ -53,7 +53,7 @@
     <th><!--[pnml name='_PAGEMASTER_REVISION']--></th>
     <th><!--[pnml name='_STATE']--></th>
     <th>
-    	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_cr_uid]-->">
+    	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_author]-->">
     		<!--[pnml name='_PAGEMASTER_AUTHOR']-->
     	</a>
    	</th>
@@ -79,8 +79,8 @@
 	  <td><!--[$pubitem.core_revision]--></td>
 	  <td><!--[$pubitem.__WORKFLOW__.state]--> </td>
 	  <td>
-	  	<a href="<!--[pnmodurl modname='Users' type='admin' func='modify' userid=$pubitem.cr_uid]-->">
-	  		<!--[pnusergetvar name="uname" uid=$pubitem.cr_uid]--> </td>
+	  	<a href="<!--[pnmodurl modname='Users' type='admin' func='modify' userid=$pubitem.author]-->">
+	  		<!--[pnusergetvar name="uname" uid=$pubitem.author]--> </td>
 	  	</a>
 	  <td><!--[$pubitem.core_online]--></td>
 	  <td><!--[$pubitem.cr_date]--></td>

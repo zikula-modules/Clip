@@ -139,7 +139,7 @@ function pagemaster_userapi_getPub($args)
     if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) or $id == '')
     {
         if ($uid <> '' and $pubtype['enableeditown'] == 1) {
-            $where .= ' ( pm_cr_uid = '.$uid.' or pm_online = 1 )';
+            $where .= ' ( pm_author = '.$uid.' or pm_online = 1 )';
         } else {
             $where .= ' pm_online = 1 ';
         }
@@ -331,13 +331,13 @@ function pagemaster_userapi_pubList($args)
     
     $uid = pnUserGetVar('uid');
     if ($uid <> '' and $pubtype['enableeditown'] == 1) {
-        $where .= '( '.$tbl_alias.'pm_cr_uid = '.$uid.' or '.$tbl_alias.'pm_online = 1 )';
+        $where .= '( '.$tbl_alias.'pm_author = '.$uid.' or '.$tbl_alias.'pm_online = 1 )';
     } else {
         $where .= ' '.$tbl_alias.'pm_online = 1 ';
     }
 
     if ($uid <> '' and $pubtype['enableeditown'] == 1) {
-        $where .= ' AND ( '.$tbl_alias.'pm_cr_uid = '.$uid.' or '.$tbl_alias.'pm_showinlist = 1 )';
+        $where .= ' AND ( '.$tbl_alias.'pm_author = '.$uid.' or '.$tbl_alias.'pm_showinlist = 1 )';
     } else {
         $where .= ' AND '.$tbl_alias.'pm_showinlist = 1 ';
     }
@@ -348,7 +348,7 @@ function pagemaster_userapi_pubList($args)
     $where .= ' AND ( '.$tbl_alias.'pm_expiredate >= NOW() OR '.$tbl_alias.'pm_expiredate IS NULL)';
 
     if ($justOwn and $uid <> '') {
-        $where .= ' AND '.$tbl_alias.'pm_cr_uid = '.$uid;
+        $where .= ' AND '.$tbl_alias.'pm_author = '.$uid;
     }
 
     if ($filter_where['where'] <> '') {
