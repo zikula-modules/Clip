@@ -29,8 +29,11 @@ define('_PAGEMASTER_CREATEPUBFIELDS', 'Publikationsfelder verwalten');
 define('_PAGEMASTER_CREATEPUBTYPE', 'neuen Publikationstyp erstellen');
 define('_PAGEMASTER_EXISTINGPUBFIELDS', 'existierende Publikationsfelder');
 define('_PAGEMASTER_MANAGE_TITLE', 'Publikationstypen verwalten');
-define('_PAGEMASTER_NEWPUBFIELD', 'New publication field');
-define('_PAGEMASTER_UPDATETABLEDEF', 'DB Tabellen updaten');
+define('_PAGEMASTER_NEWPUBFIELD', 'Neues Publikationsfeld');
+define('_PAGEMASTER_UPDATETABLEDEF', 'DB Tabellen aktualisieren');
+
+define('_PAGEMASTER_NEEDTOUPDATEDB', 'Nach Änderungen an den Publikationsfeldern müssen die DB Tabellen aktualisiert werden');
+
 
 define('_PAGEMASTER_EDIT_FIELDS', 'Publikationsfelder');
 define('_PAGEMASTER_LIST', 'Publikationsliste');

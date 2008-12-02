@@ -32,6 +32,8 @@ define('_PAGEMASTER_MANAGE_TITLE', 'Manage Publication types');
 define('_PAGEMASTER_NEWPUBFIELD', 'New publication field');
 define('_PAGEMASTER_UPDATETABLEDEF', 'Update DB Tables');
 
+define('_PAGEMASTER_NEEDTOUPDATEDB', 'When Publication fiels are changed or added you need to update the DB Tables');
+
 define('_PAGEMASTER_EDIT_FIELDS', 'Publication fields');
 define('_PAGEMASTER_LIST', 'Publications list');
 
