@@ -19,7 +19,7 @@ Loader::includeOnce('modules/pagemaster/common.php');
 class pagemaster_user_dynHandler
 {
     var $tid;
-    var $author;
+    var $core_author;
     var $core_pid;
     var $core_revision;
     var $id;
@@ -33,7 +33,7 @@ class pagemaster_user_dynHandler
         $this->goto = FormUtil::getPassedValue('goto', '');
         if ($this->id <> '') {
             $pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
-            $this->author = $pubdata['author'];
+            $this->core_author = $pubdata['core_author'];
             $this->core_pid = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
@@ -79,7 +79,7 @@ class pagemaster_user_dynHandler
         $data = $render->pnFormGetValues();
         $data['tid']           = $this->tid;
         $data['id']            = $this->id;
-        $data['author']        = $this->author;
+        $data['core_author']        = $this->core_author;
         $data['core_pid']      = $this->core_pid;
         $data['core_revision'] = $this->core_revision;
 
@@ -478,7 +478,7 @@ function pagemaster_user_viewpub($args)
     }
     $render->assign('core_tid', $tid);
     $render->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state']);
-    if ($pubdata['author'] == pnUserGetVar('uid')) {
+    if ($pubdata['core_author'] == pnUserGetVar('uid')) {
         $render->assign('core_creator', true);
     } else {
         $render->assign('core_creator', false);

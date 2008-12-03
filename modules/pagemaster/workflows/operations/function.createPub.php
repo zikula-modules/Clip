@@ -16,6 +16,8 @@ function pagemaster_operation_createPub(&$obj, $params)
 
 	$maxpid = DBUtil::selectFieldMax($obj['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
 	$obj['core_pid'] = $maxpid + 1;
+	
+	$obj['core_author'] = pnUserGetVar('uid');
 
 	$obj = DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id');
 

@@ -81,7 +81,7 @@ class pagemaster_admin_pubtypesHandler
             );
             $pubarr[] = array (
                 'text'  => _PAGEMASTER_CREATOR,
-                'value' => 'author'
+                'value' => 'core_author'
             );
             $pubarr[] = array (
                 'text'  => _PAGEMASTER_UPDATER,

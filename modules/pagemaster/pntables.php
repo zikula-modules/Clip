@@ -180,7 +180,8 @@ function pagemaster_pntables()
             'core_publishdate' => 'pm_publishdate',
             'core_expiredate' => 'pm_expiredate',
             'core_language' => 'pm_language',
-            'core_hitcount' => 'pm_hitcount'
+            'core_hitcount' => 'pm_hitcount',
+            'core_author' => 'pm_author'
         );
         $tabledefcore = array(
             'id'                  => 'I PRIMARY AUTO',
@@ -193,7 +194,8 @@ function pagemaster_pntables()
             'core_publishdate'    => 'T',
             'core_expiredate'     => 'T',
             'core_language'       => 'C(3) NOTNULL',
-            'core_hitcount'       => 'I(9) DEFAULT 0'
+            'core_hitcount'       => 'I(9) DEFAULT 0',
+            'core_author'         => 'I(11) NOTNULL'
         );
 
         for (; !$result->EOF; $result->MoveNext()) {

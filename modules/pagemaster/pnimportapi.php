@@ -374,10 +374,11 @@ function pagemaster_importapi_importps4()
 
             $data[] = $item['pg_created'];
             $data[] = $item['pg_creator'];
+            $data[] = $item['pg_creator'];
             $data[] = $item['pg_lastUpdatedDate'];
             $data[] = $item['pg_creator'];
 
-            $sql .= ', pm_cr_date, pm_author, pm_lu_date, pm_lu_uid ';
+            $sql .= ', pm_cr_date, pm_cr_uid, pm_author, pm_lu_date, pm_lu_uid ';
             $sql .= ') VALUES ( ' . $data[1];
             unset ($data[1]);
 
