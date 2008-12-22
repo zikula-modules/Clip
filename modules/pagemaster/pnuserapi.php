@@ -272,7 +272,7 @@ function pagemaster_userapi_pubList($args)
     }
     include_once('includes/pnForm.php'); //have to load, otherwise plugins can not be loaded... TODO
 
-    Loader::LoadClass("FilterUtil");
+    Loader::LoadClass('PagemasterFilterUtil', 'modules/pagemaster/classes/FilterUtil/');
 
     
     foreach ($pubfields as $fieldname => $field) {
@@ -318,8 +318,8 @@ function pagemaster_userapi_pubList($args)
     $orderby = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
 
     $tablename = 'pagemaster_pubdata'.$tid;
-    $fu = & new FilterUtil(array('table' => $tablename,
-                                 'plugins' => $filterPlugins));
+    $fu = & new PagemasterFilterUtil(array('table' => $tablename,
+                                           'plugins' => $filterPlugins));
     
     if ($filter <> '') {
         $fu->setFilter($filter);
