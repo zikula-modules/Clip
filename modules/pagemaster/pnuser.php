@@ -257,7 +257,7 @@ function pagemaster_user_main($args)
     $template           = isset($args['template']) ? $args['template'] : '';
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState');
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields');
-    $rss                = isset ($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
+    $rss                = isset($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
     $cachelifetime      = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
 
     if ($justOwn == '') {
@@ -270,11 +270,16 @@ function pagemaster_user_main($args)
         $handlePluginFields = true;
     }
 
-    if ($tid == '') {
+    if (empty($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+    } elseif(!is_numeric($tid)) {
+        return LogUtil::registerError(pnML('_MUSTBENUMERIC', array('s' => 'tid')));
     }
 
     $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    if (empty($pubtype)) {
+        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+    }
 
     if (isset($args['itemsperpage'])) {
         $itemsperpage = $args['itemsperpage'];

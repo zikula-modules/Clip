@@ -136,9 +136,9 @@ function pagemaster_userapi_getPub($args)
     $uid = pnUserGetVar('uid');
 
     $where = '';
-    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) or $id == '')
+    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || $id == '')
     {
-        if ($uid <> '' and $pubtype['enableeditown'] == 1) {
+        if (!empty($uid) && $pubtype['enableeditown'] == 1) {
             $where .= ' ( pm_author = '.$uid.' or pm_online = 1 )';
         } else {
             $where .= ' pm_online = 1 ';
