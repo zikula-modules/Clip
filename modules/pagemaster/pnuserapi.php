@@ -131,7 +131,10 @@ function pagemaster_userapi_getPub($args)
     $pid = $args['pid'];
     $id  = $args['id'];
 
-    $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    if (empty($pubtype)) {
+        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+    }
 
     $uid = pnUserGetVar('uid');
 

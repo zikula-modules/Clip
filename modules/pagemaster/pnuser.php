@@ -407,20 +407,24 @@ function pagemaster_user_viewpub($args)
     $template = isset($args['template']) ? $args['template'] : '';//FormUtil::getPassedValue('template');
     $cachelifetime = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
 
-    if ($tid == '') {
+    if (empty($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
-    if ($pid == '' && $id == '') {
+    if (empty($pid) && empty($id)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id | pid')));
     }
 
     $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    if (empty($pubtype)) {
+        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+    }
+
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
 
-    if ($pid == '') {
+    if (empty($pid)) {
         $pid = pnModAPIFunc('pagemaster', 'user', 'getPid',
                             array('tid' => $tid,
-                                  'id' => $id));
+                                  'id'  => $id));
     }
 
     if ($template == '') {
