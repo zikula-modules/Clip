@@ -208,6 +208,13 @@ function pagemaster_userapi_pubList($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
+    // validate the passed tid
+    $pntables = pnDBGetTables();
+    if (!isset($pntables['pagemaster_pubdata'.$args['tid']])) {
+        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+    }
+    unset($pntables);
+
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
     $justOwn            = isset($args['justOwn']) ? $args['justOwn'] : false;
     $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
@@ -218,7 +225,7 @@ function pagemaster_userapi_pubList($args)
     }
 
     $filter  = $args['filter'];
-    
+
     $orderby = $args['orderby'];
     $tid     = $args['tid'];
 
@@ -274,12 +281,11 @@ function pagemaster_userapi_pubList($args)
 
     Loader::LoadClass('PagemasterFilterUtil', 'modules/pagemaster/classes/FilterUtil/');
 
-    
+
     foreach ($pubfields as $fieldname => $field) {
         $plugin = pagemasterGetPlugin($field['fieldplugin']);
 
         if (isset ($plugin->filterClass)) {
-            
             $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
         }
         // check for tables to join
@@ -320,7 +326,7 @@ function pagemaster_userapi_pubList($args)
     $tablename = 'pagemaster_pubdata'.$tid;
     $fu = & new PagemasterFilterUtil(array('table' => $tablename,
                                            'plugins' => $filterPlugins));
-    
+
     if ($filter <> '') {
         $fu->setFilter($filter);
     } elseif ($pubtype['defaultfilter'] <> '') {
@@ -328,7 +334,7 @@ function pagemaster_userapi_pubList($args)
     }
     
     $filter_where = $fu->GetSQL();
-    
+
     $uid = pnUserGetVar('uid');
     if ($uid <> '' and $pubtype['enableeditown'] == 1) {
         $where .= '( '.$tbl_alias.'pm_author = '.$uid.' or '.$tbl_alias.'pm_online = 1 )';

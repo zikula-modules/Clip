@@ -460,7 +460,7 @@ function pagemaster_user_viewpub($args)
     $render->cache_lifetime = $cachelifetime;
 
     if ($cacheid) {
-        if ( $render->is_cached($template, $cacheid)) {
+        if ($render->is_cached($template, $cacheid)) {
             return $render->fetch($template, $cacheid);
         }
     }
