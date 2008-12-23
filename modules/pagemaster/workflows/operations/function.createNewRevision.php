@@ -11,7 +11,6 @@
 
 function pagemaster_operation_createNewRevision(&$obj, $params)
 {
-
     if (!isset($params['nextstate'])) {
         return;
     }
@@ -45,5 +44,4 @@ function pagemaster_operation_createNewRevision(&$obj, $params)
                       'pid' => $obj['core_pid'],
                       'prevversion' => 1 );
     return DBUtil::insertObject($revision, 'pagemaster_revisions');*/
-
 }

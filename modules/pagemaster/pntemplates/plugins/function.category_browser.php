@@ -41,11 +41,13 @@ function smarty_function_category_browser($params, &$smarty)
     $filter_arr = explode(',', $filter);
     $lang = SessionUtil::getVar('lang', null);
 
-    if (!$tid)
-    return 'Required parameter [tid] not provided in smarty_function_category_browser';
+    if (!$tid) {
+        return 'Required parameter [tid] not provided in smarty_function_category_browser';
+    }
 
-    if (!$field)
-    return 'Required parameter [field] not provided in smarty_function_category_browser';
+    if (!$field) {
+        return 'Required parameter [field] not provided in smarty_function_category_browser';
+    }
 
     $cacheid = $tid . '-' . $field;
     $render  = pnRender::getInstance('pagemaster',$cache, $cacheid);
@@ -90,19 +92,17 @@ function smarty_function_category_browser($params, &$smarty)
                 if ($fv == $filter_act) {
                     $v['selected'] = 1;
                     $one_selected = true;
-                } else{
-                    if ($multiselect)
-                    $old_filter = $old_filter.','.$fv;
-                    else{
+                } else {
+                    if ($multiselect) {
+                        $old_filter = $old_filter.','.$fv;
+                    } else {
                         // just add if from another browser
-                        if ($globalmultiselect)
-                        {
+                        if ($globalmultiselect) {
                             list($fx, $subx, $idx) = explode(':', $fv);
                             $found = false;
-                            foreach ($cats as $k2 => $v2)
-                            {
+                            foreach ($cats as $k2 => $v2) {
                                 if ($v2['id'] == $idx)
-                                $found = true;
+                                    $found = true;
                             }
                             if (!$found) {
                                 $old_filter = $old_filter.','.$fv;
@@ -127,17 +127,16 @@ function smarty_function_category_browser($params, &$smarty)
 
             if ($new_filter == '') {
                 $url = pnModURL('pagemaster', 'user', 'main',
-                array('tid' => $tid));
+                                array('tid'    => $tid));
             } else {
                 $url = pnModURL('pagemaster', 'user', 'main',
-                array('tid' => $tid,
+                                array('tid'    => $tid,
                                       'filter' => $new_filter));
             }
 
             if ($count) {
-                
                 $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
-                array('tid'                => $tid,
+                                       array('tid'                => $tid,
                                              'countmode'          => 'just',
                                              'filter'             => $filter_act,
                                              'checkPerm'          => false,
@@ -156,7 +155,6 @@ function smarty_function_category_browser($params, &$smarty)
         return "No category for id [$id] in smarty_function_category_browser";
     }
 
-    
     $render->assign('cats', $cat_arr);
 
     $html = $render->fetch($template, $cacheid);

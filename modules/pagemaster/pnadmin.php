@@ -392,13 +392,13 @@ function pagemaster_admin_showcode()
         return LogUtil::registerError(_NOT_AUTHORIZED);
     }
 
-    $tid  = FormUtil::getPassedValue('tid', '');
-    $mode = FormUtil::getPassedValue('mode', '');
+    $tid  = FormUtil::getPassedValue('tid');
+    $mode = FormUtil::getPassedValue('mode');
 
-    if ($tid == '') {
+    if (empty($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
-    if ($mode == '') {
+    if (empty($mode)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'mode')));
     }
 

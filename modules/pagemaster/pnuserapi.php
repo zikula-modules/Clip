@@ -33,6 +33,7 @@ function pagemaster_userapi_editPub($args)
     $commandName = $args['commandName'];
     $data        = $args['data'];
     $tid         = $data['tid'];
+
     if (!isset ($args['pubfields'])) {
         $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
     } else {
@@ -52,8 +53,9 @@ function pagemaster_userapi_editPub($args)
             $data[$fieldname] = $plugin->preSave($data, $field);
         }
     }
+
     $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
-    if (!$ret) {
+    if (empty($ret)) {
         return LogUtil::registerError(_PAGEMASTER_WORKFLOW_ACTIONERROR);
     }
     return array_merge($data, $ret);
@@ -142,7 +144,7 @@ function pagemaster_userapi_getPub($args)
     if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || $id == '')
     {
         if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-            $where .= ' ( pm_author = '.$uid.' or pm_online = 1 )';
+            $where .= ' ( pm_author = '.$uid.' OR pm_online = 1 )';
         } else {
             $where .= ' pm_online = 1 ';
         }

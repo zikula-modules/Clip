@@ -11,8 +11,9 @@
 
 function pagemaster_operation_updateOnlineState(&$obj, $params)
 {
-    $online = isset($params['online']) ? $params['online'] : false;
-    $obj['core_online'] = $online;
+    // set the online parameter, or set it offline if is not set
+    $obj['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
 
-    return (bool)DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
+    // return the updated object
+    return DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
 }

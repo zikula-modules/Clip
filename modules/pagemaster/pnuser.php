@@ -79,7 +79,7 @@ class pagemaster_user_dynHandler
         $data = $render->pnFormGetValues();
         $data['tid']           = $this->tid;
         $data['id']            = $this->id;
-        $data['core_author']        = $this->core_author;
+        $data['core_author']   = $this->core_author;
         $data['core_pid']      = $this->core_pid;
         $data['core_revision'] = $this->core_revision;
 
@@ -89,7 +89,12 @@ class pagemaster_user_dynHandler
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
-        if ($this->goto == '') {
+        // if the item is now offline or was moved to the depot
+        if ($data['core_indepot'] == 0 || $data['core_indepot'] == 1) {
+            $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
+                                   array('tid' => $data['tid']));
+
+        } elseif (empty($this->goto)) {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $data['tid'],
                                          'pid' => $data['core_pid']));
@@ -101,6 +106,7 @@ class pagemaster_user_dynHandler
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
         }
+
         if (empty($data)) {
             return false;
         } else {
@@ -188,18 +194,22 @@ function pagemaster_user_pubedit()
     }
 
     $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    if (empty($pubtype)) {
+        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+    }
+
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
 
     // No security check needed - the security check will be done by the handler class. 
     // see the init-part of the handler class for details. 
     $dynHandler = new pagemaster_user_dynHandler();
 
-    if ($id == '' && $pid <>'') {
+    if (empty($id) && !empty($pid)) {
         $id = pnModAPIFunc('pagemaster', 'user', 'getId',
                            array('tid' => $tid,
                                  'pid' => $pid));
-        if ($id == '') {
-            return LogUtil::registerError("pid $pid not found");
+        if (empty($id)) {
+            return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'pid')));
         }
     }
     $dynHandler->tid       = $tid;
@@ -209,7 +219,7 @@ function pagemaster_user_pubedit()
     $dynHandler->tablename = 'pagemaster_pubdata'.$tid;
 
     // get actual state for selecting pnForm Template
-    if ('id' <> '') {
+    if (!empty($id)) {
         $obj = array('id' => $id);
         WorkflowUtil::getWorkflowForObject($obj, $dynHandler->tablename, 'id', 'pagemaster');
         $stepname = $obj['__WORKFLOW__']['state'];
@@ -414,7 +424,7 @@ function pagemaster_user_viewpub($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id | pid')));
     }
 
-    $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
     if (empty($pubtype)) {
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }

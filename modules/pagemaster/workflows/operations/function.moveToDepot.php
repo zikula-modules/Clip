@@ -13,12 +13,18 @@ function pagemaster_operation_moveToDepot($obj, $params)
 {
     $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $obj['tid'], 'tid');
 
+    // if revisions enabled for this pubtype
+    // move the object to depot and retirn the updated object
     if ($pubtype['enablerevisions']) {
         $obj['core_indepot'] = 1;
-        $obj['core_online'] = 0;
-        return (bool) DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
+        $obj['core_online']  = 0;
+        return DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
+
+    // delete the object otherwise
     } else {
-        return WorkflowUtil::deleteWorkflow($obj);
-        //return (bool) DBUtil::deleteObject($obj, $obj['__WORKFLOW__']['obj_table']);
+        if (WorkflowUtil::deleteWorkflow($obj)) {
+            return array('core_online' => 0);
+        }
+        return false;
     }
 }
