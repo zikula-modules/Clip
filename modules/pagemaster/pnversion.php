@@ -44,5 +44,5 @@ $modversion['dependencies'] = array(
                                     array('modname'    => 'Thumbnail', 
                                           'minversion' => '1.1', 
                                           'maxversion' => '', 
-                                          'status'     => PNMODULE_DEPENDENCY_RECOMMENDED)
+                                          'status'     => PNMODULE_DEPENDENCY_REQUIRED)
                                    );
