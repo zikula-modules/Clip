@@ -1,9 +1,9 @@
 <?php
 
 
-Loader::loadClass('FilterUtil_OpCommon', FILTERUTIL_CLASS_PATH);
+Loader::loadClass('PagemasterFilterUtil_OpCommon', Pagemaster_FILTERUTIL_CLASS_PATH);
 
-class FilterUtil_Plugin_pmList extends FilterUtil_OpCommon
+class PagemasterFilterUtil_Plugin_pmList extends PagemasterFilterUtil_OpCommon
 {
 	/**
 	 * Constructor
