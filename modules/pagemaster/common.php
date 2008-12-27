@@ -38,7 +38,7 @@ function getNewFileReference()
 function getExtension($filename, $keepDot = false)
 {
     if (!$filename) {
-        return pn_exit('getExtension: filename is empty');
+        return pn_exit('getExtension pm: filename is empty');
     }
 
     $p = strrpos($filename, '.');
@@ -57,7 +57,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
 {
     $template_code = '
                       <h1><!--[pnml name=\''. $pubtype['title'] .'\']--></h1>
-
+						
                       <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
                           <!--[pnml name=\'_PAGEMASTER_GENERIC_EDITPUB\']--><br />
                       <!--[/pnsecauthaction_block]-->
