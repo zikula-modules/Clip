@@ -26,7 +26,7 @@ class pagemaster_admin_modifyconfigHandler
         $render->assign('uploadpath', $uploadpath);
 
         // Check taken from MediaAttach
-        if (is_dir($$uploadpath . '/') &&  is_writable($uploadpath . '/')) {        
+        if (is_dir($uploadpath . '/') &&  is_writable($uploadpath . '/')) {        
             $render->assign('updirok', '1');
         } else {
             $render->assign('updirok', '0');
