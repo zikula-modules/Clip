@@ -53,7 +53,7 @@ class pmformuploadinput extends pnFormUploadInput
 		$tid  = $data['tid'];
 		$data = $data[$field['name']];
 
-		if ($data <> '' and !empty ($_FILES)) {
+		if ($data['name'] <> '' and !empty ($_FILES)) {
 			$uploadpath = pnModGetVar('pagemaster', 'uploadpath');
 			// TODO: delete the old file
 			$srcTempFilename = $data['tmp_name'];
