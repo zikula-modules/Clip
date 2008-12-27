@@ -264,7 +264,7 @@ function pagemaster_user_main($args)
     $filter             = isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter');
     $orderby            = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
     $justOwn            = isset($args['justOwn']) ? $args['justOwn'] : FormUtil::getPassedValue('justOwn');
-    $template           = isset($args['template']) ? $args['template'] : '';
+    $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState');
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields');
     $rss                = isset($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
@@ -414,7 +414,7 @@ function pagemaster_user_viewpub($args)
     $tid      = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $pid      = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
     $id       = isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id');
-    $template = isset($args['template']) ? $args['template'] : '';//FormUtil::getPassedValue('template');
+    $template = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
     $cachelifetime = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
 
     if (empty($tid)) {
@@ -441,7 +441,7 @@ function pagemaster_user_viewpub($args)
         if ($pubtype['filename'] <> '') {
             // template comes from pubtype
             $sec_template = $pubtype['filename'];
-            $template     = 'output/viewpub_'.$pubtype['filename'].'.htm';
+            $template     = 'output/viewpub_'.$sec_template.'.htm';
         } else {
             // standart template
             $template = 'var:viewpub_template_code';
