@@ -90,8 +90,8 @@ class pagemaster_user_dynHandler
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // if the item is now offline or was moved to the depot
-        if ($data['core_indepot'] == 0 || $data['core_indepot'] == 1) {
-            $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
+        if ($data['core_online'] == 0 || $data['core_indepot'] == 1) {
+            $this->goto = pnModURL('pagemaster', 'user', 'main',
                                    array('tid' => $data['tid']));
 
         } elseif (empty($this->goto)) {
