@@ -52,7 +52,7 @@ function pagemaster_listblock_display($blockinfo)
 
     $listCount  = $vars['listCount'];
     $listOffset = $vars['listOffset'];
-    $template   = (isset ($vars['template']) && $vars['template'] != '' ? $vars['template'] : 'block-list.htm');
+    $template   = (isset ($vars['template']) && $vars['template'] != '' ? $vars['template'] : 'block-list');
     $filterStr  = $vars['filters'];
     $orderBy    = $vars['orderBy'];
     $cachelifetime  = $vars['cachelifetime'];
