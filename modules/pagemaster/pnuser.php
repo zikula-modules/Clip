@@ -240,8 +240,8 @@ function pagemaster_user_pubedit()
             return $render->pnFormExecute($user_defined_template_all, $dynHandler);
 
         } else {
-            LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_step)));
-            LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_all)));
+            LogUtil::registerError(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_step)));
+            LogUtil::registerError(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_all)));
             global $editpub_template_code;
             $editpub_template_code = generate_editpub_template_code($tid, $pubfields, $pubtype);
             // TODO delete all the time, even if it's not needed
