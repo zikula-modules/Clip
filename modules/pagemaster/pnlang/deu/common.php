@@ -11,6 +11,8 @@
 
 // Common items
 define('_PAGEMASTER_PUBLICATION', 'Publication');
+define('_PAGEMASTER_LANGUAGE','Deutsch');
+define('_PAGEMASTER_HITCOUNT','Aufrufe');
 
 // Common publication fields
 define('_PAGEMASTER_AUTHOR', 'Author');
