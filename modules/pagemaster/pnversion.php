@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -13,7 +13,7 @@
 $modversion['name']           = 'pagemaster';
 
 // Version (10 chars or less):
-$modversion['version']        = '0.2';
+$modversion['version']        = '0.2.1';
 $modversion['description']    = 'Content Module like pagesetter';
 $modversion['displayname']    = 'pagemaster';
 
@@ -28,7 +28,7 @@ $modversion['contact']        = 'mk@sexyandfamous.com';
 
 // Module security:
 $modversion['securityschema'] = array(
-                                      'pagemaster::' => '::',
+                                      'pagemaster::'      => '::',
                                       'pagemaster:input:' => 'tid::',
                                       'pagemaster:input:' => 'tid:pid:workflowstate',
                                       'pagemaster:full:'  => 'tid:pid:template',
@@ -44,5 +44,5 @@ $modversion['dependencies'] = array(
                                     array('modname'    => 'Thumbnail', 
                                           'minversion' => '1.1', 
                                           'maxversion' => '', 
-                                          'status'     => PNMODULE_DEPENDENCY_REQUIRED)
+                                          'status'     => PNMODULE_DEPENDENCY_RECOMMENDED)
                                    );
