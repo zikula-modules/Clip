@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -15,7 +15,7 @@
 function pagemaster_listblock_init()
 {
     // Security
-    pnSecAddSchema('pagemaster:Listblock:', 'Block title:Block Id:Type Id');
+    SecurityUtil::registerPermissionSchema('pagemaster:Listblock:', 'Block title:Block Id:Type Id');
 }
 
 /**
@@ -35,48 +35,46 @@ function pagemaster_listblock_info()
     );
 }
 
+/**
+ * display the block according its configuration
+ */
 function pagemaster_listblock_display($blockinfo)
 {
     // Get variables from content block
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
-    if (!array_key_exists('tid', $vars)) {
-        return '';
+    // Validation of required parameters
+    if (!isset($vars['tid'])) {
+        $vars['tid'] = pnModGetVar('pagemaster', 'frontpagePubType');
     }
-
-    $tid = $vars['tid'];
-    if (!isset ($tid)) {
-        $blockinfo['content'] = 'No type ID set for this block.';
-        return pnBlockThemeBlock($blockinfo);
-    }
-
-    $listCount  = $vars['listCount'];
-    $listOffset = $vars['listOffset'];
-    $template   = (isset ($vars['template']) && $vars['template'] != '' ? $vars['template'] : 'block-list');
-    $filterStr  = $vars['filters'];
-    $orderBy    = $vars['orderBy'];
-    $cachelifetime  = $vars['cachelifetime'];
 
     // Security check
-    if (!SecurityUtil::checkPermission('pagemaster:Listblock:', "$blockinfo[title]:$blockinfo[bid]:$tid", ACCESS_READ)) {
+    if (!SecurityUtil::checkPermission('pagemaster:Listblock:', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
         return;
     }
 
-    $html = pnModFunc('pagemaster', 'user', 'main',
-                      array('tid'                => $tid,
-                            'filter'             => $filterStr,
-                            'orderby'            => $orderBy,
-                            'itemsperpage'           => $listCount,
-                            'startnum'           => $listOffset,
-                            'checkPerm'          => true,
-                            'template'           => $template,
-                            'handlePluginFields' => true,
-                            'cachelifetime'      => $cachelifetime
-    ));
-	if ($html == '')
-		return false;
-		
-    $blockinfo['content'] = $html;
+    // Default values
+    $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : 'block_list';
+    $listCount     = (isset($vars['listCount']) && (int)$vars['listCount'] > 1) ? $vars['listCount'] : 5;
+    $listOffset    = (isset($vars['listOffset'])) ? $vars['listOffset'] : 0;
+    $filterStr     = (isset($vars['filters'])) ? $vars['filters'] : '';
+    $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
+    $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
+
+    $blockinfo['content'] = pnModFunc('pagemaster', 'user', 'main',
+                                      array('tid'                => $vars['tid'],
+                                            'filter'             => $filterStr,
+                                            'orderby'            => $orderBy,
+                                            'itemsperpage'       => $listCount,
+                                            'startnum'           => $listOffset,
+                                            'checkPerm'          => true,
+                                            'template'           => $template,
+                                            'handlePluginFields' => true,
+                                            'cachelifetime'      => $cachelifetime));
+
+    if (empty($blockinfo['content'])) {
+        return;
+    }
 
     return pnBlockThemeBlock($blockinfo);
 }
@@ -86,41 +84,38 @@ function pagemaster_listblock_display($blockinfo)
  */
 function pagemaster_listblock_modify($blockinfo)
 {
-    $output = new pnHTML();
-
     // Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
-    if (!isset ($vars['tid'])) {
+    if (!isset($vars['tid'])) {
         $vars['tid'] = pnModGetVar('pagemaster', 'frontpagePubType');
     }
-    if (!isset ($vars['listCount'])) {
-        $vars['listCount'] = 10;
+    if (!isset($vars['listCount'])) {
+        $vars['listCount'] = 5;
     }
-    if (!isset ($vars['listOffset'])) {
-        $vars['listOffset'] = '';
+    if (!isset($vars['listOffset'])) {
+        $vars['listOffset'] = 0;
     }
-    if (!isset ($vars['template'])) {
-        $vars['template'] = '';
+    if (!isset($vars['cachelifetime'])) {
+        $vars['cachelifetime'] = 0;
     }
-    if (!isset ($vars['cachelifetime'])) {
-        $vars['cachelifetime'] = '';
+    if (!isset($vars['filters'])) {
+        $vars['filters'] = '';
     }
-
-    $cachelifetime  = $vars['cachelifetime'];
-    $listCount  = $vars['listCount'];
-    $listOffset = $vars['listOffset'];
-    $template   = $vars['template'];
-    $filters    = array_key_exists('filters', $vars) ? $vars['filters'] : null;
-    $orderBy    = array_key_exists('orderBy', $vars) ? $vars['orderBy'] : null;
-    if (!pnModAPILoad('pagemaster', 'admin')) {
-        return pagemasterErrorPage(__FILE__, __LINE__, 'Failed to load pagemaster admin API');
+    if (!isset($vars['orderBy'])) {
+        $vars['orderBy'] = '';
+    }
+    if (!isset($vars['template'])) {
+        $vars['template'] = 'block_list';
     }
 
-    // (no table start/end since the block framework takes care of that)
+    $output = new pnHTML();
 
-    // Create row for "Publication type"
+    // (no table start/end since the block edit template takes care of that)
+
+    // Create a row for "Publication type"
+    pnModDBInfoLoad('pagemaster');
     $pubTypesData = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
     $pubTypes = array ();
@@ -134,10 +129,11 @@ function pagemaster_listblock_modify($blockinfo)
             $pubTypes[count($pubTypes)-1]['selected'] = 1;
         }
     }
+    unset($pubTypesData);
 
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCKLISTPUBTYPE);
+    $row[] = $output->Text(_PMBLOCK_LIST_PUBTYPE);
     $row[] = $output->FormSelectMultiple('tid', $pubTypes);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
@@ -149,8 +145,8 @@ function pagemaster_listblock_modify($blockinfo)
     // Add filter
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCKLISTFILTER);
-    $row[] = $output->FormText('filters', $filters);
+    $row[] = $output->Text(_PMBLOCK_LIST_FILTER);
+    $row[] = $output->FormText('filters', $vars['filters']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
     // Add row
@@ -161,8 +157,8 @@ function pagemaster_listblock_modify($blockinfo)
     // Add order by
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCKLISTORDERBY);
-    $row[] = $output->FormText('orderBy', $orderBy);
+    $row[] = $output->Text(_PMBLOCK_LIST_ORDERBY);
+    $row[] = $output->FormText('orderBy', $vars['orderBy']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
     // Add row
@@ -174,8 +170,8 @@ function pagemaster_listblock_modify($blockinfo)
     // Add cachelifetime
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCKLISTCACHELIFETIME);
-    $row[] = $output->FormText('cachelifetime', $cachelifetime);
+    $row[] = $output->Text(_PMBLOCK_LIST_CACHELIFETIME);
+    $row[] = $output->FormText('cachelifetime', $vars['cachelifetime']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
     // Add row
@@ -186,8 +182,8 @@ function pagemaster_listblock_modify($blockinfo)
     // Add no. of publications
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCKLISTSHOWCOUNT);
-    $row[] = $output->FormText('listCount', $listCount);
+    $row[] = $output->Text(_PMBLOCK_LIST_SHOWCOUNT);
+    $row[] = $output->FormText('listCount', $vars['listCount']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
     // Add row
@@ -198,8 +194,8 @@ function pagemaster_listblock_modify($blockinfo)
     // Add no. of publications offset
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCKLISTSHOWOFFSET);
-    $row[] = $output->FormText('listOffset', $listOffset);
+    $row[] = $output->Text(_PMBLOCK_LIST_SHOWOFFSET);
+    $row[] = $output->FormText('listOffset', $vars['listOffset']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
     // Add row
@@ -210,8 +206,8 @@ function pagemaster_listblock_modify($blockinfo)
     // Add template
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCKLISTTEMPLATE);
-    $row[] = $output->FormText('template', $template);
+    $row[] = $output->Text(_PMBLOCK_LIST_TEMPLATE);
+    $row[] = $output->FormText('template', $vars['template']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
     // Add row
@@ -231,13 +227,13 @@ function pagemaster_listblock_update($blockinfo)
     $filters = pnVarCleanFromInput('filters');
 
     $vars = array (
-        'tid'        => FormUtil::getPassedValue('tid'),
-        'filters'    => $filters,
-        'listCount'  => FormUtil::getPassedValue('listCount'),
-        'listOffset' => FormUtil::getPassedValue('listOffset'),
-        'template'   => FormUtil::getPassedValue('template'),
-        'cachelifetime'   => FormUtil::getPassedValue('cachelifetime'),
-        'orderBy'    => FormUtil::getPassedValue('orderBy')
+        'tid'           => FormUtil::getPassedValue('tid'),
+        'filters'       => $filters,
+        'listCount'     => FormUtil::getPassedValue('listCount'),
+        'listOffset'    => FormUtil::getPassedValue('listOffset'),
+        'template'      => FormUtil::getPassedValue('template'),
+        'cachelifetime' => FormUtil::getPassedValue('cachelifetime'),
+        'orderBy'       => FormUtil::getPassedValue('orderBy')
     );
 
     $blockinfo['content'] = pnBlockVarsToContent($vars);
