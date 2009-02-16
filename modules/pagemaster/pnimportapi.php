@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -34,8 +34,8 @@ function pagemaster_importapi_importps1()
     //Loader::loadClassFromModule('Categories', 'CategoryRegistry');
 
     $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
-    if ($rootcat == '' or !$rootcat) {
-        return LogUtil :: registerError('Category /__SYSTEM__/Modules/pagemaster/lists not found');
+    if (empty($rootcat)) {
+        return LogUtil::registerError('Category /__SYSTEM__/Modules/pagemaster/lists not found');
     }
 
     //$temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
@@ -82,7 +82,7 @@ function pagemaster_importapi_importps1()
         }
     }
     //save link between list id's and category id's
-    pnModSetVar('pagesetter','temp_arr',serialize($temp_arr));
+    pnModSetVar('pagesetter', 'temp_arr', serialize($temp_arr));
     return LogUtil::registerStatus(_PAGEMASTER_IMPORTFROMPAGESETTER_INSERTSUCCEDED);
 }
 
@@ -165,7 +165,7 @@ function pagemaster_importapi_importps2()
             } elseif ($pubfield['type'] == 'multilist') {
                 $datafield['fieldplugin'] = 'function.pmformmultilistinput.php';
                 $list = DBUtil :: selectObjectArray("pagesetter_lists", 'pg_id = ' . $pubfield['typeData']);
-                $cat = DBUtil :: selectObjectArray("categories_category", "cat_path = '/__SYSTEM__/Modules/pagemaster/lists/" . mysql_escape_string($list[0]['title']) . "' and cat_name = '" . mysql_escape_string($list[0]['title']) . "'");
+                $cat = DBUtil :: selectObjectArray("categories_category", "cat_path = '/__SYSTEM__/Modules/pagemaster/lists/" . mysql_escape_string($list[0]['title']) . "' AND cat_name = '" . mysql_escape_string($list[0]['title']) . "'");
                 $datafield['typedata'] = $cat[0]['id'];
 
             } elseif ($pubfield['type'] == 'publication') {
@@ -216,12 +216,12 @@ function pagemaster_importapi_importps2()
                 $datafield['fieldplugin'] = 'function.pmformlatlnginput.php';
             }
             
-            elseif (is_numeric($pubfield['type']) and $pubfield['type'] > 100) {
+            elseif (is_numeric($pubfield['type']) && $pubfield['type'] > 100) {
                 //has to be a list
                 $datafield['fieldplugin'] = 'function.pmformlistinput.php';
                 $pubfield['type'] = $pubfield['type'] -100;
                 $list = DBUtil::selectObjectArray('pagesetter_lists', 'pg_id = '.$pubfield['type']);
-                $cat  = DBUtil::selectObjectArray('categories_category', 'cat_path = \'/__SYSTEM__/Modules/pagemaster/lists/'.mysql_escape_string($list[0]['title']).'\' and cat_name = \''.mysql_escape_string($list[0]['title']) .'\'');
+                $cat  = DBUtil::selectObjectArray('categories_category', 'cat_path = \'/__SYSTEM__/Modules/pagemaster/lists/'.mysql_escape_string($list[0]['title']).'\' AND cat_name = \''.mysql_escape_string($list[0]['title']) .'\'');
                 $datafield['typedata'] = $cat[0]['id'];
 
             } else {
@@ -302,7 +302,7 @@ function pagemaster_importapi_importps4()
         $tablename   = $pntable['pagesetter_pubdata'].$pubtype['id'];
         $tablenamePM = $pntable['pagemaster_pubdata'.$pubtype['id']];
 
-        $sql    = 'SELECT pg_hitcount , dyn.* from pn_pagesetter_pubheader pp, ' . $tablename . ' dyn where pp.pg_pid = dyn.pg_pid and pp.pg_tid = ' . $pubtype['id'];
+        $sql    = 'SELECT pg_hitcount , dyn.* from pn_pagesetter_pubheader pp, ' . $tablename . ' dyn where pp.pg_pid = dyn.pg_pid AND pp.pg_tid = ' . $pubtype['id'];
         $result = DBUtil::executeSQL($sql);
         if (!$result) {
             LogUtil::registerError(_PAGEMASTER_CANNOTIMPORTDATAFORTID.' '.$pubtype['id']);
@@ -344,8 +344,8 @@ function pagemaster_importapi_importps4()
                         copy($DirPS . '/' . $tmb_file_name, $DirPM . '/' . $tmb_file_name);
 
                     } elseif (isset ($listfields[$DBid])) {
-                        if ($field <> ''){
-                            if ($field <> 0){
+                        if (!empty($field)) {
+                            if ($field <> 0) {
                                 $catitem['id'] = $temp_arr[$field];
                                 $field = $catitem['id'];
                             } else {
@@ -357,10 +357,11 @@ function pagemaster_importapi_importps4()
                         $listArr = explode(':', $field);
                         $field = ':';
                         foreach ($listArr as $listId) {
-                            if ($listId <> '') {
+                            if (!empty($listId)) {
                                 $catitem['id'] = $temp_arr[$listId];
-                                if ($catitem['id'] <> '')
-                                $field .= $catitem['id'] . ':';
+                                if (!empty($catitem['id'])) {
+                                    $field .= $catitem['id'] . ':';
+                                }
                             }
                         }
                     }
@@ -383,7 +384,7 @@ function pagemaster_importapi_importps4()
             unset ($data[1]);
 
             foreach ($data as $dkey => $data2) {
-                if ($data2 == '' and $dkey <> 10) {
+                if ($data2 == '' && $dkey <> 10) {
                     $sql .= ' , null';
                 } else {
                     $sql .= ' ,\''. mysql_escape_string($data2) . '\'';

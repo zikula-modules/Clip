@@ -2,11 +2,11 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -25,13 +25,12 @@ class pmformpubinput extends pnFormDropdownList
     function load($render)
     {
         $pubfields = $render->pnFormEventHandler->pubfields;
-        
-        foreach ($pubfields as $key => $pubfield) {
-            if ($pubfield['name'] == $this->id) {
-                list($tid,$filter,$join,$joinfields,$orderby) = explode(';', $pubfield['typedata']);
-            }
+
+        if (array_key_exists($this->id, $pubfields)) {
+            list($tid, $filter, $join, $joinfields, $orderby) = explode(';', $pubfields[$this->id]['typedata']);
         }
-        $pubfields_pub = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid);
+
+        $pubfields_pub = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
         $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
                                array('tid'                => $tid,
                                      'countmode'          => 'no',
@@ -52,6 +51,7 @@ class pmformpubinput extends pnFormDropdownList
                              'value' => $pub['core_pid']);
         }
         $this->items = $items;
+
         parent::load($render);
     }
 

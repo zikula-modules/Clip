@@ -2,23 +2,26 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
 function createOrderBy($orderby)
 {
     $orderbylist = explode(',', $orderby);
-    $orderby = '';
-    foreach ($orderbylist as $key => $orderbysingle) {
-        list ($col, $ascdesc) = explode(':', $orderbysingle);
-        if ($key > 0)
+    $orderby     = '';
+    foreach ($orderbylist as $key => $value) {
+        if ($key > 0) {
             $orderby .= ', ';
-        $orderby .= $col.' '.$ascdesc;
+        }
+        // $value = {col[:ascdesc]}
+        $value    = explode(':', $value);
+        $orderby .= $value[0].(isset($value[1]) ? ' '.$value[1] : '');
     }
+
     return trim($orderby);
 }
 
@@ -29,8 +32,9 @@ function getNewFileReference()
 
     $id = '';
 
-    for ($i = 0; $i < 30; ++ $i)
-        $id .= $chars[mt_rand(0, $charLen -1)];
+    for ($i = 0; $i < 30; ++ $i) {
+        $id .= $chars[mt_rand(0, $charLen-1)];
+    }
 
     return $id;
 }
@@ -53,48 +57,54 @@ function getExtension($filename, $keepDot = false)
     return '';
 }
 
-function generate_editpub_template_code($tid, $pubfields, $pubtype)
+function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction='new', $uniqueid=null)
 {
     $template_code = '
-                      <h1><!--[pnml name=\''. $pubtype['title'] .'\']--></h1>
-						
-                      <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                          <!--[pnml name=\'_PAGEMASTER_GENERIC_EDITPUB\']--><br />
-                      <!--[/pnsecauthaction_block]-->
-
                       <!--[insert name=\'getstatusmsg\']-->
 
-                      <!--[pnml name=\''. $pubtype['description'] .'\']--><br />
-        
+                      <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
+                          <div class="pn-warningmsg"><!--[pnml name=\'_PAGEMASTER_GENERIC_EDITPUB\' html=1]--></div>
+                      <!--[/pnsecauthaction_block]-->
+
+                      <h1><!--[pnml name=\''. $pubtype['title'] .'\']--></h1>
+
+                      <p><!--[pnml name=\''. $pubtype['description'] .'\']--></p>
+
                       <!--[pnform enctype=\'multipart/form-data\']-->
                       <!--[pnformvalidationsummary]-->
                       <table>
                       ';
 
-    foreach ($pubfields as $pubfield) {
-        if ($pubfield['fieldmaxlength'] <> '') {
-            $maxlength = ' maxLength=\'' . $pubfield['fieldmaxlength'] . '\' ';
+    $ak = array_keys($pubfields);
+    foreach ($ak as $k) {
+        // get the plugin pnform name of the plugin filename
+        $pmformname = explode('.', $pubfields[$k]['fieldplugin']);
+        $pmformname = $pmformname[1];
+
+        if (!empty($pubfields[$k]['fieldmaxlength'])) {
+            $maxlength = 'maxLength=\''.$pubfields[$k]['fieldmaxlength'].'\'';
+        } elseif($pmformname == 'pmformtextinput') {
+            $maxlength = 'maxLength=\'65535\' ';
         } else {
-            $maxlength = ' maxLength=\'255\' '; //TODO Not a clean solution. MaxLength is not needed for ever plugin
+            $maxlength = 'maxLength=\'255\' '; //TODO Not a clean solution. MaxLength is not needed for ever plugin
         }
 
-        if ($pubfield['description'] <> '') {
-            $toolTip = ' toolTip=\'' . $pubfield['description'] . '\' ';
+        if (!empty($pubfields[$k]['description'])) {
+            $toolTip = 'toolTip=\''.$pubfields[$k]['description'].'\' ';
         } else {
             $toolTip = '';
         }
 
         // specific plugins
-        $fieldplugin = explode('.', $pubfield['fieldplugin']);
-        if ($fieldplugin[1] == 'pmformtextinput') {
-            $linecol = ' rows=\'20\' cols=\'70\' ';
+        if ($pmformname == 'pmformtextinput') {
+            $linecol = 'rows=\'20\' cols=\'70\' ';
         } else {
             $linecol = '';
         }
         $template_code .= '
                             <tr>
-                                <td><!--[pnformlabel for=\'' . $pubfield['name'] . '\' text=\'' . $pubfield['title'] . '\']-->:</td>
-                                <td><!--[' . $fieldplugin[1] . ' id=\'' . $pubfield['name'] . '\' ' . $maxlength . $linecol . $toolTip . ' mandatory=\'' . $pubfield['ismandatory'] . '\']--></td>
+                                <td><!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' text=\''.$pubfields[$k]['title'].'\']-->:</td>
+                                <td><!--['.$pmformname.' id=\''.$pubfields[$k]['name'].'\' '.$maxlength.$linecol.$toolTip.'mandatory=\''.$pubfields[$k]['ismandatory'].'\']--></td>
                             </tr>
                             ';
     }
@@ -111,7 +121,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
 
                             <tr>
                                 <td><!--[pnformlabel for=\'core_language\' text=\'_LANGUAGE\']-->:</td>
-                                <td><!--[pnformlanguageselector id=\'core_language\' mandatory=\'1\']--></td>
+                                <td><!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']--></td>
                             </tr>
 
                             <tr>
@@ -120,9 +130,9 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
                             </tr>
                         </table>
 
-                        <br/>
+                        <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\''.(!empty($uniqueid) ? " hookid='$uniqueid'" : '').' module=\'pagemaster\']-->
 
-                        <!--[foreach item=action from=$actions]-->
+                        <!--[foreach item=\'action\' from=$actions]-->
                             <!--[pnformbutton commandName=$action text=$action]-->
                         <!--[/foreach]-->
                         <!--[/pnform]-->
@@ -134,17 +144,17 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype)
 function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
 {
     $template_code = '<!--[pndebug]-->
-                
-                <!--[hitcount pid=$core_pid tid=$core_tid]-->
-                <h1><!--[pnml name=\'' . $pubtype['title'] . '\']--></h1>
 
+                <!--[hitcount pid=$core_pid tid=$core_tid]-->
                 <!--[insert name=\'getstatusmsg\']-->
 
                 <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                    <!--[pnml name=\'_PAGEMASTER_GENERIC_VIEWPUB\']--><br />
+                    <div class="pn-warningmsg"><!--[pnml name=\'_PAGEMASTER_GENERIC_VIEWPUB\' html=1]--></div>
                 <!--[/pnsecauthaction_block]-->
 
-                <!--[pnml name=\'' . $pubtype['description'] . '\']--><br />
+                <h1><!--[pnml name=\'' . $pubtype['title'] . '\']--></h1>
+
+                <p><!--[pnml name=\'' . $pubtype['description'] . '\']--></p>
 
                 ';
 
@@ -156,13 +166,30 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
         if (isset($pubfields[$key])) {
             $field = $pubfields[$key];
 
-            $template_code_fielddesc = '<!--[pnml name=\''.$field['name'].'\']-->: ';
+            $template_code_fielddesc = '<!--[pnml name=\''.$field['title'].'\']-->: ';
+            // image plugin
             if ($field['fieldplugin'] == 'function.pmformimageinput.php') {
-                $template_code_add = '<!--[if $'.$field['name'].'.url neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $field['name'] .'.orig_name]--><br/>'."\n";
-                $template_code_add .= '<img src="<!--[$' . $field['name'] . '.thumbnailUrl]-->" /><br/>'."\n";
-                $template_code_add .= '<img src="<!--[$' . $field['name'] . '.url]-->" /><br/>'."\n".'<!--[/if]-->'."\n\n";
+                $template_code_add = '<!--[if $'.$field['name'].'.url neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $field['name'] .'.orig_name]--><br />
+                                      <img src="<!--[$' . $field['name'] . '.thumbnailUrl]-->" /><br />
+                                      <img src="<!--[$' . $field['name'] . '.url]-->" /><br />
+                                      <!--[/if]-->'."\n\n";
+            // list input
             } elseif ($field['fieldplugin'] == 'function.pmformlistinput.php') {
                 $template_code_add = '<!--[if $'.$field['name'].'.fullTitle neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $field['name'] .'.fullTitle]--><br/>'."\n".'<!--[/if]-->'."\n\n";
+
+            // multilist input
+            } elseif ($field['fieldplugin'] == 'function.pmformmultilistinput.php') {
+                $template_code_add = '<!--[if $'.$field['name'].' neq null]-->'."\n".$template_code_fielddesc.'<br />
+                <ul>
+                    <!--[foreach from=$items item=\'item\']-->
+                    <!--[array_field_isset assign=\'itemname\' array=$item.display_name field=$core_language returnValue=1]-->
+                    <!--[if $itemname eq \'\']--><!--[assign var=\'itemname\' value=$item.name]--><!--[/if]-->
+                    <li><!--[$itemname]--></li>
+                    <!--[/foreach]-->
+                </ul>
+                <!--[/if]-->'."\n\n";
+
+            // publication input
             } elseif ($field['fieldplugin'] == 'function.pmformpubinput.php') {
                 $template_code_add = '<!--[if $'.$key.' neq \'\']-->'."\n".$template_code_fielddesc.'<!--[pnmodapifunc modname=\'pagemaster\' checkPerm=true handlePluginFields=true getApprovalState=true func=\'getPub\' tid=\''.$field['typedata'].'\' pid=$'.$key.' assign=\''.$key.'_publication\']-->'."\n".'<!--[/if]-->'."\n\n";
             }
@@ -181,8 +208,13 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
                 $template_code_add = '<!--[if $'.$key.' neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $key .'|pnvarprephtmldisplay]--><br/>'."\n".'<!--[/if]-->'."\n\n";
             }
         }
-        $template_code = $template_code . $template_code_add;
+        $template_code .= $template_code_add;
     }
+
+    // Add the Hooks support for viewpub
+    $template_code .= "\n".'<!--[pnmodurl modname=\'pagemaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\']-->
+                            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'pagemaster\' returnurl=$returnurl]-->';
+    
     return $template_code;
 }
 
@@ -192,23 +224,26 @@ function pagemasterGetPluginsOptionList()
     $plugins = array ();
     if ($dh = opendir($dir)) {
         while (($file = readdir($dh)) !== false) {
-            if (substr($file, 0, 15) == "function.pmform") {
+            if (substr($file, 0, 15) == 'function.pmform') {
                 $plugin = pagemasterGetPlugin($file);
                 $plugins[] = array (
                     'plugin' => $plugin,
                     'file' => $file
                 );
-
             }
         }
         closedir($dh);
     }
+
     return $plugins;
 }
 
 function pagemasterGetWorkflowsOptionList()
 {
     function parse_dir($dir, &$plugins) {
+        if (!is_dir($dir) || !is_readable($dir)) {
+            return;
+        }
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
                 if (substr($file, -4, 4) == '.xml') {
@@ -222,7 +257,7 @@ function pagemasterGetWorkflowsOptionList()
         }
     }
     $plugins = array ();
-        
+
     $dir = 'modules/pagemaster/workflows';
     parse_dir($dir, $plugins);
     $dir = 'config/workflows/pagemaster';
@@ -232,61 +267,76 @@ function pagemasterGetWorkflowsOptionList()
 
 function pagemasterGetPlugin($file)
 {
-    static $plugins = array ();
-    if (empty ($plugins[$file])) {
+    static $plugins = array();
+
+    if (empty($plugins[$file])) {
         $pluginType = pagemasterGetPluginTypeFromFilename($file);
         pagemasterloadPluginType($pluginType);
         $plugins[$file] = new $pluginType;
     }
+
     return $plugins[$file];
 }
 
 function pagemasterGetPluginTypeFromFilename($filename)
 {
     $i = strpos($filename, '.', 9);
-    if ($i === false)
+    if ($i === false) {
         return false;
+    }
     return substr($filename, 9, $i -9);
 }
 
 function pagemasterloadPluginType($pluginType)
 {
-    static $loadedPlugins = array ();
-    if (empty ($loadedPlugins[$pluginType])) {
-        $filename = "modules/pagemaster/pntemplates/plugins/function.$pluginType.php";
-        require_once $filename;
+    static $loadedPlugins = array();
+
+    if (empty($loadedPlugins[$pluginType])) {
+        require_once("modules/pagemaster/pntemplates/plugins/function.$pluginType.php");
         $loadedPlugins[$pluginType] = 1;
     }
 }
 
 function handlePluginFields($publist, $pubfields)
 {
-    foreach ($pubfields as $fieldname => $field) {
-        $plugin = pagemasterGetPlugin($field['fieldplugin']);
+    // Loop the plugins and process their data in the publist if postRead exists
+    // Save memory using array keys instead $key => $values
+    $akl = array_keys($publist);
+    $akf = array_keys($pubfields);
+    // Loop the plugins
+    foreach ($akf as $fieldname) {
+        // $pubfields[$fieldname] is a $field
+        $plugin = pagemasterGetPlugin($pubfields[$fieldname]['fieldplugin']);
 
         if (method_exists($plugin, 'postRead')) {
-            foreach ($publist as $key => $pub) {
-                if ($pub[$fieldname] <> '' and isset($pub[$fieldname]))
-                    $publist[$key][$fieldname] = $plugin->postRead($pub[$fieldname], $field);
+            foreach ($akl as $l) {
+                // $publist[$l] is a $pub
+                if (isset($publist[$l][$fieldname]) && !empty($publist[$l][$fieldname])) {
+                    $publist[$l][$fieldname] = $plugin->postRead($publist[$l][$fieldname], $pubfields[$fieldname]);
+                }
             }
         }
     }
+
     return $publist;
 }
 
 function getTidFromTablename($tablename)
 {
+    $tid = '';
     while (is_numeric(substr($tablename, -1))) {
         $tid = substr($tablename, -1) . $tid;
         $tablename = substr($tablename, 0, strlen($tablename) - 1);
     }
-    return $tid;
+
+    return (int)$tid;
 }
 
 function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
 {
-    if ($orderby <> '') {
-        $orderby_arr = explode(',',$orderby);
+    if (!empty($orderby)) {
+        $orderby_arr = explode(',', $orderby);
+        $orderby_new = '';
 
         foreach ($orderby_arr as $orderby_field) {
             list($orderby_col, $orderby_dir) = explode(' ', trim($orderby_field));
@@ -300,7 +350,7 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
                     break;
                 }
             }
-            if ($plugin_name <> '') {
+            if (!empty($plugin_name)) {
                 $plugin =  pagemasterGetPlugin($plugin_name);
                 if (method_exists($plugin, 'orderBy')) {
                     $orderby_col = $plugin->orderBy($field_name);
@@ -312,18 +362,27 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
             }
             $orderby_new .= $orderby_col.' '.$orderby_dir.',';
         }
-        $orderby = substr($orderby_new,0,-1);
+        $orderby = substr($orderby_new, 0, -1);
     }
+
     return $orderby;
 }
 
+/**
+ * Loop the pubfields array until get the title field
+ *
+ * @param array $pubfields
+ * @return name of the title field
+ */
 function getTitleField($pubfields)
 {
-    foreach ($pubfields as $field) {
-        if ($field['istitle'] == 1) {
-            $core_title = $field['name'];
+    $ak = array_keys($pubfields);
+    foreach ($ak as $i) {
+        if ($pubfields[$i]['istitle'] == 1) {
+            $core_title = $pubfields[$i]['name'];
             break;
         }
     }
+
     return $core_title;
 }

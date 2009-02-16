@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -18,7 +18,7 @@ function pagemaster_import_importps()
     }
 
     $step = FormUtil::getPassedValue('step');
-    if ($step <> '') {
+    if (!empty($step)) {
         $ret = pnModAPIFunc('pagemaster', 'import', 'importps'.$step);
     }
     $render = pnRender::getInstance('pagemaster', null, null, true);

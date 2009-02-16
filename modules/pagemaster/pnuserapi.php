@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -58,9 +58,14 @@ function pagemaster_userapi_editPub($args)
     if (empty($ret)) {
         return LogUtil::registerError(_PAGEMASTER_WORKFLOW_ACTIONERROR);
     }
-    return array_merge($data, $ret);
-}
 
+    // Merge the results of each operation in the data
+    foreach ($ret as $opresult) {
+        $data = array_merge($data, $opresult);
+    }
+
+    return $data;
+}
 
 /**
  * Returns pid
@@ -84,7 +89,7 @@ function pagemaster_userapi_getPid($args)
 }
 
 /**
- * Returns id
+ * Returns the ID of the online publication
  * @author kundi
  * @param int $args['tid']
  * @param int $args['pid']
@@ -92,17 +97,15 @@ function pagemaster_userapi_getPid($args)
  */
 function pagemaster_userapi_getId($args)
 {
-    if (!isset($args['tid'])) {
+    if (!isset($args['tid']) || !is_numeric($args['tid'])) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
-    if (!isset($args['pid'])) {
+    if (!isset($args['pid']) || !is_numeric($args['pid'])) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'pid')));
     }
 
-    $pid = $args['pid'];
     $tablename = 'pagemaster_pubdata'.$args['tid'];
-    $pub = DBUtil::selectObjectArray($tablename, 'pm_online = 1 and pm_pid = '.$pid);
-    return $pub[0]['id'];
+    return DBUtil::selectField($tablename, 'id', 'pm_online = 1 AND pm_pid = '.$args['pid']);
 }
 
 /**
@@ -118,6 +121,7 @@ function pagemaster_userapi_getId($args)
  */
 function pagemaster_userapi_getPub($args)
 {
+    // Validation of essential parameters
     if (!isset($args['tid'])) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
@@ -125,23 +129,39 @@ function pagemaster_userapi_getPub($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id | pid')));
     }
 
+    // Defaults
+    $pubtype            = isset($args['pubtype']) ? $args['pubtype'] : null;
+    $pubfields          = isset($args['pubfields']) ? $args['pubfields'] : null;
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
     $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
 
     $tid = $args['tid'];
-    $pid = $args['pid'];
-    $id  = $args['id'];
 
-    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    // Get the pubtype if not set
     if (empty($pubtype)) {
-        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+        $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+        // Validate the result
+        if ($pubtype === false) {
+            return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+        }
     }
 
-    $uid = pnUserGetVar('uid');
+    // Get the pubfields if not set
+    if (empty($pubfields)) {
+        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+        // Validate the result
+        if ($pubfields === false) {
+            return LogUtil::registerError(_PAGEMASTER_NOPUBFIELDSFOUND);
+        }
+    }
 
+    // build the where clause
+    $tablename = 'pagemaster_pubdata'.$tid;
+    $uid = pnUserGetVar('uid');
     $where = '';
-    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || $id == '')
+
+    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || empty($args['id']))
     {
         if (!empty($uid) && $pubtype['enableeditown'] == 1) {
             $where .= ' ( pm_author = '.$uid.' OR pm_online = 1 )';
@@ -150,30 +170,30 @@ function pagemaster_userapi_getPub($args)
         }
         $where .= ' AND pm_indepot = 0 ';
         $where .= ' AND (pm_language = \'\' OR pm_language = \''.pnUserGetLang().'\')';
-        $where .= ' AND (pm_publishdate <= NOW() or pm_publishdate is null)';
-        $where .= ' AND (pm_expiredate >= NOW() or pm_expiredate is null)';
+        $where .= ' AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)';
+        $where .= ' AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)';
     } else {
         $where .= ' 1=1 ';
     }
 
-    if ($id == '') {
-        $where .= ' AND pm_pid = '.$pid;
+    if (empty($args['id'])) {
+        $where .= ' AND pm_pid = '.$args['pid'];
     } else {
-        $where .= ' AND pm_id = '.$id;
+        $where .= ' AND pm_id = '.$args['id'];
     }
-    $tablename = 'pagemaster_pubdata'.$tid;
 
-    $publist   = DBUtil::selectObjectArray($tablename, $where);
+    // Get the publication list with the defined criteria
+    $publist = DBUtil::selectObjectArray($tablename, $where);
 
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
-    
+    // Handle the plugins data if needed
     if ($handlePluginFields){
-        include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
+        // have to load pnForm, otherwise plugins can not be loaded... TODO
+        include_once('includes/pnForm.php');
         $publist = handlePluginFields($publist, $pubfields);
     }
 
     $pubdata = $publist[0];
-    
+
     $core_title = getTitleField($pubfields);
     $pubdata['core_title'] = $pubdata[$core_title];
 
@@ -213,26 +233,25 @@ function pagemaster_userapi_pubList($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
+    $tid = $args['tid'];
+
     // validate the passed tid
     $pntables = pnDBGetTables();
-    if (!isset($pntables['pagemaster_pubdata'.$args['tid']])) {
+    if (!isset($pntables['pagemaster_pubdata'.$tid])) {
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }
     unset($pntables);
 
-    $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
+    // parameters defaults
     $justOwn            = isset($args['justOwn']) ? $args['justOwn'] : false;
-    $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
+    $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
-
+    $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
+    
+    // permission check
     if ($checkPerm && !SecurityUtil::checkPermission('pagemaster:list:', "$tid::", ACCESS_READ)) {
         return LogUtil::registerError(_NOT_AUTHORIZED);
     }
-
-    $filter  = $args['filter'];
-
-    $orderby = $args['orderby'];
-    $tid     = $args['tid'];
 
     // Optional arguments.
     if (!isset($args['startnum']) || !is_numeric($args['startnum'])) {
@@ -241,14 +260,8 @@ function pagemaster_userapi_pubList($args)
     if (!isset($args['itemsperpage']) || !is_numeric($args['itemsperpage'])) {
         $args['itemsperpage'] = -1;
     }
-
     if (!isset($args['justcount']) || !is_numeric($args['justcount'])) {
         $args['justcount'] = 'no';
-    }
-    if (!isset($args['pubfields'])) {
-        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
-    } else {
-        $pubfields = $args['pubfields'];
     }
 
     if (!isset($args['pubtype'])) {
@@ -256,16 +269,22 @@ function pagemaster_userapi_pubList($args)
     } else {
         $pubtype = $args['pubtype'];
     }
+    if (!isset($args['pubfields'])) {
+        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+    } else {
+        $pubfields = $args['pubfields'];
+    }
 
-    if ($orderby == '' || !isset($orderby)) {
-        if ($pubtype['sortfield1'] <> '') {
+    // set the order
+    if (!isset($args['orderby']) || empty($args['orderby'])) {
+        if (!empty($pubtype['sortfield1'])) {
             if ($pubtype['sortdesc1'] == 1) {
                 $orderby = $pubtype['sortfield1'].' DESC ';
             } else {
                 $orderby = $pubtype['sortfield1'].' ASC ';
             }
 
-            if ($pubtype['sortfield2'] <> '') {
+            if (!empty($pubtype['sortfield2'])) {
                 if ($pubtype['sortdesc2'] == 1) {
                     $orderby .= ', '.$pubtype['sortfield2'].' DESC ';
                 } else {
@@ -273,7 +292,7 @@ function pagemaster_userapi_pubList($args)
                 }
             }
 
-            if ($pubtype['sortfield3'] <> '') {
+            if (!empty($pubtype['sortfield3'])) {
                 if ($pubtype['sortdesc3'] == 1) {
                     $orderby .= ', '.$pubtype['sortfield3'].' DESC ';
                 } else {
@@ -281,8 +300,10 @@ function pagemaster_userapi_pubList($args)
                 }
             }
         }
+    } else {
+        $orderby = $args['orderby'];
     }
-    include_once('includes/pnForm.php'); //have to load, otherwise plugins can not be loaded... TODO
+    include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
 
     Loader::LoadClass('PagemasterFilterUtil', 'modules/pagemaster/classes/FilterUtil/');
 
@@ -290,11 +311,11 @@ function pagemaster_userapi_pubList($args)
     foreach ($pubfields as $fieldname => $field) {
         $plugin = pagemasterGetPlugin($field['fieldplugin']);
 
-        if (isset ($plugin->filterClass)) {
+        if (isset($plugin->filterClass)) {
             $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
         }
         // check for tables to join
-    if ($args['countmode'] <> 'just'){
+        if ($args['countmode'] <> 'just'){
             // do not join for just
            if ($field['fieldplugin'] == 'function.pmformpubinput.php'){
                 $vars        = explode(';', $field['typedata']);
@@ -332,25 +353,28 @@ function pagemaster_userapi_pubList($args)
     $fu = & new PagemasterFilterUtil(array('table' => $tablename,
                                            'plugins' => $filterPlugins));
 
-    if ($filter <> '') {
-        $fu->setFilter($filter);
-    } elseif ($pubtype['defaultfilter'] <> '') {
+    if (isset($args['filter']) && !empty($args['filter'])) {
+        $fu->setFilter($args['filter']);
+    } elseif (!empty($pubtype['defaultfilter'])) {
         $fu->setFilter($pubtype['defaultfilter']);
     }
-    
+
     $filter_where = $fu->GetSQL();
 
+    // build the where clause
+    $where = '';
     $uid = pnUserGetVar('uid');
-    if ($uid <> '' and $pubtype['enableeditown'] == 1) {
-        $where .= '( '.$tbl_alias.'pm_author = '.$uid.' or '.$tbl_alias.'pm_online = 1 )';
+    if (!empty($uid) & $justOwn) {
+        // only own publications
+        $where .= ' '.$tbl_alias.'pm_author = '.$uid;
+        if ($pubtype['enableeditown'] == 0) {
+            // if not capable to edit, only online and enabled ones
+            $where .= ' AND '.$tbl_alias.'pm_online = 1 AND '.$tbl_alias.'pm_showinlist = 1';
+        }
+    } elseif (!empty($uid) && $pubtype['enableeditown'] == 1) {
+        $where .= '('.$tbl_alias.'pm_author = '.$uid.' OR ('.$tbl_alias.'pm_online = 1  AND '.$tbl_alias.'pm_showinlist = 1))';
     } else {
-        $where .= ' '.$tbl_alias.'pm_online = 1 ';
-    }
-
-    if ($uid <> '' and $pubtype['enableeditown'] == 1) {
-        $where .= ' AND ( '.$tbl_alias.'pm_author = '.$uid.' or '.$tbl_alias.'pm_showinlist = 1 )';
-    } else {
-        $where .= ' AND '.$tbl_alias.'pm_showinlist = 1 ';
+        $where .= ' '.$tbl_alias.'pm_online = 1 AND '.$tbl_alias.'pm_showinlist = 1';
     }
 
     $where .= ' AND '.$tbl_alias.'pm_indepot = 0 ';
@@ -358,11 +382,7 @@ function pagemaster_userapi_pubList($args)
     $where .= ' AND ( '.$tbl_alias.'pm_publishdate <= NOW() OR '.$tbl_alias.'pm_publishdate IS NULL)';
     $where .= ' AND ( '.$tbl_alias.'pm_expiredate >= NOW() OR '.$tbl_alias.'pm_expiredate IS NULL)';
 
-    if ($justOwn and $uid <> '') {
-        $where .= ' AND '.$tbl_alias.'pm_author = '.$uid;
-    }
-
-    if ($filter_where['where'] <> '') {
+    if (!empty($filter_where['where'])) {
         $where .= ' AND '.$filter_where['where'];
     }
 
@@ -378,14 +398,12 @@ function pagemaster_userapi_pubList($args)
                 $publist[$key] = $pub;
             }
         }
-        if ($handlePluginFields){
-            
+        if ($handlePluginFields) {
             $publist = handlePluginFields($publist, $pubfields);
-            
         }
     }
 
-    if ($args['countmode'] == 'just' or $args['countmode'] == 'both') {
+    if ($args['countmode'] == 'just' || $args['countmode'] == 'both') {
         $pubcount = DBUtil::selectObjectCount($tablename, str_replace(' tbl.', ' ', $where));
     }
 

@@ -5,7 +5,7 @@
 <div class="pn-admincontainer">
 <div class="pn-adminpageicon"><!--[pnimg modname='core' src='configure.gif' set='icons/large' alt='_MODIFYCONFIG' altml=true]--></div>
 
-<h2><!--[pnml name="_MODIFYCONFIG"]--></h2>
+<h2><!--[pnml name='_MODIFYCONFIG']--></h2>
 
 <div class="pn-menu pm-menu">
 	<span class="pn-menuitem-title"><a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps']-->"><!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER']--></a></span>
@@ -18,14 +18,23 @@
 	<div class="pn-adminformrow">
 		<!--[pnformlabel for='uploadpath' text='_PAGEMASTER_UPLOADPATH']-->:
   		<!--[pnformtextinput maxLength='200' id='uploadpath']-->
-		<span class="pmhelp"><!--[pnml name='_PAGEMASTER_UPLOADPATH_HELP']--></span>
+		<!--[if $updirstatus < 3]-->
+			<!--[assign var='updir_msgcolor' value='#ff0000']-->
+			<!--[if $updirstatus == 0]-->
+				<!--[assign var='updir_message'  value='_PAGEMASTER_UPLOADPATH_NOTEXISTS']-->
+			<!--[elseif $updirstatus == 1]-->
+				<!--[assign var='updir_message'  value='_PAGEMASTER_UPLOADPATH_NOTDIRECTORY']-->
+			<!--[elseif $updirstatus == 2]-->
+				<!--[assign var='updir_message'  value='_PAGEMASTER_UPLOADPATH_NONWRITEABLE']-->
+			<!--[/if]-->
+		<!--[else]-->
+			<!--[assign var='updir_msgcolor' value='#00d900']-->
+			<!--[assign var='updir_message'  value='_PAGEMASTER_UPLOADPATH_WRITEABLE']-->
+		<!--[/if]-->
+		<span style="color: <!--[$updir_msgcolor]-->;"><!--[pnml name=$updir_message]--></span>
 	</div>
 	<div class="pn-adminformrow">
-		<!--[if $updirok == 1]-->
-		<span style="margin-left: 26.5em; color: #00d900;"><!--[pnml name='_PAGEMASTER_UPLOADPATH_WRITEABLE']--></span>
-		<!--[else]-->
-		<span style="margin-left: 26.5em; color: #ff0000;"><!--[pnml name='_PAGEMASTER_UPLOADPATH_NONWRITEABLE']--></span>
-		<!--[/if]-->
+		<span class="pmhelp"><!--[pnml name='_PAGEMASTER_UPLOADPATH_HELP' siteroot=$siteroot]--></span><br />
 	</div>
 </fieldset>
 

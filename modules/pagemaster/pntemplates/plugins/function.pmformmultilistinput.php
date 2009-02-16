@@ -2,17 +2,17 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
+require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
 
-class pmformmultilistinput extends pnFormCategoryCheckboxList
+class pmformmultilistinput extends pnFormCategorySelector
 {
     var $columnDef   = 'C(512)';
     var $title       = _PAGEMASTER_PLUGIN_MULTILIST;
@@ -25,10 +25,11 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
 
     function postRead($data, $field)
     {
-        $data    = substr($data, 1);
-        $data    = substr($data, 0, -1);
         $cat_arr = null;
-        if ($data <> ''){
+        if (!empty($data)) {
+            if (strpos($data, ':') === 0) {
+                $data = substr($data, 1, -1);
+            }
             $catIds = explode(':', $data);
             if (!empty($catIds)) {
                 Loader::loadClass('CategoryUtil');
@@ -41,8 +42,8 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
                     $where[] = $category_column['id'].' = \''.DataUtil::formatForStore($catId).'\'';
                 }
                 $cat_arr = CategoryUtil::getCategories(implode(' OR ', $where), '', 'id');
-                $lang   = SessionUtil::getVar('lang', null);
-                
+                $lang    = pnUserGetVar('lang');
+
                 foreach ($catIds as $catId) {
                     $cat_arr[$catId]['fullTitle'] = (isset($cat_arr[$catId]['display_name'][$lang]) ? $cat_arr[$catId]['display_name'][$lang] : $cat_arr[$catId]['name']);
                 }
@@ -60,7 +61,8 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
     function load(&$render, $params)
     {
         if (isset($render->pnFormEventHandler->pubfields[$this->id])) {
-            $params['category'] = $render->pnFormEventHandler->pubfields[$this->id]['typedata'];
+            $config = explode('|', $render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+            $params['category'] = $config[0];
         }
         parent::load(&$render, $params);
     }
@@ -69,14 +71,34 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pmplugin_categorylist\') ;
+                                 var config = new Array()
+                                 config.push($F(\'pmplugin_categorylist\'))
+
+                                 if (parseInt($F(\'pmplugin_multisize\')) != NaN && parseInt($F(\'pmplugin_multisize\')) > 0) {
+                                     config.push($F(\'pmplugin_multisize\'));
+                                 } else {
+                                     config.push(\'~\');
+                                 }
+
+                                 $(\'typedata\').value = config.join(\'|\')
                                  closeTypeData();
                              }';
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field)
+    function getTypeHtml($field, $render)
     {
+        // parse the configuration
+        if (isset($render->_tpl_vars['typedata'])) {
+            $vars = explode('|', $render->_tpl_vars['typedata']);
+        } else {
+            $vars = array();
+        }
+        $size = null;
+        if (!empty($vars) && isset($vars[1]) && $vars[1] > 0) {
+            $size = $vars[1];
+        }
+
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
@@ -84,8 +106,11 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
-        $html .= '<div class="pn-formrow">
-                  <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+        $html = '<div class="pn-formrow">
+                     <label for="pmplugin_multisize">'._PAGEMASTER_SIZE.':</label> <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
+                 </div>
+                 <div class="pn-formrow">
+                 <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         foreach ($cats as $cat) {
             $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
@@ -95,6 +120,29 @@ class pmformmultilistinput extends pnFormCategoryCheckboxList
                   </div>';
 
         return $html;
+    }
+
+    function render(&$render)
+    {
+        // extract the configuration {category, size}
+        $config = array(30, '~');
+        if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
+            $config = explode('|', $render->pnFormEventHandler->pubfields[$this->inputName]['typedata']);
+            if (!isset($config[1])) {
+                $config[1] = '~';
+            }
+            
+        }
+
+        if ($config[1] != '~') {
+            $this->size = $config[1];
+        }
+
+        $this->selectionMode = 'multiple';
+        if ($this->selectedValue == null) {
+            $this->selectedValue = array();
+        }
+        return parent::render($render);
     }
 }
 

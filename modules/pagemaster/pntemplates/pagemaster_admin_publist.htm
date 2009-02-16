@@ -86,12 +86,12 @@
 	  <td><!--[$pubitem.lu_date]--></td>
 	  <td>
         <a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='xedit.gif' set='icons/extrasmall' alt='_EDIT' altml=true]--></a>&nbsp; 
-	    <a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$core_tid id=$pubitem.core_pid]-->"><!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' alt='_VIEW' altml=true]--></a>&nbsp; 
+	    <a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' alt='_VIEW' altml=true]--></a>&nbsp; 
 	    <a href="<!--[pnmodurl modname='pagemaster' type='admin' func='history' tid=$core_tid pid=$pubitem.core_pid]-->"><!--[pnimg modname='core' src='clock.gif' set='icons/extrasmall' alt='_PAGEMASTER_HISTORY' altml=true]--></a>
       </td>
 	</tr>
   <!--[foreachelse]-->
-    <tr><td colspan="7"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
+    <tr><td colspan="9"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
   <!--[/foreach]-->
   </tbody>
 </table>

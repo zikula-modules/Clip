@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -22,15 +22,25 @@ class pagemaster_admin_modifyconfigHandler
      */
     function initialize(&$render)
     {
-        $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
-        $render->assign('uploadpath', $uploadpath);
+        $modvars = pnModGetVar('pagemaster');
+        $render->assign('uploadpath', $modvars['uploadpath']);
 
-        // Check taken from MediaAttach
-        if (is_dir($uploadpath . '/') &&  is_writable($uploadpath . '/')) {        
-            $render->assign('updirok', '1');
+        // Upload dir check
+        $siteroot = substr(pnServerGetVar('DOCUMENT_ROOT'), 0, -1).pnGetBaseURI().'/';
+        $render->assign('siteroot', DataUtil::formatForDisplay($siteroot));
+
+        if (file_exists($modvars['uploadpath'].'/')) {
+            $render->assign('updirstatus', 1); // exists
+            if (is_dir($modvars['uploadpath'].'/')) {
+                $render->assign('updirstatus', 2); // is a directory
+                if (is_writable($modvars['uploadpath'].'/')) {
+                    $render->assign('updirstatus', 3); // is writable
+                }
+            }
         } else {
-            $render->assign('updirok', '0');
+            $render->assign('updirstatus', 0); // doesn't exists
         }
+
         return true;
     }
 
@@ -42,9 +52,22 @@ class pagemaster_admin_modifyconfigHandler
         $data = $render->pnFormGetValues();
         if ($args['commandName'] == 'modify') {
             $data = $render->pnFormGetValues();
+
+            // upload path
+            // remove the siteroot if was included
+            $siteroot = substr(pnServerGetVar('DOCUMENT_ROOT'), 0, -1).pnGetBaseURI().'/';
+            $data['uploadpath'] = str_replace($siteroot, '', $data['uploadpath']);
+            if (StringUtil::right($data['uploadpath'], 1) == '/') {
+                $data['uploadpath'] = StringUtil::left($data['uploadpath'], strlen($data['uploadpath']) - 1);
+            }
             pnModSetVar('pagemaster', 'uploadpath', $data['uploadpath']);
-            return true;
+
+            return pnRedirect(pnModURL('pagemaster', 'admin', 'modifyconfig'));
+
+        } elseif ($args['commandName'] == 'cancel') {
+            return pnRedirect(pnModURL('pagemaster', 'admin'));
         }
+
         return true;
     }
 }
@@ -63,7 +86,8 @@ class pagemaster_admin_pubtypesHandler
     function initialize(&$render)
     {
         $tid = FormUtil::getPassedValue('tid');
-        if ($tid <> "") {
+
+        if (!empty($tid) &&  is_numeric($tid)) {
             $this->tid = $tid;
             $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
             $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
@@ -76,7 +100,7 @@ class pagemaster_admin_pubtypesHandler
                 'value' => 'cr_date'
             );
             $pubarr[] = array (
-                'text'  => _PAGEMASTER_EDITDATE,
+                'text'  => _PAGEMASTER_UPDDATE,
                 'value' => 'lu_date'
             );
             $pubarr[] = array (
@@ -103,7 +127,7 @@ class pagemaster_admin_pubtypesHandler
                 'text'  => _PAGEMASTER_HITCOUNT,
                 'value' => 'pm_hitcount'
             );
-            
+
             $fieldnames = array_keys($pubfields);
             foreach ($fieldnames as $fieldname) {
                 $pubarr[] = array (
@@ -135,7 +159,7 @@ class pagemaster_admin_pubtypesHandler
 
         if ($args['commandName'] == 'updatetabledef') {
             $ret = pnModAPIFunc('pagemaster', 'admin', 'updatetabledef',
-                                array('tid' => $data[tid]));
+                                array('tid' => $data['tid']));
             if (!$ret) {
                 return LogUtil::registerError(_UPDATEFAILED);
             }
@@ -148,18 +172,20 @@ class pagemaster_admin_pubtypesHandler
             if (!isset($data['urltitle']) || empty($data['urltitle'])) {
                 $data['urltitle'] = DataUtil::formatPermalink($data['title']);
             }
-            
-            if ($data['filename'] == '') {
+
+            if (empty($data['filename'])) {
                 $data['filename'] = $data['title'];
             }
-            if ($data['formname'] == '') {
+            if (empty($data['formname'])) {
                 $data['formname'] = $data['title'];
             }
-            if ($this->tid == '') {
+
+            if (empty($this->tid)) {
                 DBUtil::insertObject($data, 'pagemaster_pubtypes');
             } else {
                 DBUtil::updateObject($data, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
             }
+            // report a successful update
             LogUtil::registerStatus(_UPDATESUCCEDED);
 
         } elseif ($args['commandName'] == 'delete') {
@@ -189,9 +215,15 @@ class pagemaster_admin_pubfieldsHandler
     {
         $tid = FormUtil::getPassedValue('tid');
         $id  = FormUtil::getPassedValue('id');
+
+        // validation check
+        if (empty($tid) || !is_numeric($tid)) {
+            LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'tid')));
+            $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'main'));
+        }
         $this->tid = $tid;
 
-        if ($id <> '') {
+        if (!empty($id)) {
             $this->id = $id;
             $pubfield = DBUtil::selectObjectByID('pagemaster_pubfields', $id);
             $render->assign($pubfield);
@@ -200,10 +232,6 @@ class pagemaster_admin_pubfieldsHandler
         $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
         $render->assign('pubfields', $pubfields);
         $render->assign('tid', $tid);
-        if ($tid == '') {
-            LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'tid')));
-            $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'main'));
-        }
         return true;
     }
 
@@ -233,7 +261,7 @@ class pagemaster_admin_pubfieldsHandler
                 DBUtil::updateObject($istitle, 'pagemaster_pubfields', 'pm_tid = '.$data['tid']);
             }
 
-            if ($this->id == '') {
+            if (empty($this->id)) {
                 $where = 'pm_name = \''.$data['name'].'\' AND pm_tid = '.$data['tid'];
             } else {
                 $where = 'pm_id <> '.$this->id.' AND pm_name = \''.$data['name'].'\' AND pm_tid = '.$data['tid'];
@@ -244,7 +272,7 @@ class pagemaster_admin_pubfieldsHandler
                 return LogUtil::registerError(_PAGEMASTER_NAMEUNIQUE);
             }
 
-            if ($this->id == '') {
+            if (empty($this->id)) {
                 $max_rowID = DBUtil::selectFieldMax('pagemaster_pubfields', 'id', 'MAX', 'pm_tid = '.$data['tid']);
                 $data['lineno'] = $max_rowID + 1;
                 if ($max_rowID == 1) {
@@ -274,6 +302,7 @@ function pagemaster_admin_create_tid()
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerError(_NOT_AUTHORIZED);
     }
+
     $render = FormUtil::newpnForm('pagemaster');
     return $render->pnFormExecute('pagemaster_admin_create_tid.htm', new pagemaster_admin_pubtypesHandler());
 }
@@ -303,15 +332,15 @@ function pagemaster_admin_editpubfields()
     return $render->pnFormExecute('pagemaster_admin_edit_pubfields.htm', new pagemaster_admin_pubfieldsHandler());
 }
 
-function pagemaster_admin_publist()
+function pagemaster_admin_publist($args=array())
 {
-    $tid          = FormUtil::getPassedValue('tid');
+    $tid          = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $startnum     = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
     $itemsperpage = isset($args['itemsperpage']) ? $args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', 50);
-    $orderby = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
-    
+    $orderby      = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
 
-    if ($tid == '') {
+    // Validate the essential parameyers
+    if (empty($tid) || !is_numeric($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
@@ -320,26 +349,36 @@ function pagemaster_admin_publist()
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
+    if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
+        return LogUtil::registerError(_PAGEMASTER_TID_MUSTCREATETABLE, null, pnModURL('pagemaster', 'admin', 'create_tid', array('tid' => $tid), null, 'pn-maincontent'));
+    }
+
     $old_orderby = $orderby;
     $core_title = DBUtil::selectField('pagemaster_pubfields', 'name', "pm_tid = '$tid' AND pm_istitle = '1'");
-    if (substr($orderby,0,10) == 'core_title')
-        $orderby = str_replace('core_title',$core_title,$orderby);
-        
-    $publist   = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', str_replace(':',' ', $orderby), $startnum-1, $itemsperpage);
-    $pubcount  = DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
-    foreach ($publist as $key => $pub) {
-        $workflow = WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
-        $publist[$key] = $pub;
+    if (substr($orderby, 0, 10) == 'core_title') {
+        $orderby = str_replace('core_title', $core_title, $orderby);
     }
-    
 
+    $publist  = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', str_replace(':',' ', $orderby), $startnum-1, $itemsperpage);
+    if ($publist !== false) {
+        $pubcount = (int)DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
+        foreach ($publist as $key => $pub) {
+            $workflow = WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
+            $publist[$key] = $pub;
+        }
+    } else {
+        $publist  = array();
+        $pubcount = 0;
+    }
+
+    // fetch the output
     $render = pnRender::getInstance('pagemaster');
     $render->assign('core_tid', $tid);
     $render->assign('orderby', $old_orderby);
     $render->assign('core_title', $core_title);
     $render->assign('publist', $publist);
-    
-    $render->assign('pager', array('numitems'     => (int)$pubcount,
+
+    $render->assign('pager', array('numitems'     => $pubcount,
                                    'itemsperpage' => $itemsperpage));
 
     return $render->fetch('pagemaster_admin_publist.htm');
@@ -350,10 +389,10 @@ function pagemaster_admin_history()
     $pid = FormUtil::getPassedValue('pid');
     $tid = FormUtil::getPassedValue('tid');
 
-    if ($tid == '') {
+    if (empty($tid) || !is_numeric($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
-    if ($pid == '') {
+    if (empty($pid) || !is_numeric($pid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'pid')));
     }
 
@@ -395,7 +434,7 @@ function pagemaster_admin_showcode()
     $tid  = FormUtil::getPassedValue('tid');
     $mode = FormUtil::getPassedValue('mode');
 
-    if (empty($tid)) {
+    if (empty($tid) || !is_numeric($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
     if (empty($mode)) {
@@ -405,7 +444,7 @@ function pagemaster_admin_showcode()
     $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = $tid", 'pm_lineno', -1, -1, 'name');
 
-    /* get the code depending of the mode */
+    // get the code depending of the mode
     if ($mode == 'input') {
         $code = generate_editpub_template_code($tid, $pubfields, $pubtype);
 
@@ -422,14 +461,14 @@ function pagemaster_admin_showcode()
         $code = generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields);
 
     } elseif ($mode == 'outputlist') {
-        $code = file_get_contents('modules/pagemaster/pntemplates/publist_template.htm');
+        $code = file_get_contents('modules/pagemaster/pntemplates/generic_publist.htm');
     }
 
-    /* code cleaning */
+    // code cleaning
     $code = DataUtil::formatForDisplay($code);
     $code = str_replace("\n", '<br/>',$code);
 
-    /* generate the output */
+    // generate the output
     $render = pnRender::getInstance('pagemaster');
     $render->assign('mode', $mode);
     $render->assign('pubtype', $pubtype);

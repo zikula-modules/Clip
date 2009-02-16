@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -14,7 +14,7 @@ function pagemaster_operation_moveToDepot($obj, $params)
     $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $obj['tid'], 'tid');
 
     // if revisions enabled for this pubtype
-    // move the object to depot and retirn the updated object
+    // move the object to depot and return the updated object
     if ($pubtype['enablerevisions']) {
         $obj['core_indepot'] = 1;
         $obj['core_online']  = 0;

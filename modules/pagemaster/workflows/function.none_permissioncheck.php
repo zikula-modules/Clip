@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -21,7 +21,7 @@
 function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
     if (!empty($obj)) {
-        // process	 $obj and calculate an instance
+        // process $obj and calculate an instance
         $pid = $obj['core_pid'];
         $tid = getTidFromTablename($obj['__WORKFLOW__']['obj_table']);
 
@@ -29,7 +29,7 @@ function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
         if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == pnUserGetVar('uid')) {
             return true;
         } else {
-            return SecurityUtil :: checkPermission('pagemaster:input:', "$tid:$pid:$obj[__WORKFLOW__][state]", $permLevel, $currentUser);
+            return SecurityUtil::checkPermission('pagemaster:input:', "$tid:$pid:$obj[__WORKFLOW__][state]", $permLevel, $currentUser);
         }
 
     } else {

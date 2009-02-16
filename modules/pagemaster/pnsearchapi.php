@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -29,10 +29,9 @@ function pagemaster_searchapi_options($args)
         // Looking for pubtype with at least one searchable field
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
         foreach ($pubtypes as $key => $pubtype) {
-            $pubfields = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']);
-            
+            $pubfields = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
+
             if (count($pubfields) == 0 ) {
-                
                 unset ($pubtypes[$key]);
             }
         }
@@ -62,19 +61,19 @@ function pagemaster_searchapi_search($args)
 
     $sessionId = session_id();
     $insertSql = "INSERT INTO $searchTable
-    ($searchColumn[title],
-    $searchColumn[text],
-    $searchColumn[extra],
-    $searchColumn[created],
-    $searchColumn[module],
-    $searchColumn[session])
-    VALUES ";
+                      ($searchColumn[title],
+                       $searchColumn[text],
+                       $searchColumn[extra],
+                       $searchColumn[created],
+                       $searchColumn[module],
+                       $searchColumn[session])
+                  VALUES ";
 
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
     foreach ($pubtypes as $pubtype)
     {
         if ($search_tid[$pubtype['tid']] == 1){
-            $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 and pm_tid = '.$pubtype['tid']);
+            $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
             $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
             $columnname = $pntable[$tablename.'_column'];
 
@@ -87,8 +86,8 @@ function pagemaster_searchapi_search($args)
                 $where .= ' AND pm_showinlist = 1 ';
                 $where .= ' AND pm_online = 1 ';
                 $where .= ' AND pm_indepot = 0 ';
-                $where .= " AND (pm_language = '' or pm_language = '".pnUserGetLang()."')";
-                $where .= ' AND (pm_publishdate <= NOW() or pm_publishdate is null) AND (pm_expiredate >= NOW() or pm_expiredate is null)';
+                $where .= " AND (pm_language = '' OR pm_language = '".pnUserGetLang()."')";
+                $where .= ' AND (pm_publishdate <= NOW() OR pm_publishdate is null) AND (pm_expiredate >= NOW() OR pm_expiredate is null)';
 
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
 

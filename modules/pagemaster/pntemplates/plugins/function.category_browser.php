@@ -2,11 +2,11 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -118,7 +118,7 @@ function smarty_function_category_browser($params, &$smarty)
             if ($v['selected'] == 1) {
                 $new_filter = $old_filter;
             } else {
-                if ($old_filter <> '') {
+                if (!empty($old_filter)) {
                     $new_filter = $old_filter.','.$filter_act;
                 } else {
                     $new_filter = $filter_act;

@@ -2,10 +2,10 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -31,18 +31,20 @@ class pagemaster_user_dynHandler
     function initialize(&$render)
     {
         $this->goto = FormUtil::getPassedValue('goto', '');
-        if ($this->id <> '') {
+
+        if (!empty($this->id)) {
             $pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
             $this->core_author = $pubdata['core_author'];
             $this->core_pid = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
         } else {
+            $pubdata = array();
             $actions = WorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
 
-        if ($pubtype['tid'] > 0) {
-            $tid = $pubtype['tid']; 
+        if ($this->pubtype['tid'] > 0) {
+            $tid = $this->pubtype['tid']; 
         } else {
             $tid = FormUtil::getPassedValue('tid'); 
             // if there are no actions the user is not allowed to change / submit / delete something.
@@ -58,7 +60,7 @@ class pagemaster_user_dynHandler
         foreach ($fieldnames as $fieldname)
         {
             $val = FormUtil::getPassedValue('set_'.$fieldname, '');
-            if ($val <> '') {
+            if (!empty($val)) {
                 $pubdata[$fieldname] = $val;
             }
         }
@@ -66,6 +68,7 @@ class pagemaster_user_dynHandler
         if (count($pubdata > 0)) {
             $render->assign($pubdata);
         }
+
         $render->assign('actions', $actions);
         return true;
     }
@@ -90,7 +93,8 @@ class pagemaster_user_dynHandler
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // if the item is now offline or was moved to the depot
-        if ($data['core_online'] == 0 || $data['core_indepot'] == 1) {
+        if ((isset($data['core_online']) && $data['core_online'] == 0) ||
+            (isset($data['core_indepot']) && $data['core_indepot'] == 1)) {
             $this->goto = pnModURL('pagemaster', 'user', 'main',
                                    array('tid' => $data['tid']));
 
@@ -133,18 +137,19 @@ function pagemaster_user_executecommand()
     $schema      = FormUtil::getPassedValue('schema');
     $goto        = FormUtil::getPassedValue('goto');
 
-    if ($tid == '') {
+    if (empty($tid) || !is_numeric($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
-    if (!isset($id) || empty($id)) {
+    if (!isset($id) || empty($id) || !is_numeric($id)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id')));
     }
-    if ($commandName == '') {
+
+    if (empty($commandName)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'commandName')));
     }
 
-    if ($schema == '') {
+    if (empty($schema)) {
         $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
         $schema  = str_replace('.xml', '', $pubtype['workflow']);
     }
@@ -155,8 +160,8 @@ function pagemaster_user_executecommand()
         return LogUtil::registerError(pnML('_NOFOUND', array('i' => _PAGEMASTER_PUBLICATION)));
     }
 
-    WorkflowUtil::executeAction($schema, $pub, $commandName, 'pagemaster_pubdata'.$tid, 'pagemaster');
-    if ($goto <> ''){
+    WorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
+    if (!empty($goto)) {
         if ($goto == 'edit') {
             return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
                                        array('tid' => $tid,
@@ -189,16 +194,19 @@ function pagemaster_user_pubedit()
     $id  = FormUtil::getPassedValue('id');
     $pid = FormUtil::getPassedValue('pid');
 
-    if (empty($tid)) {
+    if (empty($tid) || !is_numeric($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
-    $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
     if (empty($pubtype)) {
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }
 
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
+    if (empty($pubtype)) {
+        LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'pubfields')));
+    }
 
     // No security check needed - the security check will be done by the handler class. 
     // see the init-part of the handler class for details. 
@@ -212,6 +220,11 @@ function pagemaster_user_pubedit()
             return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'pid')));
         }
     }
+
+    // cast values to ensure the type
+    $id  = (int)$id;
+    $pid = (int)$pid;
+
     $dynHandler->tid       = $tid;
     $dynHandler->id        = $id;
     $dynHandler->pubtype   = $pubtype;
@@ -223,6 +236,8 @@ function pagemaster_user_pubedit()
         $obj = array('id' => $id);
         WorkflowUtil::getWorkflowForObject($obj, $dynHandler->tablename, 'id', 'pagemaster');
         $stepname = $obj['__WORKFLOW__']['state'];
+    } else {
+        $stepname = '';
     }
 
     $render = FormUtil::newpnForm('pagemaster');
@@ -230,7 +245,7 @@ function pagemaster_user_pubedit()
     // resolve the template to use
     $user_defined_template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
 
-    if ($render->get_template_path($user_defined_template_step)) {
+    if (!empty($stepname) && $render->get_template_path($user_defined_template_step)) {
         return $render->pnFormExecute($user_defined_template_step, $dynHandler);
 
     } else {
@@ -240,12 +255,16 @@ function pagemaster_user_pubedit()
             return $render->pnFormExecute($user_defined_template_all, $dynHandler);
 
         } else {
-            LogUtil::registerError(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_step)));
+            if (!empty($stepname)) {
+                LogUtil::registerError(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_step)));
+            }
             LogUtil::registerError(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_all)));
-            global $editpub_template_code;
-            $editpub_template_code = generate_editpub_template_code($tid, $pubfields, $pubtype);
+            $hookAction = empty($id) ? 'new' : 'modify';
+            $uniqueid = !empty($pid) ? "{$tid}_{$pid}" : null;
+
             // TODO delete all the time, even if it's not needed
             $render->force_compile = true;
+            $render->assign('editpub_template_code', generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction, $uniqueid));
             return $render->pnFormExecute('var:editpub_template_code', $dynHandler);
         }
     }
@@ -259,6 +278,7 @@ function pagemaster_user_pubedit()
  */
 function pagemaster_user_main($args)
 {
+    // Get the input parameters
     $tid                = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
     $filter             = isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter');
@@ -267,23 +287,12 @@ function pagemaster_user_main($args)
     $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState');
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields');
-    $rss                = isset($args['rss']) ? $args['rss'] : FormUtil :: getPassedValue('rss');
+    $rss                = isset($args['rss']) ? (bool)$args['rss'] : (bool)FormUtil::getPassedValue('rss');
     $cachelifetime      = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
 
-    if ($justOwn == '') {
-        $justOwn = false;
-    }
-    if ($getApprovalState == '') {
-        $getApprovalState = false;
-    }
-    if ($handlePluginFields == '') {
-        $handlePluginFields = true;
-    }
-
-    if (empty($tid)) {
+    // Essential validation
+    if (empty($tid) || !is_numeric($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
-    } elseif(!is_numeric($tid)) {
-        return LogUtil::registerError(pnML('_MUSTBENUMERIC', array('s' => 'tid')));
     }
 
     $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
@@ -291,52 +300,46 @@ function pagemaster_user_main($args)
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }
 
-    if (isset($args['itemsperpage'])) {
-        $itemsperpage = $args['itemsperpage'];
-    } elseif (FormUtil::getPassedValue('itemsperpage') <> '') {
-        $itemsperpage = FormUtil::getPassedValue('itemsperpage');
+    if (empty($template)) {
+        if (!empty($pubtype['filename'])) {
+            // template comes from pubtype
+            $sec_template = $pubtype['filename'];
+            $template     = 'output/publist_'.$pubtype['filename'].'.htm';
+        } else {
+            // standart template
+            $template     = 'generic_publist.htm';
+            // do not check permission for dynamic template
+            $sec_template = '';
+        }
     } else {
-        $itemsperpage = ((int)$pubtype['itemsperpage'] > 0 ? (int)$pubtype['itemsperpage'] : -1 );
+        // template comes from parameter
+        $sec_template = $template;
+        $template     = 'output/publist_'.$template.'.htm';
     }
 
-    if ($cachelifetime == '') {
+    // Security check as early as possible
+    if (!SecurityUtil::checkPermission('pagemaster:list:', "$tid::$sec_template", ACCESS_READ)) {
+        return LogUtil::registerError(_NOT_AUTHORIZED . ' pagemaster:list:  -  '."$tid::$sec_template");
+    }
+
+    // Check if this view is cached
+    if (empty($cachelifetime)) {
         $cachelifetime = $pubtype['cachelifetime'];
     }
 
-    if ($cachelifetime <> '') {
+    if (!empty($cachelifetime)) {
         $cachetid = true;
-        if ($filter <> '') {
+        if (!empty($filter)) {
             $cacheid = 'publist'.$tid.'|'.$filter;
         } else {
             $cacheid = 'publist'.$tid.'|nofilter';
         }
     } else {
         $cachetid = false;
-        $cacheid = false;
+        $cacheid  = false;
     }
 
-    if ($template == '') {
-        if ($pubtype['filename'] <> '') {
-            //template comes from pubtype
-            $sec_template = $pubtype['filename'];
-            $template     = 'output/publist_'.$pubtype['filename'].'.htm';
-        } else {
-            //standart template
-            $template = 'publist_template.htm';
-            //do not check permission for dynamic template
-            $sec_template = '';
-        }
-    } else {
-        //template comes from parameter
-        $sec_template = $template;
-        $template     = 'output/publist_'.$template.'.htm';
-    }
-
-    if (!SecurityUtil::checkPermission('pagemaster:list:', "$tid::$sec_template", ACCESS_READ)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED . ' pagemaster:list:  -  ' . "$tid::$sec_template");
-    }
-
-    if ($startnum == '') {
+    if (empty($startnum)) {
         $cacheid .= '|nostartnum';
     } else {
         $cacheid .= '|'.$startnum;
@@ -351,16 +354,37 @@ function pagemaster_user_main($args)
         }
     }
 
-    $orderby   = createOrderBy($orderby);
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+    // Defaults
+    if (empty($justOwn)) {
+        $justOwn = false;
+    }
+    if (empty($getApprovalState)) {
+        $getApprovalState = false;
+    }
+    if (empty($handlePluginFields)) {
+        $handlePluginFields = true;
+    }
 
-    if ($itemsperpage <> 0) {
+    if (isset($args['itemsperpage'])) {
+        $itemsperpage = $args['itemsperpage'];
+    } elseif (FormUtil::getPassedValue('itemsperpage') != null) {
+        $itemsperpage = (int)FormUtil::getPassedValue('itemsperpage');
+    } else {
+        $itemsperpage = ((int)$pubtype['itemsperpage'] > 0 ? (int)$pubtype['itemsperpage'] : -1 );
+    }
+
+    if ($itemsperpage != 0) {
         $countmode = 'both';
     } else {
         $countmode = 'no';
     }
+
+    $orderby   = createOrderBy($orderby);
+
+    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
             
-    $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
+    // Uses the API to get the list of publications
+    $result = pnModAPIFunc('pagemaster', 'user', 'pubList',
                            array('tid'                => $tid,
                                  'pubfields'          => $pubfields,
                                  'pubtype'            => $pubtype,
@@ -374,53 +398,55 @@ function pagemaster_user_main($args)
                                  'getApprovalState'   => $getApprovalState,
                                  'justOwn'            => $justOwn));
     
-    $publist  = $pubarr['publist'];
-    $pubcount = $pubarr['pubcount'];
+    // Assign the data to the output
+    $render->assign('tid', $tid);
+    $render->assign('publist', $result['publist']);
+    $render->assign('core_titlefield', getTitleField($pubfields));
 
-    $core_title = getTitleField($pubfields);
-
-    if ($itemsperpage <> 0) {
-        $render->assign('pager', array('numitems'     => $pubcount,
+    // Assign the pager values if needed
+    if ($itemsperpage != 0) {
+        $render->assign('pager', array('numitems'     => $result['pubcount'],
                                        'itemsperpage' => $itemsperpage));
     }
-    $render->assign('publist', $publist);
-    $render->assign('core_titlefield', $core_title);
-    $render->assign('tid', $tid);
 
-    // check if template is available
-    if ($template <> 'publist_template.htm' && !$render->get_template_path($template)) {
+    // Check if template is available
+    if ($template != 'generic_publist.htm' && !$render->get_template_path($template)) {
         LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $template)));
-        $template = 'publist_template.htm';
+        $template = 'generic_publist.htm';
     }
 
-    if ($rss == true) {
+    if ($rss) {
         echo $render->display($template, $cacheid);
         pnShutDown();
     }
+
     return $render->fetch($template, $cacheid);
 }
 
 /**
  * View a publication
+ * @author kundi
  *
  * @param $args['tid']
  * @param $args['pid']
  * @param $args['id'] (optional)
  * @param $args['template'] (optional)
- * @author kundi
+ * @return publication view output
  */
 function pagemaster_user_viewpub($args)
 {
+    // Get the input parameters
     $tid      = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $pid      = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
     $id       = isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id');
     $template = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
-    $cachelifetime = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
+    $cachelt  = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
 
-    if (empty($tid)) {
+    // Essential validation
+    if (empty($tid) || !is_numeric($tid)) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
-    if (empty($pid) && empty($id)) {
+    if ((empty($pid) || !is_numeric($pid)) && (empty($id) || !is_numeric($id))) {
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id | pid')));
     }
 
@@ -429,94 +455,103 @@ function pagemaster_user_viewpub($args)
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }
 
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
-
+    // Get the pid if it was not passed
     if (empty($pid)) {
         $pid = pnModAPIFunc('pagemaster', 'user', 'getPid',
                             array('tid' => $tid,
                                   'id'  => $id));
     }
 
-    if ($template == '') {
-        if ($pubtype['filename'] <> '') {
+    // Determine the template to use
+    if (empty($template)) {
+        if (!empty($pubtype['filename'])) {
             // template comes from pubtype
+            $template     = 'output/viewpub_'.$pubtype['filename'].'.htm';
+            // template for the security check
             $sec_template = $pubtype['filename'];
-            $template     = 'output/viewpub_'.$sec_template.'.htm';
         } else {
             // standart template
-            $template = 'var:viewpub_template_code';
+            $template     = 'var:viewpub_template_code';
             // do not check permission for dynamic template
             $sec_template = '';
         }
     } else {
         // template comes from parameter
+        $template     = 'output/viewpub_'.$template.'.htm';
+        // template for the security check
         $sec_template = $template;
-        $template     = 'output/viewpub_' . $template . '.htm';
     }
 
+    // Security check as early as possible
     if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid:$pid:$sec_template", ACCESS_READ)) {
         return LogUtil::registerError(_NOT_AUTHORIZED . ' pagemaster:full: - ' . "$tid:$pid:$sec_template");
     }
 
-    if ($cachelifetime == '') {
-        $cachelifetime = $pubtype['cachelifetime'];
+    // Check if this view is cached
+    if (empty($cachelt)) {
+        $cachelt = $pubtype['cachelifetime'];
     }
 
-    if ($cachelifetime <> '') {
+    if (!empty($cachelt)) {
         $cachetid = true;
         $cacheid = 'viewpub'.$tid.'|'.$pid;
     } else {
         $cachetid = false;
-        $cacheid = false;
+        $cacheid  = false;
     }
 
-    $render  = pnRender::getInstance('pagemaster', $cachetid, $cacheid, true);
-    $render->cache_lifetime = $cachelifetime;
+    $render = pnRender::getInstance('pagemaster', $cachetid, $cacheid, true);
 
-    if ($cacheid) {
+    if ($cachetid) {
+        $render->cache_lifetime = $cachelt;
         if ($render->is_cached($template, $cacheid)) {
             return $render->fetch($template, $cacheid);
         }
     }
+
+    // Not cached or cache disabled, then get the Pub from the DB
+    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+
     $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
                             array('tid'                => $tid,
                                   'id'                 => $id,
                                   'pid'                => $pid,
+                                  'pubtype'            => $pubtype,
+                                  'pubfields'          => $pubfields,
                                   'checkPerm'          => false, //check later, together with template
                                   'getApprovalState'   => true,
                                   'handlePluginFields' => true));
 
     if (!$pubdata) {
-        return false;
+        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'Pub')));
     }
 
     $core_title = getTitleField($pubfields);
 
+    // Assign each field of the pubdata to the output
     foreach ($pubdata as $key => $field) {
         $render->assign($key, $field);
     }
+
+    // Process the output
     $render->assign('core_tid', $tid);
     $render->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state']);
-    if ($pubdata['core_author'] == pnUserGetVar('uid')) {
-        $render->assign('core_creator', true);
-    } else {
-        $render->assign('core_creator', false);
-    }
+    $render->assign('core_titlefield', $core_title);
     $render->assign('core_title', $pubdata[$core_title]);
     $render->assign('core_uniqueid', $tid.'_'.$pubdata['core_pid']);
-    $render->assign('core_titlefield', $core_title);
+    $render->assign('core_creator', ($pubdata['core_author'] == pnUserGetVar('uid')) ? true : false);
 
-    // check if template is available
-    if ($template <> 'var:viewpub_template_code' && !$render->get_template_path($template)) {
+    // Check if template is available
+    if ($template != 'var:viewpub_template_code' && !$render->get_template_path($template)) {
         LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $template)));
         $template = 'var:viewpub_template_code';
     }
 
     if ($template == 'var:viewpub_template_code') {
-        global $viewpub_template_code;
-        $viewpub_template_code = generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields);
-        //TODO: only recompile if changed
+        // TODO: only recompile if changed
         $render->force_compile = true;
+        $render->assign('viewpub_template_code', generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields));
     }
+
     return $render->fetch($template, $cacheid);
 }

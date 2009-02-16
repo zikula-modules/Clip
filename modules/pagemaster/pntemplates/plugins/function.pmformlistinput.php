@@ -2,11 +2,11 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -40,7 +40,16 @@ class pmformlistinput extends pnFormCategorySelector
 
     function load(&$render, $params)
     {
-        $params['category'] = $render->pnFormEventHandler->pubfields[$this->id]['typedata'];
+        if (!empty($render->pnFormEventHandler->pubfields[$this->id]['typedata'])) {
+            // config is: {categoryID, (bool)includeEmpty}
+            $config = explode(',', $render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+            $params['category'] = $config[0];
+            $this->includeEmptyElement = isset($config[1]) ? (bool)$config[1] : true;
+        } else {
+            $params['category'] = 30; // Global category
+            $this->includeEmptyElement = true;
+        }
+
         $params['dummyEntry'] = true;
         parent::load(&$render, $params);
     }
@@ -49,13 +58,23 @@ class pmformlistinput extends pnFormCategorySelector
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pmplugin_categorylist\');
+                                 if ($F(\'pmplugin_categorylist\') != null) {
+                                     $(\'typedata\').value = $F(\'pmplugin_categorylist\');
+                                 } else {
+                                     $(\'typedata\').value = 30; 
+                                 }
+                                 $(\'typedata\').value += \',\';
+                                 if ($F(\'pmplugin_categoryempty\') == \'on\') {
+                                     $(\'typedata\').value += 1;
+                                 } else {
+                                     $(\'typedata\').value += 0;
+                                 }
                                  closeTypeData();
                              }';
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field)
+    function getTypeHtml($field, $render)
     {
         Loader::loadClass('CategoryUtil');
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
@@ -70,6 +89,19 @@ class pmformlistinput extends pnFormCategorySelector
         }
 
         $html .= '</select>
+                  </div>';
+
+        // get the include empty element config value
+        if (isset($render->_tpl_vars['typedata'])) {
+            $config = explode(',', $render->_tpl_vars['typedata']);
+            $this->includeEmptyElement = isset($config[1]) ? (bool)$config[1] : true;
+        } else {
+            $this->includeEmptyElement = true;
+        }
+
+        $checked = $this->includeEmptyElement ? 'checked="checked"' : '';
+        $html .= '<div class="pn-formrow">
+                    <label for="pmplugin_categoryempty">'._PAGEMASTER_INCLUDEEMPTYITEM.'</label> <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
                   </div>';
 
         return $html;

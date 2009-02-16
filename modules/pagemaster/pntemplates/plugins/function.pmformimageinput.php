@@ -2,11 +2,11 @@
 /**
  * PageMaster
  *
- * @copyright (c) 2008, PageMaster Team
+ * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
- * @package     Zikula_3rd_party_Modules
+ * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
@@ -23,25 +23,23 @@ class pmformimageinput extends pnFormUploadInput
         return __FILE__; // FIXME: may be found in smarty's data???
     }
 
-	function render(&$render)
-	{
-		$input_html = parent::render($render);
-		return $input_html.' '.$this->upl_arr['orig_name'];
-	}
+    function render(&$render)
+    {
+        $input_html = parent::render($render);
+        return $input_html.' '.$this->upl_arr['orig_name'];
+    }
 
-	function load(&$render, &$params)
-	{
-		$this->loadValue($render, $render->get_template_vars());
-	}
+    function load(&$render, &$params)
+    {
+        $this->loadValue($render, $render->get_template_vars());
+    }
 
-	function loadValue(&$render, &$values)
-	{
-		if (array_key_exists($this->dataField, $values))
-		    $value = $values[$this->dataField];
-
-		if ($value !== null)
-		    $this->upl_arr = unserialize($value);
-	}
+    function loadValue(&$render, &$values)
+    {
+        if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
+            $this->upl_arr = unserialize($values[$this->dataField]);
+        }
+    }
 
     function postRead($data, $field)
     {
@@ -49,15 +47,15 @@ class pmformimageinput extends pnFormUploadInput
             $arrTypeData = @unserialize($data);
 
             if (!is_array($arrTypeData)) {
-                return LogUtil::registerError('error in pmformimageinput: stored data is invalid');
+                return LogUtil::registerError('pmformimageinput: '._PAGEMASTER_STOREDDATAINVALID);
             }
 
-            $DirPM = pnModGetVar('pagemaster', 'uploadpath');
-            if ($arrTypeData['tmb_name'] <> '') {
+            $url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
+            if (!empty($arrTypeData['tmb_name'])) {
                 $this->upl_arr =  array(
                          'orig_name'    => $arrTypeData['orig_name'],
-                         'thumbnailUrl' => $DirPM.'/'.$arrTypeData['tmb_name'],
-                         'url'          => $DirPM.'/'.$arrTypeData['file_name']
+                         'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
+                         'url'          => $url.'/'.$arrTypeData['file_name']
                 );
             } else {
                 $this->upl_arr = array(
@@ -66,6 +64,7 @@ class pmformimageinput extends pnFormUploadInput
                          'url'          => ''
                 );
             }
+
             return $this->upl_arr;
 
         } else {
@@ -80,22 +79,27 @@ class pmformimageinput extends pnFormUploadInput
         $data = $data[$field['name']];
 
         // ugly to get old image from DB
-        if ($id != NULL)
+        if ($id != NULL) {
             $old_image = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
+        }
 
-        if ($data['name'] <> '') {
+        if (!empty($data['name'])) {
             $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {
                 $old_image_arr = unserialize($old_image);
-                unlink($uploadpath. '/' .$old_image_arr['tmb_name']);
-                unlink($uploadpath. '/' .$old_image_arr['file_name']);
+                unlink($uploadpath.'/'.$old_image_arr['tmb_name']);
+                unlink($uploadpath.'/'.$old_image_arr['file_name']);
             }
-            list ($x, $y) = explode(':', $field['typedata']);
-            $wh = array();
-            if ($x > 0 and $y > 0) {
-                $wh = array (
+
+            if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
+                list($x, $y) = explode(':', $field['typedata']);
+            }
+
+            $thumbargs = array();
+            if (isset($x) && $x > 0 && isset($y) && $y > 0) {
+                $thumbargs = array(
                     'w' => $x,
                     'h' => $y
                 );
@@ -104,16 +108,26 @@ class pmformimageinput extends pnFormUploadInput
             $srcTempFilename = $data['tmp_name'];
             $ext             = strtolower(getExtension($data['name']));
             $randName        = getNewFileReference();
-            $new_filename    = $randName . '.' . $ext;
-            $new_filenameTmb = $randName . '-tmb.' . $ext;
-            $dstFilename     = $uploadpath . '/' . $new_filename;
-            $dstFilenameTmb  = $uploadpath . '/' . $new_filenameTmb;
+            $new_filename    = "{$randName}.{$ext}";
+            $dstFilename     = "{$uploadpath}/{$new_filename}";
 
             copy($srcTempFilename, $dstFilename);
 
-            $dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail',
-            array_merge($wh, array('filename'    => $dstFilename,
-                                                           'dstFilename' => $dstFilenameTmb)));
+            // Check for the Thumbnails module and if we need it
+            if (!empty($thumbargs) && pnModAvailable('Thumbnail')) {
+                $new_filenameTmb = "{$randName}-tmb.{$ext}";
+                $dstFilenameTmb  = "{$uploadpath}/{$new_filenameTmb}";
+                $thumbargs = array_merge($wh, array('filename'    => $dstFilename,
+                                                    'dstFilename' => $dstFilenameTmb));
+                $dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $thumbargs);
+            } elseif (empty($thumbargs)) {
+                // no thumbnail needed
+                $new_filenameTmb = $new_filename;
+            } else {
+                // no thumbnail available
+                $new_filenameTmb = '';
+            }
+
             $arrTypeData = array(
                 'orig_name' => $data['name'],
                 'tmb_name'  => $new_filenameTmb,

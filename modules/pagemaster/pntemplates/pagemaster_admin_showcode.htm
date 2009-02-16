@@ -10,14 +10,17 @@
 <!--[pmadminsubmenu tid=$pubtype.tid mode=$mode]-->
 
 <!--[if $mode eq 'input']-->
-	<!--[assign var='pathcopy' value='input/pubedit_'|cat:$pubtype.formname|cat:'_all.htm']-->
+	<!--[assign var='pmtplname' value='pubedit_'|cat:$pubtype.formname|cat:'_all.htm']-->
+	<!--[assign var='pmsubfolder' value='input']-->
 <!--[elseif $mode eq 'outputlist']-->
-	<!--[assign var='pathcopy' value='output/publist_'|cat:$pubtype.filename|cat:'.htm']-->
+	<!--[assign var='pmtplname' value='publist_'|cat:$pubtype.filename|cat:'.htm']-->
+	<!--[assign var='pmsubfolder' value='output']-->
 <!--[elseif $mode eq 'outputfull']-->
-	<!--[assign var='pathcopy' value='output/viewpub_'|cat:$pubtype.filename|cat:'.htm']-->
+	<!--[assign var='pmtplname' value='viewpub_'|cat:$pubtype.filename|cat:'.htm']-->
+	<!--[assign var='pmsubfolder' value='output']-->
 <!--[/if]-->
 
-<div class="pn-warningmsg"><!--[pnml name='_PAGEMASTER_COPYTHECODEIN' l='pagemaster/pntemplates/'|cat:$pathcopy]--></div>
+<div class="pn-warningmsg"><!--[pnml name='_PAGEMASTER_CREATEATEMPLATENAMED' tpl=$pmtplname pmsubfolder=$pmsubfolder html=true]--></div>
 <br />
 
 <!--[$code]-->

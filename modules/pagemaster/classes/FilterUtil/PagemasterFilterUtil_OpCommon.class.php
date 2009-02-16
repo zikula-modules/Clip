@@ -55,7 +55,7 @@ class PagemasterFilterUtil_OpCommon extends PagemasterFilterUtil_Common {
             $this->addFields($config['fields']);
         }
 
-        if ($config['default'] == true || !isset($this->fields) || !is_array($this->fields)) {
+        if ((isset($config['default']) && $config['default'] == true) || !isset($this->fields) || !is_array($this->fields)) {
             $this->default = true;
         }
 
@@ -86,9 +86,10 @@ class PagemasterFilterUtil_OpCommon extends PagemasterFilterUtil_Common {
     public function addFields($fields)
     {
         if (is_array($fields)) {
-            foreach($fields as $fld)
+            foreach($fields as $fld) {
                 $this->addFields($fld);
-        } elseif (!empty($fields) && $this->fieldExists($fields) && array_search($fields, $this->fields) === false) {
+            }
+        } elseif (!empty($fields) && $this->fieldExists($fields) && (is_array($this->fields) && array_search($fields, $this->fields) === false)) {
             $this->fields[] = $fields;
         }
     }
