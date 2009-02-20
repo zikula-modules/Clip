@@ -455,7 +455,7 @@ function pagemaster_userapi_encodeurl($args)
     if (count($args['args']) > 0) {
         $paramarray = array();
         foreach ($args['args'] as $k => $v) {
-            $paramarray[] = $k.'/'.DataUtil::formatPermalink($v);
+            $paramarray[] = $k.'/'.urlencode($v);
         }
         $params = '/'. implode('/', $paramarray);
     }
