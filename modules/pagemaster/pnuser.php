@@ -260,11 +260,10 @@ function pagemaster_user_pubedit()
             }
             LogUtil::registerError(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_all)));
             $hookAction = empty($id) ? 'new' : 'modify';
-            $uniqueid = !empty($pid) ? "{$tid}_{$pid}" : null;
 
             // TODO delete all the time, even if it's not needed
             $render->force_compile = true;
-            $render->assign('editpub_template_code', generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction, $uniqueid));
+            $render->assign('editpub_template_code', generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction));
             return $render->pnFormExecute('var:editpub_template_code', $dynHandler);
         }
     }

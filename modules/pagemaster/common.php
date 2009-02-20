@@ -57,7 +57,7 @@ function getExtension($filename, $keepDot = false)
     return '';
 }
 
-function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction='new', $uniqueid=null)
+function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction='new')
 {
     $template_code = '
                       <!--[insert name=\'getstatusmsg\']-->
@@ -130,7 +130,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction=
                             </tr>
                         </table>
 
-                        <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\''.(!empty($uniqueid) ? " hookid='$uniqueid'" : '').' module=\'pagemaster\']-->
+                        <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$core_tid`-`$core_pid`" module=\'pagemaster\']-->
 
                         <!--[foreach item=\'action\' from=$actions]-->
                             <!--[pnformbutton commandName=$action text=$action]-->
