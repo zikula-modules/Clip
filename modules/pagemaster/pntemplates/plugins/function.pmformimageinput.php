@@ -93,18 +93,6 @@ class pmformimageinput extends pnFormUploadInput
                 unlink($uploadpath.'/'.$old_image_arr['file_name']);
             }
 
-            if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
-                list($x, $y) = explode(':', $field['typedata']);
-            }
-
-            $thumbargs = array();
-            if (isset($x) && $x > 0 && isset($y) && $y > 0) {
-                $thumbargs = array(
-                    'w' => $x,
-                    'h' => $y
-                );
-            }
-
             $srcTempFilename = $data['tmp_name'];
             $ext             = strtolower(getExtension($data['name']));
             $randName        = getNewFileReference();
@@ -117,12 +105,26 @@ class pmformimageinput extends pnFormUploadInput
             if (!empty($thumbargs) && pnModAvailable('Thumbnail')) {
                 $new_filenameTmb = "{$randName}-tmb.{$ext}";
                 $dstFilenameTmb  = "{$uploadpath}/{$new_filenameTmb}";
-                $thumbargs = array_merge($wh, array('filename'    => $dstFilename,
-                                                    'dstFilename' => $dstFilenameTmb));
+                // build the thumbnail
+                $thumbargs = array();
+                if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
+                    list($x, $y) = explode(':', $field['typedata']);
+                    if ((int)$x > 0) {
+                        $thumbargs['w'] = (int)$x;
+                    }
+                    if ((int)$y > 0) {
+                        $thumbargs['h'] = (int)$y;
+                    }
+                }
+                $thumbargs['filename'] = $dstFilename;
+                $thumbargs['dstFilename'] = $dstFilenameTmb;
+                // use the thumbnail module
                 $dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $thumbargs);
+
             } elseif (empty($thumbargs)) {
                 // no thumbnail needed
                 $new_filenameTmb = $new_filename;
+
             } else {
                 // no thumbnail available
                 $new_filenameTmb = '';
