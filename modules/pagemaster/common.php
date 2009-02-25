@@ -82,7 +82,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction=
         $pmformname = $pmformname[1];
 
         if (!empty($pubfields[$k]['fieldmaxlength'])) {
-            $maxlength = 'maxLength=\''.$pubfields[$k]['fieldmaxlength'].'\'';
+            $maxlength = 'maxLength=\''.$pubfields[$k]['fieldmaxlength'].'\' ';
         } elseif($pmformname == 'pmformtextinput') {
             $maxlength = 'maxLength=\'65535\' ';
         } else {
