@@ -34,6 +34,7 @@ function pagemaster_userapi_editPub($args)
     $data        = $args['data'];
     $tid         = $data['tid'];
 
+
     if (!isset ($args['pubfields'])) {
         $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
     } else {
@@ -59,11 +60,7 @@ function pagemaster_userapi_editPub($args)
         return LogUtil::registerError(_PAGEMASTER_WORKFLOW_ACTIONERROR);
     }
 
-    // Merge the results of each operation in the data
-    foreach ($ret as $opresult) {
-        $data = array_merge($data, $opresult);
-    }
-
+    $data = array_merge($data, $ret);
     return $data;
 }
 
@@ -305,7 +302,8 @@ function pagemaster_userapi_pubList($args)
     }
     include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
 
-    Loader::LoadClass('PagemasterFilterUtil', 'modules/pagemaster/classes/FilterUtil/');
+    Loader::LoadClass("FilterUtil");
+
 
 
     foreach ($pubfields as $fieldname => $field) {
@@ -350,11 +348,12 @@ function pagemaster_userapi_pubList($args)
     $orderby = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
 
     $tablename = 'pagemaster_pubdata'.$tid;
-    $fu = & new PagemasterFilterUtil(array('table' => $tablename,
-                                           'plugins' => $filterPlugins));
+    $fu = & new FilterUtil(array('table' => $tablename,
+                                 'plugins' => $filterPlugins));
 
+    
     if (isset($args['filter']) && !empty($args['filter'])) {
-        $fu->setFilter($args['filter']);
+	$fu->setFilter($args['filter']);
     } elseif (!empty($pubtype['defaultfilter'])) {
         $fu->setFilter($pubtype['defaultfilter']);
     }
@@ -385,10 +384,9 @@ function pagemaster_userapi_pubList($args)
     if (!empty($filter_where['where'])) {
         $where .= ' AND '.$filter_where['where'];
     }
-
-    if ($args['countmode'] <> 'just') {
+   if ($args['countmode'] <> 'just') {
         if (isset($joinInfo)) {
-            $publist = DBUtil::selectExpandedObjectArray($tablename, $joinInfo, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
+	     $publist = DBUtil::selectExpandedObjectArray($tablename, $joinInfo, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
         } else {
             $publist = DBUtil::selectObjectArray($tablename, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
         }

@@ -27,6 +27,10 @@ class pmformmultilistinput extends pnFormCategorySelector
     {
         $cat_arr = null;
         if (!empty($data)) {
+	     static $lang;
+	     if (empty($lang)){
+		$lang = pnUserGetLang();
+	     }
             if (strpos($data, ':') === 0) {
                 $data = substr($data, 1, -1);
             }
@@ -42,7 +46,8 @@ class pmformmultilistinput extends pnFormCategorySelector
                     $where[] = $category_column['id'].' = \''.DataUtil::formatForStore($catId).'\'';
                 }
                 $cat_arr = CategoryUtil::getCategories(implode(' OR ', $where), '', 'id');
-                $lang    = pnUserGetVar('lang');
+                
+		  
 
                 foreach ($catIds as $catId) {
                     $cat_arr[$catId]['fullTitle'] = (isset($cat_arr[$catId]['display_name'][$lang]) ? $cat_arr[$catId]['display_name'][$lang] : $cat_arr[$catId]['name']);

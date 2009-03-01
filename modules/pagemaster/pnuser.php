@@ -92,7 +92,7 @@ class pagemaster_user_dynHandler
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
-        // if the item is now offline or was moved to the depot
+	 // if the item is now offline or was moved to the depot
         if ((isset($data['core_online']) && $data['core_online'] == 0) ||
             (isset($data['core_indepot']) && $data['core_indepot'] == 1)) {
             $this->goto = pnModURL('pagemaster', 'user', 'main',
@@ -110,7 +110,6 @@ class pagemaster_user_dynHandler
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
         }
-
         if (empty($data)) {
             return false;
         } else {
@@ -241,6 +240,9 @@ function pagemaster_user_pubedit()
     }
 
     $render = FormUtil::newpnForm('pagemaster');
+
+    if (empty($stepname))
+	$stepname = 'initial';
 
     // resolve the template to use
     $user_defined_template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';

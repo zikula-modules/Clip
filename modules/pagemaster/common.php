@@ -299,25 +299,16 @@ function pagemasterloadPluginType($pluginType)
 
 function handlePluginFields($publist, $pubfields)
 {
-    // Loop the plugins and process their data in the publist if postRead exists
-    // Save memory using array keys instead $key => $values
-    $akl = array_keys($publist);
-    $akf = array_keys($pubfields);
-    // Loop the plugins
-    foreach ($akf as $fieldname) {
-        // $pubfields[$fieldname] is a $field
-        $plugin = pagemasterGetPlugin($pubfields[$fieldname]['fieldplugin']);
+    foreach ($pubfields as $fieldname => $field) {
+        $plugin = pagemasterGetPlugin($field['fieldplugin']);
 
         if (method_exists($plugin, 'postRead')) {
-            foreach ($akl as $l) {
-                // $publist[$l] is a $pub
-                if (isset($publist[$l][$fieldname]) && !empty($publist[$l][$fieldname])) {
-                    $publist[$l][$fieldname] = $plugin->postRead($publist[$l][$fieldname], $pubfields[$fieldname]);
-                }
+            foreach ($publist as $key => $pub) {
+                if ($pub[$fieldname] <> '' and isset($pub[$fieldname]))
+                    $publist[$key][$fieldname] = $plugin->postRead($pub[$fieldname], $field);
             }
         }
     }
-
     return $publist;
 }
 

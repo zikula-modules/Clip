@@ -25,18 +25,21 @@ class pmformlistinput extends pnFormCategorySelector
 
     function postRead($data, $field)
     {
-        Loader::loadClass('CategoryUtil');
+	 Loader::loadClass('CategoryUtil');
         $cat = CategoryUtil::getCategoryByID($data);
-
-        $lang = SessionUtil::getVar('lang', null);
+	 static $lang;
+ 	 if ($lang == '')
+	        $lang = SessionUtil::getVar('lang', null);
 
         // compatible mode to pagesetter
         $cat['fullTitle'] = (isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name']);
         $cat['value']     = $cat['name'];
         $cat['title']     = $cat['name'];
+	 return $cat;
 
-        return $cat;
+
     }
+
 
     function load(&$render, $params)
     {
