@@ -340,14 +340,16 @@ function pagemaster_userapi_pubList($args)
 
     if (isset($joinInfo)) {
         $tbl_alias = 'tbl.';
+	 $filter_args = array('join' => array('join_table' => $joinInfo['join_table']), 'plugins' => $filterPlugins);
     } else {
         $tbl_alias = '';
+	 $filter_args = array('plugins' => $filterPlugins);
     }
 
     // check if some plugin specific orderby has to be done
     $orderby = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
     $tablename = 'pagemaster_pubdata'.$tid;
-    $fu = & new FilterUtil('pagemaster',$tablename,array('join' => array('join_table' => $joinInfo['join_table']), 'plugins' => $filterPlugins));
+    $fu = & new FilterUtil('pagemaster',$tablename,$filter_args);
     
     if (isset($args['filter']) && !empty($args['filter'])) {
 	$fu->setFilter($args['filter']);
