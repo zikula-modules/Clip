@@ -221,7 +221,6 @@ function pagemaster_userapi_getPub($args)
  * @param bool $args['checkperm']
  * @param bool $args['handlePluginFields']
  * @param bool $args['getApprovalState']
- * @param bool $args['justOwn']
  * @return array publication or count
  */
 function pagemaster_userapi_pubList($args)
@@ -240,7 +239,6 @@ function pagemaster_userapi_pubList($args)
     unset($pntables);
 
     // parameters defaults
-    $justOwn            = isset($args['justOwn']) ? $args['justOwn'] : false;
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
     $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
@@ -311,6 +309,8 @@ function pagemaster_userapi_pubList($args)
 
         if (isset($plugin->filterClass)) {
             $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
+            $filterPlugins[$plugin->filterClass]['ops'] = array('eq','ne','sub');
+            
         }
         // check for tables to join
         if ($args['countmode'] <> 'just'){
@@ -346,11 +346,8 @@ function pagemaster_userapi_pubList($args)
 
     // check if some plugin specific orderby has to be done
     $orderby = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
-
     $tablename = 'pagemaster_pubdata'.$tid;
-    $fu = & new FilterUtil(array('table' => $tablename,
-                                 'plugins' => $filterPlugins));
-
+    $fu = & new FilterUtil('pagemaster',$tablename,array('join' => array('join_table' => $joinInfo['join_table']), 'plugins' => $filterPlugins));
     
     if (isset($args['filter']) && !empty($args['filter'])) {
 	$fu->setFilter($args['filter']);
@@ -363,14 +360,7 @@ function pagemaster_userapi_pubList($args)
     // build the where clause
     $where = '';
     $uid = pnUserGetVar('uid');
-    if (!empty($uid) & $justOwn) {
-        // only own publications
-        $where .= ' '.$tbl_alias.'pm_author = '.$uid;
-        if ($pubtype['enableeditown'] == 0) {
-            // if not capable to edit, only online and enabled ones
-            $where .= ' AND '.$tbl_alias.'pm_online = 1 AND '.$tbl_alias.'pm_showinlist = 1';
-        }
-    } elseif (!empty($uid) && $pubtype['enableeditown'] == 1) {
+    if (!empty($uid) && $pubtype['enableeditown'] == 1) {
         $where .= '('.$tbl_alias.'pm_author = '.$uid.' OR ('.$tbl_alias.'pm_online = 1  AND '.$tbl_alias.'pm_showinlist = 1))';
     } else {
         $where .= ' '.$tbl_alias.'pm_online = 1 AND '.$tbl_alias.'pm_showinlist = 1';

@@ -16,7 +16,7 @@ class pmformdateinput extends pnFormDateInput
 {
     var $columnDef = 'T';
     var $title     = _PAGEMASTER_PLUGIN_DATE;
-    var $filterClass = 'Date';
+    var $filterClass = 'date';
 
 	
     function getFilename()

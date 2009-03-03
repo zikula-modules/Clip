@@ -284,7 +284,6 @@ function pagemaster_user_main($args)
     $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
     $filter             = isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter');
     $orderby            = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
-    $justOwn            = isset($args['justOwn']) ? $args['justOwn'] : FormUtil::getPassedValue('justOwn');
     $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState');
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields');
@@ -355,10 +354,6 @@ function pagemaster_user_main($args)
         }
     }
 
-    // Defaults
-    if (empty($justOwn)) {
-        $justOwn = false;
-    }
     if (empty($getApprovalState)) {
         $getApprovalState = false;
     }
@@ -396,8 +391,7 @@ function pagemaster_user_main($args)
                                  'itemsperpage'       => $itemsperpage,
                                  'checkPerm'          => false, // already checked
                                  'handlePluginFields' => $handlePluginFields,
-                                 'getApprovalState'   => $getApprovalState,
-                                 'justOwn'            => $justOwn));
+                                 'getApprovalState'   => $getApprovalState));
     
     // Assign the data to the output
     $render->assign('tid', $tid);
