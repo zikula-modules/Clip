@@ -40,6 +40,7 @@ class pagemaster_user_dynHandler
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
         } else {
             $pubdata = array();
+            $this->core_author = pnUserGetVar('uid');
             $actions = WorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
 
@@ -50,8 +51,8 @@ class pagemaster_user_dynHandler
             // if there are no actions the user is not allowed to change / submit / delete something.
             // We will redirect the user to the overview page
             if (count($actions) < 1) {
-                LogUtil::registerError(_PAGEMASTER_WORKFLOW_NOACTIONSFOUND);
-               // return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid))); 
+               LogUtil::registerError(_PAGEMASTER_WORKFLOW_NOACTIONSFOUND);
+               return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid))); 
             }
         }
 
@@ -92,13 +93,13 @@ class pagemaster_user_dynHandler
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
-	 // if the item is now offline or was moved to the depot
-        if ((isset($data['core_online']) && $data['core_online'] == 0) ||
-            (isset($data['core_indepot']) && $data['core_indepot'] == 1)) {
+        // if the item is now offline or was moved to the depot
+        // sombody change this always back, pls let it be like this, otherwise stepmode does not work!
+        if ($data['core_indepot'] == 1) {
             $this->goto = pnModURL('pagemaster', 'user', 'main',
                                    array('tid' => $data['tid']));
 
-        } elseif (empty($this->goto)) {
+        }  elseif (empty($this->goto)) {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $data['tid'],
                                          'pid' => $data['core_pid']));
