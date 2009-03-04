@@ -31,7 +31,6 @@ class FilterUtil_Filter_pmList
 	    if (array_search($op, $this->availableOperators()) === false || array_search($field,$this->fields) === false) {
 			return '';
 		}
-		Loader :: loadClass('CategoryUtil');
         Loader :: loadClass('CategoryUtil');
 		$cats = CategoryUtil :: getSubCategories($value);
 		$items = array();

@@ -300,9 +300,11 @@ function pagemaster_userapi_pubList($args)
     }
     include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
 
-    Loader::LoadClass("FilterUtil");
-
-
+    if (version_compare(PN_VERSION_NUM, '2.0', '>='))
+        Loader::LoadClass("FilterUtil");
+    else
+        Loader::LoadClass("FilterUtil",'modules/pagemaster/classes');
+        
 
     foreach ($pubfields as $fieldname => $field) {
         $plugin = pagemasterGetPlugin($field['fieldplugin']);
