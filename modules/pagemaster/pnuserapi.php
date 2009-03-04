@@ -364,6 +364,8 @@ function pagemaster_userapi_pubList($args)
     // build the where clause
     $where = '';
     $uid = pnUserGetVar('uid');
+    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || empty($args['id']))
+    {
     if (!empty($uid) && $pubtype['enableeditown'] == 1) {
         $where .= '('.$tbl_alias.'pm_author = '.$uid.' OR ('.$tbl_alias.'pm_online = 1  AND '.$tbl_alias.'pm_showinlist = 1))';
     } else {
@@ -374,7 +376,11 @@ function pagemaster_userapi_pubList($args)
     $where .= ' AND ( '.$tbl_alias.'pm_language = \'\' OR '.$tbl_alias.'pm_language = \''.pnUserGetLang().'\')';
     $where .= ' AND ( '.$tbl_alias.'pm_publishdate <= NOW() OR '.$tbl_alias.'pm_publishdate IS NULL)';
     $where .= ' AND ( '.$tbl_alias.'pm_expiredate >= NOW() OR '.$tbl_alias.'pm_expiredate IS NULL)';
-
+    }else
+    {
+        $where .= ' 1=1 '; 
+    }
+    
     if (!empty($filter_where['where'])) {
         $where .= ' AND '.$filter_where['where'];
     }
