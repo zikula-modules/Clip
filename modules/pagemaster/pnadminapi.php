@@ -61,21 +61,4 @@ function pagemaster_adminapi_getlinks()
     return $links;
 }
 
-function pagemaster_adminapi_moveToDepot($args, $direction)
-{
-    if (!isset($args['tid'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'tid')));
-    }
 
-    if (!isset($args['id'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'id')));
-    }
-
-    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $args['tid'], 'tid');
-
-    if ($pubtype['enablerevisions']) {
-        return pagesetterDepotTransportReal($args, $direction);
-    } else {
-        return pagesetterDepotTransportDelete($args);
-    }
-}
