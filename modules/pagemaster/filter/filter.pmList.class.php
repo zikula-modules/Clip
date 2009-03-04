@@ -26,25 +26,35 @@ class FilterUtil_Filter_pmList
 	 */
     
     
-	function getSQL($field, $op, $value)
+function getSQL($field, $op, $value)
 	{
-	    if (array_search($op, $this->availableOperators()) === false || array_search($field,$this->fields) === false) {
+
+	if (array_search($op, $this->availableOperators()) === false || array_search($field,$this->fields) === false) {
 			return '';
-		}
-        Loader :: loadClass('CategoryUtil');
-		$cats = CategoryUtil :: getSubCategories($value);
-		$items = array();
-		$items[] = $value;
-		foreach ($cats as $item) {
-			$items[] = $item['id'];
-		}
-		if (count($items) == 1)
-			$where = $this->column[$field]." = " . implode("", $items);
-		else
-			$where = $this->column[$field]." IN (" . implode(",", $items) . ")";
-        if ($op == 'ne') {
-		    $where = 'NOT '.$where;
-		}
+	}
+	Loader :: loadClass('CategoryUtil');
+	switch($op) {
+            case "eq":
+                $where = $this->column[$field] . ' = ' . $value;
+                break;
+            case "ne":
+                $where = $this->column[$field] . ' != ' . $value;
+                break;
+            case "sub":
+                $cats = CategoryUtil :: getSubCategories($value);
+		        $items = array();
+		        $items[] = $value;
+		        foreach ($cats as $item) {
+			        $items[] = $item['id'];
+		        }
+		        if (count($items) == 1)
+			        $where = $this->column[$field]." = " . implode("", $items);
+		        else
+			        $where = $this->column[$field]." IN (" . implode(",", $items) . ")";
+                break;
+            default:
+                $where = '';
+        }
 		return array('where' => $where);
 	}
 }
