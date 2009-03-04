@@ -34,8 +34,7 @@
       <description>Update content</description>
       <permission>editor</permission>
       <state>approved</state>
-      <operation>moveToDepot</operation>
-      <operation nextState="approved" online="1">createNewRevision</operation>
+      <operation nextState="approved" online="1">updatePub</operation>
     </action>
 
     <action id="delete">
@@ -43,7 +42,6 @@
       <description>Delete content</description>
       <permission>editor</permission>
       <state>approved</state>
-      <operation>moveToDepot</operation>
       <operation>deletePub</operation>
     </action>
 

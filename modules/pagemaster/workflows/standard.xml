@@ -50,16 +50,15 @@
       <permission>moderator</permission>
       <state>waiting</state>
       <nextState>approved</nextState>
-      <operation>moveOthersToDepot</operation><!-- delete/depot all others -->
-      <operation online="1">updatePub</operation><!-- only update online state -->      
+      <operation newrevision="0" online="1">updatePub</operation><!-- only update online state -->      
     </action>
 
-    <action id="reject">
-      <title>Reject</title>
-      <description>Reject and delete submitted content</description>
+    <action id="delete">
+      <title>Delete</title>
+      <description>Delete publication</description>
       <permission>moderator</permission>
       <state>waiting</state>
-      <operation>eraseRevision</operation>
+      <operation>deletePub</operation>
     </action>
 
     <action id="update">
@@ -67,7 +66,7 @@
       <description>Save content with no WS change</description>
       <permission>moderator</permission>
       <state>waiting</state>
-      <operation>updatePub</operation>
+      <operation newrevision="0">updatePub</operation>
     </action>
 
       <!-- State: approved -->
@@ -77,8 +76,7 @@
       <description>Update content and approve for immediate publishing</description>
       <permission>moderator</permission>
       <state>approved</state>
-      <operation>moveToDepot</operation>
-      <operation nextState="approved" online="1">createNewRevision</operation>
+      <operation online="1" nextstate="approved">updatePub</operation>
     </action>
 
     <action id="update">
@@ -86,7 +84,7 @@
       <description>Update content for later publishing</description>
       <permission>moderator</permission>
       <state>approved</state>
-      <operation nextstate="waiting">createNewRevision</operation>
+      <operation online="0" nextstate="waiting">updatePub</operation>
     </action>
 
     <action id="delete">
@@ -94,8 +92,14 @@
       <description>Delete publication</description>
       <permission>moderator</permission>
       <state>approved</state>
-      <operation>moveToDepot</operation>
       <operation>deletePub</operation>
+    </action>
+    <action id="MoveToDepot">
+      <title>Move to Depot</title>
+      <description>Move to depot</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation>moveToDepot</operation>
     </action>
 
     <action id="online">
