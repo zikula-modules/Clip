@@ -50,8 +50,8 @@
       <permission>moderator</permission>
       <state>waiting</state>
       <nextState>approved</nextState>
-      <operation>moveOthersToDepot</operation>
-      <operation online="1">updatePub</operation>
+      <operation>moveOthersToDepot</operation><!-- delete/depot all others -->
+      <operation online="1">updatePub</operation><!-- only update online state -->      
     </action>
 
     <action id="reject">
@@ -59,13 +59,12 @@
       <description>Reject and delete submitted content</description>
       <permission>moderator</permission>
       <state>waiting</state>
-
       <operation>eraseRevision</operation>
     </action>
 
     <action id="update">
       <title>Update</title>
-      <description>Save content with no workflow change</description>
+      <description>Save content with no WS change</description>
       <permission>moderator</permission>
       <state>waiting</state>
       <operation>updatePub</operation>
