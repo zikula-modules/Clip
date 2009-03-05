@@ -25,17 +25,17 @@ class pmformlistinput extends pnFormCategorySelector
 
     function postRead($data, $field)
     {
-	 Loader::loadClass('CategoryUtil');
+        Loader::loadClass('CategoryUtil');
         $cat = CategoryUtil::getCategoryByID($data);
-	 static $lang;
- 	 if ($lang == '')
-	        $lang = SessionUtil::getVar('lang', null);
+        static $lang;
+        if ($lang == '')
+        $lang = SessionUtil::getVar('lang', null);
 
         // compatible mode to pagesetter
         $cat['fullTitle'] = (isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name']);
         $cat['value']     = $cat['name'];
         $cat['title']     = $cat['name'];
-	 return $cat;
+        return $cat;
 
 
     }
@@ -47,13 +47,23 @@ class pmformlistinput extends pnFormCategorySelector
             // config is: {categoryID, (bool)includeEmpty}
             $config = explode(',', $render->pnFormEventHandler->pubfields[$this->id]['typedata']);
             $params['category'] = $config[0];
-            $this->includeEmptyElement = isset($config[1]) ? (bool)$config[1] : true;
+
+            if (!isset($params['includeEmptyElement']))
+            {
+                if (isset($config[1])){
+                    $this->includeEmptyElement = (bool)$config[1];
+                }elseif ($params['mandatory'] == "0")
+                {
+                    $this->includeEmptyElement = 1;
+                }else{
+                    $this->includeEmptyElement = 0;
+                }
+            }else{
+               $this->includeEmptyElement = $params['includeEmptyElement'];
+            }
         } else {
             $params['category'] = 30; // Global category
-            $this->includeEmptyElement = true;
         }
-
-        $params['dummyEntry'] = true;
         parent::load(&$render, $params);
     }
 
