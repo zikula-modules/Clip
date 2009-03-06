@@ -61,6 +61,8 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
             $params['category'] = $render->pnFormEventHandler->pubfields[$this->id]['typedata'];
         }
         parent::load(&$render, $params);
+        if ($this->mandatory)
+            array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
     }
 
     function getSaveTypeDataFunc($field)
