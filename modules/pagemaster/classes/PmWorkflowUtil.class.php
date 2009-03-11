@@ -245,8 +245,7 @@ class PmWorkflowUtil
         $allowedActions = array();
         foreach($actions as $action) {
             if (PmWorkflowUtil::permissionCheck($module, $schemaName, $obj, $action['permission'], $action['id'])) {
-                $allowedActions[$action['id']] = array('id' => $action['id'], 'title' => $action['title'], 'description' => $action['description'], 
-								'permission' => $action['permission'], 'nextState' => $action['nextState'], 'operation' => $action['operation']);
+                $allowedActions[$action['id']] = $action;
             }
         }
         return $allowedActions;
