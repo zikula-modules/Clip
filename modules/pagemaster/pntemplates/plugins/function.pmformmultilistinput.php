@@ -25,8 +25,7 @@ class pmformmultilistinput extends pnFormCategorySelector
 
     function postRead($data, $field)
     {
-        $cat_arr = null;
-        if (!empty($data)) {
+        if (!empty($data) && $data <> '::') {
 	     static $lang;
 	     if (empty($lang)){
 		$lang = pnUserGetLang();
@@ -40,15 +39,11 @@ class pmformmultilistinput extends pnFormCategorySelector
                 pnModDBInfoLoad ('Categories');
                 $pntables        = pnDBGetTables();
                 $category_column = $pntables['categories_category_column'];
-
                 $where = array();
                 foreach ($catIds as $catId) {
                     $where[] = $category_column['id'].' = \''.DataUtil::formatForStore($catId).'\'';
                 }
                 $cat_arr = CategoryUtil::getCategories(implode(' OR ', $where), '', 'id');
-                
-		  
-
                 foreach ($catIds as $catId) {
                     $cat_arr[$catId]['fullTitle'] = (isset($cat_arr[$catId]['display_name'][$lang]) ? $cat_arr[$catId]['display_name'][$lang] : $cat_arr[$catId]['name']);
                 }
