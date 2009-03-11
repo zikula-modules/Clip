@@ -40,6 +40,12 @@ class pmformlistinput extends pnFormCategorySelector
 
     }
 
+    function render(&$render)
+    {
+	if ($this->mandatory== '1')
+		$mand = ' *';
+	return parent::render($render).$mand;
+    }
 
     function load(&$render, $params)
     {

@@ -49,6 +49,14 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
         return $cat_arr;
     }
 
+    function render(&$render)
+    {
+      	if ($this->mandatory== '1')
+		$mand = '* Pflichtfeld';
+	return $mand.parent::render($render);
+    }
+
+
     function create(&$render, &$params)
     {
         $this->saveAsString = 1;

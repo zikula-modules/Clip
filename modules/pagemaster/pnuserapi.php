@@ -158,7 +158,7 @@ function pagemaster_userapi_getPub($args)
     $uid = pnUserGetVar('uid');
     $where = '';
 
-    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || empty($args['id']))
+    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) )
     {
         if (!empty($uid) && $pubtype['enableeditown'] == 1) {
             $where .= ' ( pm_author = '.$uid.' OR pm_online = 1 )';
@@ -364,7 +364,7 @@ function pagemaster_userapi_pubList($args)
     // build the where clause
     $where = '';
     $uid = pnUserGetVar('uid');
-    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || empty($args['id']))
+    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) )
     {
     if (!empty($uid) && $pubtype['enableeditown'] == 1) {
         $where .= '('.$tbl_alias.'pm_author = '.$uid.' OR ('.$tbl_alias.'pm_online = 1  AND '.$tbl_alias.'pm_showinlist = 1))';

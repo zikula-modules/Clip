@@ -38,6 +38,7 @@ class pagemaster_user_dynHandler
             $this->core_pid = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
             $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
+	     //print_r($actions);
         } else {
             $pubdata = array();
             $this->core_author = pnUserGetVar('uid');
@@ -86,31 +87,31 @@ class pagemaster_user_dynHandler
         $data['core_author']   = $this->core_author;
         $data['core_pid']      = $this->core_pid;
         $data['core_revision'] = $this->core_revision;
-
         $data = pnModAPIFunc('pagemaster', 'user', 'editPub',
                              array('data'        => $data,
                                    'commandName' => $args['commandName'],
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
-        // if the item is now offline or was moved to the depot
         // sombody change this always back, pls let it be like this, otherwise stepmode does not work!
-        if ($data['core_indepot'] == 1) {
-            $this->goto = pnModURL('pagemaster', 'user', 'main',
-                                   array('tid' => $data['tid']));
-
-        }  elseif (empty($this->goto)) {
-            $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
-                                   array('tid' => $data['tid'],
-                                         'pid' => $data['core_pid']));
-
-        } elseif ($this->goto == 'stepmode') {
+	if ($this->goto == 'stepmode') {
             // stepmode can be used to go automaticaly from one workflowstep to the next
             $this->goto = pnModURL('pagemaster', 'user', 'pubedit',
                                    array('tid'  => $data['tid'],
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
-        }
+       }elseif ($this->goto <> '') {
+	    null;
+ 	}
+        // if the item moved to the depot
+	elseif ($data[$args['commandName']]['core_indepot'] == 1) {
+            $this->goto = pnModURL('pagemaster', 'user', 'main',
+                                   array('tid' => $data['tid']));
+        }  elseif (empty($this->goto)) {
+            $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
+                                   array('tid' => $data['tid'],
+                                         'pid' => $data['core_pid']));
+        } 
         if (empty($data)) {
             return false;
         } else {
