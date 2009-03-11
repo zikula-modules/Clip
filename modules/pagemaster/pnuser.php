@@ -37,14 +37,13 @@ class pagemaster_user_dynHandler
             $this->core_author = $pubdata['core_author'];
             $this->core_pid = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
-            $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
-	     //print_r($actions);
+            $actions = PmWorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
         } else {
             $pubdata = array();
             $this->core_author = pnUserGetVar('uid');
-            $actions = WorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
+            $actions = PmWorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
-
+	 
         if ($this->pubtype['tid'] > 0) {
             $tid = $this->pubtype['tid']; 
         } else {
@@ -94,20 +93,17 @@ class pagemaster_user_dynHandler
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // sombody change this always back, pls let it be like this, otherwise stepmode does not work!
-	if ($this->goto == 'stepmode') {
+	// if the item moved to the depot
+	if ($data[$args['commandName']]['core_indepot'] == 1) {
+            $this->goto = pnModURL('pagemaster', 'user', 'main',
+                                   array('tid' => $data['tid']));
+       }elseif ($this->goto == 'stepmode') {
             // stepmode can be used to go automaticaly from one workflowstep to the next
             $this->goto = pnModURL('pagemaster', 'user', 'pubedit',
                                    array('tid'  => $data['tid'],
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
-       }elseif ($this->goto <> '') {
-	    null;
- 	}
-        // if the item moved to the depot
-	elseif ($data[$args['commandName']]['core_indepot'] == 1) {
-            $this->goto = pnModURL('pagemaster', 'user', 'main',
-                                   array('tid' => $data['tid']));
-        }  elseif (empty($this->goto)) {
+ 	}elseif (empty($this->goto)) {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $data['tid'],
                                          'pid' => $data['core_pid']));
@@ -161,7 +157,7 @@ function pagemaster_user_executecommand()
         return LogUtil::registerError(pnML('_NOFOUND', array('i' => _PAGEMASTER_PUBLICATION)));
     }
 
-    WorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
+    PmWorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
     if (!empty($goto)) {
         if ($goto == 'edit') {
             return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
@@ -235,7 +231,7 @@ function pagemaster_user_pubedit()
     // get actual state for selecting pnForm Template
     if (!empty($id)) {
         $obj = array('id' => $id);
-        WorkflowUtil::getWorkflowForObject($obj, $dynHandler->tablename, 'id', 'pagemaster');
+        PmWorkflowUtil::getWorkflowForObject($obj, $dynHandler->tablename, 'id', 'pagemaster');
         $stepname = $obj['__WORKFLOW__']['state'];
     } else {
         $stepname = '';

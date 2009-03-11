@@ -8,6 +8,8 @@
  * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
+Loader::LoadClass("PmWorkflowUtil",'modules/pagemaster/classes');
+
 
 function createOrderBy($orderby)
 {
@@ -133,7 +135,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction=
                         <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$core_tid`-`$core_pid`" module=\'pagemaster\']-->
 
                         <!--[foreach item=\'action\' from=$actions]-->
-                            <!--[pnformbutton commandName=$action text=$action]-->
+                            <!--[pnformbutton commandName=$action.id text=$action.title|pnml]-->
                         <!--[/foreach]-->
                         <!--[/pnform]-->
                         ';

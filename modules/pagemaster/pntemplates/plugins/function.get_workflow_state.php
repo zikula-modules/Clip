@@ -32,7 +32,7 @@ function smarty_function_get_workflow_state($params, &$smarty)
     $tablename = 'pagemaster_pubdata'.$tid;
     $pub['id'] = $id;
     
-    WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
+    PmWorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
 
     if ($params['assign']) {
         $smarty->assign($params['assign'], $pub['__WORKFLOW__']);

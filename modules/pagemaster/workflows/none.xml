@@ -20,7 +20,7 @@
   <actions>
     <!-- From initial state -->
     <action id="submit">
-      <title>Submit</title>
+      <title>_PAGEMASTER_WSA_SUBMIT</title>
       <description>Submit new content</description>
       <permission>comment</permission>
       <nextState>approved</nextState>
@@ -30,16 +30,16 @@
       <!-- State: approved -->
 
     <action id="update">
-      <title>Update</title>
-      <description>Update content</description>
+      <title>_PAGEMASTER_WSA_UPDATE</title>
+      <description>_PAGEMASTER_WSA_UPDATE</description>
       <permission>editor</permission>
       <state>approved</state>
       <operation nextState="approved" online="1">updatePub</operation>
     </action>
 
     <action id="delete">
-      <title>Delete</title>
-      <description>Delete content</description>
+      <title>_PAGEMASTER_WSA_DELETE</title>
+      <description>_PAGEMASTER_WSA_DELETE</description>
       <permission>editor</permission>
       <state>approved</state>
       <operation>deletePub</operation>

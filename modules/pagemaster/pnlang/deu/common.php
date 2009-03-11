@@ -80,3 +80,14 @@ define('_PAGEMASTER_USESCRIBITE', 'Use scribite!');
 
 // zikula search api plugin
 define('_PAGEMASTER_SEARCH_TITLE', 'Durchsuche folgende Inhalte');
+
+// Workflow Actions
+define('_PAGEMASTER_WSA_SUBMIT', 'Speichern');
+define('_PAGEMASTER_WSA_SUBMIT_APROVE', 'Speichern und Freischalten');
+define('_PAGEMASTER_WSA_UPDATE_APROVE', 'Update und Freischalten');
+define('_PAGEMASTER_WSA_APROVE', 'Freischalten');
+define('_PAGEMASTER_WSA_UPDATE', 'Update');
+define('_PAGEMASTER_WSA_DELETE', 'Löschen');
+define('_PAGEMASTER_WSA_MOVETODEBOT', 'Ins Depot');
+define('_PAGEMASTER_WSA_SETONLINE', 'Set Online');
+define('_PAGEMASTER_WSA_SETOFFLINE', 'Set Offline');

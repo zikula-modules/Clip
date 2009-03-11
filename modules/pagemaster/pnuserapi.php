@@ -55,7 +55,7 @@ function pagemaster_userapi_editPub($args)
         }
     }
 
-    $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
+    $ret = PmWorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
     if (empty($ret)) {
         return LogUtil::registerError(_PAGEMASTER_WORKFLOW_ACTIONERROR);
     }
@@ -205,7 +205,7 @@ function pagemaster_userapi_getPub($args)
     }
 
     if ($getApprovalState) {
-        WorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'pagemaster');
+        PmWorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'pagemaster');
     }
 
     return $pubdata;
@@ -392,7 +392,7 @@ function pagemaster_userapi_pubList($args)
         }
         if ($getApprovalState) {
             foreach ($publist as $key => $pub) {
-                WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
+                PmWorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
                 $publist[$key] = $pub;
             }
         }

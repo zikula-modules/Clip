@@ -27,7 +27,7 @@
       <!-- From initial state -->
 
     <action id="approve">
-      <title>Submit+Approve</title>
+      <title>_PAGEMASTER_WSA_SUBMIT_APROVE</title>
       <description>Submit new content and approve immediately</description>
       <permission>moderator</permission>
       <nextState>approved</nextState>
@@ -35,7 +35,7 @@
     </action>
 
     <action id="submit">
-      <title>Submit</title>
+      <title>_PAGEMASTER_WSA_SUBMIT</title>
       <description>Submit new content for acceptance by the local moderator</description>
       <permission>author</permission>
       <nextState>waiting</nextState>
@@ -45,7 +45,7 @@
       <!-- State: waiting -->
 
     <action id="approve">
-      <title>Approve</title>
+      <title>_PAGEMASTER_WSA_APROVE</title>
       <description>Approve publication for immediate publishing</description>
       <permission>moderator</permission>
       <state>waiting</state>
@@ -54,7 +54,7 @@
     </action>
 
     <action id="delete">
-      <title>Delete</title>
+      <title>_PAGEMASTER_WSA_DELETE</title>
       <description>Delete publication</description>
       <permission>moderator</permission>
       <state>waiting</state>
@@ -62,7 +62,7 @@
     </action>
 
     <action id="update">
-      <title>Update</title>
+      <title>_PAGEMASTER_WSA_UPDATE</title>
       <description>Save content with no WS change</description>
       <permission>moderator</permission>
       <state>waiting</state>
@@ -72,7 +72,7 @@
       <!-- State: approved -->
 
     <action id="updateApprove">
-      <title>Update and Approve</title>
+      <title>_PAGEMASTER_WSA_UPDATE_APROVE</title>
       <description>Update content and approve for immediate publishing</description>
       <permission>moderator</permission>
       <state>approved</state>
@@ -80,7 +80,7 @@
     </action>
 
     <action id="update">
-      <title>Update</title>
+      <title>_PAGEMASTER_WSA_UPDATE</title>
       <description>Update content for later publishing</description>
       <permission>moderator</permission>
       <state>approved</state>
@@ -88,14 +88,14 @@
     </action>
 
     <action id="delete">
-      <title>Delete</title>
+      <title>_PAGEMASTER_WSA_UPDATE_DELETE</title>
       <description>Delete publication</description>
       <permission>moderator</permission>
       <state>approved</state>
       <operation>deletePub</operation>
     </action>
     <action id="MoveToDepot">
-      <title>Move to Depot</title>
+      <title>_PAGEMASTER_WSA_MOVETODEBOT</title>
       <description>Move to depot</description>
       <permission>moderator</permission>
       <state>approved</state>
@@ -103,7 +103,7 @@
     </action>
 
     <action id="online">
-      <title>Go online</title>
+      <title>_PAGEMASTER_WSA_SETONLINE</title>
       <description>Set publication online</description>
       <permission>moderator</permission>
       <state>approved</state>
@@ -111,7 +111,7 @@
     </action>
 
     <action id="offline">
-      <title>Take offline</title>
+      <title>_PAGEMASTER_WSA_SETOFFLINE</title>
       <description>Set publication offline</description>
       <permission>moderator</permission>
       <state>approved</state>
