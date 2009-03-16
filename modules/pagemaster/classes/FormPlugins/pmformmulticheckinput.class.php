@@ -26,7 +26,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     static function postRead($data, $field)
     {
         if (!empty($data) && $data <> '::') {
-	    $lang = pnUserGetLang();
+	        $lang = pnUserGetLang();
             if (strpos($data, ':') === 0) {
                 $data = substr($data, 1, -1);
             }
@@ -55,7 +55,6 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
 		$mand = '* Pflichtfeld';
 	return $mand.parent::render($render);
     }
-
 
     function create(&$render, &$params)
     {

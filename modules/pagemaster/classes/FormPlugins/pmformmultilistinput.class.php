@@ -48,10 +48,25 @@ class pmformmultilistinput extends pnFormCategorySelector
         }
         return $cat_arr;
     }
-
+    
+    function render(&$render)
+    {
+        // extract the configuration {category, size}
+        $config = array(30, '~');
+        if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
+            $config = explode('|', $render->pnFormEventHandler->pubfields[$this->inputName]['typedata']);
+            if (!isset($config[1]))
+                $config[1] = '~';
+        }
+        if ($config[1] != '~')
+            $this->size = $config[1];
+        return parent::render($render);
+    }
+    
     function create(&$render, &$params)
     {
         $this->saveAsString = 1;
+        $this->selectionMode = 'multiple';
         parent::create($render, $params);
     }
 
@@ -122,26 +137,8 @@ class pmformmultilistinput extends pnFormCategorySelector
         return $html;
     }
 
-    function render(&$render)
+    function getSelectedValue()
     {
-        // extract the configuration {category, size}
-        $config = array(30, '~');
-        if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
-            $config = explode('|', $render->pnFormEventHandler->pubfields[$this->inputName]['typedata']);
-            if (!isset($config[1])) {
-                $config[1] = '~';
-            }
-            
-        }
-
-        if ($config[1] != '~') {
-            $this->size = $config[1];
-        }
-
-        $this->selectionMode = 'multiple';
-        if ($this->selectedValue == null) {
-            $this->selectedValue = array();
-        }
-        return parent::render($render);
+        return ':'.parent::getSelectedValue().':';
     }
 }
