@@ -47,8 +47,10 @@ function pagemaster_init()
 
 function pagemaster_upgrade($from_version)
 {
-    switch ($from_version) {
+    echo $from_version; 
 
+
+    switch ($from_version) {
     case '0.1' :
         // add the urltitle field to the pubtypes table
         if (!DBUtil::changeTable('pagemaster_pubtypes')) {
@@ -166,9 +168,9 @@ function pagemaster_upgrade($from_version)
                 return LogUtil::registerError(_UPDATETABLEFAILED);
             }
         }
-    case '0.3':
+    case '0.2.1':
         $tables = pnDBGetTables();
-        $sql = "UPDATE {$tables['pagemaster_pubfields']} pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1)";
+        $sql = "UPDATE {$tables['pagemaster_pubfields']} set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1)";
         if (!DBUtil::executeSQL($sql)) {
             return LogUtil::registerError(_UPDATETABLEFAILED);
         }

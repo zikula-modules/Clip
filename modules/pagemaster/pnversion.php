@@ -24,7 +24,7 @@ $modversion['help']           = 'pndocs/help.txt';
 $modversion['license']        = 'pndocs/license.txt';
 $modversion['official']       = 0;
 $modversion['author']         = 'spax';
-$modversion['contact']        = 'mk@sexyandfamous.com';
+$modversion['contact']        = ' ';
 
 // Module security:
 $modversion['securityschema'] = array(
