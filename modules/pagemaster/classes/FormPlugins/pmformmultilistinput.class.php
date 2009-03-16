@@ -77,7 +77,7 @@ class pmformmultilistinput extends pnFormCategorySelector
             $params['category'] = $config[0];
         }
         parent::load(&$render, $params);
-        if ($this->mandatory)
+
             array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
         
     }
@@ -137,8 +137,17 @@ class pmformmultilistinput extends pnFormCategorySelector
         return $html;
     }
 
+    //these two methods are others in pnFormCategoryCheckboxList then pnFormCategorySelector (original pnForm classes). To be able to switch form multilsit to checkbox it is important that both act the same way.
     function getSelectedValue()
     {
         return ':'.parent::getSelectedValue().':';
+    }
+
+    function setSelectedValue($value)
+    {
+	    if (is_string($value))
+		    $value = split(':', $value);
+	    $this->selectedValue = $value;
+           $this->selectedIndex = 0;
     }
 }

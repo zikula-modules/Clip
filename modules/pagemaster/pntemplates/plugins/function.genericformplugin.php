@@ -34,7 +34,7 @@ function smarty_function_genericformplugin($params, &$render)
     
     //read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])){
-        $params['mandatory'] = $pubfields[$id]['ismandatory'];
+        $params['mandatory'] = 1;//$pubfields[$id]['ismandatory'];
     }
     if (!isset($params['maxLength'])){
         $params['maxLength'] = $pubfields[$id]['fieldmaxlength'];
