@@ -89,8 +89,8 @@ class pagemaster_admin_pubtypesHandler
 
         if (!empty($tid) &&  is_numeric($tid)) {
             $this->tid = $tid;
-            $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
-            $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+            $pubtype   = getPubType($tid);
+            $pubfields = getPubFields($tid);
             $pubarr[] = array (
                 'text'  => '',
                 'value' => ''
@@ -244,8 +244,7 @@ class pagemaster_admin_pubfieldsHandler
 
         $data['id']        = $this->id;
         $data['tid']       = $this->tid;
-        $file              = $data['fieldplugin'];
-        $plugin            = pagemasterGetPlugin($file);
+        $plugin            = getPlugin($data['fieldplugin']);
         $data['fieldtype'] = $plugin->columnDef;
 
         if ($args['commandName'] == 'delete') {
@@ -441,7 +440,7 @@ function pagemaster_admin_showcode()
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'mode')));
     }
 
-    $pubtype   = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    $pubtype   = getPubType($tid);
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = $tid", 'pm_lineno', -1, -1, 'name');
 
     // get the code depending of the mode

@@ -42,7 +42,7 @@ class pmformcustomdata extends pnFormTextInput
         return parent::render($render);
 	}
 
-    function postRead($data, $field)
+    static function postRead($data, $field)
     {
         if (!empty($data)) {
             $data = @unserialize($data);
@@ -134,7 +134,7 @@ class pmformcustomdata extends pnFormTextInput
         }
     }
 
-    function getSaveTypeDataFunc($field)
+    static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -179,7 +179,7 @@ class pmformcustomdata extends pnFormTextInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    static function getTypeHtml($field, $render)
     {
         PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/Zikula.itemlist.js');
         // parse the data
@@ -338,8 +338,4 @@ class pmformcustomdata extends pnFormTextInput
         }
         return ''; 
     }
-}
-
-function smarty_function_pmformcustomdata($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformcustomdata', $params);
 }

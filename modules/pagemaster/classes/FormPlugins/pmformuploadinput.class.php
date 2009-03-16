@@ -41,7 +41,7 @@ class pmformuploadinput extends pnFormUploadInput
         }
     }
 
-    function postRead($data, $field)
+    static function postRead($data, $field)
     {
         if (!empty($data)) {
             $arrTypeData = @unserialize($data);
@@ -69,7 +69,7 @@ class pmformuploadinput extends pnFormUploadInput
         return NULL;
     }
 
-    function preSave($data, $field)
+    static function preSave($data, $field)
     {
         $id   = $data['id'];
         $tid  = $data['tid'];
@@ -113,8 +113,4 @@ class pmformuploadinput extends pnFormUploadInput
 
         return NULL;
     }
-}
-
-function smarty_function_pmformuploadinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformuploadinput', $params);
 }

@@ -39,7 +39,7 @@ function smarty_function_category_browser($params, &$smarty)
 
     $filter = FormUtil::getPassedValue('filter');
     $filter_arr = explode(',', $filter);
-    $lang = SessionUtil::getVar('lang', null);
+    $lang = pnUserGetLang();
 
     if (!$tid) {
         return 'Required parameter [tid] not provided in smarty_function_category_browser';
@@ -62,7 +62,7 @@ function smarty_function_category_browser($params, &$smarty)
 
     $result = null;
     
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+    $pubfields = getPubFields($tid);
     $id = $pubfields[$field]['typedata'];
     
     $cats = CategoryUtil::getSubCategories($id);
@@ -70,7 +70,7 @@ function smarty_function_category_browser($params, &$smarty)
     if ($cats) {
         if ($count) {
             // get it only once
-            $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+            $pubtype = getPubType($tid);
         }
         $one_selected = false;
 

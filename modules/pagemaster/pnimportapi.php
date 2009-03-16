@@ -228,7 +228,7 @@ function pagemaster_importapi_importps2()
                 echo 'unsupportet field type' . $pubfield['type'];
             }
 
-            $plugin = pagemasterGetPlugin($datafield['fieldplugin']);
+            $plugin                    = getPlugin($datafield['fieldplugin']);
             $datafield['fieldtype']    = $plugin->columnDef;
             $datafield['istitle']      = $pubfield['isTitle'];
             $datafield['ispageable']   = $pubfield['isPageable'];

@@ -24,7 +24,7 @@ function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
         // process $obj and calculate an instance
         $pid = $obj['core_pid'];
         $tid = getTidFromTablename($obj['__WORKFLOW__']['obj_table']);
-        $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+        $pubtype = getPubType($tid);
         if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == $currentUser) {
             return true;
         } else {

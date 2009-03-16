@@ -23,13 +23,11 @@ class pmformlistinput extends pnFormCategorySelector
         return __FILE__; // FIXME: may be found in smarty's data???
     }
 
-    function postRead($data, $field)
+    static function postRead($data, $field)
     {
         Loader::loadClass('CategoryUtil');
         $cat = CategoryUtil::getCategoryByID($data);
-        static $lang;
-        if ($lang == '')
-        $lang = SessionUtil::getVar('lang', null);
+        $lang = pnUserGetLang();
 
         // compatible mode to pagesetter
         $cat['fullTitle'] = (isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name']);
@@ -73,7 +71,7 @@ class pmformlistinput extends pnFormCategorySelector
         parent::load(&$render, $params);
     }
 
-    function getSaveTypeDataFunc($field)
+    static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -93,7 +91,7 @@ class pmformlistinput extends pnFormCategorySelector
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    static function getTypeHtml($field, $render)
     {
         Loader::loadClass('CategoryUtil');
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
@@ -125,8 +123,4 @@ class pmformlistinput extends pnFormCategorySelector
 
         return $html;
     }
-}
-
-function smarty_function_pmformlistinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformlistinput', $params);
 }

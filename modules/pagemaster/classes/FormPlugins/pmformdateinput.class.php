@@ -24,7 +24,7 @@ class pmformdateinput extends pnFormDateInput
         return __FILE__; // FIXME: may be found in smarty's data???
     }
 
-    function getSaveTypeDataFunc($field)
+    static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -38,7 +38,7 @@ class pmformdateinput extends pnFormDateInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    static function getTypeHtml($field, $render)
     {
         if ($render->_tpl_vars['typedata'] == 1) {
             $checked = 'checked="checked"';
@@ -63,6 +63,3 @@ class pmformdateinput extends pnFormDateInput
     }
 }
 
-function smarty_function_pmformdateinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformdateinput', $params);
-}

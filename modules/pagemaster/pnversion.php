@@ -13,7 +13,7 @@
 $modversion['name']           = 'pagemaster';
 
 // Version (10 chars or less):
-$modversion['version']        = '0.2.1';
+$modversion['version']        = '0.3';
 $modversion['description']    = 'Content Module like pagesetter';
 $modversion['displayname']    = 'pagemaster';
 

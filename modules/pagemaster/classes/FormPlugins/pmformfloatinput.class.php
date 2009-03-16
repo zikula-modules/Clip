@@ -10,19 +10,15 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformtextinput.php');
+require_once ('system/pnForm/plugins/function.pnformfloatinput.php');
 
-class pmformstringinput extends pnFormTextInput
-{
-    var $columnDef = 'C(512)';
-    var $title     = _PAGEMASTER_PLUGIN_STRING;
+class pmformfloatinput extends pnFormFloatInput {
+    
+    var $columnDef = 'F';
+    var $title     = _PAGEMASTER_PLUGIN_FLOAT;
 
     function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???
     }
-}
-
-function smarty_function_pmformstringinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformstringinput', $params);
 }

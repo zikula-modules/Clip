@@ -30,7 +30,7 @@ class pmformpubinput extends pnFormDropdownList
             list($tid, $filter, $join, $joinfields, $orderby) = explode(';', $pubfields[$this->id]['typedata']);
         }
 
-        $pubfields_pub = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+        $pubfields_pub = getPubFields($tid);
         $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
                                array('tid'                => $tid,
                                      'countmode'          => 'no',
@@ -55,7 +55,7 @@ class pmformpubinput extends pnFormDropdownList
         parent::load($render);
     }
 
-    function getSaveTypeDataFunc($field)
+    static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -65,7 +65,7 @@ class pmformpubinput extends pnFormDropdownList
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    static function getTypeHtml($field, $render)
     {
         $vars = explode(';', $render->_tpl_vars['typedata']);
 
@@ -109,8 +109,4 @@ class pmformpubinput extends pnFormDropdownList
                  </div>';
         return $html;
     }
-}
-
-function smarty_function_pmformpubinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformpubinput', $params);
 }

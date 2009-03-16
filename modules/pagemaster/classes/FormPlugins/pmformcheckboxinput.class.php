@@ -10,19 +10,15 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformurlinput.php');
+require_once('system/pnForm/plugins/function.pnformcheckbox.php');
 
-class pmformurlinput extends pnFormURLInput
+class pmformcheckboxinput extends pnFormCheckbox
 {
-    var $columnDef = 'C(500)';
-    var $title     = _PAGEMASTER_PLUGIN_URL;
+    var $columnDef = 'I(4)';
+    var $title     = _PAGEMASTER_PLUGIN_CHECKBOX;
 
     function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???
     }
-}
-
-function smarty_function_pmformurlinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformurlinput', $params);
 }

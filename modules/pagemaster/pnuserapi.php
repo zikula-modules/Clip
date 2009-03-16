@@ -36,20 +36,20 @@ function pagemaster_userapi_editPub($args)
 
 
     if (!isset ($args['pubfields'])) {
-        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+        $pubfields = getPubFields($tid);
     } else {
         $pubfields = $args['pubfields'];
     }
 
     if (!isset ($args['schema'])) {
-        $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+        $pubtype = getPubType($tid);
         $schema  = str_replace('.xml', '', $pubtype['workflow']);
     } else {
         $schema = $args['schema'];
     }
 
     foreach ($pubfields as $fieldname => $field) {
-        $plugin = pagemasterGetPlugin($field['fieldplugin']);
+        $plugin = getPlugin($field['fieldplugin']);
         if (method_exists($plugin, 'preSave')) {
             $data[$fieldname] = $plugin->preSave($data, $field);
         }
@@ -137,7 +137,7 @@ function pagemaster_userapi_getPub($args)
 
     // Get the pubtype if not set
     if (empty($pubtype)) {
-        $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+        $pubtype = getPubType($tid);
         // Validate the result
         if ($pubtype === false) {
             return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
@@ -146,7 +146,7 @@ function pagemaster_userapi_getPub($args)
 
     // Get the pubfields if not set
     if (empty($pubfields)) {
-        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+        $pubfields = getPubFields($tid);
         // Validate the result
         if ($pubfields === false) {
             return LogUtil::registerError(_PAGEMASTER_NOPUBFIELDSFOUND);
@@ -260,12 +260,12 @@ function pagemaster_userapi_pubList($args)
     }
 
     if (!isset($args['pubtype'])) {
-        $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+        $pubtype = getPubType($tid);
     } else {
         $pubtype = $args['pubtype'];
     }
     if (!isset($args['pubfields'])) {
-        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+        $pubfields = getPubFields($tid);
     } else {
         $pubfields = $args['pubfields'];
     }
@@ -307,7 +307,9 @@ function pagemaster_userapi_pubList($args)
         
 
     foreach ($pubfields as $fieldname => $field) {
-        $plugin = pagemasterGetPlugin($field['fieldplugin']);
+        
+        $pluginclass = $field['fieldplugin'];
+        $plugin = getPlugin($pluginclass);
 
         if (isset($plugin->filterClass)) {
             $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;

@@ -10,19 +10,15 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformcheckbox.php');
+require_once('system/pnForm/plugins/function.pnformemailinput.php');
 
-class pmformcheckboxinput extends pnFormCheckbox
+class pmformemailinput extends pnFormEMailInput
 {
-    var $columnDef = 'I(4)';
-    var $title     = _PAGEMASTER_PLUGIN_CHECKBOX;
+    var $columnDef = 'C(100)';
+    var $title     = _PAGEMASTER_PLUGIN_EMAIL;
 
     function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???
     }
-}
-
-function smarty_function_pmformcheckboxinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformcheckboxinput', $params);
 }

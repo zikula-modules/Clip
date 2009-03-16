@@ -27,7 +27,7 @@ class pnFormPluginType extends pnFormDropdownList
         foreach ($plugins as $plugin) {
             $items[] = array (
                 'text'  => $plugin['plugin']->title,
-                'value' => $plugin['file']
+                'value' => $plugin['class']
             );
         }
         $this->items = $items;
@@ -39,11 +39,7 @@ class pnFormPluginType extends pnFormDropdownList
     {
         $result = parent::render($render);
         $typeDataHtml = '';
-        if (!empty($this->selectedValue) || ($this->selectedValue == '' && !empty($this->items))) {
-            if ($this->selectedValue == '') {
-                $this->selectedValue = $this->items[0]['value'];
-            }
-
+        if (!empty($this->selectedValue) && !empty($this->items)) {
             if (!file_exists('javascript/livepipe/livepipe.js') || !file_exists('javascript/livepipe/livepipe.css') ||  !file_exists('javascript/livepipe/window.js')) {
                 LogUtil::registerError(pnML('_PAGEMASTER_LIVEPIPE_NOTFOUND', null, true));
             } else {
@@ -51,12 +47,11 @@ class pnFormPluginType extends pnFormDropdownList
                 PageUtil::addVar('javascript', 'javascript/livepipe/window.js');
                 PageUtil::addVar('stylesheet', 'javascript/livepipe/livepipe.css');
             }
-
             $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
-
-            $plugin = pagemasterGetPlugin($this->selectedValue);
+            $plugin = getPlugin($this->selectedValue);
             if (method_exists($plugin, 'getTypeHtml'))
             {    
+                echo 1;
                 if (method_exists($plugin, 'getSaveTypeDataFunc')) {
                     $script .= $plugin->getSaveTypeDataFunc($this);
                 } else {

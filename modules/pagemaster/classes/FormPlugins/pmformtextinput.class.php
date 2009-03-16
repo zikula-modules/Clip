@@ -37,7 +37,7 @@ class pmformtextinput extends pnFormTextInput
         return parent::render($render);
     }
 
-    function getSaveTypeDataFunc($field)
+    static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -53,7 +53,7 @@ class pmformtextinput extends pnFormTextInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    static function getTypeHtml($field, $render)
     {
         if (isset($render->_tpl_vars['typedata']) && $render->_tpl_vars['typedata'] == 1) {
             $checked = 'checked="checked"';
@@ -71,8 +71,4 @@ class pmformtextinput extends pnFormTextInput
 
         return $html;
     }
-}
-
-function smarty_function_pmformtextinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformtextinput', $params);
 }

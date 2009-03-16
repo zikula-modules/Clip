@@ -8,7 +8,7 @@
  * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
-
+//update pn_pagemaster_pubfields set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1)
 function pagemaster_init()
 {
     // create table
@@ -19,12 +19,6 @@ function pagemaster_init()
     if (!DBUtil::createTable('pagemaster_pubtypes')) {
         return false;
     }
-    
-/*
-    if (!DBUtil::createIndex('urltitle', 'pagemaster_pubtypes', array('urltitle'))) {
-        return LogUtil::registerError(_CREATEINDEXFAILED);
-    }
-*/
     
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
@@ -172,8 +166,12 @@ function pagemaster_upgrade($from_version)
                 return LogUtil::registerError(_UPDATETABLEFAILED);
             }
         }
-        // return pagemaster_upgrade('0.2.1');
-
+    case '0.3':
+        $tables = pnDBGetTables();
+        $sql = "UPDATE {$tables['pagemaster_pubfields']} pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1)";
+        if (!DBUtil::executeSQL($sql)) {
+            return LogUtil::registerError(_UPDATETABLEFAILED);
+        }
     }
 
     return true;

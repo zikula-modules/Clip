@@ -106,19 +106,19 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction=
         $template_code .= '
                             <tr>
                                 <td><!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' text=\''.$pubfields[$k]['title'].'\']-->:</td>
-                                <td><!--['.$pmformname.' id=\''.$pubfields[$k]['name'].'\' '.$maxlength.$linecol.$toolTip.'mandatory=\''.$pubfields[$k]['ismandatory'].'\']--></td>
+                                <td><!--[genericformplugin id=\''.$pubfields[$k]['name'].'\' '.$linecol.$toolTip.'\']--></td>
                             </tr>
                             ';
     }
     $template_code .= '
                             <tr>
                                 <td><!--[pnformlabel for=\'core_publishdate\' text=\'_PAGEMASTER_PUBLISHDATE\']-->:</td>
-                                <td><!--[pmformdateinput id=\'core_publishdate\' includeTime=\'1\']--></td>
+                                <td><!--[pnformdateinput id=\'core_publishdate\' includeTime=\'1\']--></td>
                             </tr>
 
                             <tr>
                                 <td><!--[pnformlabel for=\'core_expiredate\' text=\'_PAGEMASTER_EXPIREDATE\']-->:</td>
-                                <td><!--[pmformdateinput id=\'core_expiredate\' includeTime=\'1\']--></td>
+                                <td><!--[pnformdateinput id=\'core_expiredate\' includeTime=\'1\']--></td>
                             </tr>
 
                             <tr>
@@ -128,7 +128,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction=
 
                             <tr>
                                 <td><!--[pnformlabel for=\'core_showinlist\' text=\'_PAGEMASTER_SHOWINLIST\']-->:</td>
-                                <td><!--[pmformcheckboxinput id=\'core_showinlist\' checked=\'checked\']--></td>
+                                <td><!--[pnformcheckbox id=\'core_showinlist\' checked=\'checked\']--></td>
                             </tr>
                         </table>
 
@@ -222,21 +222,26 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
 
 function pagemasterGetPluginsOptionList()
 {
-    $dir = 'modules/pagemaster/pntemplates/plugins';
+    $classDirs = array();
+    //Loader::LoadClass checks these dirs, strange
+    $classDirs[] = 'config/classes/modules/pagemaster/classes/FormPlugins';
+    $classDirs[] = 'modules/pagemaster/classes/FormPlugins';
     $plugins = array ();
-    if ($dh = opendir($dir)) {
-        while (($file = readdir($dh)) !== false) {
-            if (substr($file, 0, 15) == 'function.pmform') {
-                $plugin = pagemasterGetPlugin($file);
-                $plugins[] = array (
-                    'plugin' => $plugin,
-                    'file' => $file
-                );
+    foreach ($classDirs as $classDir) {
+        if ($dh = opendir($classDir)) {
+            while (($file = readdir($dh)) !== false) {
+                if (substr($file, 0, 6) == 'pmform') {
+                    $pluginclass = substr($file, 0, -10);
+                    $plugin = getPlugin($pluginclass);
+                    $plugins[] = array (
+                        'plugin' => $plugin,
+                		'class' => $pluginclass    
+                    );
+                }
             }
+            closedir($dh);
         }
-        closedir($dh);
     }
-
     return $plugins;
 }
 
@@ -267,43 +272,11 @@ function pagemasterGetWorkflowsOptionList()
     return $plugins;
 }
 
-function pagemasterGetPlugin($file)
-{
-    static $plugins = array();
-
-    if (empty($plugins[$file])) {
-        $pluginType = pagemasterGetPluginTypeFromFilename($file);
-        pagemasterloadPluginType($pluginType);
-        $plugins[$file] = new $pluginType;
-    }
-
-    return $plugins[$file];
-}
-
-function pagemasterGetPluginTypeFromFilename($filename)
-{
-    $i = strpos($filename, '.', 9);
-    if ($i === false) {
-        return false;
-    }
-    return substr($filename, 9, $i -9);
-}
-
-function pagemasterloadPluginType($pluginType)
-{
-    static $loadedPlugins = array();
-
-    if (empty($loadedPlugins[$pluginType])) {
-        require_once("modules/pagemaster/pntemplates/plugins/function.$pluginType.php");
-        $loadedPlugins[$pluginType] = 1;
-    }
-}
-
 function handlePluginFields($publist, $pubfields)
 {
     foreach ($pubfields as $fieldname => $field) {
-        $plugin = pagemasterGetPlugin($field['fieldplugin']);
-
+        $pluginclass = $field['fieldplugin'];
+        $plugin = getPlugin($pluginclass);
         if (method_exists($plugin, 'postRead')) {
             foreach ($publist as $key => $pub) {
                 if ($pub[$fieldname] <> '' and isset($pub[$fieldname]))
@@ -344,7 +317,7 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
                 }
             }
             if (!empty($plugin_name)) {
-                $plugin =  pagemasterGetPlugin($plugin_name);
+                $plugin = getPlugin($pluginclass);
                 if (method_exists($plugin, 'orderBy')) {
                     $orderby_col = $plugin->orderBy($field_name);
                 } else {
@@ -379,3 +352,38 @@ function getTitleField($pubfields)
 
     return $core_title;
 }
+
+/**
+ * Singletone
+ *
+ * @param plugin class
+ * @return plugin object
+ */
+function getPlugin($pluginclass)
+{
+    static $plugin_arr;
+    if (!isset($plugin_arr[$pluginclass]))
+    {
+        Loader::LoadClass($pluginclass,'modules/pagemaster/classes/FormPlugins');
+        $plugin_arr[$pluginclass] = new $pluginclass;
+    }
+    return $plugin_arr[$pluginclass];
+}
+
+function getPubFields($tid)
+{
+    static $pubfields_arr;
+    if (empty($pubfields_arr[$tid]))
+        $pubfields_arr[$tid] = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+    return $pubfields_arr[$tid];
+}
+function getPubType($tid)
+{
+    static $pubtype_arr;
+    if (empty($pubtype_arr[$tid]))
+        $pubtype_arr[$tid] = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    return $pubtype_arr[$tid];
+}
+
+
+

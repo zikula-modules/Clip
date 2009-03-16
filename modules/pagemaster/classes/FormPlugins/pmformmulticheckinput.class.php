@@ -10,12 +10,12 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
+require_once('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
 
-class pmformmultilistinput extends pnFormCategorySelector
+class pmformmulticheckinput extends pnFormCategoryCheckboxList
 {
     var $columnDef   = 'C(512)';
-    var $title       = _PAGEMASTER_PLUGIN_MULTILIST;
+    var $title       = _PAGEMASTER_PLUGIN_MULTICHECK;
     var $filterClass = 'pmList';
 
     function getFilename()
@@ -23,13 +23,10 @@ class pmformmultilistinput extends pnFormCategorySelector
         return __FILE__; // FIXME: may be found in smarty's data???
     }
 
-    function postRead($data, $field)
+    static function postRead($data, $field)
     {
         if (!empty($data) && $data <> '::') {
-	     static $lang;
-	     if (empty($lang)){
-		$lang = pnUserGetLang();
-	     }
+	    $lang = pnUserGetLang();
             if (strpos($data, ':') === 0) {
                 $data = substr($data, 1, -1);
             }
@@ -52,6 +49,14 @@ class pmformmultilistinput extends pnFormCategorySelector
         return $cat_arr;
     }
 
+    function render(&$render)
+    {
+      	if ($this->mandatory== '1')
+		$mand = '* Pflichtfeld';
+	return $mand.parent::render($render);
+    }
+
+
     function create(&$render, &$params)
     {
         $this->saveAsString = 1;
@@ -61,47 +66,25 @@ class pmformmultilistinput extends pnFormCategorySelector
     function load(&$render, $params)
     {
         if (isset($render->pnFormEventHandler->pubfields[$this->id])) {
-            $config = explode('|', $render->pnFormEventHandler->pubfields[$this->id]['typedata']);
-            $params['category'] = $config[0];
+            $params['category'] = $render->pnFormEventHandler->pubfields[$this->id]['typedata'];
         }
         parent::load(&$render, $params);
         if ($this->mandatory)
             array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
-        
     }
 
-    function getSaveTypeDataFunc($field)
+    static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 var config = new Array()
-                                 config.push($F(\'pmplugin_categorylist\'))
-
-                                 if (parseInt($F(\'pmplugin_multisize\')) != NaN && parseInt($F(\'pmplugin_multisize\')) > 0) {
-                                     config.push($F(\'pmplugin_multisize\'));
-                                 } else {
-                                     config.push(\'~\');
-                                 }
-
-                                 $(\'typedata\').value = config.join(\'|\')
+                                 $(\'typedata\').value = $F(\'pmplugin_checklist\') ;
                                  closeTypeData();
                              }';
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    static function getTypeHtml($field)
     {
-        // parse the configuration
-        if (isset($render->_tpl_vars['typedata'])) {
-            $vars = explode('|', $render->_tpl_vars['typedata']);
-        } else {
-            $vars = array();
-        }
-        $size = null;
-        if (!empty($vars) && isset($vars[1]) && $vars[1] > 0) {
-            $size = $vars[1];
-        }
-
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
@@ -110,10 +93,7 @@ class pmformmultilistinput extends pnFormCategorySelector
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
         $html = '<div class="pn-formrow">
-                     <label for="pmplugin_multisize">'._PAGEMASTER_SIZE.':</label> <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
-                 </div>
-                 <div class="pn-formrow">
-                 <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+                 <label for="pmplugin_checklist">'._CATEGORY.':</label><select id="pmplugin_checklist" name="pmplugin_checklist">';
 
         foreach ($cats as $cat) {
             $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
@@ -124,31 +104,4 @@ class pmformmultilistinput extends pnFormCategorySelector
 
         return $html;
     }
-
-    function render(&$render)
-    {
-        // extract the configuration {category, size}
-        $config = array(30, '~');
-        if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
-            $config = explode('|', $render->pnFormEventHandler->pubfields[$this->inputName]['typedata']);
-            if (!isset($config[1])) {
-                $config[1] = '~';
-            }
-            
-        }
-
-        if ($config[1] != '~') {
-            $this->size = $config[1];
-        }
-
-        $this->selectionMode = 'multiple';
-        if ($this->selectedValue == null) {
-            $this->selectedValue = array();
-        }
-        return parent::render($render);
-    }
-}
-
-function smarty_function_pmformmultilistinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformmultilistinput', $params);
 }

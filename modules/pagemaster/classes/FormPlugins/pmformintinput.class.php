@@ -10,19 +10,15 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformemailinput.php');
+require_once('system/pnForm/plugins/function.pnformintinput.php');
 
-class pmformemailinput extends pnFormEMailInput
+class pmformintinput extends pnFormIntInput
 {
-    var $columnDef = 'C(100)';
-    var $title     = _PAGEMASTER_PLUGIN_EMAIL;
+    var $columnDef = 'I (9,0)';
+    var $title =     _PAGEMASTER_PLUGIN_INTEGER;
 
     function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???
     }
-}
-
-function smarty_function_pmformemailinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformemailinput', $params);
 }

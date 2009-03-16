@@ -41,7 +41,7 @@ class pmformimageinput extends pnFormUploadInput
         }
     }
 
-    function postRead($data, $field)
+    static function postRead($data, $field)
     {
         if (!empty($data)) {
             $arrTypeData = @unserialize($data);
@@ -72,7 +72,7 @@ class pmformimageinput extends pnFormUploadInput
         }
     }
 
-    function preSave($data, $field)
+    static function preSave($data, $field)
     {
         $id   = $data['id'];
         $tid  = $data['tid'];
@@ -147,7 +147,7 @@ class pmformimageinput extends pnFormUploadInput
         return NULL;
     }
 
-    function getSaveTypeDataFunc($field)
+    static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -157,7 +157,7 @@ class pmformimageinput extends pnFormUploadInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    static function getTypeHtml($field, $render)
     {
         $html = '<div class="pn-formrow">
                  <label for="pmplugin_x_px">x:</label><input type="text" id="pmplugin_x_px" name="pmplugin_x_px" />
@@ -166,8 +166,4 @@ class pmformimageinput extends pnFormUploadInput
                  </div>';
         return $html;
     }
-}
-
-function smarty_function_pmformimageinput($params, &$render) {
-    return $render->pnFormRegisterPlugin('pmformimageinput', $params);
 }

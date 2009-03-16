@@ -147,7 +147,7 @@ function pagemaster_user_executecommand()
     }
 
     if (empty($schema)) {
-        $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+        $pubtype = getPubType($tid);
         $schema  = str_replace('.xml', '', $pubtype['workflow']);
     }
 
@@ -195,13 +195,13 @@ function pagemaster_user_pubedit()
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
-    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    $pubtype = getPubType($tid);
     if (empty($pubtype)) {
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }
 
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, 'pm_lineno', -1, -1, 'name');
-    if (empty($pubtype)) {
+    $pubfields = getPubFields($tid);
+    if (empty($pubfields)) {
         LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'pubfields')));
     }
 
@@ -293,7 +293,7 @@ function pagemaster_user_main($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
     }
 
-    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    $pubtype = getPubType($tid);
     if (empty($pubtype)) {
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }
@@ -375,7 +375,7 @@ function pagemaster_user_main($args)
 
     $orderby   = createOrderBy($orderby);
 
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+    $pubfields = getPubFields($tid);
             
     // Uses the API to get the list of publications
     $result = pnModAPIFunc('pagemaster', 'user', 'pubList',
@@ -443,7 +443,7 @@ function pagemaster_user_viewpub($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id | pid')));
     }
 
-    $pubtype = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    $pubtype = getPubType($tid);
     if (empty($pubtype)) {
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }
@@ -503,7 +503,7 @@ function pagemaster_user_viewpub($args)
     }
 
     // Not cached or cache disabled, then get the Pub from the DB
-    $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+    $pubfields = getPubFields($tid);
 
     $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
                             array('tid'                => $tid,
