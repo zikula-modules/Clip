@@ -20,7 +20,8 @@
  * @param $args['multiselect'] are more selection in one browser allowed (makes only sense for multilist fields)
  * @param $args['globalmultiselect'] are more then one selections in all available browsers allowed
  * @param $args['togglediv'] this div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus)
- * @param $args['cache'] enable cache
+ * @param $args['cache'] enable smarty cache
+ * @param $args['cache_count'] enable count cache (apc is required)
  * @param $args['assign'] optional
 
  * @return html of category tree
@@ -36,6 +37,8 @@ function smarty_function_category_browser($params, &$smarty)
     $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;
     $globalmultiselect = isset($params['globalmultiselect']) ? $params['globalmultiselect'] : false;
     $cache             = isset($params['cache']) ? $params['cache'] : false;
+    $cache_count       = isset($params['cache_count']) ? $params['cache_count'] : true;
+
 
     $filter = FormUtil::getPassedValue('filter');
     $filter_arr = explode(',', $filter);
@@ -71,6 +74,8 @@ function smarty_function_category_browser($params, &$smarty)
         if ($count) {
             // get it only once
             $pubtype = getPubType($tid);
+            if (function_exists('apc_fetch') && $cache_count)
+  		$count_arr = apc_fetch('cat_browser_count_'.$tid);
         }
         $one_selected = false;
 
@@ -135,7 +140,10 @@ function smarty_function_category_browser($params, &$smarty)
             }
 
             if ($count) {
-                $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
+	         if (isset($count_arr[$filter_act]))
+			$v['count'] = $count_arr[$filter_act];
+		  else{
+                	$pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
                                        array('tid'                => $tid,
                                              'countmode'          => 'just',
                                              'filter'             => $filter_act,
@@ -143,17 +151,21 @@ function smarty_function_category_browser($params, &$smarty)
                                              'pubfields'          => $pubfields,
                                              'pubtype'            => $pubtype,
                                              'handlePluginFields' => false));
-                $v['count'] = $pubarr['pubcount'];
+			$count_arr[$filter_act] = $v['count'] = $pubarr['pubcount'];
+		  }
             }
 
             $v['depth'] = $depth;
             $v['url'] = $url;
             $v['fullTitle'] = $v['display_name'][$lang];
             $cat_arr[] = $v;
-        }
+            }
     } else {
         return "No category for id [$id] in smarty_function_category_browser";
     }
+
+    if (function_exists('apc_store') && $count && $cache_count)
+    	apc_store('cat_browser_count_'.$tid, $count_arr, 3600);
 
     $render->assign('cats', $cat_arr);
 
