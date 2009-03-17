@@ -317,7 +317,7 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
                 }
             }
             if (!empty($plugin_name)) {
-                $plugin = getPlugin($pluginclass);
+                $plugin = getPlugin($plugin_name);
                 if (method_exists($plugin, 'orderBy')) {
                     $orderby_col = $plugin->orderBy($field_name);
                 } else {
