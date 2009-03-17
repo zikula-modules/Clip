@@ -75,7 +75,7 @@ function smarty_function_category_browser($params, &$smarty)
             // get it only once
             $pubtype = getPubType($tid);
             if (function_exists('apc_fetch') && $cache_count)
-  		$count_arr = apc_fetch('cat_browser_count_'.$tid);
+  		$count_arr_old = $count_arr = apc_fetch('cat_browser_count_'.$tid);
         }
         $one_selected = false;
 
@@ -164,7 +164,7 @@ function smarty_function_category_browser($params, &$smarty)
         return "No category for id [$id] in smarty_function_category_browser";
     }
 
-    if (function_exists('apc_store') && $count && $cache_count)
+    if (function_exists('apc_store') && $count && $cache_count && $count_arr_old <> $count_arr)
     	apc_store('cat_browser_count_'.$tid, $count_arr, 3600);
 
     $render->assign('cats', $cat_arr);
