@@ -300,7 +300,7 @@ function getTidFromTablename($tablename)
 
 function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
 {
-    if (!empty($orderby)) {
+	if (!empty($orderby)) {
         $orderby_arr = explode(',', $orderby);
         $orderby_new = '';
 
@@ -319,7 +319,7 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
             if (!empty($plugin_name)) {
                 $plugin = getPlugin($plugin_name);
                 if (method_exists($plugin, 'orderBy')) {
-                    $orderby_col = $plugin->orderBy($field_name);
+                    $orderby_col = $plugin->orderBy($field_name, $tbl_alias);
                 } else {
                     $orderby_col = $tbl_alias.$orderby_col;
                 }

@@ -319,7 +319,7 @@ function pagemaster_userapi_pubList($args)
         // check for tables to join
         if ($args['countmode'] <> 'just'){
             // do not join for just
-           if ($field['fieldplugin'] == 'function.pmformpubinput.php'){
+           if ($field['fieldplugin'] == 'pmformpubinput'){
                 $vars        = explode(';', $field['typedata']);
                 $join_tid    = $vars[0];
                 $join_filter = $vars[1];
@@ -349,7 +349,6 @@ function pagemaster_userapi_pubList($args)
         $tbl_alias = '';
 	 $filter_args = array('plugins' => $filterPlugins);
     }
-
     // check if some plugin specific orderby has to be done
     $orderby = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
     $tablename = 'pagemaster_pubdata'.$tid;
