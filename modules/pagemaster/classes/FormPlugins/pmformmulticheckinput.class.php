@@ -16,7 +16,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
 {
     var $columnDef   = 'C(512)';
     var $title       = _PAGEMASTER_PLUGIN_MULTICHECK;
-    var $filterClass = 'pmList';
+    var $filterClass = 'pmMultiList';
 
     function getFilename()
     {

@@ -12,7 +12,7 @@
 
 Loader::loadClass('filter.category', FILTERUTIL_CLASS_PATH.'/filter');
 
-class FilterUtil_Filter_pmList
+class FilterUtil_Filter_pmMultiList
   extends FilterUtil_Filter_category
 {
 	/**
@@ -41,20 +41,16 @@ function getSQL($field, $op, $value)
                 $where = $this->column[$field] . ' != ' . $value;
                 break;
             case "sub":
-                $cats = CategoryUtil :: getSubCategories($value);
-		  $items = array();
-		  $items[] = $value;
-		  foreach ($cats as $item) {
-			 $items[] = $item['id'];
+ 	  	  $where .= $this->column[$field].' like "%:' . $value . ':%" OR ';
+		  $cats = CategoryUtil :: getSubCategories($value);
+ 	         foreach ($cats as $item) {
+			$where .= $this->column[$field].' like "%:' . $item['id'] . ':%" OR ';
 		  }
-		  if (count($items) == 1)
-			$where = $this->column[$field]." = " . implode("", $items);
-		  else
-		  	$where = $this->column[$field]." IN (" . implode(",", $items) . ")";
+		  $where = substr($where,0,-3);
                 break;
             default:
                 $where = '';
         }
-		return array('where' => $where);
+ 	     return array('where' => $where);
 	}
 }

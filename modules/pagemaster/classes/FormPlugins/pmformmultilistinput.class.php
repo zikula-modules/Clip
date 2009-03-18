@@ -16,7 +16,7 @@ class pmformmultilistinput extends pnFormCategorySelector
 {
     var $columnDef   = 'C(512)';
     var $title       = _PAGEMASTER_PLUGIN_MULTILIST;
-    var $filterClass = 'pmList';
+    var $filterClass = 'pmMulitList';
 
     function getFilename()
     {

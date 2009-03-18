@@ -138,7 +138,6 @@ function smarty_function_category_browser($params, &$smarty)
                                 array('tid'    => $tid,
                                       'filter' => $new_filter));
             }
-
             if ($count) {
 	         if (isset($count_arr[$filter_act]))
 			$v['count'] = $count_arr[$filter_act];
