@@ -72,7 +72,7 @@ function pagemaster_searchapi_search($args)
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
     foreach ($pubtypes as $pubtype)
     {
-        if ($search_tid[$pubtype['tid']] == 1){
+        if ($search_tid == '' || $search_tid[$pubtype['tid']] == 1){
             $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
             $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
             $columnname = $pntable[$tablename.'_column'];
