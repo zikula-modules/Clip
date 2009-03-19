@@ -52,20 +52,20 @@ class pmformimageinput extends pnFormUploadInput
 
             $url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
             if (!empty($arrTypeData['tmb_name'])) {
-                $this->upl_arr =  array(
+                $upl_arr =  array(
                          'orig_name'    => $arrTypeData['orig_name'],
                          'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
                          'url'          => $url.'/'.$arrTypeData['file_name']
                 );
             } else {
-                $this->upl_arr = array(
+                $upl_arr = array(
                          'orig_name'    => '',
                          'thumbnailUrl' => '',
                          'url'          => ''
                 );
             }
 
-            return $this->upl_arr;
+            return $upl_arr;
 
         } else {
             return NULL;
