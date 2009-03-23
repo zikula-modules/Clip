@@ -111,12 +111,12 @@ class pmformlistinput extends pnFormCategorySelector
         // get the include empty element config value
         if (isset($render->_tpl_vars['typedata'])) {
             $config = explode(',', $render->_tpl_vars['typedata']);
-            $this->includeEmptyElement = isset($config[1]) ? (bool)$config[1] : true;
+            $includeEmptyElement = isset($config[1]) ? (bool)$config[1] : true;
         } else {
-            $this->includeEmptyElement = true;
+            $includeEmptyElement = true;
         }
 
-        $checked = $this->includeEmptyElement ? 'checked="checked"' : '';
+        $checked = $includeEmptyElement ? 'checked="checked"' : '';
         $html .= '<div class="pn-formrow">
                     <label for="pmplugin_categoryempty">'._PAGEMASTER_INCLUDEEMPTYITEM.'</label> <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
                   </div>';
