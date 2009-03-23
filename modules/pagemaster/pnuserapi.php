@@ -313,8 +313,6 @@ function pagemaster_userapi_pubList($args)
 
         if (isset($plugin->filterClass)) {
             $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
-            $filterPlugins[$plugin->filterClass]['ops'] = array('eq','ne','sub');
-            
         }
         // check for tables to join
         if ($args['countmode'] <> 'just'){
