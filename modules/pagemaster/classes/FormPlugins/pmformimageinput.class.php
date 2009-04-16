@@ -14,156 +14,202 @@ require_once('system/pnForm/plugins/function.pnformuploadinput.php');
 
 class pmformimageinput extends pnFormUploadInput
 {
-    var $columnDef = 'C(256)';
-    var $title     = _PAGEMASTER_PLUGIN_IMAGE;
-    var $upl_arr;
+	var $columnDef = 'C(512)';
+	var $title     = _PAGEMASTER_PLUGIN_IMAGE;
+	var $upl_arr;
 
-    function getFilename()
-    {
-        return __FILE__; // FIXME: may be found in smarty's data???
-    }
+	function getFilename()
+	{
+		return __FILE__; // FIXME: may be found in smarty's data???
+	}
 
-    function render(&$render)
-    {
-        $input_html = parent::render($render);
-        return $input_html.' '.$this->upl_arr['orig_name'];
-    }
+	function render(&$render)
+	{
+		$input_html = parent::render($render);
+		return $input_html.' '.$this->upl_arr['orig_name'];
+	}
 
-    function load(&$render, &$params)
-    {
-        $this->loadValue($render, $render->get_template_vars());
-    }
+	function load(&$render, &$params)
+	{
+		$this->loadValue($render, $render->get_template_vars());
+	}
 
-    function loadValue(&$render, &$values)
-    {
-        if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
-            $this->upl_arr = unserialize($values[$this->dataField]);
-        }
-    }
+	function loadValue(&$render, &$values)
+	{
+		if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
+			$this->upl_arr = unserialize($values[$this->dataField]);
+		}
+	}
 
-    static function postRead($data, $field)
-    {
-        if (!empty($data)) {
-            $arrTypeData = @unserialize($data);
+	static function postRead($data, $field)
+	{
+		if (!empty($data)) {
+			$arrTypeData = @unserialize($data);
 
-            if (!is_array($arrTypeData)) {
-                return LogUtil::registerError('pmformimageinput: '._PAGEMASTER_STOREDDATAINVALID);
-            }
-
-            $url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
-            if (!empty($arrTypeData['tmb_name'])) {
-                $upl_arr =  array(
+			if (!is_array($arrTypeData)) {
+				return LogUtil::registerError('pmformimageinput: '._PAGEMASTER_STOREDDATAINVALID);
+			}
+			echo $asdfa;
+			
+			$url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
+			if (!empty($arrTypeData['orig_name'])) {
+				$upl_arr =  array(
                          'orig_name'    => $arrTypeData['orig_name'],
-                         'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
+                         'preUrl'		=> !empty($arrTypeData['pre_name']) ? $url.'/'.$arrTypeData['pre_name'] : '',
+						 'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
+						 'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
                          'url'          => $url.'/'.$arrTypeData['file_name']
-                );
-            } else {
-                $upl_arr = array(
+				);
+			} else {
+				$upl_arr = array(
                          'orig_name'    => '',
-                         'thumbnailUrl' => '',
+                         'preUrl'		=> '',
+						 'fullUrl'      => '',
+						 'thumbnailUrl' => '',
                          'url'          => ''
-                );
-            }
+                         );
+			}
 
-            return $upl_arr;
+			return $upl_arr;
 
-        } else {
-            return NULL;
-        }
-    }
+		} else {
+			return NULL;
+		}
+	}
 
-    static function preSave($data, $field)
-    {
-        $id   = $data['id'];
-        $tid  = $data['tid'];
-        $data = $data[$field['name']];
+	static function preSave($data, $field)
+	{
+		$id   = $data['id'];
+		$tid  = $data['tid'];
+		$PostData = $data[$field['name']];
 
-        // ugly to get old image from DB
-        if ($id != NULL) {
-            $old_image = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
-        }
+		// ugly to get old image from DB
+		if ($id != NULL) {
+			$old_image = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
+		}
 
-        if (!empty($data['name'])) {
-            $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
+		if (!empty($PostData['name'])) {
+			$uploadpath = pnModGetVar('pagemaster', 'uploadpath');
 
-            // delete the old file
-            if ($id != NULL) {
-                $old_image_arr = unserialize($old_image);
-                unlink($uploadpath.'/'.$old_image_arr['tmb_name']);
-                unlink($uploadpath.'/'.$old_image_arr['file_name']);
-            }
+			// delete the old file
+			if ($id != NULL) {
+				$old_image_arr = unserialize($old_image);
+				unlink($uploadpath.'/'.$old_image_arr['tmb_name']);
+				unlink($uploadpath.'/'.$old_image_arr['pre_name']);
+				unlink($uploadpath.'/'.$old_image_arr['full_name']);
+				unlink($uploadpath.'/'.$old_image_arr['file_name']);
+			}
 
-            $srcTempFilename = $data['tmp_name'];
-            $ext             = strtolower(getExtension($data['name']));
-            $randName        = getNewFileReference();
-            $new_filename    = "{$randName}.{$ext}";
-            $dstFilename     = "{$uploadpath}/{$new_filename}";
+			$srcFilename =   $PostData['tmp_name'];
+			$ext             = strtolower(getExtension($PostData['name']));
+			$randName        = getNewFileReference();
+			$newFileNameOrig = $randName.'.'.$ext;
+			$newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
+			copy($srcFilename, $newDestOrig);
+			$tmpargs = array();
+			$preargs = array();
+			$fullargs = array();
+			if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
+				list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = explode(':', $field['typedata']);
+				if ((int)$tmpx > 0)
+				$tmpargs['w'] = (int)$tmpx ;
+				if ((int)$tmpy > 0)
+				$tmpargs['h'] = (int)$tmpy;
+				if ((int)$prex > 0)
+				$preargs['w'] = (int)$prex ;
+				if ((int)$prey > 0)
+				$preargs['h'] = (int)$prey ;
+				if ((int)$fullx > 0)
+				$fullargs['w'] = (int)$fullx ;
+				if ((int)$fully > 0)
+				$fullargs['h'] = (int)$fully ;
+			} 
+			// Check for the Thumbnails module and if we need it
+			if (!empty($tmpargs) && pnModAvailable('Thumbnail')) {
+				echo 1;
+				$newFilenameTmp = "{$randName}-tmb.{$ext}";
+				$newDestTmp  = "{$uploadpath}/{$newFilenameTmp}";
+				$tmpargs['filename'] = $newDestOrig;
+				$tmpargs['dstFilename'] = $newDestTmp;
+				print_r($tmpargs);
+				$dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $tmpargs);
+				echo $dstName;
 
-            copy($srcTempFilename, $dstFilename);
+			} elseif (empty($tmpargs)) {
+				// no thumbnail needed
+				$newFilenameTmp = $newFileNameOrig;
+			}
+			if (!empty($preargs ) && pnModAvailable('Thumbnail')) {
+				echo 2;
+				$newFilenamePre = "{$randName}-pre.{$ext}";
+				$newDestPre  = "{$uploadpath}/{$newFilenamePre}";
+				$preargs['filename'] = $newDestOrig;
+				$preargs['dstFilename'] = $newDestPre;
+				$dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $preargs);
+				echo $dstName;
+			} elseif (empty($tmpargs)) {
+				// no thumbnail needed
+				$newFilenamePre = $newFileNameOrig;
+			}
+			if (!empty($fullargs) && pnModAvailable('Thumbnail')) {
+				echo 3;
+				$newFilenameFull = "{$randName}-full.{$ext}";
+				$newDestFull  = "{$uploadpath}/{$newFilenameFull}";
+				$fullargs['filename'] = $newDestOrig;
+				$fullargs['dstFilename'] = $newDestFull;
+				$dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $fullargs);
+				echo $dstName;
 
-            // Check for the Thumbnails module and if we need it
-            if (!empty($thumbargs) && pnModAvailable('Thumbnail')) {
-                $new_filenameTmb = "{$randName}-tmb.{$ext}";
-                $dstFilenameTmb  = "{$uploadpath}/{$new_filenameTmb}";
-                // build the thumbnail
-                $thumbargs = array();
-                if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
-                    list($x, $y) = explode(':', $field['typedata']);
-                    if ((int)$x > 0) {
-                        $thumbargs['w'] = (int)$x;
-                    }
-                    if ((int)$y > 0) {
-                        $thumbargs['h'] = (int)$y;
-                    }
-                }
-                $thumbargs['filename'] = $dstFilename;
-                $thumbargs['dstFilename'] = $dstFilenameTmb;
-                // use the thumbnail module
-                $dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $thumbargs);
+			} elseif (empty($tmpargs)) {
+				// no thumbnail needed
+				$newFilenameFull = $newFileNameOrig;
+			}
+			$arrTypeData = array(
+                'orig_name' => $PostData['name'],
+                'tmb_name'  => $newFilenameTmp,
+				'pre_name'  => $newFilenamePre,
+				'full_name'  => $newFilenameFull,
+                'file_name' => $newFileNameOrig
+			);
 
-            } elseif (empty($thumbargs)) {
-                // no thumbnail needed
-                $new_filenameTmb = $new_filename;
+			return serialize($arrTypeData);
 
-            } else {
-                // no thumbnail available
-                $new_filenameTmb = '';
-            }
+		} elseif ($id != NULL) {
+			// if it's not a new pub
+			// return the old image if no new is selected
+			return $old_image;
+		}
 
-            $arrTypeData = array(
-                'orig_name' => $data['name'],
-                'tmb_name'  => $new_filenameTmb,
-                'file_name' => $new_filename
-            );
+		return NULL;
+	}
 
-            return serialize($arrTypeData);
-
-        } elseif ($id != NULL) {
-            // if it's not a new pub
-            // return the old image if no new is selected
-            return $old_image;
-        }
-
-        return NULL;
-    }
-
-    static function getSaveTypeDataFunc($field)
-    {
-        $saveTypeDataFunc = 'function saveTypeData()
+	static function getSaveTypeDataFunc($field)
+	{
+		$saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pmplugin_x_px\')+\':\'+$F(\'pmplugin_y_px\');
+                                 $(\'typedata\').value = $F(\'pmplugin_tmpx_px\')+\':\'+$F(\'pmplugin_tmpy_px\')+\':\'+$F(\'pmplugin_previewx_px\')+\':\'+$F(\'pmplugin_previewy_px\')+\':\'+$F(\'pmplugin_fullx_px\')+\':\'+$F(\'pmplugin_fully_px\');
                                  closeTypeData();
                              }';
-        return $saveTypeDataFunc;
-    }
+		return $saveTypeDataFunc;
+	}
 
-    static function getTypeHtml($field, $render)
-    {
-        $html = '<div class="pn-formrow">
-                 <label for="pmplugin_x_px">x:</label><input type="text" id="pmplugin_x_px" name="pmplugin_x_px" />
+	static function getTypeHtml($field, $render)
+	{
+		$html = '<div class="pn-formrow">
+                 <label for="pmplugin_tmpx_px">Thumbnail x:</label><input type="text" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
                  <br />
-                 <label for="pmplugin_y_px">y:</label><input type="text" id="pmplugin_y_px" name="pmplugin_y_px" />
+                 <label for="pmplugin_tmpy_px">Thumbnail y:</label><input type="text" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
+		   <br />
+		   <br />
+                 <label for="pmplugin_pre_px">Preview x:</label><input type="text" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
+                 <br />
+                 <label for="pmplugin_pre_px">Preview y:</label><input type="text" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
+		   <br />
+		   <br />
+                 <label for="pmplugin_full_px">Full x:</label><input type="text" id="pmplugin_fullx_px" name="pmplugin_fullx_px" />
+                 <br />
+                 <label for="pmplugin_full_px">Full y:</label><input type="text" id="pmplugin_fully_px" name="pmplugin_fully_px" />
                  </div>';
-        return $html;
-    }
+		return $html;
+	}
 }
