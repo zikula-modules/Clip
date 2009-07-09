@@ -16,13 +16,15 @@
     </state>
   </states>
 
+<!-- Permission is confusing. Actualy add is less then edit (in Zikula), but in pagemaster it's opposit. You need less permission to add a publication then to edit one -->
+<!-- Reason: With edit you can edit all publications (as well from others), with add you can add one and if edit own is true, you can edit it, but not publications of others -->
 
   <actions>
     <!-- From initial state -->
     <action id="submit">
       <title>_PAGEMASTER_WSA_SUBMIT</title>
       <description>Submit new content</description>
-      <permission>comment</permission>
+      <permission>edit</permission>
       <nextState>approved</nextState>
      <operation online="1">createPub</operation>
     </action>
@@ -32,7 +34,7 @@
     <action id="update">
       <title>_PAGEMASTER_WSA_UPDATE</title>
       <description>_PAGEMASTER_WSA_UPDATE</description>
-      <permission>editor</permission>
+      <permission>add</permission>
       <state>approved</state>
       <operation nextState="approved" online="1">updatePub</operation>
     </action>
@@ -40,7 +42,7 @@
     <action id="delete">
       <title>_PAGEMASTER_WSA_DELETE</title>
       <description>_PAGEMASTER_WSA_DELETE</description>
-      <permission>editor</permission>
+      <permission>delete</permission>
       <state>approved</state>
       <operation>deletePub</operation>
     </action>

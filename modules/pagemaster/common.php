@@ -370,11 +370,11 @@ function getPlugin($pluginclass)
     return $plugin_arr[$pluginclass];
 }
 
-function getPubFields($tid)
+function getPubFields($tid, $orderBy = '')
 {
     static $pubfields_arr;
     if (empty($pubfields_arr[$tid]))
-        $pubfields_arr[$tid] = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, '', -1, -1, 'name');
+        $pubfields_arr[$tid] = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, $orderBy, -1, -1, 'name');
     return $pubfields_arr[$tid];
 }
 function getPubType($tid)

@@ -200,7 +200,7 @@ function pagemaster_user_pubedit()
         return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
     }
 
-    $pubfields = getPubFields($tid);
+    $pubfields = getPubFields($tid, 'pm_lineno');
     if (empty($pubfields)) {
         LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'pubfields')));
     }
