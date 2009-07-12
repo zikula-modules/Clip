@@ -1,231 +1,215 @@
 <?php
+// $Id$
+// =======================================================================
+// Pagesetter by Jorn Lind-Nielsen (C) 2003.
+// ----------------------------------------------------------------------
+// For POST-NUKE Content Management System
+// Copyright (C) 2002 by the PostNuke Development Team.
+// http://www.postnuke.com/
+// ----------------------------------------------------------------------
+// LICENSE
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License (GPL)
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WIthOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// To read the license please visit http://www.gnu.org/copyleft/gpl.html
+// =======================================================================
+
 /**
- * PageMaster
- *
- * @copyright   (c) PageMaster Team
- * @link        http://code.zikula.org/pagemaster/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * This function is called internally by the core whenever the module is
+ * loaded.  It adds in information about the tables that the module uses.
  */
-
-function pagemaster_pntables()
+function pagesetter_pntables()
 {
-    $pntable = array ();
+  $pntable = array();
+
+    // Publication types table setup
+
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_pubtypes';
+
+  $pntable['pagesetter_pubtypes'] = $tableName;
+
+  $pntable['pagesetter_pubtypes_column'] = array('id'                 => 'pg_id',
+                                                 'title'              => 'pg_title',
+                                                 'filename'           => 'pg_filename',
+                                                 'formname'           => 'pg_formname',
+                                                 'description'        => 'pg_description',
+                                                 'authorID'           => 'pg_authorid',
+                                                 'created'            => 'pg_createddate',
+                                                 'listCount'          => 'pg_listcount',
+                                                 'sortField1'         => 'pg_sortfield1',
+                                                 'sortDesc1'          => 'pg_sortdesc1',
+                                                 'sortField2'         => 'pg_sortfield2',
+                                                 'sortDesc2'          => 'pg_sortdesc2',
+                                                 'sortField3'         => 'pg_sortfield3',
+                                                 'sortDesc3'          => 'pg_sortdesc3',
+                                                 'defaultFilter'      => 'pg_defaultFilter',
+                                                 'enableHooks'        => 'pg_enablehooks',
+                                                 'workflow'           => 'pg_workflow',
+                                                 'enableRevisions'    => 'pg_enablerevisions',
+                                                 'enableEditOwn'      => 'pg_enableeditown',
+                                                 'enableTopicAccess'  => 'pg_enabletopicaccess',
+                                                 'defaultFolder'      => 'pg_defaultfolder',
+                                                 'defaultSubFolder'   => 'pg_defaultsubfolder',
+                                                 'defaultFolderTopic' => 'pg_defaultfoldertopic');
 
 
-    // relations table
-    $pntable['pagemaster_relations'] = DBUtil::getLimitedTablename('pagemaster_relations');
-    $pntable['pagemaster_relations_column'] = array (
-        'tid1' => 'pm_tid',
-        'pid1' => 'pm_pid',
-        'id1'  => 'pm_id',
-        'tid2' => 'pm_tid',
-        'pid2' => 'pm_pid',
-        'id2'  => 'pm_id'
-    );
-    $pntable['pagemaster_relations_column_def'] = array (
-        'tid1' => 'I NOTNULL',
-        'pid1' => 'I NOTNULL',
-        'id1'  => 'I NOTNULL',
-        'tid2' => 'I NOTNULL',
-        'pid2' => 'I NOTNULL',
-        'id2'  => 'I NOTNULL',
-    );
-    ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_relations_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_relations_column_def']);
+    // Publication fields table setup
+
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_pubfields';
+
+  $pntable['pagesetter_pubfields'] = $tableName;
+
+  $pntable['pagesetter_pubfields_column'] = array('id'            => 'pg_id',
+                                                  'tid'           => 'pg_tid',
+                                                  'name'          => 'pg_name',
+                                                  'title'         => 'pg_title',
+                                                  'description'   => 'pg_description',
+                                                  'type'          => 'pg_type',
+                                                  'typeName'      => 'pg_typename',
+                                                  'typeData'      => 'pg_typedata',
+                                                  'isTitle'       => 'pg_istitle',
+                                                  'isPageable'    => 'pg_ispageable',
+                                                  'isSearchable'  => 'pg_issearchable',
+                                                  'isMandatory'   => 'pg_ismandatory',
+                                                  'lineno'        => 'pg_lineno');
+
+    // Lists tables setup
+
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_lists';
+
+  $pntable['pagesetter_lists'] = $tableName;
+
+  $pntable['pagesetter_lists_column'] = array('id'          => 'pg_id',
+                                              'authorID'    => 'pg_authorid',
+                                              'created'     => 'pg_created',
+                                              'title'       => 'pg_title',
+                                              'description' => 'pg_description');
 
 
-    // pubfields table
-    $pntable['pagemaster_pubfields'] = DBUtil::getLimitedTablename('pagemaster_pubfields');
-    $pntable['pagemaster_pubfields_column'] = array (
-        'id'             => 'pm_id',
-        'tid'            => 'pm_tid',
-        'name'           => 'pm_name',
-        'title'          => 'pm_title',
-        'description'    => 'pm_description',
-        'fieldtype'      => 'pm_fieldtype',     // for performance reason, is also stored in plugin
-        'fieldplugin'    => 'pm_fieldplugin',
-        'fieldmaxlength' => 'pm_fieldmaxlength',
-        'typedata'       => 'pm_typedata',
-        'istitle'        => 'pm_istitle',
-        'ispageable'     => 'pm_ispageable',
-        'issearchable'   => 'pm_issearchable',
-        'ismandatory'    => 'pm_ismandatory',
-        'lineno'         => 'pm_lineno'
-    );
-    $pntable['pagemaster_pubfields_column_def'] = array (
-        'id'             => 'I PRIMARY AUTO',
-        'tid'            => 'I NOTNULL',
-        'name'           => "C(255) NOTNULL DEFAULT ''",
-        'title'          => "C(255) NOTNULL DEFAULT ''",
-        'description'    => "C(255) NOTNULL DEFAULT ''",
-        'fieldtype'      => "C(50) NOTNULL DEFAULT ''",
-        'fieldplugin'    => "C(50) NOTNULL DEFAULT ''",
-        'fieldmaxlength' => 'I NULL',
-        'typedata'       => 'C(4000) NULL',
-        'istitle'        => 'I4 NOTNULL',
-        'ispageable'     => 'I4 NOTNULL',
-        'issearchable'   => 'I4 NOTNULL',
-        'ismandatory'    => 'I4 NOTNULL',
-        'lineno'         => 'I NOTNULL'
-    );
-    ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_pubfields_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_pubfields_column_def']);
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_listitems';
+
+  $pntable['pagesetter_listitems'] = $tableName;
+
+  $pntable['pagesetter_listitems_column'] = array('id'          => 'pg_id',
+                                                  'lid'         => 'pg_lid',
+                                                  'parentID'    => 'pg_parentid',
+                                                  'title'       => 'pg_title',
+                                                  'fullTitle'   => 'pg_fulltitle',
+                                                  'value'       => 'pg_value',
+                                                  'description' => 'pg_description',
+                                                  'lineno'      => 'pg_lineno',
+                                                  'indent'      => 'pg_indent',
+                                                  'lval'        => 'pg_lval',
+                                                  'rval'        => 'pg_rval');
 
 
-    // pubtypes table
-    $pntable['pagemaster_pubtypes'] = DBUtil::getLimitedTablename('pagemaster_pubtypes');
-    $pntable['pagemaster_pubtypes_column'] = array (
-        'tid'             => 'pm_tid',
-        'title'           => 'pm_title',
-        'urltitle'        => 'pm_urltitle',
-        'filename'        => 'pm_filename',
-        'formname'        => 'pm_formname',
-        'description'     => 'pm_description',
-        'itemsperpage'    => 'pm_itemsperpage',
-        'sortfield1'      => 'pm_sortfield1',
-        'sortdesc1'       => 'pm_sortdesc1',
-        'sortfield2'      => 'pm_sortfield2',
-        'sortdesc2'       => 'pm_sortdesc2',
-        'sortfield3'      => 'pm_sortfield3',
-        'sortdesc3'       => 'pm_sortdesc3',
-        'defaultfilter'   => 'pm_defaultFilter',
-        'workflow'        => 'pm_workflow',
-        'enablerevisions' => 'pm_enablerevisions',
-        'enableeditown'   => 'pm_enableeditown',
-        'cachelifetime'   => 'pm_cachelifetime'
-    );
-    $pntable['pagemaster_pubtypes_column_def'] = array (
-        'tid'             => 'I PRIMARY AUTO',
-        'title'           => "C(255) NOTNULL DEFAULT ''",
-        'urltitle'        => "C(255) NOTNULL DEFAULT ''",
-        'filename'        => "C(255) NOTNULL DEFAULT ''",
-        'formname'        => "C(255) NOTNULL DEFAULT ''",
-        'description'     => "C(255) NOTNULL DEFAULT ''",
-        'itemsperpage'    => 'I NOTNULL',
-        'sortfield1'      => "C(255)",
-        'sortdesc1'       => 'I4',
-        'sortfield2'      => "C(255)",
-        'sortdesc2'       => 'I4',
-        'sortfield3'      => "C(255)",
-        'sortdesc3'       => 'I4',
-        'workflow'        => "C(255) NOTNULL",
-        'defaultfilter'   => "C(255)",
-        'enablerevisions' => 'I4 NOTNULL',
-        'enableeditown'   => 'I4 NOTNULL',
-        'cachelifetime'   => 'I8 NULL'
-    );
-    ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_pubtypes_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_pubtypes_column_def']);
+    // Publication header tables setup
 
-/*
-    // revisions table
-    $pntable['pagemaster_revisions'] = DBUtil::getLimitedTablename('pagemaster_revisions');
-    $pntable['pagemaster_revisions_column'] = array (
-        'tid'         => 'pm_tid',
-        'id'          => 'pm_id',
-        'pid'         => 'pm_pid',
-        'prevversion' => 'pm_prevversion'
-    );
-    $pntable['pagemaster_revisions_column_def'] = array (
-        'tid'         => 'I PRIMARY NOTNULL',
-        'id'          => 'I PRIMARY NOTNULL',
-        'pid'         => 'I NOTNULL',
-        'prevversion' => 'I NOTNULL'
-    );
-    ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_revisions_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_revisions_column_def']);
-*/
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_pubheader';
 
-    // dynamic pubdata tables
-    function pagemaster_addtable(&$pntable, $tid, $tablecolumn, $tabledef)
-    {
-        $tablename = "pagemaster_pubdata{$tid}";
+  $pntable['pagesetter_pubheader'] = $tableName;
 
-        $pntable[$tablename] = DBUtil::getLimitedTablename($tablename);
-        $pntable[$tablename.'_column']     = $tablecolumn;
-        $pntable[$tablename.'_column_def'] = $tabledef;
+  $pntable['pagesetter_pubheader_column'] = array('tid'         => 'pg_tid', // Key
+                                                  'pid'         => 'pg_pid', // Key
+                                                  'hitCount'    => 'pg_hitcount',
+                                                  'onlineID'    => 'pg_onlineid',
+                                                  'deleted'     => 'pg_deleted');
 
-        ObjectUtil::addStandardFieldsToTableDefinition($pntable[$tablename.'_column'], 'pm_');
-        ObjectUtil::addStandardFieldsToTableDataDefinition($pntable[$tablename.'_column_def']);
-    }
 
-    // Can't use DBUtil because the pagemaster table definitions are not loaded yet
-    list($dbconn) = pnDBGetConn();
-    $sql = 'SELECT ' . $pntable['pagemaster_pubfields_column']['tid']
-              . ', ' . $pntable['pagemaster_pubfields_column']['id']
-              . ', ' . $pntable['pagemaster_pubfields_column']['name']
-              . ', ' . $pntable['pagemaster_pubfields_column']['fieldtype']
-              . ' FROM ' . $pntable['pagemaster_pubfields']
-              . ' ORDER BY ' . $pntable['pagemaster_pubfields_column']['tid'] . ' ASC, '
-                             . $pntable['pagemaster_pubfields_column']['id']  . ' ASC ';
+    // Revisions tables setup
 
-    $result = $dbconn->execute($sql); 
-    if ($dbconn->errorNo() != 0) {
-        // installation
-    } else {
-        $old_tid = 0;
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_revisions';
 
-        $tablecolumncore = array(
-            'id'               => 'pm_id',
-            'core_pid'         => 'pm_pid',
-            'core_online'      => 'pm_online',
-            'core_indepot'     => 'pm_indepot',
-            'core_revision'    => 'pm_revision',
-            'core_showinmenu'  => 'pm_showinmenu',
-            'core_showinlist'  => 'pm_showinlist',
-            'core_publishdate' => 'pm_publishdate',
-            'core_expiredate'  => 'pm_expiredate',
-            'core_language'    => 'pm_language',
-            'core_hitcount'    => 'pm_hitcount',
-            'core_author'      => 'pm_author'
-        );
-        $tabledefcore = array(
-            'id'               => 'I PRIMARY AUTO',
-            'core_pid'         => 'I NOTNULL',
-            'core_online'      => 'I4 NOTNULL',
-            'core_indepot'     => 'I4 NOTNULL',
-            'core_revision'    => 'I NOTNULL',
-            'core_showinmenu'  => 'I4 NOTNULL',
-            'core_showinlist'  => 'I4 NOTNULL DEFAULT 1',
-            'core_publishdate' => 'T',
-            'core_expiredate'  => 'T',
-            'core_language'    => 'C(3) NOTNULL',
-            'core_hitcount'    => 'I(9) DEFAULT 0',
-            'core_author'      => 'I(11) NOTNULL'
-        );
+  $pntable['pagesetter_revisions'] = $tableName;
 
-        // loop the pubfields adding their definitions
-        // to their pubdata tables
-        for (; !$result->EOF; $result->MoveNext()) {
-            $tid       = $result->fields[0];
-            $id        = $result->fields[1];
-            $name      = $result->fields[2];
-            $fieldtype = $result->fields[3];
+  $pntable['pagesetter_revisions_column'] = array('tid'             => 'pg_tid', // Key
+                                                  'id'              => 'pg_id',  // Key
+                                                  'pid'             => 'pg_pid',
+                                                  'previousVersion' => 'pg_prevversion',
+                                                  'user'            => 'pg_user',
+                                                  'timestamp'       => 'pg_timestamp');
 
-            // if we change of publication type
-            if ($tid != $old_tid && $old_tid != 0) {
-                // add the table definition to the $pntable array
-                pagemaster_addtable($pntable, $old_tid, array_merge($tablecolumncore, $tablecolumn), array_merge($tabledefcore, $tabledef));
-                // and reset the columns and definitions for the next pubtype
-                $tablecolumn = array();
-                $tabledef    = array();
-            }
 
-            // add the column and definition for this field
-            $tablecolumn[$name] = "pm_{$id}";
-            $tabledef[$name]    = "{$fieldtype} NULL";
+    // Workflow configuration tables setup
 
-            // set the actual tid to check a pubtype change in the next cycle
-            $old_tid = $tid;
-        }
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_wfcfg';
 
-        // the final one doesn't trigger a tid change
-        if (isset($tablecolumn) && !empty($tablecolumn)) {
-            pagemaster_addtable($pntable, $old_tid, array_merge($tablecolumncore, $tablecolumn), array_merge($tabledefcore, $tabledef));
-        }
-    }
+  $pntable['pagesetter_wfcfg'] = $tableName;
 
-    return $pntable;
+  $pntable['pagesetter_wfcfg_column'] = array('workflow'        => 'pg_workflow', // Key
+                                              'tid'             => 'pg_tid',      // Key
+                                              'setting'         => 'pg_setting',  // Key
+                                              'value'           => 'pg_value');
+
+
+    // Counters tables setup
+
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_counters';
+
+  $pntable['pagesetter_counters'] = $tableName;
+
+  $pntable['pagesetter_counters_column'] = array('name'            => 'pg_name', // Key
+                                                 'count'           => 'pg_count');
+
+
+    // Guppy session data
+
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_session';
+
+  $pntable['pagesetter_session'] = $tableName;
+
+  $pntable['pagesetter_session_column'] = array('sessionId' => 'pg_sessionid',
+                                                'cache'     => 'pg_cache',
+                                                'lastUsed'  => 'pg_lastused');
+                                                
+
+    // Relations data
+    
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_relations';
+  
+  $pntable['pagesetter_relations'] = $tableName;
+  
+  $pntable['pagesetter_relations_column'] = array('tid1'         => 'pg_tid1',
+                                                  'pid1'         => 'pg_pid1',
+                                                  'fieldId1'     => 'pg_fieldid1',
+                                                  'tid2'         => 'pg_tid2',
+                                                  'pid2'         => 'pg_pid2',
+                                                  'fieldId2'     => 'pg_fieldid2');
+
+
+    // Publication data (the fixed fields)
+
+  $tableName = pnConfigGetVar('prefix') . '_pagesetter_pubdata'; 
+
+  $pntable['pagesetter_pubdata'] = $tableName; // Unused since we create it dynamically
+
+  $pntable['pagesetter_pubdata_column'] = array('id'                => 'pg_id',  // database ID
+                                                'pid'               => 'pg_pid', // publication ID
+                                                'approvalState'     => 'pg_approvalState',
+                                                'online'            => 'pg_online', // Duplicate/redundant by purpose
+                                                'inDepot'           => 'pg_indepot',
+                                                'revision'          => 'pg_revision',
+                                                'topic'             => 'pg_topic',
+                                                'showInMenu'        => 'pg_showInMenu',
+                                                'showInList'        => 'pg_showInList',
+                                                'author'            => 'pg_author',  // Modifieable author name
+                                                'creatorID'         => 'pg_creator', // Non-modifiable author ID
+                                                'created'           => 'pg_created',
+                                                'hitCount'          => 'pg_hitCount', // Unused, left to enable upgrades
+                                                'lastUpdated'       => 'pg_lastUpdatedDate',
+                                                'publishDate'       => 'pg_publishDate',
+                                                'expireDate'        => 'pg_expireDate',
+                                                'language'          => 'pg_language');
+
+  return $pntable;
 }
+
+?>
