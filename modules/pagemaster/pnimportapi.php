@@ -154,71 +154,71 @@ function pagemaster_importapi_importps2()
             $datafield['typedata'] = '';
 
             if ($pubfield['type'] == 'datetime') {
-                $datafield['fieldplugin'] = 'function.pmformdateinput.php'; //TODO
+                $datafield['fieldplugin'] = 'pmformdateinput'; //TODO
 
             } elseif ($pubfield['type'] == 'url') {
-                $datafield['fieldplugin'] = 'function.pmformurlinput.php';
+                $datafield['fieldplugin'] = 'pmformurlinput';
 
             } elseif ($pubfield['type'] == 'email') {
-                $datafield['fieldplugin'] = 'function.pmformemailinput.php';
+                $datafield['fieldplugin'] = 'pmformemailinput';
 
             } elseif ($pubfield['type'] == 'multilist') {
-                $datafield['fieldplugin'] = 'function.pmformmultilistinput.php';
+                $datafield['fieldplugin'] = 'pmformmultilistinput';
                 $list = DBUtil :: selectObjectArray("pagesetter_lists", 'pg_id = ' . $pubfield['typeData']);
                 $cat = DBUtil :: selectObjectArray("categories_category", "cat_path = '/__SYSTEM__/Modules/pagemaster/lists/" . mysql_escape_string($list[0]['title']) . "' AND cat_name = '" . mysql_escape_string($list[0]['title']) . "'");
                 $datafield['typedata'] = $cat[0]['id'];
 
             } elseif ($pubfield['type'] == 'publication') {
-                $datafield['fieldplugin'] = 'function.pmformpubinput.php';
+                $datafield['fieldplugin'] = 'pmformpubinput';
                 $datafield['typedata'] = $pubfield['typeData'];
 
             } elseif ($pubfield['type'] == '0') {
-                $datafield['fieldplugin'] = 'function.pmformstringinput.php';
+                $datafield['fieldplugin'] = 'pmformstringinput';
 
             }
             elseif ($pubfield['type'] == '1') {
-                $datafield['fieldplugin'] = 'function.pmformtextinput.php';
+                $datafield['fieldplugin'] = 'pmformtextinput';
                 $datafield['typedata'] = '0';
 
             } elseif ($pubfield['type'] == '2') {
-                $datafield['fieldplugin'] = 'function.pmformtextinput.php';
+                $datafield['fieldplugin'] = 'pmformtextinput';
                 $datafield['typedata'] = '1';
 
             } elseif ($pubfield['type'] == '3') {
-                $datafield['fieldplugin'] = 'function.pmformcheckboxinput.php';
+                $datafield['fieldplugin'] = 'pmformcheckboxinput';
 
             } elseif ($pubfield['type'] == '4') {
-                $datafield['fieldplugin'] = 'function.pmformintinput.php';
+                $datafield['fieldplugin'] = 'pmformintinput';
 
             } elseif ($pubfield['type'] == '5') {
-                $datafield['fieldplugin'] = 'function.pmformfloatinput.php';
+                $datafield['fieldplugin'] = 'pmformfloatinput';
 
             } elseif ($pubfield['type'] == '6') {
-                $datafield['fieldplugin'] = 'function.pmformdateinput.php';
+                $datafield['fieldplugin'] = 'pmformdateinput';
 
             } elseif ($pubfield['type'] == '7') { //time TODO
-                $datafield['fieldplugin'] = 'function.pmformdateinput.php';
+                $datafield['fieldplugin'] = 'pmformdateinput';
 
             } elseif ($pubfield['type'] == '8') {
-                $datafield['fieldplugin'] = 'function.pmformurlinput.php';
+                $datafield['fieldplugin'] = 'pmformurlinput';
 
             } elseif ($pubfield['type'] == '9') {
-                $datafield['fieldplugin'] = 'function.pmformimageinput.php';
+                $datafield['fieldplugin'] = 'pmformimageinput';
                 $datafield['typedata'] = '100:100';
 
             } elseif ($pubfield['type'] == '10') {
-                $datafield['fieldplugin'] = 'function.pmformuploadinput.php';
+                $datafield['fieldplugin'] = 'pmformuploadinput';
 
             } elseif ($pubfield['type']  == 'plz' ) {
-                $datafield['fieldplugin'] = 'function.pmformplzinput.php';
+                $datafield['fieldplugin'] = 'pmformplzinput';
 
             } elseif ($pubfield['type']  == 'latlng' ) {
-                $datafield['fieldplugin'] = 'function.pmformlatlnginput.php';
+                $datafield['fieldplugin'] = 'pmformlatlnginput';
             }
             
             elseif (is_numeric($pubfield['type']) && $pubfield['type'] > 100) {
                 //has to be a list
-                $datafield['fieldplugin'] = 'function.pmformlistinput.php';
+                $datafield['fieldplugin'] = 'pmformlistinput';
                 $pubfield['type'] = $pubfield['type'] -100;
                 $list = DBUtil::selectObjectArray('pagesetter_lists', 'pg_id = '.$pubfield['type']);
                 $cat  = DBUtil::selectObjectArray('categories_category', 'cat_path = \'/__SYSTEM__/Modules/pagemaster/lists/'.mysql_escape_string($list[0]['title']).'\' AND cat_name = \''.mysql_escape_string($list[0]['title']) .'\'');
@@ -279,6 +279,7 @@ function pagemaster_importapi_importps4()
      
 
     $pntable = &pnDBGetTables();
+    $pubheader_table = $pntable['pagesetter_pubheader'];
     $DirPM = pnModGetVar('pagemaster', 'uploadpath');
     $DirPS = pnModGetVar('pagesetter', 'uploadDirDocs');
 
@@ -288,13 +289,13 @@ function pagemaster_importapi_importps4()
 
         foreach ($pubfields as $pubfield) {
 
-            if ($pubfield['fieldplugin'] == 'function.pmformimageinput.php') {
+            if ($pubfield['fieldplugin'] == 'pmformimageinput') {
                 $imagefields[$pubfield['id']] = 1;
 
-            } elseif ($pubfield['fieldplugin'] == 'function.pmformlistinput.php') {
+            } elseif ($pubfield['fieldplugin'] == 'pmformlistinput') {
                 $listfields[$pubfield['id']] = 1;
 
-            } elseif ($pubfield['fieldplugin'] == 'function.pmformmultilistinput.php') {
+            } elseif ($pubfield['fieldplugin'] == 'pmformmultilistinput') {
                 $multifields[$pubfield['id']] = 1;
 
             }
@@ -302,7 +303,7 @@ function pagemaster_importapi_importps4()
         $tablename   = $pntable['pagesetter_pubdata'].$pubtype['id'];
         $tablenamePM = $pntable['pagemaster_pubdata'.$pubtype['id']];
 
-        $sql    = 'SELECT pg_hitcount , dyn.* from pn_pagesetter_pubheader pp, ' . $tablename . ' dyn where pp.pg_pid = dyn.pg_pid AND pp.pg_tid = ' . $pubtype['id'];
+        $sql    = 'SELECT pp.pg_hitcount , dyn.* from ' . $pubheader_table . ' pp, ' . $tablename . ' dyn where pp.pg_pid = dyn.pg_pid AND pp.pg_tid = ' . $pubtype['id'];
         $result = DBUtil::executeSQL($sql);
         if (!$result) {
             LogUtil::registerError(_PAGEMASTER_CANNOTIMPORTDATAFORTID.' '.$pubtype['id']);
