@@ -15,8 +15,19 @@ require_once('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
 class pmformmulticheckinput extends pnFormCategoryCheckboxList
 {
     var $columnDef   = 'C(512)';
-    var $title       = 'MultiCheckbox List';
+    var $title;
     var $filterClass = 'pmMultiList';
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('MultiCheckbox List');
+    }
+
+    function pmformmulticheckinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {

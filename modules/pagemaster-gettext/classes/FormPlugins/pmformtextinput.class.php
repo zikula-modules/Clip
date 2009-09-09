@@ -15,7 +15,18 @@ require_once('system/pnForm/plugins/function.pnformtextinput.php');
 class pmformtextinput extends pnFormTextInput
 {
     var $columnDef = 'X';
-    var $title     = 'Text';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('Text');
+    }
+
+    function pmformtextinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {

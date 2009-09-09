@@ -15,8 +15,19 @@ require_once('system/pnForm/plugins/function.pnformuploadinput.php');
 class pmformuploadinput extends pnFormUploadInput
 {
     var $columnDef = 'C(512)';
-    var $title     = 'File Upload';
+    var $title;
     var $upl_arr;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('File Upload');
+    }
+
+    function pmformuploadinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {

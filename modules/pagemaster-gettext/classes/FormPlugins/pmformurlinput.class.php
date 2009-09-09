@@ -15,7 +15,18 @@ require_once('system/pnForm/plugins/function.pnformurlinput.php');
 class pmformurlinput extends pnFormURLInput
 {
     var $columnDef = 'C(500)';
-    var $title     = 'Url';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('URL');
+    }
+
+    function pmformurlinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {

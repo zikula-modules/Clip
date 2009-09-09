@@ -15,8 +15,19 @@ require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
 class pmformmultilistinput extends pnFormCategorySelector
 {
     var $columnDef   = 'C(512)';
-    var $title       = 'Multiple selector';
+    var $title;
     var $filterClass = 'pmMultiList';
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('Multiple selector');
+    }
+
+    function pmformmultilistinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {

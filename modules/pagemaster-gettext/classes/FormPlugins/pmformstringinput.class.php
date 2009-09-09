@@ -17,6 +17,17 @@ class pmformstringinput extends pnFormTextInput
     var $columnDef = 'C(512)';
     var $title     = 'String';
 
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('String');
+    }
+
+    function pmformstringinput()
+    {
+        $this->__construct();
+    }
+
     function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???

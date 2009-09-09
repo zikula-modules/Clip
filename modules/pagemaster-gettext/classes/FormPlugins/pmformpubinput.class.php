@@ -15,7 +15,18 @@ require_once('system/pnForm/plugins/function.pnformdropdownlist.php');
 class pmformpubinput extends pnFormDropdownList
 {
     var $columnDef = 'I';
-    var $title     = 'Publication';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('Publication');
+    }
+
+    function pmformpubinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {
