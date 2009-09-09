@@ -1,0 +1,41 @@
+<!--[* $Id$ *]-->
+
+<!--[include file='pagemaster_admin_header.htm']-->
+
+<div class="pn-admincontainer">
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='clock.gif' set='icons/large' alt='_MODIFYCONFIG' altml=true]--></div>
+
+<h2><!--[pnml name='_PAGEMASTER_HISTORY']--></h2>
+
+<!--[pmadminsubmenu tid=$core_tid]-->
+
+<table class="pn-admintable">
+  <thead>
+  <tr>
+    <th><!--[pnml name='_PAGEMASTER_PID']--></th>
+    <th><!--[pnml name='_TITLE']--></th>
+    <th><!--[pnml name='_PAGEMASTER_REVISION']--></th>
+    <th><!--[pnml name='_STATE']--></th>
+    <th><!--[pnml name='_PAGEMASTER_AUTHOR']--></th>
+    <th><!--[pnml name='_PAGEMASTER_ONLINE']--></th>
+    <th><!--[pnml name='_PAGEMASTER_INDEPOT']--></th>
+  </tr>
+  </thead>
+  <tbody>
+  <!--[foreach from=$publist item=pubitem]-->
+    <tr class="<!--[cycle values='pn-odd,pn-even']-->">
+      <td><!--[$pubitem.core_pid]--></td>
+      <td><!--[$pubitem.$core_title]--></td>
+	  <td><!--[$pubitem.core_revision]--></td>
+	  <td><!--[$pubitem.__WORKFLOW__.state]--> </td>
+	  <td><!--[pnusergetvar name='uname' uid=$pubitem.core_author]--> </td>
+	  <td><!--[$pubitem.core_online]--></td>
+	  <td><!--[$pubitem.core_indepot]--></td>
+	</tr>
+  <!--[foreachelse]-->
+    <tr><td colspan="7"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
+  <!--[/foreach]-->
+  </tbody>
+</table>
+
+</div>

@@ -1,0 +1,28 @@
+<!--[* $Id$ *]-->
+
+<!--[include file='pagemaster_admin_header.htm']-->
+
+<div class="pn-admincontainer">
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='exec.gif' set='icons/large' alt='_PAGEMASTER_SHOWCODE' altml=true]--></div>
+
+<h2><!--[pnml name=_PAGEMASTER_SHOWCODE]--></h2>
+
+<!--[pmadminsubmenu tid=$pubtype.tid mode=$mode]-->
+
+<!--[if $mode eq 'input']-->
+	<!--[assign var='pmtplname' value='pubedit_'|cat:$pubtype.formname|cat:'_all.htm']-->
+	<!--[assign var='pmsubfolder' value='input']-->
+<!--[elseif $mode eq 'outputlist']-->
+	<!--[assign var='pmtplname' value='publist_'|cat:$pubtype.filename|cat:'.htm']-->
+	<!--[assign var='pmsubfolder' value='output']-->
+<!--[elseif $mode eq 'outputfull']-->
+	<!--[assign var='pmtplname' value='viewpub_'|cat:$pubtype.filename|cat:'.htm']-->
+	<!--[assign var='pmsubfolder' value='output']-->
+<!--[/if]-->
+
+<div class="pn-warningmsg"><!--[pnml name='_PAGEMASTER_CREATEATEMPLATENAMED' tpl=$pmtplname pmsubfolder=$pmsubfolder html=true]--></div>
+<br />
+
+<!--[$code]-->
+
+</div>

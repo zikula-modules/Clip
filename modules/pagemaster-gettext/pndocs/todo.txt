@@ -1,0 +1,5 @@
+Check:
+	Pagesetter code in pagemaster_adminapi_moveToDepot?
+
+TODO
+	Maxlenght more clean solution. Exclude some default plugins?

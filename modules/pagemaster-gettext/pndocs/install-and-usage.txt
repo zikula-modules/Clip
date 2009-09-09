@@ -1,0 +1,27 @@
+Install PageMaster as any other module:
+upload its files in the proper locations
+(there's needed the livepipe.net library in the /javascript folder)
+and the usual folder in /modules.
+
+Go to your Modules Admin Panel and regenerate the list,
+install, activate and configure the writable folder path
+that pagemaster will use when need to upload files to the site,
+and that's all, begin the creation of your publication types
+and manage your stuff ;-)
+
+
+Some things you should know for using PageMaster:
+
+workflow: "none"
+- all users can add new publications to the publication type 
+  if they own the ACCESS_COMMENT permission in zikula
+
+general:
+- if you are using the file upload possibility of pagemaster
+  there will be thumbnails created by the Thumbnail module.
+  The Thumbnail module needs at least the permission
+  ACCESS_EDIT to create Thumbnails. So - do not forget to
+  give this permission to the user group that should be able
+  to upload image files.
+
+Enjoy!

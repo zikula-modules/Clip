@@ -1,0 +1,233 @@
+/***** Windows *****/
+#control_overlay {
+	background-color: #000;
+}
+.window_close {
+	border-bottom: 1px solid #DADADA;
+	padding: 0 0 5px;
+}
+.window_close .close_button {
+	position: relative;
+}
+.window_close .close_button span {
+	color: #B8B8B8;
+	font-size: 10px;
+	font-weight: bold;
+	position: absolute;
+	right: 24px;
+	text-transform: uppercase;
+	top: 3px;
+}
+.window_close a,
+.window_close a:focus,
+.window_close a:hover,
+.window_close a:active {
+	text-decoration: none;
+}
+
+
+/* modal box */
+.modal {
+	background-color: #fff;
+	padding: 10px;
+	border: 5px solid #E7E7E7;
+	text-align: left;
+}
+
+.modal form {
+	color: #666666;
+	font-size: 11px;
+	margin: 25px 0 0;
+}
+				   
+.modal input {
+	font-size: 14px;
+}
+.modal input.input_text {
+	border:1px solid #ccc;width:144px;padding:2px 3px;font:bold 16px Arial, Helvetica, sans-serif;background:url(/images/form.gif)}
+
+.modal form h3 {
+	float: left;
+	padding: 3px 8px 0 0;
+	text-align: right;
+}
+.modal form p {
+	float: left;
+}
+
+.form-item {
+	margin: 1em 0;
+}
+
+.form-item label {
+	display: block;
+	font-size: 13px;
+	font-weight: bold;
+	margin: 0 0 5px 30px;
+}
+.form-item label .form-required {
+	color: #FF0000;
+}
+
+.form-item .option {
+	display: inline;
+	font-size: 11px;
+	font-weight: normal;
+	margin: 0 0 5px 30px;
+}
+
+.modal .item-list ul {
+	border-top: 1px solid #E5E5E5;
+	margin: 15px 30px 0;
+	padding: 10px 0 0;
+}
+.modal .item-list li {
+	color: #CC0000;
+	list-style-image: none;
+	list-style-position: inside;
+	list-style-type: square;
+	margin: 0 0 5px;
+}
+.modal .item-list li a {
+	color: #666666;
+}
+.modal .item-list li a:hover {
+	color: #cc0000;
+	text-decoration: underline;
+}
+
+input.form-submit {
+	background-color: #777;
+	border: none;
+	color: #FFFFFF;
+	cursor: pointer;
+	display: block;
+	margin: 0 0 0 135px;
+	padding: 2px 5px;
+}
+
+/* specific modal login form */
+#modal_login_form .form-item .form-text {
+	height: 20px;
+	margin: 0 0 0 30px;
+	padding: 3px 5px 0;
+	width: 190px;
+	font-size: 14px;
+	border: 1px solid #E5E5E5;
+}
+#modal_login_form .form-item .form-text:focus {
+	border: 1px solid #c00;
+	background-color:#feffe9;
+}
+
+
+
+/***** Tabs *****/
+.livetabs {
+	border-bottom: #ccc 1px solid;
+	clear: both;
+	height: 20px;
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+.livetabs .tab {
+	float: left;
+	margin: 0 5px 0 0;
+	text-align: center
+}
+.livetabs .tab a {
+	background-color: #fff;
+	color: #666;
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+	height: 20px;
+	line-height: 20px;
+	min-width: 80px;
+	padding: 0 6px;
+}
+.livetabs .tab a:hover {
+	color: #666;
+	text-decoration: none;
+}
+.livetabs .tab a.active {
+	background-color: #ddd;
+	text-decoration: none;
+}
+.livetabs_content {
+	border: #ccc 1px solid;
+	border-top: none;
+	clear: both;
+	margin: 0px;
+	padding: 0px;
+}
+.livetabs_content .tabcontent {
+	padding: 8px;
+}
+
+/* paged tabs */
+.livetabs_paged {
+	border: none;
+}
+.livetabs_paged .tab {
+	border: 1px solid #E5E5E5;
+	margin: 0 7px 0 0;
+}
+.livetabs_paged .tab a {
+	background-color: #fff;
+	color: #666;
+	min-width: 10px;
+	padding: 0 6px;
+}
+.livetabs_paged .tab a:hover {
+	color: #666;
+}
+.livetabs_paged .tab a.active {
+	background-color: #ddd;
+}
+
+
+/* tabbed images */
+.tabbed_images {
+	list-style:none;
+	margin:0;
+	padding:0;
+	clear:both;
+}
+
+.tabbed_images li {
+	list-style:none;
+	float:left;
+	margin:0;
+	padding:0;
+}
+
+.tabbed_images li a {
+	border:1px solid #ccc;
+	display:block;
+	float:left;
+	margin:0 10px 0 0;
+}
+
+.tabbed_images li a.active,
+.tabbed_images li a:hover {
+	border:1px solid #333;
+}
+
+.tabbed_images li a img {
+	border:none;
+	padding:2px;
+	margin:0;
+	margin-bottom:-5px;
+}
+
+#image_1,
+#image_2,
+#image_3,
+#image_4,
+#image_5 {
+	margin-top:10px;
+	padding:2px;
+	border:1px solid #ccc;
+}

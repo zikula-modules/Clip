@@ -1,0 +1,188 @@
+/**
+ * PageMaster
+ *
+ * @copyright   (c) PageMaster Team
+ * @link        http://code.zikula.org/pagemaster/
+ * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id: style.css 220 2007-08-11 15:23:48Z mateo $
+ * @package     Zikula_3rdParty_Modules
+ * @subpackage  pagemaster
+ */
+
+div.pn-menu {
+    width: 100%;
+	text-align: left;
+}
+div.pm-menu {
+    margin-bottom: 1.5em;
+}
+
+.pn-menuitem-title {
+	width: 99%;
+	background: url(../../../system/Admin/pnimages/button_bkg.gif) repeat;
+    line-height: 23px;
+    min-height: 23px;
+    height: auto !important;
+    height: 23px;
+	display: block;
+	padding-left: 5px;
+	border-left: 1px solid #ccc; 
+	border-right: 1px solid #ccc;
+}
+
+#newpubfield {
+	position: relative;
+}
+
+#pubfieldlist {
+	border: 1px solid #ccc;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#pubfieldlist li {
+	font-size: 1em;
+	line-height: 2em;
+	margin: 0;
+	padding: 0.4em 0 0 1em;
+}
+
+#pubfieldlist span {
+	float: left;
+	overflow: hidden;
+	text-align: left;
+}
+
+.extrasmallplace {
+	width: 10%;
+}
+
+.smallplace {
+	width: 15%;
+}
+
+.normalplace {
+	width: 20%;
+}
+
+.moveable {
+	cursor: move;
+}
+
+.pmhelp {
+	background: url(../../../images/icons/extrasmall/agt_support.gif) no-repeat;
+	background-position: 5px center;
+	color: #0074B0;
+	padding-left: 25px;
+}
+
+/* Admin modalbox */
+#typeDataDiv {
+	width: 550px;
+	height: auto !important;
+	height: 75px;
+	min-height: 75px;
+	z-index: 9999;
+	left: 50%;
+	margin-left: -275px;
+	background-color: #FFFFFF;
+	padding:10px;
+}
+
+/* itemlist styles */
+.itemlist {
+	border: 1px solid #ccc;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.itemlist li {
+	font-size: 1em;
+	margin: 0;
+	padding: 0.3em 0 0.3em 1em;
+}
+
+.itemlist li input {
+	width: 90%;
+}
+
+.itemlist li  * {
+	vertical-align: middle;
+}
+
+.itemlist .itemlistcell {
+	float: left;
+	text-align: left;
+}
+
+.itemlist .width88 {
+	width: 88%;
+}
+.itemlist .width44 {
+	width: 44%;
+}
+.itemlist .width40 {
+	width: 40%;
+}
+.itemlist .width22 {
+	width: 22%;
+}
+.itemlist .width20 {
+	width: 20%;
+}
+.itemlist .width15 {
+	width: 15%;
+}
+.itemlist .width10 {
+	width: 10%;
+}
+.itemlist .width7 {
+	width: 7%;
+}
+.itemlist .width6 {
+	width: 6%;
+}
+.itemlist .width5 {
+	width: 5%;
+}
+.itemlist .width4 {
+	width: 4%;
+}
+
+.itemlist .width10,
+.itemlist .width15,
+.itemlist .width20,
+.itemlist .width22,
+.itemlist .width40,
+.itemlist .width44,
+.itemlist .width88 {
+	text-align: left;
+}
+.itemlist .width5,
+.itemlist .width6,
+.itemlist .width7 {
+	white-space: nowrap;
+}
+.itemlist .width5 input,
+.itemlist .width6 input,
+.itemlist .width7 input {
+	width: auto;
+}
+.itemlist .width4,
+.itemlist .width5 {
+	text-align: center;
+}
+
+.itemlist button {
+	cursor: pointer;
+}
+
+.itemlist .buttondelete {
+	/* don't remove this */
+}
+
+.newitemlistdiv {
+	margin: 1em 0 1em 1em;
+}

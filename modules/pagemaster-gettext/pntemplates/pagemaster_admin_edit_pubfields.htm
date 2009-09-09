@@ -1,0 +1,130 @@
+<!--[* $Id$ *]-->
+
+<!--[include file='pagemaster_admin_header.htm']-->
+
+<!--[pnajaxheader module='pagemaster' filename='pubfieldlist.js' dragdrop=true]-->
+<!--[pnpageaddvar name='stylesheet' value='modules/pagemaster/pnstyle/style.css']-->
+
+<div class="pn-admincontainer">
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='db_update.gif' set='icons/large' alt='_PAGEMASTER_CREATEPUBFIELDS' altml=true]--></div>
+
+<h2><!--[pnml name='_PAGEMASTER_CREATEPUBFIELDS']--></h2>
+
+<!--[pmadminsubmenu tid=$tid id=$id|default:'']-->
+<!--[pnformvalidationsummary]-->
+<h3><!--[pnml name=_PAGEMASTER_EXISTINGPUBFIELDS]--></h3>
+<div class="pn-warningmsg"><!--[pnml name=_PAGEMASTER_NEEDTOUPDATEDB]--></div>
+<ol id="pubfieldlist">
+	<li id="pubfieldlistheader" class="pubfieldlistheader pn-clearfix">
+		<span class="smallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_NAME']--></strong></span>
+		<span class="smallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_TITLE']--></strong></span>
+		<span class="normalplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_DESCRIPTION']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_ISSEARCHABLE']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_ISTITLE']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_ISMANDATORY']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_MAXLENGTH']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[pnml name='_ACTIONS']--></strong></span>
+	</li>
+	<!--[foreach from=$pubfields item=pubfield name=pubfields]-->
+	<li id="pubfield_<!--[$pubfield.id]-->" class="<!--[ cycle name='pubfieldlist' values='pn-odd,pn-even' ]--> pn-sortable pn-clearfix moveable">
+		<span id="pubfielddrag_<!--[$pubfield.id]-->" class="smallplace"><!--[pnml name=$pubfield.name]--></span>
+		<span class="smallplace"><!--[$pubfield.title]-->&nbsp;</span>
+		<span class="normalplace"><!--[$pubfield.description|truncate:45]-->&nbsp;</span> 
+		<span class="extrasmallplace" style="text-align:center">
+			<!--[if $pubfield.issearchable]-->
+				<!--[pnimg modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall']-->
+			<!--[/if]-->
+			&nbsp;
+		</span>
+		<span class="extrasmallplace" style="text-align:center">
+			<!--[if $pubfield.istitle]-->
+				<!--[pnimg modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall']-->
+			<!--[/if]-->
+			&nbsp;
+		</span>
+		<span class="extrasmallplace" style="text-align:center">
+			<!--[if $pubfield.ismandatory]-->
+				<!--[pnimg modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall']-->
+			<!--[/if]-->
+			&nbsp;
+		</span>
+		<span class="extrasmallplace" style="text-align:center">
+			<!--[if $pubfield.fieldmaxlength]-->
+				<!--[$pubfield.fieldmaxlength]-->
+			<!--[/if]-->
+			&nbsp;
+		</span>
+		<span class="extrasmallplace">
+			<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' id=$pubfield.id tid=$pubfield.tid fragment='newpubfield']-->"><!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall']--></a>
+		</span>
+	</li>
+	<!--[ /foreach ]-->
+</ol>
+
+<!--[pnform]-->
+<fieldset id="newpubfield">
+	<legend><!--[pnml name='_PAGEMASTER_ADDPUBFIELDS']--></legend>
+	<table summary="<!--[pnml name='_PAGEMASTER_ADDPUBFIELDS']-->">
+		<tr>
+			<td><!--[pnformlabel for='name' text='_PAGEMASTER_PUBFIELD_NAME']-->:</td>
+			<td><!--[pnformtextinput id='name' maxLength='255' mandatory=true]--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_NAME_HELP']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='title' text='_PAGEMASTER_PUBFIELD_TITLE']-->:</td>
+			<td><!--[pnformtextinput id='title' maxLength='255' mandatory=true]--></td>
+			<td class="pmhelp"><!--[pnml name=_PAGEMASTER_PUBFIELD_TITLE_HELP]--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='description' text='_PAGEMASTER_PUBFIELD_DESCRIPTION']-->:</td>
+			<td><!--[pnformtextinput id='description' maxLength='255']--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_DESCRIPTION_HELP']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='fieldplugin' text='_PAGEMASTER_PUBFIELD_FIELDPLUGIN']-->:</td>
+			<td><!--[pnformplugintype id='fieldplugin']-->
+				<!--[pnformtextinput id='typedata' maxLength='4000']--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_FIELDPLUGIN_HELP']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='istitle' text='_PAGEMASTER_PUBFIELD_ISTITLE']-->:</td>
+			<td><!--[pnformcheckbox id='istitle']--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_ISTITLE_HELP']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='ispageable' text='_PAGEMASTER_PUBFIELD_ISPAGEABLE']-->:</td>
+			<td><!--[pnformcheckbox id='ispageable']--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_ISPAGEABLE_HELP']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='ismandatory' text='_PAGEMASTER_PUBFIELD_ISMANDATORY']-->:</td>
+			<td><!--[pnformcheckbox id='ismandatory']--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_ISMANDATORY_HELP']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='ismandatory' text='_PAGEMASTER_PUBFIELD_ISSEARCHABLE']-->:</td>
+			<td><!--[pnformcheckbox id='issearchable']--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_ISSEARCHABLE_HELP']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='fieldmaxlength' text='_PAGEMASTER_PUBFIELD_MAXLENGTH' ]-->:</td>
+			<td><!--[pnformintinput id='fieldmaxlength' maxLength='15']--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_MAXLENGTH_HELP']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='lineno' text='_PAGEMASTER_PUBFIELD_LINENO']-->:</td>
+			<td><!--[pnformintinput id='lineno' maxLength='4']--></td>
+			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_LINENO_HELP']--></td>
+		</tr>
+	</table>
+
+	<p>(*) <!--[pnml name=_PAGEMASTER_MANDATORY]--></p>
+</fieldset>
+
+<div class="pn-adminformrow pn-adminformbuttons">
+	<!--[pnformbutton commandName='create' text='_SAVE']-->
+	<!--[pnformbutton commandName='delete' text='_DELETE']-->
+</div>
+<!--[/pnform]-->
+
+</div>
