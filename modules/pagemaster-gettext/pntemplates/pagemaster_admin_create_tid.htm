@@ -3,9 +3,9 @@
 <!--[include file='pagemaster_admin_header.htm']-->
 
 <div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='database.gif' set='icons/large' alt='_PAGEMASTER_CREATEEDIT_TID' altml=true]--></div>
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='database.gif' set='icons/large' __alt='Create / Edit Publication type' ]--></div>
 
-<h2><!--[pnml name='_PAGEMASTER_CREATEEDIT_TID']--></h2>
+<h2><!--[gt text='Create / Edit Publication type']--></h2>
 
 <!--[if isset($tid)]-->
 <!--[pmadminsubmenu tid=$tid]-->
@@ -15,97 +15,97 @@
 <!--[pnformvalidationsummary]-->
 <table cellspacing="1">
 	<tr>
-		<td><!--[pnformlabel for='title' text='_PAGEMASTER_TITLE']-->:</td>
+		<td><!--[pnformlabel for='title' text='Title']-->:</td>
 		<td><!--[pnformtextinput id='title' maxLength='255' mandatory=true]--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_TITLE_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Title of the publication type (can be a language define)']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='description' text='_PAGEMASTER_DESCRIPTION']-->:</td>
+		<td><!--[pnformlabel for='description' text='Description']-->:</td>
 		<td><!--[pnformtextinput id='description' maxLength='255']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_DESCRIPTION_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Description of the publication type (can be a language define)']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='itemsperpage' text='_PAGEMASTER_LISTCOUNT']-->:</td>
+		<td><!--[pnformlabel for='itemsperpage' text='Items per page']-->:</td>
 		<td><!--[pnformintinput id='itemsperpage' maxLength='255' mandatory=true]--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_LISTCOUNT_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='After how many publications the list will be paged. 0 for no paging']--></td>
 	</tr>
 
 	<!--[if isset($pubfields)]-->
 	<tr>
-		<td><!--[pnformlabel for='sortfield1' text='_PAGEMASTER_SORTFIELD']-->:</td>
+		<td><!--[pnformlabel for='sortfield1' text='Sort field']-->:</td>
 		<td><!--[pnformdropdownlist items=$pubfields id='sortfield1']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_SORTFIELD_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='sortdesc1' text='_PAGEMASTER_SORTDESC']-->:</td>
+		<td><!--[pnformlabel for='sortdesc1' text='Sort descending']-->:</td>
 		<td><!--[pnformcheckbox id='sortdesc1']--></td>
 		<td></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='sortfield2' text='_PAGEMASTER_SORTFIELD']-->:</td>
+		<td><!--[pnformlabel for='sortfield2' text='Sort field']-->:</td>
 		<td><!--[pnformdropdownlist items=$pubfields id='sortfield2']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_SORTFIELD_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='sortdesc2' text='_PAGEMASTER_SORTDESC']-->:</td>
+		<td><!--[pnformlabel for='sortdesc2' text='Sort descending']-->:</td>
 		<td><!--[pnformcheckbox id='sortdesc2']--></td>
 		<td></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='sortfield3' text='_PAGEMASTER_SORTFIELD']-->:</td>
+		<td><!--[pnformlabel for='sortfield3' text='Sort field']-->:</td>
 		<td><!--[pnformdropdownlist items=$pubfields id='sortfield3']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_SORTFIELD_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='sortdesc3' text='_PAGEMASTER_SORTDESC']-->:</td>
+		<td><!--[pnformlabel for='sortdesc3' text='Sort descending']-->:</td>
 		<td><!--[pnformcheckbox id='sortdesc3']--></td>
 		<td></td>
 	</tr>
 	<!--[/if]-->
 
 	<tr>
-		<td><!--[pnformlabel for='defaultfilter' text='_PAGEMASTER_DEFAULTFILTER']-->:</td>
+		<td><!--[pnformlabel for='defaultfilter' text='Default filter']-->:</td>
 		<td><!--[pnformtextinput id='defaultfilter' maxLength='255']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_DEFAULTFILTER_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='The filter which is used by default']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='workflow' text='_PAGEMASTER_WORKFLOW']-->:</td>
-		<td><!--[pnformdropdownlist id='workflow' items=$pmWorkflows ]--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_WORKFLOW_HELP']--></td>
+		<td><!--[pnformlabel for='workflow' text='Workflow']-->:</td>
+		<td><!--[pnformdropdownlist id='workflow' items=$pmWorkflows]--></td>
+		<td class="pmhelp"><!--[gt text='You can choose a special workflow for the publications']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='enablerevisions' text='_PAGEMASTER_ENABLEREVISION']-->:</td>
+		<td><!--[pnformlabel for='enablerevisions' text='Revision']-->:</td>
 		<td><!--[pnformcheckbox id='enablerevisions']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_ENABLEREVISION_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Revisioning']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='filename' text='_PAGEMASTER_FILENAME']-->:</td>
+		<td><!--[pnformlabel for='filename' text='Output template name']-->:</td>
 		<td><!--[pnformtextinput id='filename' maxLength='255']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_FILENAME_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Name of the output template']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='formname' text='_PAGEMASTER_FORMNAME']-->:</td>
+		<td><!--[pnformlabel for='formname' text='Input template name']-->:</td>
 		<td><!--[pnformtextinput id='formname' maxLength='255']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_FORMNAME_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Name of the template for the formular']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='enableeditown' text='_PAGEMASTER_EDITOWN']-->:</td>
+		<td><!--[pnformlabel for='enableeditown' text='Edit own']-->:</td>
 		<td><!--[pnformcheckbox id='enableeditown']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_EDITOWN_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='Allow editing of own publications']--></td>
 	</tr>
 	<tr>
-		<td><!--[pnformlabel for='cachelifetime' text='_PAGEMASTER_CACHESECONDS']-->:</td>
+		<td><!--[pnformlabel for='cachelifetime' text='Caching time']-->:</td>
 		<td><!--[pnformintinput id='cachelifetime' maxLength='6']--></td>
-		<td class="pmhelp"><!--[pnml name='_PAGEMASTER_CACHESECONDS_HELP']--></td>
+		<td class="pmhelp"><!--[gt text='How long should the publications be cached. Empty for no cache.']--></td>
 	</tr>
 </table>
 
-<p>(*) <!--[pnml name='_PAGEMASTER_MANDATORY']--></p>
+<p>(*) <!--[gt text='This field is mandatory']--></p>
 
 <div class="pn-adminformrow pn-adminformbuttons">
-	<!--[pnformbutton commandName='create' text='_SAVE']-->
-	<!--[pnformbutton commandName='delete' text='_DELETE']-->
-	<!--[if isset($pubfields)]--><!--[pnformbutton commandName='updatetabledef' text='_PAGEMASTER_UPDATETABLEDEF']--><!--[/if]-->
+	<!--[pnformbutton commandName='create' text='Save']-->
+	<!--[pnformbutton commandName='delete' text='Delete']-->
+	<!--[if isset($pubfields)]--><!--[pnformbutton commandName='updatetabledef' text='Update DB tables']--><!--[/if]-->
 </div>
 
 <!--[/pnform]-->

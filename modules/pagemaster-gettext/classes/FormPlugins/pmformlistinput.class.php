@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
 class pmformlistinput extends pnFormCategorySelector
 {
     var $columnDef   = 'I (9,0)';
-    var $title       = _PAGEMASTER_PLUGIN_LIST;
+    var $title       = 'List';
     var $filterClass = 'pmList';
 
     function getFilename()
@@ -78,7 +78,7 @@ class pmformlistinput extends pnFormCategorySelector
                                  if ($F(\'pmplugin_categorylist\') != null) {
                                      $(\'typedata\').value = $F(\'pmplugin_categorylist\');
                                  } else {
-                                     $(\'typedata\').value = 30; 
+                                     $(\'typedata\').value = 30;
                                  }
                                  $(\'typedata\').value += \',\';
                                  if ($F(\'pmplugin_categoryempty\') == \'on\') {
@@ -93,12 +93,13 @@ class pmformlistinput extends pnFormCategorySelector
 
     static function getTypeHtml($field, $render)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         Loader::loadClass('CategoryUtil');
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
         $html = '<div class="pn-formrow">
-                  <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+                  <label for="pmplugin_categorylist">'.__('Category', $dom).':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         $ak = array_keys($cats);
         foreach ($ak as $key) {
@@ -118,7 +119,7 @@ class pmformlistinput extends pnFormCategorySelector
 
         $checked = $includeEmptyElement ? 'checked="checked"' : '';
         $html .= '<div class="pn-formrow">
-                    <label for="pmplugin_categoryempty">'._PAGEMASTER_INCLUDEEMPTYITEM.'</label> <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
+                    <label for="pmplugin_categoryempty">'.__('Include an empty item?', $dom).'</label> <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
                   </div>';
 
         return $html;

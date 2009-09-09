@@ -3,44 +3,44 @@
 <!--[include file='pagemaster_admin_header.htm']-->
 
 <div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='configure.gif' set='icons/large' alt='_MODIFYCONFIG' altml=true]--></div>
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='configure.gif' set='icons/large' __alt='Settings' ]--></div>
 
-<h2><!--[pnml name='_MODIFYCONFIG']--></h2>
+<h2><!--[gt text='Settings']--></h2>
 
 <div class="pn-menu pm-menu">
-	<span class="pn-menuitem-title"><a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps']-->"><!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER']--></a></span>
+	<span class="pn-menuitem-title"><a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps']-->"><!--[gt text='Import Pagesetter Publications']--></a></span>
 </div>
 
 <!--[pnform]-->
 <!--[pnformvalidationsummary]-->
 <fieldset>
-	<legend><!--[pnml name='_PAGEMASTER_UPLOADPATH']--></legend>
+	<legend><!--[gt text='Upload path']--></legend>
 	<div class="pn-adminformrow">
-		<!--[pnformlabel for='uploadpath' text='_PAGEMASTER_UPLOADPATH']-->:
+		<!--[pnformlabel for='uploadpath' text='Upload path']-->:
   		<!--[pnformtextinput maxLength='200' id='uploadpath']-->
 		<!--[if $updirstatus < 3]-->
 			<!--[assign var='updir_msgcolor' value='#ff0000']-->
 			<!--[if $updirstatus == 0]-->
-				<!--[assign var='updir_message'  value='_PAGEMASTER_UPLOADPATH_NOTEXISTS']-->
+				<!--[assign var='updir_message'  value='The given path doesn't exists']-->
 			<!--[elseif $updirstatus == 1]-->
-				<!--[assign var='updir_message'  value='_PAGEMASTER_UPLOADPATH_NOTDIRECTORY']-->
+				<!--[assign var='updir_message'  value='The given path is not a directory']-->
 			<!--[elseif $updirstatus == 2]-->
-				<!--[assign var='updir_message'  value='_PAGEMASTER_UPLOADPATH_NONWRITEABLE']-->
+				<!--[assign var='updir_message'  value='The given path is not writeable']-->
 			<!--[/if]-->
 		<!--[else]-->
 			<!--[assign var='updir_msgcolor' value='#00d900']-->
-			<!--[assign var='updir_message'  value='_PAGEMASTER_UPLOADPATH_WRITEABLE']-->
+			<!--[assign var='updir_message'  value='The given path is writeable']-->
 		<!--[/if]-->
-		<span style="color: <!--[$updir_msgcolor]-->;"><!--[pnml name=$updir_message]--></span>
+		<span style="color: <!--[$updir_msgcolor]-->;"><!--[gt text="$updir_message"]--></span>
 	</div>
 	<div class="pn-adminformrow">
-		<span class="pmhelp"><!--[pnml name='_PAGEMASTER_UPLOADPATH_HELP' siteroot=$siteroot]--></span><br />
+		<span class="pmhelp"><!--[gt text='Path where uploaded files will be stored, relative to the site root (%s)' tag1=$siteroot]--></span><br />
 	</div>
 </fieldset>
 
 <div class="pn-adminformrow pn-adminformbuttons">
-	<!--[pnformbutton commandName='modify' text='_SAVE']-->
-	<!--[pnformbutton commandName='cancel' text='_CANCEL']-->
+	<!--[pnformbutton commandName='modify' text='Save']-->
+	<!--[pnformbutton commandName='cancel' text='Cancel']-->
 </div>
 <!--[/pnform]-->
 

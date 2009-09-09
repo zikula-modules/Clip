@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
 class pmformmultilistinput extends pnFormCategorySelector
 {
     var $columnDef   = 'C(512)';
-    var $title       = _PAGEMASTER_PLUGIN_MULTILIST;
+    var $title       = 'Multiple selector';
     var $filterClass = 'pmMultiList';
 
     function getFilename()
@@ -48,7 +48,7 @@ class pmformmultilistinput extends pnFormCategorySelector
         }
         return $cat_arr;
     }
-    
+
     function render(&$render)
     {
         // extract the configuration {category, size}
@@ -62,7 +62,7 @@ class pmformmultilistinput extends pnFormCategorySelector
             $this->size = $config[1];
         return parent::render($render);
     }
-    
+
     function create(&$render, &$params)
     {
         $this->saveAsString = 1;
@@ -79,7 +79,7 @@ class pmformmultilistinput extends pnFormCategorySelector
         parent::load(&$render, $params);
 
             array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
-        
+
     }
 
     static function getSaveTypeDataFunc($field)
@@ -103,6 +103,7 @@ class pmformmultilistinput extends pnFormCategorySelector
 
     static function getTypeHtml($field, $render)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         // parse the configuration
         if (isset($render->_tpl_vars['typedata'])) {
             $vars = explode('|', $render->_tpl_vars['typedata']);
@@ -122,10 +123,10 @@ class pmformmultilistinput extends pnFormCategorySelector
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
         $html = '<div class="pn-formrow">
-                     <label for="pmplugin_multisize">'._PAGEMASTER_SIZE.':</label> <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
+                     <label for="pmplugin_multisize">'.__('Size', $dom).':</label> <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
                  </div>
                  <div class="pn-formrow">
-                 <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+                 <label for="pmplugin_categorylist">'.__('Category', $dom).':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         foreach ($cats as $cat) {
             $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';

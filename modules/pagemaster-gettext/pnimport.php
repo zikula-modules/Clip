@@ -13,8 +13,9 @@ Loader::includeOnce('modules/pagemaster/common.php');
 
 function pagemaster_import_importps()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
 
     $step = FormUtil::getPassedValue('step');

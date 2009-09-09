@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformurlinput.php');
 class pmformurlinput extends pnFormURLInput
 {
     var $columnDef = 'C(500)';
-    var $title     = _PAGEMASTER_PLUGIN_URL;
+    var $title     = 'Url';
 
     function getFilename()
     {

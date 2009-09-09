@@ -23,6 +23,7 @@ function pagemaster_searchapi_info()
  */
 function pagemaster_searchapi_options($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
         $render = pnRender::getInstance('pagemaster');
 
@@ -48,7 +49,7 @@ function pagemaster_searchapi_options($args)
  */
 function pagemaster_searchapi_search($args)
 {
-
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     $search_tid = FormUtil::getPassedValue('search_tid', '', 'REQUEST');
     Loader::includeOnce('modules/pagemaster/common.php');
     pnModDBInfoLoad('Search');
@@ -94,7 +95,7 @@ function pagemaster_searchapi_search($args)
                 $publist    = DBUtil::selectObjectArray($tablename, $where);
                 $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$pubtype['tid'], '', -1, -1, 'name');
                 $core_title = getTitleField($pubfields);
-                $type_name  = pnML($pubtype['title'].'_SEARCH'); 
+                $type_name  = pnML($pubtype['title'].'_SEARCH');
 
                 foreach ($publist as $pub) {
                     $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
@@ -107,7 +108,7 @@ function pagemaster_searchapi_search($args)
                     . '\'' . DataUtil::formatForStore($sessionId) . '\')';
                     $insertResult = DBUtil::executeSQL($sql);
                     if (!$insertResult) {
-                        return LogUtil::registerError (_GETFAILED);
+                        return LogUtil::registerError (__('Error! Could not load items.', $dom));
                     }
                 }
             }

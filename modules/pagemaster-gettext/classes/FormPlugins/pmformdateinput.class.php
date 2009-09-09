@@ -15,10 +15,10 @@ require_once('system/pnForm/plugins/function.pnformdateinput.php');
 class pmformdateinput extends pnFormDateInput
 {
     var $columnDef = 'T';
-    var $title     = _PAGEMASTER_PLUGIN_DATE;
+    var $title     = 'Date';
     var $filterClass = 'date';
 
-	
+
     function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???
@@ -32,7 +32,7 @@ class pmformdateinput extends pnFormDateInput
                                      $(\'typedata\').value = 1;
                                  } else {
                                      $(\'typedata\').value = 0;
-                                 } 
+                                 }
                                  closeTypeData();
                              }';
         return $saveTypeDataFunc;
@@ -40,13 +40,14 @@ class pmformdateinput extends pnFormDateInput
 
     static function getTypeHtml($field, $render)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         if ($render->_tpl_vars['typedata'] == 1) {
             $checked = 'checked="checked"';
         } else {
             $checked = '';
         }
         $html .= '<div class="pn-formrow">
-                  <label for="pmplugin_usedatetime">'._PAGEMASTER_USEDATETIME.':</label><input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
+                  <label for="pmplugin_usedatetime">'.__('Use datetime', $dom).':</label><input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
                   </div>';
         return $html;
     }

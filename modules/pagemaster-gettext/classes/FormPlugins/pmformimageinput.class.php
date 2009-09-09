@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformuploadinput.php');
 class pmformimageinput extends pnFormUploadInput
 {
 	var $columnDef = 'C(512)';
-	var $title     = _PAGEMASTER_PLUGIN_IMAGE;
+	var $title     = 'Image Upload';
 	var $upl_arr;
 
 	function getFilename()
@@ -43,14 +43,15 @@ class pmformimageinput extends pnFormUploadInput
 
 	static function postRead($data, $field)
 	{
+	    $dom = ZLanguage::getModuleDomain('pagemaster');
 		if (!empty($data)) {
 			$arrTypeData = @unserialize($data);
 
 			if (!is_array($arrTypeData)) {
-				return LogUtil::registerError('pmformimageinput: '._PAGEMASTER_STOREDDATAINVALID);
+				return LogUtil::registerError('pmformimageinput: '.__('Stored data is invalid', $dom));
 			}
 			echo $asdfa;
-			
+
 			$url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
 			if (!empty($arrTypeData['orig_name'])) {
 				$upl_arr =  array(
@@ -123,7 +124,7 @@ class pmformimageinput extends pnFormUploadInput
 				$fullargs['w'] = (int)$fullx ;
 				if ((int)$fully > 0)
 				$fullargs['h'] = (int)$fully ;
-			} 
+			}
 			// Check for the Thumbnails module and if we need it
 			if (!empty($tmpargs) && pnModAvailable('Thumbnail')) {
 				echo 1;

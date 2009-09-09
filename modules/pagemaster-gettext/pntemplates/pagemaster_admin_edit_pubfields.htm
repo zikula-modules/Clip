@@ -6,28 +6,28 @@
 <!--[pnpageaddvar name='stylesheet' value='modules/pagemaster/pnstyle/style.css']-->
 
 <div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='db_update.gif' set='icons/large' alt='_PAGEMASTER_CREATEPUBFIELDS' altml=true]--></div>
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='db_update.gif' set='icons/large' __alt='Manage Publication fields' ]--></div>
 
-<h2><!--[pnml name='_PAGEMASTER_CREATEPUBFIELDS']--></h2>
+<h2><!--[gt text='Manage Publication fields']--></h2>
 
 <!--[pmadminsubmenu tid=$tid id=$id|default:'']-->
 <!--[pnformvalidationsummary]-->
-<h3><!--[pnml name=_PAGEMASTER_EXISTINGPUBFIELDS]--></h3>
-<div class="pn-warningmsg"><!--[pnml name=_PAGEMASTER_NEEDTOUPDATEDB]--></div>
+<h3><!--[gt text="Existing Publication fields"]--></h3>
+<div class="pn-warningmsg"><!--[gt text="When Publication fields are changed or added you need to update the DB Tables"]--></div>
 <ol id="pubfieldlist">
 	<li id="pubfieldlistheader" class="pubfieldlistheader pn-clearfix">
-		<span class="smallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_NAME']--></strong></span>
-		<span class="smallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_TITLE']--></strong></span>
-		<span class="normalplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_DESCRIPTION']--></strong></span>
-		<span class="extrasmallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_ISSEARCHABLE']--></strong></span>
-		<span class="extrasmallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_ISTITLE']--></strong></span>
-		<span class="extrasmallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_ISMANDATORY']--></strong></span>
-		<span class="extrasmallplace"><strong><!--[pnml name='_PAGEMASTER_PUBFIELD_MAXLENGTH']--></strong></span>
-		<span class="extrasmallplace"><strong><!--[pnml name='_ACTIONS']--></strong></span>
+		<span class="smallplace"><strong><!--[gt text='Name']--></strong></span>
+		<span class="smallplace"><strong><!--[gt text='Title']--></strong></span>
+		<span class="normalplace"><strong><!--[gt text='Description']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[gt text='Searchable']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[gt text='Title field']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[gt text='Mandatory']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[gt text='Max. Lenght']--></strong></span>
+		<span class="extrasmallplace"><strong><!--[gt text='Actions']--></strong></span>
 	</li>
 	<!--[foreach from=$pubfields item=pubfield name=pubfields]-->
-	<li id="pubfield_<!--[$pubfield.id]-->" class="<!--[ cycle name='pubfieldlist' values='pn-odd,pn-even' ]--> pn-sortable pn-clearfix moveable">
-		<span id="pubfielddrag_<!--[$pubfield.id]-->" class="smallplace"><!--[pnml name=$pubfield.name]--></span>
+	<li id="pubfield_<!--[$pubfield.id]-->" class="<!--[cycle name='pubfieldlist' values='pn-odd,pn-even']--> pn-sortable pn-clearfix moveable">
+		<span id="pubfielddrag_<!--[$pubfield.id]-->" class="smallplace"><!--[gt text="$pubfield.name"]--></span>
 		<span class="smallplace"><!--[$pubfield.title]-->&nbsp;</span>
 		<span class="normalplace"><!--[$pubfield.description|truncate:45]-->&nbsp;</span> 
 		<span class="extrasmallplace" style="text-align:center">
@@ -58,72 +58,72 @@
 			<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' id=$pubfield.id tid=$pubfield.tid fragment='newpubfield']-->"><!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall']--></a>
 		</span>
 	</li>
-	<!--[ /foreach ]-->
+	<!--[/foreach]-->
 </ol>
 
 <!--[pnform]-->
 <fieldset id="newpubfield">
-	<legend><!--[pnml name='_PAGEMASTER_ADDPUBFIELDS']--></legend>
-	<table summary="<!--[pnml name='_PAGEMASTER_ADDPUBFIELDS']-->">
+	<legend><!--[gt text='Add Publication fields']--></legend>
+	<table summary="<!--[gt text='Add Publication fields']-->">
 		<tr>
-			<td><!--[pnformlabel for='name' text='_PAGEMASTER_PUBFIELD_NAME']-->:</td>
+			<td><!--[pnformlabel for='name' text='Name']-->:</td>
 			<td><!--[pnformtextinput id='name' maxLength='255' mandatory=true]--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_NAME_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='Name of this field (is used e.g. an the template Variables)']--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='title' text='_PAGEMASTER_PUBFIELD_TITLE']-->:</td>
+			<td><!--[pnformlabel for='title' text='Title']-->:</td>
 			<td><!--[pnformtextinput id='title' maxLength='255' mandatory=true]--></td>
-			<td class="pmhelp"><!--[pnml name=_PAGEMASTER_PUBFIELD_TITLE_HELP]--></td>
+			<td class="pmhelp"><!--[gt text="Title (is shown e.g. in the automaticaly generated templates) and can be a language define"]--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='description' text='_PAGEMASTER_PUBFIELD_DESCRIPTION']-->:</td>
+			<td><!--[pnformlabel for='description' text='Description']-->:</td>
 			<td><!--[pnformtextinput id='description' maxLength='255']--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_DESCRIPTION_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='Description of this field (used as tooltip on the input form)']--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='fieldplugin' text='_PAGEMASTER_PUBFIELD_FIELDPLUGIN']-->:</td>
+			<td><!--[pnformlabel for='fieldplugin' text='Fieldtype (Plugin)']-->:</td>
 			<td><!--[pnformplugintype id='fieldplugin']-->
 				<!--[pnformtextinput id='typedata' maxLength='4000']--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_FIELDPLUGIN_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='Which kind of fieldtype is used. (can be extended by plugins). Detailed informations about the individual plugins can be found in the documentation.']--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='istitle' text='_PAGEMASTER_PUBFIELD_ISTITLE']-->:</td>
+			<td><!--[pnformlabel for='istitle' text='Title field']-->:</td>
 			<td><!--[pnformcheckbox id='istitle']--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_ISTITLE_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='The content of this field will be shown as the title']--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='ispageable' text='_PAGEMASTER_PUBFIELD_ISPAGEABLE']-->:</td>
+			<td><!--[pnformlabel for='ispageable' text='Pageable']-->:</td>
 			<td><!--[pnformcheckbox id='ispageable']--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_ISPAGEABLE_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='Pageable']--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='ismandatory' text='_PAGEMASTER_PUBFIELD_ISMANDATORY']-->:</td>
+			<td><!--[pnformlabel for='ismandatory' text='Mandatory']-->:</td>
 			<td><!--[pnformcheckbox id='ismandatory']--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_ISMANDATORY_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='This field has to be completely filled out']--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='ismandatory' text='_PAGEMASTER_PUBFIELD_ISSEARCHABLE']-->:</td>
+			<td><!--[pnformlabel for='ismandatory' text='Searchable']-->:</td>
 			<td><!--[pnformcheckbox id='issearchable']--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_ISSEARCHABLE_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='The content of this field can be searched']--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='fieldmaxlength' text='_PAGEMASTER_PUBFIELD_MAXLENGTH' ]-->:</td>
+			<td><!--[pnformlabel for='fieldmaxlength' text='Max. Lenght']-->:</td>
 			<td><!--[pnformintinput id='fieldmaxlength' maxLength='15']--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_MAXLENGTH_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='The maximum lenght for the content of this field']--></td>
 		</tr>
 		<tr>
-			<td><!--[pnformlabel for='lineno' text='_PAGEMASTER_PUBFIELD_LINENO']-->:</td>
+			<td><!--[pnformlabel for='lineno' text='Line No.']-->:</td>
 			<td><!--[pnformintinput id='lineno' maxLength='4']--></td>
-			<td class="pmhelp"><!--[pnml name='_PAGEMASTER_PUBFIELD_LINENO_HELP']--></td>
+			<td class="pmhelp"><!--[gt text='No. of this field']--></td>
 		</tr>
 	</table>
 
-	<p>(*) <!--[pnml name=_PAGEMASTER_MANDATORY]--></p>
+	<p>(*) <!--[gt text="This field is mandatory"]--></p>
 </fieldset>
 
 <div class="pn-adminformrow pn-adminformbuttons">
-	<!--[pnformbutton commandName='create' text='_SAVE']-->
-	<!--[pnformbutton commandName='delete' text='_DELETE']-->
+	<!--[pnformbutton commandName='create' text='Save']-->
+	<!--[pnformbutton commandName='delete' text='Delete']-->
 </div>
 <!--[/pnform]-->
 

@@ -1,23 +1,23 @@
 <!--[* $Id$ *]-->
 
-<h2><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER"]--></h2>
+<h2><!--[gt text="Import Pagesetter Publications"]--></h2>
 
 <!--[insert name='getstatusmsg']-->
 
-<p><!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER_INFO' noprocess=1]--></p>
+<p><!--[gt text='On this Page you can import Publications from Pagesetter.<br /> You can only import Publications when no Pagemaster Publication exist.<br />Please configure the Upload Path before you import something.<br />No Pagesetter datas will be changed due the import.']--></p>
 
 <a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='1']-->">
 
-<!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTCAT']--></a>
+<!--[gt text='Import Lists']--></a>
 <br />
 <!--[if $allreadyexists > 0]-->
-	<!--[pnml name='_PAGEMASTER_IMPORTFROMPAGESETTER_EXISTINGPUBS']-->
+	<!--[gt text='There has already been an Import']-->
 <!--[else]-->	
-	<a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='2']-->"><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTDB"]--></a>
+	<a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='2']-->"><!--[gt text="Import Publication types"]--></a>
 <!--[/if]-->
 <br />
 <a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='3']-->">
 
-<!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_CREATETABLES"]--></a>
+<!--[gt text="Create DB Tables"]--></a>
 <br />
-<a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='4']-->"><!--[pnml name="_PAGEMASTER_IMPORTFROMPAGESETTER_IMPORTDATA"]--></a>
+<a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps' step='4']-->"><!--[gt text="Import Data"]--></a>

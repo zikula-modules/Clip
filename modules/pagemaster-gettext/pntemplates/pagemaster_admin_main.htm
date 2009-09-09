@@ -3,28 +3,28 @@
 <!--[include file='pagemaster_admin_header.htm']-->
 
 <div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='editcopy.gif' set='icons/large' alt='_PAGEMASTER_PUBTYPES' altml=true]--></div>
-	<h2><!--[pnml name='_PAGEMASTER_PUBTYPES']--></h2>
-	<p><!--[pnml name='_PAGEMASTER_PUBTYPE_EXISTING' html=true]--></p>
-	<table class="pn-admintable" summary="<!--[pnml name='_PAGEMASTER_PUBTYPE_EXISTING']-->">
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='editcopy.gif' set='icons/large' __alt='Publication types' ]--></div>
+	<h2><!--[gt text='Publication types']--></h2>
+	<p><!--[gt text='Here the list of the existing Publication types. If you don't have one yet, go to the <a href="">New Publication Type form</a> and create one; after that, you'll be able to add the fields for the publications within that type, and once you have the fields you want, <a href="">Update the DB</a>. After create/update the table of your pubtype, you can add publications and customize the templates for your pubtype starting of the code that pagemaster generate for you. Enjoy!']--></p>
+	<table class="pn-admintable" summary="<!--[gt text='Here the list of the existing Publication types. If you don't have one yet, go to the <a href="">New Publication Type form</a> and create one; after that, you'll be able to add the fields for the publications within that type, and once you have the fields you want, <a href="">Update the DB</a>. After create/update the table of your pubtype, you can add publications and customize the templates for your pubtype starting of the code that pagemaster generate for you. Enjoy!']-->">
 		<thead>
 		<tr>
-			<th><!--[pnml name='_TITLE']--></th>
-			<th><!--[pnml name='_DESCRIPTION']--></th>
-			<th><!--[pnml name='_PAGEMASTER_PUBTYPE_EDITFIELDS']--></th>
-			<th><!--[pnml name='_PAGEMASTER_PUBTYPE_PUBLIST']--></th>
-			<th><!--[pnml name='_PAGEMASTER_PUBTYPE_PUBLISTADMIN']--></th>
-			<th><!--[pnml name='_PAGEMASTER_PUBTYPE_NEWARTICLE']--></th>
-			<th><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWINPUTCODE']--></th>
-			<th><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODELIST']--></th>
-			<th><!--[pnml name='_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODEFULL']--></th>
+			<th><!--[gt text='Title']--></th>
+			<th><!--[gt text='Description']--></th>
+			<th><!--[gt text='Edit Publication fields']--></th>
+			<th><!--[gt text='Show Publication list']--></th>
+			<th><!--[gt text='Show PubList Admin']--></th>
+			<th><!--[gt text='New Publication']--></th>
+			<th><!--[gt text='Show Form Code']--></th>
+			<th><!--[gt text='Show PubList Code']--></th>
+			<th><!--[gt text='Show PubView Code']--></th>
 		</tr>
 		</thead>
 		<tbody>
 		<!--[foreach from=$pubtypes item=pubtype]-->
 		<tr class="<!--[cycle values='pn-odd,pn-even']-->">
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='create_tid' tid=$pubtype.tid ]-->"><!--[$pubtype.title]--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='create_tid' tid=$pubtype.tid]-->"><!--[$pubtype.title]--></a>
 			</td>
 			<td>
 				<!--[$pubtype.description]-->
@@ -52,7 +52,7 @@
 			</td>
 		</tr>
 		<!--[foreachelse]-->
-		<tr><td colspan="9"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
+		<tr><td colspan="9"><!--[gt text='No items found.']--></td></tr>
 		<!--[/foreach]-->
 		</tbody>
 	</table>

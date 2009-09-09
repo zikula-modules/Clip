@@ -30,6 +30,7 @@ class pagemaster_user_dynHandler
 
     function initialize(&$render)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         $this->goto = FormUtil::getPassedValue('goto', '');
 
         if (!empty($this->id)) {
@@ -43,19 +44,19 @@ class pagemaster_user_dynHandler
             $this->core_author = pnUserGetVar('uid');
             $actions = PmWorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
-	 
+
         if ($this->pubtype['tid'] > 0) {
-            $tid = $this->pubtype['tid']; 
+            $tid = $this->pubtype['tid'];
         } else {
-            $tid = FormUtil::getPassedValue('tid'); 
+            $tid = FormUtil::getPassedValue('tid');
         }
         // if there are no actions the user is not allowed to change / submit / delete something.
         // We will redirect the user to the overview page
         if (count($actions) < 1) {
-            LogUtil::registerError(_PAGEMASTER_WORKFLOW_NOACTIONSFOUND);
-            return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid))); 
+            LogUtil::registerError(__('No workflow actions with permission found.', $dom));
+            return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid)));
         }
-        
+
         // check for set_ default values
         $fieldnames = array_keys($this->pubfields);
         foreach ($fieldnames as $fieldname)
@@ -107,7 +108,7 @@ class pagemaster_user_dynHandler
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $data['tid'],
                                          'pid' => $data['core_pid']));
-        } 
+        }
         if (empty($data)) {
             return false;
         } else {
@@ -128,6 +129,7 @@ class pagemaster_user_dynHandler
  */
 function pagemaster_user_executecommand()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     $tid         = FormUtil::getPassedValue('tid');
     $id          = FormUtil::getPassedValue('id');
     $commandName = FormUtil::getPassedValue('commandName');
@@ -135,15 +137,15 @@ function pagemaster_user_executecommand()
     $goto        = FormUtil::getPassedValue('goto');
 
     if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
 
     if (!isset($id) || empty($id) || !is_numeric($id)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'id', $dom));
     }
 
     if (empty($commandName)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'commandName')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'commandName', $dom));
     }
 
     if (empty($schema)) {
@@ -154,7 +156,7 @@ function pagemaster_user_executecommand()
     $tablename = 'pagemaster_pubdata'.$tid;
     $pub = DBUtil::selectObjectByID($tablename, $id, 'id');
     if (!$pub) {
-        return LogUtil::registerError(pnML('_NOFOUND', array('i' => _PAGEMASTER_PUBLICATION)));
+        return LogUtil::registerError(__('No publication found.', $dom));
     }
 
     PmWorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
@@ -187,26 +189,27 @@ function pagemaster_user_executecommand()
  */
 function pagemaster_user_pubedit()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     $tid = FormUtil::getPassedValue('tid');
     $id  = FormUtil::getPassedValue('id');
     $pid = FormUtil::getPassedValue('pid');
 
     if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
 
     $pubtype = getPubType($tid);
     if (empty($pubtype)) {
-        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+        return LogUtil::registerError(__f('No such tid found.', 'tid', $dom));
     }
 
     $pubfields = getPubFields($tid, 'pm_lineno');
     if (empty($pubfields)) {
-        LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'pubfields')));
+        LogUtil::registerError(__f('No such %i% found.', 'pubfields', $dom));
     }
 
-    // No security check needed - the security check will be done by the handler class. 
-    // see the init-part of the handler class for details. 
+    // No security check needed - the security check will be done by the handler class.
+    // see the init-part of the handler class for details.
     $dynHandler = new pagemaster_user_dynHandler();
 
     if (empty($id) && !empty($pid)) {
@@ -214,7 +217,7 @@ function pagemaster_user_pubedit()
                            array('tid' => $tid,
                                  'pid' => $pid));
         if (empty($id)) {
-            return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'pid')));
+            return LogUtil::registerError(__f('No such %i% found.', 'pid', $dom));
         }
     }
 
@@ -256,9 +259,9 @@ function pagemaster_user_pubedit()
 
         } else {
             if (!empty($stepname)) {
-                LogUtil::registerError(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_step)));
+                LogUtil::registerError(__f('Template [%s] not found', $user_defined_template_step, $dom));
             }
-            LogUtil::registerError(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $user_defined_template_all)));
+            LogUtil::registerError(__f('Template [%s] not found', $user_defined_template_all, $dom));
             $hookAction = empty($id) ? 'new' : 'modify';
 
             // TODO delete all the time, even if it's not needed
@@ -277,6 +280,7 @@ function pagemaster_user_pubedit()
  */
 function pagemaster_user_main($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     // Get the input parameters
     $tid                = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
@@ -290,12 +294,12 @@ function pagemaster_user_main($args)
 
     // Essential validation
     if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
 
     $pubtype = getPubType($tid);
     if (empty($pubtype)) {
-        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+        return LogUtil::registerError(__f('No such %s found.', 'tid', $dom));
     }
 
     if (empty($template)) {
@@ -376,7 +380,7 @@ function pagemaster_user_main($args)
     $orderby   = createOrderBy($orderby);
 
     $pubfields = getPubFields($tid);
-            
+
     // Uses the API to get the list of publications
     $result = pnModAPIFunc('pagemaster', 'user', 'pubList',
                            array('tid'                => $tid,
@@ -390,7 +394,7 @@ function pagemaster_user_main($args)
                                  'checkPerm'          => false, // already checked
                                  'handlePluginFields' => $handlePluginFields,
                                  'getApprovalState'   => $getApprovalState));
-    
+
     // Assign the data to the output
     $render->assign('tid', $tid);
     $render->assign('publist', $result['publist']);
@@ -404,7 +408,7 @@ function pagemaster_user_main($args)
 
     // Check if template is available
     if ($template != 'generic_publist.htm' && !$render->get_template_path($template)) {
-        LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $template)));
+        LogUtil::registerStatus(__f('Template [%s] not found', $template, $dom));
         $template = 'generic_publist.htm';
     }
 
@@ -428,6 +432,7 @@ function pagemaster_user_main($args)
  */
 function pagemaster_user_viewpub($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     // Get the input parameters
     $tid      = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $pid      = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
@@ -437,15 +442,15 @@ function pagemaster_user_viewpub($args)
 
     // Essential validation
     if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
     if ((empty($pid) || !is_numeric($pid)) && (empty($id) || !is_numeric($id))) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id | pid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'id | pid', $dom));
     }
 
     $pubtype = getPubType($tid);
     if (empty($pubtype)) {
-        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+        return LogUtil::registerError(__f('No such %s found.', 'tid', $dom));
     }
 
     // Get the pid if it was not passed
@@ -516,7 +521,7 @@ function pagemaster_user_viewpub($args)
                                   'handlePluginFields' => true));
 
     if (!$pubdata) {
-        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'Pub')));
+        return LogUtil::registerError(__f('No such %s found.', 'Pub', $dom));
     }
 
     $core_title = getTitleField($pubfields);
@@ -536,7 +541,7 @@ function pagemaster_user_viewpub($args)
 
     // Check if template is available
     if ($template != 'var:viewpub_template_code' && !$render->get_template_path($template)) {
-        LogUtil::registerStatus(pnML('_PAGEMASTER_TEMPLATENOTFOUND', array('tpl' => $template)));
+        LogUtil::registerStatus(__f('Template [%s] not found', $template, $dom));
         $template = 'var:viewpub_template_code';
     }
 
