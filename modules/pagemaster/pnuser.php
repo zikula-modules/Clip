@@ -545,8 +545,7 @@ function pagemaster_user_viewpub($args)
     }
 
     if ($template == 'var:viewpub_template_code') {
-        // TODO: only recompile if changed
-        $render->force_compile = true;
+        $render->compile_check = true;
         $render->assign('viewpub_template_code', generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields));
     }
 
