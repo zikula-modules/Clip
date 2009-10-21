@@ -34,15 +34,14 @@ class pmformlistinput extends pnFormCategorySelector
         $cat['value']     = $cat['name'];
         $cat['title']     = $cat['name'];
         return $cat;
-
-
     }
 
     function render(&$render)
     {
-	if ($this->mandatory== '1')
-		$mand = ' *';
-	return parent::render($render).$mand;
+        if ($this->mandatory == '1') {
+            $mand = ' *';
+        }
+        return parent::render($render).$mand;
     }
 
     function load(&$render, $params)
@@ -52,18 +51,16 @@ class pmformlistinput extends pnFormCategorySelector
             $config = explode(',', $render->pnFormEventHandler->pubfields[$this->id]['typedata']);
             $params['category'] = $config[0];
 
-            if (!isset($params['includeEmptyElement']))
-            {
-                if (isset($config[1])){
+            if (!isset($params['includeEmptyElement'])) {
+                if (isset($config[1])) {
                     $this->includeEmptyElement = (bool)$config[1];
-                }elseif ($params['mandatory'] == "0")
-                {
+                } elseif ($params['mandatory'] == '0') {
                     $this->includeEmptyElement = 1;
-                }else{
+                } else {
                     $this->includeEmptyElement = 0;
                 }
-            }else{
-               $this->includeEmptyElement = $params['includeEmptyElement'];
+            } else {
+                $this->includeEmptyElement = $params['includeEmptyElement'];
             }
         } else {
             $params['category'] = 30; // Global category
@@ -78,7 +75,7 @@ class pmformlistinput extends pnFormCategorySelector
                                  if ($F(\'pmplugin_categorylist\') != null) {
                                      $(\'typedata\').value = $F(\'pmplugin_categorylist\');
                                  } else {
-                                     $(\'typedata\').value = 30; 
+                                     $(\'typedata\').value = 30;
                                  }
                                  $(\'typedata\').value += \',\';
                                  if ($F(\'pmplugin_categoryempty\') == \'on\') {
@@ -88,6 +85,7 @@ class pmformlistinput extends pnFormCategorySelector
                                  }
                                  closeTypeData();
                              }';
+
         return $saveTypeDataFunc;
     }
 
@@ -98,7 +96,7 @@ class pmformlistinput extends pnFormCategorySelector
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
         $html = '<div class="pn-formrow">
-                  <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+                 <label for="pmplugin_categorylist">'._CATEGORY.':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         $ak = array_keys($cats);
         foreach ($ak as $key) {
@@ -118,7 +116,7 @@ class pmformlistinput extends pnFormCategorySelector
 
         $checked = $includeEmptyElement ? 'checked="checked"' : '';
         $html .= '<div class="pn-formrow">
-                    <label for="pmplugin_categoryempty">'._PAGEMASTER_INCLUDEEMPTYITEM.'</label> <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
+                  <label for="pmplugin_categoryempty">'._PAGEMASTER_INCLUDEEMPTYITEM.'</label> <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
                   </div>';
 
         return $html;

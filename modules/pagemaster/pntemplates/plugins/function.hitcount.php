@@ -23,14 +23,13 @@ function smarty_function_hitcount($params, &$smarty)
     $tid = $params['tid'];
     $pid = $params['pid'];
 
-    if (!$tid)
+    if (!$tid) {
         return 'Required parameter [tid] not provided in smarty_function_hitcount';
+    }
 
-    if (!$pid)
+    if (!$pid) {
         return 'Required parameter [pid] not provided in smarty_function_hitcount';
+    }
 
-    $tablename = DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid);
-
-    $sql ='UPDATE '.$tablename.' SET pm_hitcount = pm_hitcount + 1 WHERE pm_pid = '.$pid;  
-    DBUtil::executeSQL($sql);
+    DBUtil::incrementObjectFieldByID('pagemaster_pubdata'.$tid, 'core_hitcount', $pid, 'core_pid');
 }

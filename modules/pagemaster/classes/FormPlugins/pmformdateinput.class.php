@@ -18,7 +18,6 @@ class pmformdateinput extends pnFormDateInput
     var $title     = _PAGEMASTER_PLUGIN_DATE;
     var $filterClass = 'date';
 
-	
     function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???
@@ -45,9 +44,12 @@ class pmformdateinput extends pnFormDateInput
         } else {
             $checked = '';
         }
+
         $html .= '<div class="pn-formrow">
-                  <label for="pmplugin_usedatetime">'._PAGEMASTER_USEDATETIME.':</label><input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
+                    <label for="pmplugin_usedatetime">'._PAGEMASTER_USEDATETIME.':</label>
+                    <input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
                   </div>';
+
         return $html;
     }
 
@@ -62,4 +64,3 @@ class pmformdateinput extends pnFormDateInput
         parent::create($render, $params);
     }
 }
-

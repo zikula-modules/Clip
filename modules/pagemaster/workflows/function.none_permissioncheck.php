@@ -31,7 +31,7 @@ function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
             return SecurityUtil::checkPermission('pagemaster:input:', "$tid:$pid:$obj[__WORKFLOW__][state]", $permLevel, $currentUser);
         }
     } else {
-      	// no object passed - user wants to create a new one
+        // no object passed - user wants to create a new one
         $tid = FormUtil::getPassedValue('tid');
         return SecurityUtil::checkPermission('pagemaster:input:', "$tid::", $permLevel, $currentUser);
     }

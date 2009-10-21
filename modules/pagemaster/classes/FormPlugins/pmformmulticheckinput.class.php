@@ -26,14 +26,14 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     static function postRead($data, $field)
     {
         if (!empty($data) && $data <> '::') {
-	        $lang = pnUserGetLang();
+            $lang = pnUserGetLang();
             if (strpos($data, ':') === 0) {
                 $data = substr($data, 1, -1);
             }
             $catIds = explode(':', $data);
             if (!empty($catIds)) {
                 Loader::loadClass('CategoryUtil');
-                pnModDBInfoLoad ('Categories');
+                pnModDBInfoLoad('Categories');
                 $pntables        = pnDBGetTables();
                 $category_column = $pntables['categories_category_column'];
                 $where = array();
@@ -51,9 +51,10 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
 
     function render(&$render)
     {
-      	if ($this->mandatory== '1')
-		$mand = '* Pflichtfeld';
-	return $mand.parent::render($render);
+        if ($this->mandatory == '1') {
+            $mand = '* Pflichtfeld';
+        }
+        return $mand.parent::render($render);
     }
 
     function create(&$render, &$params)
@@ -67,9 +68,12 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
         if (isset($render->pnFormEventHandler->pubfields[$this->id])) {
             $params['category'] = $render->pnFormEventHandler->pubfields[$this->id]['typedata'];
         }
+
         parent::load(&$render, $params);
-        if ($this->mandatory)
+
+        if ($this->mandatory) {
             array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+        }
     }
 
     static function getSaveTypeDataFunc($field)
@@ -79,6 +83,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
                                  $(\'typedata\').value = $F(\'pmplugin_checklist\') ;
                                  closeTypeData();
                              }';
+
         return $saveTypeDataFunc;
     }
 

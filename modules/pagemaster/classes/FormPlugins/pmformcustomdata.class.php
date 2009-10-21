@@ -33,19 +33,20 @@ class pmformcustomdata extends pnFormTextInput
     }
 
     function render(&$render)
-	{
-	    $this->textMode = 'singleline';
+    {
+        $this->textMode = 'singleline';
         $render->assign($this->inputName, @unserialize($this->text));
         if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
             $render->assign($this->inputName.'_typedata', $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0));
         }
         return parent::render($render);
-	}
+    }
 
     static function postRead($data, $field)
     {
         if (!empty($data)) {
             $data = @unserialize($data);
+
             // if not a section or no items/config returns the data
             if (!isset($data['enabled']) || (isset($data['items']) && empty($data['items'])) || empty($field['typedata'])) {
                 return $data;
@@ -64,6 +65,7 @@ class pmformcustomdata extends pnFormTextInput
                     }
                 }
                 return $data;
+
             } else {
                 return array('enabled' => 'off');
             }
@@ -176,18 +178,21 @@ class pmformcustomdata extends pnFormTextInput
                                  $(\'typedata\').value = compressed.join(\'||\')
                                  closeTypeData()
                              }';
+
         return $saveTypeDataFunc;
     }
 
     static function getTypeHtml($field, $render)
     {
         PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/Zikula.itemlist.js');
+
         // parse the data
         if (isset($render->_tpl_vars['typedata'])) {
             $vars = explode('||', $render->_tpl_vars['typedata']);
         } else {
             $vars = array();
         }
+
         if (is_array($vars) && !empty($vars)) {
             // extract and clean the config vars
             $configvars = explode('|', array_pop($vars));
@@ -222,6 +227,7 @@ class pmformcustomdata extends pnFormTextInput
                        <span class="itemlistcell width10">'._OPTIONS.'</span>
                        </div>
                      </li>';
+
         foreach ($vars as $key => $var) {
             $html .= '<li id="listitem_pmcustomdata_'.$key.'" class="listitem_pmcustomdata">
                         <div class="pn-clearfix">
@@ -243,6 +249,7 @@ class pmformcustomdata extends pnFormTextInput
                         </div>
                       </li>';
         }
+
         $html .= '</ul>
                   <ul style="display:none">
                       <li id="pmcustomdata_emptyitem">
@@ -284,7 +291,8 @@ class pmformcustomdata extends pnFormTextInput
      * Method to extract the config values
      * @TODO: protect this method
      */
-    function parseConfig($arrayConfig, $indexKey=null) {
+    function parseConfig($arrayConfig, $indexKey=null)
+    {
         $result = array();
         $arrayConfig = explode('||', $arrayConfig);
         foreach ($arrayConfig as $row) {
@@ -302,7 +310,8 @@ class pmformcustomdata extends pnFormTextInput
      * Method to parse a special string call 
      * @TODO: protect this method
      */
-    function parseCall($call, $data=null) {
+    function parseCall($call, $data=null)
+    {
         if (!empty($data)) {
             foreach ($data as $key => $value) {
                 $key  = "%$key%";

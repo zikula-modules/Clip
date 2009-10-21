@@ -80,7 +80,6 @@ class pmformuploadinput extends pnFormUploadInput
             $old_upload = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
         }
 
-        
         if (!empty($data['name'])) {
             $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
 

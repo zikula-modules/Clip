@@ -43,7 +43,7 @@ class pagemaster_user_dynHandler
             $this->core_author = pnUserGetVar('uid');
             $actions = PmWorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
-	 
+
         if ($this->pubtype['tid'] > 0) {
             $tid = $this->pubtype['tid']; 
         } else {
@@ -55,7 +55,7 @@ class pagemaster_user_dynHandler
             LogUtil::registerError(_PAGEMASTER_WORKFLOW_NOACTIONSFOUND);
             return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid))); 
         }
-        
+
         // check for set_ default values
         $fieldnames = array_keys($this->pubfields);
         foreach ($fieldnames as $fieldname)
@@ -92,22 +92,25 @@ class pagemaster_user_dynHandler
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
-        // sombody change this always back, pls let it be like this, otherwise stepmode does not work!
-	// if the item moved to the depot
-	if ($data[$args['commandName']]['core_indepot'] == 1) {
+        // somebody change this always back, pls let it be like this, otherwise stepmode does not work!
+        // if the item moved to the depot
+        if ($data[$args['commandName']]['core_indepot'] == 1) {
             $this->goto = pnModURL('pagemaster', 'user', 'main',
                                    array('tid' => $data['tid']));
-       }elseif ($this->goto == 'stepmode') {
+
+        } elseif ($this->goto == 'stepmode') {
             // stepmode can be used to go automaticaly from one workflowstep to the next
             $this->goto = pnModURL('pagemaster', 'user', 'pubedit',
                                    array('tid'  => $data['tid'],
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
- 	}elseif (empty($this->goto)) {
+
+         } elseif (empty($this->goto)) {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $data['tid'],
                                          'pid' => $data['core_pid']));
-        } 
+        }
+
         if (empty($data)) {
             return false;
         } else {
@@ -239,8 +242,9 @@ function pagemaster_user_pubedit()
 
     $render = FormUtil::newpnForm('pagemaster');
 
-    if (empty($stepname))
-	$stepname = 'initial';
+    if (empty($stepname)) {
+        $stepname = 'initial';
+    }
 
     // resolve the template to use
     $user_defined_template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
@@ -376,7 +380,7 @@ function pagemaster_user_main($args)
     $orderby   = createOrderBy($orderby);
 
     $pubfields = getPubFields($tid);
-            
+
     // Uses the API to get the list of publications
     $result = pnModAPIFunc('pagemaster', 'user', 'pubList',
                            array('tid'                => $tid,
@@ -390,7 +394,7 @@ function pagemaster_user_main($args)
                                  'checkPerm'          => false, // already checked
                                  'handlePluginFields' => $handlePluginFields,
                                  'getApprovalState'   => $getApprovalState));
-    
+
     // Assign the data to the output
     $render->assign('tid', $tid);
     $render->assign('publist', $result['publist']);

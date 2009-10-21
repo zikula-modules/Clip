@@ -14,19 +14,19 @@ function pagemaster_operation_createPub(&$obj, $params)
     // set the online value if set
     $obj['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
 
-	// find a new pid
+    // find a new pid
     $maxpid = DBUtil::selectFieldMax($obj['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
-	$obj['core_pid'] = $maxpid + 1;
+    $obj['core_pid'] = $maxpid + 1;
 
     // assign the author
-	$obj['core_author'] = pnUserGetVar('uid');
+    $obj['core_author'] = pnUserGetVar('uid');
 
-	// save the object
-	$obj = DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id');
+    // save the object
+    $obj = DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id');
 
-	// let know that an item was created
-	pnModCallHooks('item', 'create', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
+    // let know that an item was created
+    pnModCallHooks('item', 'create', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
 
-	// return the created item
-	return $obj;
+    // return the created item
+    return $obj;
 }

@@ -61,6 +61,7 @@ function pagemaster_userapi_editPub($args)
     }
 
     $data = array_merge($data, $ret);
+
     return $data;
 }
 
@@ -101,8 +102,16 @@ function pagemaster_userapi_getId($args)
         return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'pid')));
     }
 
+    // build the where clause
+    $where[] = 'pm_pid = '.$args['pid'];
+    if (!SecurityUtil::checkPermission('pagemaster:input:', "$args[tid]:$args[pid]:", ACCESS_ADMIN)) {
+        $where[] = 'pm_online = 1';
+    }
+    $where = implode(' AND ', $where);
+
     $tablename = 'pagemaster_pubdata'.$args['tid'];
-    return DBUtil::selectField($tablename, 'id', 'pm_online = 1 AND pm_pid = '.$args['pid']);
+
+    return DBUtil::selectField($tablename, 'id', $where);
 }
 
 /**
@@ -158,7 +167,7 @@ function pagemaster_userapi_getPub($args)
     $uid = pnUserGetVar('uid');
     $where = '';
 
-    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) )
+    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN))
     {
         if (!empty($uid) && $pubtype['enableeditown'] == 1) {
             $where .= ' ( pm_author = '.$uid.' OR pm_online = 1 )';
@@ -353,7 +362,7 @@ function pagemaster_userapi_pubList($args)
     $fu = & new FilterUtil('pagemaster',$tablename,$filter_args);
     
     if (isset($args['filter']) && !empty($args['filter'])) {
-	$fu->setFilter($args['filter']);
+        $fu->setFilter($args['filter']);
     } elseif (!empty($pubtype['defaultfilter'])) {
         $fu->setFilter($pubtype['defaultfilter']);
     }
@@ -385,7 +394,7 @@ function pagemaster_userapi_pubList($args)
     }
    if ($args['countmode'] <> 'just') {
         if (isset($joinInfo)) {
-	     $publist = DBUtil::selectExpandedObjectArray($tablename, $joinInfo, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
+            $publist = DBUtil::selectExpandedObjectArray($tablename, $joinInfo, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
         } else {
             $publist = DBUtil::selectObjectArray($tablename, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
         }

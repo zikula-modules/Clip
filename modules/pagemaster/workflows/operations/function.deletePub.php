@@ -14,10 +14,10 @@ function pagemaster_operation_deletePub(&$obj, $params)
     if (PmWorkflowUtil::deleteWorkflow($obj)) {
         // let know that the item was deleted
         pnModCallHooks('item', 'delete', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
-	    return array('core_online' => 0, 'deleted' => 1);
+        return array('core_online' => 0, 'deleted' => 1);
 
-	// false otherwise
+    // false otherwise
     } else {
-	    return false;
-	}
+        return false;
+    }
 }

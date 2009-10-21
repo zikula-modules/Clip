@@ -160,7 +160,8 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
 
                 ';
 
-    foreach ($pubdata as $key => $pubfield) {
+    foreach ($pubdata as $key => $pubfield)
+    {
         $template_code_add = '';
         $template_code_fielddesc = '';
 
@@ -235,7 +236,7 @@ function pagemasterGetPluginsOptionList()
                     $plugin = getPlugin($pluginclass);
                     $plugins[] = array (
                         'plugin' => $plugin,
-                		'class' => $pluginclass    
+                        'class' => $pluginclass    
                     );
                 }
             }
@@ -300,7 +301,7 @@ function getTidFromTablename($tablename)
 
 function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
 {
-	if (!empty($orderby)) {
+    if (!empty($orderby)) {
         $orderby_arr = explode(',', $orderby);
         $orderby_new = '';
 
@@ -380,10 +381,10 @@ function getPubFields($tid, $orderBy = '')
 function getPubType($tid)
 {
     static $pubtype_arr;
-    if (empty($pubtype_arr[$tid]))
+
+    if (empty($pubtype_arr[$tid])) {
         $pubtype_arr[$tid] = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    }
+
     return $pubtype_arr[$tid];
 }
-
-
-

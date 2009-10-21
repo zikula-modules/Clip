@@ -21,17 +21,20 @@
  */
 function smarty_function_get_workflow_state($params, &$smarty)
 {
-    $tid                = $params['tid'];
-    $id                 = $params['id'];
-    if (!$tid)
-    return 'Required parameter [tid] not provided in smarty_function_get_workflow_state';
+    $tid = $params['tid'];
+    $id  = $params['id'];
 
-    if (!$id)
-    return 'Required parameter [id] not provided in smarty_function_get_workflow_state';
+    if (!$tid) {
+        return 'Required parameter [tid] not provided in smarty_function_get_workflow_state';
+    }
+
+    if (!$id) {
+        return 'Required parameter [id] not provided in smarty_function_get_workflow_state';
+    }
 
     $tablename = 'pagemaster_pubdata'.$tid;
     $pub['id'] = $id;
-    
+
     PmWorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
 
     if ($params['assign']) {

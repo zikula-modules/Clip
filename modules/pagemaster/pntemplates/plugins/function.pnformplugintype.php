@@ -50,8 +50,7 @@ class pnFormPluginType extends pnFormDropdownList
             $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
             $plugin = getPlugin($this->selectedValue);
             if (method_exists($plugin, 'getTypeHtml'))
-            {    
-                echo 1;
+            {
                 if (method_exists($plugin, 'getSaveTypeDataFunc')) {
                     $script .= $plugin->getSaveTypeDataFunc($this);
                 } else {

@@ -39,7 +39,6 @@ function smarty_function_category_browser($params, &$smarty)
     $cache             = isset($params['cache']) ? $params['cache'] : false;
     $cache_count       = isset($params['cache_count']) ? $params['cache_count'] : true;
 
-
     $filter = FormUtil::getPassedValue('filter');
     $filter_arr = explode(',', $filter);
     $lang = pnUserGetLang();
@@ -54,28 +53,29 @@ function smarty_function_category_browser($params, &$smarty)
 
     $cacheid = $tid . '-' . $field;
     $render  = pnRender::getInstance('pagemaster',$cache, $cacheid);
-    
-    if ($cache){
-        if ( $render->is_cached($template,$cacheid)) {
+
+    if ($cache) {
+        if ($render->is_cached($template,$cacheid)) {
             return $render->fetch($template,$cacheid);
         }
     }
-    
+
     Loader::loadClass('CategoryUtil');
 
     $result = null;
-    
+
     $pubfields = getPubFields($tid);
     $id = $pubfields[$field]['typedata'];
-    
+
     $cats = CategoryUtil::getSubCategories($id);
 
     if ($cats) {
         if ($count) {
             // get it only once
             $pubtype = getPubType($tid);
-            if (function_exists('apc_fetch') && $cache_count)
-  		$count_arr_old = $count_arr = apc_fetch('cat_browser_count_'.$tid);
+            if (function_exists('apc_fetch') && $cache_count) {
+                $count_arr_old = $count_arr = apc_fetch('cat_browser_count_'.$tid);
+            }
         }
         $one_selected = false;
 
@@ -139,32 +139,33 @@ function smarty_function_category_browser($params, &$smarty)
                                       'filter' => $new_filter));
             }
             if ($count) {
-	         if (isset($count_arr[$filter_act]))
-			$v['count'] = $count_arr[$filter_act];
-		  else{
-                	$pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
-                                       array('tid'                => $tid,
-                                             'countmode'          => 'just',
-                                             'filter'             => $filter_act,
-                                             'checkPerm'          => false,
-                                             'pubfields'          => $pubfields,
-                                             'pubtype'            => $pubtype,
-                                             'handlePluginFields' => false));
-			$count_arr[$filter_act] = $v['count'] = $pubarr['pubcount'];
-		  }
+                if (isset($count_arr[$filter_act])) {
+                    $v['count'] = $count_arr[$filter_act];
+                } else {
+                    $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
+                                           array('tid'                => $tid,
+                                                 'countmode'          => 'just',
+                                                 'filter'             => $filter_act,
+                                                 'checkPerm'          => false,
+                                                 'pubfields'          => $pubfields,
+                                                 'pubtype'            => $pubtype,
+                                                 'handlePluginFields' => false));
+                    $count_arr[$filter_act] = $v['count'] = $pubarr['pubcount'];
+                }
             }
 
             $v['depth'] = $depth;
             $v['url'] = $url;
             $v['fullTitle'] = $v['display_name'][$lang];
             $cat_arr[] = $v;
-            }
+        }
     } else {
         return "No category for id [$id] in smarty_function_category_browser";
     }
 
-    if (function_exists('apc_store') && $count && $cache_count && $count_arr_old <> $count_arr)
-    	apc_store('cat_browser_count_'.$tid, $count_arr, 3600);
+    if (function_exists('apc_store') && $count && $cache_count && $count_arr_old <> $count_arr) {
+        apc_store('cat_browser_count_'.$tid, $count_arr, 3600);
+    }
 
     $render->assign('cats', $cat_arr);
 
