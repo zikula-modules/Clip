@@ -171,7 +171,7 @@ function pagemaster_userapi_getPub($args)
     $uid = pnUserGetVar('uid');
     $where = '';
 
-    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN))
+   if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN))
     {
         if (!empty($uid) && $pubtype['enableeditown'] == 1) {
             $where .= ' ( pm_author = '.$uid.' OR pm_online = 1 )';
@@ -182,18 +182,20 @@ function pagemaster_userapi_getPub($args)
         $where .= ' AND (pm_language = \'\' OR pm_language = \''.pnUserGetLang().'\')';
         $where .= ' AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)';
         $where .= ' AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)';
-    } else {
-        $where .= ' 1=1 ';
-    }
 
-    if (empty($args['id'])) {
-        $where .= ' AND pm_pid = '.$args['pid'];
+        if (empty($args['id'])) {
+            $where .= ' AND pm_pid = '.$args['pid'];
+        } else {
+            $where .= ' AND pm_id = '.$args['id'];
+        }
     } else {
-        $where .= ' AND pm_id = '.$args['id'];
+        if (empty($args['id'])) {
+            $prefix = pnConfigGetVar('prefix');
+            $where .= " pm_pid = ".$args['pid']." AND pm_id = (SELECT MAX(pm_id) FROM {$prefix}_pagemaster_pubdata$tid WHERE pm_pid = ".$args['pid'].")";
+        } else {
+            $where .= ' pm_id = '.$args['id'];
+        }
     }
-
-    // Get the publication list with the defined criteria
-    $publist = DBUtil::selectObjectArray($tablename, $where);
 
     // Handle the plugins data if needed
     if ($handlePluginFields){
