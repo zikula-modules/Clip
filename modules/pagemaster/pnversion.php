@@ -13,7 +13,7 @@ $dom = ZLanguage::getModuleDomain('pagemaster');
 $modversion['name']           = 'pagemaster';
 
 // Version (10 chars or less):
-$modversion['version']        = '0.3.2';
+$modversion['version']        = '0.3.3';
 $modversion['description']    = __('Content Module like pagesetter');
 $modversion['displayname']    = 'pagemaster';
 
@@ -37,6 +37,10 @@ $modversion['securityschema'] = array(
 
 // Module depedencies
 $modversion['dependencies'] = array(
+                                    array('modname'    => 'Workflow',
+                                          'minversion' => '1.0',
+                                          'maxversion' => '',
+                                          'status'     => PNMODULE_DEPENDENCY_REQUIRED),
                                     array('modname'    => 'scribite',
                                           'minversion' => '2.0',
                                           'maxversion' => '',
