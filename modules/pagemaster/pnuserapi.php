@@ -22,14 +22,15 @@ Loader::includeOnce('modules/pagemaster/common.php');
  */
 function pagemaster_userapi_editPub($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!isset($args['data'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'data')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'data', $dom));
     }
     if (!isset($args['commandName'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'commandName')).' - '._PAGEMASTER_WORKFLOW_ACTIONCN);
+        return LogUtil::registerError(__f('Missing argument [%s]', 'commandName', $dom).' - '.__('commandName has to be a valid workflow action for the currenct state', $dom));
     }
 
-    include_once('includes/pnForm.php');    
+    include_once('includes/pnForm.php');
     $commandName = $args['commandName'];
     $data        = $args['data'];
     $tid         = $data['tid'];
@@ -57,7 +58,7 @@ function pagemaster_userapi_editPub($args)
 
     $ret = PmWorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
     if (empty($ret)) {
-        return LogUtil::registerError(_PAGEMASTER_WORKFLOW_ACTIONERROR);
+        return LogUtil::registerError(__('Workflow action error', $dom));
     }
 
     $data = array_merge($data, $ret);
@@ -74,11 +75,12 @@ function pagemaster_userapi_editPub($args)
  */
 function pagemaster_userapi_getPid($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!isset($args['tid'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
     if (!isset($args['id'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'id', $dom));
     }
 
     $tablename = 'pagemaster_pubdata'.$args['tid'];
@@ -95,11 +97,12 @@ function pagemaster_userapi_getPid($args)
  */
 function pagemaster_userapi_getId($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!isset($args['tid']) || !is_numeric($args['tid'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
     if (!isset($args['pid']) || !is_numeric($args['pid'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'pid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'pid', $dom));
     }
 
     // build the where clause
@@ -127,12 +130,13 @@ function pagemaster_userapi_getId($args)
  */
 function pagemaster_userapi_getPub($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     // Validation of essential parameters
     if (!isset($args['tid'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
     if (!isset($args['id']) && !isset($args['pid'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'id | pid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'id | pid', $dom));
     }
 
     // Defaults
@@ -149,7 +153,7 @@ function pagemaster_userapi_getPub($args)
         $pubtype = getPubType($tid);
         // Validate the result
         if ($pubtype === false) {
-            return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+            return LogUtil::registerError(__f('No such %s found.', 'tid', $dom));
         }
     }
 
@@ -158,7 +162,7 @@ function pagemaster_userapi_getPub($args)
         $pubfields = getPubFields($tid);
         // Validate the result
         if ($pubfields === false) {
-            return LogUtil::registerError(_PAGEMASTER_NOPUBFIELDSFOUND);
+            return LogUtil::registerError(__('No publication fields found', $dom));
         }
     }
 
@@ -204,13 +208,13 @@ function pagemaster_userapi_getPub($args)
     $pubdata['core_title'] = $pubdata[$core_title];
 
     if (count($publist) == 0) {
-        return LogUtil::registerError(_PAGEMASTER_NOPUBLICATIONSFOUND);
+        return LogUtil::registerError(__('No publications found', $dom));
     } elseif (count($publist) > 1) {
-        return LogUtil::registerError(_PAGEMASTER_TOOMANYPUBS);
+        return LogUtil::registerError(__('Too many pubs found', $dom));
     }
 
     if ($checkPerm && !SecurityUtil::checkPermission('pagemaster:full:', "$tid:$publist[0][core_pid]:", ACCESS_READ)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
 
     if ($getApprovalState) {
@@ -234,8 +238,9 @@ function pagemaster_userapi_getPub($args)
  */
 function pagemaster_userapi_pubList($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!isset($args['tid'])) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
 
     $tid = $args['tid'];
@@ -243,7 +248,7 @@ function pagemaster_userapi_pubList($args)
     // validate the passed tid
     $pntables = pnDBGetTables();
     if (!isset($pntables['pagemaster_pubdata'.$tid])) {
-        return LogUtil::registerError(pnML('_NOSUCHITEMFOUND', array('i' => 'tid')));
+        return LogUtil::registerError(__f('No such %s found.', 'tid', $dom));
     }
     unset($pntables);
 
@@ -251,10 +256,10 @@ function pagemaster_userapi_pubList($args)
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
     $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
     $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
-    
+
     // permission check
     if ($checkPerm && !SecurityUtil::checkPermission('pagemaster:list:', "$tid::", ACCESS_READ)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
 
     // Optional arguments.
@@ -313,10 +318,10 @@ function pagemaster_userapi_pubList($args)
         Loader::LoadClass("FilterUtil");
     else
         Loader::LoadClass("FilterUtil",'modules/pagemaster/classes');
-        
+
 
     foreach ($pubfields as $fieldname => $field) {
-        
+
         $pluginclass = $field['fieldplugin'];
         $plugin = getPlugin($pluginclass);
 
@@ -360,7 +365,7 @@ function pagemaster_userapi_pubList($args)
     $orderby = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
     $tablename = 'pagemaster_pubdata'.$tid;
     $fu = & new FilterUtil('pagemaster',$tablename,$filter_args);
-    
+
     if (isset($args['filter']) && !empty($args['filter'])) {
         $fu->setFilter($args['filter']);
     } elseif (!empty($pubtype['defaultfilter'])) {
@@ -386,9 +391,9 @@ function pagemaster_userapi_pubList($args)
     $where .= ' AND ( '.$tbl_alias.'pm_expiredate >= NOW() OR '.$tbl_alias.'pm_expiredate IS NULL)';
     }else
     {
-        $where .= ' 1=1 '; 
+        $where .= ' 1=1 ';
     }
-    
+
     if (!empty($filter_where['where'])) {
         $where .= ' AND '.$filter_where['where'];
     }
@@ -428,8 +433,9 @@ function pagemaster_userapi_pubList($args)
  */
 function pagemaster_userapi_encodeurl($args)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
-        return LogUtil::registerError (_MODARGSERROR);
+        return LogUtil::registerError (__('Error! Could not do what you wanted. Please check your input.', $dom));
     }
 
     $supportedfunctions = array('main', 'viewpub');

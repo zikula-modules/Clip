@@ -7,7 +7,7 @@
  * @version $Id: PmWorkflowUtil.class.php 25239 2008-12-30 07:17:50Z drak $
  * @license GNU/LGPL - http://www.gnu.org/copyleft/lgpl.html
  * @author Drak, drak@hostnuke.com Feb 2006
- * Inspired by the Pagesetter workflow system by Jørn Wildt
+ * Inspired by the Pagesetter workflow system by Jï¿½rn Wildt
  * @package Zikula_Core
  */
 
@@ -31,6 +31,7 @@ class PmWorkflowUtil
      */
     function loadSchema($schema = 'standard', $module = null)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         static $workflows;
 
         if (!isset($workflows)) {
@@ -50,14 +51,14 @@ class PmWorkflowUtil
         // Get module info
         $modinfo = pnModGetInfo(pnModGetIDFromName($module));
         if (!$modinfo){
-            return pn_exit("$module module specified doesnt exist");
+            return pn_exit(__f("%s module specified doesnt exist", $module, $dom));
         }
 
         $path = PmWorkflowUtil::_findpath("$schema.xml", $module);
         if ($path) {
             $workflowXML = file_get_contents($path);
         } else {
-            return pn_exit("couldnt find workflow file: $path");
+            return pn_exit(__f("couldnt find workflow file: %s", $path, $dom));
         }
 
         // instanciate Workflow Parser
@@ -87,6 +88,7 @@ class PmWorkflowUtil
      */
     function _findpath($file, $module=null)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         // if no module specified, default to calling module
         if (empty($module)) {
             $module = pnModGetName();
@@ -95,7 +97,7 @@ class PmWorkflowUtil
         // Get module info
         $modinfo = pnModGetInfo(pnModGetIDFromName($module));
         if (!$modinfo){
-            return pn_exit("$module module specified doesnt exist");
+            return pn_exit(__f("%s module specified doesnt exist", $module, $dom));
         }
 
         $moduledir = $modinfo['directory'];
@@ -108,12 +110,12 @@ class PmWorkflowUtil
         if ($modinfo['type'] == 2) { // non system module
             $modulepath = "modules/$moduledir";
         } else {
-            return pn_exit("unsupported module type");
+            return pn_exit(__("unsupported module type"));
         }
 
         // ensure module is active
         if (!$modinfo['state'] == 3) {
-            return pn_exit("module is not active");
+            return pn_exit(__("module is not active"));
         }
 
         $themedir = ThemeUtil::getInfo(ThemeUtil::getIDFromName(pnUserGetTheme()));
@@ -151,17 +153,18 @@ class PmWorkflowUtil
      */
     function executeAction($schema, &$obj, $actionID, $table=null, $module=null, $idcolumn='id')
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         if (!isset($obj)) {
-            return pn_exit('$obj not set');
+            return pn_exit(__('$obj not set'));
         }
 
         if (!is_array($obj))
         {
-            return pn_exit('$obj needs to be an array');
+            return pn_exit(__('$obj needs to be an array'));
         }
 
         if (empty($schema)) {
-            return pn_exit('$schema needs to be named');
+            return pn_exit(__('$schema needs to be named'));
         }
 
         if (empty($module)) {
@@ -264,12 +267,13 @@ class PmWorkflowUtil
      */
     function getActionsForObject(&$obj, $dbTable, $idcolumn='id', $module=null)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         if (!is_array($obj)) {
-            return pn_exit('object is not an array');
+            return pn_exit(__('object is not an array'));
         }
 
         if (!isset($dbTable)) {
-            return pn_exit('$dbTable not specified');
+            return pn_exit(__('$dbTable not specified'));
         }
 
         if (empty($module)) {
@@ -302,11 +306,11 @@ class PmWorkflowUtil
         }
 
         if (!isset($dbTable)) {
-            return pn_exit('$dbTable must be specified');
+            return pn_exit(__('$dbTable must be specified'));
         }
 
         if (!isset($obj) || !is_array($obj)) {
-            return pn_exit('$obj must be an array.');
+            return pn_exit(__('$obj must be an array.'));
         }
 
         // get workflow data from DB
@@ -374,6 +378,7 @@ class PmWorkflowUtil
      */
     function permissionCheck($module, $schema, $obj=array(), $permLevel, $actionId=null)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         // translate permission to something meaningful
         $permLevel = PmWorkflowUtil::translatePermission($permLevel);
 
@@ -398,13 +403,13 @@ class PmWorkflowUtil
         // test operation file exists
         $path = PmWorkflowUtil::_findpath("function.{$schema}_permissioncheck.php", $module);
         if (!$path) {
-            return pn_exit("permission check file: function.{$schema}_permissioncheck.php : does not exist");
+            return pn_exit(__f("permission check file: function.%s_permissioncheck.php : does not exist", $schema, $dom));
         }
 
         // load file and test if function exists
         Loader::includeOnce($path);
         if (!function_exists($function)) {
-            return pn_exit("permission check function: $function: not defined");
+            return pn_exit(__f("permission check function: %s: not defined", $function, $dom));
         }
 
         // function must be loaded so now we can execute the function
@@ -553,6 +558,7 @@ class pmWorkflow
      */
     function executeAction($actionID, &$obj, $stateID = 'initial')
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         // check if state exists
         if (!isset($this->actionMap[$stateID])) {
             return pn_exit("STATE: $stateID not found");
@@ -560,14 +566,14 @@ class pmWorkflow
 
         // check the action exists for given state
         if (!isset($this->actionMap[$stateID][$actionID])) {
-            return pn_exit("Action: $actionID not available in this State: $stateID");
+            return pn_exit(__f('Action: %1$s not available in this State: %2$s', array($actionID, $stateID), $dom));
         }
 
         $action = $this->actionMap[$stateID][$actionID];
 
         // permission check
         if (!PmWorkflowUtil::permissionCheck($this->module, $this->id, $obj, $action['permission'], $actionID)) { //hacktheback
-            return pn_exit("no permission to execute action: $action[permission]");
+            return pn_exit("no permission to execute action: %s", $action[permission], $dom);
         }
 
         // commit workflow to object
@@ -614,20 +620,21 @@ class pmWorkflow
      */
     function executeOperation($operation, &$obj, $nextState)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         $operationName = $operation['name'];
         $operationParams = $operation['parameters'];
 
         // test operation file exists
         $path = PmWorkflowUtil::_findpath("operations/function.{$operationName}.php", $this->module);
         if (!$path) {
-            return pn_exit("operation file: $operationName: does not exist");
+            return pn_exit(__f("operation file: %s: does not exist", $operationName, $dom));
         }
 
         // load file and test if function exists
         Loader::includeOnce($path);
         $function = "{$this->module}_operation_{$operationName}";
         if (!function_exists($function)) {
-            return pn_exit("operation function: $function: not defined");
+            return pn_exit(__f("operation function: %s: not defined", $function, $dom));
         }
 
         // execute operation and return result
@@ -691,7 +698,7 @@ class pmWorkflow
  * Workflow Parser
  * Parse workflow schema into associative arrays
  *
- * @author Jørn Wildt
+ * @author Jï¿½rn Wildt
  * @author Drak
  * @package Zikula_Core
  * @subpackage PmWorkflowUtil
@@ -822,7 +829,7 @@ class pmWorkflowParser
                 $stateName = $action['state'];
                 if ($stateName != null) {
                     if (!isset($stateMap[$stateName]))
-                        return LogUtil::registerError("Unknown state name '$stateName' in action '" . $action['title'] ."'");
+                        return LogUtil::registerError(__f('Unknown state name %1$s in action %2$s', array($stateName, $action['title']), $dom));
                 }
 
                 if (isset($action['nextState'])) {
@@ -831,14 +838,14 @@ class pmWorkflowParser
 
                 if (isset($nextStateName)) {
                     if (!isset($stateMap[$nextStateName]))
-                    return LogUtil::registerError("Unknown next-state name '$nextStateName' in action '" . $action['title'] ."'");
+                    return LogUtil::registerError(__f('Unknown next-state name %1$s in action %2$s', array($nextStateName, $action['title']), $dom));
                 }
 
                 foreach($action['operations'] as $operation) {
                     if (isset($operation['parameters']['NEXTSTATE'])) {
                         $stateName = $operation['parameters']['NEXTSTATE'];
                         if (!isset($stateMap[$stateName]))
-                        return LogUtil::registerError("Unknown state name '$stateName' in action '" . $action['title'] . "' -  operation '$operation[name]'");
+                        return LogUtil::registerError(__f('Unknown state name %1$s in action %2$s - operation %3$s', array($stateName, $action['title'], $operation['name']), $dom));
                     }
                 }
             }
@@ -1058,7 +1065,8 @@ class pmWorkflowParser
      */
     function unexpectedXMLError($name, $state)
     {
-        return "Unexpected $name tag in $state state";
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        return __('Unexpected %1$s tag in %2$s state', array($name, $state), $dom);
     }
 
     // Declare object variables;

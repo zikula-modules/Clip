@@ -17,7 +17,8 @@
  */
 function pagemaster_importapi_importps1()
 {
-    // convert list's
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+    //convert list's
     pnModLoad('pagesetter');
 
     function guppy_translate($str) {
@@ -89,7 +90,7 @@ function pagemaster_importapi_importps1()
 
     // save link between list id's and category id's
     pnModSetVar('pagesetter', 'temp_arr', serialize($temp_arr));
-    return LogUtil::registerStatus(_PAGEMASTER_IMPORTFROMPAGESETTER_INSERTSUCCEDED);
+    return LogUtil::registerStatus(__('The import succeded !', $dom));
 }
 
 /**
@@ -100,7 +101,8 @@ function pagemaster_importapi_importps1()
  */
 function pagemaster_importapi_importps2()
 {
-    // convert list's
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+    //convert list's
     pnModLoad('pagesetter');
     pnModDBInfoLoad('Categories');
     include_once('includes/pnForm.php');
@@ -131,10 +133,10 @@ function pagemaster_importapi_importps2()
         $prefix = pnConfigGetVar('prefix');
         $sql = 'SELECT '.$prefix.'_pagesetter_pubfields.pg_id AS "id",
                        '.$prefix.'_pagesetter_pubfields.pg_tid AS "tid",
-                       '.$prefix.'_pagesetter_pubfields.pg_name AS "name", 
+                       '.$prefix.'_pagesetter_pubfields.pg_name AS "name",
                        '.$prefix.'_pagesetter_pubfields.pg_title AS "title",
                        '.$prefix.'_pagesetter_pubfields.pg_description AS "description",
-                       '.$prefix.'_pagesetter_pubfields.pg_type AS "type", 
+                       '.$prefix.'_pagesetter_pubfields.pg_type AS "type",
                        '.$prefix.'_pagesetter_pubfields.pg_typedata AS "typeData",
                        '.$prefix.'_pagesetter_pubfields.pg_istitle AS "isTitle",
                        '.$prefix.'_pagesetter_pubfields.pg_ispageable AS "isPageable",
@@ -221,9 +223,10 @@ function pagemaster_importapi_importps2()
 
             } elseif ($pubfield['type']  == 'latlng' ) {
                 $datafield['fieldplugin'] = 'pmformlatlnginput';
+            }
 
-            } elseif (is_numeric($pubfield['type']) && $pubfield['type'] > 100) {
-                // has to be a list
+            elseif (is_numeric($pubfield['type']) && $pubfield['type'] > 100) {
+                //has to be a list
                 $datafield['fieldplugin'] = 'pmformlistinput';
                 $pubfield['type'] = $pubfield['type'] -100;
                 $list = DBUtil::selectObjectArray('pagesetter_lists', 'pg_id = '.$pubfield['type']);
@@ -245,7 +248,7 @@ function pagemaster_importapi_importps2()
         }
     }
 
-    return LogUtil::registerStatus(_PAGEMASTER_IMPORTFROMPAGESETTER_INSERTSUCCEDED);
+    return LogUtil::registerStatus(__('The import succeded !', $dom));
 }
 
 /**
@@ -256,7 +259,8 @@ function pagemaster_importapi_importps2()
  */
 function pagemaster_importapi_importps3()
 {
-    // create tables
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+    //create tables
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
     foreach ($pubtypes as $pubtype) {
@@ -266,7 +270,7 @@ function pagemaster_importapi_importps3()
         }
     }
 
-    return LogUtil :: registerStatus(_PAGEMASTER_IMPORTFROMPAGESETTER_INSERTSUCCEDED);
+    return LogUtil :: registerStatus(__('The import succeded !', $dom));
 }
 
 /**
@@ -277,6 +281,7 @@ function pagemaster_importapi_importps3()
  */
 function pagemaster_importapi_importps4()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     pnModLoad('pagesetter');
     pnModDBInfoLoad('Workflow');
 
@@ -284,6 +289,7 @@ function pagemaster_importapi_importps4()
     Loader::loadClassFromModule('Categories', 'Category');
 
     $temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
+
 
     $pntable = &pnDBGetTables();
     $pubheader_table = $pntable['pagesetter_pubheader'];
@@ -427,5 +433,5 @@ function pagemaster_importapi_importps4()
         $upd_result = DBUtil::executeSQL($sql);
     }
 
-    return LogUtil::registerStatus(_PAGEMASTER_IMPORTFROMPAGESETTER_INSERTSUCCEDED);
+    return LogUtil::registerStatus(__('The import succeded !', $dom));
 }

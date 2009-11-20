@@ -11,6 +11,7 @@
 //update pn_pagemaster_pubfields set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1)
 function pagemaster_init()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     // create table
     if (!DBUtil::createTable('pagemaster_pubfields')) {
         return false;
@@ -19,7 +20,7 @@ function pagemaster_init()
     if (!DBUtil::createTable('pagemaster_pubtypes')) {
         return false;
     }
-    
+
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
 
@@ -47,7 +48,8 @@ function pagemaster_init()
 
 function pagemaster_upgrade($from_version)
 {
-    switch ($from_version) {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+    echo $from_version;
 
     case '0.1' :
         // add the urltitle field to the pubtypes table
@@ -56,7 +58,7 @@ function pagemaster_upgrade($from_version)
         }
         // create the index
         if (!DBUtil::createIndex('urltitle', 'pagemaster_pubtypes', array('urltitle'))) {
-            return LogUtil::registerError(_CREATEINDEXFAILED);
+            return LogUtil::registerError(__('Error! Index creation failed.', $dom));
         }
         // update the urltitle field of each existing pubtype
         $types = DBUtil::selectObjectArray('pagemaster_pubtypes');
@@ -65,7 +67,7 @@ function pagemaster_upgrade($from_version)
                 $types[$k]['urltitle'] = DataUtil::formatPermalink($types[$k]['title']);
             }
             if (!DBUtil::updateObjectArray($types, 'pagemaster_pubtypes', 'tid')) {
-                return LogUtil::registerError(_UPDATEFAILED);
+                return LogUtil::registerError(__('Error! Update attempt failed.', $dom));
             }
         }
         return pagemaster_upgrade('0.2');
@@ -95,7 +97,7 @@ function pagemaster_upgrade($from_version)
             }
             $sql = "UPDATE {$tables['pagemaster_pubdata'.$tid]} SET pm_author = pm_cr_uid WHERE pm_author = '0'";
             if (!DBUtil::executeSQL($sql)) {
-                return LogUtil::registerError(_UPDATETABLEFAILED);
+                return LogUtil::registerError(__('Error! Table update failed.', $dom));
             }
         }
 
@@ -163,7 +165,7 @@ function pagemaster_upgrade($from_version)
             }
             // update the publications data
             if (!DBUtil::updateObjectArray($fieldsdata, 'pagemaster_pubdata'.$tid)) {
-                return LogUtil::registerError(_UPDATETABLEFAILED);
+                return LogUtil::registerError(__('Error! Table update failed.', $dom));
             }
         }
 
@@ -171,7 +173,7 @@ function pagemaster_upgrade($from_version)
         $tables = pnDBGetTables();
         $sql = "UPDATE {$tables['pagemaster_pubfields']} set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1)";
         if (!DBUtil::executeSQL($sql)) {
-            return LogUtil::registerError(_UPDATETABLEFAILED);
+            return LogUtil::registerError(__('Error! Table update failed.', $dom));
         }
     }
 
@@ -180,6 +182,7 @@ function pagemaster_upgrade($from_version)
 
 function pagemaster_delete()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
     foreach ($pubtypes as $pubtype) {
         DBUtil::dropTable('pagemaster_pubdata'.$pubtype['tid']);

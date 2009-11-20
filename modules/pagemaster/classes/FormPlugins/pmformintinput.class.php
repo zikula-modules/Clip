@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformintinput.php');
 class pmformintinput extends pnFormIntInput
 {
     var $columnDef = 'I (9,0)';
-    var $title =     _PAGEMASTER_PLUGIN_INTEGER;
+    var $title =     'Integer Value';
 
     function getFilename()
     {

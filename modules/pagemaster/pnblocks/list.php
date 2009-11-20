@@ -133,7 +133,7 @@ function pagemaster_listblock_modify($blockinfo)
 
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCK_LIST_PUBTYPE);
+    $row[] = $output->Text(__('Publication type', $dom));
     $row[] = $output->FormSelectMultiple('tid', $pubTypes);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
@@ -145,7 +145,7 @@ function pagemaster_listblock_modify($blockinfo)
     // Add filter
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCK_LIST_FILTER);
+    $row[] = $output->Text(__('Filter string', $dom));
     $row[] = $output->FormText('filters', $vars['filters']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
@@ -157,7 +157,7 @@ function pagemaster_listblock_modify($blockinfo)
     // Add order by
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCK_LIST_ORDERBY);
+    $row[] = $output->Text(__('Order by', $dom));
     $row[] = $output->FormText('orderBy', $vars['orderBy']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
@@ -170,7 +170,7 @@ function pagemaster_listblock_modify($blockinfo)
     // Add cachelifetime
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCK_LIST_CACHELIFETIME);
+    $row[] = $output->Text(__('Cache lifetime', $dom));
     $row[] = $output->FormText('cachelifetime', $vars['cachelifetime']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
@@ -182,7 +182,7 @@ function pagemaster_listblock_modify($blockinfo)
     // Add no. of publications
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCK_LIST_SHOWCOUNT);
+    $row[] = $output->Text(__('Number of items', $dom));
     $row[] = $output->FormText('listCount', $vars['listCount']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
@@ -194,7 +194,7 @@ function pagemaster_listblock_modify($blockinfo)
     // Add no. of publications offset
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCK_LIST_SHOWOFFSET);
+    $row[] = $output->Text(__('Starting from', $dom));
     $row[] = $output->FormText('listOffset', $vars['listOffset']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 
@@ -206,7 +206,7 @@ function pagemaster_listblock_modify($blockinfo)
     // Add template
     $row = array ();
     $output->SetOutputMode(_PNH_RETURNOUTPUT);
-    $row[] = $output->Text(_PMBLOCK_LIST_TEMPLATE);
+    $row[] = $output->Text(__('Template', $dom));
     $row[] = $output->FormText('template', $vars['template']);
     $output->SetOutputMode(_PNH_KEEPOUTPUT);
 

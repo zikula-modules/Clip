@@ -15,7 +15,18 @@ require_once('system/pnForm/plugins/function.pnformtextinput.php');
 class pmformtextinput extends pnFormTextInput
 {
     var $columnDef = 'X';
-    var $title     = _PAGEMASTER_PLUGIN_TEXT;
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('Text');
+    }
+
+    function pmformtextinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {
@@ -47,7 +58,7 @@ class pmformtextinput extends pnFormTextInput
                                      } else {
                                          $(\'typedata\').value = 0;
                                      }
-                                 } 
+                                 }
                                  closeTypeData();
                              }';
         return $saveTypeDataFunc;
@@ -55,6 +66,7 @@ class pmformtextinput extends pnFormTextInput
 
     static function getTypeHtml($field, $render)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         if (isset($render->_tpl_vars['typedata']) && $render->_tpl_vars['typedata'] == 1) {
             $checked = 'checked="checked"';
         } else {
@@ -63,9 +75,9 @@ class pmformtextinput extends pnFormTextInput
 
         $html = '<div class="pn-formrow">';
         if (pnModAvailable('scribite')) {
-            $html .= '<label for="pmplugin_usescribite">'._PAGEMASTER_USESCRIBITE.':</label><input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />';
+            $html .= '<label for="pmplugin_usescribite">'.__('Use Scribite!', $dom).':</label><input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />';
         } else {
-            $html .= _PAGEMASTER_SCRIBITETIP;
+            $html .= __('Install Scribite! if you want to use it in this text field', $dom);
         }
         $html .= '</div>';
 

@@ -15,8 +15,19 @@ require_once('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
 class pmformmulticheckinput extends pnFormCategoryCheckboxList
 {
     var $columnDef   = 'C(512)';
-    var $title       = _PAGEMASTER_PLUGIN_MULTICHECK;
+    var $title;
     var $filterClass = 'pmMultiList';
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('MultiCheckbox List');
+    }
+
+    function pmformmulticheckinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {
@@ -89,6 +100,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
 
     static function getTypeHtml($field)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
@@ -97,7 +109,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
         $html = '<div class="pn-formrow">
-                 <label for="pmplugin_checklist">'._CATEGORY.':</label><select id="pmplugin_checklist" name="pmplugin_checklist">';
+                 <label for="pmplugin_checklist">'.__('Category', $dom).':</label><select id="pmplugin_checklist" name="pmplugin_checklist">';
 
         foreach ($cats as $cat) {
             $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';

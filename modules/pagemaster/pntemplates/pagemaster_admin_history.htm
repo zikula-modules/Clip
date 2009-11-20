@@ -3,22 +3,22 @@
 <!--[include file='pagemaster_admin_header.htm']-->
 
 <div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='clock.gif' set='icons/large' alt='_MODIFYCONFIG' altml=true]--></div>
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='clock.gif' set='icons/large' __alt='Settings' ]--></div>
 
-<h2><!--[pnml name='_PAGEMASTER_HISTORY']--></h2>
+<h2><!--[gt text='History']--></h2>
 
 <!--[pmadminsubmenu tid=$core_tid]-->
 
 <table class="pn-admintable">
   <thead>
   <tr>
-    <th><!--[pnml name='_PAGEMASTER_PID']--></th>
-    <th><!--[pnml name='_TITLE']--></th>
-    <th><!--[pnml name='_PAGEMASTER_REVISION']--></th>
-    <th><!--[pnml name='_STATE']--></th>
-    <th><!--[pnml name='_PAGEMASTER_AUTHOR']--></th>
-    <th><!--[pnml name='_PAGEMASTER_ONLINE']--></th>
-    <th><!--[pnml name='_PAGEMASTER_INDEPOT']--></th>
+    <th><!--[gt text='PID']--></th>
+    <th><!--[gt text='Title']--></th>
+    <th><!--[gt text='Revision']--></th>
+    <th><!--[gt text='State']--></th>
+    <th><!--[gt text='Author']--></th>
+    <th><!--[gt text='Online']--></th>
+    <th><!--[gt text='In depot']--></th>
   </tr>
   </thead>
   <tbody>
@@ -33,7 +33,7 @@
 	  <td><!--[$pubitem.core_indepot]--></td>
 	</tr>
   <!--[foreachelse]-->
-    <tr><td colspan="7"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
+    <tr><td colspan="7"><!--[gt text='No items found.']--></td></tr>
   <!--[/foreach]-->
   </tbody>
 </table>

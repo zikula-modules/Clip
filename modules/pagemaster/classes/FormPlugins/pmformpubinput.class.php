@@ -15,7 +15,18 @@ require_once('system/pnForm/plugins/function.pnformdropdownlist.php');
 class pmformpubinput extends pnFormDropdownList
 {
     var $columnDef = 'I';
-    var $title     = _PAGEMASTER_PLUGIN_PUBLICATION;
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('Publication');
+    }
+
+    function pmformpubinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {
@@ -68,7 +79,7 @@ class pmformpubinput extends pnFormDropdownList
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pmplugin_pubtid\')+\';\'+$F(\'pmplugin_pubfilter\')+\';\'+$F(\'pmplugin_pubjoin\')+\';\'+$F(\'pmplugin_pubjoinfields\')+\';\'+$F(\'pmplugin_puborderbyfield\');  
+                                 $(\'typedata\').value = $F(\'pmplugin_pubtid\')+\';\'+$F(\'pmplugin_pubfilter\')+\';\'+$F(\'pmplugin_pubjoin\')+\';\'+$F(\'pmplugin_pubjoinfields\')+\';\'+$F(\'pmplugin_puborderbyfield\');
                                  closeTypeData();
                              }';
 
@@ -77,6 +88,7 @@ class pmformpubinput extends pnFormDropdownList
 
     static function getTypeHtml($field, $render)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         $vars = explode(';', $render->_tpl_vars['typedata']);
 
         $tid         = $vars[0];
@@ -94,9 +106,7 @@ class pmformpubinput extends pnFormDropdownList
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
         $html = '<div class="pn-formrow">
-                   <label for="pmplugin_pubtid">'._PAGEMASTER_PUBLICATION.':</label><br />
-                   <select id="pmplugin_pubtid" name="pmplugin_pubtid">';
-
+                 <label for="pmplugin_pubtid">'.__('Publication', $dom).':</label><br /><select id="pmplugin_pubtid" name="pmplugin_pubtid">';
         foreach ($pubtypes as $pubtype) {
             if ($pubtype['tid'] == $tid) {
                 $selected = 'selected="selected"';
@@ -105,26 +115,20 @@ class pmformpubinput extends pnFormDropdownList
             }
             $html .= '<option value="'.$pubtype['tid'].'" '.$selected.' >'.$pubtype['title'].'</option>';
         }
-
-        $html .= '  </select>
-                  </div>
-                  <div class="pn-formrow">
-                    <label for="pmplugin_pubfilter">'._PAGEMASTER_PUBFILTER.':</label><br />
-                    <input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$filter.'" />
-                  </div>
-                  <div class="pn-formrow">
-                    <label for="pmplugin_pubjoin">'._PAGEMASTER_PUBJOIN.':</label>
-                    <input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.$checked.' />
-                  </div>
-                  <div class="pn-formrow">
-                    <label for="pmplugin_pubjoinfields">'._PAGEMASTER_PUBJOINFIELDS.':</label><br />
-                    <input type="text" id="pmplugin_pubjoinfields" name="pmplugin_pubjoinfields" value="'.$join_fields.'" >
-                  </div>
-                  <div class="pn-formrow">
-                    <label for="pmplugin_puborderbyfield">'._PAGEMASTER_PUBORDERBY.':</label><br />
-                    <input type="text" id="pmplugin_puborderbyfield" name="pmplugin_puborderbyfield" value="'.$orderby_field.'" >
+        $html .= '</select>
                   </div>';
-
+        $html .= '<div class="pn-formrow">
+                  <label for="pmplugin_pubfilter">'.__('Filter', $dom).':</label><br /><input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$filter.'" />
+                 </div>';
+        $html .= '<div class="pn-formrow">
+                  <label for="pmplugin_pubjoin">'.__('Join', $dom).':</label><input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.$checked.' />
+                 </div>';
+        $html .= '<div class="pn-formrow">
+                  <label for="pmplugin_pubjoinfields">'.__('Join fields (fieldname:alias,fieldname:alias..)', $dom).':</label><br /><input type="text" id="pmplugin_pubjoinfields" name="pmplugin_pubjoinfields" value="'.$join_fields.'" >
+                 </div>';
+        $html .= '<div class="pn-formrow">
+                  <label for="pmplugin_puborderbyfield">'.__('Orderby field', $dom).':</label><br /><input type="text" id="pmplugin_puborderbyfield" name="pmplugin_puborderbyfield" value="'.$orderby_field.'" >
+                 </div>';
         return $html;
     }
 }

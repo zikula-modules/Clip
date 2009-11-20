@@ -15,7 +15,7 @@ require_once('system/pnForm/plugins/function.pnformcheckbox.php');
 class pmformcheckboxinput extends pnFormCheckbox
 {
     var $columnDef = 'I(4)';
-    var $title     = _PAGEMASTER_PLUGIN_CHECKBOX;
+    var $title     = 'Checkbox';
 
     function getFilename()
     {

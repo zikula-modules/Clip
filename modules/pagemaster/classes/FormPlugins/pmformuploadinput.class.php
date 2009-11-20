@@ -15,8 +15,19 @@ require_once('system/pnForm/plugins/function.pnformuploadinput.php');
 class pmformuploadinput extends pnFormUploadInput
 {
     var $columnDef = 'C(512)';
-    var $title     = _PAGEMASTER_PLUGIN_UPLOAD;
+    var $title;
     var $upl_arr;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->title = __('File Upload');
+    }
+
+    function pmformuploadinput()
+    {
+        $this->__construct();
+    }
 
     function getFilename()
     {
@@ -47,7 +58,7 @@ class pmformuploadinput extends pnFormUploadInput
             $arrTypeData = @unserialize($data);
 
             if (!is_array($arrTypeData)) {
-                return LogUtil::registerError('pmformuploadinput: '._PAGEMASTER_STOREDDATAINVALID);
+                return LogUtil::registerError('pmformuploadinput: '.__('Stored data is invalid', $dom));
             }
 
             $url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
@@ -79,6 +90,7 @@ class pmformuploadinput extends pnFormUploadInput
             // if it's not a new pub get the old upload
             $old_upload = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
         }
+
 
         if (!empty($data['name'])) {
             $uploadpath = pnModGetVar('pagemaster', 'uploadpath');

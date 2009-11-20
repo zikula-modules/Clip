@@ -6,7 +6,7 @@
 	<!--[foreach from=$pubtypes item=pubtype]-->
 	<ul>
 				<input type="checkbox" id="pagemaster<!--[$pubtype.tid]-->" name="search_tid[<!--[$pubtype.tid]-->]" value="1" checked="checked" />
-				<label for="pagemaster<!--[$pubtype.tid]-->"><!--[pnml name=$pubtype.title|cat:"_SEARCH"]--></label>
+				<label for="pagemaster<!--[$pubtype.tid]-->"><!--[gt text="$pubtype.title|cat:"]--></label>
 	</ul>
 	<!--[/foreach]-->
 	

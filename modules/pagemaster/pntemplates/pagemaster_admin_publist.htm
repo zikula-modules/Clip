@@ -29,9 +29,9 @@
 <!--[/if]-->
 
 <div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='folder_documents.gif' set='icons/large' alt='_PAGEMASTER_LIST' altml=true]--></div>
+<div class="pn-adminpageicon"><!--[pnimg modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list' ]--></div>
 
-<h2><!--[pnml name='_PAGEMASTER_LIST']--></h2>
+<h2><!--[gt text='Publications list']--></h2>
 
 <!--[pmadminsubmenu tid=$core_tid]-->
 
@@ -42,33 +42,33 @@
   <tr>
     <th>
     	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_pid]-->">
-    		<!--[pnml name='_PAGEMASTER_PID']-->
+    		<!--[gt text='PID']-->
     	</a>
    	</th>
     <th>
     	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_title]-->">
-    		<!--[pnml name='_TITLE']-->
+    		<!--[gt text='Title']-->
     	</a>
    	</th>
-    <th><!--[pnml name='_PAGEMASTER_REVISION']--></th>
-    <th><!--[pnml name='_STATE']--></th>
+    <th><!--[gt text='Revision']--></th>
+    <th><!--[gt text='State']--></th>
     <th>
     	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_author]-->">
-    		<!--[pnml name='_PAGEMASTER_AUTHOR']-->
+    		<!--[gt text='Author']-->
     	</a>
    	</th>
-    <th><!--[pnml name='_PAGEMASTER_ONLINE']--></th>
+    <th><!--[gt text='Online']--></th>
     <th>
     	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_cr_date]-->">
-    		<!--[pnml name='_PAGEMASTER_CREATIONDATE']-->
+    		<!--[gt text='Creation date']-->
     	</a>
    	</th>
     <th>
     	<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_lu_date]-->">
-    		<!--[pnml name='_PAGEMASTER_UPDDATE']-->
+    		<!--[gt text='Update date']-->
     	</a>
    	</th>
-    <th><!--[pnml name='_OPTIONS']--></th>
+    <th><!--[gt text='Options']--></th>
   </tr>
   </thead>
   <tbody>
@@ -85,13 +85,13 @@
 	  <td><!--[$pubitem.cr_date]--></td>
 	  <td><!--[$pubitem.lu_date]--></td>
 	  <td>
-        <a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='xedit.gif' set='icons/extrasmall' alt='_EDIT' altml=true]--></a>&nbsp; 
-	    <a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' alt='_VIEW' altml=true]--></a>&nbsp; 
-	    <a href="<!--[pnmodurl modname='pagemaster' type='admin' func='history' tid=$core_tid pid=$pubitem.core_pid]-->"><!--[pnimg modname='core' src='clock.gif' set='icons/extrasmall' alt='_PAGEMASTER_HISTORY' altml=true]--></a>
+        <a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='xedit.gif' set='icons/extrasmall' __alt='Edit' ]--></a>&nbsp; 
+	    <a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' __alt='View' ]--></a>&nbsp; 
+	    <a href="<!--[pnmodurl modname='pagemaster' type='admin' func='history' tid=$core_tid pid=$pubitem.core_pid]-->"><!--[pnimg modname='core' src='clock.gif' set='icons/extrasmall' __alt='History' ]--></a>
       </td>
 	</tr>
   <!--[foreachelse]-->
-    <tr><td colspan="9"><!--[pnml name='_NOITEMSFOUND']--></td></tr>
+    <tr><td colspan="9"><!--[gt text='No items found.']--></td></tr>
   <!--[/foreach]-->
   </tbody>
 </table>

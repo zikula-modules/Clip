@@ -85,6 +85,7 @@ class pagemaster_admin_pubtypesHandler
      */
     function initialize(&$render)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         $tid = FormUtil::getPassedValue('tid');
 
         if (!empty($tid) &&  is_numeric($tid)) {
@@ -96,35 +97,35 @@ class pagemaster_admin_pubtypesHandler
                 'value' => ''
             );
             $pubarr[] = array (
-                'text'  => _PAGEMASTER_CREATIONDATE,
+                'text'  => __('Creation date', $dom),
                 'value' => 'cr_date'
             );
             $pubarr[] = array (
-                'text'  => _PAGEMASTER_UPDDATE,
+                'text'  => __('Update date', $dom),
                 'value' => 'lu_date'
             );
             $pubarr[] = array (
-                'text'  => _PAGEMASTER_CREATOR,
+                'text'  => __('Creator', $dom),
                 'value' => 'core_author'
             );
             $pubarr[] = array (
-                'text'  => _PAGEMASTER_UPDATER,
+                'text'  => __('Updater', $dom),
                 'value' => 'lu_uid'
             );
            $pubarr[] = array (
-                'text'  => _PAGEMASTER_PUBLISHDATE,
+                'text'  => __('Publish Date', $dom),
                 'value' => 'pm_publishdate'
             );
             $pubarr[] = array (
-                'text'  => _PAGEMASTER_EXPIREDATE,
+                'text'  => __('Expire Date', $dom),
                 'value' => 'pm_expiredate'
             );
             $pubarr[] = array (
-                'text'  => _PAGEMASTER_LANGUAGE,
+                'text'  => __('English', $dom),
                 'value' => 'pm_language'
             );
             $pubarr[] = array (
-                'text'  => _PAGEMASTER_HITCOUNT,
+                'text'  => __('Number of Clicks', $dom),
                 'value' => 'pm_hitcount'
             );
 
@@ -154,6 +155,7 @@ class pagemaster_admin_pubtypesHandler
      */
     function handleCommand(&$render, &$args)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         $data = $render->pnFormGetValues();
         $data['tid'] = $this->tid;
 
@@ -161,9 +163,9 @@ class pagemaster_admin_pubtypesHandler
             $ret = pnModAPIFunc('pagemaster', 'admin', 'updatetabledef',
                                 array('tid' => $data['tid']));
             if (!$ret) {
-                return LogUtil::registerError(_UPDATEFAILED);
+                return LogUtil::registerError(__('Error! Update attempt failed.', $dom));
             }
-            LogUtil::registerStatus(_UPDATESUCCEDED);
+            LogUtil::registerStatus(__('Done! Item updated.', $dom));
 
         } elseif ($args['commandName'] == 'create') {
             if (!$render->pnFormIsValid()) {
@@ -186,13 +188,13 @@ class pagemaster_admin_pubtypesHandler
                 DBUtil::updateObject($data, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
             }
             // report a successful update
-            LogUtil::registerStatus(_UPDATESUCCEDED);
+            LogUtil::registerStatus(__('Done! Item updated.', $dom));
 
         } elseif ($args['commandName'] == 'delete') {
             DBUtil::deleteObject(null, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
             DBUtil::deleteObject(null, 'pagemaster_pubfields', 'pm_tid='.$this->tid);
             DBUtil::dropTable('pagemaster_pubdata' . $this->tid);
-            LogUtil::registerStatus(_DELETESUCCEDED);
+            LogUtil::registerStatus(__('Done! Item deleted.', $dom));
         }
 
         return $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'main'));
@@ -213,12 +215,13 @@ class pagemaster_admin_pubfieldsHandler
      */
     function initialize(&$render)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         $tid = FormUtil::getPassedValue('tid');
         $id  = FormUtil::getPassedValue('id');
 
         // validation check
         if (empty($tid) || !is_numeric($tid)) {
-            LogUtil::registerError(pnML('_PAGEMASTER_VARNOTSET', array('var' => 'tid')));
+            LogUtil::registerError(__f('%s not set', 'tid', $dom));
             $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'main'));
         }
         $this->tid = $tid;
@@ -240,6 +243,7 @@ class pagemaster_admin_pubfieldsHandler
      */
     function handleCommand(&$render, &$args)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
         $data = $render->pnFormGetValues();
 
         $data['id']        = $this->id;
@@ -249,7 +253,7 @@ class pagemaster_admin_pubfieldsHandler
 
         if ($args['commandName'] == 'delete') {
             DBUtil::deleteObject($data, 'pagemaster_pubfields');
-            LogUtil::registerStatus(_DELETESUCCEDED);
+            LogUtil::registerStatus(__('Done! Item deleted.', $dom));
 
         } elseif ($args['commandName'] == 'create') {
             if (!$render->pnFormIsValid()) {
@@ -268,7 +272,7 @@ class pagemaster_admin_pubfieldsHandler
 
             $nameUnique = DBUtil::selectFieldMax('pagemaster_pubfields', 'id', 'COUNT', $where);
             if ($nameUnique > 0) {
-                return LogUtil::registerError(_PAGEMASTER_NAMEUNIQUE);
+                return LogUtil::registerError(__('Name has to be unique', $dom));
             }
 
             if (empty($this->id)) {
@@ -278,11 +282,11 @@ class pagemaster_admin_pubfieldsHandler
                     $data['istitle'] = 1;
                 }
                 DBUtil::insertObject($data, 'pagemaster_pubfields');
-                LogUtil::registerStatus(_CREATESUCCEDED);
+                LogUtil::registerStatus(__('Done! Item created.', $dom));
 
             } else {
                 DBUtil::updateObject($data, 'pagemaster_pubfields', 'pm_id = '.$this->id);
-                LogUtil::registerStatus(_UPDATESUCCEDED);
+                LogUtil::registerStatus(__('Done! Item updated.', $dom));
             }
         }
 
@@ -298,8 +302,9 @@ class pagemaster_admin_pubfieldsHandler
  */
 function pagemaster_admin_create_tid()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
 
     $render = FormUtil::newpnForm('pagemaster');
@@ -308,8 +313,9 @@ function pagemaster_admin_create_tid()
 
 function pagemaster_admin_main()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
 
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
@@ -322,8 +328,9 @@ function pagemaster_admin_main()
 
 function pagemaster_admin_editpubfields()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
 
     $render = FormUtil::newpnForm('pagemaster');
@@ -333,6 +340,7 @@ function pagemaster_admin_editpubfields()
 
 function pagemaster_admin_publist($args=array())
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     $tid          = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $startnum     = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
     $itemsperpage = isset($args['itemsperpage']) ? $args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', 50);
@@ -340,16 +348,16 @@ function pagemaster_admin_publist($args=array())
 
     // Validate the essential parameyers
     if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
 
     if (!SecurityUtil::checkPermission('pagemaster::', $tid.'::', ACCESS_EDIT)) {
-        return LogUtil :: registerError(_NOT_AUTHORIZED);
+        return LogUtil :: registerError(__('No permission', $dom));
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
     if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
-        return LogUtil::registerError(_PAGEMASTER_TID_MUSTCREATETABLE, null, pnModURL('pagemaster', 'admin', 'create_tid', array('tid' => $tid), null, 'pn-maincontent'));
+        return LogUtil::registerError(__('The table of this publication type seems not to exist. Please, update the DB Tables at the bottom of this form.', $dom), null, pnModURL('pagemaster', 'admin', 'create_tid', array('tid' => $tid), null, 'pn-maincontent'));
     }
 
     $old_orderby = $orderby;
@@ -385,18 +393,19 @@ function pagemaster_admin_publist($args=array())
 
 function pagemaster_admin_history()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     $pid = FormUtil::getPassedValue('pid');
     $tid = FormUtil::getPassedValue('tid');
 
     if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
     if (empty($pid) || !is_numeric($pid)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'pid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'pid', $dom));
     }
 
     if (!SecurityUtil::checkPermission('pagemaster::', "$tid:$pid:", ACCESS_ADMIN)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
@@ -417,8 +426,9 @@ function pagemaster_admin_history()
 
 function pagemaster_admin_modifyconfig()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
     $render = FormUtil::newpnForm('pagemaster');
     return $render->pnFormExecute('pagemaster_admin_modifyconfig.htm', new pagemaster_admin_modifyconfigHandler());
@@ -426,18 +436,19 @@ function pagemaster_admin_modifyconfig()
 
 function pagemaster_admin_showcode()
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED);
+        return LogUtil::registerError(__('No permission', $dom));
     }
 
     $tid  = FormUtil::getPassedValue('tid');
     $mode = FormUtil::getPassedValue('mode');
 
     if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'tid')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
     if (empty($mode)) {
-        return LogUtil::registerError(pnML('_PAGEMASTER_MISSINGARG', array('arg' => 'mode')));
+        return LogUtil::registerError(__f('Missing argument [%s]', 'mode', $dom));
     }
 
     $pubtype   = getPubType($tid);
@@ -452,7 +463,7 @@ function pagemaster_admin_showcode()
         $tablename = 'pagemaster_pubdata'.$tid;
         $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
         if ($id <= 0) {
-            return LogUtil::registerError(_PAGEMASTER_ATLEASTONE);
+            return LogUtil::registerError(__('There has to be at least one publication, to generate the template code.', $dom));
         }
         $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
                                 array('tid' => $tid,

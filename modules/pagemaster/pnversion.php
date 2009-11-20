@@ -8,13 +8,13 @@
  * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
-
+$dom = ZLanguage::getModuleDomain('pagemaster');
 // Module name:
 $modversion['name']           = 'pagemaster';
 
 // Version (10 chars or less):
-$modversion['version']        = '0.3.1';
-$modversion['description']    = 'Content Module like pagesetter';
+$modversion['version']        = '0.3.2';
+$modversion['description']    = __('Content Module like pagesetter');
 $modversion['displayname']    = 'pagemaster';
 
 // Used by the Credits module:
@@ -37,12 +37,12 @@ $modversion['securityschema'] = array(
 
 // Module depedencies
 $modversion['dependencies'] = array(
-                                    array('modname'    => 'scribite', 
-                                          'minversion' => '2.0', 
-                                          'maxversion' => '', 
+                                    array('modname'    => 'scribite',
+                                          'minversion' => '2.0',
+                                          'maxversion' => '',
                                           'status'     => PNMODULE_DEPENDENCY_RECOMMENDED),
-                                    array('modname'    => 'Thumbnail', 
-                                          'minversion' => '1.1', 
-                                          'maxversion' => '', 
+                                    array('modname'    => 'Thumbnail',
+                                          'minversion' => '1.1',
+                                          'maxversion' => '',
                                           'status'     => PNMODULE_DEPENDENCY_RECOMMENDED)
                                    );
