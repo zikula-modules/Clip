@@ -114,6 +114,7 @@ function pagemaster_importapi_importps2()
         $datatype['tid']             = $pubtype['id'];
         $datatype['title']           = $pubtype['title'];
         $datatype['filename']        = $pubtype['filename'];
+        $datatype['filename']        = $pubtype['filename'];
         $datatype['formname']        = $pubtype['formname'];
         $datatype['description']     = $pubtype['description'];
         $datatype['itemsperpage']    = $pubtype['listCount'];

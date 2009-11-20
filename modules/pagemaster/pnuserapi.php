@@ -452,17 +452,27 @@ function pagemaster_userapi_encodeurl($args)
         $pubTypeTitle = DataUtil::formatPermalink(DBUtil::selectFieldByID('pagemaster_pubtypes', 'urltitle', $tid, 'tid'));
     }
 
-    if (isset($args['args']['pid']) || isset($args['args']['id'])) {
-        $tables =& pnDBGetTables();
-        $column = $tables['pagemaster_pubfields_column'];
-        $where  = "$column[tid] = $tid AND $column[istitle] = 1";
-        $titlefield = DBUtil::selectField('pagemaster_pubfields', 'name', $where);
+   if (isset($args['args']['pid']) || isset($args['args']['id'])) {
+        $prefix = pnConfigGetVar('prefix');
 
-        $pid = (isset($args['args']['pid'])) ? $args['args']['pid'] : $args['args']['id'];
-        unset($args['args']['id']);
-        unset($args['args']['pid']);
+        if (isset($args['args']['pid'])) {
+            $pid = $args['args']['pid'];
+            unset($args['args']['pid']);
+        } elseif (isset($args['args']['id'])) {
+            $id = $args['args']['id'];
+            unset($args['args']['id']);
+            $result = DBUtil::executeSQL("SELECT pm_pid FROM {$prefix}_pagemaster_pubdata{$tid} WHERE pm_id = {$id}");
+            $pid = $result->fields[0];
+        } else {
+            return false;
+        }
 
-        $pubTitle = DBUtil::selectFieldById('pagemaster_pubdata'.$tid, $titlefield, $pid, 'core_pid');
+        $result = DBUtil::executeSQL("SELECT pm_id FROM {$prefix}_pagemaster_pubfields WHERE pm_tid = {$tid} AND pm_istitle = 1");
+        $titlefieldid = $result->fields[0];
+
+        $result = DBUtil::executeSQL("SELECT pm_{$titlefieldid} FROM {$prefix}_pagemaster_pubdata{$tid} WHERE pm_pid = '{$pid}'");
+        $pubTitle = $result->fields[0];
+
         $pubTitle = '/'.DataUtil::formatPermalink($pubTitle).'.'.$pid;
     }
 
