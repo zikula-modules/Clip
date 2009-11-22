@@ -30,37 +30,37 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // pubtype form link
     if ($func != 'create_tid') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'create_tid', array('tid' => $tid)).'">'.pnML('_PAGEMASTER_PUBTYPE_FORM').'</a> | ';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'create_tid', array('tid' => $tid)).'">'.__('Pubtype form').'</a> | ';
     } else {
-        $output .= '<a>'.pnML('_PAGEMASTER_PUBTYPE_FORM').'</a> | ';
+        $output .= '<a>'.__('Pubtype form').'</a> | ';
     }
 
     // pub list link
     if ($func != 'publist') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'publist', array('tid' => $tid)).'">'.pnML('_PAGEMASTER_LIST').'</a> | ';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publications list').'</a> | ';
     } else {
-        $output .= '<a>'.pnML('_PAGEMASTER_LIST').'</a> | ';
+        $output .= '<a>'.__('Publications list').'</a> | ';
     }
 
     // edit fields link
     if ($func != 'editpubfields') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'editpubfields', array('tid' => $tid)).'">'.pnML('_PAGEMASTER_EDIT_FIELDS').'</a> | ';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'editpubfields', array('tid' => $tid)).'">'.__('Publication fields').'</a> | ';
     } elseif ($params['id'] != '') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'editpubfields', array('tid' => $tid)).'#newpubfield">'.pnML('_PAGEMASTER_EDIT_FIELDS').'</a> | ';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'editpubfields', array('tid' => $tid)).'#newpubfield">'.__('Publication fields').'</a> | ';
     } else {
-        $output .= '<a href="#newpubfield">'.pnML('_PAGEMASTER_EDIT_FIELDS').'</a> | ';
+        $output .= '<a href="#newpubfield">'.__('Publication fields').'</a> | ';
     }
 
     // new article link
-    $output .= '<a href="'.pnModURL('pagemaster', 'user', 'pubedit', array('tid' => $tid)).'">'.pnML('_PAGEMASTER_PUBTYPE_NEWARTICLE').'</a> | ';
+    $output .= '<a href="'.pnModURL('pagemaster', 'user', 'pubedit', array('tid' => $tid)).'">'.__('New Publication').'</a> | ';
 
     // show code links
     if ($func == 'showcode') {
-        $output .= ($params['mode'] == 'input' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . pnML('_PAGEMASTER_PUBTYPE_SHOWINPUTCODE').'</a> | ';
-        $output .= ($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . pnML('_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODELIST').'</a> | ';
-        $output .= ($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . pnML('_PAGEMASTER_PUBTYPE_SHOWOUTPUTCODEFULL').'</a>';
+        $output .= ($params['mode'] == 'input' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Show Form Code').'</a> | ';
+        $output .= ($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('Show PubList Code').'</a> | ';
+        $output .= ($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Show PubView Code').'</a>';
     } else {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.pnML('_PAGEMASTER_PUBTYPE_SHOWINPUTCODE').'</a>';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Show Form Code').'</a>';
     }
 
     $output .= '</span></div>';

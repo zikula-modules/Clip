@@ -2,20 +2,20 @@
 
 <!--[include file='pagemaster_admin_header.htm']-->
 
-<div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='configure.gif' set='icons/large' __alt='Settings' ]--></div>
+<div class="z-admincontainer">
+<div class="z-adminpageicon"><!--[pnimg modname='core' src='configure.gif' set='icons/large' __alt='Settings' ]--></div>
 
 <h2><!--[gt text='Settings']--></h2>
 
-<div class="pn-menu pm-menu">
-	<span class="pn-menuitem-title"><a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps']-->"><!--[gt text='Import Pagesetter Publications']--></a></span>
+<div class="z-menu pm-menu">
+	<span class="z-menuitem-title"><a href="<!--[pnmodurl modname='pagemaster' type='import' func='importps']-->"><!--[gt text='Import Pagesetter Publications']--></a></span>
 </div>
 
 <!--[pnform]-->
 <!--[pnformvalidationsummary]-->
 <fieldset>
 	<legend><!--[gt text='Upload path']--></legend>
-	<div class="pn-adminformrow">
+	<div class="z-formrow">
 		<!--[pnformlabel for='uploadpath' text='Upload path']-->:
   		<!--[pnformtextinput maxLength='200' id='uploadpath']-->
 		<!--[if $updirstatus < 3]-->
@@ -33,14 +33,14 @@
 		<!--[/if]-->
 		<span style="color: <!--[$updir_msgcolor]-->;"><!--[gt text="$updir_message"]--></span>
 	</div>
-	<div class="pn-adminformrow">
+	<div class="z-formrow">
 		<span class="pmhelp"><!--[gt text='Path where uploaded files will be stored, relative to the site root (%s)' tag1=$siteroot]--></span><br />
 	</div>
 </fieldset>
 
-<div class="pn-adminformrow pn-adminformbuttons">
-	<!--[pnformbutton commandName='modify' text='Save']-->
-	<!--[pnformbutton commandName='cancel' text='Cancel']-->
+<div class="z-formbuttons">
+	<!--[pnformbutton id="modify" commandName="modify" text="Save"]-->
+	<!--[pnformbutton id="cancel" commandName="cancel" text="Cancel"]-->
 </div>
 <!--[/pnform]-->
 

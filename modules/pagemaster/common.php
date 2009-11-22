@@ -112,22 +112,22 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction=
     }
     $template_code .= '
                             <tr>
-                                <td><!--[pnformlabel for=\'core_publishdate\' text=\'_PAGEMASTER_PUBLISHDATE\']-->:</td>
+                                <td><!--[pnformlabel for=\'core_publishdate\' text=\'' . __('Publish Date') . '\']-->:</td>
                                 <td><!--[pnformdateinput id=\'core_publishdate\' includeTime=\'1\']--></td>
                             </tr>
 
                             <tr>
-                                <td><!--[pnformlabel for=\'core_expiredate\' text=\'_PAGEMASTER_EXPIREDATE\']-->:</td>
+                                <td><!--[pnformlabel for=\'core_expiredate\' text=\'' . __('Expire Date') . '\']-->:</td>
                                 <td><!--[pnformdateinput id=\'core_expiredate\' includeTime=\'1\']--></td>
                             </tr>
 
                             <tr>
-                                <td><!--[pnformlabel for=\'core_language\' text=\'_LANGUAGE\']-->:</td>
+                                <td><!--[pnformlabel for=\'core_language\' text=\'' . __('Language') . '\']-->:</td>
                                 <td><!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']--></td>
                             </tr>
 
                             <tr>
-                                <td><!--[pnformlabel for=\'core_showinlist\' text=\'_PAGEMASTER_SHOWINLIST\']-->:</td>
+                                <td><!--[pnformlabel for=\'core_showinlist\' text=\'' . __('Show in List') . '\']-->:</td>
                                 <td><!--[pnformcheckbox id=\'core_showinlist\' checked=\'checked\']--></td>
                             </tr>
                         </table>
@@ -151,7 +151,7 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
                 <!--[insert name=\'getstatusmsg\']-->
 
                 <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                    <div class="pn-warningmsg"><!--[pnml name=\'_PAGEMASTER_GENERIC_VIEWPUB\' html=1]--></div>
+                    <div class="pn-warningmsg"><!--[gt text=\"This is a generic template. Your can create a customized template (<b>viewpub_{$pubtype_name}.htm</b>) and store it in the the directory <b>/config/templates/pagemaster/input/</b> or within your theme in the <b>/templates/modules/pagemaster/input/</b> subfolder.\"]--></div>
                 <!--[/pnsecauthaction_block]-->
 
                 <h1><!--[pnml name=\'' . $pubtype['title'] . '\']--></h1>

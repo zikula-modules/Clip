@@ -49,15 +49,15 @@ function pagemaster_adminapi_getlinks()
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'main'),
-            'text' => pnML(__('List Publication Types', $dom))
+            'text' => __('List Publication Types', $dom)
         );
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'create_tid'),
-            'text' => pnML(__('Create New Publication Type', $dom))
+            'text' => __('Create New Publication Type', $dom)
         );
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'modifyconfig'),
-            'text' => pnML(__('Settings', $dom))
+            'text' => __('Settings', $dom)
         );
     }
     return $links;
