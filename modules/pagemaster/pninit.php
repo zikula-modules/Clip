@@ -50,7 +50,8 @@ function pagemaster_upgrade($from_version)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
     echo $from_version;
-
+  switch ($oldversion)
+    {
     case '0.1' :
         // add the urltitle field to the pubtypes table
         if (!DBUtil::changeTable('pagemaster_pubtypes')) {
