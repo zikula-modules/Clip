@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
 
 class pmformmulticheckinput extends pnFormCategoryCheckboxList
 {

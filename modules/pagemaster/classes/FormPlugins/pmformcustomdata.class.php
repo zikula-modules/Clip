@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformtextinput.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformtextinput.php');
 
 class pmformcustomdata extends pnFormTextInput
 {

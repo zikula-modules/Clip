@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformurlinput.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformurlinput.php');
 
 class pmformurlinput extends pnFormURLInput
 {

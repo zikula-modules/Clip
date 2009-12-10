@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformdropdownlist.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformdropdownlist.php');
 
 class pmformpubinput extends pnFormDropdownList
 {

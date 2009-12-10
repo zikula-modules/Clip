@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformemailinput.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformemailinput.php');
 
 class pmformemailinput extends pnFormEMailInput
 {

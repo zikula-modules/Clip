@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformuploadinput.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformuploadinput.php');
 
 class pmformuploadinput extends pnFormUploadInput
 {

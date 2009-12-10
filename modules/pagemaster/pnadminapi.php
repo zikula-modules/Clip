@@ -43,7 +43,6 @@ function pagemaster_adminapi_updatetabledef($args)
 function pagemaster_adminapi_getlinks()
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
-    pnModLangLoad('pagemaster', 'admin');
 
     $links = array ();
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {

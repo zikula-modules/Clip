@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformdateinput.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformdateinput.php');
 
 class pmformdateinput extends pnFormDateInput
 {

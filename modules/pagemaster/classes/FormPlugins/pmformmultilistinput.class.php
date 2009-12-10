@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformcategoryselector.php');
 
 class pmformmultilistinput extends pnFormCategorySelector
 {
