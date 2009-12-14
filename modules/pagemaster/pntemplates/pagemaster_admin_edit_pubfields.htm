@@ -27,7 +27,7 @@
 	</li>
 	<!--[foreach from=$pubfields item=pubfield name=pubfields]-->
 	<li id="pubfield_<!--[$pubfield.id]-->" class="<!--[cycle name='pubfieldlist' values='pn-odd,pn-even']--> pn-sortable pn-clearfix moveable">
-		<span id="pubfielddrag_<!--[$pubfield.id]-->" class="smallplace"><!--[gt text="$pubfield.name"]--></span>
+		<span id="pubfielddrag_<!--[$pubfield.id]-->" class="smallplace"><!--[$pubfield.name]--></span>
 		<span class="smallplace"><!--[$pubfield.title]-->&nbsp;</span>
 		<span class="normalplace"><!--[$pubfield.description|truncate:45]-->&nbsp;</span> 
 		<span class="extrasmallplace" style="text-align:center">
