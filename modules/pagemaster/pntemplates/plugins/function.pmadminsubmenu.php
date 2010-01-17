@@ -26,7 +26,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     $func = FormUtil::getPassedValue('func', 'main');
 
     // build the output
-    $output = '<div class="pn-menu pm-menu"><span class="pn-menuitem-title">';
+    $output = '<div class="z-menu pm-menu"><span class="z-menuitem-title">';
 
     // pubtype form link
     if ($func != 'create_tid') {

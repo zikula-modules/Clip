@@ -25,7 +25,7 @@ function pagemaster_init()
     Loader::loadClassFromModule('Categories', 'Category');
 
     $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules');
-    $lang = pnUserGetLang();
+    $lang =ZLanguage::getLanguageCode();
 
     $cat = new PNCategory();
     $cat->setDataField('parent_id', $rootcat['id']);
@@ -71,8 +71,7 @@ function pagemaster_upgrade($from_version)
                 return LogUtil::registerError(__('Error! Update attempt failed.', $dom));
             }
         }
-        return pagemaster_upgrade('0.2');
-
+      
     case '0.2':
         // fix the upload path to a root-relative one
         $uploadpath = pnModGetVar('pagemaster', 'uploadpath');

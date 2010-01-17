@@ -24,7 +24,7 @@ class pmformmsinput extends pnFormTextInput
 
     static function postRead($data, $field)
     {
-        $lang = pnUserGetLang();
+        $lang =ZLanguage::getLanguageCode();
         Loader :: loadClass('CategoryUtil');
         $cat = CategoryUtil :: getCategoryByID($data);
 

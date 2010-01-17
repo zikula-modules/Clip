@@ -15,7 +15,7 @@
 <h3><!--[gt text="Existing Publication fields"]--></h3>
 <div class="z-warningmsg"><!--[gt text="When Publication fields are changed or added you need to update the DB Tables"]--></div>
 <ol id="pubfieldlist">
-	<li id="pubfieldlistheader" class="pubfieldlistheader pn-clearfix">
+	<li id="pubfieldlistheader" class="pubfieldlistheader z-clearfix">
 		<span class="smallplace"><strong><!--[gt text='Name']--></strong></span>
 		<span class="smallplace"><strong><!--[gt text='Title']--></strong></span>
 		<span class="normalplace"><strong><!--[gt text='Description']--></strong></span>
@@ -26,7 +26,7 @@
 		<span class="extrasmallplace"><strong><!--[gt text='Actions']--></strong></span>
 	</li>
 	<!--[foreach from=$pubfields item=pubfield name=pubfields]-->
-	<li id="pubfield_<!--[$pubfield.id]-->" class="<!--[cycle name='pubfieldlist' values='pn-odd,pn-even']--> pn-sortable pn-clearfix moveable">
+	<li id="pubfield_<!--[$pubfield.id]-->" class="<!--[cycle name='pubfieldlist' values='z-odd,z-even']--> z-sortable z-clearfix moveable">
 		<span id="pubfielddrag_<!--[$pubfield.id]-->" class="smallplace"><!--[$pubfield.name]--></span>
 		<span class="smallplace"><!--[$pubfield.title]-->&nbsp;</span>
 		<span class="normalplace"><!--[$pubfield.description|truncate:45]-->&nbsp;</span> 
@@ -83,7 +83,7 @@
 		<tr>
 			<td><!--[pnformlabel for='fieldplugin' text='Fieldtype (Plugin)']-->:</td>
 			<td><!--[pnformplugintype id='fieldplugin']-->
-				<!--[pnformtextinput id='typedata' maxLength='4000']--></td>
+				<!--pnformtextinput id='typedata' maxLength='4000'--></td>
 			<td class="pmhelp"><!--[gt text='Which kind of fieldtype is used. (can be extended by plugins). Detailed informations about the individual plugins can be found in the documentation.']--></td>
 		</tr>
 		<tr>
@@ -121,7 +121,7 @@
 	<p>(*) <!--[gt text="This field is mandatory"]--></p>
 </fieldset>
 
-<div class="pn-adminformrow pn-adminformbuttons">
+<div class="z-formrow z-formbuttons">
 	<!--[pnformbutton commandName='create' text='Save']-->
 	<!--[pnformbutton commandName='delete' text='Delete']-->
 </div>

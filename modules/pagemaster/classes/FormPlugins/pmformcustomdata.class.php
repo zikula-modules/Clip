@@ -210,7 +210,7 @@ class pmformcustomdata extends pnFormTextInput
             $vars = array();
         }
 
-        $html = '<div class="pn-formrow">
+        $html = '<div class="z-formrow">
                  <div>
                    <label for="pmplugin_defaultdata">'.__('Default', $dom).':</label> <input type="text" id="pmplugin_defaultdata" name="pmplugin_defaultdata" value="'.str_replace('"', '&quot;', $configvars[1]).'" />
                  </div>
@@ -219,7 +219,7 @@ class pmformcustomdata extends pnFormTextInput
                  </div>
                  <ul id="pmcustomdata" class="itemlist">
                      <li class="itemlistheader">
-                       <div class="pn-clearfix">
+                       <div class="z-clearfix">
                        <span class="itemlistcell width22">'.__('Type name', $dom).'</span>
                        <span class="itemlistcell width22">'.__('Display name', $dom).'</span>
                        <span class="itemlistcell width22">'.__('API to use', $dom).'</span>
@@ -230,7 +230,7 @@ class pmformcustomdata extends pnFormTextInput
 
         foreach ($vars as $key => $var) {
             $html .= '<li id="listitem_pmcustomdata_'.$key.'" class="listitem_pmcustomdata">
-                        <div class="pn-clearfix">
+                        <div class="z-clearfix">
                         <span class="itemlistcell width22">
                           <input id="itemname_'.$key.'" name="itemname[]" value="'.($var[0] != '~'? $var[0] : '').'" />
                         </span>
@@ -253,7 +253,7 @@ class pmformcustomdata extends pnFormTextInput
         $html .= '</ul>
                   <ul style="display:none">
                       <li id="pmcustomdata_emptyitem">
-                        <div class="pn-clearfix">
+                        <div class="z-clearfix">
                         <span class="itemlistcell width22">
                           <input class="iteminput" id="itemname_" name="dummy[]" />
                         </span>

@@ -65,7 +65,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction=
                       <!--[insert name=\'getstatusmsg\']-->
 
                       <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                          <div class="pn-warningmsg"><!--[pnml name=\'_PAGEMASTER_GENERIC_EDITPUB\' html=1]--></div>
+                          <div class="z-warningmsg"><!--[pnml name=\'_PAGEMASTER_GENERIC_EDITPUB\' html=1]--></div>
                       <!--[/pnsecauthaction_block]-->
 
                       <h1><!--[pnml name=\''. $pubtype['title'] .'\']--></h1>
@@ -151,7 +151,7 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
                 <!--[insert name=\'getstatusmsg\']-->
 
                 <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                    <div class="pn-warningmsg"><!--[gt text=\"This is a generic template. Your can create a customized template (<b>viewpub_{$pubtype_name}.htm</b>) and store it in the the directory <b>/config/templates/pagemaster/input/</b> or within your theme in the <b>/templates/modules/pagemaster/input/</b> subfolder.\"]--></div>
+                    <div class="z-warningmsg"><!--[gt text=\"This is a generic template. Your can create a customized template (<b>viewpub_{$pubtype_name}.htm</b>) and store it in the the directory <b>/config/templates/pagemaster/input/</b> or within your theme in the <b>/templates/modules/pagemaster/input/</b> subfolder.\"]--></div>
                 <!--[/pnsecauthaction_block]-->
 
                 <h1><!--[pnml name=\'' . $pubtype['title'] . '\']--></h1>

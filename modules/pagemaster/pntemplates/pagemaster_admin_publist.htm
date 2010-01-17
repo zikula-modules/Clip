@@ -28,8 +28,8 @@
 	<!--[assign var="orderby_lu_date" value="lu_date"]-->
 <!--[/if]-->
 
-<div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list' ]--></div>
+<div class="z-admincontainer">
+<div class="z-adminpageicon"><!--[pnimg modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list' ]--></div>
 
 <h2><!--[gt text='Publications list']--></h2>
 
@@ -37,7 +37,7 @@
 
 <!--[pager show='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1]-->
 
-<table class="pn-admintable">
+<table class="z-admintable">
   <thead>
   <tr>
     <th>
@@ -73,7 +73,7 @@
   </thead>
   <tbody>
   <!--[foreach from=$publist item=pubitem]-->
-    <tr class="<!--[cycle values='pn-odd,pn-even']-->">
+    <tr class="<!--[cycle values='z-odd,z-even']-->">
       <td><!--[$pubitem.core_pid]--></td>
       <td><!--[$pubitem.$core_title]--></td>
 	  <td><!--[$pubitem.core_revision]--></td>

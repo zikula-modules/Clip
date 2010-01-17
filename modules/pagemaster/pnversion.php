@@ -16,6 +16,7 @@ $modversion['name']           = 'pagemaster';
 $modversion['version']        = '0.3.3';
 $modversion['description']    = __('Content Module like pagesetter');
 $modversion['displayname']    = 'pagemaster';
+$modversion['url']            = __('pagemaster', $dom);
 
 // Used by the Credits module:
 $modversion['credits']        = 'pndocs/credits.txt';

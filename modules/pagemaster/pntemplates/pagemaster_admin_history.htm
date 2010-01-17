@@ -2,14 +2,14 @@
 
 <!--[include file='pagemaster_admin_header.htm']-->
 
-<div class="pn-admincontainer">
-<div class="pn-adminpageicon"><!--[pnimg modname='core' src='clock.gif' set='icons/large' __alt='Settings' ]--></div>
+<div class="z-admincontainer">
+<div class="z-adminpageicon"><!--[pnimg modname='core' src='clock.gif' set='icons/large' __alt='Settings' ]--></div>
 
 <h2><!--[gt text='History']--></h2>
 
 <!--[pmadminsubmenu tid=$core_tid]-->
 
-<table class="pn-admintable">
+<table class="z-admintable">
   <thead>
   <tr>
     <th><!--[gt text='PID']--></th>
@@ -23,7 +23,7 @@
   </thead>
   <tbody>
   <!--[foreach from=$publist item=pubitem]-->
-    <tr class="<!--[cycle values='pn-odd,pn-even']-->">
+    <tr class="<!--[cycle values='z-odd,z-even']-->">
       <td><!--[$pubitem.core_pid]--></td>
       <td><!--[$pubitem.$core_title]--></td>
 	  <td><!--[$pubitem.core_revision]--></td>

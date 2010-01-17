@@ -41,7 +41,7 @@ function smarty_function_category_browser($params, &$smarty)
 
     $filter = FormUtil::getPassedValue('filter');
     $filter_arr = explode(',', $filter);
-    $lang = pnUserGetLang();
+    $lang =ZLanguage::getLanguageCode();
 
     if (!$tid) {
         return 'Required parameter [tid] not provided in smarty_function_category_browser';

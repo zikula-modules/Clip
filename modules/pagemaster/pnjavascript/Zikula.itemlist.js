@@ -19,7 +19,7 @@
  *   <li ... class="itemlistheader">
  *     ...
  *   </li>
- *   <li id="listitem_LISTID_ITEMID" class="listitem_LISTID sortable pn-odd/pn-even">
+ *   <li id="listitem_LISTID_ITEMID" class="listitem_LISTID sortable z-odd/z-even">
  *     ...
  *     <input id="vars_ITEMID_fieldname" name="vars[ITEMID][fieldname]" ... />
  *     <a ...id="buttondelete_LISTID_ITEMID" class="buttondelete">...</a>
@@ -158,12 +158,12 @@ Zikula.itemlist = Class.create({
         lastid = this.lastitemid;
         newitem.id = 'listitem_'+this.id+'_'+lastid;
 
-        if ($(newitem).hasClassName('pn-odd')) {
-            $(newitem).removeClassName('pn-odd');
-            $(newitem).addClassName('pn-even');
+        if ($(newitem).hasClassName('z-odd')) {
+            $(newitem).removeClassName('z-odd');
+            $(newitem).addClassName('z-even');
         } else {
-            $(newitem).removeClassName('pn-even');
-            $(newitem).addClassName('pn-odd');
+            $(newitem).removeClassName('z-even');
+            $(newitem).addClassName('z-odd');
         }
 
         $A(newitem.getElementsByClassName('iteminput')).each(

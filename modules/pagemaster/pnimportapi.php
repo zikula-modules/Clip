@@ -43,7 +43,7 @@ function pagemaster_importapi_importps1()
 
     //$temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
     $temp_arr = array();
-    $lang  = pnUserGetLang();
+    $lang  =ZLanguage::getLanguageCode();
     $lists = DBUtil::selectObjectArray('pagesetter_lists');
     foreach ($lists as $list)
     {

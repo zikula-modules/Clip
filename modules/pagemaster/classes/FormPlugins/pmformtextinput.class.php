@@ -73,7 +73,7 @@ class pmformtextinput extends pnFormTextInput
             $checked = '';
         }
 
-        $html = '<div class="pn-formrow">';
+        $html = '<div class="z-formrow">';
         if (pnModAvailable('scribite')) {
             $html .= '<label for="pmplugin_usescribite">'.__('Use Scribite!', $dom).':</label><input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />';
         } else {

@@ -220,7 +220,7 @@ class pmformimageinput extends pnFormUploadInput
 
     static function getTypeHtml($field, $render)
     {
-        $html = '<div class="pn-formrow">
+        $html = '<div class="z-formrow">
                    <label for="pmplugin_tmpx_px">Thumbnail x:</label>
                    <input type="text" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
                  <br />

@@ -27,7 +27,7 @@ class pmformlistinput extends pnFormCategorySelector
     {
         Loader::loadClass('CategoryUtil');
         $cat = CategoryUtil::getCategoryByID($data);
-        $lang = pnUserGetLang();
+        $lang =ZLanguage::getLanguageCode();
 
         // compatible mode to pagesetter
         $cat['fullTitle'] = (isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name']);
@@ -96,7 +96,7 @@ class pmformlistinput extends pnFormCategorySelector
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
-        $html = '<div class="pn-formrow">
+        $html = '<div class="z-formrow">
                   <label for="pmplugin_categorylist">'.__('Category', $dom).':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         $ak = array_keys($cats);
@@ -116,7 +116,7 @@ class pmformlistinput extends pnFormCategorySelector
         }
 
         $checked = $includeEmptyElement ? 'checked="checked"' : '';
-        $html .= '<div class="pn-formrow">
+        $html .= '<div class="z-formrow">
                     <label for="pmplugin_categoryempty">'.__('Include an empty item?', $dom).'</label> <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
                   </div>';
 

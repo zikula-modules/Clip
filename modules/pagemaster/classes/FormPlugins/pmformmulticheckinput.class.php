@@ -37,7 +37,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     static function postRead($data, $field)
     {
         if (!empty($data) && $data <> '::') {
-            $lang = pnUserGetLang();
+            $lang =ZLanguage::getLanguageCode();
             if (strpos($data, ':') === 0) {
                 $data = substr($data, 1, -1);
             }
@@ -108,7 +108,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
-        $html = '<div class="pn-formrow">
+        $html = '<div class="z-formrow">
                  <label for="pmplugin_checklist">'.__('Category', $dom).':</label><select id="pmplugin_checklist" name="pmplugin_checklist">';
 
         foreach ($cats as $cat) {

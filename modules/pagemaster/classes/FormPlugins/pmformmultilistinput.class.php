@@ -37,7 +37,7 @@ class pmformmultilistinput extends pnFormCategorySelector
     static function postRead($data, $field)
     {
         if (!empty($data) && $data <> '::') {
-            $lang = pnUserGetLang();
+            $lang =ZLanguage::getLanguageCode();
             if (strpos($data, ':') === 0) {
                 $data = substr($data, 1, -1);
             }
@@ -137,10 +137,10 @@ class pmformmultilistinput extends pnFormCategorySelector
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 
-        $html = '<div class="pn-formrow">
+        $html = '<div class="z-formrow">
                      <label for="pmplugin_multisize">'.__('Size', $dom).':</label> <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
                  </div>
-                 <div class="pn-formrow">
+                 <div class="z-formrow">
                  <label for="pmplugin_categorylist">'.__('Category', $dom).':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         foreach ($cats as $cat) {

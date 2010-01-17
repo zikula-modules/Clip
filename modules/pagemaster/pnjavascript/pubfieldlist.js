@@ -14,7 +14,7 @@ function pubfieldlistsortinit() {
 	Sortable.create('pubfieldlist',
 		{ 
 	    	dropOnEmpty: true,
-	        only: 'pn-sortable',
+	        only: 'z-sortable',
 	        constraint: false,
 	        containment:['pubfieldlist'],
 	        onUpdate: pubfieldlistorderchanged

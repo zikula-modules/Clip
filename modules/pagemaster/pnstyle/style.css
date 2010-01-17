@@ -9,7 +9,7 @@
  * @subpackage  pagemaster
  */
 
-div.pn-menu {
+div.z-menu {
     width: 100%;
 	text-align: left;
 }
@@ -17,7 +17,7 @@ div.pm-menu {
     margin-bottom: 1.5em;
 }
 
-.pn-menuitem-title {
+.z-menuitem-title {
 	width: 99%;
 	background: url(../../../system/Admin/pnimages/button_bkg.gif) repeat;
     line-height: 23px;
