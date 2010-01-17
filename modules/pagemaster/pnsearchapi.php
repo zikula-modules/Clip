@@ -83,11 +83,11 @@ function pagemaster_searchapi_search($args)
             }
 
             if (is_array($where_arr)) {
-                $where = search_construct_where($args, $where_arr);
+                $where  = search_construct_where($args, $where_arr);
                 $where .= ' AND pm_showinlist = 1 ';
                 $where .= ' AND pm_online = 1 ';
                 $where .= ' AND pm_indepot = 0 ';
-                $where .= " AND (pm_language = '' OR pm_language = '".pnUserGetLang()."')";
+                $where .= " AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCode() ."')";
                 $where .= ' AND (pm_publishdate <= NOW() OR pm_publishdate is null) AND (pm_expiredate >= NOW() OR pm_expiredate is null)';
 
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
