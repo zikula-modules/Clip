@@ -3,110 +3,110 @@
 <!--[include file='pagemaster_admin_header.htm']-->
 
 <div class="z-admincontainer">
-<div class="z-adminpageicon"><!--[pnimg modname='core' src='database.gif' set='icons/large' __alt='Create / Edit Publication type' ]--></div>
+	<div class="z-adminpageicon"><!--[pnimg modname='core' src='database.gif' set='icons/large' __alt='Create / Edit Publication type' ]--></div>
 
-<h2><!--[gt text='Create / Edit Publication type']--></h2>
+	<h2><!--[gt text='Create / Edit Publication type']--></h2>
 
-<!--[if isset($tid)]-->
-<!--[pmadminsubmenu tid=$tid]-->
-<!--[/if]-->
-
-<!--[pnform]-->
-<!--[pnformvalidationsummary]-->
-<table cellspacing="1">
-	<tr>
-		<td><!--[pnformlabel for='title' text='Title']-->:</td>
-		<td><!--[pnformtextinput id='title' maxLength='255' mandatory=true]--></td>
-		<td class="pmhelp"><!--[gt text='Title of the publication type (can be a language define)']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='description' text='Description']-->:</td>
-		<td><!--[pnformtextinput id='description' maxLength='255']--></td>
-		<td class="pmhelp"><!--[gt text='Description of the publication type (can be a language define)']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='itemsperpage' text='Items per page']-->:</td>
-		<td><!--[pnformintinput id='itemsperpage' maxLength='255' mandatory=true]--></td>
-		<td class="pmhelp"><!--[gt text='After how many publications the list will be paged. 0 for no paging']--></td>
-	</tr>
-
-	<!--[if isset($pubfields)]-->
-	<tr>
-		<td><!--[pnformlabel for='sortfield1' text='Sort field']-->:</td>
-		<td><!--[pnformdropdownlist items=$pubfields id='sortfield1']--></td>
-		<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='sortdesc1' text='Sort descending']-->:</td>
-		<td><!--[pnformcheckbox id='sortdesc1']--></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='sortfield2' text='Sort field']-->:</td>
-		<td><!--[pnformdropdownlist items=$pubfields id='sortfield2']--></td>
-		<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='sortdesc2' text='Sort descending']-->:</td>
-		<td><!--[pnformcheckbox id='sortdesc2']--></td>
-		<td></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='sortfield3' text='Sort field']-->:</td>
-		<td><!--[pnformdropdownlist items=$pubfields id='sortfield3']--></td>
-		<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='sortdesc3' text='Sort descending']-->:</td>
-		<td><!--[pnformcheckbox id='sortdesc3']--></td>
-		<td></td>
-	</tr>
+	<!--[if isset($tid)]-->
+	<!--[pmadminsubmenu tid=$tid]-->
 	<!--[/if]-->
 
-	<tr>
-		<td><!--[pnformlabel for='defaultfilter' text='Default filter']-->:</td>
-		<td><!--[pnformtextinput id='defaultfilter' maxLength='255']--></td>
-		<td class="pmhelp"><!--[gt text='The filter which is used by default']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='workflow' text='Workflow']-->:</td>
-		<td><!--[pnformdropdownlist id='workflow' items=$pmWorkflows]--></td>
-		<td class="pmhelp"><!--[gt text='You can choose a special workflow for the publications']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='enablerevisions' text='Revision']-->:</td>
-		<td><!--[pnformcheckbox id='enablerevisions']--></td>
-		<td class="pmhelp"><!--[gt text='Revisioning']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='filename' text='Output template name']-->:</td>
-		<td><!--[pnformtextinput id='filename' maxLength='255']--></td>
-		<td class="pmhelp"><!--[gt text='Name of the output template']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='formname' text='Input template name']-->:</td>
-		<td><!--[pnformtextinput id='formname' maxLength='255']--></td>
-		<td class="pmhelp"><!--[gt text='Name of the template for the formular']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='enableeditown' text='Edit own']-->:</td>
-		<td><!--[pnformcheckbox id='enableeditown']--></td>
-		<td class="pmhelp"><!--[gt text='Allow editing of own publications']--></td>
-	</tr>
-	<tr>
-		<td><!--[pnformlabel for='cachelifetime' text='Caching time']-->:</td>
-		<td><!--[pnformintinput id='cachelifetime' maxLength='6']--></td>
-		<td class="pmhelp"><!--[gt text='How long should the publications be cached. Empty for no cache.']--></td>
-	</tr>
-</table>
+	<!--[pnform]-->
+	<!--[pnformvalidationsummary]-->
+	<table cellspacing="1">
+		<tr>
+			<td><!--[pnformlabel for='title' text='Title']-->:</td>
+			<td><!--[pnformtextinput id='title' maxLength='255' mandatory=true]--></td>
+			<td class="pmhelp"><!--[gt text='Title of the publication type (can be a language define)']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='description' text='Description']-->:</td>
+			<td><!--[pnformtextinput id='description' maxLength='255']--></td>
+			<td class="pmhelp"><!--[gt text='Description of the publication type (can be a language define)']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='itemsperpage' text='Items per page']-->:</td>
+			<td><!--[pnformintinput id='itemsperpage' maxLength='255' mandatory=true]--></td>
+			<td class="pmhelp"><!--[gt text='After how many publications the list will be paged. 0 for no paging']--></td>
+		</tr>
 
-<p>(*) <!--[gt text='This field is mandatory']--></p>
+		<!--[if isset($pubfields)]-->
+		<tr>
+			<td><!--[pnformlabel for='sortfield1' text='Sort field']-->:</td>
+			<td><!--[pnformdropdownlist items=$pubfields id='sortfield1']--></td>
+			<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='sortdesc1' text='Sort descending']-->:</td>
+			<td><!--[pnformcheckbox id='sortdesc1']--></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='sortfield2' text='Sort field']-->:</td>
+			<td><!--[pnformdropdownlist items=$pubfields id='sortfield2']--></td>
+			<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='sortdesc2' text='Sort descending']-->:</td>
+			<td><!--[pnformcheckbox id='sortdesc2']--></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='sortfield3' text='Sort field']-->:</td>
+			<td><!--[pnformdropdownlist items=$pubfields id='sortfield3']--></td>
+			<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='sortdesc3' text='Sort descending']-->:</td>
+			<td><!--[pnformcheckbox id='sortdesc3']--></td>
+			<td></td>
+		</tr>
+		<!--[/if]-->
 
-<div class="z-formrow z-formbuttons">
-	<!--[pnformbutton commandName='create' text='Save']-->
-	<!--[pnformbutton commandName='delete' text='Delete']-->
-	<!--[if isset($pubfields)]--><!--[pnformbutton commandName='updatetabledef' text='Update DB tables']--><!--[/if]-->
-</div>
+		<tr>
+			<td><!--[pnformlabel for='defaultfilter' text='Default filter']-->:</td>
+			<td><!--[pnformtextinput id='defaultfilter' maxLength='255']--></td>
+			<td class="pmhelp"><!--[gt text='The filter which is used by default']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='workflow' text='Workflow']-->:</td>
+			<td><!--[pnformdropdownlist id='workflow' items=$pmWorkflows]--></td>
+			<td class="pmhelp"><!--[gt text='You can choose a special workflow for the publications']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='enablerevisions' text='Revision']-->:</td>
+			<td><!--[pnformcheckbox id='enablerevisions']--></td>
+			<td class="pmhelp"><!--[gt text='Revisioning']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='filename' text='Output template name']-->:</td>
+			<td><!--[pnformtextinput id='filename' maxLength='255']--></td>
+			<td class="pmhelp"><!--[gt text='Name of the output template']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='formname' text='Input template name']-->:</td>
+			<td><!--[pnformtextinput id='formname' maxLength='255']--></td>
+			<td class="pmhelp"><!--[gt text='Name of the template for the formular']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='enableeditown' text='Edit own']-->:</td>
+			<td><!--[pnformcheckbox id='enableeditown']--></td>
+			<td class="pmhelp"><!--[gt text='Allow editing of own publications']--></td>
+		</tr>
+		<tr>
+			<td><!--[pnformlabel for='cachelifetime' text='Caching time']-->:</td>
+			<td><!--[pnformintinput id='cachelifetime' maxLength='6']--></td>
+			<td class="pmhelp"><!--[gt text='How long should the publications be cached. Empty for no cache.']--></td>
+		</tr>
+	</table>
 
-<!--[/pnform]-->
+	<p>(*) <!--[gt text='This field is mandatory']--></p>
+
+	<div class="z-formrow z-formbuttons">
+		<!--[pnformbutton commandName='create' text='Save']-->
+		<!--[pnformbutton commandName='delete' text='Delete']-->
+		<!--[if isset($pubfields)]--><!--[pnformbutton commandName='updatetabledef' text='Update DB tables']--><!--[/if]-->
+	</div>
+
+	<!--[/pnform]-->
 </div>

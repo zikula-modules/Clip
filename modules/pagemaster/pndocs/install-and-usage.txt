@@ -2,7 +2,7 @@
   INSTALL
 	Install PageMaster as any other module:
 	upload its files in the proper locations
-	(move the pagemaster/pnjavascript/livepipe folder to the ZIkula's /javascript folder)
+	(move the pagemaster/pnjavascript/livepipe folder to the Zikula's /javascript folder)
 	and the usual folder in /modules.
 
 	Go to your Modules Admin Panel and regenerate the list,

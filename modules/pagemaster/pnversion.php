@@ -8,26 +8,25 @@
  * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
+
 $dom = ZLanguage::getModuleDomain('pagemaster');
-// Module name:
+
 $modversion['name']           = 'pagemaster';
-
-// Version (10 chars or less):
-$modversion['version']        = '0.3.3';
-$modversion['description']    = __('Content Module like pagesetter');
-$modversion['displayname']    = 'pagemaster';
+$modversion['displayname']    = __('PageMaster', $dom);
+$modversion['description']    = __('Content Module like pagesetter', $dom);
+//! module name that appears in URL
 $modversion['url']            = __('pagemaster', $dom);
+$modversion['version']        = '0.3.3'; // 10 chars or less
 
-// Used by the Credits module:
 $modversion['credits']        = 'pndocs/credits.txt';
 $modversion['changelog']      = 'pndocs/changelog.txt';
 $modversion['help']           = 'pndocs/help.txt';
 $modversion['license']        = 'pndocs/license.txt';
-$modversion['official']       = 0;
+$modversion['official']       = false;
 $modversion['author']         = 'spax';
 $modversion['contact']        = ' ';
 
-// Module security:
+// Permissions schema
 $modversion['securityschema'] = array(
                                       'pagemaster::'      => '::',
                                       'pagemaster:input:' => 'tid::',

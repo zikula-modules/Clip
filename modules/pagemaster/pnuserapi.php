@@ -13,6 +13,7 @@ Loader::includeOnce('modules/pagemaster/common.php');
 
 /**
  * Edit or creates a new publication
+ *
  * @author kundi
  * @param $args['data'] array of pubfields data
  * @param $args['commandName'] commandName has to be a valid workflow action for the currenct state
@@ -23,6 +24,7 @@ Loader::includeOnce('modules/pagemaster/common.php');
 function pagemaster_userapi_editPub($args)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     if (!isset($args['data'])) {
         return LogUtil::registerError(__f('Missing argument [%s]', 'data', $dom));
     }
@@ -31,10 +33,10 @@ function pagemaster_userapi_editPub($args)
     }
 
     include_once('includes/pnForm.php');
+
     $commandName = $args['commandName'];
     $data        = $args['data'];
     $tid         = $data['tid'];
-
 
     if (!isset ($args['pubfields'])) {
         $pubfields = getPubFields($tid);
@@ -58,7 +60,7 @@ function pagemaster_userapi_editPub($args)
 
     $ret = PmWorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
     if (empty($ret)) {
-        return LogUtil::registerError(__('Workflow action error', $dom));
+        return LogUtil::registerError(__('Workflow action error.', $dom));
     }
 
     $data = array_merge($data, $ret);
@@ -68,6 +70,7 @@ function pagemaster_userapi_editPub($args)
 
 /**
  * Returns pid
+ *
  * @author kundi
  * @param int $args['tid']
  * @param int $args['id']
@@ -76,6 +79,7 @@ function pagemaster_userapi_editPub($args)
 function pagemaster_userapi_getPid($args)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     if (!isset($args['tid'])) {
         return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
@@ -84,12 +88,14 @@ function pagemaster_userapi_getPid($args)
     }
 
     $tablename = 'pagemaster_pubdata'.$args['tid'];
-    $pub = DBUtil::selectObjectByID($tablename, $args['id'], 'id');
+    $pub       = DBUtil::selectObjectByID($tablename, $args['id'], 'id');
+
     return $pub['id'];
 }
 
 /**
  * Returns the ID of the online publication
+ *
  * @author kundi
  * @param int $args['tid']
  * @param int $args['pid']
@@ -98,6 +104,7 @@ function pagemaster_userapi_getPid($args)
 function pagemaster_userapi_getId($args)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     if (!isset($args['tid']) || !is_numeric($args['tid'])) {
         return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
@@ -119,6 +126,7 @@ function pagemaster_userapi_getId($args)
 
 /**
  * Returns a Publication
+ *
  * @author kundi
  * @param int $args['tid']
  * @param int $args['pid']
@@ -131,6 +139,7 @@ function pagemaster_userapi_getId($args)
 function pagemaster_userapi_getPub($args)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     // Validation of essential parameters
     if (!isset($args['tid'])) {
         return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
@@ -153,7 +162,7 @@ function pagemaster_userapi_getPub($args)
         $pubtype = getPubType($tid);
         // Validate the result
         if ($pubtype === false) {
-            return LogUtil::registerError(__f('No such %s found.', 'tid', $dom));
+            return LogUtil::registerError(__('No such publication type found.', $dom));
         }
     }
 
@@ -168,10 +177,10 @@ function pagemaster_userapi_getPub($args)
 
     // build the where clause
     $tablename = 'pagemaster_pubdata'.$tid;
-    $uid = pnUserGetVar('uid');
-    $where = '';
+    $uid       = pnUserGetVar('uid');
+    $where     = '';
 
-   if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN))
+    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN))
     {
         if (!empty($uid) && $pubtype['enableeditown'] == 1) {
             $where .= ' ( pm_author = '.$uid.' OR pm_online = 1 )';
@@ -197,6 +206,8 @@ function pagemaster_userapi_getPub($args)
         }
     }
 
+    $publist = array();
+
     // Handle the plugins data if needed
     if ($handlePluginFields){
         // have to load pnForm, otherwise plugins can not be loaded... TODO
@@ -204,19 +215,19 @@ function pagemaster_userapi_getPub($args)
         $publist = handlePluginFields($publist, $pubfields);
     }
 
+    if (count($publist) == 0) {
+        return LogUtil::registerError(__('No publications found.', $dom));
+    } elseif (count($publist) > 1) {
+        return LogUtil::registerError(__('Too many publications found.', $dom));
+    }
+
     $pubdata = $publist[0];
 
     $core_title = getTitleField($pubfields);
     $pubdata['core_title'] = $pubdata[$core_title];
 
-    if (count($publist) == 0) {
-        return LogUtil::registerError(__('No publications found', $dom));
-    } elseif (count($publist) > 1) {
-        return LogUtil::registerError(__('Too many pubs found', $dom));
-    }
-
-    if ($checkPerm && !SecurityUtil::checkPermission('pagemaster:full:', "$tid:$publist[0][core_pid]:", ACCESS_READ)) {
-        return LogUtil::registerError(__('No permission', $dom));
+    if ($checkPerm && !SecurityUtil::checkPermission('pagemaster:full:', "$tid:$pubdata[core_pid]:", ACCESS_READ)) {
+        return LogUtil::registerPermissionError();
     }
 
     if ($getApprovalState) {
@@ -228,6 +239,7 @@ function pagemaster_userapi_getPub($args)
 
 /**
  * Returns a Publication List
+ *
  * @author kundi
  * @param $args['tid']
  * @param $args['startnum']
@@ -241,6 +253,7 @@ function pagemaster_userapi_getPub($args)
 function pagemaster_userapi_pubList($args)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     if (!isset($args['tid'])) {
         return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
@@ -250,7 +263,7 @@ function pagemaster_userapi_pubList($args)
     // validate the passed tid
     $pntables = pnDBGetTables();
     if (!isset($pntables['pagemaster_pubdata'.$tid])) {
-        return LogUtil::registerError(__f('No such %s found.', 'tid', $dom));
+        return LogUtil::registerError(__('No such publication type found.', $dom));
     }
     unset($pntables);
 
@@ -314,16 +327,17 @@ function pagemaster_userapi_pubList($args)
     } else {
         $orderby = $args['orderby'];
     }
+
     include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
 
-    if (version_compare(PN_VERSION_NUM, '2.0', '>='))
-        Loader::LoadClass("FilterUtil");
-    else
-        Loader::LoadClass("FilterUtil",'modules/pagemaster/classes');
+    if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
+        Loader::LoadClass('FilterUtil');
+    } else {
+        Loader::LoadClass('FilterUtil', 'modules/pagemaster/classes');
+    }
 
-
-    foreach ($pubfields as $fieldname => $field) {
-
+    foreach ($pubfields as $fieldname => $field)
+    {
         $pluginclass = $field['fieldplugin'];
         $plugin = getPlugin($pluginclass);
 
@@ -336,7 +350,7 @@ function pagemaster_userapi_pubList($args)
            if ($field['fieldplugin'] == 'pmformpubinput'){
                 $vars        = explode(';', $field['typedata']);
                 $join_tid    = $vars[0];
-                $join_filter = $vars[1];
+                $join_filter = $vars[1]; // TODO Use?
                 $join        = $vars[2];
                 $join_fields = $vars[3];
                 $join_arr    = explode(',', $join_fields);
@@ -358,15 +372,16 @@ function pagemaster_userapi_pubList($args)
 
     if (isset($joinInfo)) {
         $tbl_alias = 'tbl.';
-	 $filter_args = array('join' => array('join_table' => $joinInfo['join_table']), 'plugins' => $filterPlugins);
+	    $filter_args = array('join' => array('join_table' => $joinInfo['join_table']), 'plugins' => $filterPlugins);
     } else {
         $tbl_alias = '';
-	 $filter_args = array('plugins' => $filterPlugins);
+	    $filter_args = array('plugins' => $filterPlugins);
     }
+
     // check if some plugin specific orderby has to be done
-    $orderby = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
+    $orderby   = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
     $tablename = 'pagemaster_pubdata'.$tid;
-    $fu = & new FilterUtil('pagemaster',$tablename,$filter_args);
+    $fu = new FilterUtil('pagemaster', $tablename, $filter_args);
 
     if (isset($args['filter']) && !empty($args['filter'])) {
         $fu->setFilter($args['filter']);
@@ -378,28 +393,27 @@ function pagemaster_userapi_pubList($args)
 
     // build the where clause
     $where = '';
-    $uid = pnUserGetVar('uid');
-    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) )
-    {
-    if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-        $where .= '('.$tbl_alias.'pm_author = '.$uid.' OR ('.$tbl_alias.'pm_online = 1  AND '.$tbl_alias.'pm_showinlist = 1))';
-    } else {
-        $where .= ' '.$tbl_alias.'pm_online = 1 AND '.$tbl_alias.'pm_showinlist = 1';
-    }
+    $uid   = pnUserGetVar('uid');
+    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN)) {
+        if (!empty($uid) && $pubtype['enableeditown'] == 1) {
+            $where .= '('.$tbl_alias.'pm_author = '.$uid.' OR ('.$tbl_alias.'pm_online = 1  AND '.$tbl_alias.'pm_showinlist = 1))';
+        } else {
+            $where .= ' '.$tbl_alias.'pm_online = 1 AND '.$tbl_alias.'pm_showinlist = 1';
+        }
 
-    $where .= ' AND '.$tbl_alias.'pm_indepot = 0 ';
-    $where .= ' AND ( '.$tbl_alias.'pm_language = \'\' OR '.$tbl_alias.'pm_language = \''.pnUserGetLang().'\')';
-    $where .= ' AND ( '.$tbl_alias.'pm_publishdate <= NOW() OR '.$tbl_alias.'pm_publishdate IS NULL)';
-    $where .= ' AND ( '.$tbl_alias.'pm_expiredate >= NOW() OR '.$tbl_alias.'pm_expiredate IS NULL)';
-    }else
-    {
+        $where .= ' AND '.$tbl_alias.'pm_indepot = 0 ';
+        $where .= ' AND ( '.$tbl_alias.'pm_language = \'\' OR '.$tbl_alias.'pm_language = \''.pnUserGetLang().'\')';
+        $where .= ' AND ( '.$tbl_alias.'pm_publishdate <= NOW() OR '.$tbl_alias.'pm_publishdate IS NULL)';
+        $where .= ' AND ( '.$tbl_alias.'pm_expiredate >= NOW() OR '.$tbl_alias.'pm_expiredate IS NULL)';
+    } else {
         $where .= ' 1=1 ';
     }
 
     if (!empty($filter_where['where'])) {
         $where .= ' AND '.$filter_where['where'];
     }
-   if ($args['countmode'] <> 'just') {
+
+    if ($args['countmode'] <> 'just') {
         if (isset($joinInfo)) {
             $publist = DBUtil::selectExpandedObjectArray($tablename, $joinInfo, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
         } else {
@@ -435,15 +449,15 @@ function pagemaster_userapi_pubList($args)
  */
 function pagemaster_userapi_encodeurl($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
-        return LogUtil::registerError (__('Error! Could not do what you wanted. Please check your input.', $dom));
+        return LogUtil::registerArgsError();
     }
 
     $supportedfunctions = array('main', 'viewpub');
     if (!in_array($args['func'], $supportedfunctions)) {
         return '';
     }
+
     if (!isset($args['args']['tid'])) {
         return false;
     } else {
@@ -495,10 +509,10 @@ function pagemaster_userapi_encodeurl($args)
  */
 function pagemaster_userapi_decodeurl($args)
 {
-    $_ =& $args['vars'];
+    $_ = $args['vars'];
 
     $functions = array('executecommand', 'pubedit', 'main', 'viewpub');
-    $argsnum = count($_);
+    $argsnum   = count($_);
     if (!isset($_[2]) || empty($_[2])) {
         pnQueryStringSetVar('func', 'main');
         return true;
@@ -520,9 +534,10 @@ function pagemaster_userapi_decodeurl($args)
 
     if (isset($_[3]) && !empty($_[3])) {
         $permalinksseparator = pnConfigGetVar('shorturlsseparator');
-        $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+$~i', $_[3], $res);
+        $match = '';
+        $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+$~i', $_[3], $match);
         if ($isPub) {
-            $pid = $res[1];
+            $pid = $match[1];
             pnQueryStringSetVar('func', 'viewpub');
             pnQueryStringSetVar('pid', $pid);
             $nextvar = 4;

@@ -539,7 +539,7 @@ function pagemaster_user_viewpub($args)
     $render->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state']);
     $render->assign('core_titlefield', $core_title);
     $render->assign('core_title', $pubdata[$core_title]);
-    $render->assign('core_uniqueid', $tid.'_'.$pubdata['core_pid']);
+    $render->assign('core_uniqueid', $tid.'-'.$pubdata['core_pid']);
     $render->assign('core_creator', ($pubdata['core_author'] == pnUserGetVar('uid')) ? true : false);
 
     // Check if template is available

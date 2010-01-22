@@ -24,6 +24,7 @@ function pagemaster_searchapi_info()
 function pagemaster_searchapi_options($args)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
         $render = pnRender::getInstance('pagemaster');
 
@@ -41,6 +42,7 @@ function pagemaster_searchapi_options($args)
 
         return $render->fetch('pagemaster_search_options.htm');
     }
+
     return '';
 }
 
@@ -50,6 +52,7 @@ function pagemaster_searchapi_options($args)
 function pagemaster_searchapi_search($args)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     $search_tid = FormUtil::getPassedValue('search_tid', '', 'REQUEST');
     Loader::includeOnce('modules/pagemaster/common.php');
     pnModDBInfoLoad('Search');
@@ -115,6 +118,7 @@ function pagemaster_searchapi_search($args)
         }
         $where_arr = '';
     }
+
     return true;
 }
 

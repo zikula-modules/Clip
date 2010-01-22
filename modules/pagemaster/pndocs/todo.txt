@@ -4,3 +4,4 @@
 
   TODO
 	Maxlenght more clean solution. Exclude some default plugins?
+	Move the publangs to l2

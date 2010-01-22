@@ -280,11 +280,13 @@ function handlePluginFields($publist, $pubfields)
         $plugin = getPlugin($pluginclass);
         if (method_exists($plugin, 'postRead')) {
             foreach ($publist as $key => $pub) {
-                if ($pub[$fieldname] <> '' and isset($pub[$fieldname]))
+                if (isset($pub[$fieldname]) && $pub[$fieldname] <> '') {
                     $publist[$key][$fieldname] = $plugin->postRead($pub[$fieldname], $field);
+                }
             }
         }
     }
+
     return $publist;
 }
 
@@ -355,36 +357,39 @@ function getTitleField($pubfields)
 }
 
 /**
- * Singletone
- *
- * @param plugin class
- * @return plugin object
+ * Singletones
  */
 function getPlugin($pluginclass)
 {
     static $plugin_arr;
-    if (!isset($plugin_arr[$pluginclass]))
-    {
-        Loader::LoadClass($pluginclass,'modules/pagemaster/classes/FormPlugins');
+
+    if (!isset($plugin_arr[$pluginclass])) {
+        Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');
         $plugin_arr[$pluginclass] = new $pluginclass;
     }
+
     return $plugin_arr[$pluginclass];
 }
 
 function getPubFields($tid, $orderBy = '')
 {
     static $pubfields_arr;
-    if (empty($pubfields_arr[$tid]))
+
+    $tid = (int)$tid;
+    if (!isset($pubfields_arr[$tid])) {
         $pubfields_arr[$tid] = DBUtil::selectObjectArray('pagemaster_pubfields', 'pm_tid = '.$tid, $orderBy, -1, -1, 'name');
+    }
+
     return $pubfields_arr[$tid];
 }
+
 function getPubType($tid)
 {
     static $pubtype_arr;
 
-    if (empty($pubtype_arr[$tid])) {
-        $pubtype_arr[$tid] = DBUtil::selectObjectByID('pagemaster_pubtypes', $tid, 'tid');
+    if (!isset($pubtype_arr)) {
+        $pubtype_arr = DBUtil::selectObjectArray('pagemaster_pubtypes', '', 'tid', -1, -1, 'tid');
     }
 
-    return $pubtype_arr[$tid];
+    return isset($pubtype_arr[(int)$tid]) ? $pubtype_arr[(int)$tid] : false;
 }
