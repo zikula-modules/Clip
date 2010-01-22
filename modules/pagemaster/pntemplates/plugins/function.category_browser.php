@@ -64,7 +64,7 @@ function smarty_function_category_browser($params, &$smarty)
 
     $result = null;
 
-    $pubfields = getPubFields($tid);
+    $pubfields = PMgetPubFields($tid);
     $id = $pubfields[$field]['typedata'];
 
     $cats = CategoryUtil::getSubCategories($id);
@@ -72,7 +72,7 @@ function smarty_function_category_browser($params, &$smarty)
     if ($cats) {
         if ($count) {
             // get it only once
-            $pubtype = getPubType($tid);
+            $pubtype = PMgetPubType($tid);
             if (function_exists('apc_fetch') && $cache_count) {
                 $count_arr_old = $count_arr = apc_fetch('cat_browser_count_'.$tid);
             }

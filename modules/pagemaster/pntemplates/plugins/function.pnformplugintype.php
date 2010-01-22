@@ -22,7 +22,7 @@ class pnFormPluginType extends pnFormDropdownList
     function __construct()
     {
         $this->autoPostBack = true;
-        $plugins = pagemasterGetPluginsOptionList();
+        $plugins = PMgetPluginsOptionList();
 
         foreach ($plugins as $plugin) {
             $items[] = array (
@@ -49,7 +49,7 @@ class pnFormPluginType extends pnFormDropdownList
                 PageUtil::addVar('stylesheet', 'javascript/livepipe/livepipe.css');
             }
             $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
-            $plugin = getPlugin($this->selectedValue);
+            $plugin = PMgetPlugin($this->selectedValue);
             if (method_exists($plugin, 'getTypeHtml'))
             {
                 echo 1;

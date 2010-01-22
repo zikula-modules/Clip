@@ -30,7 +30,7 @@ function smarty_function_genericformplugin($params, &$render)
         return 'tid not extractable from pnRender Object in smarty_function_genericformplugin';
     }
 
-    $pubfields = getPubFields($tid);
+    $pubfields = PMgetPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];
     Loader::LoadClass($pluginclass,'modules/pagemaster/classes/FormPlugins');
     $plugin = new $pluginclass;

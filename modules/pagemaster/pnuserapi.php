@@ -39,20 +39,20 @@ function pagemaster_userapi_editPub($args)
     $tid         = $data['tid'];
 
     if (!isset ($args['pubfields'])) {
-        $pubfields = getPubFields($tid);
+        $pubfields = PMgetPubFields($tid);
     } else {
         $pubfields = $args['pubfields'];
     }
 
     if (!isset ($args['schema'])) {
-        $pubtype = getPubType($tid);
+        $pubtype = PMgetPubType($tid);
         $schema  = str_replace('.xml', '', $pubtype['workflow']);
     } else {
         $schema = $args['schema'];
     }
 
     foreach ($pubfields as $fieldname => $field) {
-        $plugin = getPlugin($field['fieldplugin']);
+        $plugin = PMgetPlugin($field['fieldplugin']);
         if (method_exists($plugin, 'preSave')) {
             $data[$fieldname] = $plugin->preSave($data, $field);
         }
@@ -159,7 +159,7 @@ function pagemaster_userapi_getPub($args)
 
     // Get the pubtype if not set
     if (empty($pubtype)) {
-        $pubtype = getPubType($tid);
+        $pubtype = PMgetPubType($tid);
         // Validate the result
         if ($pubtype === false) {
             return LogUtil::registerError(__('No such publication type found.', $dom));
@@ -168,7 +168,7 @@ function pagemaster_userapi_getPub($args)
 
     // Get the pubfields if not set
     if (empty($pubfields)) {
-        $pubfields = getPubFields($tid);
+        $pubfields = PMgetPubFields($tid);
         // Validate the result
         if ($pubfields === false) {
             return LogUtil::registerError(__('No publication fields found', $dom));
@@ -212,7 +212,7 @@ function pagemaster_userapi_getPub($args)
     if ($handlePluginFields){
         // have to load pnForm, otherwise plugins can not be loaded... TODO
         include_once('includes/pnForm.php');
-        $publist = handlePluginFields($publist, $pubfields);
+        $publist = PMhandlePluginFields($publist, $pubfields);
     }
 
     if (count($publist) == 0) {
@@ -223,7 +223,7 @@ function pagemaster_userapi_getPub($args)
 
     $pubdata = $publist[0];
 
-    $core_title = getTitleField($pubfields);
+    $core_title = PMgetTitleField($pubfields);
     $pubdata['core_title'] = $pubdata[$core_title];
 
     if ($checkPerm && !SecurityUtil::checkPermission('pagemaster:full:', "$tid:$pubdata[core_pid]:", ACCESS_READ)) {
@@ -289,12 +289,12 @@ function pagemaster_userapi_pubList($args)
     }
 
     if (!isset($args['pubtype'])) {
-        $pubtype = getPubType($tid);
+        $pubtype = PMgetPubType($tid);
     } else {
         $pubtype = $args['pubtype'];
     }
     if (!isset($args['pubfields'])) {
-        $pubfields = getPubFields($tid);
+        $pubfields = PMgetPubFields($tid);
     } else {
         $pubfields = $args['pubfields'];
     }
@@ -339,7 +339,7 @@ function pagemaster_userapi_pubList($args)
     foreach ($pubfields as $fieldname => $field)
     {
         $pluginclass = $field['fieldplugin'];
-        $plugin = getPlugin($pluginclass);
+        $plugin = PMgetPlugin($pluginclass);
 
         if (isset($plugin->filterClass)) {
             $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
@@ -379,7 +379,7 @@ function pagemaster_userapi_pubList($args)
     }
 
     // check if some plugin specific orderby has to be done
-    $orderby   = handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
+    $orderby   = PMhandlePluginOrderBy($orderby, $pubfields, $tbl_alias);
     $tablename = 'pagemaster_pubdata'.$tid;
     $fu = new FilterUtil('pagemaster', $tablename, $filter_args);
 
@@ -426,7 +426,7 @@ function pagemaster_userapi_pubList($args)
             }
         }
         if ($handlePluginFields) {
-            $publist = handlePluginFields($publist, $pubfields);
+            $publist = PMhandlePluginFields($publist, $pubfields);
         }
     }
 

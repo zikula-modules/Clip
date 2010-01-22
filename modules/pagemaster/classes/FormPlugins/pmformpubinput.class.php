@@ -50,7 +50,7 @@ class pmformpubinput extends pnFormDropdownList
             list($tid, $filter, $join, $joinfields, $orderby) = explode(';', $pubfields[$this->id]['typedata']);
         }
 
-        $pubfields_pub = getPubFields($tid);
+        $pubfields_pub = PMgetPubFields($tid);
         $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
                                array('tid'                => $tid,
                                      'countmode'          => 'no',
@@ -60,7 +60,7 @@ class pmformpubinput extends pnFormDropdownList
                                      'checkPerm'          => true,
                                      'handlePluginFields' => false));
 
-        $titleField = getTitleField($pubfields_pub);
+        $titleField = PMgetTitleField($pubfields_pub);
 
         $items = array();
         $items[] = array('text' => '- - -',

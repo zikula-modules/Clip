@@ -96,8 +96,8 @@ function pagemaster_searchapi_search($args)
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
 
                 $publist    = DBUtil::selectObjectArray($tablename, $where);
-                $pubfields  = getPubFields($pubtype['tid']);
-                $core_title = getTitleField($pubfields);
+                $pubfields  = PMgetPubFields($pubtype['tid']);
+                $core_title = PMgetTitleField($pubfields);
                 $type_name  = __($pubtype['title'].'Search');
 
                 foreach ($publist as $pub) {

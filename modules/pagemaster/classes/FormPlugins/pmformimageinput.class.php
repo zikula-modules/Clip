@@ -101,8 +101,8 @@ class pmformimageinput extends pnFormUploadInput
             }
 
             $srcFilename     = $PostData['tmp_name'];
-            $ext             = strtolower(getExtension($PostData['name']));
-            $randName        = getNewFileReference();
+            $ext             = strtolower(PMgetExtension($PostData['name']));
+            $randName        = PMgetNewFileReference();
             $newFileNameOrig = $randName.'.'.$ext;
             $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
             copy($srcFilename, $newDestOrig);
@@ -126,8 +126,8 @@ class pmformimageinput extends pnFormUploadInput
             } 
 
 			$srcFilename =   $PostData['tmp_name'];
-			$ext             = strtolower(getExtension($PostData['name']));
-			$randName        = getNewFileReference();
+			$ext             = strtolower(PMgetExtension($PostData['name']));
+			$randName        = PMgetNewFileReference();
 			$newFileNameOrig = $randName.'.'.$ext;
 			$newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
 			copy($srcFilename, $newDestOrig);

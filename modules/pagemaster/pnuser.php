@@ -151,7 +151,7 @@ function pagemaster_user_executecommand()
     }
 
     if (empty($schema)) {
-        $pubtype = getPubType($tid);
+        $pubtype = PMgetPubType($tid);
         $schema  = str_replace('.xml', '', $pubtype['workflow']);
     }
 
@@ -200,12 +200,12 @@ function pagemaster_user_pubedit()
         return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
 
-    $pubtype = getPubType($tid);
+    $pubtype = PMgetPubType($tid);
     if (empty($pubtype)) {
         return LogUtil::registerError(__f('No such tid found.', 'tid', $dom));
     }
 
-    $pubfields = getPubFields($tid, 'pm_lineno');
+    $pubfields = PMgetPubFields($tid, 'pm_lineno');
     if (empty($pubfields)) {
         LogUtil::registerError(__f('No such %i% found.', 'pubfields', $dom));
     }
@@ -269,7 +269,7 @@ function pagemaster_user_pubedit()
 
             // TODO delete all the time, even if it's not needed
             $render->force_compile = true;
-            $render->assign('editpub_template_code', generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction));
+            $render->assign('editpub_template_code', PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction));
             return $render->pnFormExecute('var:editpub_template_code', $dynHandler);
         }
     }
@@ -300,7 +300,7 @@ function pagemaster_user_main($args)
         return LogUtil::registerError(__f('Missing argument [%s]', 'tid', $dom));
     }
 
-    $pubtype = getPubType($tid);
+    $pubtype = PMgetPubType($tid);
     if (empty($pubtype)) {
         return LogUtil::registerError(__f('No such %s found.', 'tid', $dom));
     }
@@ -380,9 +380,9 @@ function pagemaster_user_main($args)
         $countmode = 'no';
     }
 
-    $orderby   = createOrderBy($orderby);
+    $orderby   = PMcreateOrderBy($orderby);
 
-    $pubfields = getPubFields($tid);
+    $pubfields = PMgetPubFields($tid);
 
     // Uses the API to get the list of publications
     $result = pnModAPIFunc('pagemaster', 'user', 'pubList',
@@ -401,7 +401,7 @@ function pagemaster_user_main($args)
     // Assign the data to the output
     $render->assign('tid', $tid);
     $render->assign('publist', $result['publist']);
-    $render->assign('core_titlefield', getTitleField($pubfields));
+    $render->assign('core_titlefield', PMgetTitleField($pubfields));
 
     // Assign the pager values if needed
     if ($itemsperpage != 0) {
@@ -451,7 +451,7 @@ function pagemaster_user_viewpub($args)
         return LogUtil::registerError(__f('Missing argument [%s]', 'id | pid', $dom));
     }
 
-    $pubtype = getPubType($tid);
+    $pubtype = PMgetPubType($tid);
     if (empty($pubtype)) {
         return LogUtil::registerError(__f('No such %s found.', 'tid', $dom));
     }
@@ -511,7 +511,7 @@ function pagemaster_user_viewpub($args)
     }
 
     // Not cached or cache disabled, then get the Pub from the DB
-    $pubfields = getPubFields($tid);
+    $pubfields = PMgetPubFields($tid);
 
     $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
                             array('tid'                => $tid,
@@ -527,7 +527,7 @@ function pagemaster_user_viewpub($args)
         return LogUtil::registerError(__f('No such %s found.', 'Pub', $dom));
     }
 
-    $core_title = getTitleField($pubfields);
+    $core_title = PMgetTitleField($pubfields);
 
     // Assign each field of the pubdata to the output
     foreach ($pubdata as $key => $field) {
@@ -550,7 +550,7 @@ function pagemaster_user_viewpub($args)
 
     if ($template == 'var:viewpub_template_code') {
         $render->compile_check = true;
-        $render->assign('viewpub_template_code', generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields));
+        $render->assign('viewpub_template_code', PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields));
     }
 
     return $render->fetch($template, $cacheid);

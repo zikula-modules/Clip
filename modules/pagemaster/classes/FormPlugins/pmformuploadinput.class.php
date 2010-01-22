@@ -102,8 +102,8 @@ class pmformuploadinput extends pnFormUploadInput
             }
 
             $srcTempFilename = $data['tmp_name'];
-            $ext             = strtolower(getExtension($data['name']));
-            $randName        = getNewFileReference();
+            $ext             = strtolower(PMgetExtension($data['name']));
+            $randName        = PMgetNewFileReference();
             $new_filename    = "{$randName}.{$ext}";
             $dstFilename     = "{$uploadpath}/{$new_filename}";
 

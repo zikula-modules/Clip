@@ -11,7 +11,7 @@
 Loader::LoadClass("PmWorkflowUtil",'modules/pagemaster/classes');
 
 
-function createOrderBy($orderby)
+function PMcreateOrderBy($orderby)
 {
     $orderbylist = explode(',', $orderby);
     $orderby     = '';
@@ -27,7 +27,7 @@ function createOrderBy($orderby)
     return trim($orderby);
 }
 
-function getNewFileReference()
+function PMgetNewFileReference()
 {
     $chars   = '0123456789abcdefghijklmnopqrstuvwxyz';
     $charLen = strlen($chars);
@@ -41,10 +41,10 @@ function getNewFileReference()
     return $id;
 }
 
-function getExtension($filename, $keepDot = false)
+function PMgetExtension($filename, $keepDot = false)
 {
     if (!$filename) {
-        return pn_exit('getExtension pm: filename is empty');
+        return pn_exit('PMgetExtension pm: filename is empty');
     }
 
     $p = strrpos($filename, '.');
@@ -56,10 +56,11 @@ function getExtension($filename, $keepDot = false)
             return substr($filename, $p +1);
         }
     }
+
     return '';
 }
 
-function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction='new')
+function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
 {
     $template_code = '
                       <!--[insert name=\'getstatusmsg\']-->
@@ -143,7 +144,7 @@ function generate_editpub_template_code($tid, $pubfields, $pubtype, $hookAction=
     return $template_code;
 }
 
-function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
+function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
 {
     $template_code = '<!--[pndebug]-->
 
@@ -221,7 +222,7 @@ function generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields)
     return $template_code;
 }
 
-function pagemasterGetPluginsOptionList()
+function PMgetPluginsOptionList()
 {
     $classDirs = array();
     //Loader::LoadClass checks these dirs, strange
@@ -233,7 +234,7 @@ function pagemasterGetPluginsOptionList()
             while (($file = readdir($dh)) !== false) {
                 if (substr($file, 0, 6) == 'pmform') {
                     $pluginclass = substr($file, 0, -10);
-                    $plugin = getPlugin($pluginclass);
+                    $plugin = PMgetPlugin($pluginclass);
                     $plugins[] = array (
                         'plugin' => $plugin,
                         'class' => $pluginclass    
@@ -246,38 +247,43 @@ function pagemasterGetPluginsOptionList()
     return $plugins;
 }
 
-function pagemasterGetWorkflowsOptionList()
+function PMgetWorkflowsOptionList()
 {
-    function parse_dir($dir, &$plugins) {
-        if (!is_dir($dir) || !is_readable($dir)) {
-            return;
-        }
-        if ($dh = opendir($dir)) {
-            while (($file = readdir($dh)) !== false) {
-                if (substr($file, -4, 4) == '.xml') {
-                    $plugins[] = array (
-                        'text'  => $file,
-                        'value' => $file
-                    );
-                }
+    if (!function_exists('PM_parse_dir')) {
+        function PM_parse_dir($dir, &$plugins)
+        {
+            if (!is_dir($dir) || !is_readable($dir)) {
+                return;
             }
-            closedir($dh);
+            if ($dh = opendir($dir)) {
+                while (($file = readdir($dh)) !== false) {
+                    if (substr($file, -4, 4) == '.xml') {
+                        $plugins[] = array (
+                            'text'  => $file,
+                            'value' => $file
+                        );
+                    }
+                }
+                closedir($dh);
+            }
         }
     }
+
     $plugins = array ();
 
     $dir = 'modules/pagemaster/workflows';
-    parse_dir($dir, $plugins);
+    PM_parse_dir($dir, $plugins);
     $dir = 'config/workflows/pagemaster';
-    parse_dir($dir, $plugins);
+    PM_parse_dir($dir, $plugins);
+
     return $plugins;
 }
 
-function handlePluginFields($publist, $pubfields)
+function PMhandlePluginFields($publist, $pubfields)
 {
     foreach ($pubfields as $fieldname => $field) {
         $pluginclass = $field['fieldplugin'];
-        $plugin = getPlugin($pluginclass);
+        $plugin = PMgetPlugin($pluginclass);
         if (method_exists($plugin, 'postRead')) {
             foreach ($publist as $key => $pub) {
                 if (isset($pub[$fieldname]) && $pub[$fieldname] <> '') {
@@ -290,7 +296,7 @@ function handlePluginFields($publist, $pubfields)
     return $publist;
 }
 
-function getTidFromTablename($tablename)
+function PMgetTidFromTablename($tablename)
 {
     $tid = '';
     while (is_numeric(substr($tablename, -1))) {
@@ -301,7 +307,7 @@ function getTidFromTablename($tablename)
     return (int)$tid;
 }
 
-function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
+function PMhandlePluginOrderBy($orderby, $pubfields, $tbl_alias)
 {
     if (!empty($orderby)) {
         $orderby_arr = explode(',', $orderby);
@@ -320,7 +326,7 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
                 }
             }
             if (!empty($plugin_name)) {
-                $plugin = getPlugin($plugin_name);
+                $plugin = PMgetPlugin($plugin_name);
                 if (method_exists($plugin, 'orderBy')) {
                     $orderby_col = $plugin->orderBy($field_name, $tbl_alias);
                 } else {
@@ -343,7 +349,7 @@ function handlePluginOrderBy($orderby, $pubfields, $tbl_alias)
  * @param array $pubfields
  * @return name of the title field
  */
-function getTitleField($pubfields)
+function PMgetTitleField($pubfields)
 {
     $ak = array_keys($pubfields);
     foreach ($ak as $i) {
@@ -359,7 +365,7 @@ function getTitleField($pubfields)
 /**
  * Singletones
  */
-function getPlugin($pluginclass)
+function PMgetPlugin($pluginclass)
 {
     static $plugin_arr;
 
@@ -371,7 +377,7 @@ function getPlugin($pluginclass)
     return $plugin_arr[$pluginclass];
 }
 
-function getPubFields($tid, $orderBy = '')
+function PMgetPubFields($tid, $orderBy = '')
 {
     static $pubfields_arr;
 
@@ -383,7 +389,7 @@ function getPubFields($tid, $orderBy = '')
     return $pubfields_arr[$tid];
 }
 
-function getPubType($tid)
+function PMgetPubType($tid)
 {
     static $pubtype_arr;
 

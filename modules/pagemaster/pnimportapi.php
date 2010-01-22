@@ -238,7 +238,7 @@ function pagemaster_importapi_importps2()
                 LogUtil::registerError('unsupported field type' . $pubfield['type']);
             }
 
-            $plugin                    = getPlugin($datafield['fieldplugin']);
+            $plugin                    = PMgetPlugin($datafield['fieldplugin']);
             $datafield['fieldtype']    = $plugin->columnDef;
             $datafield['istitle']      = $pubfield['isTitle'];
             $datafield['ispageable']   = $pubfield['isPageable'];

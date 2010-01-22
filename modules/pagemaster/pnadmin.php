@@ -90,8 +90,8 @@ class pagemaster_admin_pubtypesHandler
 
         if (!empty($tid) &&  is_numeric($tid)) {
             $this->tid = $tid;
-            $pubtype   = getPubType($tid);
-            $pubfields = getPubFields($tid);
+            $pubtype   = PMgetPubType($tid);
+            $pubfields = PMgetPubFields($tid);
             $pubarr[] = array (
                 'text'  => '',
                 'value' => ''
@@ -144,7 +144,7 @@ class pagemaster_admin_pubtypesHandler
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
         $render->assign('pubtypes', $pubtypes);
 
-        $workflows = pagemasterGetWorkflowsOptionList();
+        $workflows = PMgetWorkflowsOptionList();
         $render->assign('pmWorkflows', $workflows);
 
         return true;
@@ -248,7 +248,7 @@ class pagemaster_admin_pubfieldsHandler
 
         $data['id']        = $this->id;
         $data['tid']       = $this->tid;
-        $plugin            = getPlugin($data['fieldplugin']);
+        $plugin            = PMgetPlugin($data['fieldplugin']);
         $data['fieldtype'] = $plugin->columnDef;
 
         if ($args['commandName'] == 'delete') {
@@ -451,12 +451,12 @@ function pagemaster_admin_showcode()
         return LogUtil::registerError(__f('Missing argument [%s]', 'mode', $dom));
     }
 
-    $pubtype   = getPubType($tid);
+    $pubtype   = PMgetPubType($tid);
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = $tid", 'pm_lineno', -1, -1, 'name');
 
     // get the code depending of the mode
     if ($mode == 'input') {
-        $code = generate_editpub_template_code($tid, $pubfields, $pubtype);
+        $code = PMgen_editpub_tplcode($tid, $pubfields, $pubtype);
 
     } elseif ($mode == 'outputfull') {
         include_once('includes/pnForm.php');
@@ -468,7 +468,7 @@ function pagemaster_admin_showcode()
         $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
                                 array('tid' => $tid,
                                       'id'  => $id));
-        $code = generate_viewpub_template_code($tid, $pubdata, $pubtype, $pubfields);
+        $code = PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields);
 
     } elseif ($mode == 'outputlist') {
         $code = file_get_contents('modules/pagemaster/pntemplates/generic_publist.htm');
