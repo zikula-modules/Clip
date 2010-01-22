@@ -11,102 +11,105 @@
 	<!--[pmadminsubmenu tid=$tid]-->
 	<!--[/if]-->
 
-	<!--[pnform]-->
-	<!--[pnformvalidationsummary]-->
-	<table cellspacing="1">
-		<tr>
-			<td><!--[pnformlabel for='title' text='Title']-->:</td>
-			<td><!--[pnformtextinput id='title' maxLength='255' mandatory=true]--></td>
-			<td class="pmhelp"><!--[gt text='Title of the publication type (can be a language define)']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='description' text='Description']-->:</td>
-			<td><!--[pnformtextinput id='description' maxLength='255']--></td>
-			<td class="pmhelp"><!--[gt text='Description of the publication type (can be a language define)']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='itemsperpage' text='Items per page']-->:</td>
-			<td><!--[pnformintinput id='itemsperpage' maxLength='255' mandatory=true]--></td>
-			<td class="pmhelp"><!--[gt text='After how many publications the list will be paged. 0 for no paging']--></td>
-		</tr>
+	<!--[pnform cssClass='z-form' enctype='application/x-www-form-urlencoded']-->
+		<div>
+			<!--[pnformvalidationsummary]-->
+			<fieldset>
+				<legend><!--[gt text='General options']--></legend>
+				<div class="z-formrow">
+					<!--[pnformlabel for='title' text='Title' mandatorysym=true]-->
+					<!--[pnformtextinput id='title' maxLength='255' mandatory=true]-->
+					<div class="z-formnote"><!--[gt text='Title of the publication type, can be a custom gettext string.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='description' text='Description']-->
+					<!--[pnformtextinput id='description' maxLength='255']-->
+					<div class="z-formnote"><!--[gt text='Description of the publication type, can be a custom gettext string.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='itemsperpage' text='Items per page' mandatorysym=true]-->
+					<!--[pnformintinput id='itemsperpage' maxLength='255' mandatory=true]-->
+					<div class="z-formnote"><!--[gt text='After how many publications the list will be paged. 0 for no paging.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='enablerevisions' text='Revision']-->
+					<!--[pnformcheckbox id='enablerevisions']-->
+					<div class="z-formnote"><!--[gt text='Enable revisioning.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='enableeditown' text='Edit own']-->
+					<!--[pnformcheckbox id='enableeditown']-->
+					<div class="z-formnote"><!--[gt text='Allow editing of own publications.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='defaultfilter' text='Default filter']-->
+					<!--[pnformtextinput id='defaultfilter' maxLength='255']-->
+					<div class="z-formnote"><!--[gt text='The filter which is used by default.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='workflow' text='Workflow']-->
+					<!--[pnformdropdownlist id='workflow' items=$pmWorkflows]-->
+					<div class="z-formnote"><!--[gt text='You can choose a special workflow for the publications.']--></div>
+				</div>
+			</fieldset>
 
-		<!--[if isset($pubfields)]-->
-		<tr>
-			<td><!--[pnformlabel for='sortfield1' text='Sort field']-->:</td>
-			<td><!--[pnformdropdownlist items=$pubfields id='sortfield1']--></td>
-			<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='sortdesc1' text='Sort descending']-->:</td>
-			<td><!--[pnformcheckbox id='sortdesc1']--></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='sortfield2' text='Sort field']-->:</td>
-			<td><!--[pnformdropdownlist items=$pubfields id='sortfield2']--></td>
-			<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='sortdesc2' text='Sort descending']-->:</td>
-			<td><!--[pnformcheckbox id='sortdesc2']--></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='sortfield3' text='Sort field']-->:</td>
-			<td><!--[pnformdropdownlist items=$pubfields id='sortfield3']--></td>
-			<td class="pmhelp"><!--[gt text='Field for sorting']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='sortdesc3' text='Sort descending']-->:</td>
-			<td><!--[pnformcheckbox id='sortdesc3']--></td>
-			<td></td>
-		</tr>
-		<!--[/if]-->
+			<!--[if isset($pubfields)]-->
+			<fieldset>
+				<legend><!--[gt text='Sort options']--></legend>
+				<div class="z-formrow">
+					<!--[pnformlabel for='sortfield1' text='Sort field']-->
+					<!--[pnformdropdownlist items=$pubfields id='sortfield1']-->
+					<div class="z-formnote"><!--[gt text='Field for sorting.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='sortdesc1' text='Sort descending']-->
+					<!--[pnformcheckbox id='sortdesc1']-->
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='sortfield2' text='Sort field']-->
+					<!--[pnformdropdownlist items=$pubfields id='sortfield2']-->
+					<div class="z-formnote"><!--[gt text='Field for sorting.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='sortdesc2' text='Sort descending']-->
+					<!--[pnformcheckbox id='sortdesc2']-->
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='sortfield3' text='Sort field']-->
+					<!--[pnformdropdownlist items=$pubfields id='sortfield3']-->
+					<div class="z-formnote"><!--[gt text='Field for sorting.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='sortdesc3' text='Sort descending']-->
+					<!--[pnformcheckbox id='sortdesc3']-->
+				</div>
+			</fieldset>
+			<!--[/if]-->
 
-		<tr>
-			<td><!--[pnformlabel for='defaultfilter' text='Default filter']-->:</td>
-			<td><!--[pnformtextinput id='defaultfilter' maxLength='255']--></td>
-			<td class="pmhelp"><!--[gt text='The filter which is used by default']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='workflow' text='Workflow']-->:</td>
-			<td><!--[pnformdropdownlist id='workflow' items=$pmWorkflows]--></td>
-			<td class="pmhelp"><!--[gt text='You can choose a special workflow for the publications']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='enablerevisions' text='Revision']-->:</td>
-			<td><!--[pnformcheckbox id='enablerevisions']--></td>
-			<td class="pmhelp"><!--[gt text='Revisioning']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='filename' text='Output template name']-->:</td>
-			<td><!--[pnformtextinput id='filename' maxLength='255']--></td>
-			<td class="pmhelp"><!--[gt text='Name of the output template']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='formname' text='Input template name']-->:</td>
-			<td><!--[pnformtextinput id='formname' maxLength='255']--></td>
-			<td class="pmhelp"><!--[gt text='Name of the template for the formular']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='enableeditown' text='Edit own']-->:</td>
-			<td><!--[pnformcheckbox id='enableeditown']--></td>
-			<td class="pmhelp"><!--[gt text='Allow editing of own publications']--></td>
-		</tr>
-		<tr>
-			<td><!--[pnformlabel for='cachelifetime' text='Caching time']-->:</td>
-			<td><!--[pnformintinput id='cachelifetime' maxLength='6']--></td>
-			<td class="pmhelp"><!--[gt text='How long should the publications be cached. Empty for no cache.']--></td>
-		</tr>
-	</table>
+			<fieldset>
+				<legend><!--[gt text='Output options']--></legend>
+				<div class="z-formrow">
+					<!--[pnformlabel for='filename' text='Output template name']-->
+					<!--[pnformtextinput id='filename' maxLength='255']-->
+					<div class="z-formnote"><!--[gt text='Name of the output template.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='formname' text='Input template name']-->
+					<!--[pnformtextinput id='formname' maxLength='255']-->
+					<div class="z-formnote"><!--[gt text='Name of the template for the formular.']--></div>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='cachelifetime' text='Caching time']-->
+					<!--[pnformintinput id='cachelifetime' maxLength='6']-->
+					<div class="z-formnote"><!--[gt text='How long should the publications be cached. Empty for no cache.']--></div>
+				</div>
+			</fieldset>
 
-	<p>(*) <!--[gt text='This field is mandatory']--></p>
-
-	<div class="z-formrow z-formbuttons">
-		<!--[pnformbutton commandName='create' text='Save']-->
-		<!--[pnformbutton commandName='delete' text='Delete']-->
-		<!--[if isset($pubfields)]--><!--[pnformbutton commandName='updatetabledef' text='Update DB tables']--><!--[/if]-->
-	</div>
-
+			<div class="z-formbuttons">
+				<!--[pnformbutton commandName='create' __text='Save']-->
+				<!--[pnformbutton commandName='delete' __text='Delete']-->
+				<!--[if isset($pubfields)]--><!--[pnformbutton commandName='updatetabledef' __text='Update DB tables']--><!--[/if]-->
+			</div>
+		</div>
 	<!--[/pnform]-->
 </div>
