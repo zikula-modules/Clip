@@ -347,6 +347,12 @@ function pagemaster_user_main($args)
         } else {
             $cacheid = 'publist'.$tid.'|nofilter';
         }
+        
+        if(!empty($orderby)){
+            $cacheid .= '|'.$orderby;
+        }else{
+            $cacheid .= '|noorderby';
+        }
     } else {
         $cachetid = false;
         $cacheid  = false;
