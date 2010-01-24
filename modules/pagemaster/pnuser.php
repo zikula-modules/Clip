@@ -96,10 +96,10 @@ class pagemaster_user_dynHandler
         // see http://www.smarty.net/manual/en/caching.groups.php
         $pnr=pnRender::getInstance('pagemaster') ; 
         // clear the view of the current publication
-		$pnr->clear(null,'viewpub'.$this->tid.'|'.$this->core_pid);
- 		// clear all page of publist
-		$pnr->clear(null,'publist'.$this->tid );
-		unset($pnr);                           
+        $pnr->clear(null,'viewpub'.$this->tid.'|'.$this->core_pid);
+        // clear all page of publist
+        $pnr->clear(null,'publist'.$this->tid );
+        unset($pnr);                           
                                    
         // somebody change this always back, pls let it be like this, otherwise stepmode does not work!
         // if the item moved to the depot
