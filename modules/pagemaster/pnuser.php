@@ -507,7 +507,8 @@ function pagemaster_user_viewpub($args)
         $cachelt = $pubtype['cachelifetime'];
     }
 
-    if (!empty($cachelt)) {
+    if (!empty($cachelt) && !SecurityUtil::checkPermission('pagemaster:input:', "$tid:$pid:", ACCESS_ADMIN)) { 
+    	// second clause allow developer to add an edit button on the "viewpub" template
         $cachetid = true;
         $cacheid = 'viewpub'.$tid.'|'.$pid;
     } else {
