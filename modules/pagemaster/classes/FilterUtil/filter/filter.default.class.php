@@ -47,7 +47,7 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
         if (isset($config['ops']) && (!isset($this->ops) || !is_array($this->ops))) {
             $this->activateOperators($config['ops']);
         } else {
-            $this->activateOperators(array('eq', 'ne', 'lt', 'le', 'gt', 'ge', 'like', 'null', 'notnull'));
+            $this->activateOperators(array('eq', 'ne', 'lt', 'le', 'gt', 'ge', 'like', 'likefirst' , 'null', 'notnull'));
         }
         
         if ($config['default'] == true || count($this->fields) <= 0) {
@@ -63,7 +63,7 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
      */
     public function activateOperators($op)
     {
-        static $ops = array('eq', 'ne', 'lt', 'le', 'gt', 'ge', 'like', 'null', 'notnull');
+        static $ops = array('eq', 'ne', 'lt', 'le', 'gt', 'ge', 'like','likefirst' , 'null', 'notnull');
         if (is_array($op)) {
             foreach($op as $v) {
                 $this->activateOperators($v);
@@ -140,6 +140,9 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
                 break;
             case 'like':
                 return array('where' => $this->column[$field] . " like '%" . $value . "%'");
+                break;
+            case 'likefirst':
+                return array('where' => $this->column[$field] . " like '" . $value . "%'");
                 break;
             case 'null':
                 return array('where' => $this->column[$field] . " = '' OR " . $this->column[$field] . " IS NULL");
