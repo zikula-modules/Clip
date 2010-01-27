@@ -19,7 +19,7 @@
  */
 function smarty_function_genericformplugin($params, &$render)
 {
-    $id = $params['id'];
+    $id  = $params['id'];
     $tid = $render->pnFormEventHandler->tid;
 
     if (!$id) {
@@ -32,8 +32,9 @@ function smarty_function_genericformplugin($params, &$render)
 
     $pubfields = PMgetPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];
+
     Loader::LoadClass($pluginclass,'modules/pagemaster/classes/FormPlugins');
-    $plugin = new $pluginclass;
+    //$plugin = new $pluginclass;
 
     //read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])){
@@ -44,5 +45,5 @@ function smarty_function_genericformplugin($params, &$render)
         $params['maxLength'] = $pubfields[$id]['fieldmaxlength'];
     }
 
-    return $render->pnFormRegisterPlugin($plugin, $params);
+    return $render->pnFormRegisterPlugin($pluginclass, $params);
 }

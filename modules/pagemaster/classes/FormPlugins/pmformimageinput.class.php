@@ -10,15 +10,24 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformuploadinput.php');
+require_once('system/pnForm/plugins/function.pnformuploadinput.php');
 
 class pmformimageinput extends pnFormUploadInput
 {
 	var $columnDef = 'C(512)';
-	var $title     = 'Image Upload';
+	var $title;
 	var $upl_arr;
 
-    function getFilename()
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('Image Upload', $dom);
+
+        parent::__construct();
+    }
+
+	function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???
     }
@@ -26,6 +35,7 @@ class pmformimageinput extends pnFormUploadInput
     function render(&$render)
     {
         $input_html = parent::render($render);
+
         return $input_html.' '.$this->upl_arr['orig_name'];
     }
 
@@ -44,13 +54,17 @@ class pmformimageinput extends pnFormUploadInput
 	static function postRead($data, $field)
 	{
 	    $dom = ZLanguage::getModuleDomain('pagemaster');
-		if (!empty($data)) {
+
+		// this plugin return an array by default
+	    $upl_arr = array();
+
+		// if the data is not empty, process it
+	    if (!empty($data)) {
 			$arrTypeData = @unserialize($data);
 
 			if (!is_array($arrTypeData)) {
 				return LogUtil::registerError('pmformimageinput: '.__('Stored data is invalid', $dom));
 			}
-			echo $asdfa;
 
 			$url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
 			if (!empty($arrTypeData['orig_name'])) {
@@ -70,11 +84,9 @@ class pmformimageinput extends pnFormUploadInput
                          'url'          => ''
                          );
             }
-            return $upl_arr;
+		}
 
-        } else {
-            return NULL;
-        }
+        return $upl_arr;
     }
 
     static function preSave($data, $field)
@@ -137,28 +149,26 @@ class pmformimageinput extends pnFormUploadInput
 			if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
 				list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = explode(':', $field['typedata']);
 				if ((int)$tmpx > 0)
-				$tmpargs['w'] = (int)$tmpx ;
+				    $tmpargs['w'] = (int)$tmpx ;
 				if ((int)$tmpy > 0)
-				$tmpargs['h'] = (int)$tmpy;
+				    $tmpargs['h'] = (int)$tmpy;
 				if ((int)$prex > 0)
-				$preargs['w'] = (int)$prex ;
+				    $preargs['w'] = (int)$prex ;
 				if ((int)$prey > 0)
-				$preargs['h'] = (int)$prey ;
+				    $preargs['h'] = (int)$prey ;
 				if ((int)$fullx > 0)
-				$fullargs['w'] = (int)$fullx ;
+				    $fullargs['w'] = (int)$fullx ;
 				if ((int)$fully > 0)
-				$fullargs['h'] = (int)$fully ;
+				    $fullargs['h'] = (int)$fully ;
 			}
+
 			// Check for the Thumbnails module and if we need it
 			if (!empty($tmpargs) && pnModAvailable('Thumbnail')) {
-				echo 1;
 				$newFilenameTmp = "{$randName}-tmb.{$ext}";
 				$newDestTmp  = "{$uploadpath}/{$newFilenameTmp}";
 				$tmpargs['filename'] = $newDestOrig;
 				$tmpargs['dstFilename'] = $newDestTmp;
-				print_r($tmpargs);
 				$dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $tmpargs);
-				echo $dstName;
 
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed

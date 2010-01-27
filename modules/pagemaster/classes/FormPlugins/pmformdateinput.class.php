@@ -10,14 +10,22 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformdateinput.php');
+require_once('system/pnForm/plugins/function.pnformdateinput.php');
 
 class pmformdateinput extends pnFormDateInput
 {
     var $columnDef = 'T';
-    var $title     = 'Date';
+    var $title;
     var $filterClass = 'date';
 
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('Date', $dom);
+
+        parent::__construct();
+    }
 
     function getFilename()
     {
@@ -35,12 +43,14 @@ class pmformdateinput extends pnFormDateInput
                                  }
                                  closeTypeData();
                              }';
+
         return $saveTypeDataFunc;
     }
 
     static function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
+
         if ($render->_tpl_vars['typedata'] == 1) {
             $checked = 'checked="checked"';
         } else {

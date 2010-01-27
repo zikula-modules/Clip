@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformurlinput.php');
+require_once('system/pnForm/plugins/function.pnformurlinput.php');
 
 class pmformurlinput extends pnFormURLInput
 {
@@ -20,12 +20,10 @@ class pmformurlinput extends pnFormURLInput
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
-        $this->title = __('URL');
-    }
+        //! field type name
+        $this->title = __('URL', $dom);
 
-    function pmformurlinput()
-    {
-        $this->__construct();
+        parent::__construct();
     }
 
     function getFilename()

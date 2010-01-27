@@ -94,12 +94,12 @@ class pagemaster_user_dynHandler
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // see http://www.smarty.net/manual/en/caching.groups.php
-        $pnr=pnRender::getInstance('pagemaster') ; 
+        $pnr = pnRender::getInstance('pagemaster');
         // clear the view of the current publication
-        $pnr->clear(null,'viewpub'.$this->tid.'|'.$this->core_pid);
+        $pnr->clear_cache(null,'viewpub'.$this->tid.'|'.$this->core_pid);
         // clear all page of publist
-        $pnr->clear(null,'publist'.$this->tid );
-        unset($pnr);                           
+        $pnr->clear_cache(null,'publist'.$this->tid);
+        unset($pnr);
                                    
         // somebody change this always back, pls let it be like this, otherwise stepmode does not work!
         // if the item moved to the depot
@@ -270,9 +270,9 @@ function pagemaster_user_pubedit()
 
         } else {
             if (!empty($stepname)) {
-                LogUtil::registerError(__f('Template [%s] not found', $user_defined_template_step, $dom));
+                //LogUtil::registerError(__f('Template [%s] not found', $user_defined_template_step, $dom));
             }
-            LogUtil::registerError(__f('Template [%s] not found', $user_defined_template_all, $dom));
+            //LogUtil::registerError(__f('Template [%s] not found', $user_defined_template_all, $dom));
             $hookAction = empty($id) ? 'new' : 'modify';
 
             // TODO delete all the time, even if it's not needed
@@ -332,7 +332,7 @@ function pagemaster_user_main($args)
 
     // Security check as early as possible
     if (!SecurityUtil::checkPermission('pagemaster:list:', "$tid::$sec_template", ACCESS_READ)) {
-        return LogUtil::registerError(_NOT_AUTHORIZED . ' pagemaster:list:  -  '."$tid::$sec_template");
+        return LogUtil::registerPermissionError();
     }
 
     // Check if this view is cached
@@ -414,6 +414,7 @@ function pagemaster_user_main($args)
 
     // Assign the data to the output
     $render->assign('tid', $tid);
+    $render->assign('pubtype', $pubtype);
     $render->assign('publist', $result['publist']);
     $render->assign('core_titlefield', PMgetTitleField($pubfields));
 
@@ -539,7 +540,7 @@ function pagemaster_user_viewpub($args)
                                   'handlePluginFields' => true));
 
     if (!$pubdata) {
-        return LogUtil::registerError(__f('No such %s found.', 'Pub', $dom));
+        return LogUtil::registerError(__('No such publication found.', $dom));
     }
 
     $core_title = PMgetTitleField($pubfields);
@@ -550,6 +551,7 @@ function pagemaster_user_viewpub($args)
     }
 
     // Process the output
+    $render->assign('pubtype', $pubtype);
     $render->assign('core_tid', $tid);
     $render->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state']);
     $render->assign('core_titlefield', $core_title);
@@ -559,7 +561,7 @@ function pagemaster_user_viewpub($args)
 
     // Check if template is available
     if ($template != 'var:viewpub_template_code' && !$render->get_template_path($template)) {
-        LogUtil::registerStatus(__f('Template [%s] not found', $template, $dom));
+        //LogUtil::registerStatus(__f('Template [%s] not found', $template, $dom));
         $template = 'var:viewpub_template_code';
     }
 

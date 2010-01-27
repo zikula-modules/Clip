@@ -10,12 +10,21 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformcheckbox.php');
+require_once('system/pnForm/plugins/function.pnformcheckbox.php');
 
 class pmformcheckboxinput extends pnFormCheckbox
 {
     var $columnDef = 'I(4)';
-    var $title     = 'Checkbox';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('Checkbox', $dom);
+
+        parent::__construct();
+    }
 
     function getFilename()
     {

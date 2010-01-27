@@ -10,22 +10,20 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformtextinput.php');
+require_once('system/pnForm/plugins/function.pnformtextinput.php');
 
 class pmformstringinput extends pnFormTextInput
 {
     var $columnDef = 'C(512)';
-    var $title     = 'String';
+    var $title;
 
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
-        $this->title = __('String');
-    }
+        //! field type name
+        $this->title = __('String', $dom);
 
-    function pmformstringinput()
-    {
-        $this->__construct();
+        parent::__construct();
     }
 
     function getFilename()

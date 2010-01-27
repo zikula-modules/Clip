@@ -8,8 +8,8 @@
  * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
-Loader::LoadClass("PmWorkflowUtil",'modules/pagemaster/classes');
 
+Loader::LoadClass('PmWorkflowUtil', 'modules/pagemaster/classes');
 
 function PMcreateOrderBy($orderby)
 {
@@ -62,82 +62,97 @@ function PMgetExtension($filename, $keepDot = false)
 
 function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
 {
+    // FIXME Review template path (to pnForm?)
     $template_code = '
                       <!--[insert name=\'getstatusmsg\']-->
 
                       <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                          <div class="z-warningmsg"><!--[pnml name=\'_PAGEMASTER_GENERIC_EDITPUB\' html=1]--></div>
+                          <div class="z-warningmsg">
+                              <!--[pnmodurl modname=\'pagemaster\' type=\'admin\' func=\'showcode\' mode=\'input\' tid=$pubtype.tid assign=\'urlpecode\']-->
+                              <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the code</a> and create individuals template (<b>pubedit_{STEPNAME}_%2$s.htm</b>), then store it in the the directory: <b>/config/templates/pnForm/pubedit_{STEPNAME}_%2$s.htm</b>.\' tag1=$urlpecode tag2=$pubtype.tid]-->
+                          </div>
                       <!--[/pnsecauthaction_block]-->
 
-                      <h1><!--[pnml name=\''. $pubtype['title'] .'\']--></h1>
+                      <h1><!--[gt text=\''. $pubtype['title'] .'\']--></h1>
 
-                      <p><!--[pnml name=\''. $pubtype['description'] .'\']--></p>
+                      <!--[assign var=\'pubtypedesc\' value=\''. $pubtype['description'] .'\']-->
+                      <!--[if $pubtypedesc neq \'\']-->
+                          <div><!--[gt text=\''. $pubtype['description'] .'\']--></div>
+                      <!--[/if]-->
 
-                      <!--[pnform enctype=\'multipart/form-data\']-->
-                      <!--[pnformvalidationsummary]-->
-                      <table>
+                      <!--[pnform cssClass=\'z-form\' enctype=\'multipart/form-data\']-->
+                          <div>
+                              <!--[pnformvalidationsummary]-->
+                              <fieldset>
                       ';
 
-    $ak = array_keys($pubfields);
-    foreach ($ak as $k) {
+    foreach (array_keys($pubfields) as $k) {
         // get the plugin pnform name of the plugin filename
         $pmformname = explode('.', $pubfields[$k]['fieldplugin']);
         $pmformname = $pmformname[1];
 
         if (!empty($pubfields[$k]['fieldmaxlength'])) {
-            $maxlength = 'maxLength=\''.$pubfields[$k]['fieldmaxlength'].'\' ';
+            $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
         } elseif($pmformname == 'pmformtextinput') {
-            $maxlength = 'maxLength=\'65535\' ';
+            $maxlength = " maxLength='65535'";
         } else {
-            $maxlength = 'maxLength=\'255\' '; //TODO Not a clean solution. MaxLength is not needed for ever plugin
+            $maxlength = ''; //" maxLength='255'"; //TODO Not a clean solution. MaxLength is not needed for ever plugin
         }
 
         if (!empty($pubfields[$k]['description'])) {
-            $toolTip = 'toolTip=\''.$pubfields[$k]['description'].'\' ';
+            //$toolTip = " toolTip='{$pubfields[$k]['description']}'";
+            $toolTip = $pubfields[$k]['description'];
         } else {
             $toolTip = '';
         }
 
         // specific plugins
         if ($pmformname == 'pmformtextinput') {
-            $linecol = 'rows=\'20\' cols=\'70\' ';
+            $linecol = " rows='20' cols='70'";
         } else {
             $linecol = '';
         }
         $template_code .= '
-                            <tr>
-                                <td><!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' text=\''.$pubfields[$k]['title'].'\']-->:</td>
-                                <td><!--[genericformplugin id=\''.$pubfields[$k]['name'].'\' '.$linecol.$toolTip.'\']--></td>
-                            </tr>
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' __text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').']-->
+                                <!--[genericformplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.']-->'.
+                                ($toolTip ? '<span class="z-formnote z-sub"><!--[gt text=\''.$toolTip.'\']--></span>' : '').'
+                            </div>
                             ';
     }
-    $template_code .= '
-                            <tr>
-                                <td><!--[pnformlabel for=\'core_publishdate\' text=\'' . __('Publish Date') . '\']-->:</td>
-                                <td><!--[pnformdateinput id=\'core_publishdate\' includeTime=\'1\']--></td>
-                            </tr>
+    $template_code .= '     </fieldset>
 
-                            <tr>
-                                <td><!--[pnformlabel for=\'core_expiredate\' text=\'' . __('Expire Date') . '\']-->:</td>
-                                <td><!--[pnformdateinput id=\'core_expiredate\' includeTime=\'1\']--></td>
-                            </tr>
+                            <fieldset>
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\'core_language\' __text=\'' . no__('Language') . '\']-->
+                                <!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']-->
+                            </div>
 
-                            <tr>
-                                <td><!--[pnformlabel for=\'core_language\' text=\'' . __('Language') . '\']-->:</td>
-                                <td><!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']--></td>
-                            </tr>
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\'core_publishdate\' __text=\'' . no__('Publish date') . '\']-->
+                                <!--[pnformdateinput id=\'core_publishdate\' includeTime=\'1\']-->
+                            </div>
 
-                            <tr>
-                                <td><!--[pnformlabel for=\'core_showinlist\' text=\'' . __('Show in List') . '\']-->:</td>
-                                <td><!--[pnformcheckbox id=\'core_showinlist\' checked=\'checked\']--></td>
-                            </tr>
-                        </table>
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\'core_expiredate\' __text=\'' . no__('Expire date') . '\']-->
+                                <!--[pnformdateinput id=\'core_expiredate\' includeTime=\'1\']-->
+                            </div>
 
-                        <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$core_tid`-`$core_pid`" module=\'pagemaster\']-->
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\'core_showinlist\' __text=\'' . no__('Show in list') . '\']-->
+                                <!--[pnformcheckbox id=\'core_showinlist\' checked=\'checked\']-->
+                            </div>
+                            </fieldset>
 
-                        <!--[foreach item=\'action\' from=$actions]-->
-                            <!--[pnformbutton commandName=$action.id text=$action.title|pnml]-->
-                        <!--[/foreach]-->
+                            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$core_tid`-`$core_pid`" module=\'pagemaster\']-->
+
+                            <div class="z-formbuttons">
+                                <!--[foreach item=\'action\' from=$actions]-->
+                                    <!--[gt text=$action.title assign=\'actiontitle\']-->    
+                                    <!--[pnformbutton commandName=$action.id text=$actiontitle]-->
+                                <!--[/foreach]-->
+                            </div>
+                        </div>
                         <!--[/pnform]-->
                         ';
 
@@ -152,15 +167,22 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
                 <!--[insert name=\'getstatusmsg\']-->
 
                 <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                    <div class="z-warningmsg"><!--[gt text=\"This is a generic template. Your can create a customized template (<b>viewpub_{$pubtype_name}.htm</b>) and store it in the the directory <b>/config/templates/pagemaster/input/</b> or within your theme in the <b>/templates/modules/pagemaster/input/</b> subfolder.\"]--></div>
+                    <div class="z-warningmsg">
+                        <!--[pnmodurl modname=\'pagemaster\' type=\'admin\' func=\'showcode\' mode=\'outputfull\' tid=$pubtype.tid assign=\'urlpvcode\']-->
+                        <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the pubview code</a> and create a customized template (<b>viewpub_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/viewpub_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/viewpub_%2$s.htm</b>.\' tag1=$urlpvcode tag2=$pubtype.filename]-->
+                    </div>
                 <!--[/pnsecauthaction_block]-->
 
-                <h1><!--[pnml name=\'' . $pubtype['title'] . '\']--></h1>
+                <h1><!--[gt text=\''.$pubtype['title'].'\']--></h1>
 
-                <p><!--[pnml name=\'' . $pubtype['description'] . '\']--></p>
+                <!--[assign var=\'pubtypedesc\' value=\''. $pubtype['description'] .'\']-->
+                <!--[if $pubtypedesc neq \'\']-->
+                    <div><!--[gt text=\''. $pubtype['description'] .'\']--></div>
+                <!--[/if]-->
 
+                <div class="z-form">
                 ';
-
+//z_prayer($pubdata);
     foreach ($pubdata as $key => $pubfield)
     {
         $template_code_add = '';
@@ -170,54 +192,100 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
         if (isset($pubfields[$key])) {
             $field = $pubfields[$key];
 
-            $template_code_fielddesc = '<!--[pnml name=\''.$field['title'].'\']-->: ';
-            // image plugin
-            if ($field['fieldplugin'] == 'function.pmformimageinput.php') {
-                $template_code_add = '<!--[if $'.$field['name'].'.url neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $field['name'] .'.orig_name]--><br />
-                                      <img src="<!--[$' . $field['name'] . '.thumbnailUrl]-->" /><br />
-                                      <img src="<!--[$' . $field['name'] . '.url]-->" /><br />
-                                      <!--[/if]-->'."\n\n";
-            // list input
-            } elseif ($field['fieldplugin'] == 'function.pmformlistinput.php') {
-                $template_code_add = '<!--[if $'.$field['name'].'.fullTitle neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $field['name'] .'.fullTitle]--><br/>'."\n".'<!--[/if]-->'."\n\n";
+            $template_code_fielddesc = '<!--[gt text=\''.$field['title'].'\']-->:';
 
-            // multilist input
-            } elseif ($field['fieldplugin'] == 'function.pmformmultilistinput.php') {
-                $template_code_add = '<!--[if $'.$field['name'].' neq null]-->'."\n".$template_code_fielddesc.'<br />
-                <ul>
-                    <!--[foreach from=$items item=\'item\']-->
-                    <!--[array_field_isset assign=\'itemname\' array=$item.display_name field=$core_language returnValue=1]-->
-                    <!--[if $itemname eq \'\']--><!--[assign var=\'itemname\' value=$item.name]--><!--[/if]-->
-                    <li><!--[$itemname]--></li>
-                    <!--[/foreach]-->
-                </ul>
-                <!--[/if]-->'."\n\n";
+            // handle some special plugins
+            // FIXME move this to each plugin?
+            switch ($field['fieldplugin'])
+            { 
+                // image plugin
+                case 'pmformimageinput':
+                    $template_code_add = '<!--[if $'.$field['name'].'.url neq \'\']-->
+                                              <div class="z-formrow">
+                                                  <span class="z-label">'.$template_code_fielddesc.'</span>
+                                                  <span class="z-formnote">
+                                                      <!--[$'.$field['name'].'.orig_name]--><br />
+                                                      <img src="<!--[$'.$field['name'].'.thumbnailUrl]-->" /><br />
+                                                      <img src="<!--[$'.$field['name'].'.url]-->" />
+                                                  <span>
+                                              </div>
+                                          <!--[/if]-->'."\n\n";
+                    break;
 
-            // publication input
-            } elseif ($field['fieldplugin'] == 'function.pmformpubinput.php') {
-                $template_code_add = '<!--[if $'.$key.' neq \'\']-->'."\n".$template_code_fielddesc.'<!--[pnmodapifunc modname=\'pagemaster\' checkPerm=true handlePluginFields=true getApprovalState=true func=\'getPub\' tid=\''.$field['typedata'].'\' pid=$'.$key.' assign=\''.$key.'_publication\']-->'."\n".'<!--[/if]-->'."\n\n";
+                // list input
+                case 'pmformlistinput':
+                    $template_code_add = '<!--[if $'.$field['name'].'.fullTitle neq \'\']-->
+                                              <div class="z-formrow">
+                                                  <span class="z-label">'.$template_code_fielddesc.'</span>
+                                                  <span class="z-formnote"><!--[$'.$key.'.fullTitle]--><span>
+                                              </div>
+                                          <!--[/if]-->'."\n\n";
+                    break;
+
+                // multilist input
+                case 'pmformmultilistinput':
+                    $template_code_add = '<!--[if $'.$field['name'].' neq \'\']-->
+                                              <div class="z-formrow">
+                                                  <span class="z-label">'.$template_code_fielddesc.'</span>
+                                                  <span class="z-formnote">
+                                                      <ul>
+                                                          <!--[foreach from=$'.$key.' item=\'item\']-->
+                                                              <li><!--[$item.fullTitle]--></li>
+                                                          <!--[/foreach]-->
+                                                      </ul>
+                                                  <span>
+                                              </div>
+                                          <!--[/if]-->'."\n\n";
+                    break;
+
+                // publication input
+                case 'pmformpubinput'://z_prayer($field);
+                    $template_code_add = '<!--[if $'.$key.' neq \'\']-->
+                                              <div class="z-formrow">
+                                                  <span class="z-label">'.$template_code_fielddesc.'</span>
+                                                  <span class="z-formnote"><pre><!--[pmarray array=$'.$key.']--></pre><!--[*pnmodapifunc modname=\'pagemaster\' func=\'getPub\' tid=\''.$field['typedata'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*]--><span>
+                                              </div>
+                                          <!--[/if]-->'."\n\n";
+                    break;
             }
         }
 
         // if it was no special field handle it normal
-        if ($template_code_add == '') {
-            if ($template_code_fielddesc == '') {
-                $template_code_fielddesc = $key.': ';
+        if (empty($template_code_add)) {
+            if (empty($template_code_fielddesc)) {
+                $template_code_fielddesc = $key.':';
             }
-            if (is_array($pubfield)) {
-                foreach ($pubfield as $a => $b) {
-                    $template_code_add = '<!--[$'. $key .'.'. $a .']--><br/>'."\n\n";
-                }
+            // filter some core fields (uids)
+            if (in_array($key, array('core_author', 'cr_uid', 'lu_uid'))) {
+                $snippet_body = '<!--[$'.$key.'|userprofilelink]--> (<!--[$'.$key.'|pnvarprephtmldisplay]-->)';
+            // flags
+            } elseif (in_array($key, array('core_online', 'core_indepot', 'core_showinmenu', 'core_showinlist'))) {
+                $snippet_body = '<!--[$'.$key.'|yesno]-->';
+            // generic arrays
+            } elseif (is_array($pubfield)) {
+                $snippet_body = '<pre><!--[pmarray array=$'.$key.']--></pre>';
+            // generic strings
             } else {
-                $template_code_add = '<!--[if $'.$key.' neq \'\']-->'."\n".$template_code_fielddesc.'<!--[$'. $key .'|pnvarprephtmldisplay]--><br/>'."\n".'<!--[/if]-->'."\n\n";
+                $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay]-->';
             }
+            // build the final snippet
+            $template_code_add = '<!--[if $'.$key.' neq \'\']-->
+                                      <div class="z-formrow">
+                                          <span class="z-label">'.$template_code_fielddesc.'</span>
+                                          <span class="z-formnote">'.$snippet_body.'<span>
+                                      </div>
+                                  <!--[/if]-->'."\n\n";
         }
+
+        // add the snippet to the final template 
         $template_code .= $template_code_add;
     }
 
     // Add the Hooks support for viewpub
-    $template_code .= "\n".'<!--[pnmodurl modname=\'pagemaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\']-->
-                            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'pagemaster\' returnurl=$returnurl]-->';
+    $template_code .= '</div>
+
+                       <!--[pnmodurl modname=\'pagemaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\']-->
+                       <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'pagemaster\' returnurl=$returnurl]-->';
     
     return $template_code;
 }
@@ -228,23 +296,30 @@ function PMgetPluginsOptionList()
     //Loader::LoadClass checks these dirs, strange
     $classDirs[] = 'config/classes/modules/pagemaster/classes/FormPlugins';
     $classDirs[] = 'modules/pagemaster/classes/FormPlugins';
+
     $plugins = array ();
     foreach ($classDirs as $classDir) {
-        if ($dh = opendir($classDir)) {
-            while (($file = readdir($dh)) !== false) {
-                if (substr($file, 0, 6) == 'pmform') {
-                    $pluginclass = substr($file, 0, -10);
-                    $plugin = PMgetPlugin($pluginclass);
-                    $plugins[] = array (
-                        'plugin' => $plugin,
-                        'class' => $pluginclass    
-                    );
-                }
+        $files = FileUtil::getFiles($classDir, false, true, 'php', 'f');
+        foreach ($files as $file) {
+            if (substr($file, 0, 6) == 'pmform') {
+                $pluginclass = substr($file, 0, -10);
+                $plugin = PMgetPlugin($pluginclass);
+                $plugins[] = array (
+                    'plugin' => $plugin,
+                    'class' => $pluginclass    
+                );
             }
-            closedir($dh);
         }
     }
+
+    uasort($plugins, '_PMsortPluginList');
+
     return $plugins;
+}
+
+function _PMsortPluginList($a, $b)
+{
+    return strcmp($a['plugin']->title, $b['plugin']->title);
 }
 
 function PMgetWorkflowsOptionList()
@@ -255,16 +330,12 @@ function PMgetWorkflowsOptionList()
             if (!is_dir($dir) || !is_readable($dir)) {
                 return;
             }
-            if ($dh = opendir($dir)) {
-                while (($file = readdir($dh)) !== false) {
-                    if (substr($file, -4, 4) == '.xml') {
-                        $plugins[] = array (
-                            'text'  => $file,
-                            'value' => $file
-                        );
-                    }
-                }
-                closedir($dh);
+            $files = FileUtil::getFiles($dir, false, true, 'xml', 'f');
+            foreach ($files as $file) {
+                $plugins[] = array (
+                    'text'  => $file,
+                    'value' => $file
+                );
             }
         }
     }
@@ -284,11 +355,10 @@ function PMhandlePluginFields($publist, $pubfields)
     foreach ($pubfields as $fieldname => $field) {
         $pluginclass = $field['fieldplugin'];
         $plugin = PMgetPlugin($pluginclass);
+
         if (method_exists($plugin, 'postRead')) {
-            foreach ($publist as $key => $pub) {
-                if (isset($pub[$fieldname]) && $pub[$fieldname] <> '') {
-                    $publist[$key][$fieldname] = $plugin->postRead($pub[$fieldname], $field);
-                }
+            foreach (array_keys($publist) as $key) {
+                $publist[$key][$fieldname] = $plugin->postRead($publist[$key][$fieldname], $field);
             }
         }
     }

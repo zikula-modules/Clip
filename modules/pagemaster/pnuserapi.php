@@ -199,14 +199,14 @@ function pagemaster_userapi_getPub($args)
         }
     } else {
         if (empty($args['id'])) {
-            $prefix = pnConfigGetVar('prefix');
-            $where .= " pm_pid = ".$args['pid']." AND pm_id = (SELECT MAX(pm_id) FROM {$prefix}_pagemaster_pubdata$tid WHERE pm_pid = ".$args['pid'].")";
+            $tablem = DBUtil::getLimitedTablename($tablename);
+            $where .= " pm_pid = ".$args['pid']." AND pm_id = (SELECT MAX(pm_id) FROM $tablem WHERE pm_pid = ".$args['pid'].")";
         } else {
             $where .= ' pm_id = '.$args['id'];
         }
     }
 
-    $publist = array();
+    $publist = DBUtil::selectObjectArray($tablename, $where);
 
     // Handle the plugins data if needed
     if ($handlePluginFields){

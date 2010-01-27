@@ -7,3 +7,5 @@
 	without worry about the plugins data integrity.
 	0.2.1 also changes the upload path to a root-relative path,
 	to build the URLs in the display with ease ;-)
+
+	the pmform plugins needs to handle empty or null $data in postRead

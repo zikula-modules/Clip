@@ -10,12 +10,21 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformintinput.php');
+require_once('system/pnForm/plugins/function.pnformintinput.php');
 
 class pmformintinput extends pnFormIntInput
 {
     var $columnDef = 'I (9,0)';
-    var $title =     'Integer Value';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('Integer Value', $dom);
+
+        parent::__construct();
+    }
 
     function getFilename()
     {

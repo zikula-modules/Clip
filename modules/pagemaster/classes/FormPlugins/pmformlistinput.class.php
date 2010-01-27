@@ -10,13 +10,22 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformcategoryselector.php');
+require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
 
 class pmformlistinput extends pnFormCategorySelector
 {
     var $columnDef   = 'I (9,0)';
-    var $title       = 'List';
+    var $title;
     var $filterClass = 'pmList';
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('List', $dom);
+
+        parent::__construct();
+    }
 
     function getFilename()
     {
@@ -25,22 +34,34 @@ class pmformlistinput extends pnFormCategorySelector
 
     static function postRead($data, $field)
     {
-        Loader::loadClass('CategoryUtil');
-        $cat = CategoryUtil::getCategoryByID($data);
-        $lang =ZLanguage::getLanguageCode();
+        // this plugin return an array
+        $cat = array();
 
-        // compatible mode to pagesetter
-        $cat['fullTitle'] = (isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name']);
-        $cat['value']     = $cat['name'];
-        $cat['title']     = $cat['name'];
+        // if there's a value extract the category
+        if (!empty($data) && is_numeric($data)) {
+            Loader::loadClass('CategoryUtil');
+
+            $cat  = CategoryUtil::getCategoryByID($data);
+
+            if (empty($cat)) {
+                return array();
+            }
+
+            $lang = ZLanguage::getLanguageCode();
+
+            // compatible mode to pagesetter
+            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+            $cat['value']     = $cat['name'];
+            $cat['title']     = $cat['name'];
+        }
+
         return $cat;
     }
 
     function render(&$render)
     {
-        if ($this->mandatory == '1') {
-            $mand = ' *';
-        }
+        $mand = ($this->mandatory == '1') ? ' <span class="z-mandatorysym">*</span>' : '';
+
         return parent::render($render).$mand;
     }
 
@@ -65,6 +86,7 @@ class pmformlistinput extends pnFormCategorySelector
         } else {
             $params['category'] = 30; // Global category
         }
+
         parent::load(&$render, $params);
     }
 
@@ -92,7 +114,9 @@ class pmformlistinput extends pnFormCategorySelector
     static function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
+
         Loader::loadClass('CategoryUtil');
+
         $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
         $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
 

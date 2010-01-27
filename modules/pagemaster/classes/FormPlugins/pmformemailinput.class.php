@@ -10,12 +10,21 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformemailinput.php');
+require_once('system/pnForm/plugins/function.pnformemailinput.php');
 
 class pmformemailinput extends pnFormEMailInput
 {
     var $columnDef = 'C(100)';
-    var $title     = 'Email';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('Email', $dom);
+
+        parent::__construct();
+    }
 
     function getFilename()
     {

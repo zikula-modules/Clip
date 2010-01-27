@@ -10,12 +10,21 @@
  * @subpackage  pagemaster
  */
 
-require_once ('system/pnForm/plugins/function.pnformtextinput.php');
+require_once('system/pnForm/plugins/function.pnformtextinput.php');
 
 class pmformmsinput extends pnFormTextInput
 {
     var $columnDef = 'C(255)';
-    var $title = 'Mediashare';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('Mediashare', $dom);
+
+        parent::__construct();
+    }
 
     function getFilename()
     {
@@ -24,14 +33,27 @@ class pmformmsinput extends pnFormTextInput
 
     static function postRead($data, $field)
     {
-        $lang =ZLanguage::getLanguageCode();
-        Loader :: loadClass('CategoryUtil');
-        $cat = CategoryUtil :: getCategoryByID($data);
+        // this plugin return an array
+        $cat = array();
 
-        //compatible mode to pagesetter
-        $cat['fullTitle'] = $cat['display_name'][$lang];
-        $cat['value'] = $cat['name'];
-        $cat['title'] = $cat['name'];
+        // if there's a value extract the category
+        if (!empty($data) && is_numeric($data)) {
+            Loader::loadClass('CategoryUtil');
+
+            $cat  = CategoryUtil::getCategoryByID($data);
+
+            if (empty($cat)) {
+                return array();
+            }
+
+            $lang = ZLanguage::getLanguageCode();
+
+            // compatible mode to pagesetter
+            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+            $cat['value']     = $cat['name'];
+            $cat['title']     = $cat['name'];
+        }
+
         return $cat;
     }
 }

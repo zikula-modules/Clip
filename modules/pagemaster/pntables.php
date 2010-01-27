@@ -167,37 +167,45 @@ function pagemaster_pntables()
     } else {
         $old_tid = 0;
 
+        $tablefirst = array(
+            'core_title'       => 'pm_pid', // field to be overriden by the title field
+            'core_pid'         => 'pm_pid',
+            'id'               => 'pm_id'
+        );
         $tablecolumncore = array(
             'id'               => 'pm_id',
             'core_pid'         => 'pm_pid',
+            'core_author'      => 'pm_author',
+            'core_hitcount'    => 'pm_hitcount',
+            'core_language'    => 'pm_language',
+            'core_revision'    => 'pm_revision',
             'core_online'      => 'pm_online',
             'core_indepot'     => 'pm_indepot',
-            'core_revision'    => 'pm_revision',
             'core_showinmenu'  => 'pm_showinmenu',
             'core_showinlist'  => 'pm_showinlist',
             'core_publishdate' => 'pm_publishdate',
-            'core_expiredate'  => 'pm_expiredate',
-            'core_language'    => 'pm_language',
-            'core_hitcount'    => 'pm_hitcount',
-            'core_author'      => 'pm_author'
+            'core_expiredate'  => 'pm_expiredate'
         );
         $tabledefcore = array(
             'id'               => 'I PRIMARY AUTO',
             'core_pid'         => 'I NOTNULL',
+            'core_author'      => 'I(11) NOTNULL',
+            'core_hitcount'    => 'I(9) DEFAULT 0',
+            'core_language'    => 'C(3) NOTNULL',
+            'core_revision'    => 'I NOTNULL',
             'core_online'      => 'I4 NOTNULL',
             'core_indepot'     => 'I4 NOTNULL',
-            'core_revision'    => 'I NOTNULL',
             'core_showinmenu'  => 'I4 NOTNULL',
             'core_showinlist'  => 'I4 NOTNULL DEFAULT 1',
             'core_publishdate' => 'T',
-            'core_expiredate'  => 'T',
-            'core_language'    => 'C(3) NOTNULL',
-            'core_hitcount'    => 'I(9) DEFAULT 0',
-            'core_author'      => 'I(11) NOTNULL'
+            'core_expiredate'  => 'T'
         );
 
         // loop the pubfields adding their definitions
         // to their pubdata tables
+        $tablecolumn = array();
+        $tabledef    = array();
+
         for (; !$result->EOF; $result->MoveNext()) {
             $tid       = $result->fields[0];
             $id        = $result->fields[1];
@@ -207,7 +215,7 @@ function pagemaster_pntables()
             // if we change of publication type
             if ($tid != $old_tid && $old_tid != 0) {
                 // add the table definition to the $pntable array
-                pagemaster_addtable($pntable, $old_tid, array_merge($tablecolumncore, $tablecolumn), array_merge($tabledefcore, $tabledef));
+                pagemaster_addtable($pntable, $old_tid, array_merge($tablefirst, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
                 // and reset the columns and definitions for the next pubtype
                 $tablecolumn = array();
                 $tabledef    = array();
@@ -223,7 +231,7 @@ function pagemaster_pntables()
 
         // the final one doesn't trigger a tid change
         if (isset($tablecolumn) && !empty($tablecolumn)) {
-            pagemaster_addtable($pntable, $old_tid, array_merge($tablecolumncore, $tablecolumn), array_merge($tabledefcore, $tabledef));
+            pagemaster_addtable($pntable, $old_tid, array_merge($tablefirst, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
         }
     }
 

@@ -37,12 +37,15 @@ class pnFormPluginType extends pnFormDropdownList
 
     function render($render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $this->cssClass = strpos($this->cssClass, 'pm-plugintypeselector') === false ? $this->cssClass.' pm-plugintypeselector' : $this->cssClass;
         $result = parent::render($render);
+
         $typeDataHtml = '';
         if (!empty($this->selectedValue) && !empty($this->items)) {
             if (!file_exists('javascript/livepipe/livepipe.js') || !file_exists('javascript/livepipe/livepipe.css') ||  !file_exists('javascript/livepipe/window.js')) {
-                LogUtil::registerError(__("Javascript livepipe package was not found or it's incomplete. It's required for the plugin configuration modalbox. Please <a href=\"http://code.zikula.org/pagemaster/downloads\">download it</a> and copy into your site."), null, true);
+                PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/livepipe/livepipe.js');
+                PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/livepipe/window.js');
+                PageUtil::addVar('stylesheet', 'modules/pagemaster/pnjavascript/livepipe/livepipe.css');
             } else {
                 PageUtil::addVar('javascript', 'javascript/livepipe/livepipe.js');
                 PageUtil::addVar('javascript', 'javascript/livepipe/window.js');
@@ -52,7 +55,6 @@ class pnFormPluginType extends pnFormDropdownList
             $plugin = PMgetPlugin($this->selectedValue);
             if (method_exists($plugin, 'getTypeHtml'))
             {
-                echo 1;
                 if (method_exists($plugin, 'getSaveTypeDataFunc')) {
                     $script .= $plugin->getSaveTypeDataFunc($this);
                 } else {
@@ -79,12 +81,12 @@ class pnFormPluginType extends pnFormDropdownList
                 ';
 
                 $typeDataHtml  = '
-                <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/utilities.gif" alt="' . __('Modify config') .'" /></a>
+                <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/utilities.gif" alt="'.__('Modify config', $dom).'" /></a>
                 <div id="typeDataDiv" class="modal">
                     <div>'.$plugin->getTypeHtml($this, $render).'</div>
                     <div>
-                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/extrasmall/filesave.gif" alt="' . _SAVE . '" /></button>&nbsp;
-                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/extrasmall/button_cancel.gif" alt="' . _CANCEL . '" /></button>
+                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/extrasmall/filesave.gif" alt="'.__('Save', $dom).'" /></button>&nbsp;
+                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/extrasmall/button_cancel.gif" alt="'.__('Cancel', $dom).'" /></button>
                     </div>
                 </div>';
             } else {

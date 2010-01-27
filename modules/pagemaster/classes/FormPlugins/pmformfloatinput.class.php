@@ -10,12 +10,21 @@
  * @subpackage  pagemaster
  */
 
-require_once ('system/pnForm/plugins/function.pnformfloatinput.php');
+require_once('system/pnForm/plugins/function.pnformfloatinput.php');
 
 class pmformfloatinput extends pnFormFloatInput {
 
     var $columnDef = 'F';
-    var $title     = 'Float Value';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('Float Value', $dom);
+
+        parent::__construct();
+    }
 
     function getFilename()
     {

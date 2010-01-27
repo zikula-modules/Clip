@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformuploadinput.php');
+require_once('system/pnForm/plugins/function.pnformuploadinput.php');
 
 class pmformuploadinput extends pnFormUploadInput
 {
@@ -21,12 +21,10 @@ class pmformuploadinput extends pnFormUploadInput
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
-        $this->title = __('File Upload');
-    }
+        //! field type name
+        $this->title = __('File Upload', $dom);
 
-    function pmformuploadinput()
-    {
-        $this->__construct();
+        parent::__construct();
     }
 
     function getFilename()
@@ -37,6 +35,7 @@ class pmformuploadinput extends pnFormUploadInput
     function render(&$render)
     {
         $input_html = parent::render($render);
+
         return $input_html.' '.$this->upl_arr['orig_name'];
     }
 
@@ -54,6 +53,9 @@ class pmformuploadinput extends pnFormUploadInput
 
     static function postRead($data, $field)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+
+        // if there's some data, process it
         if (!empty($data)) {
             $arrTypeData = @unserialize($data);
 
@@ -73,11 +75,9 @@ class pmformuploadinput extends pnFormUploadInput
                          'file_name' => ''
                 );
             }
-
-            return $this->upl_arr;
         }
 
-        return NULL;
+        return $this->upl_arr;
     }
 
     static function preSave($data, $field)

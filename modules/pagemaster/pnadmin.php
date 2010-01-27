@@ -23,10 +23,17 @@ class pagemaster_admin_modifyconfigHandler
     function initialize(&$render)
     {
         $modvars = pnModGetVar('pagemaster');
+
         $render->assign('uploadpath', $modvars['uploadpath']);
+
+        // check if there are pubtypes already
+        $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
+
+        $render->assign('alreadyexists', $numpubtypes > 0 ? true : false);
 
         // Upload dir check
         $siteroot = substr(pnServerGetVar('DOCUMENT_ROOT'), 0, -1).pnGetBaseURI().'/';
+
         $render->assign('siteroot', DataUtil::formatForDisplay($siteroot));
 
         if (file_exists($modvars['uploadpath'].'/')) {
@@ -86,6 +93,7 @@ class pagemaster_admin_pubtypesHandler
     function initialize(&$render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
+
         $tid = FormUtil::getPassedValue('tid');
 
         if (!empty($tid) &&  is_numeric($tid)) {
@@ -121,7 +129,7 @@ class pagemaster_admin_pubtypesHandler
                 'value' => 'pm_expiredate'
             );
             $pubarr[] = array (
-                'text'  => __('English', $dom),
+                'text'  => __('Language', $dom),
                 'value' => 'pm_language'
             );
             $pubarr[] = array (
@@ -455,23 +463,30 @@ function pagemaster_admin_showcode()
     $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = $tid", 'pm_lineno', -1, -1, 'name');
 
     // get the code depending of the mode
-    if ($mode == 'input') {
-        $code = PMgen_editpub_tplcode($tid, $pubfields, $pubtype);
+    switch ($mode)
+    {
+        case 'input':
+            $code = PMgen_editpub_tplcode($tid, $pubfields, $pubtype);
+            break;
 
-    } elseif ($mode == 'outputfull') {
-        include_once('includes/pnForm.php');
-        $tablename = 'pagemaster_pubdata'.$tid;
-        $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
-        if ($id <= 0) {
-            return LogUtil::registerError(__('There has to be at least one publication, to generate the template code.', $dom));
-        }
-        $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
-                                array('tid' => $tid,
-                                      'id'  => $id));
-        $code = PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields);
+        case 'outputfull':
+            include_once('includes/pnForm.php');
+            $tablename = 'pagemaster_pubdata'.$tid;
+            $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
+            if ($id <= 0) {
+                return LogUtil::registerError(__('There has to be at least one publication, to generate the template code.', $dom));
+            }
+            $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
+                                    array('tid' => $tid,
+                                          'id'  => $id,
+                                          'handlePluginFields' => true));
 
-    } elseif ($mode == 'outputlist') {
-        $code = file_get_contents('modules/pagemaster/pntemplates/generic_publist.htm');
+            $code = PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields);
+            break;
+
+        case 'outputlist':
+            $code = file_get_contents('modules/pagemaster/pntemplates/generic_publist.htm');
+            break;
     }
 
     // code cleaning

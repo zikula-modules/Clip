@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformdropdownlist.php');
+require_once('system/pnForm/plugins/function.pnformdropdownlist.php');
 
 class pmformpubinput extends pnFormDropdownList
 {
@@ -20,12 +20,10 @@ class pmformpubinput extends pnFormDropdownList
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
-        $this->title = __('Publication');
-    }
+        //! field type name
+        $this->title = __('Publication', $dom);
 
-    function pmformpubinput()
-    {
-        $this->__construct();
+        parent::__construct();
     }
 
     function getFilename()
@@ -36,10 +34,13 @@ class pmformpubinput extends pnFormDropdownList
     static function postRead($data, $field)
     {
         // TODO [Finish this]
+        /*
         if (!empty($field['typedata'])) {
             list($tid, $filter, $join, $joinfields, $orderby) = explode(';', $field['typedata']);
         }
-        return NULL;    
+        */
+
+        return array();    
     }
 
     function load($render)
@@ -51,6 +52,7 @@ class pmformpubinput extends pnFormDropdownList
         }
 
         $pubfields_pub = PMgetPubFields($tid);
+
         $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
                                array('tid'                => $tid,
                                      'countmode'          => 'no',
@@ -89,6 +91,7 @@ class pmformpubinput extends pnFormDropdownList
     static function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
+
         $vars = explode(';', $render->_tpl_vars['typedata']);
 
         $tid         = $vars[0];
@@ -106,7 +109,9 @@ class pmformpubinput extends pnFormDropdownList
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
         $html = '<div class="z-formrow">
-                 <label for="pmplugin_pubtid">'.__('Publication', $dom).':</label><br /><select id="pmplugin_pubtid" name="pmplugin_pubtid">';
+                 <label for="pmplugin_pubtid">'.__('Publication', $dom).':</label><br />
+                 <select id="pmplugin_pubtid" name="pmplugin_pubtid">';
+
         foreach ($pubtypes as $pubtype) {
             if ($pubtype['tid'] == $tid) {
                 $selected = 'selected="selected"';
@@ -115,6 +120,7 @@ class pmformpubinput extends pnFormDropdownList
             }
             $html .= '<option value="'.$pubtype['tid'].'" '.$selected.' >'.$pubtype['title'].'</option>';
         }
+
         $html .= '</select>
                   </div>';
         $html .= '<div class="z-formrow">
@@ -129,6 +135,7 @@ class pmformpubinput extends pnFormDropdownList
         $html .= '<div class="z-formrow">
                   <label for="pmplugin_puborderbyfield">'.__('Orderby field', $dom).':</label><br /><input type="text" id="pmplugin_puborderbyfield" name="pmplugin_puborderbyfield" value="'.$orderby_field.'" >
                  </div>';
+
         return $html;
     }
 }

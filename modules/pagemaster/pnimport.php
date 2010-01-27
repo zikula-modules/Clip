@@ -13,24 +13,22 @@ Loader::includeOnce('modules/pagemaster/common.php');
 
 function pagemaster_import_importps()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerError(__('No permission', $dom));
+        return LogUtil::registerPermissionError();
     }
 
     $step = FormUtil::getPassedValue('step');
     if (!empty($step)) {
-        $ret = pnModAPIFunc('pagemaster', 'import', 'importps'.$step);
+        pnModAPIFunc('pagemaster', 'import', 'importps'.$step);
     }
+
+    // check if there are pubtypes already
+    $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
+
+    // build the output
     $render = pnRender::getInstance('pagemaster', null, null, true);
 
-    // check if exitsts
-    $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
-    if (count($pubtypes) > 0) {
-        $render->assign('allreadyexists', 1);
-    } else {
-        $render->assign('allreadyexists', 0);
-    }
+    $render->assign('alreadyexists', $numpubtypes > 0 ? true : false);
 
     return $render->fetch('pagemaster_admin_importps.htm');
 }

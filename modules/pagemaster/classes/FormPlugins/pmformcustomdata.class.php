@@ -10,12 +10,21 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformtextinput.php');
+require_once('system/pnForm/plugins/function.pnformtextinput.php');
 
 class pmformcustomdata extends pnFormTextInput
 {
     var $columnDef = 'X';
-    var $title     = 'Custom Data';
+    var $title;
+
+    function __construct()
+    {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+        //! field type name
+        $this->title = __('Custom Data', $dom);
+
+        parent::__construct();
+    }
 
     function getFilename()
     {
@@ -25,6 +34,7 @@ class pmformcustomdata extends pnFormTextInput
     function create(&$render, $params)
     {
         parent::create($render, $params);
+
         if (empty($this->text)) {
             $config = $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0);
             $defaultvalue = isset($config['configvars'][1]) ? $config['configvars'][1] : '';
@@ -39,11 +49,13 @@ class pmformcustomdata extends pnFormTextInput
         if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
             $render->assign($this->inputName.'_typedata', $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0));
         }
+
         return parent::render($render);
     }
 
     static function postRead($data, $field)
     {
+        // if there's any data, process it
         if (!empty($data)) {
             $data = @unserialize($data);
 
@@ -69,9 +81,10 @@ class pmformcustomdata extends pnFormTextInput
             } else {
                 return array('enabled' => 'off');
             }
-        } else {
-            return NULL;
         }
+
+        // this plugin returns an array by default
+        return array();
     }
 
     function decode(&$render)
@@ -184,7 +197,9 @@ class pmformcustomdata extends pnFormTextInput
 
     static function getTypeHtml($field, $render)
     {
-        PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/Zikula.itemlist.js');
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+
+        PageUtil::addVar('javascript', 'javascript/helpers/Zikula.itemlist.js');
 
         // parse the data
         if (isset($render->_tpl_vars['typedata'])) {
@@ -293,8 +308,9 @@ class pmformcustomdata extends pnFormTextInput
      */
     function parseConfig($arrayConfig, $indexKey=null)
     {
-        $result = array();
         $arrayConfig = explode('||', $arrayConfig);
+
+        $result = array();
         foreach ($arrayConfig as $row) {
             $tmp = explode('|', $row);
             if (!is_null($indexKey) && isset($tmp[$indexKey]) && !empty($tmp[$indexKey])) {
@@ -303,6 +319,7 @@ class pmformcustomdata extends pnFormTextInput
                 $result[] = $tmp;
             }
         }
+
         return $result;
     }
 

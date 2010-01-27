@@ -30,6 +30,10 @@ div.pm-menu {
 	border-right: 1px solid #ccc;
 }
 
+.z-form div.z-formrow select.pm-plugintypeselector {
+  width: 66.2%;
+}
+
 #newpubfield {
 	position: relative;
 }

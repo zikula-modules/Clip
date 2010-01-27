@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformtextinput.php');
+require_once('system/pnForm/plugins/function.pnformtextinput.php');
 
 class pmformtextinput extends pnFormTextInput
 {
@@ -20,12 +20,10 @@ class pmformtextinput extends pnFormTextInput
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
-        $this->title = __('Text');
-    }
+        //! field type name
+        $this->title = __('Text', $dom);
 
-    function pmformtextinput()
-    {
-        $this->__construct();
+        parent::__construct();
     }
 
     function getFilename()
@@ -45,6 +43,7 @@ class pmformtextinput extends pnFormTextInput
                                         'areas'      => $scribite_arr));
             PageUtil::setVar('rawtext', $scribite);
         }
+
         return parent::render($render);
     }
 
@@ -52,21 +51,21 @@ class pmformtextinput extends pnFormTextInput
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 if ($(\'pmplugin_usescribite\')) {
-                                     if ($F(\'pmplugin_usescribite\') == \'on\') {
-                                         $(\'typedata\').value = 1;
-                                     } else {
-                                         $(\'typedata\').value = 0;
-                                     }
+                                 if ($(\'pmplugin_usescribite\') && $F(\'pmplugin_usescribite\') == \'on\') {
+                                     $(\'typedata\').value = 1;
+                                 } else {
+                                     $(\'typedata\').value = 0;
                                  }
                                  closeTypeData();
                              }';
+
         return $saveTypeDataFunc;
     }
 
     static function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
+
         if (isset($render->_tpl_vars['typedata']) && $render->_tpl_vars['typedata'] == 1) {
             $checked = 'checked="checked"';
         } else {

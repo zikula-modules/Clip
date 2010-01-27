@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-Loader::requireOnce('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
+require_once('system/pnForm/plugins/function.pnformcategorycheckboxlist.php');
 
 class pmformmulticheckinput extends pnFormCategoryCheckboxList
 {
@@ -21,12 +21,10 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
-        $this->title = __('MultiCheckbox List');
-    }
+        //! field type name
+        $this->title = __('MultiCheckbox List', $dom);
 
-    function pmformmulticheckinput()
-    {
-        $this->__construct();
+        parent::__construct();
     }
 
     function getFilename()
@@ -37,20 +35,24 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     static function postRead($data, $field)
     {
         if (!empty($data) && $data <> '::') {
-            $lang =ZLanguage::getLanguageCode();
+            $lang = ZLanguage::getLanguageCode();
             if (strpos($data, ':') === 0) {
                 $data = substr($data, 1, -1);
             }
+
             $catIds = explode(':', $data);
             if (!empty($catIds)) {
                 Loader::loadClass('CategoryUtil');
                 pnModDBInfoLoad('Categories');
+
                 $pntables        = pnDBGetTables();
                 $category_column = $pntables['categories_category_column'];
+
                 $where = array();
                 foreach ($catIds as $catId) {
                     $where[] = $category_column['id'].' = \''.DataUtil::formatForStore($catId).'\'';
                 }
+
                 $cat_arr = CategoryUtil::getCategories(implode(' OR ', $where), '', 'id');
                 foreach ($catIds as $catId) {
                     $cat_arr[$catId]['fullTitle'] = (isset($cat_arr[$catId]['display_name'][$lang]) ? $cat_arr[$catId]['display_name'][$lang] : $cat_arr[$catId]['name']);
@@ -62,15 +64,13 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
 
     function render(&$render)
     {
-        if ($this->mandatory == '1') {
-            $mand = '* Pflichtfeld';
-        }
-        return $mand.parent::render($render);
+        return parent::render($render);
     }
 
     function create(&$render, &$params)
     {
         $this->saveAsString = 1;
+
         parent::create($render, $params);
     }
 
@@ -101,6 +101,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     static function getTypeHtml($field)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
+
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
