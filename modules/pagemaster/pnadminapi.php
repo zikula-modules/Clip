@@ -55,7 +55,7 @@ function pagemaster_adminapi_getlinks()
         );
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'create_tid'),
-            'text' => __('New publication tType', $dom)
+            'text' => __('New publication type', $dom)
         );
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'modifyconfig'),
