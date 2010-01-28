@@ -1,5 +1,9 @@
 <!--[* $Id: $ *]-->
 
+<h1><!--[gt text=$pubtype.title]--></h1>
+
+<!--[include file='pagemaster_generic_navbar.htm' func='publist']-->
+
 <!--[insert name='getstatusmsg']-->
 
 <!--[pnsecauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN]-->
@@ -8,6 +12,11 @@
 	<!--[gt text='This is a generic template. Your can <a href="%1$s">get the publist code</a> and create a customized template (<b>publist_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/publist_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/publist_%2$s.htm</b>.' tag1=$urlplcode tag2=$pubtype.filename]-->
 </div>
 <!--[/pnsecauthaction_block]-->
+
+<!--[if $pubtype.description neq '']-->
+<p class="pm-pubdesc"><!--[gt text=$pubtype.description]--></p>
+<!--[/if]-->
+
 <!--[pnsecauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT]-->
 <p>
 	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->">
@@ -21,17 +30,20 @@
 		<!--[foreach from=$publist item='pubitem']-->
 		<tr class="<!--[cycle values='z-even,z-odd']-->">
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$tid pid=$pubitem.core_pid]-->"><!--[$pubitem.$core_titlefield]--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$pubtype.tid pid=$pubitem.core_pid]-->"><!--[$pubitem.$core_titlefield]--></a>
 			</td>
 			<td class="z-right">
-				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$tid pid=$pubitem.core_pid]-->">
+				<!--[strip]-->
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$pubtype.tid pid=$pubitem.core_pid]-->">
 					<!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View']-->
 				</a>
 				<!--[pnsecauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD]-->
-				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$tid pid=$pubitem.core_pid]-->">
+				&nbsp;
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid pid=$pubitem.core_pid]-->">
 					<!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit']-->
 				</a>
 				<!--[/pnsecauthaction_block]-->
+				<!--[/strip]-->
 			</td>
 		</tr>
 		<!--[foreachelse]-->

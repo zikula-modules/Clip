@@ -215,7 +215,7 @@ function pagemaster_admin_showcode()
             $tablename = 'pagemaster_pubdata'.$tid;
             $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
             if ($id <= 0) {
-                return LogUtil::registerError(__('There has to be at least one publication, to generate the template code.', $dom));
+                return LogUtil::registerError(__('There has to be at least one publication to generate the template code.', $dom));
             }
             $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
                                     array('tid' => $tid,

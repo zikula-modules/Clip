@@ -18,6 +18,10 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
 {
     // FIXME Review template path (to pnForm?)
     $template_code = '
+                      <h1><!--[gt text=$pubtype.title]--></h1>
+
+                      <!--[include file=\'pagemaster_generic_navbar.htm\' func=\'pubedit\']-->
+
                       <!--[insert name=\'getstatusmsg\']-->
 
                       <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
@@ -27,17 +31,15 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
                           </div>
                       <!--[/pnsecauthaction_block]-->
 
-                      <h1><!--[gt text=\''. $pubtype['title'] .'\']--></h1>
-
-                      <!--[assign var=\'pubtypedesc\' value=\''. $pubtype['description'] .'\']-->
-                      <!--[if $pubtypedesc neq \'\']-->
-                          <div><!--[gt text=\''. $pubtype['description'] .'\']--></div>
+                      <!--[if $pubtype.description neq \'\']-->
+                      <div class="pm-pubdesc"><!--[gt text=$pubtype.description]--></div>
                       <!--[/if]-->
 
                       <!--[pnform cssClass=\'z-form\' enctype=\'multipart/form-data\']-->
                           <div>
                               <!--[pnformvalidationsummary]-->
                               <fieldset>
+                              <legend><!--[if isset($id)]--><!--[gt text=\'Edit publication\']--><!--[else]--><!--[gt text=\'New publication\']--><!--[/if]--></legend>
                       ';
 
     foreach (array_keys($pubfields) as $k) {
@@ -77,6 +79,7 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
     $template_code .= '     </fieldset>
 
                             <fieldset>
+                            <legend><!--[gt text=\'Publication options\']--></legend>
                             <div class="z-formrow">
                                 <!--[pnformlabel for=\'core_language\' __text=\'' . no__('Language') . '\']-->
                                 <!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']-->
@@ -116,8 +119,12 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
 function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
 {
     $template_code = '<!--[pndebug]-->
-
                 <!--[hitcount pid=$core_pid tid=$core_tid]-->
+
+                <h1><!--[gt text=$pubtype.title]--></h1>
+
+                <!--[include file=\'pagemaster_generic_navbar.htm\' func=\'pubview\']-->
+
                 <!--[insert name=\'getstatusmsg\']-->
 
                 <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
@@ -127,11 +134,8 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
                     </div>
                 <!--[/pnsecauthaction_block]-->
 
-                <h1><!--[gt text=\''.$pubtype['title'].'\']--></h1>
-
-                <!--[assign var=\'pubtypedesc\' value=\''. $pubtype['description'] .'\']-->
-                <!--[if $pubtypedesc neq \'\']-->
-                    <div><!--[gt text=\''. $pubtype['description'] .'\']--></div>
+                <!--[if $pubtype.description neq \'\']-->
+                <div class="pm-pubdesc"><!--[gt text=$pubtype.description]--></div>
                 <!--[/if]-->
 
                 <div class="z-form">

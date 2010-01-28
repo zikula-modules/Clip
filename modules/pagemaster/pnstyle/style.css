@@ -9,9 +9,12 @@
  * @subpackage  pagemaster
  */
 
-div.z-menu {
-  width: 100%;
-  text-align: left;
+.pn-module-pagemaster div.z-menu {
+  margin-bottom: 1em;
+}
+.pn-module-pagemaster div.z-menu .pm-breadtext {
+  color: #444;
+  padding: 3px;
 }
 div.pm-menu {
   margin-bottom: 1.5em;

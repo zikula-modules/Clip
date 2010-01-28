@@ -148,6 +148,8 @@ function pagemaster_user_pubedit()
     // create the output object
     $render = FormUtil::newpnForm('pagemaster');
 
+    $render->assign('pubtype', $pubtype);
+
     // resolve the template to use
     $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'display_alerts', false);
 
@@ -426,7 +428,8 @@ function pagemaster_user_viewpub($args)
         return LogUtil::registerError(__('No such publication found.', $dom));
     }
 
-    $core_title = PMgetTitleField($pubfields);
+    $core_title            = PMgetTitleField($pubfields);
+    $pubtype['titlefield'] = $core_title;
 
     // assign each field of the pubdata to the output
     $render->assign($pubdata);
