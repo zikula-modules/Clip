@@ -7,8 +7,8 @@
 
 	<h2><!--[gt text='Publication types']--></h2>
 
-	<!--[pnmodurl modname='pagemaster' type='admin' func='create_tid' assign='urlcreate']-->
-	<p><!--[gt text='Here the list of the existing Publication types (pubtypes). If you don\'t have one yet, go to the <a href="%s">New Publication Type form</a> and create one; after that, you\'ll be able to add the fields for the publications within that type, and once you have the fields you want, edit the Publication type and press the <strong>Update the DB</strong> button. After create/update the table of your pubtype, you can add publications and customize the templates for your pubtype starting of the code that pagemaster generate for you. Enjoy!' tag1=$urlcreate]--></p>
+	<!--[pnmodurl modname='pagemaster' type='admin' func='pubtype' assign='urlcreate']-->
+	<p><!--[gt text='Here the list of the existing Publication types (pubtypes). If you don\'t have one yet, go to the <a href="%s">New publication type form</a> and create one; after that, you\'ll be able to add the fields for the publications within that type, and once you have the fields you want, edit the Publication type and press the <strong>Update DB</strong> button. After create/update the table of your pubtype, you can add publications and customize the templates for your pubtype starting of the code that pagemaster generate for you. Enjoy!' tag1=$urlcreate]--></p>
 	
 	<table class="z-datatable">
 	<thead>
@@ -19,9 +19,9 @@
 			<th><!--[gt text='Show publications list']--></th>
 			<th><!--[gt text='Show admin publist']--></th>
 			<th><!--[gt text='New publication']--></th>
-			<th><!--[gt text='Show Form code']--></th>
-			<th><!--[gt text='Show PubList code']--></th>
-			<th><!--[gt text='Show PubView code']--></th>
+			<th><!--[gt text='Show form code']--></th>
+			<th><!--[gt text='Show pub list code']--></th>
+			<th><!--[gt text='Show pub view code']--></th>
 		</tr>
 		</thead>
 
@@ -29,13 +29,13 @@
 		<!--[foreach from=$pubtypes item='pubtype']-->
 		<tr class="<!--[cycle values='z-odd,z-even']-->">
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='create_tid' tid=$pubtype.tid]-->"><!--[$pubtype.title]--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='pubtype' tid=$pubtype.tid]-->"><!--[$pubtype.title]--></a>
 			</td>
 			<td>
 				<!--[$pubtype.description]-->
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='db_update.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='pubfields' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='db_update.gif' set='icons/extrasmall']--></a>
 			</td>
 			<td>
 				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='main' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall']--></a>

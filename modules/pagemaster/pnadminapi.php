@@ -28,7 +28,7 @@ function pagemaster_adminapi_updatetabledef($args)
 
     $pntable = &pnDBGetTables();
     if (!isset($pntable[$tablename])) {
-        $urlfields = pnModURL('pagemaster', 'admin', 'editpubfields', array('tid' => $args['tid']));
+        $urlfields = pnModURL('pagemaster', 'admin', 'pubfields', array('tid' => $args['tid']));
         return LogUtil::registerError(__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields, $dom));
     }
 
@@ -54,7 +54,7 @@ function pagemaster_adminapi_getlinks()
             'text' => __('List publication types', $dom)
         );
         $links[] = array (
-            'url'  => pnModURL('pagemaster', 'admin', 'create_tid'),
+            'url'  => pnModURL('pagemaster', 'admin', 'pubtype'),
             'text' => __('New publication type', $dom)
         );
         $links[] = array (

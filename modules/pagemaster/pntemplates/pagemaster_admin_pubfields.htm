@@ -12,9 +12,10 @@
 
 	<!--[pmadminsubmenu tid=$tid id=$id|default:'']-->
 
-	<h3><!--[gt text='Existing Publication fields']--></h3>
-	<!--[pnmodurl modname='pagemaster' type='admin' func='create_tid' tid=$tid assign='urlupdate']-->
-	<div class="z-warningmsg"><!--[gt text='When Publication fields are changed or added you need to <a href="%s">Update the DB Table</a>' tag1=$urlupdate]--></div>
+	<!--[pnmodurl modname='pagemaster' type='admin' func='pubtype' tid=$tid assign='urlupdate']-->
+	<div class="z-warningmsg"><!--[gt text='When publication fields are added or changed you need to <a href="%s">Update the DB Table</a>.' tag1=$urlupdate]--></div>
+
+	<h3><!--[gt text='Existing publication fields']--></h3>
 
 	<ol id="pubfieldlist" class="z-itemlist">
 		<li id="pubfieldlistheader" class="pubfieldlistheader z-itemheader z-itemsortheader z-clearfix">
@@ -63,7 +64,7 @@
 				&nbsp;
 			</span>
 			<span class="z-w10">
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='editpubfields' id=$pubfield.id tid=$pubfield.tid fragment='newpubfield']-->"><!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='pubfields' id=$pubfield.id tid=$pubfield.tid fragment='newpubfield']-->"><!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall']--></a>
 			</span>
 		</li>
 		<!--[foreachelse]-->

@@ -15,7 +15,7 @@ Loader::includeOnce('modules/pagemaster/common.php');
  * Creates a new pubtype
  * @author gf
  */
-function pagemaster_admin_create_tid()
+function pagemaster_admin_pubtype()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
@@ -27,7 +27,7 @@ function pagemaster_admin_create_tid()
     // build the output
     $render = FormUtil::newpnForm('pagemaster');
 
-    return $render->pnFormExecute('pagemaster_admin_create_tid.htm', new pagemaster_admin_pubtypes());
+    return $render->pnFormExecute('pagemaster_admin_pubtype.htm', new pagemaster_admin_pubtypes());
 }
 
 function pagemaster_admin_main()
@@ -46,7 +46,7 @@ function pagemaster_admin_main()
     return $render->fetch('pagemaster_admin_main.htm');
 }
 
-function pagemaster_admin_editpubfields()
+function pagemaster_admin_pubfields()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
@@ -58,7 +58,7 @@ function pagemaster_admin_editpubfields()
     // build the output
     $render = FormUtil::newpnForm('pagemaster');
 
-    return $render->pnFormExecute('pagemaster_admin_edit_pubfields.htm', new pagemaster_admin_pubfields());
+    return $render->pnFormExecute('pagemaster_admin_pubfields.htm', new pagemaster_admin_pubfields());
 }
 
 function pagemaster_admin_publist($args=array())
@@ -85,7 +85,7 @@ function pagemaster_admin_publist($args=array())
     if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
         return LogUtil::registerError(__('Error! The table of this publication type seems not to exist. Please, update the DB Tables at the bottom of this form.', $dom),
                                       null,
-                                      pnModURL('pagemaster', 'admin', 'create_tid', array('tid' => $tid), null, 'pn-maincontent'));
+                                      pnModURL('pagemaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
     }
 
     // orderby check

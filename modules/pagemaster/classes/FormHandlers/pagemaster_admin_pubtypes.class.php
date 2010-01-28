@@ -115,7 +115,7 @@ class pagemaster_admin_pubtypes
                     return LogUtil::registerError(__('Error! Update attempt failed.', $dom));
                 }
 
-                LogUtil::registerStatus(__('Done! Publication type updated.', $dom));
+                LogUtil::registerStatus(__('Done! Database table updated.', $dom));
                 break;
 
             // create a pubtype

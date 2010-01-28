@@ -115,7 +115,7 @@ class pagemaster_admin_pubfields
                 break;
         }
 
-        $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'editpubfields',
+        $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'pubfields',
                                          array('tid' => $data['tid'])));
         return true;
     }
