@@ -326,7 +326,7 @@ function PMhandlePluginFields($publist, $pubfields, $islist=true)
                     $publist[$key][$fieldname] = $plugin->postRead($publist[$key][$fieldname], $field);
                 }
             } else {
-                $publist[$fieldname] = $plugin->postRead($publist[$key][$fieldname], $field);
+                $publist[$fieldname] = $plugin->postRead($publist[$fieldname], $field);
             }
         }
     }
