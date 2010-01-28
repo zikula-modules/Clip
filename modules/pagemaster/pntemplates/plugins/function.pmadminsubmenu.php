@@ -18,10 +18,12 @@
  */
 function smarty_function_pmadminsubmenu($params, &$smarty)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
     $tid = $params['tid'];
 
     if (!$tid) {
-        return 'Required parameter [tid] not provided in smarty_function_pmadminsubmenu';
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
     }
 
     $func = FormUtil::getPassedValue('func', 'main');
@@ -31,37 +33,37 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // pubtype form link
     if ($func != 'pubtype') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'pubtype', array('tid' => $tid)).'">'.__('Pubtype form').'</a> | ';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'pubtype', array('tid' => $tid)).'">'.__('Pubtype form', $dom).'</a> | ';
     } else {
-        $output .= '<a>'.__('Pubtype form').'</a> | ';
+        $output .= '<a>'.__('Pubtype form', $dom).'</a> | ';
     }
 
     // pub list link
     if ($func != 'publist') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publications list').'</a> | ';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publications list', $dom).'</a> | ';
     } else {
-        $output .= '<a>'.__('Publications list').'</a> | ';
+        $output .= '<a>'.__('Publications list', $dom).'</a> | ';
     }
 
     // edit fields link
     if ($func != 'pubfields') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'pubfields', array('tid' => $tid)).'">'.__('Publication fields').'</a> | ';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'pubfields', array('tid' => $tid)).'">'.__('Publication fields', $dom).'</a> | ';
     } elseif ($params['id'] != '') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'pubfields', array('tid' => $tid)).'#newpubfield">'.__('Publication fields').'</a> | ';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'pubfields', array('tid' => $tid)).'#newpubfield">'.__('Publication fields', $dom).'</a> | ';
     } else {
-        $output .= '<a href="#newpubfield">'.__('Publication fields').'</a> | ';
+        $output .= '<a href="#newpubfield">'.__('Publication fields', $dom).'</a> | ';
     }
 
     // new article link
-    $output .= '<a href="'.pnModURL('pagemaster', 'user', 'pubedit', array('tid' => $tid)).'">'.__('New publication').'</a> | ';
+    $output .= '<a href="'.pnModURL('pagemaster', 'user', 'pubedit', array('tid' => $tid)).'">'.__('New publication', $dom).'</a> | ';
 
     // show code links
     if ($func == 'showcode') {
-        $output .= ($params['mode'] == 'input' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Show form code').'</a> | ';
-        $output .= ($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('Show pub list code').'</a> | ';
-        $output .= ($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Show pub view code').'</a>';
+        $output .= ($params['mode'] == 'input' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Show form code', $dom).'</a> | ';
+        $output .= ($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('Show pub list code', $dom).'</a> | ';
+        $output .= ($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Show pub view code', $dom).'</a>';
     } else {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Show form code').'</a>';
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Show form code', $dom).'</a>';
     }
 
     $output .= '</span></div>';
