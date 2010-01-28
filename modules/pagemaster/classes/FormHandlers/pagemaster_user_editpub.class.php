@@ -47,11 +47,7 @@ class pagemaster_user_editpub
             $actions = PmWorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
 
-        if ($this->pubtype['tid'] > 0) {
-            $tid = $this->pubtype['tid'];
-        } else {
-            $tid = FormUtil::getPassedValue('tid');
-        }
+        $tid = ($this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
 
         // if there are no actions the user is not allowed to change / submit / delete something.
         // We will redirect the user to the overview page
@@ -63,6 +59,7 @@ class pagemaster_user_editpub
 
         // check for set_* default values
         $fieldnames = array_keys($this->pubfields);
+
         foreach ($fieldnames as $fieldname)
         {
             $val = FormUtil::getPassedValue('set_'.$fieldname, '');

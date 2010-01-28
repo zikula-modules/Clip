@@ -1,0 +1,42 @@
+<!--[* $Id: $ *]-->
+
+<!--[insert name='getstatusmsg']-->
+
+<!--[pnsecauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN]-->
+<div class="z-warningmsg">
+	<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid assign='urlplcode']-->
+	<!--[gt text='This is a generic template. Your can <a href="%1$s">get the publist code</a> and create a customized template (<b>publist_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/publist_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/publist_%2$s.htm</b>.' tag1=$urlplcode tag2=$pubtype.filename]-->
+</div>
+<!--[/pnsecauthaction_block]-->
+<!--[pnsecauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT]-->
+<p>
+	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->">
+		<!--[pnimg modname='core' src='insertcell.gif' set='icons/extrasmall' alt='' __title='New publication']-->&nbsp;<!--[gt text='Add a publication']-->
+	</a>
+</p>
+<!--[/pnsecauthaction_block]-->
+
+<table class="z-datatable">
+	<tbody>
+		<!--[foreach from=$publist item='pubitem']-->
+		<tr class="<!--[cycle values='z-even,z-odd']-->">
+			<td>
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$tid pid=$pubitem.core_pid]-->"><!--[$pubitem.$core_titlefield]--></a>
+			</td>
+			<td class="z-right">
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$tid pid=$pubitem.core_pid]-->">
+					<!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit']-->
+				</a>
+			</td>
+		</tr>
+		<!--[foreachelse]-->
+		<tr>
+			<td><!--[gt text='No publications found.']--></td>
+		</tr>
+		<!--[/foreach]-->
+	</tbody>
+</table>
+
+<!--[if isset($pager)]-->
+	<!--[pager show='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1]-->
+<!--[/if]-->

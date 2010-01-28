@@ -200,6 +200,9 @@ function pagemaster_admin_showcode()
     $pubtype   = PMgetPubType($tid);
     $pubfields = PMgetPubFields($tid);
 
+    // create the renderer
+    $render = pnRender::getInstance('pagemaster');
+
     // get the code depending of the mode
     switch ($mode)
     {
@@ -223,16 +226,14 @@ function pagemaster_admin_showcode()
             break;
 
         case 'outputlist':
-            $code = file_get_contents('modules/pagemaster/pntemplates/generic_publist.htm');
+            $path = $render->get_template_path('pagemaster_generic_publist.htm');
+            $code = file_get_contents($path.'/pagemaster_generic_publist.htm');
             break;
     }
 
     // code cleaning
     $code = DataUtil::formatForDisplay($code);
     $code = str_replace("\n", '<br />', $code);
-
-    // generate the output
-    $render = pnRender::getInstance('pagemaster');
 
     $render->assign('code',      $code);
     $render->assign('mode',      $mode);

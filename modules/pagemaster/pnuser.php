@@ -164,7 +164,7 @@ function pagemaster_user_pubedit()
     // generic edit
     $template_all = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
 
-    if ($render->get_template_path($template_all)) {
+    if ($render->template_exists($template_all)) {
         return $render->pnFormExecute($template_all, $formHandler);
     } elseif ($alert) {
         //LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_all, $dom));
@@ -219,7 +219,7 @@ function pagemaster_user_main($args)
             // do not check permission for dynamic template
             $sec_template = '';
             // standart template
-            $template     = 'generic_publist.htm';
+            $template     = 'pagemaster_generic_publist.htm';
         }
     } else {
         // template comes from parameter
@@ -302,9 +302,10 @@ function pagemaster_user_main($args)
     }
 
     // Check if template is available
-    if ($template != 'generic_publist.htm' && !$render->template_exists($template)) {
-        LogUtil::registerStatus(__f('Template [%s] not found', $template, $dom));
-        $template = 'generic_publist.htm';
+    if ($template != 'pagemaster_generic_publist.htm' && !$render->template_exists($template)) {
+        // FIXME modvar for alerts
+        //LogUtil::registerStatus(__f('Template [%s] not found', $template, $dom));
+        $template = 'pagemaster_generic_publist.htm';
     }
 
     if ($rss) {

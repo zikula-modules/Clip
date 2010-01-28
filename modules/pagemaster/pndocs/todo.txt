@@ -11,3 +11,4 @@
 	centralize include_once('includes/pnForm.php');
 	deprecate PmWorkflowUtil
 	migrate to the itemlist styles and clean the internal stylesheet
+	category based plugins should validate if their categories are not in the current plugin tree
