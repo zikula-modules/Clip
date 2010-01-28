@@ -116,6 +116,7 @@ class pagemaster_admin_pubtypes
                 }
 
                 LogUtil::registerStatus(__('Done! Publication type updated.', $dom));
+                break;
 
             // create a pubtype
             case 'create':
@@ -140,6 +141,7 @@ class pagemaster_admin_pubtypes
                     DBUtil::updateObject($data, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
                     LogUtil::registerStatus(__('Done! Publication type updated.', $dom));
                 }
+                break;
 
             // delete
             case 'delete':
@@ -149,6 +151,7 @@ class pagemaster_admin_pubtypes
                 // FIXME no more related stuff is needed? Hooks, Workflows registers? 
 
                 LogUtil::registerStatus(__('Done! Publication type deleted.', $dom));
+                break;
         }
 
         return $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'main'));

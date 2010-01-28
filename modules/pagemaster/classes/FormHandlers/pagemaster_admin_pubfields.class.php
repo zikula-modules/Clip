@@ -103,6 +103,7 @@ class pagemaster_admin_pubfields
                     DBUtil::updateObject($data, 'pagemaster_pubfields', 'pm_id = '.$this->id);
                     LogUtil::registerStatus(__('Done! Field updated.', $dom));
                 }
+                break;
 
             // delete the field
             case 'delete':
@@ -111,6 +112,7 @@ class pagemaster_admin_pubfields
                 } else {
                     LogUtil::registerError(__('Error! Deletion attempt failed.', $dom));
                 }
+                break;
         }
 
         $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'editpubfields',
