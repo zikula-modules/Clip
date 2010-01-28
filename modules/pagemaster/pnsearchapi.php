@@ -23,8 +23,6 @@ function pagemaster_searchapi_info()
  */
 function pagemaster_searchapi_options($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
-
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
         $render = pnRender::getInstance('pagemaster');
 
@@ -104,14 +102,11 @@ function pagemaster_searchapi_search($args)
                 $pubfields  = PMgetPubFields($pubtype['tid']);
                 $core_title = PMgetTitleField($pubfields);
 
-                //! pubtype.title search title
-                $type_name  = __f('%s search', __($pubtype['title'], $dom), $dom);
-
                 foreach ($publist as $pub)
                 {
                     $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
                     $sql = $insertSql . '('
-                    . '\'' . DataUtil::formatForStore($type_name . ' - ' . $pub[$core_title]) . '\', '
+                    . '\'' . DataUtil::formatForStore($pub[$core_title]) . '\', '
                     . '\'' . DataUtil::formatForStore('') . '\', '
                     . '\'' . DataUtil::formatForStore($extra) . '\', '
                     . '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '

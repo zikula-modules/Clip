@@ -2,11 +2,9 @@
 
 <input type="hidden" id="active_pagemaster" name="active[pagemaster]" value="1" checked="checked" />
 
+<!--[foreach from=$pubtypes item=pubtype]-->
 <div>
-	<!--[foreach from=$pubtypes item=pubtype]-->
-	<ul>
-		<input type="checkbox" id="pagemaster<!--[$pubtype.tid]-->" name="search_tid[<!--[$pubtype.tid]-->]" value="1" checked="checked" />
-		<label for="pagemaster<!--[$pubtype.tid]-->"><!--[gt text=$pubtype.title]--></label>
-	</ul>
-	<!--[/foreach]-->
+	<input type="checkbox" id="pagemaster<!--[$pubtype.tid]-->" name="search_tid[<!--[$pubtype.tid]-->]" value="1" checked="checked" />
+	<label for="pagemaster<!--[$pubtype.tid]-->"><!--[gt text=$pubtype.title]--></label>
 </div>
+<!--[/foreach]-->
