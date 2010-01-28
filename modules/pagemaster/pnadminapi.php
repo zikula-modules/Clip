@@ -13,21 +13,23 @@
  * Updates the database tables (DDL), based on pubfields.
  *
  * @author kundi
- * @param $args['tid'] tid of publication
- * @return true or false
+ * @param  $args['tid']  tid of publication
+ * @return bool          true on success, false otherwise
  */
 function pagemaster_adminapi_updatetabledef($args)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     if (!isset($args['tid'])) {
-        return LogUtil::registerError(__f('%s not set', 'tid', $dom));
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
     }
 
     $tablename = 'pagemaster_pubdata'.$args['tid'];
 
     $pntable = &pnDBGetTables();
-    if (!isset ($pntable[$tablename])) {
-        return LogUtil::registerError(__('No table definitions found. Please define fields for your publication.', $dom));
+    if (!isset($pntable[$tablename])) {
+        $urlfields = pnModURL('pagemaster', 'admin', 'editpubfields', array('tid' => $args['tid']));
+        return LogUtil::registerError(__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields, $dom));
     }
 
     DBUtil::createTable($tablename);
@@ -45,21 +47,21 @@ function pagemaster_adminapi_getlinks()
     $dom = ZLanguage::getModuleDomain('pagemaster');
 
     $links = array ();
+
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'main'),
-            'text' => __('List Publication Types', $dom)
+            'text' => __('List publication types', $dom)
         );
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'create_tid'),
-            'text' => __('Create New Publication Type', $dom)
+            'text' => __('New publication tType', $dom)
         );
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'modifyconfig'),
             'text' => __('Settings', $dom)
         );
     }
+
     return $links;
 }
-
-

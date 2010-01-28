@@ -30,11 +30,12 @@ function pagemaster_searchapi_options($args)
 
         // Looking for pubtype with at least one searchable field
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
-        foreach ($pubtypes as $key => $pubtype) {
-            $pubfields = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
+        foreach ($pubtypes as $key => $pubtype)
+        {
+            $pubfields = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', "pm_issearchable = '1' AND pm_tid = '$pubtype[tid]'");
 
             if (count($pubfields) == 0 ) {
-                unset ($pubtypes[$key]);
+                unset($pubtypes[$key]);
             }
         }
 
@@ -54,6 +55,7 @@ function pagemaster_searchapi_search($args)
     $dom = ZLanguage::getModuleDomain('pagemaster');
 
     $search_tid = FormUtil::getPassedValue('search_tid', '', 'REQUEST');
+
     Loader::includeOnce('modules/pagemaster/common.php');
     pnModDBInfoLoad('Search');
     pnModDBInfoLoad('pagemaster');
@@ -61,7 +63,7 @@ function pagemaster_searchapi_search($args)
     $pntable = pnDBGetTables();
     $searchTable  = $pntable['search_result'];
     $searchColumn = $pntable['search_result_column'];
-    $where_arr = '';
+    $where_arr    = array();
 
     $sessionId = session_id();
     $insertSql = "INSERT INTO $searchTable
@@ -74,10 +76,12 @@ function pagemaster_searchapi_search($args)
                   VALUES ";
 
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+
     foreach ($pubtypes as $pubtype)
     {
         if ($search_tid == '' || $search_tid[$pubtype['tid']] == 1){
             $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
+
             $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
             $columnname = $pntable[$tablename.'_column'];
 
@@ -87,20 +91,24 @@ function pagemaster_searchapi_search($args)
 
             if (is_array($where_arr)) {
                 $where  = search_construct_where($args, $where_arr);
-                $where .= ' AND pm_showinlist = 1 ';
-                $where .= ' AND pm_online = 1 ';
-                $where .= ' AND pm_indepot = 0 ';
-                $where .= " AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCode() ."')";
-                $where .= ' AND (pm_publishdate <= NOW() OR pm_publishdate is null) AND (pm_expiredate >= NOW() OR pm_expiredate is null)';
+                $where .= " AND pm_showinlist = '1'
+                            AND pm_online = '1'
+                            AND pm_indepot = '0'
+                            AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCodeLegacy() ."')
+                            AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL) AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
 
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
 
                 $publist    = DBUtil::selectObjectArray($tablename, $where);
+
                 $pubfields  = PMgetPubFields($pubtype['tid']);
                 $core_title = PMgetTitleField($pubfields);
-                $type_name  = __($pubtype['title'].'Search');
 
-                foreach ($publist as $pub) {
+                //! pubtype.title search title
+                $type_name  = __f('%s search', __($pubtype['title'], $dom), $dom);
+
+                foreach ($publist as $pub)
+                {
                     $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
                     $sql = $insertSql . '('
                     . '\'' . DataUtil::formatForStore($type_name . ' - ' . $pub[$core_title]) . '\', '
@@ -109,14 +117,15 @@ function pagemaster_searchapi_search($args)
                     . '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '
                     . '\'' . 'pagemaster' . '\', '
                     . '\'' . DataUtil::formatForStore($sessionId) . '\')';
+
                     $insertResult = DBUtil::executeSQL($sql);
                     if (!$insertResult) {
-                        return LogUtil::registerError (__('Error! Could not load items.', $dom));
+                        return LogUtil::registerError(__('Error! Could not save the search results.', $dom));
                     }
                 }
             }
         }
-        $where_arr = '';
+        $where_arr = array();
     }
 
     return true;

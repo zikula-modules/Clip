@@ -12,21 +12,23 @@
 function pagemaster_ajax_changedlistorder()
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
+
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        AjaxUtil::error(DataUtil::formatForDisplayHTML(__('Sorry! No authorization to access this module.', $dom)));
+        AjaxUtil::error(__('Sorry! No authorization to access this module.', $dom));
     }
 
 //    if (!SecurityUtil::confirmAuthKey()) {
-//        AjaxUtil::error(__('Invalid 'authkey':  this probably means that you pressed the 'Back' button, or that the page 'authkey' expired. Please refresh the page and try again.', $dom));
+//        AjaxUtil::error(__("Invalid authorisation key ('authkey'). This is probably either because you pressed the 'Back' button to return to a page which does not allow that, or else because the page's authorisation key expired due to prolonged inactivity. Please refresh the page and try again.", $dom));
 //    }
 
-    $pubfieldlist = FormUtil::getPassedValue('pubfieldlist');
-    $tid = FormUtil::getPassedValue('tid');
+    $pubfields = FormUtil::getPassedValue('pubfieldlist');
+    $tid       = FormUtil::getPassedValue('tid');
 
-    foreach ($pubfieldlist as $key => $value)
+    foreach ($pubfields as $key => $value)
     {
         $data['lineno'] = $key;
-        $result = DBUtil::updateObject($data, 'pagemaster_pubfields', 'pm_id = '.DataUtil::formatForStore($value).' AND pm_tid = '.DataUtil::formatForStore($tid));
+        $where  = "pm_id = '".DataUtil::formatForStore($value)."' AND pm_tid = '".DataUtil::formatForStore($tid)."'";
+        $result = DBUtil::updateObject($data, 'pagemaster_pubfields', $where);
         if (!$result) {
             AjaxUtil::error(__('Error! Update attempt failed.', $dom));
         }

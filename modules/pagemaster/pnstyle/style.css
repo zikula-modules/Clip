@@ -10,24 +10,24 @@
  */
 
 div.z-menu {
-    width: 100%;
-	text-align: left;
+  width: 100%;
+  text-align: left;
 }
 div.pm-menu {
-    margin-bottom: 1.5em;
+  margin-bottom: 1.5em;
 }
 
 .z-menuitem-title {
-	width: 99%;
-	background: url(../../../system/Admin/pnimages/button_bkg.gif) repeat;
-    line-height: 23px;
-    min-height: 23px;
-    height: auto !important;
-    height: 23px;
-	display: block;
-	padding-left: 5px;
-	border-left: 1px solid #ccc; 
-	border-right: 1px solid #ccc;
+  background: url(../../../system/Admin/pnimages/button_bkg.gif) repeat;
+  border-left: 1px solid #ccc; 
+  border-right: 1px solid #ccc;
+  display: block;
+  height: auto !important;
+  height: 23px;
+  line-height: 23px;
+  min-height: 23px;
+  padding-left: 5px;
+  width: 99%;
 }
 
 .z-form div.z-formrow select.pm-plugintypeselector {
@@ -35,63 +35,40 @@ div.pm-menu {
 }
 
 #newpubfield {
-	position: relative;
+  position: relative;
 }
 
 #pubfieldlist {
-	border: 1px solid #ccc;
-	list-style: none;
-	margin: 0;
-	padding: 0;
+  border: 1px solid #ccc;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 #pubfieldlist li {
-	font-size: 1em;
-	line-height: 2em;
-	margin: 0;
-	padding: 0.4em 0 0 1em;
+  font-size: 1em;
+  line-height: 2em;
+  margin: 0;
+  padding: 0.4em 0 0 1em;
 }
 
 #pubfieldlist span {
-	float: left;
-	overflow: hidden;
-	text-align: left;
-}
-
-.extrasmallplace {
-	width: 10%;
-}
-
-.smallplace {
-	width: 15%;
-}
-
-.normalplace {
-	width: 20%;
-}
-
-.moveable {
-	cursor: move;
-}
-
-.pmhelp {
-	background: url(../../../images/icons/extrasmall/agt_support.gif) no-repeat;
-	background-position: 5px center;
-	color: #0074B0;
-	padding-left: 25px;
+  float: left;
+  overflow: hidden;
+  text-align: left;
 }
 
 /* Admin modalbox */
 #typeDataDiv {
-	width: 550px;
-	height: auto !important;
-	height: 75px;
-	min-height: 75px;
-	z-index: 9999;
-	left: 50%;
-	margin-left: -275px;
-	background-color: #FFFFFF;
-	padding:10px;
+  width: 550px;
+  height: auto !important;
+  height: 75px;
+  min-height: 75px;
+  z-index: 9999;
+  left: 50%;
+  margin-left: -275px;
+  background-color: #FFFFFF;
+  padding:10px;
 }
 
 /* itemlist styles */

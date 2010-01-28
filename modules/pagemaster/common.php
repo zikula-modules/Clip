@@ -11,55 +11,9 @@
 
 Loader::LoadClass('PmWorkflowUtil', 'modules/pagemaster/classes');
 
-function PMcreateOrderBy($orderby)
-{
-    $orderbylist = explode(',', $orderby);
-    $orderby     = '';
-    foreach ($orderbylist as $key => $value) {
-        if ($key > 0) {
-            $orderby .= ', ';
-        }
-        // $value = {col[:ascdesc]}
-        $value    = explode(':', $value);
-        $orderby .= $value[0].(isset($value[1]) ? ' '.$value[1] : '');
-    }
-
-    return trim($orderby);
-}
-
-function PMgetNewFileReference()
-{
-    $chars   = '0123456789abcdefghijklmnopqrstuvwxyz';
-    $charLen = strlen($chars);
-
-    $id = '';
-
-    for ($i = 0; $i < 30; ++ $i) {
-        $id .= $chars[mt_rand(0, $charLen-1)];
-    }
-
-    return $id;
-}
-
-function PMgetExtension($filename, $keepDot = false)
-{
-    if (!$filename) {
-        return pn_exit('PMgetExtension pm: filename is empty');
-    }
-
-    $p = strrpos($filename, '.');
-
-    if ($p !== false) {
-        if ($keepDot) {
-            return substr($filename, $p);
-        } else {
-            return substr($filename, $p +1);
-        }
-    }
-
-    return '';
-}
-
+/**
+ * Code generation functions
+ */
 function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
 {
     // FIXME Review template path (to pnForm?)
@@ -69,7 +23,7 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
                       <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
                           <div class="z-warningmsg">
                               <!--[pnmodurl modname=\'pagemaster\' type=\'admin\' func=\'showcode\' mode=\'input\' tid=$pubtype.tid assign=\'urlpecode\']-->
-                              <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the code</a> and create individuals template (<b>pubedit_{STEPNAME}_%2$s.htm</b>), then store it in the the directory: <b>/config/templates/pnForm/pubedit_{STEPNAME}_%2$s.htm</b>.\' tag1=$urlpecode tag2=$pubtype.tid]-->
+                              <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the code</a> and create individuals template (<b>pubedit_%2$s_{STEPNAME}.htm</b> or <b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b> or within your theme: <b>/templates/modules/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b>.\' tag1=$urlpecode tag2=$pubtype.formname]-->
                           </div>
                       <!--[/pnsecauthaction_block]-->
 
@@ -182,7 +136,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
 
                 <div class="z-form">
                 ';
-//z_prayer($pubdata);
+
     foreach ($pubdata as $key => $pubfield)
     {
         $template_code_add = '';
@@ -290,6 +244,9 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
     return $template_code;
 }
 
+/**
+ * Generic getters
+ */
 function PMgetPluginsOptionList()
 {
     $classDirs = array();
@@ -350,6 +307,9 @@ function PMgetWorkflowsOptionList()
     return $plugins;
 }
 
+/**
+ * Generic handlers
+ */
 function PMhandlePluginFields($publist, $pubfields)
 {
     foreach ($pubfields as $fieldname => $field) {
@@ -364,17 +324,6 @@ function PMhandlePluginFields($publist, $pubfields)
     }
 
     return $publist;
-}
-
-function PMgetTidFromTablename($tablename)
-{
-    $tid = '';
-    while (is_numeric(substr($tablename, -1))) {
-        $tid = substr($tablename, -1) . $tid;
-        $tablename = substr($tablename, 0, strlen($tablename) - 1);
-    }
-
-    return (int)$tid;
 }
 
 function PMhandlePluginOrderBy($orderby, $pubfields, $tbl_alias)
@@ -414,15 +363,79 @@ function PMhandlePluginOrderBy($orderby, $pubfields, $tbl_alias)
 }
 
 /**
+ * Generic utilities
+ */
+function PMgetTidFromTablename($tablename)
+{
+    $tid = '';
+    while (is_numeric(substr($tablename, -1))) {
+        $tid = substr($tablename, -1) . $tid;
+        $tablename = substr($tablename, 0, strlen($tablename) - 1);
+    }
+
+    return (int)$tid;
+}
+
+function PMcreateOrderBy($orderby)
+{
+    $orderbylist = explode(',', $orderby);
+    $orderby     = '';
+    foreach ($orderbylist as $key => $value) {
+        if ($key > 0) {
+            $orderby .= ', ';
+        }
+        // $value = {col[:ascdesc]}
+        $value    = explode(':', $value);
+        $orderby .= $value[0].(isset($value[1]) ? ' '.$value[1] : '');
+    }
+
+    return trim($orderby);
+}
+
+function PMgetNewFileReference()
+{
+    $chars   = '0123456789abcdefghijklmnopqrstuvwxyz';
+    $charLen = strlen($chars);
+
+    $id = '';
+
+    for ($i = 0; $i < 30; ++ $i) {
+        $id .= $chars[mt_rand(0, $charLen-1)];
+    }
+
+    return $id;
+}
+
+function PMgetExtension($filename, $keepDot = false)
+{
+    if (!$filename) {
+        return pn_exit('PMgetExtension pm: filename is empty');
+    }
+
+    $p = strrpos($filename, '.');
+
+    if ($p !== false) {
+        if ($keepDot) {
+            return substr($filename, $p);
+        } else {
+            return substr($filename, $p +1);
+        }
+    }
+
+    return '';
+}
+
+/**
  * Loop the pubfields array until get the title field
  *
- * @param array $pubfields
- * @return name of the title field
+ * @param   array  $pubfields
+ * @return         name of the title field
  */
 function PMgetTitleField($pubfields)
 {
-    $ak = array_keys($pubfields);
-    foreach ($ak as $i) {
+    $core_title = 'id';
+
+    foreach (array_keys($pubfields) as $i) {
         if ($pubfields[$i]['istitle'] == 1) {
             $core_title = $pubfields[$i]['name'];
             break;
