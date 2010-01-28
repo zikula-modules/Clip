@@ -12,176 +12,6 @@
 Loader::includeOnce('modules/pagemaster/common.php');
 
 /**
- * Executes a Workflow command over a direct URL Request
- *
- * @param $args['tid']
- * @param $args['id']
- * @param $args['goto'] redirect to after execution
- * @param $args['schema'] optional workflow shema
- * @param $args['commandName'] commandName
- * @author kundi
- */
-function pagemaster_user_executecommand()
-{
-    $dom = ZLanguage::getModuleDomain('pagemaster');
-
-    // get the input parameters
-    $tid         = FormUtil::getPassedValue('tid');
-    $id          = FormUtil::getPassedValue('id');
-    $commandName = FormUtil::getPassedValue('commandName');
-    $schema      = FormUtil::getPassedValue('schema');
-    $goto        = FormUtil::getPassedValue('goto');
-
-    // essential validation
-    if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
-    }
-
-    if (!isset($id) || empty($id) || !is_numeric($id)) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
-    }
-
-    if (empty($commandName)) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'commandName', $dom));
-    }
-
-    if (empty($schema)) {
-        $pubtype = PMgetPubType($tid);
-        $schema  = str_replace('.xml', '', $pubtype['workflow']);
-    }
-
-    $tablename = 'pagemaster_pubdata'.$tid;
-
-    $pub = DBUtil::selectObjectByID($tablename, $id, 'id');
-    if (!$pub) {
-        return LogUtil::registerError(__('Error! No such publication found.', $dom));
-    }
-
-    PmWorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
-
-    if (!empty($goto)) {
-        switch ($goto)
-        {
-            case 'edit':
-                return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
-                                           array('tid' => $tid,
-                                                 'id'  => $pub['id'])));
-            case 'stepmode':
-                return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
-                                           array('tid'  => $tid,
-                                                 'id'   => $pub['id'],
-                                                 'goto' => 'stepmode')));
-            default:
-                return pnRedirect($goto);
-        }
-    }
-
-    return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',
-                               array('tid' => $tid,
-                                     'id'  => $pub['id'])));
-}
-
-/**
- * Edit/Create a publication
- *
- * @param $args['tid']
- * @param $args['id']
- * @author kundi
- */
-function pagemaster_user_pubedit()
-{
-    $dom = ZLanguage::getModuleDomain('pagemaster');
-
-    // get the input parameters
-    $tid = FormUtil::getPassedValue('tid');
-    $id  = FormUtil::getPassedValue('id');
-    $pid = FormUtil::getPassedValue('pid');
-
-    // essential validation
-    if (empty($tid) || !is_numeric($tid)) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
-    }
-
-    $pubtype = PMgetPubType($tid);
-    if (empty($pubtype)) {
-        return LogUtil::registerError(__('Error! No such publication type found.', $dom));
-    }
-
-    $pubfields = PMgetPubFields($tid, 'pm_lineno');
-    if (empty($pubfields)) {
-        LogUtil::registerError(__('Error! No publication fields found.', $dom));
-    }
-
-    // no security check needed - the security check will be done by the handler class.
-    // see the init-part of the handler class for details.
-    Loader::LoadClass('pagemaster_user_editpub', 'modules/pagemaster/classes/FormHandlers');
-    $formHandler = new pagemaster_user_editpub();
-
-    if (empty($id) && !empty($pid)) {
-        $id = pnModAPIFunc('pagemaster', 'user', 'getId',
-                           array('tid' => $tid,
-                                 'pid' => $pid));
-        if (empty($id)) {
-            return LogUtil::registerError(__('Error! No such publication found.', $dom));
-        }
-    }
-
-    // cast values to ensure the type
-    $id  = (int)$id;
-    $pid = (int)$pid;
-
-    $formHandler->tid       = $tid;
-    $formHandler->id        = $id;
-    $formHandler->pubtype   = $pubtype;
-    $formHandler->pubfields = $pubfields;
-    $formHandler->tablename = 'pagemaster_pubdata'.$tid;
-
-    // get actual state for selecting pnForm Template
-    $stepname = 'initial';
-
-    if (!empty($id)) {
-        $obj = array('id' => $id);
-        PmWorkflowUtil::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'pagemaster');
-        $stepname = $obj['__WORKFLOW__']['state'];
-    }
-
-    // create the output object
-    $render = FormUtil::newpnForm('pagemaster');
-
-    $render->assign('pubtype', $pubtype);
-
-    // resolve the template to use
-    $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'display_alerts', false);
-
-    // individual step
-    $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
-
-    if (!empty($stepname) && $render->template_exists($template_step)) {
-        return $render->pnFormExecute($template_step, $formHandler);
-    } elseif ($alert) {
-        // FIXME configvar for alerts
-        //LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_step, $dom));
-    }
-
-    // generic edit
-    $template_all = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
-
-    if ($render->template_exists($template_all)) {
-        return $render->pnFormExecute($template_all, $formHandler);
-    } elseif ($alert) {
-        //LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_all, $dom));
-    }
-
-    $hookAction = empty($id) ? 'new' : 'modify';
-
-    // autogenerated edit template
-    $render->force_compile = true;
-    $render->assign('editpub_template_code', PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction));
-
-    return $render->pnFormExecute('var:editpub_template_code', $formHandler);
-}
-
-/**
  * List of publications
  *
  * @param $args['tid']
@@ -455,4 +285,174 @@ function pagemaster_user_viewpub($args)
     }
 
     return $render->fetch($template, $cacheid);
+}
+
+/**
+ * Edit/Create a publication
+ *
+ * @param $args['tid']
+ * @param $args['id']
+ * @author kundi
+ */
+function pagemaster_user_pubedit()
+{
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
+    // get the input parameters
+    $tid = FormUtil::getPassedValue('tid');
+    $id  = FormUtil::getPassedValue('id');
+    $pid = FormUtil::getPassedValue('pid');
+
+    // essential validation
+    if (empty($tid) || !is_numeric($tid)) {
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
+    }
+
+    $pubtype = PMgetPubType($tid);
+    if (empty($pubtype)) {
+        return LogUtil::registerError(__('Error! No such publication type found.', $dom));
+    }
+
+    $pubfields = PMgetPubFields($tid, 'pm_lineno');
+    if (empty($pubfields)) {
+        LogUtil::registerError(__('Error! No publication fields found.', $dom));
+    }
+
+    // no security check needed - the security check will be done by the handler class.
+    // see the init-part of the handler class for details.
+    Loader::LoadClass('pagemaster_user_editpub', 'modules/pagemaster/classes/FormHandlers');
+    $formHandler = new pagemaster_user_editpub();
+
+    if (empty($id) && !empty($pid)) {
+        $id = pnModAPIFunc('pagemaster', 'user', 'getId',
+                           array('tid' => $tid,
+                                 'pid' => $pid));
+        if (empty($id)) {
+            return LogUtil::registerError(__('Error! No such publication found.', $dom));
+        }
+    }
+
+    // cast values to ensure the type
+    $id  = (int)$id;
+    $pid = (int)$pid;
+
+    $formHandler->tid       = $tid;
+    $formHandler->id        = $id;
+    $formHandler->pubtype   = $pubtype;
+    $formHandler->pubfields = $pubfields;
+    $formHandler->tablename = 'pagemaster_pubdata'.$tid;
+
+    // get actual state for selecting pnForm Template
+    $stepname = 'initial';
+
+    if (!empty($id)) {
+        $obj = array('id' => $id);
+        PmWorkflowUtil::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'pagemaster');
+        $stepname = $obj['__WORKFLOW__']['state'];
+    }
+
+    // create the output object
+    $render = FormUtil::newpnForm('pagemaster');
+
+    $render->assign('pubtype', $pubtype);
+
+    // resolve the template to use
+    $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'display_alerts', false);
+
+    // individual step
+    $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
+
+    if (!empty($stepname) && $render->template_exists($template_step)) {
+        return $render->pnFormExecute($template_step, $formHandler);
+    } elseif ($alert) {
+        // FIXME configvar for alerts
+        //LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_step, $dom));
+    }
+
+    // generic edit
+    $template_all = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
+
+    if ($render->template_exists($template_all)) {
+        return $render->pnFormExecute($template_all, $formHandler);
+    } elseif ($alert) {
+        //LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_all, $dom));
+    }
+
+    $hookAction = empty($id) ? 'new' : 'modify';
+
+    // autogenerated edit template
+    $render->force_compile = true;
+    $render->assign('editpub_template_code', PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction));
+
+    return $render->pnFormExecute('var:editpub_template_code', $formHandler);
+}
+
+/**
+ * Executes a Workflow command over a direct URL Request
+ *
+ * @param $args['tid']
+ * @param $args['id']
+ * @param $args['goto'] redirect to after execution
+ * @param $args['schema'] optional workflow shema
+ * @param $args['commandName'] commandName
+ * @author kundi
+ */
+function pagemaster_user_executecommand()
+{
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
+    // get the input parameters
+    $tid         = FormUtil::getPassedValue('tid');
+    $id          = FormUtil::getPassedValue('id');
+    $commandName = FormUtil::getPassedValue('commandName');
+    $schema      = FormUtil::getPassedValue('schema');
+    $goto        = FormUtil::getPassedValue('goto');
+
+    // essential validation
+    if (empty($tid) || !is_numeric($tid)) {
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
+    }
+
+    if (!isset($id) || empty($id) || !is_numeric($id)) {
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
+    }
+
+    if (empty($commandName)) {
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'commandName', $dom));
+    }
+
+    if (empty($schema)) {
+        $pubtype = PMgetPubType($tid);
+        $schema  = str_replace('.xml', '', $pubtype['workflow']);
+    }
+
+    $tablename = 'pagemaster_pubdata'.$tid;
+
+    $pub = DBUtil::selectObjectByID($tablename, $id, 'id');
+    if (!$pub) {
+        return LogUtil::registerError(__('Error! No such publication found.', $dom));
+    }
+
+    PmWorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
+
+    if (!empty($goto)) {
+        switch ($goto)
+        {
+            case 'edit':
+                return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
+                                           array('tid' => $tid,
+                                                 'id'  => $pub['id'])));
+            case 'stepmode':
+                return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
+                                           array('tid'  => $tid,
+                                                 'id'   => $pub['id'],
+                                                 'goto' => 'stepmode')));
+            default:
+                return pnRedirect($goto);
+        }
+    }
+
+    return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',
+                               array('tid' => $tid,
+                                     'id'  => $pub['id'])));
 }
