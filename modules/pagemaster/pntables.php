@@ -139,16 +139,18 @@ function pagemaster_pntables()
 */
 
     // dynamic pubdata tables
-    function pagemaster_addtable(&$pntable, $tid, $tablecolumn, $tabledef)
-    {
-        $tablename = "pagemaster_pubdata{$tid}";
+    if (!function_exists('pagemaster_addtable')) {
+        function pagemaster_addtable(&$pntable, $tid, $tablecolumn, $tabledef)
+        {
+            $tablename = "pagemaster_pubdata{$tid}";
 
-        $pntable[$tablename] = DBUtil::getLimitedTablename($tablename);
-        $pntable[$tablename.'_column']     = $tablecolumn;
-        $pntable[$tablename.'_column_def'] = $tabledef;
+            $pntable[$tablename] = DBUtil::getLimitedTablename($tablename);
+            $pntable[$tablename.'_column']     = $tablecolumn;
+            $pntable[$tablename.'_column_def'] = $tabledef;
 
-        ObjectUtil::addStandardFieldsToTableDefinition($pntable[$tablename.'_column'], 'pm_');
-        ObjectUtil::addStandardFieldsToTableDataDefinition($pntable[$tablename.'_column_def']);
+            ObjectUtil::addStandardFieldsToTableDefinition($pntable[$tablename.'_column'], 'pm_');
+            ObjectUtil::addStandardFieldsToTableDataDefinition($pntable[$tablename.'_column_def']);
+        }
     }
 
     // Can't use DBUtil because the pagemaster table definitions are not loaded yet
