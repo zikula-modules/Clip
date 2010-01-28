@@ -314,15 +314,19 @@ function PMgetWorkflowsOptionList()
 /**
  * Generic handlers
  */
-function PMhandlePluginFields($publist, $pubfields)
+function PMhandlePluginFields($publist, $pubfields, $islist=true)
 {
     foreach ($pubfields as $fieldname => $field) {
         $pluginclass = $field['fieldplugin'];
         $plugin = PMgetPlugin($pluginclass);
 
         if (method_exists($plugin, 'postRead')) {
-            foreach (array_keys($publist) as $key) {
-                $publist[$key][$fieldname] = $plugin->postRead($publist[$key][$fieldname], $field);
+            if ($islist) {
+                foreach (array_keys($publist) as $key) {
+                    $publist[$key][$fieldname] = $plugin->postRead($publist[$key][$fieldname], $field);
+                }
+            } else {
+                $publist[$fieldname] = $plugin->postRead($publist[$key][$fieldname], $field);
             }
         }
     }
