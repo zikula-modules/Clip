@@ -57,7 +57,7 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
 
         if (!empty($pubfields[$k]['description'])) {
             //$toolTip = " toolTip='{$pubfields[$k]['description']}'";
-            $toolTip = $pubfields[$k]['description'];
+            $toolTip = str_replace("'", "\'", $pubfields[$k]['description']);
         } else {
             $toolTip = '';
         }
@@ -68,11 +68,15 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
         } else {
             $linecol = '';
         }
+
+        // scape sensible data
+        $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']); 
+
         $template_code .= '
                             <div class="z-formrow">
                                 <!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' __text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').']-->
                                 <!--[genericformplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.']-->'.
-                                ($toolTip ? '<span class="z-formnote z-sub"><!--[gt text=\''.$toolTip.'\']--></span>' : '').'
+                                ($toolTip ? "\n".'<span class="z-formnote z-sub"><!--[gt text=\''.$toolTip.'\']--></span>' : '').'
                             </div>
                             ';
     }

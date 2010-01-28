@@ -78,6 +78,7 @@ class pagemaster_admin_pubfields
                     DBUtil::updateObject($istitle, 'pagemaster_pubfields', 'pm_tid = '.$data['tid']);
                 }
 
+                $data['name']  = str_replace("'", '', $data['name']);
                 $submittedname = DataUtil::formatForStore($data['name']);
                 if (empty($this->id)) {
                     $where = "pm_name = '$submittedname' AND pm_tid = '$data[tid]'";
