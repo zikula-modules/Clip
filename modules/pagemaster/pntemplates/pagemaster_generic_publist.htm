@@ -11,7 +11,7 @@
 <!--[pnsecauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT]-->
 <p>
 	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->">
-		<!--[pnimg modname='core' src='insertcell.gif' set='icons/extrasmall' alt='' __title='New publication']-->&nbsp;<!--[gt text='Add a publication']-->
+		<!--[pnimg modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='New publication']-->&nbsp;<!--[gt text='Add a publication']-->
 	</a>
 </p>
 <!--[/pnsecauthaction_block]-->
@@ -24,9 +24,14 @@
 				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$tid pid=$pubitem.core_pid]-->"><!--[$pubitem.$core_titlefield]--></a>
 			</td>
 			<td class="z-right">
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$tid pid=$pubitem.core_pid]-->">
+					<!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View']-->
+				</a>
+				<!--[pnsecauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD]-->
 				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$tid pid=$pubitem.core_pid]-->">
 					<!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit']-->
 				</a>
+				<!--[/pnsecauthaction_block]-->
 			</td>
 		</tr>
 		<!--[foreachelse]-->
