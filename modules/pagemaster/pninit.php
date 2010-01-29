@@ -9,6 +9,9 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * PageMaster installation
+ */
 function pagemaster_init()
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -50,6 +53,9 @@ function pagemaster_init()
     return true;
 }
 
+/**
+ * PageMaster upgrade
+ */
 function pagemaster_upgrade($oldversion)
 {
     //update pn_pagemaster_pubfields set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1) //FIXME
@@ -196,6 +202,9 @@ function pagemaster_upgrade($oldversion)
     return true;
 }
 
+/**
+ * PageMaster deinstallation
+ */
 function pagemaster_delete()
 {
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');

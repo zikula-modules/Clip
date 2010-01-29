@@ -55,11 +55,11 @@ function pagemaster_workflow_standard_gettextstrings()
         // action titles and descriptions for each state
         'actions' => array(
             'initial' => array(
-                no__('Submit & Approve') => no__('Submit a publication and approve immediately'),
+                no__('Submit and Approve') => no__('Submit a publication and approve immediately'),
                 no__('Submit') => no__('Submit a publication for acceptance by a moderator')
             ),
             'Waiting' => array(
-                no__('Update & Approve') => no__('Update the content and approve for immediate publishing'),
+                no__('Update and Approve') => no__('Update the content and approve for immediate publishing'),
                 no__('Approve') => no__('Approve the publication for immediate publishing'),
                 no__('Update') => no__('Update the content for later publishing'),
                 no__('Delete') => no__('Delete the publication')

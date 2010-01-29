@@ -110,8 +110,6 @@ function pagemaster_importapi_importps2()
     pnModLoad('pagesetter');
     pnModDBInfoLoad('Categories');
 
-    include_once('includes/pnForm.php');
-
     // import the DB Structure
     $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes');
 

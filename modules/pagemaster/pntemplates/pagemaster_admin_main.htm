@@ -15,13 +15,10 @@
 		<tr>
 			<th><!--[gt text='Title']--></th>
 			<th><!--[gt text='Description']--></th>
-			<th><!--[gt text='Edit pubtype fields']--></th>
-			<th><!--[gt text='Show publications list']--></th>
-			<th><!--[gt text='Show admin publist']--></th>
+			<th><!--[gt text='Pubtype fields']--></th>
 			<th><!--[gt text='New publication']--></th>
-			<th><!--[gt text='Show form code']--></th>
-			<th><!--[gt text='Show pub list code']--></th>
-			<th><!--[gt text='Show pub view code']--></th>
+			<th><!--[gt text='Show publists']--></th>
+			<th><!--[gt text='Show code']--></th>
 		</tr>
 		</thead>
 
@@ -35,25 +32,22 @@
 				<!--[$pubtype.description]-->
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='pubfields' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='db_update.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='pubfields' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='db_update.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Edit']--></a>
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='main' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='db_add.gif' set='icons/extrasmall' alt='']--> <!--[gt text='New']--></a>
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Admin']--></a>
+				&nbsp;
+				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='main' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Public']--></a>
 			</td>
 			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='db_add.gif' set='icons/extrasmall']--></a>
-			</td>
-			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall']--></a>
-			</td>
-			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall']--></a>
-			</td>
-			<td>
-				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall']--></a>
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Form']--></a>
+				&nbsp;
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall' alt='']--> <!--[gt text='List']--></a>
+				&nbsp;
+				<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid]-->"><!--[pnimg modname='core' src='run.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Display']--></a>
 			</td>
 		</tr>
 		<!--[foreachelse]-->

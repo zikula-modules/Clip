@@ -320,6 +320,9 @@ function PMgetWorkflowsOptionList()
  */
 function PMhandlePluginFields($publist, $pubfields, $islist=true)
 {
+    // TODO have to load pnForm, otherwise plugins can not be loaded...
+    include_once('includes/pnForm.php');
+
     foreach ($pubfields as $fieldname => $field) {
         $pluginclass = $field['fieldplugin'];
         $plugin = PMgetPlugin($pluginclass);
@@ -463,6 +466,8 @@ function PMgetTitleField($pubfields)
 function PMgetPlugin($pluginclass)
 {
     static $plugin_arr;
+    
+    include_once('includes/pnForm.php');
 
     if (!isset($plugin_arr[$pluginclass])) {
         Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');

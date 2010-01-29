@@ -11,6 +11,9 @@
 
 Loader::includeOnce('modules/pagemaster/common.php');
 
+/**
+ * pagesetter import
+ */
 function pagemaster_import_importps()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {

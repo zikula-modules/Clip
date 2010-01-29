@@ -12,6 +12,43 @@
 Loader::includeOnce('modules/pagemaster/common.php');
 
 /**
+ * Main admin screen
+ */
+function pagemaster_admin_main()
+{
+    if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerPermissionError();
+    }
+
+    $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+
+    // build the output
+    $render = pnRender::getInstance('pagemaster');
+
+    $render->assign('pubtypes', $pubtypes);
+
+    return $render->fetch('pagemaster_admin_main.htm');
+}
+
+/**
+ * Module configuration
+ */
+function pagemaster_admin_modifyconfig()
+{
+    if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerPermissionError();
+    }
+
+    // load the form handler
+    Loader::LoadClass('pagemaster_admin_modifyconfig', 'modules/pagemaster/classes/FormHandlers');
+
+    // build the output
+    $render = FormUtil::newpnForm('pagemaster');
+
+    return $render->pnFormExecute('pagemaster_admin_modifyconfig.htm', new pagemaster_admin_modifyconfig());
+}
+
+/**
  * Creates a new pubtype
  * @author gf
  */
@@ -30,22 +67,9 @@ function pagemaster_admin_pubtype()
     return $render->pnFormExecute('pagemaster_admin_pubtype.htm', new pagemaster_admin_pubtypes());
 }
 
-function pagemaster_admin_main()
-{
-    if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerPermissionError();
-    }
-
-    $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
-
-    // build the output
-    $render = pnRender::getInstance('pagemaster');
-
-    $render->assign('pubtypes', $pubtypes);
-
-    return $render->fetch('pagemaster_admin_main.htm');
-}
-
+/**
+ * Pubfields management
+ */
 function pagemaster_admin_pubfields()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
@@ -61,6 +85,9 @@ function pagemaster_admin_pubfields()
     return $render->pnFormExecute('pagemaster_admin_pubfields.htm', new pagemaster_admin_pubfields());
 }
 
+/**
+ * Admin publist screen
+ */
 function pagemaster_admin_publist($args=array())
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -123,6 +150,9 @@ function pagemaster_admin_publist($args=array())
     return $render->fetch('pagemaster_admin_publist.htm');
 }
 
+/**
+ * History screen
+ */
 function pagemaster_admin_history()
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -162,21 +192,9 @@ function pagemaster_admin_history()
     return $render->fetch('pagemaster_admin_history.htm');
 }
 
-function pagemaster_admin_modifyconfig()
-{
-    if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerPermissionError();
-    }
-
-    // load the form handler
-    Loader::LoadClass('pagemaster_admin_modifyconfig', 'modules/pagemaster/classes/FormHandlers');
-
-    // build the output
-    $render = FormUtil::newpnForm('pagemaster');
-
-    return $render->pnFormExecute('pagemaster_admin_modifyconfig.htm', new pagemaster_admin_modifyconfig());
-}
-
+/**
+ * Code generation
+ */
 function pagemaster_admin_showcode()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
@@ -211,7 +229,6 @@ function pagemaster_admin_showcode()
             break;
 
         case 'outputfull':
-            include_once('includes/pnForm.php');
             $tablename = 'pagemaster_pubdata'.$tid;
             $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
             if ($id <= 0) {

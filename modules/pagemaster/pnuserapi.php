@@ -94,8 +94,6 @@ function pagemaster_userapi_pubList($args)
         $orderby = $args['orderby'];
     }
 
-    include_once('includes/pnForm.php'); // have to load, otherwise plugins can not be loaded... TODO
-
     if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
         Loader::LoadClass('FilterUtil');
     } else {
@@ -303,8 +301,6 @@ function pagemaster_userapi_getPub($args)
 
     // handle the plugins data if needed
     if ($handlePluginFields){
-        // have to load pnForm, otherwise plugins can not be loaded... TODO
-        include_once('includes/pnForm.php');
         $pubdata = PMhandlePluginFields($pubdata, $pubfields, false);
     }
 
@@ -339,8 +335,6 @@ function pagemaster_userapi_editPub($args)
     if (!isset($args['commandName'])) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'commandName', $dom).' '.__('commandName has to be a valid workflow action for the currenct state.', $dom));
     }
-
-    include_once('includes/pnForm.php');
 
     $commandName = $args['commandName'];
     $data        = $args['data'];
