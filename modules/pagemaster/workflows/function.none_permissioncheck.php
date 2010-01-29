@@ -23,8 +23,10 @@ function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
     if (!empty($obj)) {
         // process $obj and calculate an instance
         $pid = $obj['core_pid'];
-        $tid = PMgetTidFromTablename($obj['__WORKFLOW__']['obj_table']);
+
+        $tid     = PMgetTidFromTablename($obj['__WORKFLOW__']['obj_table']);
         $pubtype = PMgetPubType($tid);
+
         if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == $currentUser) {
             return true;
         } else {
@@ -33,6 +35,32 @@ function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
     } else {
         // no object passed - user wants to create a new one
         $tid = FormUtil::getPassedValue('tid');
+
         return SecurityUtil::checkPermission('pagemaster:input:', "$tid::", $permLevel, $currentUser);
     }
+}
+
+function pagemaster_workflow_none_gettextstrings()
+{
+    return array(
+        'title' => no__('None'),
+        'description' => no__('This is an almost non-existing workflow. Everything is online immediately after creation.'),
+
+        // state titles
+        'states' => array(
+            no__('Approved') => no__('Content has been approved is available online'),
+            no__('Deleted') => no__('Content has been deleted')
+        ),
+
+        // action titles and descriptions for each state
+        'actions' => array(
+            'initial' => array(
+                no__('Submit') => no__('Submit a publication')
+            ),
+            'Approved' => array(
+                no__('Update') => no__('Update the publication'),
+                no__('Delete') => no__('Delete the publication')
+            )
+        )
+    );
 }

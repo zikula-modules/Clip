@@ -9,15 +9,22 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * deletePub operation
+ *
+ * @param  array  $obj     object to delete
+ * @param  array  $params  (none)
+ * @return array  object id as index with boolean value: true if success, false otherwise
+ */
 function pagemaster_operation_deletePub(&$obj, $params)
 {
-    if (PmWorkflowUtil::deleteWorkflow($obj)) {
-        // let know that the item was deleted
-        pnModCallHooks('item', 'delete', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
-        return array('core_online' => 0, 'deleted' => 1);
-
-    // false otherwise
-    } else {
+    // returns false if fails
+    if (!PmWorkflowUtil::deleteWorkflow($obj)) {
         return false;
     }
+
+    // let know that the item was deleted
+    pnModCallHooks('item', 'delete', $obj['tid'].'-'.$obj['core_pid'], array('module' => 'pagemaster'));
+
+    return array($obj['id'] => true);
 }

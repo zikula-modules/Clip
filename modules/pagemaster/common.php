@@ -105,7 +105,7 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
                             </div>
                             </fieldset>
 
-                            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$core_tid`-`$core_pid`" module=\'pagemaster\']-->
+                            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$pubtype.tid`-`$core_pid`" module=\'pagemaster\']-->
 
                             <div class="z-formbuttons">
                                 <!--[foreach item=\'action\' from=$actions]-->

@@ -3,9 +3,7 @@
 <workflow>
 
   <title>Standard</title>
-  <description>This is a two staged workflow with stages for untrusted submissions and finally approved publications.
-               It does not allow untrusted corrections to published pages.</description>
-
+  <description>This is a two staged workflow with stages for untrusted submissions and finally approved publications. It does not allow untrusted corrections to published pages.</description>
 
   <states>
 
@@ -21,14 +19,13 @@
 
   </states>
 
-
   <actions>
 
-      <!-- From initial state -->
+    <!-- From initial state -->
 
     <action id="approve">
-      <title>Submit & Approve</title>
-      <description>Submit new content and approve immediately</description>
+      <title>Submit and Approve</title>
+      <description>Submit a publication and approve immediately</description>
       <permission>moderator</permission>
       <nextState>approved</nextState>
       <operation online="1">createPub</operation>
@@ -36,64 +33,74 @@
 
     <action id="submit">
       <title>Submit</title>
-      <description>Submit new content for acceptance by the local moderator</description>
-      <permission>author</permission>
+      <description>Submit a publication for acceptance by a moderator</description>
+      <permission>comment</permission>
       <nextState>waiting</nextState>
       <operation>createPub</operation>
     </action>
 
-      <!-- State: waiting -->
+    <!-- State: waiting -->
+
+    <action id="updateApprove">
+      <title>Update and Approve</title>
+      <description>Update the content and approve for immediate publishing</description>
+      <permission>editor</permission>
+      <state>waiting</state>
+      <nextState>approved</nextState>
+      <operation online="1" nextstate="approved">updatePub</operation>
+    </action>
 
     <action id="approve">
       <title>Approve</title>
-      <description>Approve publication for immediate publishing</description>
+      <description>Approve the publication for immediate publishing</description>
       <permission>moderator</permission>
       <state>waiting</state>
       <nextState>approved</nextState>
-      <operation newrevision="0" online="1">updatePub</operation><!-- only update online state -->      
-    </action>
-
-    <action id="delete">
-      <title>Delete</title>
-      <description>Delete publication</description>
-      <permission>moderator</permission>
-      <state>waiting</state>
-      <operation>deletePub</operation>
+      <operation online="1" newrevision="0">updatePub</operation><!-- only update online state -->      
     </action>
 
     <action id="update">
       <title>Update</title>
-      <description>Save content with no WS change</description>
-      <permission>moderator</permission>
+      <description>Update the content for later publishing</description>
+      <permission>editor</permission>
       <state>waiting</state>
       <operation newrevision="0">updatePub</operation>
     </action>
 
-      <!-- State: approved -->
-
-    <action id="updateApprove">
-      <title>Update & Approve</title>
-      <description>Update content and approve for immediate publishing</description>
-      <permission>moderator</permission>
-      <state>approved</state>
-      <operation online="1" nextstate="approved">updatePub</operation>
+    <action id="delete">
+      <title>Delete</title>
+      <description>Delete the publication</description>
+      <permission>delete</permission>
+      <state>waiting</state>
+      <operation>deletePub</operation>
     </action>
+
+    <!-- State: approved -->
 
     <action id="update">
       <title>Update</title>
-      <description>Update content for later publishing</description>
+      <description>Update the content for later publishing</description>
       <permission>moderator</permission>
       <state>approved</state>
       <operation online="0" nextstate="waiting">updatePub</operation>
     </action>
 
-    <action id="delete">
-      <title>Delete</title>
-      <description>Delete publication</description>
+    <action id="online">
+      <title>Publish</title>
+      <description>Make the publication available</description>
       <permission>moderator</permission>
       <state>approved</state>
-      <operation>deletePub</operation>
+      <operation online="1">updateOnlineState</operation>
     </action>
+
+    <action id="offline">
+      <title>Unpublish</title>
+      <description>Hide the publication</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation online="0">updateOnlineState</operation>
+    </action>
+
     <action id="MoveToDepot">
       <title>Move to depot</title>
       <description>Move the publication to the depot</description>
@@ -102,23 +109,14 @@
       <operation>moveToDepot</operation>
     </action>
 
-    <action id="online">
-      <title>Set online</title>
-      <description>Set publication online</description>
+    <action id="delete">
+      <title>Delete</title>
+      <description>Delete the publication</description>
       <permission>moderator</permission>
       <state>approved</state>
-      <operation online="1">updateOnlineState</operation>
-    </action>
-
-    <action id="offline">
-      <title>Set offline</title>
-      <description>Set publication offline</description>
-      <permission>moderator</permission>
-      <state>approved</state>
-      <operation online="0">updateOnlineState</operation>
+      <operation>deletePub</operation>
     </action>
 
   </actions>
-
 
 </workflow>

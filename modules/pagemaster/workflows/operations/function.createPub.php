@@ -9,6 +9,13 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * createPub operation
+ *
+ * @param  array  $obj               object to create
+ * @param  int    $params['online']  (optional) online value for the object, default: false
+ * @return bool   true if success, false otherwise
+ */
 function pagemaster_operation_createPub(&$obj, $params)
 {
     // set the online value if set
@@ -22,11 +29,13 @@ function pagemaster_operation_createPub(&$obj, $params)
     $obj['core_author'] = pnUserGetVar('uid');
 
     // save the object
-    $obj = DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id');
+    if (!DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id')) {
+        return false;
+    }
 
     // let know that an item was created
-    pnModCallHooks('item', 'create', $obj['tid'].'_'.$obj['core_pid'], array('module' => 'pagemaster'));
+    pnModCallHooks('item', 'create', $obj['tid'].'-'.$obj['core_pid'], array('module' => 'pagemaster'));
 
-    // return the created item
-    return $obj;
+    // success
+    return true;
 }

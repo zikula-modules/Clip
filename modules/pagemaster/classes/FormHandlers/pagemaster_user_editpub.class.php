@@ -104,9 +104,9 @@ class pagemaster_user_editpub
         $pnr->clear_cache(null, 'publist'.$this->tid);
         unset($pnr);
 
-        // somebody change this always back, pls let it be like this, otherwise stepmode does not work!
-        // if the item moved to the depot
-        if ($data[$args['commandName']]['core_indepot'] == 1) {
+        // check the referer (redirect to admin list)
+        // if the item moved to the depot or was deleted
+        if ($data['core_indepot'] == 1 || isset($data['deletePub'][$data['id']])) {
             $this->goto = pnModURL('pagemaster', 'user', 'main',
                                    array('tid' => $data['tid']));
 

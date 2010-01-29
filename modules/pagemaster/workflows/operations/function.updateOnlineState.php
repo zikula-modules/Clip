@@ -9,11 +9,19 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * updateOnlineState operation
+ *
+ * @param  array  $obj               object to set online
+ * @param  int    $params['online']  (optional) online value for the object
+ * @return array  object id as index with boolean value: true if success, false otherwise
+ */
 function pagemaster_operation_updateOnlineState(&$obj, $params)
 {
     // set the online parameter, or set it offline if is not set
     $obj['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
 
-    // return the updated object
-    return DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
+    $res = (bool)DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
+
+    return array($obj['id'] => $res);
 }
