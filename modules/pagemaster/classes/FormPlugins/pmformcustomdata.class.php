@@ -227,38 +227,38 @@ class pmformcustomdata extends pnFormTextInput
 
         $html = '<div class="z-formrow">
                  <div>
-                   <label for="pmplugin_defaultdata">'.__('Default', $dom).':</label> <input type="text" id="pmplugin_defaultdata" name="pmplugin_defaultdata" value="'.str_replace('"', '&quot;', $configvars[1]).'" />
+                   <label for="pmplugin_defaultdata">'.__('Default:', $dom).'</label> <input type="text" id="pmplugin_defaultdata" name="pmplugin_defaultdata" value="'.str_replace('"', '&quot;', $configvars[1]).'" />
                  </div>
-                 <div class="newitemlistdiv">
-                   <a onclick="javascript:itemlist_pmcustomdata.appenditem();" href="javascript:void(0);">'.__('Add a new item type', $dom).'</a>
-                 </div>
-                 <ul id="pmcustomdata" class="itemlist">
-                     <li class="itemlistheader">
+                 <p>
+                   <a onclick="javascript:list_pmcustomdata.appenditem();" href="javascript:void(0);">'.__('Add a new item type', $dom).'</a>
+                 </p>
+                 <ul id="pmcustomdata" class="z-itemlist">
+                     <li class="z-itemheader">
                        <div class="z-clearfix">
-                       <span class="itemlistcell width22">'.__('Type name', $dom).'</span>
-                       <span class="itemlistcell width22">'.__('Display name', $dom).'</span>
-                       <span class="itemlistcell width22">'.__('API to use', $dom).'</span>
-                       <span class="itemlistcell width22">'.__('Ajax call', $dom).'</span>
-                       <span class="itemlistcell width10">'.__('Options', $dom).'</span>
+                       <span class="z-itemcell z-w22">'.__('Type name', $dom).'</span>
+                       <span class="z-itemcell z-w22">'.__('Display name', $dom).'</span>
+                       <span class="z-itemcell z-w22">'.__('API to use', $dom).'</span>
+                       <span class="z-itemcell z-w22">'.__('Ajax call', $dom).'</span>
+                       <span class="z-itemcell z-w10">'.__('Options', $dom).'</span>
                        </div>
                      </li>';
 
         foreach ($vars as $key => $var) {
             $html .= '<li id="listitem_pmcustomdata_'.$key.'" class="listitem_pmcustomdata">
                         <div class="z-clearfix">
-                        <span class="itemlistcell width22">
+                        <span class="z-itemcell z-w22">
                           <input id="itemname_'.$key.'" name="itemname[]" value="'.($var[0] != '~'? $var[0] : '').'" />
                         </span>
-                        <span class="itemlistcell width22">
+                        <span class="z-itemcell z-w22">
                           <input class="iteminput" id="itemdisplay_'.$key.'" name="itemdisplay[]" value="'.($var[1] != '~'? $var[1] : '').'" />
                         </span>
-                        <span class="itemlistcell width22">
+                        <span class="z-itemcell z-w22">
                           <input class="iteminput" id="itemapi_'.$key.'" name="itemapi[]" value="'.($var[2] != '~'? $var[2] : '').'" />
                         </span>
-                        <span class="itemlistcell width22">
+                        <span class="z-itemcell z-w22">
                           <input class="iteminput" id="itemajax_'.$key.'" name="itemajax[]" value="'.($var[3] != '~'? $var[3] : '').'" />
                         </span>
-                        <span class="itemlistcell width10">
+                        <span class="z-itemcell z-w10">
                           <button id="buttondelete_pmcustomdata_'.$key.'" class="buttondelete"><img height="16" width="16" title="'.__('Delete', $dom).'" alt="'.__('Delete', $dom).'" src="images/icons/extrasmall/14_layer_deletelayer.gif"/></button>
                         </span>
                         </div>
@@ -269,19 +269,19 @@ class pmformcustomdata extends pnFormTextInput
                   <ul style="display:none">
                       <li id="pmcustomdata_emptyitem">
                         <div class="z-clearfix">
-                        <span class="itemlistcell width22">
+                        <span class="z-itemcell z-w22">
                           <input class="iteminput" id="itemname_" name="dummy[]" />
                         </span>
-                        <span class="itemlistcell width22">
+                        <span class="z-itemcell z-w22">
                           <input class="iteminput" id="itemdisplay_" name="dummy[]" />
                         </span>
-                        <span class="itemlistcell width22">
+                        <span class="z-itemcell z-w22">
                           <input class="iteminput" id="itemapi_" name="dummy[]" />
                         </span>
-                        <span class="itemlistcell width22">
+                        <span class="z-itemcell z-w22">
                           <input class="iteminput" id="itemajax_" name="dummy[]" />
                         </span>
-                        <span class="itemlistcell width10">
+                        <span class="z-itemcell z-w10">
                           <button id="buttondelete_pmcustomdata_X" class="buttondelete"><img height="16" width="16" title="'.__('Delete', $dom).'" alt="'.__('Delete', $dom).'" src="images/icons/extrasmall/14_layer_deletelayer.gif"/></button>
                         </span>
                         </div>
@@ -290,10 +290,10 @@ class pmformcustomdata extends pnFormTextInput
 
         $html .= '<script>
                   //<![CDATA[
-                      var itemlist_pmcustomdata = null;
+                      var list_pmcustomdata = null;
                       debug = null;
                       Event.observe(window, \'load\', function() {
-                          itemlist_pmcustomdata = new Zikula.itemlist(\'pmcustomdata\', {headerpresent: true});
+                          list_pmcustomdata = new Zikula.itemlist(\'pmcustomdata\', {headerpresent: true});
                       }, false);
                   //]]>
                   </script>

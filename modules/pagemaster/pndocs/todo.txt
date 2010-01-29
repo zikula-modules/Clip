@@ -1,10 +1,13 @@
 
   TODO
+	Fix the Drag&Drop PubFields script
 	Maxlenght more clean solution. Exclude some default plugins?
-	Move the publangs to l2 (0.4 upgrade routine, queries)
-	modvar to enable template alerts
 	rework the vars disposition in the templates (wrapped in proper arrays)
-	deprecate PmWorkflowUtil
-	migrate to the itemlist styles and clean the internal stylesheet
-	category based plugins should validate if their categories are not in the current plugin tree
 	integrate styles to workflow actions, like images and News buttons styles
+
+	text plugins configurable cols?
+	category based plugins should validate if their categories are not in the current plugin tree
+
+	modvar to enable template alerts
+	deprecate PmWorkflowUtil
+	Move the publangs to l2 (0.4 upgrade routine, queries)
