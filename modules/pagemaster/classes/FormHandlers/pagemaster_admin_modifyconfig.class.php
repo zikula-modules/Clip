@@ -23,7 +23,7 @@ class pagemaster_admin_modifyconfig
     {
         $modvars = pnModGetVar('pagemaster');
 
-        $render->assign('uploadpath', $modvars['uploadpath']);
+        $render->assign($modvars);
 
         // check if there are pubtypes already
         $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
@@ -56,6 +56,8 @@ class pagemaster_admin_modifyconfig
      */
     function handleCommand(&$render, &$args)
     {
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+
         $data = $render->pnFormGetValues();
 
         // handle the commands
@@ -71,6 +73,11 @@ class pagemaster_admin_modifyconfig
                     $data['uploadpath'] = StringUtil::left($data['uploadpath'], strlen($data['uploadpath']) - 1);
                 }
                 pnModSetVar('pagemaster', 'uploadpath', $data['uploadpath']);
+
+                // development mode
+                pnModSetVar('pagemaster', 'devmode', $data['devmode']);
+
+                LogUtil::registerStatus(__('Done! Module configuration updated.', $dom));
     
                 return pnRedirect(pnModURL('pagemaster', 'admin', 'modifyconfig'));
 

@@ -17,7 +17,7 @@
 		<div>
 			<!--[pnformvalidationsummary]-->
 			<fieldset>
-				<legend><!--[gt text='PageMaster settings']--></legend>
+				<legend><!--[gt text='General settings']--></legend>
 				<div class="z-formrow">
 					<!--[pnformlabel for='uploadpath' __text='Upload path']-->
 			  		<!--[pnformtextinput maxLength='200' id='uploadpath']-->
@@ -37,6 +37,13 @@
 					<span class="z-formnote">
 						<!--[gt text='Path where uploaded files will be stored, relative to the site root (%s)' tag1=$siteroot]--><br />
 					    <span style="color: <!--[$updir_msgcolor]-->;"><!--[$updir_message]--></span>
+					</span>
+				</div>
+				<div class="z-formrow">
+					<!--[pnformlabel for='devmode' __text='Development mode']-->
+			  		<!--[pnformcheckbox id='devmode']-->
+					<span class="z-formnote z-informationmsg">
+						<!--[gt text='Enable the development mode to see detailed notices about PageMaster requirements.']-->
 					</span>
 				</div>
 			</fieldset>

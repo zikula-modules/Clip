@@ -135,8 +135,10 @@ function pagemaster_user_main($args)
 
     // Check if template is available
     if ($template != 'pagemaster_generic_publist.htm' && !$render->template_exists($template)) {
-        // FIXME modvar for alerts
-        //LogUtil::registerStatus(__f('Template [%s] not found', $template, $dom));
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'devmode', false);
+        if ($alert) {
+            LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template, $dom));
+        }
         $template = 'pagemaster_generic_publist.htm';
     }
 
@@ -275,7 +277,10 @@ function pagemaster_user_viewpub($args)
 
     // Check if template is available
     if ($template != 'var:viewpub_template_code' && !$render->template_exists($template)) {
-        //LogUtil::registerStatus(__f('Template [%s] not found', $template, $dom));
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'devmode', false);
+        if ($alert) {
+            LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template, $dom));
+        }
         $template = 'var:viewpub_template_code';
     }
 
@@ -353,11 +358,12 @@ function pagemaster_user_pubedit()
 
     // create the output object
     $render = FormUtil::newpnForm('pagemaster');
+    $render->add_core_data();
 
     $render->assign('pubtype', $pubtype);
 
     // resolve the template to use
-    $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'display_alerts', false);
+    $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'devmode', false);
 
     // individual step
     $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
@@ -365,8 +371,7 @@ function pagemaster_user_pubedit()
     if (!empty($stepname) && $render->template_exists($template_step)) {
         return $render->pnFormExecute($template_step, $formHandler);
     } elseif ($alert) {
-        // FIXME configvar for alerts
-        //LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_step, $dom));
+        LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_step, $dom));
     }
 
     // generic edit
@@ -375,7 +380,7 @@ function pagemaster_user_pubedit()
     if ($render->template_exists($template_all)) {
         return $render->pnFormExecute($template_all, $formHandler);
     } elseif ($alert) {
-        //LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_all, $dom));
+        LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_all, $dom));
     }
 
     $hookAction = empty($id) ? 'new' : 'modify';

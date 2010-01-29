@@ -14,115 +14,9 @@ Loader::LoadClass('PmWorkflowUtil', 'modules/pagemaster/classes');
 /**
  * Code generation functions
  */
-function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
-{
-    // FIXME Review template path (to pnForm?)
-    $template_code = '
-                      <h1><!--[gt text=$pubtype.title]--></h1>
-
-                      <!--[include file=\'pagemaster_generic_navbar.htm\' func=\'pubedit\']-->
-
-                      <!--[insert name=\'getstatusmsg\']-->
-
-                      <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                          <div class="z-warningmsg">
-                              <!--[pnmodurl modname=\'pagemaster\' type=\'admin\' func=\'showcode\' mode=\'input\' tid=$pubtype.tid assign=\'urlpecode\']-->
-                              <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the code</a> and create individuals template (<b>pubedit_%2$s_{STEPNAME}.htm</b> or <b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b> or within your theme: <b>/templates/modules/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b>.\' tag1=$urlpecode tag2=$pubtype.formname]-->
-                          </div>
-                      <!--[/pnsecauthaction_block]-->
-
-                      <!--[if $pubtype.description neq \'\']-->
-                      <div class="pm-pubdesc"><!--[gt text=$pubtype.description]--></div>
-                      <!--[/if]-->
-
-                      <!--[pnform cssClass=\'z-form\' enctype=\'multipart/form-data\']-->
-                          <div>
-                              <!--[pnformvalidationsummary]-->
-                              <fieldset>
-                              <legend><!--[if isset($id)]--><!--[gt text=\'Edit publication\']--><!--[else]--><!--[gt text=\'New publication\']--><!--[/if]--></legend>
-                      ';
-
-    foreach (array_keys($pubfields) as $k) {
-        // get the plugin pnform name of the plugin filename
-        $pmformname = explode('.', $pubfields[$k]['fieldplugin']);
-        $pmformname = $pmformname[1];
-
-        if (!empty($pubfields[$k]['fieldmaxlength'])) {
-            $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
-        } elseif($pmformname == 'pmformtextinput') {
-            $maxlength = " maxLength='65535'";
-        } else {
-            $maxlength = ''; //" maxLength='255'"; //TODO Not a clean solution. MaxLength is not needed for ever plugin
-        }
-
-        if (!empty($pubfields[$k]['description'])) {
-            //$toolTip = " toolTip='{$pubfields[$k]['description']}'";
-            $toolTip = str_replace("'", "\'", $pubfields[$k]['description']);
-        } else {
-            $toolTip = '';
-        }
-
-        // specific plugins
-        if ($pmformname == 'pmformtextinput') {
-            $linecol = " rows='20' cols='70'";
-        } else {
-            $linecol = '';
-        }
-
-        // scape sensible data
-        $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']); 
-
-        $template_code .= '
-                            <div class="z-formrow">
-                                <!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' __text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').']-->
-                                <!--[genericformplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.']-->'.
-                                ($toolTip ? "\n".'<span class="z-formnote z-sub"><!--[gt text=\''.$toolTip.'\']--></span>' : '').'
-                            </div>
-                            ';
-    }
-    $template_code .= '     </fieldset>
-
-                            <fieldset>
-                            <legend><!--[gt text=\'Publication options\']--></legend>
-                            <div class="z-formrow">
-                                <!--[pnformlabel for=\'core_language\' __text=\'' . no__('Language') . '\']-->
-                                <!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']-->
-                            </div>
-
-                            <div class="z-formrow">
-                                <!--[pnformlabel for=\'core_publishdate\' __text=\'' . no__('Publish date') . '\']-->
-                                <!--[pnformdateinput id=\'core_publishdate\' includeTime=\'1\']-->
-                            </div>
-
-                            <div class="z-formrow">
-                                <!--[pnformlabel for=\'core_expiredate\' __text=\'' . no__('Expire date') . '\']-->
-                                <!--[pnformdateinput id=\'core_expiredate\' includeTime=\'1\']-->
-                            </div>
-
-                            <div class="z-formrow">
-                                <!--[pnformlabel for=\'core_showinlist\' __text=\'' . no__('Show in list') . '\']-->
-                                <!--[pnformcheckbox id=\'core_showinlist\' checked=\'checked\']-->
-                            </div>
-                            </fieldset>
-
-                            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$pubtype.tid`-`$core_pid`" module=\'pagemaster\']-->
-
-                            <div class="z-formbuttons">
-                                <!--[foreach item=\'action\' from=$actions]-->
-                                    <!--[gt text=$action.title assign=\'actiontitle\']-->    
-                                    <!--[pnformbutton commandName=$action.id text=$actiontitle]-->
-                                <!--[/foreach]-->
-                            </div>
-                        </div>
-                        <!--[/pnform]-->
-                        ';
-
-    return $template_code;
-}
-
 function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
 {
-    $template_code = '<!--[pndebug]-->
+    $template_code = '<!--[if $pncore.pagemaster.devmode|default:true]--><!--[pndebug]--><!--[/if]-->
                 <!--[hitcount pid=$core_pid tid=$core_tid]-->
 
                 <h1><!--[gt text=$pubtype.title]--></h1>
@@ -131,12 +25,14 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
 
                 <!--[insert name=\'getstatusmsg\']-->
 
+                <!--[if $pncore.pagemaster.devmode|default:true]-->
                 <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
                     <div class="z-warningmsg">
                         <!--[pnmodurl modname=\'pagemaster\' type=\'admin\' func=\'showcode\' mode=\'outputfull\' tid=$pubtype.tid assign=\'urlpvcode\']-->
                         <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the pubview code</a> and create a customized template (<b>viewpub_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/viewpub_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/viewpub_%2$s.htm</b>.\' tag1=$urlpvcode tag2=$pubtype.filename]-->
                     </div>
                 <!--[/pnsecauthaction_block]-->
+                <!--[/if]-->
 
                 <!--[if $pubtype.description neq \'\']-->
                 <div class="pm-pubdesc"><!--[gt text=$pubtype.description]--></div>
@@ -249,6 +145,113 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
                        <!--[pnmodurl modname=\'pagemaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\']-->
                        <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'pagemaster\' returnurl=$returnurl]-->';
     
+    return $template_code;
+}
+
+function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
+{
+    $template_code = '
+                      <h1><!--[gt text=$pubtype.title]--></h1>
+
+                      <!--[include file=\'pagemaster_generic_navbar.htm\' func=\'pubedit\']-->
+
+                      <!--[insert name=\'getstatusmsg\']-->
+
+                      <!--[if $pncore.pagemaster.devmode|default:true]-->
+                      <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
+                          <div class="z-warningmsg">
+                              <!--[pnmodurl modname=\'pagemaster\' type=\'admin\' func=\'showcode\' mode=\'input\' tid=$pubtype.tid assign=\'urlpecode\']-->
+                              <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the code</a> and create individuals template (<b>pubedit_%2$s_{STEPNAME}.htm</b> or <b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b> or within your theme: <b>/templates/modules/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b>.\' tag1=$urlpecode tag2=$pubtype.formname]-->
+                          </div>
+                      <!--[/pnsecauthaction_block]-->
+                      <!--[/if]-->
+
+                      <!--[if $pubtype.description neq \'\']-->
+                      <div class="pm-pubdesc"><!--[gt text=$pubtype.description]--></div>
+                      <!--[/if]-->
+
+                      <!--[pnform cssClass=\'z-form\' enctype=\'multipart/form-data\']-->
+                          <div>
+                              <!--[pnformvalidationsummary]-->
+                              <fieldset>
+                              <legend><!--[if isset($id)]--><!--[gt text=\'Edit publication\']--><!--[else]--><!--[gt text=\'New publication\']--><!--[/if]--></legend>
+                      ';
+
+    foreach (array_keys($pubfields) as $k) {
+        // get the plugin pnform name of the plugin filename
+        $pmformname = explode('.', $pubfields[$k]['fieldplugin']);
+        $pmformname = $pmformname[1];
+
+        if (!empty($pubfields[$k]['fieldmaxlength'])) {
+            $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
+        } elseif($pmformname == 'pmformtextinput') {
+            $maxlength = " maxLength='65535'";
+        } else {
+            $maxlength = ''; //" maxLength='255'"; //TODO Not a clean solution. MaxLength is not needed for ever plugin
+        }
+
+        if (!empty($pubfields[$k]['description'])) {
+            //$toolTip = " toolTip='{$pubfields[$k]['description']}'";
+            $toolTip = str_replace("'", "\'", $pubfields[$k]['description']);
+        } else {
+            $toolTip = '';
+        }
+
+        // specific plugins
+        if ($pmformname == 'pmformtextinput') {
+            $linecol = " rows='20' cols='70'";
+        } else {
+            $linecol = '';
+        }
+
+        // scape sensible data
+        $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']); 
+
+        $template_code .= '
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' __text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').']-->
+                                <!--[genericformplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.']-->'.
+                                ($toolTip ? "\n".'<span class="z-formnote z-sub"><!--[gt text=\''.$toolTip.'\']--></span>' : '').'
+                            </div>
+                            ';
+    }
+    $template_code .= '     </fieldset>
+
+                            <fieldset>
+                            <legend><!--[gt text=\'Publication options\']--></legend>
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\'core_language\' __text=\'' . no__('Language') . '\']-->
+                                <!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']-->
+                            </div>
+
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\'core_publishdate\' __text=\'' . no__('Publish date') . '\']-->
+                                <!--[pnformdateinput id=\'core_publishdate\' includeTime=\'1\']-->
+                            </div>
+
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\'core_expiredate\' __text=\'' . no__('Expire date') . '\']-->
+                                <!--[pnformdateinput id=\'core_expiredate\' includeTime=\'1\']-->
+                            </div>
+
+                            <div class="z-formrow">
+                                <!--[pnformlabel for=\'core_showinlist\' __text=\'' . no__('Show in list') . '\']-->
+                                <!--[pnformcheckbox id=\'core_showinlist\' checked=\'checked\']-->
+                            </div>
+                            </fieldset>
+
+                            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$pubtype.tid`-`$core_pid`" module=\'pagemaster\']-->
+
+                            <div class="z-formbuttons">
+                                <!--[foreach item=\'action\' from=$actions]-->
+                                    <!--[gt text=$action.title assign=\'actiontitle\']-->    
+                                    <!--[pnformbutton commandName=$action.id text=$actiontitle]-->
+                                <!--[/foreach]-->
+                            </div>
+                        </div>
+                        <!--[/pnform]-->
+                        ';
+
     return $template_code;
 }
 

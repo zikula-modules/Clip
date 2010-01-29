@@ -25,6 +25,15 @@ function pagemaster_init()
         return false;
     }
 
+    // modvars
+    CacheUtil::createLocalDir('pagemaster', 777);
+    $modvars = array(
+        'uploadpath' => CacheUtil::getLocalDir().'/pagemaster',
+        'devmode' => true
+    );
+    pnModSetVars('pagemaster', $modvars);
+
+    // build the default Category tree
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
 
@@ -49,6 +58,8 @@ function pagemaster_init()
     $cat->setDataField('display_desc', array($lang => __('PageMaster lists for its publications', $dom)));
     $cat->insert();
     $cat->update();
+
+    // TODO create the Category registry
 
     return true;
 }

@@ -6,12 +6,14 @@
 
 <!--[insert name='getstatusmsg']-->
 
+<!--[if $pncore.pagemaster.devmode|default:true]-->
 <!--[pnsecauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN]-->
 <div class="z-warningmsg">
 	<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid assign='urlplcode']-->
 	<!--[gt text='This is a generic template. Your can <a href="%1$s">get the publist code</a> and create a customized template (<b>publist_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/publist_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/publist_%2$s.htm</b>.' tag1=$urlplcode tag2=$pubtype.filename]-->
 </div>
 <!--[/pnsecauthaction_block]-->
+<!--[/if]-->
 
 <!--[if $pubtype.description neq '']-->
 <p class="pm-pubdesc"><!--[gt text=$pubtype.description]--></p>
