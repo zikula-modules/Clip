@@ -19,7 +19,7 @@
 function pagemaster_operation_deletePub(&$obj, $params)
 {
     // returns false if fails
-    if (!PmWorkflowUtil::deleteWorkflow($obj)) {
+    if (!WorkflowUtil::deleteWorkflow($obj)) {
         return false;
     }
 

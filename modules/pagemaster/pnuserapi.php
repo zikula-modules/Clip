@@ -186,7 +186,7 @@ function pagemaster_userapi_pubList($args)
         }
         if ($getApprovalState) {
             foreach (array_keys($publist) as $key) {
-                PmWorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'pagemaster');
+                WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'pagemaster');
             }
         }
         if ($handlePluginFields) {
@@ -305,7 +305,7 @@ function pagemaster_userapi_getPub($args)
     }
 
     if ($getApprovalState) {
-        PmWorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'pagemaster');
+        WorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'pagemaster');
     }
 
     // fills the core_title field
@@ -357,7 +357,7 @@ function pagemaster_userapi_editPub($args)
         }
     }
 
-    $ret = PmWorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
+    $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
     if (empty($ret)) {
         return LogUtil::registerError(__('Workflow action error.', $dom));
     }

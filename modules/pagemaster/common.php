@@ -9,8 +9,6 @@
  * @subpackage  pagemaster
  */
 
-Loader::LoadClass('PmWorkflowUtil', 'modules/pagemaster/classes');
-
 /**
  * Code generation functions
  */

@@ -352,7 +352,7 @@ function pagemaster_user_pubedit()
 
     if (!empty($id)) {
         $obj = array('id' => $id);
-        PmWorkflowUtil::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'pagemaster');
+        WorkflowUtil::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'pagemaster');
         $stepname = $obj['__WORKFLOW__']['state'];
     }
 
@@ -438,7 +438,7 @@ function pagemaster_user_executecommand()
         return LogUtil::registerError(__('Error! No such publication found.', $dom));
     }
 
-    PmWorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
+    WorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
 
     if (!empty($goto)) {
         switch ($goto)

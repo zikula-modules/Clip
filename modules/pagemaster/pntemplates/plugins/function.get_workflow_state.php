@@ -12,30 +12,33 @@
 
 /**
  * Returns the state
+ *
  * @author kundi
  * @param $args['tid'] tid
  * @param $args['pid'] pid
  * @param $args['assign'] optional
-
+ *
  * @return string
  */
 function smarty_function_get_workflow_state($params, &$smarty)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
     $tid = $params['tid'];
     $id  = $params['id'];
 
     if (!$tid) {
-        return 'Required parameter [tid] not provided in smarty_function_get_workflow_state';
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
     }
 
     if (!$id) {
-        return 'Required parameter [id] not provided in smarty_function_get_workflow_state';
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
     $pub['id'] = $id;
 
-    PmWorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
+    WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
 
     if ($params['assign']) {
         $smarty->assign($params['assign'], $pub['__WORKFLOW__']);

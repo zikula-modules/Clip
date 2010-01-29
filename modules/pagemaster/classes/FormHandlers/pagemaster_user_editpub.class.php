@@ -39,12 +39,13 @@ class pagemaster_user_editpub
             $this->core_pid      = $pubdata['core_pid'];
             $this->core_revision = $pubdata['core_revision'];
 
+            Loader::LoadClass('PmWorkflowUtil', 'modules/pagemaster/classes');
             $actions = PmWorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
 
         } else {
             $pubdata = array();
             $this->core_author = pnUserGetVar('uid');
-            $actions = PmWorkflowUtil::getActionsByState(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
+            $actions = WorkflowUtil::getActionsByStateArray(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
 
         $tid = ($this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
