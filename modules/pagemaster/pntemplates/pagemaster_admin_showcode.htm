@@ -20,9 +20,11 @@
 		<!--[assign var='pmsubfolder' value='output']-->
 	<!--[/if]-->
 
-	<div class="z-warningmsg"><!--[gt text='Create a template named <b>%1$s</b> and store it in the the directory <b>/config/templates/pagemaster/%2$s/</b> or within your theme in the <b>/themes/YourTheme/templates/modules/pagemaster/%2$s/</b> subfolder.' tag1=$pmtplname tag2=$pmsubfolder]--></div>
-	<br />
+	<div class="z-warningmsg">
+		<!--[gt text='Create a template named <b>%1$s</b> with this code, and store it in the the directory: <b>/config/templates/pagemaster/%2$s/%1$s</b>, or within your theme in the <b>/themes/YourTheme/templates/modules/pagemaster/%2$s/%1$s</b>.' tag1=$pmtplname tag2=$pmsubfolder]-->
+	</div>
 
-	<!--[$code]-->
-
+	<pre class="pm-showcode">
+		<!--[$code]-->
+	</pre>
 </div>

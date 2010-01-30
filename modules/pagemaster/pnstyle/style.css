@@ -9,21 +9,15 @@
  * @subpackage  pagemaster
  */
 
+/* general */
 img {
   vertical-align: middle;
 }
 
-.pn-module-pagemaster div.z-menu {
-  margin-bottom: 1em;
-}
-.pn-module-pagemaster div.z-menu .pm-breadtext {
-  color: #444;
-  padding: 3px;
-}
+/* admin interface */
 div.pm-menu {
   margin-bottom: 1.5em;
 }
-
 .z-menuitem-title {
   background: url(../../../system/Admin/pnimages/button_bkg.gif) repeat;
   border-left: 1px solid #ccc; 
@@ -36,12 +30,18 @@ div.pm-menu {
   padding-left: 5px;
   width: 99%;
 }
+pre.pm-showcode {
+  background: #222;
+  border: 1px solid #ccc;
+  color: #fff;
+  margin: 1em;
+  padding: 1em;
+}
 
+/* pubfield type selector and modalbox */
 .z-form div.z-formrow select.pm-plugintypeselector {
   width: 66.2%;
 }
-
-/* Admin modalbox */
 #typeDataDiv {
   width: 550px;
   height: auto !important;
@@ -52,4 +52,13 @@ div.pm-menu {
   margin-left: -275px;
   background-color: #FFFFFF;
   padding:10px;
+}
+
+/* user interface */
+.pn-module-pagemaster div.z-menu {
+  margin-bottom: 1em;
+}
+.pn-module-pagemaster div.z-menu .pm-breadtext {
+  color: #444;
+  padding: 3px;
 }
