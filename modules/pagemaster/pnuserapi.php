@@ -289,7 +289,7 @@ function pagemaster_userapi_getPub($args)
     } else {
         if (empty($id)) {
             $tablem = DBUtil::getLimitedTablename($tablename);
-            $where .= " pm_pid = '$pid' AND pm_id = (SELECT MAX(pm_id) FROM $tablem WHERE pm_pid = '$pid' AND pm_online = '1')";
+            $where .= " pm_pid = '$pid' AND pm_online = '1'";
         } else {
             $where .= " pm_id = '$id'";
         }
@@ -417,14 +417,9 @@ function pagemaster_userapi_getId($args)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'pid', $dom));
     }
 
-    // build the where clause
-    $where[] = "pm_pid = '$args[pid]'";
-    if (!SecurityUtil::checkPermission('pagemaster:input:', "$args[tid]:$args[pid]:", ACCESS_ADMIN)) {
-        $where[] = "pm_online = '1'";
-    }
-    $where = implode(' AND ', $where);
-
+    // build the query
     $tablename = 'pagemaster_pubdata'.$args['tid'];
+    $where     = "pm_pid = '$args[pid]' AND pm_online = '1'";
 
     return DBUtil::selectField($tablename, 'id', $where);
 }

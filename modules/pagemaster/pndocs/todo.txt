@@ -3,12 +3,14 @@
 	Fix the Drag&Drop PubFields script
 	Maxlenght more clean solution. Exclude some default plugins?
 	rework the vars disposition in the templates (wrapped in proper arrays)
+	new admin screen to validate the data integrity (only one online revision, title field, etc)
 	integrate styles to workflow actions, like images and News buttons styles
 
 	text plugins configurable cols?
 	category based plugins should validate if their categories are not in the current plugin tree
 
-	deprecate PmWorkflowUtil
-	status messages for workflow operations
+	move the common singletons to userapi
+	Hook calls review
+	dedicated screen (or parameter) to review the own publications + revisions
 	add the Category Registry to handle the list tree
 	Move the publangs to l2 (0.4 upgrade routine, queries)
