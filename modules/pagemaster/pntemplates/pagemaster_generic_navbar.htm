@@ -71,25 +71,24 @@
 <!--[if $pncore.pagemaster.devmode|default:true]-->
 <!--[pnsecauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN]-->
 
+<div class="z-warningmsg">
 <!--[switch expr=$section]-->
 	<!--[case expr='publist']-->
-		<div class="z-warningmsg">
-			<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid assign='urlplcode']-->
-			<!--[gt text='This is a generic template. Your can <a href="%1$s">get the publist code</a> and create a customized template (<b>publist_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/publist_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/publist_%2$s.htm</b>.' tag1=$urlplcode tag2=$pubtype.filename]-->
-		</div>
+		<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid assign='urlplcode']-->
+		<!--[gt text='This is a generic template. Your can <a href="%1$s">get the publist code</a> and create a customized template (<b>publist_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/publist_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/publist_%2$s.htm</b>.' tag1=$urlplcode tag2=$pubtype.filename]-->
 	<!--[/case]-->
 	<!--[case expr='pubview']-->
-		<div class="z-warningmsg">
-			<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid assign='urlpvcode']-->
-			<!--[gt text='This is a generic template. Your can <a href="%1$s">get the pubview code</a> and create a customized template (<b>viewpub_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/viewpub_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/viewpub_%2$s.htm</b>.' tag1=$urlpvcode tag2=$pubtype.filename]-->
-		</div>
+		<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid assign='urlpvcode']-->
+		<!--[gt text='This is a generic template. Your can <a href="%1$s">get the pubview code</a> and create a customized template (<b>viewpub_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/viewpub_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/viewpub_%2$s.htm</b>.' tag1=$urlpvcode tag2=$pubtype.filename]-->
 	<!--[/case]-->
 	<!--[case expr='pubedit']-->
-		<div class="z-warningmsg">
-			<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid assign='urlpecode']-->
-			<!--[gt text='This is a generic template. Your can <a href="%1$s">get the form code</a> and create individuals template (<b>pubedit_%2$s_{STEPNAME}.htm</b> or <b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b> or within your theme: <b>/templates/modules/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b>.' tag1=$urlpecode tag2=$pubtype.formname]-->
-		</div>
+		<!--[pnmodurl modname='pagemaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid assign='urlpecode']-->
+		<!--[gt text='This is a generic template. Your can <a href="%1$s">get the form code</a> and create individuals template (<b>pubedit_%2$s_{STEPNAME}.htm</b> or <b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b> or within your theme: <b>/templates/modules/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b>.' tag1=$urlpecode tag2=$pubtype.formname]-->
 	<!--[/case]-->
 <!--[/switch]-->
+<!--[pnmodurl modname='pagemaster' type='admin' func='modifyconfig' assign='urlconfig']-->
+<br /><!--[gt text='You can hide this message <a href="%s">disabling the development mode</a>.' tag1=$urlconfig]-->
+</div>
+
 <!--[/pnsecauthaction_block]-->
 <!--[/if]-->

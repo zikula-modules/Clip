@@ -38,6 +38,10 @@ pre.pm-showcode {
   padding: 1em;
 }
 
+#pubfieldlist {
+  background: #fff;
+}
+
 /* pubfield type selector and modalbox */
 .z-form div.z-formrow select.pm-plugintypeselector {
   width: 66.2%;
