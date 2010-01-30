@@ -2,8 +2,7 @@
 
 <!--[include file='pagemaster_admin_header.htm']-->
 
-<!--[pnajaxheader module='pagemaster' filename='pubfieldlist.js' dragdrop=true]-->
-<!--[pnpageaddvar name='stylesheet' value='modules/pagemaster/pnstyle/style.css']-->
+<!--[pnajaxheader module='pagemaster' filename='pmadmin_pubfields.js' dragdrop=true]-->
 
 <div class="z-admincontainer">
 	<div class="z-adminpageicon"><!--[pnimg modname='core' src='db_update.gif' set='icons/large' __alt='Manage Publication fields' ]--></div>
@@ -19,7 +18,8 @@
 	<fieldset>
 		<legend><!--[gt text='Existing publication fields']--></legend>
 
-		<ol id="pubfieldlist" class="z-itemlist">
+		<span id='pm_tid' style="display: none"><!--[$tid]--></span>
+		<ul id="pubfieldlist" class="z-itemlist">
 			<li id="pubfieldlistheader" class="pubfieldlistheader z-itemheader z-itemsortheader z-clearfix">
 				<span class="z-itemcell z-w15"><!--[gt text='Name']--></span>
 				<span class="z-itemcell z-w15"><!--[gt text='Title']--></span>
@@ -74,7 +74,7 @@
 			<!--[foreachelse]-->
 			<li class="z-odd z-clearfix z-center"><!--[gt text="This publication type doesn't have fields yet."]--></li>
 			<!--[/foreach]-->
-		</ol>
+		</ul>
 	</fieldset>
 	</div>
 

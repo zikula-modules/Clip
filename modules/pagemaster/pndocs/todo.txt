@@ -1,6 +1,5 @@
 
   TODO
-	Fix the Drag&Drop PubFields script
 	Maxlenght more clean solution. Exclude some default plugins?
 	rework the vars disposition in the templates (wrapped in proper arrays)
 	new admin screen to validate the data integrity (only one online revision, title field, etc)

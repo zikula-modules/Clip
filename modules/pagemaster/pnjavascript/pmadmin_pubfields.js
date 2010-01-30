@@ -9,22 +9,12 @@
  * @subpackage  pagemaster
  */
 
-Event.observe(window, 'load', pubfieldlistsortinit, false);
-function pubfieldlistsortinit() {
-	Sortable.create('pubfieldlist',
-		{ 
-	    	dropOnEmpty: true,
-	        only: 'z-sortable',
-	        constraint: false,
-	        containment:['pubfieldlist'],
-	        onUpdate: pubfieldlistorderchanged
-	});
-}
-
-function pubfieldlistorderchanged() {
+function pubfieldlistorderchanged()
+{
     var params = 'module=pagemaster&func=changedlistorder&authid=' + $F('pnFormAuthid')
-                   + '&tid=' + $F('tid')
+                   + '&tid=' + $('pm_tid').innerHTML
                    + '&' + Sortable.serialize('pubfieldlist');
+
     var myAjax = new Ajax.Request(
         'ajax.php', 
         {
@@ -34,6 +24,28 @@ function pubfieldlistorderchanged() {
         });
 }
 
-function pubfieldlistorderchanged_response() {
+function pubfieldlistorderchanged_response(req)
+{
+    if (req.status != 200) {
+        pnshowajaxerror(req.responseText);
+        return;
+    }
+
+    var json = pndejsonize(req.responseText);
+    pnupdateauthids(json.authid);
+
     pnrecolor('pubfieldlist', 'pubfieldlistheader');
 }
+
+function pubfieldlistsortinit()
+{
+	Sortable.create('pubfieldlist',
+		{
+	    	dropOnEmpty: true,
+	        only: 'z-sortable',
+	        onUpdate: pubfieldlistorderchanged
+	    }
+	);
+}
+
+Event.observe(window, 'load', pubfieldlistsortinit, false);
