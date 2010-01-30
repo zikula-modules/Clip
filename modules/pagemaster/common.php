@@ -19,18 +19,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
 
                 <h1><!--[gt text=$pubtype.title]--></h1>
 
-                <!--[include file=\'pagemaster_generic_navbar.htm\' func=\'pubview\']-->
-
-                <!--[insert name=\'getstatusmsg\']-->
-
-                <!--[if $pncore.pagemaster.devmode|default:true]-->
-                <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                    <div class="z-warningmsg">
-                        <!--[pnmodurl modname=\'pagemaster\' type=\'admin\' func=\'showcode\' mode=\'outputfull\' tid=$pubtype.tid assign=\'urlpvcode\']-->
-                        <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the pubview code</a> and create a customized template (<b>viewpub_%2$s.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/output/viewpub_%2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/viewpub_%2$s.htm</b>.\' tag1=$urlpvcode tag2=$pubtype.filename]-->
-                    </div>
-                <!--[/pnsecauthaction_block]-->
-                <!--[/if]-->
+                <!--[include file=\'pagemaster_generic_navbar.htm\' section=\'pubview\']-->
 
                 <!--[if $pubtype.description neq \'\']-->
                 <div class="pm-pubdesc"><!--[gt text=$pubtype.description]--></div>
@@ -111,19 +100,24 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
             if (empty($template_code_fielddesc)) {
                 $template_code_fielddesc = $key.':';
             }
+
             // filter some core fields (uids)
             if (in_array($key, array('core_author', 'cr_uid', 'lu_uid'))) {
                 $snippet_body = '<!--[$'.$key.'|userprofilelink]--> (<!--[$'.$key.'|pnvarprephtmldisplay]-->)';
+
             // flags
             } elseif (in_array($key, array('core_online', 'core_indepot', 'core_showinmenu', 'core_showinlist'))) {
                 $snippet_body = '<!--[$'.$key.'|yesno]-->';
+
             // generic arrays
             } elseif (is_array($pubfield)) {
                 $snippet_body = '<pre><!--[pmarray array=$'.$key.']--></pre>';
+
             // generic strings
             } else {
                 $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay]-->';
             }
+
             // build the final snippet
             $template_code_add = '<!--[if $'.$key.' neq \'\']-->
                                       <div class="z-formrow">
@@ -151,18 +145,7 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
     $template_code = '
                       <h1><!--[gt text=$pubtype.title]--></h1>
 
-                      <!--[include file=\'pagemaster_generic_navbar.htm\' func=\'pubedit\']-->
-
-                      <!--[insert name=\'getstatusmsg\']-->
-
-                      <!--[if $pncore.pagemaster.devmode|default:true]-->
-                      <!--[pnsecauthaction_block component=\'pagemaster::\' instance=\'::\' level=ACCESS_ADMIN]-->
-                          <div class="z-warningmsg">
-                              <!--[pnmodurl modname=\'pagemaster\' type=\'admin\' func=\'showcode\' mode=\'input\' tid=$pubtype.tid assign=\'urlpecode\']-->
-                              <!--[gt text=\'This is a generic template. Your can <a href="%1$s">get the code</a> and create individuals template (<b>pubedit_%2$s_{STEPNAME}.htm</b> or <b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/config/templates/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b> or within your theme: <b>/templates/modules/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b>.\' tag1=$urlpecode tag2=$pubtype.formname]-->
-                          </div>
-                      <!--[/pnsecauthaction_block]-->
-                      <!--[/if]-->
+                      <!--[include file=\'pagemaster_generic_navbar.htm\' section=\'pubedit\']-->
 
                       <!--[if $pubtype.description neq \'\']-->
                       <div class="pm-pubdesc"><!--[gt text=$pubtype.description]--></div>

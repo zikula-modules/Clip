@@ -371,7 +371,7 @@ function pagemaster_user_pubedit()
     if (!empty($stepname) && $render->template_exists($template_step)) {
         return $render->pnFormExecute($template_step, $formHandler);
     } elseif ($alert) {
-        LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_step, $dom));
+        LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template_step, $dom));
     }
 
     // generic edit
@@ -380,7 +380,7 @@ function pagemaster_user_pubedit()
     if ($render->template_exists($template_all)) {
         return $render->pnFormExecute($template_all, $formHandler);
     } elseif ($alert) {
-        LogUtil::registerError(__f('Notice: Template [%s] not found.', $template_all, $dom));
+        LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template_all, $dom));
     }
 
     $hookAction = empty($id) ? 'new' : 'modify';
