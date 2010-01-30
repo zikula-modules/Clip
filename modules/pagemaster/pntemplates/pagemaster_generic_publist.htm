@@ -8,14 +8,6 @@
 <p class="pm-pubdesc"><!--[gt text=$pubtype.description]--></p>
 <!--[/if]-->
 
-<!--[pnsecauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT]-->
-<p>
-	<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$pubtype.tid]-->">
-		<!--[pnimg modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='New publication']-->&nbsp;<!--[gt text='Add a publication']-->
-	</a>
-</p>
-<!--[/pnsecauthaction_block]-->
-
 <table class="z-datatable">
 	<tbody>
 		<!--[foreach from=$publist item='pubitem']-->
