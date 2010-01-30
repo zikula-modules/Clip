@@ -12,19 +12,40 @@
 /**
  * deletePub operation
  *
- * @param  array  $obj     object to delete
- * @param  array  $params  (none)
- * @return array  object id as index with boolean value: true if success, false otherwise
+ * @param  array  $pub               publication to delete
+ * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
+ * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_deletePub(&$obj, $params)
+function pagemaster_operation_deletePub(&$pub, $params)
 {
-    // returns false if fails
-    if (!WorkflowUtil::deleteWorkflow($obj)) {
-        return false;
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
+    // process the available parameters
+    $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
+
+    // process the deletion
+    $result = false;
+    if (WorkflowUtil::deleteWorkflow($pub)) {
+        $result = true;
+
+        // checks if there's any other revision of this publication
+        $count = DBUtil::selectObjectCount($pub['__WORKFLOW__']['obj_table'], "pm_pid = '{$pub['core_pid']}'");
+
+        if ($count == 0) {
+            // if not, let know that the publication was deleted
+            pnModCallHooks('item', 'delete', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+        }
     }
 
-    // let know that the item was deleted
-    pnModCallHooks('item', 'delete', $obj['tid'].'-'.$obj['core_pid'], array('module' => 'pagemaster'));
+    // output message
+    if (!$silent) {
+        if ($result) {
+            LogUtil::registerStatus(__('Done! Publication deleted.', $dom));
+        } else {
+            LogUtil::registerError(__('Error! Failed to delete the publication.', $dom));
+        }
+    }
 
-    return array($obj['id'] => true);
+    // returns the indexed result flag
+    return array($pub['id'] => $result);
 }

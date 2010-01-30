@@ -12,30 +12,46 @@
 /**
  * createPub operation
  *
- * @param  array  $obj               object to create
+ * @param  array  $pub               object to create
  * @param  int    $params['online']  (optional) online value for the object, default: false
- * @return bool   true if success, false otherwise
+ * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
+ * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_createPub(&$obj, $params)
+function pagemaster_operation_createPub(&$pub, $params)
 {
-    // set the online value if set
-    $obj['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
+    // process the available parameters
+    $pub['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
+    $silent             = isset($params['silent']) ? (bool)$params['silent'] : false;
+
+    // initializes the result flag
+    $result = false;
 
     // find a new pid
-    $maxpid = DBUtil::selectFieldMax($obj['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
-    $obj['core_pid'] = $maxpid + 1;
+    $maxpid = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
+    $pub['core_pid'] = $maxpid + 1;
 
     // assign the author
-    $obj['core_author'] = pnUserGetVar('uid');
+    $pub['core_author'] = pnUserGetVar('uid');
 
     // save the object
-    if (!DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id')) {
-        return false;
+    if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
+        $result = true;
+
+        // let know that a publication was created
+        pnModCallHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
     }
 
-    // let know that an item was created
-    pnModCallHooks('item', 'create', $obj['tid'].'-'.$obj['core_pid'], array('module' => 'pagemaster'));
+    // output message
+    if (!$silent) {
+        if ($result) {
+            LogUtil::registerStatus(__('Done! Publication created.', $dom));
+        } else {
+            LogUtil::registerError(__('Error! Failed to create the publication.', $dom));
+        }
+    }
 
-    // success
-    return true;
+    // returns the indexed result flag
+    return array($pub['id'] => $result);
 }

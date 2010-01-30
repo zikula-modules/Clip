@@ -16,39 +16,51 @@
  */
 class pagemaster_user_editpub
 {
-    var $tid;
-    var $core_author;
-    var $core_pid;
-    var $core_revision;
     var $id;
-    var $pubfields;
-    var $pubtype;
-    var $tablename;
-    var $goto;
+    var $core_pid;
+    var $core_author;
+    var $core_hitcount;
+    var $core_revision;
+    var $core_language;
+    var $core_online;
+    var $core_indepot;
+    var $core_showinmenu;
+    var $core_showinlist;
+    var $core_publishdate;
+    var $core_expiredate;
 
+    var $tid;
+    var $tablename;
+    var $pubtype;
+    var $pubfields;
+    var $goto;
+    
     function initialize(&$render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
 
+        // process the input parameters
+        $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
         $this->goto = FormUtil::getPassedValue('goto', '');
 
+        // initialize the publication array
+        $pubdata = array();
+
+        // process a new or existing pub, and it's available actions
         if (!empty($this->id)) {
             $pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
 
-            $this->core_author   = $pubdata['core_author'];
-            $this->core_pid      = $pubdata['core_pid'];
-            $this->core_revision = $pubdata['core_revision'];
+            $this->pubAssign($pubdata);
 
             Loader::LoadClass('PmWorkflowUtil', 'modules/pagemaster/classes');
             $actions = PmWorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
 
         } else {
-            $pubdata = array();
-            $this->core_author = pnUserGetVar('uid');
+            // initial values
+            $this->pubDefault();
+
             $actions = WorkflowUtil::getActionsByStateArray(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
         }
-
-        $tid = ($this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
 
         // if there are no actions the user is not allowed to change / submit / delete something.
         // We will redirect the user to the overview page
@@ -69,6 +81,7 @@ class pagemaster_user_editpub
             }
         }
 
+        // add the pub information to the render if exists
         if (count($pubdata) > 0) {
             $render->assign($pubdata);
         }
@@ -85,12 +98,10 @@ class pagemaster_user_editpub
 
         $data = $render->pnFormGetValues();
 
-        $data['tid']           = $this->tid;
-        $data['id']            = $this->id;
-        $data['core_author']   = $this->core_author;
-        $data['core_pid']      = $this->core_pid;
-        $data['core_revision'] = $this->core_revision;
+        // restore the core values
+        $this->pubExtract($data);
 
+        // perform the command
         $data = pnModAPIFunc('pagemaster', 'user', 'editPub',
                              array('data'        => $data,
                                    'commandName' => $args['commandName'],
@@ -129,5 +140,55 @@ class pagemaster_user_editpub
         }
 
         return $render->pnFormRedirect($this->goto);
+    }
+
+    /**
+     * Publication data handlers
+     */
+    function pubDefault()
+    {
+        $this->core_pid         = NULL;
+        $this->core_author      = pnUserGetVar('uid');
+        $this->core_hitcount    = 0;
+        $this->core_revision    = 0;
+        $this->core_language    = '';
+        $this->core_online      = 0;
+        $this->core_indepot     = 0;
+        $this->core_showinmenu  = 0;
+        $this->core_showinlist  = 1;
+        $this->core_publishdate = NULL;
+        $this->core_expiredate  = NULL;
+    }
+
+    function pubAssign($pubdata)
+    {
+        $this->core_pid         = $pubdata['core_pid'];
+        $this->core_author      = $pubdata['core_author'];
+        $this->core_hitcount    = $pubdata['core_hitcount'];
+        $this->core_revision    = $pubdata['core_revision'];
+        $this->core_language    = $pubdata['core_language'];
+        $this->core_online      = $pubdata['core_online'];
+        $this->core_indepot     = $pubdata['core_indepot'];
+        $this->core_showinmenu  = $pubdata['core_showinmenu'];
+        $this->core_showinlist  = $pubdata['core_showinlist'];
+        $this->core_publishdate = $pubdata['core_publishdate'];
+        $this->core_expiredate  = $pubdata['core_expiredate'];
+    }
+
+    function pubExtract(&$data)
+    {
+        $data['tid']              = $this->tid;
+        $data['id']               = $this->id;
+        $data['core_pid']         = $this->core_pid;
+        $data['core_author']      = $this->core_author;
+        $data['core_revision']    = $this->core_revision;
+        $data['core_hitcount']    = $this->core_hitcount;
+        $data['core_language']    = isset($data['core_language']) ? $data['core_language'] : $this->core_language;
+        $data['core_online']      = $this->core_online;
+        $data['core_indepot']     = $this->core_indepot;
+        $data['core_showinmenu']  = isset($data['core_showinmenu']) ? $data['core_showinmenu'] : $this->core_showinmenu;
+        $data['core_showinlist']  = isset($data['core_showinlist']) ? $data['core_showinlist'] : $this->core_showinlist;
+        $data['core_publishdate'] = isset($data['core_publishdate']) ? $data['core_publishdate'] : $this->core_publishdate;
+        $data['core_expiredate']  = isset($data['core_expiredate']) ? $data['core_expiredate'] : $this->core_expiredate;
     }
 }

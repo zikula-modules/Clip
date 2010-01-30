@@ -12,16 +12,37 @@
 /**
  * moveToDepot operation
  *
- * @param  array  $obj     object to move
- * @param  array  $params  (none)
- * @return array  object id as index with boolean value: true if success, false otherwise
+ * @param  array  $pub               publication to archive
+ * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
+ * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_moveToDepot($obj, $params)
+function pagemaster_operation_moveToDepot($pub, $params)
 {
-    $obj['core_indepot'] = 1;
-    $obj['core_online']  = 0;
+    $dom = ZLanguage::getModuleDomain('pagemaster');
 
-    $res = (bool)DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
+    // process the available parameters
+    $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
 
-    return array($obj['id'] => $res);
+    // set the corresponding publication values
+    $pub['core_indepot'] = 1;
+    $pub['core_online']  = 0;
+
+    $result = (bool)DBUtil::updateObject($pub, $pub['__WORKFLOW__']['obj_table']);
+
+    if ($result) {
+        // let know that the publication was updated
+        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+    }
+
+    // output message
+    if (!$silent) {
+        if ($result) {
+            LogUtil::registerStatus(__('Done! Publication archived.', $dom));
+        } else {
+            LogUtil::registerError(__('Error! Failed to update publication.', $dom));
+        }
+    }
+
+    // returns the indexed result flag
+    return array($pub['id'] => $result);
 }

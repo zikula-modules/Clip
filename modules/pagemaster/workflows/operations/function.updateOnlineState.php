@@ -12,16 +12,40 @@
 /**
  * updateOnlineState operation
  *
- * @param  array  $obj               object to set online
- * @param  int    $params['online']  (optional) online value for the object
- * @return array  object id as index with boolean value: true if success, false otherwise
+ * @param  array  $pub               publication to set online
+ * @param  int    $params['online']  (optional) online value for the publication
+ * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
+ * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_updateOnlineState(&$obj, $params)
+function pagemaster_operation_updateOnlineState(&$pub, $params)
 {
-    // set the online parameter, or set it offline if is not set
-    $obj['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
+    $dom = ZLanguage::getModuleDomain('pagemaster');
 
-    $res = (bool)DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table']);
+    // process the available parameters
+    // set the online parameter, or defaults to offline if it's not set
+    $pub['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
+    $silent             = isset($params['silent']) ? (bool)$params['silent'] : false;
 
-    return array($obj['id'] => $res);
+    $result = (bool)DBUtil::updateObject($pub, $pub['__WORKFLOW__']['obj_table']);
+
+    if ($result) {
+        // let know that the publication was updated
+        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+    }
+
+    // output message
+    if (!$silent) {
+        if ($result) {
+            if ($pub['core_online'] == 1) {
+                LogUtil::registerStatus(__("Done! Publication status set to 'published'.", $dom));
+            } else {
+                LogUtil::registerStatus(__("Done! Publication status set to 'unpublished'.", $dom));
+            }
+        } else {
+            LogUtil::registerError(__('Error! Failed to update the publication.', $dom));
+        }
+    }
+
+    // returns the indexed result flag
+    return array($pub['id'] => $result);
 }

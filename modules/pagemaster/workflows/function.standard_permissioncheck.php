@@ -65,7 +65,7 @@ function pagemaster_workflow_standard_gettextstrings()
                 no__('Delete') => no__('Delete the publication')
             ),
             'Approved' => array(
-                no__('Update') => no__('Update the content for later publishing'),
+                no__('Update') => no__('Update the publication'),
                 no__('Publish') => no__('Make the publication available'),
                 no__('Unpublish') => no__('Hide the publication'),
                 no__('Move to depot') => no__('Move the publication to the depot'),

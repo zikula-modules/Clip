@@ -12,61 +12,88 @@
 /**
  * updatePub operation
  *
- * @param  array  $obj                    object to process
- * @param  int    $params['online']       (optional) online value for the object
+ * @param  array  $pub                    publication to update
+ * @param  int    $params['online']       (optional) online value for the publication
  * @param  bool   $params['newrevision']  (optional) flag to create a new revision or not, default: true
- * @param  string $params['nextstate']    (optional) state of the updated object
- * @return array  object id as index with boolean value: true if success, false otherwise
+ * @param  string $params['nextstate']    (optional) state of the updated publication
+ * @param  bool   $params['silent']       (optional) hide or display a status/error message, default: false
+ * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_updatePub(&$obj, $params)
+function pagemaster_operation_updatePub(&$pub, $params)
 {
-    // set the online parameter if set
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
+    // process the available parameters
     if (isset($params['online'])) {
-        $obj['core_online'] = (int)$params['online'];
+        $pub['core_online'] = (int)(bool)$params['online'];
     }
-
     $newrevision = isset($params['newrevision']) ? (bool)$params['newrevision'] : true;
+    $nextState   = isset($params['nextstate']) ? $params['nextstate'] : $pub['__WORKFLOW__']['state'];
+    $silent      = isset($params['silent']) ? (bool)$params['silent'] : false;
 
-    $pubtype = PMgetPubType($obj['tid']);
     // overrides newrevision in pubtype. gives the dev. the possibility to not genereate a new revision
-    // e.g. when revision is in state wating and will be updated
+    // e.g. when the revision is pending (waiting state) and will be updated
+    $pubtype = PMgetPubType($pub['tid']);
 
-    if ($pubtype['enablerevisions'] && $obj['core_online'] == 1) {
+    if ($pubtype['enablerevisions'] && $pub['core_online'] == 1) {
         // set all other to offline
         $data = array('core_online' => 0);
-        if (!DBUtil::updateObject($data, $obj['__WORKFLOW__']['obj_table'], "pm_online = '1' and pm_pid = '{$obj['core_pid']}'")) {
-            return array($obj['id'] => false);
+
+        if (!DBUtil::updateObject($data, $pub['__WORKFLOW__']['obj_table'], "pm_online = '1' AND pm_pid = '{$pub['core_pid']}'")) {
+            if (!$silent) {
+                LogUtil::registerError(__('Error! Could not unpublish the other revisions of this publication.', $dom));
+            }
+            return array($pub['id'] => false);
         }
     }
+
+    // initializes the result flag
+    $result = false;
+
+    // get the max revision
+    $maxrev = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_revision', 'MAX', "pm_pid = '{$pub['core_pid']}'");
+    $pub['core_revision'] = $maxrev + 1;
 
     if ($pubtype['enablerevisions'] && $newrevision) {
-        $nextState = isset($params['nextstate']) ? $params['nextstate'] : $obj['__WORKFLOW__']['state'];
+        // insert the new record
+        unset($pub['id']);
+        if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
+            $result = true;
 
-        // build the new record
-        $obj['core_revision']++;
+            $pub['__WORKFLOW__']['obj_id'] = $pub['id'];
+            unset($pub['__WORKFLOW__']['id']);
 
-        unset($obj['id']);
-        DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id');
+            // register the new workflow, return false if failure
+            $workflow = new pnWorkflow($pub['__WORKFLOW__']['schemaname'], 'pagemaster');
 
-        $obj['__WORKFLOW__']['obj_id'] = $obj['id'];
-        unset($obj['__WORKFLOW__']['id']);
-
-        // register the new workflow, return false if failure
-        $workflow = new pnWorkflow($obj['__WORKFLOW__']['schemaname'], 'pagemaster');
-
-        if (!$workflow->registerWorkflow($obj, $nextState)) {
-            return array($obj['id'] => false);
+            if (!$workflow->registerWorkflow($pub, $nextState)) {
+                $result = false;
+    
+                // delete the previously inserted record
+                DBUtil::deleteObjectByID($pub['__WORKFLOW__']['obj_table'], $pub['id'], 'id');
+            }
         }
-
     } else {
         // update the object without a new revision
-        $obj['core_revision']++;
-        $obj = DBUtil::updateObject($obj, $obj['__WORKFLOW__']['obj_table'], null, 'id');
+        if (DBUtil::updateObject($pub, $pub['__WORKFLOW__']['obj_table'], null, 'id')) {
+            $result = true;
+        }
     }
 
-    // let know that this item was updated
-    pnModCallHooks('item', 'update', $obj['tid'].'-'.$obj['core_pid'], array('module' => 'pagemaster'));
+    if ($result) {
+        // let know that the publication was updated
+        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+    }
+
+    // output message
+    if (!$silent) {
+        if ($result) {
+            LogUtil::registerStatus(__('Done! Publication updated.', $dom));
+        } else {
+            LogUtil::registerError(__('Error! Failed to update the publication.', $dom));
+        }
+    }
 
     // return the updated object
-    return array($obj['id'] => true);
+    return array($pub['id'] => true);
 }

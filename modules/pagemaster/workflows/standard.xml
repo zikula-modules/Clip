@@ -79,10 +79,10 @@
 
     <action id="update">
       <title>Update</title>
-      <description>Update the content for later publishing</description>
-      <permission>moderator</permission>
+      <description>Update the publication</description>
+      <permission>editor</permission>
       <state>approved</state>
-      <operation online="0" nextstate="waiting">updatePub</operation>
+      <operation>updatePub</operation>
     </action>
 
     <action id="online">

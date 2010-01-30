@@ -12,37 +12,63 @@
 /**
  * copyPub operation
  *
- * @param  array  $obj                   object to copy
- * @param  int    $params['copyonline']  (optional) online value for the copy object
- * @param  int    $params['copystate']   (optional) state for the object copy object, default: initial
- * @return array  object id as index with boolean value: copy object if success, false otherwise
+ * @param  array  $pub                   publication to copy
+ * @param  int    $params['copyonline']  (optional) online value for the copy publication
+ * @param  int    $params['copystate']   (optional) state for the copied publication, default: initial
+ * @param  bool   $params['silent']      (optional) hide or display a status/error message, default: false
+ * @return array  publication id as index with boolean value: clone publication if success, false otherwise
  */
-function pagemaster_operation_copyPub(&$obj, $params)
+function pagemaster_operation_copyPub(&$pub, $params)
 {
-    // assign the copy online and copypaste parameters if set
-    if (isset($params['copyonline'])) {
-        $obj['core_online'] = $params['copyonline'];
-    }
+    $dom = ZLanguage::getModuleDomain('pagemaster');
 
+    // process the available parameters
+    if (isset($params['copyonline'])) {
+        $pub['core_online'] = $params['copyonline'];
+    }
     $copystate = isset($params['copystate']) ? $params['copystate'] : 'initial';
+    $silent    = isset($params['silent']) ? (bool)$params['silent'] : false;
+
+    // initializes the result flag
+    $result = false;
 
     // finds the higher pid
-    $maxpid = DBUtil::selectFieldMax($obj['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
-    $obj['core_pid'] = $maxpid + 1;
+    $maxpid = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
+    $pub['core_pid'] = $maxpid + 1;
 
-    // save the object
-    unset($obj['id']);
-    DBUtil::insertObject($obj, $obj['__WORKFLOW__']['obj_table'], 'id');
+    // save the publication
+    $id = $pub['id'];
+    unset($pub['id']);
+    if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
+        $result = true;
 
-    $obj['__WORKFLOW__']['obj_id'] = $obj['id'];
-    unset($obj['__WORKFLOW__']['id']);
+        $pub['__WORKFLOW__']['obj_id'] = $pub['id'];
+        unset($pub['__WORKFLOW__']['id']);
 
-    // register the new workflow, return false if failure
-    $workflow = new pnWorkflow($obj['__WORKFLOW__']['schemaname'], 'pagemaster');
+        // register the new workflow, return false if failure
+        $workflow = new pnWorkflow($pub['__WORKFLOW__']['schemaname'], 'pagemaster');
 
-    if (!$workflow->registerWorkflow($obj, $copystate)) {
-        return array($obj['id'] => false);
+        if ($workflow->registerWorkflow($pub, $copystate)) {
+            // let know that a publication was created
+            pnModCallHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+
+        } else {
+            $result = false;
+
+            // delete the previously inserted record
+            DBUtil::deleteObjectByID($pub['__WORKFLOW__']['obj_table'], $pub['id'], 'id');
+        }
     }
 
-    return array($obj['id'] => $obj);
+    // output message
+    if (!$silent) {
+        if ($result) {
+            LogUtil::registerStatus(__('Done! Publication copied.', $dom));
+        } else {
+            LogUtil::registerError(__('Error! Failed to copy the publication.', $dom));
+        }
+    }
+
+    // returns the cloned publication if success, false otherwise
+    return array($id => $result ? $pub : false);
 }
