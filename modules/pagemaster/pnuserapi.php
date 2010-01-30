@@ -65,6 +65,10 @@ function pagemaster_userapi_pubList($args)
     $pubtype   = isset($args['pubtype']) ? $args['pubtype'] : PMgetPubType($tid);
     $pubfields = isset($args['pubfields']) ? $args['pubfields'] : PMgetPubFields($tid);
 
+    // mode check
+    $isadmin = !SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || (!isset($args['admin']) || !$args['admin']);
+    // TODO pubtype.editown + author mode parameter check
+
     // set the order
     if (!isset($args['orderby']) || empty($args['orderby'])) {
         if (!empty($pubtype['sortfield1'])) {
@@ -159,9 +163,10 @@ function pagemaster_userapi_pubList($args)
     // build the where clause
     $where = array();
     $uid   = pnUserGetVar('uid');
-    if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN)) {
+
+    if ($isadmin) {
         if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-            $where[] = "( {$tbl_alias}pm_author = '$uid' OR ( {$tbl_alias}pm_online = '1' AND {$tbl_alias}pm_showinlist = '1') )";
+            $where[] = "( {$tbl_alias}pm_online = '1' AND ( {$tbl_alias}pm_author = '$uid' OR {$tbl_alias}pm_showinlist = '1') )";
         } else {
             $where[] = "  {$tbl_alias}pm_online = '1' AND {$tbl_alias}pm_showinlist = '1'";
         }
@@ -171,6 +176,7 @@ function pagemaster_userapi_pubList($args)
         $where[] = "( {$tbl_alias}pm_publishdate <= NOW() OR {$tbl_alias}pm_publishdate IS NULL )";
         $where[] = "( {$tbl_alias}pm_expiredate >= NOW() OR {$tbl_alias}pm_expiredate IS NULL )";
     }
+    // TODO Implement author condition
 
     if (!empty($filter_where['where'])) {
         $where[] = $filter_where['where'];
@@ -283,7 +289,7 @@ function pagemaster_userapi_getPub($args)
     } else {
         if (empty($id)) {
             $tablem = DBUtil::getLimitedTablename($tablename);
-            $where .= " pm_pid = '$pid' AND pm_id = (SELECT MAX(pm_id) FROM $tablem WHERE pm_pid = '$pid')";
+            $where .= " pm_pid = '$pid' AND pm_id = (SELECT MAX(pm_id) FROM $tablem WHERE pm_pid = '$pid' AND pm_online = '1')";
         } else {
             $where .= " pm_id = '$id'";
         }
