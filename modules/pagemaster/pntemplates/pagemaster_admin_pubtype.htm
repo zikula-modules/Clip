@@ -8,7 +8,7 @@
 	<h2><!--[gt text='Create / Edit publication type']--></h2>
 
 	<!--[if isset($tid)]-->
-	<!--[pmadminsubmenu tid=$tid]-->
+	    <!--[pmadminsubmenu tid=$tid]-->
 	<!--[/if]-->
 
 	<!--[pnform cssClass='z-form' enctype='application/x-www-form-urlencoded']-->
@@ -108,9 +108,6 @@
 			<div class="z-formbuttons">
 				<!--[pnformbutton commandName='create' __text='Save']-->
 				<!--[pnformbutton commandName='delete' __text='Delete']-->
-				<!--[if isset($pubfields)]-->
-					<!--[pnformbutton commandName='updatetabledef' __text='Update DB']-->
-				<!--[/if]-->
 			</div>
 		</div>
 	<!--[/pnform]-->

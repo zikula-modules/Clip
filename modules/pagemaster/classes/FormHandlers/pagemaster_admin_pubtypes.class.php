@@ -116,18 +116,6 @@ class pagemaster_admin_pubtypes
         // handle the commands
         switch ($args['commandName'])
         {
-            // update db tables
-            case 'updatetabledef':
-                $ret = pnModAPIFunc('pagemaster', 'admin', 'updatetabledef',
-                                    array('tid' => $data['tid']));
-
-                if (!$ret) {
-                    return LogUtil::registerError(__('Error! Update attempt failed.', $dom));
-                }
-
-                LogUtil::registerStatus(__('Done! Database table updated.', $dom));
-                break;
-
             // create a pubtype
             case 'create':
                 if (!$render->pnFormIsValid()) {

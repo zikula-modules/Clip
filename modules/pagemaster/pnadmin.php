@@ -85,6 +85,36 @@ function pagemaster_admin_pubfields()
     return $render->pnFormExecute('pagemaster_admin_pubfields.htm', new pagemaster_admin_pubfields());
 }
 
+
+/**
+ * DB pubtype table update method
+ */
+function pagemaster_admin_dbupdate($args=array())
+{
+    if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerPermissionError();
+    }
+
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
+    // get the input parameter
+    $tid  = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+    $rurl = pnServerGetVar('HTTP_REFERER', pnModURL('pagemaster', 'admin', 'main'));
+
+    if (!PMgetPubType($tid)) {
+        return LogUtil::registerError(__('Error! No such publication type found.', $dom), null, $rurl);
+    }
+
+    $result = pnModAPIFunc('pagemaster', 'admin', 'updatetabledef',
+                           array('tid' => $tid));
+
+    if (!$result) {
+        return LogUtil::registerError(__('Error! Update attempt failed.', $dom), null, $rurl);
+    }
+
+    return LogUtil::registerStatus(__('Done! Database table updated.', $dom), $rurl);
+}
+
 /**
  * Admin publist screen
  */
