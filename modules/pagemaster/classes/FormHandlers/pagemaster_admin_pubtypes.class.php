@@ -33,55 +33,65 @@ class pagemaster_admin_pubtypes
             $pubtype   = PMgetPubType($tid);
             $pubfields = PMgetPubFields($tid);
 
+            $arraysort = array(
+                'core_empty' => array(),
+                'core_title' => array(),
+                'core_cr_date' => array(),
+                'core_pu_date' => array(),
+                'core_hitcount' => array()
+            );
+
             $pubarr = array(
-                array(
+                'core_empty' => array(
                     'text'  => '',
                     'value' => ''
                 ),
-                array(
+                'core_cr_date' => array(
                     'text'  => __('Creation date', $dom),
                     'value' => 'cr_date'
                 ),
-                array(
+                'core_lu_date' => array(
                     'text'  => __('Update date', $dom),
                     'value' => 'lu_date'
                 ),
-                array(
+                'core_cr_uid' => array(
                     'text'  => __('Creator', $dom),
                     'value' => 'core_author'
                 ),
-                array(
+                'core_lu_uid' => array(
                     'text'  => __('Updater', $dom),
                     'value' => 'lu_uid'
                 ),
-                array(
-                    'text'  => __('Publish Date', $dom),
+                'core_pu_date' => array(
+                    'text'  => __('Publish date', $dom),
                     'value' => 'pm_publishdate'
                 ),
-                array(
-                    'text'  => __('Expire Date', $dom),
+                'core_ex_date' => array(
+                    'text'  => __('Expire date', $dom),
                     'value' => 'pm_expiredate'
                 ),
-                array(
+                'core_language' => array(
                     'text'  => __('Language', $dom),
                     'value' => 'pm_language'
                 ),
-                array(
-                    'text'  => __('Number of Clicks', $dom),
+                'core_hitcount' => array(
+                    'text'  => __('Number of reads', $dom),
                     'value' => 'pm_hitcount'
                 )
             );
 
-            $fieldnames = array_keys($pubfields);
-            foreach ($fieldnames as $fieldname) {
-                $pubarr[] = array(
-                    'text'  => $fieldname,
+            foreach (array_keys($pubfields) as $fieldname) {
+                $index = ($pubfields[$fieldname]['istitle'] == 1) ? 'core_title' : $fieldname;
+                $pubarr[$index] = array(
+                    'text'  => __($pubfields[$fieldname]['title'], $dom),
                     'value' => $fieldname
                 );
             }
 
-            $render->assign($pubtype);
+            $pubarr = array_values(array_merge($arraysort, $pubarr));
+
             $render->assign('pubfields', $pubarr);
+            $render->assign($pubtype);
         }
 
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
