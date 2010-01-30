@@ -9,6 +9,10 @@
  * @subpackage  pagemaster
  */
 
+img {
+  vertical-align: middle;
+}
+
 .pn-module-pagemaster div.z-menu {
   margin-bottom: 1em;
 }
