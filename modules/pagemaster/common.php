@@ -167,8 +167,8 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
 
 function PMgen_editpub_tplcode($tid)
 {
-    $titlenewpub  = no__('New publication');
-    $titleeditpub = no__('Edit publication');
+    $title_newpub  = no__('New publication');
+    $title_editpub = no__('Edit publication');
 
     $template_code = "\n".
                      '<h1><!--[gt text=$pubtype.title]--></h1>'."\n".
@@ -185,9 +185,9 @@ function PMgen_editpub_tplcode($tid)
                      '        <fieldset>'."\n".
                      '            <legend>'."\n".
                      '                <!--[if isset($id)]-->'."\n".
-                     '                    <!--[gt text=\''.$titleeditpub.'\']-->'."\n".
+                     '                    <!--[gt text=\''.$title_editpub.'\']-->'."\n".
                      '                <!--[else]-->'."\n".
-                     '                    <!--[gt text=\''.$titlenewpub.'\']-->'."\n".
+                     '                    <!--[gt text=\''.$title_newpub.'\']-->'."\n".
                      '                <!--[/if]-->'."\n".
                      '            </legend>'."\n";
 
@@ -221,6 +221,11 @@ function PMgen_editpub_tplcode($tid)
          ($toolTip ? '                <span class="z-formnote z-sub"><!--[gt text=\''.$toolTip.'\']--></span>'."\n" : '').
                      '            </div>'."\n";
     }
+    $title_lang   = no__('Language');
+    $title_pdate  = no__('Publish date');
+    $title_edate  = no__('Expire date');
+    $title_inlist = no__('Show in list');
+
     $template_code .=
                      '        </fieldset>'."\n".
                      "\n".
@@ -228,22 +233,22 @@ function PMgen_editpub_tplcode($tid)
                      '            <legend><!--[gt text=\'Publication options\']--></legend>'."\n".
                      "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\'core_language\' _'.'_text=\'' . no__('Language') . '\']-->'."\n".
+                     '                <!--[pnformlabel for=\'core_language\' _'.'_text=\'' . $title_lang . '\']-->'."\n".
                      '                <!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']-->'."\n".
                      '            </div>'."\n".
                      "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\'core_publishdate\' _'.'_text=\'' . no__('Publish date') . '\']-->'."\n".
+                     '                <!--[pnformlabel for=\'core_publishdate\' _'.'_text=\'' . $title_pdate . '\']-->'."\n".
                      '                <!--[pnformdateinput id=\'core_publishdate\' includeTime=\'1\']-->'."\n".
                      '            </div>'."\n".
                      "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\'core_expiredate\' _'.'_text=\'' . no__('Expire date') . '\']-->'."\n".
+                     '                <!--[pnformlabel for=\'core_expiredate\' _'.'_text=\'' . $title_edate . '\']-->'."\n".
                      '                <!--[pnformdateinput id=\'core_expiredate\' includeTime=\'1\']-->'."\n".
                      '            </div>'."\n".
                      "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\'core_showinlist\' _'.'_text=\'' . no__('Show in list') . '\']-->'."\n".
+                     '                <!--[pnformlabel for=\'core_showinlist\' _'.'_text=\'' . $title_inlist . '\']-->'."\n".
                      '                <!--[pnformcheckbox id=\'core_showinlist\' checked=\'checked\']-->'."\n".
                      '            </div>'."\n".
                      '        </fieldset>'."\n".

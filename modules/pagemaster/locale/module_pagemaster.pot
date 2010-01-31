@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula component\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-31 13:05-0500\n"
+"POT-Creation-Date: 2010-01-31 13:56-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -379,15 +379,15 @@ msgstr ""
 msgid "Updater"
 msgstr ""
 
-#: classes/FormHandlers/pagemaster_admin_pubtypes.class.php:66
+#: classes/FormHandlers/pagemaster_admin_pubtypes.class.php:66 common.php:225
 msgid "Publish date"
 msgstr ""
 
-#: classes/FormHandlers/pagemaster_admin_pubtypes.class.php:70
+#: classes/FormHandlers/pagemaster_admin_pubtypes.class.php:70 common.php:226
 msgid "Expire date"
 msgstr ""
 
-#: classes/FormHandlers/pagemaster_admin_pubtypes.class.php:74
+#: classes/FormHandlers/pagemaster_admin_pubtypes.class.php:74 common.php:224
 msgid "Language"
 msgstr ""
 
@@ -651,6 +651,10 @@ msgstr ""
 
 #: common.php:171
 msgid "Edit publication"
+msgstr ""
+
+#: common.php:227
+msgid "Show in list"
 msgstr ""
 
 #: pnimportapi.php:97
