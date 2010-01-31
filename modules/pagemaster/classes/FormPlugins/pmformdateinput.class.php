@@ -58,7 +58,8 @@ class pmformdateinput extends pnFormDateInput
         }
 
         $html .= '<div class="z-formrow">
-                  <label for="pmplugin_usedatetime">'.__('Use datetime', $dom).':</label><input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
+                      <label for="pmplugin_usedatetime">'.__('Use datetime', $dom).':</label>
+                      <input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
                   </div>';
 
         return $html;

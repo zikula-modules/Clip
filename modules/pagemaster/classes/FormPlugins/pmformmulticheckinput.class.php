@@ -108,9 +108,9 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
 
-        $html = '<div class="z-formrow">
-                 <label for="pmplugin_checklist">'.__('Category', $dom).':</label>
-                 <select id="pmplugin_checklist" name="pmplugin_checklist">';
+        $html = ' <div class="z-formrow">
+                      <label for="pmplugin_checklist">'.__('Category', $dom).':</label>
+                      <select id="pmplugin_checklist" name="pmplugin_checklist">';
 
         $lang = ZLanguage::getLanguageCode();
 
@@ -118,10 +118,10 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
             $cat = CategoryUtil::getCategoryByID($catID);
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
 
-            $html .= "<option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
+            $html .= "    <option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
-        $html .= '</select>
+        $html .= '   </select>
                   </div>';
 
         return $html;

@@ -151,7 +151,7 @@ class pmformmultilistinput extends pnFormCategorySelector
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
 
         $html = '<div class="z-formrow">
-                     <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>&nbsp;
+                     <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>
                      <select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         $lang = ZLanguage::getLanguageCode();
@@ -160,13 +160,14 @@ class pmformmultilistinput extends pnFormCategorySelector
             $cat = CategoryUtil::getCategoryByID($catID);
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
 
-            $html .= "<option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
+            $html .= "    <option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
         $html .= '    </select>
                   </div>
                   <div class="z-formrow">
-                     <label for="pmplugin_multisize">'.__('Size', $dom).':</label> <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
+                      <label for="pmplugin_multisize">'.__('Size', $dom).':</label>
+                      <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
                   </div>';
 
         return $html;

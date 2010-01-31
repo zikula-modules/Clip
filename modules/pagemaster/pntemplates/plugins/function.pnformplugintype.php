@@ -70,7 +70,7 @@ class pnFormPluginType extends pnFormDropdownList
                     $(\'cancelTypeButton\').observe(\'click\', closeTypeData);
                     pm_modalbox = new Control.Modal($(\'showTypeButton\'), {
                         overlayOpacity: 0.6,
-                        className: \'modal\',
+                        className: \'pm-modalpopup\',
                         fade: true,
                         iframeshim: false,
                         closeOnClick: false
@@ -82,11 +82,11 @@ class pnFormPluginType extends pnFormDropdownList
 
                 $typeDataHtml  = '
                 <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/utilities.gif" alt="'.__('Modify config', $dom).'" /></a>
-                <div id="typeDataDiv" class="modal">
-                    <div>'.$plugin->getTypeHtml($this, $render).'</div>
-                    <div>
-                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/extrasmall/filesave.gif" alt="'.__('Save', $dom).'" /></button>&nbsp;
-                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/extrasmall/button_cancel.gif" alt="'.__('Cancel', $dom).'" /></button>
+                <div id="typeDataDiv" class="pm-modalpopup z-form">
+                    '.$plugin->getTypeHtml($this, $render).'
+                    <div class="z-formbuttons">
+                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/small/filesave.gif" alt="'.__('Save', $dom).'" /></button>&nbsp;
+                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/small/button_cancel.gif" alt="'.__('Cancel', $dom).'" /></button>
                     </div>
                 </div>';
             } else {

@@ -124,17 +124,17 @@ class pmformimageinput extends pnFormUploadInput
             if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
                 list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = explode(':', $field['typedata']);
                 if ((int)$tmpx > 0)
-                $tmpargs['w'] = (int)$tmpx ;
+                    $tmpargs['w'] = (int)$tmpx ;
                 if ((int)$tmpy > 0)
-                $tmpargs['h'] = (int)$tmpy;
+                    $tmpargs['h'] = (int)$tmpy;
                 if ((int)$prex > 0)
-                $preargs['w'] = (int)$prex ;
+                    $preargs['w'] = (int)$prex ;
                 if ((int)$prey > 0)
-                $preargs['h'] = (int)$prey ;
+                    $preargs['h'] = (int)$prey ;
                 if ((int)$fullx > 0)
-                $fullargs['w'] = (int)$fullx ;
+                    $fullargs['w'] = (int)$fullx ;
                 if ((int)$fully > 0)
-                $fullargs['h'] = (int)$fully ;
+                    $fullargs['h'] = (int)$fully ;
             } 
 
 			$srcFilename =   $PostData['tmp_name'];
@@ -202,7 +202,7 @@ class pmformimageinput extends pnFormUploadInput
                 'orig_name' => $PostData['name'],
                 'tmb_name'  => $newFilenameTmp,
                 'pre_name'  => $newFilenamePre,
-                'full_name'  => $newFilenameFull,
+                'full_name' => $newFilenameFull,
                 'file_name' => $newFileNameOrig
             );
 
@@ -231,23 +231,28 @@ class pmformimageinput extends pnFormUploadInput
     static function getTypeHtml($field, $render)
     {
         $html = '<div class="z-formrow">
-                   <label for="pmplugin_tmpx_px">Thumbnail x:</label>
-                   <input type="text" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
-                 <br />
-                   <label for="pmplugin_tmpy_px">Thumbnail y:</label>
-                   <input type="text" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
-                 <br />
-                 <br />
-                   <label for="pmplugin_pre_px">Preview x:</label>
-                   <input type="text" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
-                 <br />
-                   <label for="pmplugin_pre_px">Preview y:</label>
-                   <input type="text" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
-                 <br />
-                 <br />
+                     <label for="pmplugin_tmpx_px">Thumbnail x:</label>
+                     <input type="text" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
+                 </div>
+                 <div class="z-formrow">
+                     <label for="pmplugin_tmpy_px">Thumbnail y:</label>
+                     <input type="text" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
+                     <br />
+                 </div>
+                 <div class="z-formrow">
+                     <label for="pmplugin_pre_px">Preview x:</label>
+                     <input type="text" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
+                 </div>
+                 <div class="z-formrow">
+                     <label for="pmplugin_pre_px">Preview y:</label>
+                     <input type="text" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
+                     <br />
+                 </div>
+                 <div class="z-formrow">
                    <label for="pmplugin_full_px">Full x:</label>
                    <input type="text" id="pmplugin_fullx_px" name="pmplugin_fullx_px" />
-                 <br />
+                 </div>
+                 <div class="z-formrow">
                    <label for="pmplugin_full_px">Full y:</label>
                    <input type="text" id="pmplugin_fully_px" name="pmplugin_fully_px" />
                  </div>';

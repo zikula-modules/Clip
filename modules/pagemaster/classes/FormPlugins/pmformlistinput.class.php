@@ -122,8 +122,9 @@ class pmformlistinput extends pnFormCategorySelector
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
 
-        $html = '<div class="z-formrow">
-                  <label for="pmplugin_categorylist">'.__('Category', $dom).':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+        $html = ' <div class="z-formrow">
+                      <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>
+                      <select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         $lang = ZLanguage::getLanguageCode();
 
@@ -131,10 +132,10 @@ class pmformlistinput extends pnFormCategorySelector
             $cat = CategoryUtil::getCategoryByID($catID);
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
 
-            $html .= "<option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
+            $html .= "    <option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
-        $html .= '</select>
+        $html .= '    </select>
                   </div>';
 
         // get the include empty element config value
@@ -147,7 +148,8 @@ class pmformlistinput extends pnFormCategorySelector
 
         $checked = $includeEmptyElement ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
-                    <label for="pmplugin_categoryempty">'.__('Include an empty item?', $dom).'</label> <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
+                      <label for="pmplugin_categoryempty">'.__('Include an empty item?', $dom).'</label>
+                      <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
                   </div>';
 
         return $html;

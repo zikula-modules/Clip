@@ -72,13 +72,17 @@ class pmformtextinput extends pnFormTextInput
             $checked = '';
         }
 
-        $html = '<div class="z-formrow">';
+        // TODO Formatting config
         if (pnModAvailable('scribite')) {
-            $html .= '<label for="pmplugin_usescribite">'.__('Use Scribite!', $dom).':</label><input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />';
+            $html = '<div class="z-formrow">
+                         <label for="pmplugin_usescribite">'.__('Use Scribite!', $dom).':</label>
+                         <input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />
+                     </div>';
         } else {
-            $html .= __('Install Scribite! if you want to use it in this text field', $dom);
+            $html = '<div class="z-formrow">
+                         <span class="z-informationmsg">'.__('Install Scribite! if you want to use it in this text field', $dom).'</span>
+                     </div>';
         }
-        $html .= '</div>';
 
         return $html;
     }

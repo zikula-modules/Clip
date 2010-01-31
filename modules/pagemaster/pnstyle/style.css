@@ -13,6 +13,9 @@
 img {
   vertical-align: middle;
 }
+.z-formrow {
+  text-align: left;
+}
 
 /* admin interface */
 div.pm-menu {
