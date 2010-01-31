@@ -286,3 +286,28 @@ function pagemaster_admin_showcode()
 
     return $render->fetch('pagemaster_admin_showcode.htm');
 }
+
+/**
+ * pagesetter import
+ */
+function pagemaster_admin_importps()
+{
+    if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerPermissionError();
+    }
+
+    $step = FormUtil::getPassedValue('step');
+    if (!empty($step)) {
+        pnModAPIFunc('pagemaster', 'import', 'importps'.$step);
+    }
+
+    // check if there are pubtypes already
+    $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
+
+    // build the output
+    $render = pnRender::getInstance('pagemaster', null, null, true);
+
+    $render->assign('alreadyexists', $numpubtypes > 0 ? true : false);
+
+    return $render->fetch('pagemaster_admin_importps.htm');
+}
