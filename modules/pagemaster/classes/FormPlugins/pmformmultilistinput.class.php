@@ -148,23 +148,25 @@ class pmformmultilistinput extends pnFormCategorySelector
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
-        // TODO: Work based on a Category Registry
-        // TODO: Let the user choose the root CID
-        $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
-        $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
 
         $html = '<div class="z-formrow">
-                     <label for="pmplugin_multisize">'.__('Size', $dom).':</label> <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
-                 </div>
-                 <div class="z-formrow">
-                     <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>
+                     <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>&nbsp;
                      <select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
-        foreach ($cats as $cat) {
-            $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
+        $lang = ZLanguage::getLanguageCode();
+
+        foreach ($registered as $property => $catID) {
+            $cat = CategoryUtil::getCategoryByID($catID);
+            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+
+            $html .= "<option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
         $html .= '    </select>
+                  </div>
+                  <div class="z-formrow">
+                     <label for="pmplugin_multisize">'.__('Size', $dom).':</label> <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
                   </div>';
 
         return $html;

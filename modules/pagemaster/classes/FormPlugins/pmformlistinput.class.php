@@ -117,15 +117,21 @@ class pmformlistinput extends pnFormCategorySelector
 
         Loader::loadClass('CategoryUtil');
 
-        $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
-        $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
+        Loader::loadClass('CategoryUtil');
+        Loader::loadClass('CategoryRegistryUtil');
+
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
 
         $html = '<div class="z-formrow">
                   <label for="pmplugin_categorylist">'.__('Category', $dom).':</label><select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
-        $ak = array_keys($cats);
-        foreach ($ak as $key) {
-            $html .= '<option value="'.$cats[$key]['id'].'">'.$cats[$key]['name'].'</option>';
+        $lang = ZLanguage::getLanguageCode();
+
+        foreach ($registered as $property => $catID) {
+            $cat = CategoryUtil::getCategoryByID($catID);
+            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+
+            $html .= "<option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
         $html .= '</select>

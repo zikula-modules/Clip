@@ -64,6 +64,9 @@ class pagemaster_admin_pubfields
         $plugin            = PMgetPlugin($data['fieldplugin']);
         $data['fieldtype'] = $plugin->columnDef;
 
+        $returnurl = pnModURL('pagemaster', 'admin', 'pubfields',
+                              array('tid' => $data['tid']));
+
         // handle the commands
         switch ($args['commandName'])
         {
@@ -116,8 +119,7 @@ class pagemaster_admin_pubfields
                 break;
         }
 
-        $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'pubfields',
-                                         array('tid' => $data['tid'])));
+        $render->pnFormRedirect($returnurl);
         return true;
     }
 }

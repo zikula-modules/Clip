@@ -106,15 +106,19 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
-        // TODO: Work based on a Category Registry
-        $rootCat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
-        $cats    = CategoryUtil::getCategoriesByParentID($rootCat['id']);
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
 
         $html = '<div class="z-formrow">
-                 <label for="pmplugin_checklist">'.__('Category', $dom).':</label><select id="pmplugin_checklist" name="pmplugin_checklist">';
+                 <label for="pmplugin_checklist">'.__('Category', $dom).':</label>
+                 <select id="pmplugin_checklist" name="pmplugin_checklist">';
 
-        foreach ($cats as $cat) {
-            $html .= '<option value="'.$cat['id'].'">'.$cat['name'].'</option>';
+        $lang = ZLanguage::getLanguageCode();
+
+        foreach ($registered as $property => $catID) {
+            $cat = CategoryUtil::getCategoryByID($catID);
+            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+
+            $html .= "<option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
         $html .= '</select>
