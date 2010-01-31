@@ -8,6 +8,4 @@
 	text plugins configurable cols, nl2br if scribite is not enabled?
 	category based plugins should validate if their categories are not in the current plugin tree
 
-	move the common singletons to userapi
-	Hook calls review
 	dedicated screen (or parameter) to review the own publications + revisions

@@ -77,6 +77,9 @@ class pagemaster_admin_modifyconfig
                 // development mode
                 pnModSetVar('pagemaster', 'devmode', $data['devmode']);
 
+                // let any other modules know that the modules configuration has been updated
+                pnModCallHooks('module', 'updateconfig', 'pagemaster', array('module' => 'pagemaster'));
+
                 LogUtil::registerStatus(__('Done! Module configuration updated.', $dom));
     
                 return pnRedirect(pnModURL('pagemaster', 'admin', 'modifyconfig'));

@@ -12,7 +12,7 @@
 /**
  * Code generation functions
  */
-function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
+function PMgen_viewpub_tplcode($tid, $pubdata)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
 
@@ -29,10 +29,13 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
                      "\n".
                      '<div class="z-form pm-pubdetails">';
 
+    $pubfields = PMgetPubFields($tid);
+
     foreach ($pubdata as $key => $pubfield)
     {
-        $template_code_add = '';
+        $template_code_add       = '';
         $template_code_fielddesc = '';
+        $snippet_body            = '';
 
         // check if field is to handle special
         if (isset($pubfields[$key])) {
@@ -43,7 +46,12 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
             // handle some special plugins
             // FIXME move this to each plugin?
             switch ($field['fieldplugin'])
-            { 
+            {
+                // text plugin
+                case 'pmformtextinput':
+                    $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay|pnmodcallhooks:\'pagemaster\']-->';
+                    break;
+
                 // image plugin
                 case 'pmformimageinput':
                     $template_code_add = 
@@ -109,24 +117,26 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
                 $template_code_fielddesc = $key.':';
             }
 
-            // filter some core fields (uids)
-            if (in_array($key, array('core_author', 'cr_uid', 'lu_uid'))) {
-                $snippet_body = "\n".
-                    '                <!--[$'.$key.'|userprofilelink]-->'."\n".
-                    '                <span class="z-sub">[<!--[$'.$key.'|pnvarprephtmldisplay]-->]</span>'."\n".
-                    '            ';
-
-            // flags
-            } elseif (in_array($key, array('core_online', 'core_indepot', 'core_showinmenu', 'core_showinlist'))) {
-                $snippet_body = '<!--[$'.$key.'|yesno]-->';
-
-            // generic arrays
-            } elseif (is_array($pubfield)) {
-                $snippet_body = '<pre><!--[pmarray array=$'.$key.']--></pre>';
-
-            // generic strings
-            } else {
-                $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay]-->';
+            if (empty($snippet_body)) {
+                // filter some core fields (uids)
+                if (in_array($key, array('core_author', 'cr_uid', 'lu_uid'))) {
+                    $snippet_body = "\n".
+                        '                <!--[$'.$key.'|userprofilelink]-->'."\n".
+                        '                <span class="z-sub">[<!--[$'.$key.'|pnvarprephtmldisplay]-->]</span>'."\n".
+                        '            ';
+    
+                // flags
+                } elseif (in_array($key, array('core_online', 'core_indepot', 'core_showinmenu', 'core_showinlist'))) {
+                    $snippet_body = '<!--[$'.$key.'|yesno]-->';
+    
+                // generic arrays
+                } elseif (is_array($pubfield)) {
+                    $snippet_body = '<pre><!--[pmarray array=$'.$key.']--></pre>';
+    
+                // generic strings
+                } else {
+                    $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay]-->';
+                }
             }
 
             // build the final snippet
@@ -153,7 +163,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
     return $template_code;
 }
 
-function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
+function PMgen_editpub_tplcode($tid)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
 
@@ -177,6 +187,8 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
                      '                    <!--[gt text=\''.no__('New publication', $dom).'\']-->'."\n".
                      '                <!--[/if]-->'."\n".
                      '            </legend>'."\n";
+
+    $pubfields = PMgetPubFields($tid);
 
     foreach (array_keys($pubfields) as $k) {
         // get the plugin pnform name of the plugin filename
@@ -242,7 +254,11 @@ function PMgen_editpub_tplcode($tid, $pubfields, $pubtype, $hookAction='new')
                      '            </div>'."\n".
                      '        </fieldset>'."\n".
                      "\n".
-                     '        <!--[pnmodcallhooks hookobject=\'item\' hookaction=\''.$hookAction.'\' hookid="`$pubtype.tid`-`$core_pid`" module=\'pagemaster\']-->'."\n".
+                     '        <!--[if isset($id)]-->'."\n".
+                     '            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'pagemaster\']-->'."\n".
+                     '        <!--[else]-->'."\n".
+                     '            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'new\' module=\'pagemaster\']-->'."\n".
+                     '        <!--[/if]-->'."\n".
                      "\n".
                      '        <div class="z-formbuttons">'."\n".
                      '            <!--[foreach item=\'action\' from=$actions]-->'."\n".

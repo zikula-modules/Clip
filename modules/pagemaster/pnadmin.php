@@ -245,9 +245,6 @@ function pagemaster_admin_showcode()
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'mode', $dom));
     }
 
-    $pubtype   = PMgetPubType($tid);
-    $pubfields = PMgetPubFields($tid);
-
     // create the renderer
     $render = pnRender::getInstance('pagemaster');
 
@@ -255,7 +252,7 @@ function pagemaster_admin_showcode()
     switch ($mode)
     {
         case 'input':
-            $code = PMgen_editpub_tplcode($tid, $pubfields, $pubtype);
+            $code = PMgen_editpub_tplcode($tid);
             break;
 
         case 'outputfull':
@@ -269,7 +266,7 @@ function pagemaster_admin_showcode()
                                           'id'  => $id,
                                           'handlePluginFields' => true));
 
-            $code = PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields);
+            $code = PMgen_viewpub_tplcode($tid, $pubdata);
             break;
 
         case 'outputlist':
@@ -282,10 +279,9 @@ function pagemaster_admin_showcode()
     $code = DataUtil::formatForDisplay($code);
     $code = str_replace("\n", '<br />', $code);
 
-    $render->assign('code',      $code);
-    $render->assign('mode',      $mode);
-    $render->assign('pubtype',   $pubtype);
-    $render->assign('pubfields', $pubfields);
+    $render->assign('code',    $code);
+    $render->assign('mode',    $mode);
+    $render->assign('pubtype', PMgetPubType($tid));
 
     return $render->fetch('pagemaster_admin_showcode.htm');
 }
