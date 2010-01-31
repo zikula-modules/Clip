@@ -5,6 +5,7 @@
  * @copyright   (c) PageMaster Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @version     $ Id $
  * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
@@ -15,7 +16,7 @@
 function pagemaster_listblock_init()
 {
     // Security
-    SecurityUtil::registerPermissionSchema('pagemaster:Listblock:', 'Block title:Block Id:Type Id');
+    SecurityUtil::registerPermissionSchema('pagemaster:Listblock:', 'Block title:Block Id:Pubtype Id');
 }
 
 /**
@@ -23,11 +24,12 @@ function pagemaster_listblock_init()
  */
 function pagemaster_listblock_info()
 {
-    // Values
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
     return array (
-        'text_type'      => 'pagemasterList',
         'module'         => 'pagemaster',
-        'text_type_long' => 'pagemaster list N publications',
+        'text_type'      => __('PageMaster List', $dom),
+        'text_type_long' => __('PageMaster N publications list', $dom),
         'allow_multiple' => true,
         'form_content'   => false,
         'form_refresh'   => false,
@@ -84,6 +86,8 @@ function pagemaster_listblock_display($blockinfo)
  */
 function pagemaster_listblock_modify($blockinfo)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
     // Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 

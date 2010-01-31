@@ -167,7 +167,8 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
 
 function PMgen_editpub_tplcode($tid)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $titlenewpub  = no__('New publication');
+    $titleeditpub = no__('Edit publication');
 
     $template_code = "\n".
                      '<h1><!--[gt text=$pubtype.title]--></h1>'."\n".
@@ -184,9 +185,9 @@ function PMgen_editpub_tplcode($tid)
                      '        <fieldset>'."\n".
                      '            <legend>'."\n".
                      '                <!--[if isset($id)]-->'."\n".
-                     '                    <!--[gt text=\''.no__('Edit publication', $dom).'\']-->'."\n".
+                     '                    <!--[gt text=\''.$titleeditpub.'\']-->'."\n".
                      '                <!--[else]-->'."\n".
-                     '                    <!--[gt text=\''.no__('New publication', $dom).'\']-->'."\n".
+                     '                    <!--[gt text=\''.$titlenewpub.'\']-->'."\n".
                      '                <!--[/if]-->'."\n".
                      '            </legend>'."\n";
 
@@ -205,26 +206,17 @@ function PMgen_editpub_tplcode($tid)
             $maxlength = ''; //" maxLength='255'"; //TODO Not a clean solution. MaxLength is not needed for ever plugin
         }
 
-        if (!empty($pubfields[$k]['description'])) {
-            //$toolTip = " toolTip='{$pubfields[$k]['description']}'";
-            $toolTip = str_replace("'", "\'", $pubfields[$k]['description']);
-        } else {
-            $toolTip = '';
-        }
+        $toolTip = !empty($pubfields[$k]['description']) ? str_replace("'", "\'", $pubfields[$k]['description']) : '';
 
         // specific plugins
-        if ($pmformname == 'pmformtextinput') {
-            $linecol = " rows='20' cols='70'";
-        } else {
-            $linecol = '';
-        }
+        $linecol = ($pmformname == 'pmformtextinput') ? " rows='20' cols='70'" : '';
 
         // scape simple quotes where needed
         $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']); 
 
         $template_code .= "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' __text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').']-->'."\n".
+                     '                <!--[pnformlabel for=\''.$pubfields[$k]['name'].'\' _'.'_text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').']-->'."\n".
                      '                <!--[genericformplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.']-->'."\n".
          ($toolTip ? '                <span class="z-formnote z-sub"><!--[gt text=\''.$toolTip.'\']--></span>'."\n" : '').
                      '            </div>'."\n";
@@ -236,22 +228,22 @@ function PMgen_editpub_tplcode($tid)
                      '            <legend><!--[gt text=\'Publication options\']--></legend>'."\n".
                      "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\'core_language\' __text=\'' . no__('Language') . '\']-->'."\n".
+                     '                <!--[pnformlabel for=\'core_language\' _'.'_text=\'' . no__('Language') . '\']-->'."\n".
                      '                <!--[pnformlanguageselector id=\'core_language\' mandatory=\'0\']-->'."\n".
                      '            </div>'."\n".
                      "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\'core_publishdate\' __text=\'' . no__('Publish date') . '\']-->'."\n".
+                     '                <!--[pnformlabel for=\'core_publishdate\' _'.'_text=\'' . no__('Publish date') . '\']-->'."\n".
                      '                <!--[pnformdateinput id=\'core_publishdate\' includeTime=\'1\']-->'."\n".
                      '            </div>'."\n".
                      "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\'core_expiredate\' __text=\'' . no__('Expire date') . '\']-->'."\n".
+                     '                <!--[pnformlabel for=\'core_expiredate\' _'.'_text=\'' . no__('Expire date') . '\']-->'."\n".
                      '                <!--[pnformdateinput id=\'core_expiredate\' includeTime=\'1\']-->'."\n".
                      '            </div>'."\n".
                      "\n".
                      '            <div class="z-formrow">'."\n".
-                     '                <!--[pnformlabel for=\'core_showinlist\' __text=\'' . no__('Show in list') . '\']-->'."\n".
+                     '                <!--[pnformlabel for=\'core_showinlist\' _'.'_text=\'' . no__('Show in list') . '\']-->'."\n".
                      '                <!--[pnformcheckbox id=\'core_showinlist\' checked=\'checked\']-->'."\n".
                      '            </div>'."\n".
                      '        </fieldset>'."\n".

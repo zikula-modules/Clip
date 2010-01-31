@@ -339,7 +339,7 @@ function pagemaster_userapi_editPub($args)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'data', $dom));
     }
     if (!isset($args['commandName'])) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'commandName', $dom).' '.__('commandName has to be a valid workflow action for the currenct state.', $dom));
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'commandName', $dom).' '.__('commandName has to be a valid workflow action for the current state.', $dom));
     }
 
     $commandName = $args['commandName'];

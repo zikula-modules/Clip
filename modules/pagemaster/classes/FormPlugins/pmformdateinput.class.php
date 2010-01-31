@@ -58,7 +58,7 @@ class pmformdateinput extends pnFormDateInput
         $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
 
         $html .= '<div class="z-formrow z-warningmsg">
-                      <label for="pmplugin_usedatetime">'.__('Use datetime', $dom).':</label>
+                      <label for="pmplugin_usedatetime">'.__('Include time', $dom).':</label>
                       <input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
                   </div>';
 
