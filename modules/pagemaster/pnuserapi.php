@@ -437,15 +437,18 @@ function pagemaster_userapi_encodeurl($args)
         return LogUtil::registerArgsError();
     }
 
+    static $cache = array();
+
     $supportedfunctions = array('main', 'viewpub');
     if (!in_array($args['func'], $supportedfunctions)) {
         return '';
     }
 
+    $pubtypeTitle = '';
     if (!isset($args['args']['tid'])) {
         return false;
     } else {
-        $tid = (int)$args['args']['tid'];
+        $tid          = (int)$args['args']['tid'];
         $pubtype      = PMgetPubType($tid);
         $pubtypeTitle = DataUtil::formatPermalink($pubtype['urltitle']);
 
@@ -453,27 +456,26 @@ function pagemaster_userapi_encodeurl($args)
         unset($pubtype);
     }
 
-   if (isset($args['args']['pid']) || isset($args['args']['id'])) {
-        $prefix = pnConfigGetVar('prefix');
-
+    $pubTitle = '';
+    if (isset($args['args']['pid']) || isset($args['args']['id'])) {
         if (isset($args['args']['pid'])) {
             $pid = (int)$args['args']['pid'];
             unset($args['args']['pid']);
         } elseif (isset($args['args']['id'])) {
             $id = (int)$args['args']['id'];
             unset($args['args']['id']);
-            $result = DBUtil::executeSQL("SELECT pm_pid FROM {$prefix}_pagemaster_pubdata{$tid} WHERE pm_id = '{$id}'");
-            $pid = $result->fields[0];
+            if (!isset($cache['id'][$id])) {
+                $pid = $cache['id'][$id] = DBUtil::selectFieldByID("pagemaster_pubdata{$tid}", 'core_pid', $id, 'id');
+            } else {
+                $pid = $cache['id'][$id];
+            }
         } else {
             return false;
         }
 
-        //$result = DBUtil::executeSQL("SELECT pm_id FROM {$prefix}_pagemaster_pubfields WHERE pm_tid = '{$tid}' AND pm_istitle = '1'");
-        //$titlefieldid = $result->fields[0];
         $titlefield = PMgetTitleField(PMgetPubFields($tid));
 
         $pubTitle = DBUtil::selectFieldByID("pagemaster_pubdata{$tid}", $titlefield['name'], $pid, 'core_pid');
-
         $pubTitle = '/'.DataUtil::formatPermalink($pubTitle).'.'.$pid;
     }
 
