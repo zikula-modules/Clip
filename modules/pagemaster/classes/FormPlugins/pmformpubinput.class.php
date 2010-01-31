@@ -17,6 +17,8 @@ class pmformpubinput extends pnFormDropdownList
     var $columnDef = 'I4';
     var $title;
 
+    var $config;
+
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -31,54 +33,71 @@ class pmformpubinput extends pnFormDropdownList
         return __FILE__; // FIXME: may be found in smarty's data???
     }
 
-    static function postRead($data, $field)
+    function postRead($data, $field)
     {
-        // TODO [Finish this]
-        /*
-        if (!empty($field['typedata'])) {
-            list($tid, $filter, $join, $joinfields, $orderby) = explode(';', $field['typedata']);
-        }
-        */
+        $dom = ZLanguage::getModuleDomain('pagemaster');
 
-        return array();    
+        $this->parseConfig($field['typedata']);
+
+        $pub = array();
+
+        if (!empty($this->config['tid']) && !empty($data)) {
+            $pub = pnModAPIFunc('pagemaster', 'user', 'getPub',
+                                array('tid'                => $this->config['tid'],
+                                      'pid'                => (int)$data,
+                                      'checkPerm'          => true,
+                                      'getApprovalState'   => true,
+                                      'handlePluginFields' => true));
+
+            if (!$pub) {
+                $pub = array('core_error' => __('No such publication found.', $dom));
+            }
+        }
+
+        return $pub;    
     }
 
     function load($render)
     {
-        $pubfields = $render->pnFormEventHandler->pubfields;
+        $dom = ZLanguage::getModuleDomain('pagemaster');
 
-        if (array_key_exists($this->id, $pubfields)) {
-            list($tid, $filter, $join, $joinfields, $orderby) = explode(';', $pubfields[$this->id]['typedata']);
+        $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+
+        if (!empty($this->config['tid'])) {
+            $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
+                                   array('tid'                => $this->config['tid'],
+                                         'countmode'          => 'no',
+                                         'filter'             => $this->config['filter'],
+                                         'orderby'            => $this->config['orderby'],
+                                         'checkPerm'          => true,
+                                         'handlePluginFields' => false));
+
+            $pubfields  = PMgetPubFields($this->config['tid']);
+            $titleField = PMgetTitleField($pubfields);
+
+            $items = array();
+            $items[] = array('text'  => '- - -',
+                             'value' => '');
+
+            foreach ($pubarr['publist'] as $pub ) {
+                $items[] = array('text'  => $pub[$titleField],
+                                 'value' => $pub['core_pid']);
+            }
+            $this->items = $items;
+        } else {
+            $this->items = array(
+                               array('text'  => __('Plugin not configured.', $dom),
+                                     'value' => '')
+                           );
         }
-
-        $pubfields_pub = PMgetPubFields($tid);
-
-        $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
-                               array('tid'                => $tid,
-                                     'countmode'          => 'no',
-                                     'filter'             => $filter,
-                                     'pubfields'          => $pubfields_pub,
-                                     'orderby'            => $orderby,
-                                     'checkPerm'          => true,
-                                     'handlePluginFields' => false));
-
-        $titleField = PMgetTitleField($pubfields_pub);
-
-        $items = array();
-        $items[] = array('text' => '- - -',
-                         'value' => '');
-
-        foreach ($pubarr['publist'] as $pub ) {
-            $items[] = array('text'  => $pub[$titleField],
-                             'value' => $pub['core_pid']);
-        }
-        $this->items = $items;
 
         parent::load($render);
     }
 
     static function getSaveTypeDataFunc($field)
     {
+        // TODO Implement effects for the checkbox enabled
+        // TODO Implement pnFormPostBack to check if the fields are correct?
         $saveTypeDataFunc = 'function saveTypeData()
                              {
                                  $(\'typedata\').value = $F(\'pmplugin_pubtid\')+\';\'+$F(\'pmplugin_pubfilter\')+\';\'+$F(\'pmplugin_pubjoin\')+\';\'+$F(\'pmplugin_pubjoinfields\')+\';\'+$F(\'pmplugin_puborderbyfield\');
@@ -88,59 +107,65 @@ class pmformpubinput extends pnFormDropdownList
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field, $render)
+    function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
 
-        $vars = explode(';', $render->_tpl_vars['typedata']);
+        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : '';
+        $this->parseConfig($typedata);
 
-        $tid         = $vars[0];
-        $filter      = $vars[1];
-        $join        = $vars[2];
-        $join_fields = $vars[3];
-        $orderby_field = $vars[4];
-
-        if ($join == 'on') {
-            $checked = 'checked="checked"';
-        } else {
-            $checked = '';
+        $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'title', '', '', false, 'tid');
+        foreach ($pubtypes as $tid => $title) {
+            $pubtypes[$tid] = __($title, $dom);
         }
-
-        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+        asort($pubtypes);
 
         $html = ' <div class="z-formrow">
                       <label for="pmplugin_pubtid">'.__('Publication', $dom).':</label>
                       <select id="pmplugin_pubtid" name="pmplugin_pubtid">';
 
-        foreach ($pubtypes as $pubtype) {
-            if ($pubtype['tid'] == $tid) {
-                $selected = 'selected="selected"';
-            } else {
-                $selected = '';
-            }
-            $html .= '<option value="'.$pubtype['tid'].'" '.$selected.' >'.$pubtype['title'].'</option>'."\n";
+        foreach ($pubtypes as $tid => $title) {
+            $selectedText = ($tid == $this->config['tid']) ? 'selected="selected"' : '';
+
+            $html .= "<option{$selectedText} value=\"{$tid}\">{$title}</option>\n";
         }
 
         $html .= '    </select>
                   </div>
                   <div class="z-formrow">
                       <label for="pmplugin_pubfilter">'.__('Filter', $dom).':</label>
-                      <input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$filter.'" />
+                      <input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$this->config['filter'].'" />
                   </div>
                   <div class="z-formrow">
                       <label for="pmplugin_pubjoin">'.__('Join', $dom).':</label>
-                      <input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.$checked.' />
+                      <input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.($this->config['join'] == 'on' ? 'checked="checked"' : '').' />
                   </div>
                   <div class="z-formrow">
                       <label for="pmplugin_pubjoinfields">'.__('Join fields', $dom).':</label>
-                      <input type="text" id="pmplugin_pubjoinfields" name="pmplugin_pubjoinfields" value="'.$join_fields.'" >
+                      <input type="text" id="pmplugin_pubjoinfields" name="pmplugin_pubjoinfields" value="'.$this->config['alias'].'" >
                       <span class="z-formnote z-sub">'.__('format: fieldname:alias,fieldname:alias', $dom).'</span>
                   </div>
                   <div class="z-formrow">
                       <label for="pmplugin_puborderbyfield">'.__('Orderby field', $dom).':</label>
-                      <input type="text" id="pmplugin_puborderbyfield" name="pmplugin_puborderbyfield" value="'.$orderby_field.'" >
+                      <input type="text" id="pmplugin_puborderbyfield" name="pmplugin_puborderbyfield" value="'.$this->config['orderby'].'" >
                   </div>';
 
         return $html;
+    }
+
+    /**
+     * Parse configuration
+     */
+    function parseConfig($typedata = '', $args = array())
+    {
+        $this->config = explode(';', $typedata);
+
+        $this->config = array(
+            'tid'     => (int)$this->config[0],
+            'filter'  => isset($this->config[1]) ? $this->config[1] : '',
+            'join'    => isset($this->config[2]) ? $this->config[2] : '',
+            'alias'   => isset($this->config[3]) ? $this->config[3] : '',
+            'orderby' => isset($this->config[4]) ? $this->config[4] : ''
+        );
     }
 }

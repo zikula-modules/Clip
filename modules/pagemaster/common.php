@@ -96,14 +96,16 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                     break;
 
                 // publication input
-                case 'pmformpubinput'://z_prayer($field);
+                case 'pmformpubinput':
+                    $plugin = PMgetPlugin('pmformpubinput');
+                    $plugin->parseConfig($field['typedata']);
                     $template_code_add = 
                     '    <!--[if $'.$key.' neq \'\']-->'."\n".
                     '        <div class="z-formrow">'."\n".
                     '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                     '            <span class="z-formnote">'."\n".
                     '                <pre><!--[pmarray array=$'.$key.']--></pre>'."\n".
-                    '                <!--[*pnmodapifunc modname=\'pagemaster\' func=\'getPub\' tid=\''.$field['typedata'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*]-->'."\n".
+                    '                <!--[*pnmodapifunc modname=\'pagemaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*]-->'."\n".
                     '            <span>'."\n".
                     '        </div>'."\n".
                     '    <!--[/if]-->';

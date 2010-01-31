@@ -18,6 +18,8 @@ class pmformdateinput extends pnFormDateInput
     var $title;
     var $filterClass = 'date';
 
+    var $config;
+
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -47,17 +49,15 @@ class pmformdateinput extends pnFormDateInput
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field, $render)
+    function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
 
-        if ($render->_tpl_vars['typedata'] == 1) {
-            $checked = 'checked="checked"';
-        } else {
-            $checked = '';
-        }
+        $this->parseConfig($render->_tpl_vars['typedata']);
 
-        $html .= '<div class="z-formrow">
+        $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
+
+        $html .= '<div class="z-formrow z-warningmsg">
                       <label for="pmplugin_usedatetime">'.__('Use datetime', $dom).':</label>
                       <input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
                   </div>';
@@ -67,12 +67,19 @@ class pmformdateinput extends pnFormDateInput
 
     function create(&$render, &$params)
     {
-        $pubfields = $render->pnFormEventHandler->pubfields;
-
-        if (array_key_exists($this->id, $pubfields)) {
-            $params['includeTime'] = $pubfields[$this->id]['typedata'];
-        }
+        $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+        $params['includeTime'] = $this->config['includeTime'];
 
         parent::create($render, $params);
+    }
+
+    /**
+     * Parse configuration
+     */
+    function parseConfig($typedata = '', $args = array())
+    {
+        $this->config = array();
+
+        $this->config['includeTime'] = (bool)$typedata;
     }
 }

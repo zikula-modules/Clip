@@ -17,6 +17,8 @@ class pmformtextinput extends pnFormTextInput
     var $columnDef = 'X';
     var $title;
 
+    var $config;
+
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -33,8 +35,10 @@ class pmformtextinput extends pnFormTextInput
 
     function render(&$render)
     {
+        $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+
         $this->textMode = 'multiline';
-        if ($render->pnFormEventHandler->pubfields[$this->id]['typedata'] == 1 && pnModAvailable('scribite')) {
+        if ($this->config['usescribite'] && pnModAvailable('scribite')) {
             static $scribite_arr;
             $scribite_arr[] = $this->id;
             $scribite = pnModFunc('scribite', 'user', 'loader',
@@ -62,15 +66,14 @@ class pmformtextinput extends pnFormTextInput
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field, $render)
+    function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
 
-        if (isset($render->_tpl_vars['typedata']) && $render->_tpl_vars['typedata'] == 1) {
-            $checked = 'checked="checked"';
-        } else {
-            $checked = '';
-        }
+        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : false;
+        $this->parseConfig($typedata);
+
+        $checked = $this->config['usescribite'] ? 'checked="checked"' : '';
 
         // TODO Formatting config
         if (pnModAvailable('scribite')) {
@@ -85,5 +88,15 @@ class pmformtextinput extends pnFormTextInput
         }
 
         return $html;
+    }
+
+    /**
+     * Parse configuration
+     */
+    function parseConfig($typedata = '', $args = array())
+    {
+        $this->config = array();
+
+        $this->config['usescribite'] = (bool)$typedata;
     }
 }

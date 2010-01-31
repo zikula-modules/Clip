@@ -18,11 +18,13 @@ class pmformmultilistinput extends pnFormCategorySelector
     var $title;
     var $filterClass = 'pmMultiList';
 
+    var $config;
+
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
         //! field type name
-        $this->title = __('Multiple selector', $dom);
+        $this->title = __('Multiple Selector', $dom);
 
         parent::__construct();
     }
@@ -74,16 +76,14 @@ class pmformmultilistinput extends pnFormCategorySelector
     function render(&$render)
     {
         // extract the configuration {category, size}
-        $config = array(30, '~');
         if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
-            $config = explode('|', $render->pnFormEventHandler->pubfields[$this->inputName]['typedata']);
-            if (!isset($config[1])) {
-                $config[1] = '~';
-            }
+            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata']);;
+        } else {
+            $this->parseConfig();
         }
 
-        if ($config[1] != '~') {
-            $this->size = $config[1];
+        if (!empty($this->config[1])) {
+            $this->size = $this->config[1];
         }
 
         return parent::render($render);
@@ -91,7 +91,7 @@ class pmformmultilistinput extends pnFormCategorySelector
 
     function create(&$render, &$params)
     {
-        $this->saveAsString = 1;
+        $this->saveAsString  = 1;
         $this->selectionMode = 'multiple';
 
         parent::create($render, $params);
@@ -100,8 +100,8 @@ class pmformmultilistinput extends pnFormCategorySelector
     function load(&$render, $params)
     {
         if (isset($render->pnFormEventHandler->pubfields[$this->id])) {
-            $config = explode('|', $render->pnFormEventHandler->pubfields[$this->id]['typedata']);
-            $params['category'] = $config[0];
+            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+            $params['category'] = $this->config[0];
         }
 
         parent::load(&$render, $params);
@@ -129,20 +129,17 @@ class pmformmultilistinput extends pnFormCategorySelector
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field, $render)
+    function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
 
         // parse the configuration
-        if (isset($render->_tpl_vars['typedata'])) {
-            $vars = explode('|', $render->_tpl_vars['typedata']);
-        } else {
-            $vars = array();
-        }
+        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : '';
+        $this->parseConfig($typedata);
 
-        $size = null;
-        if (!empty($vars) && isset($vars[1]) && $vars[1] > 0) {
-            $size = $vars[1];
+        $size = '';
+        if ($this->config[1] > 0) {
+            $size = $this->config[1];
         }
 
         Loader::loadClass('CategoryUtil');
@@ -159,8 +156,9 @@ class pmformmultilistinput extends pnFormCategorySelector
         foreach ($registered as $property => $catID) {
             $cat = CategoryUtil::getCategoryByID($catID);
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+            $selectedText     = ($this->config[0] == $catID) ? ' selected="selected"' : '';
 
-            $html .= "    <option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
+            $html .= "    <option{$selectedText} value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
         $html .= '    </select>
@@ -171,6 +169,19 @@ class pmformmultilistinput extends pnFormCategorySelector
                   </div>';
 
         return $html;
+    }
+
+    /**
+     * Parse configuration
+     */
+    function parseConfig($typedata = '', $args = array())
+    {
+        $this->config = explode('|', $typedata);
+
+        $this->config = array(
+            0 => !empty($this->config[0]) ? (int)$this->config[0] : 30, // TODO Category Registry?
+            1 => (isset($this->config[1]) && !empty($this->config[1]) && $this->config[1] != '~') ? (int)$this->config[1] : 0
+        );
     }
 
     /**

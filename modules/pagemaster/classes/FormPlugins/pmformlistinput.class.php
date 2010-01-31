@@ -18,6 +18,8 @@ class pmformlistinput extends pnFormCategorySelector
     var $title;
     var $filterClass = 'pmList';
 
+    var $config;
+
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -68,22 +70,17 @@ class pmformlistinput extends pnFormCategorySelector
     function load(&$render, $params)
     {
         if (!empty($render->pnFormEventHandler->pubfields[$this->id]['typedata'])) {
-            // config is: {categoryID, (bool)includeEmpty}
-            $config = explode(',', $render->pnFormEventHandler->pubfields[$this->id]['typedata']);
-            $params['category'] = $config[0];
+            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata'], (int)$params['mandatory']);
+
+            $params['category'] = $this->config[0];
 
             if (!isset($params['includeEmptyElement'])) {
-                if (isset($config[1])) {
-                    $this->includeEmptyElement = (bool)$config[1];
-                } elseif ($params['mandatory'] == '0') {
-                    $this->includeEmptyElement = 1;
-                } else {
-                    $this->includeEmptyElement = 0;
-                }
+                $this->includeEmptyElement = $this->config[1];
             } else {
                 $this->includeEmptyElement = $params['includeEmptyElement'];
             }
         } else {
+            // TODO Extract the List property category rrot?
             $params['category'] = 30; // Global category
         }
 
@@ -111,9 +108,12 @@ class pmformlistinput extends pnFormCategorySelector
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field, $render)
+    function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
+
+        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : array(30, true);
+        $this->parseConfig($typedata);
 
         Loader::loadClass('CategoryUtil');
 
@@ -131,27 +131,35 @@ class pmformlistinput extends pnFormCategorySelector
         foreach ($registered as $property => $catID) {
             $cat = CategoryUtil::getCategoryByID($catID);
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+            $selectedText     = ($this->config[0] == $catID) ? ' selected="selected"' : '';
 
-            $html .= "    <option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
+            $html .= "    <option{$selectedText} value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
         $html .= '    </select>
                   </div>';
 
-        // get the include empty element config value
-        if (isset($render->_tpl_vars['typedata'])) {
-            $config = explode(',', $render->_tpl_vars['typedata']);
-            $includeEmptyElement = isset($config[1]) ? (bool)$config[1] : true;
-        } else {
-            $includeEmptyElement = true;
-        }
-
-        $checked = $includeEmptyElement ? 'checked="checked"' : '';
+        $checked = $this->config[1] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
                       <label for="pmplugin_categoryempty">'.__('Include an empty item?', $dom).'</label>
                       <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
                   </div>';
 
         return $html;
+    }
+
+    /**
+     * Parse configuration
+     */
+    function parseConfig($typedata = '', $args = array())
+    {
+        // config string: "(int)categoryID, (bool)includeEmpty"
+        $this->config = array();
+
+        $this->config = explode(',', $typedata);
+        $this->config = array(
+            0 => (int)$this->config[0],
+            1 => isset($this->config[1]) ? (bool)$this->config[1] : (bool)$args
+        );
     }
 }

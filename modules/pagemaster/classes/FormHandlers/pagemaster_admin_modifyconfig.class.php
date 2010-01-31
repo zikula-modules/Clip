@@ -28,7 +28,7 @@ class pagemaster_admin_modifyconfig
         // check if there are pubtypes already
         $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
 
-        $render->assign('alreadyexists', $numpubtypes > 0 ? true : false);
+        $render->assign('alreadywithpubs', $numpubtypes > 0 ? true : false);
 
         // upload dir check
         $siteroot = substr(pnServerGetVar('DOCUMENT_ROOT'), 0, -1).pnGetBaseURI().'/';

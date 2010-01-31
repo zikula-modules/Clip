@@ -18,6 +18,8 @@ class pmformimageinput extends pnFormUploadInput
 	var $title;
 	var $upl_arr;
 
+    var $config;
+
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -70,7 +72,7 @@ class pmformimageinput extends pnFormUploadInput
 			if (!empty($arrTypeData['orig_name'])) {
 				$upl_arr =  array(
                          'orig_name'    => $arrTypeData['orig_name'],
-                         'preUrl'        => !empty($arrTypeData['pre_name']) ? $url.'/'.$arrTypeData['pre_name'] : '',
+                         'preUrl'       => !empty($arrTypeData['pre_name']) ? $url.'/'.$arrTypeData['pre_name'] : '',
                          'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
                          'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
                          'url'          => $url.'/'.$arrTypeData['file_name']
@@ -78,7 +80,7 @@ class pmformimageinput extends pnFormUploadInput
             } else {
                 $upl_arr = array(
                          'orig_name'    => '',
-                         'preUrl'        => '',
+                         'preUrl'       => '',
                          'fullUrl'      => '',
                          'thumbnailUrl' => '',
                          'url'          => ''
@@ -89,7 +91,7 @@ class pmformimageinput extends pnFormUploadInput
         return $upl_arr;
     }
 
-    static function preSave($data, $field)
+    function preSave($data, $field)
     {
         $id   = $data['id'];
         $tid  = $data['tid'];
@@ -118,23 +120,25 @@ class pmformimageinput extends pnFormUploadInput
             $newFileNameOrig = $randName.'.'.$ext;
             $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
             copy($srcFilename, $newDestOrig);
-            $tmpargs = array();
-            $preargs = array();
+
+            $tmpargs  = array();
+            $preargs  = array();
             $fullargs = array();
             if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
-                list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = explode(':', $field['typedata']);
-                if ((int)$tmpx > 0)
-                    $tmpargs['w'] = (int)$tmpx ;
-                if ((int)$tmpy > 0)
-                    $tmpargs['h'] = (int)$tmpy;
-                if ((int)$prex > 0)
-                    $preargs['w'] = (int)$prex ;
-                if ((int)$prey > 0)
-                    $preargs['h'] = (int)$prey ;
-                if ((int)$fullx > 0)
-                    $fullargs['w'] = (int)$fullx ;
-                if ((int)$fully > 0)
-                    $fullargs['h'] = (int)$fully ;
+                $this->parseConfig($field['typedata']);
+                list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = $this->config;
+                if ($tmpx > 0)
+                    $tmpargs['w'] = $tmpx ;
+                if ($tmpy > 0)
+                    $tmpargs['h'] = $tmpy;
+                if ($prex > 0)
+                    $preargs['w'] = $prex ;
+                if ($prey > 0)
+                    $preargs['h'] = $prey ;
+                if ($fullx > 0)
+                    $fullargs['w'] = $fullx ;
+                if ($fully > 0)
+                    $fullargs['h'] = $fully ;
             } 
 
 			$srcFilename =   $PostData['tmp_name'];
@@ -143,23 +147,25 @@ class pmformimageinput extends pnFormUploadInput
 			$newFileNameOrig = $randName.'.'.$ext;
 			$newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
 			copy($srcFilename, $newDestOrig);
+
 			$tmpargs = array();
 			$preargs = array();
 			$fullargs = array();
 			if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
-				list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = explode(':', $field['typedata']);
-				if ((int)$tmpx > 0)
-				    $tmpargs['w'] = (int)$tmpx ;
-				if ((int)$tmpy > 0)
-				    $tmpargs['h'] = (int)$tmpy;
-				if ((int)$prex > 0)
-				    $preargs['w'] = (int)$prex ;
-				if ((int)$prey > 0)
-				    $preargs['h'] = (int)$prey ;
-				if ((int)$fullx > 0)
-				    $fullargs['w'] = (int)$fullx ;
-				if ((int)$fully > 0)
-				    $fullargs['h'] = (int)$fully ;
+                $this->parseConfig($field['typedata']);
+                list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = $this->config;
+				if ($tmpx > 0)
+				    $tmpargs['w'] = $tmpx ;
+				if ($tmpy > 0)
+				    $tmpargs['h'] = $tmpy;
+				if ($prex > 0)
+				    $preargs['w'] = $prex ;
+				if ($prey > 0)
+				    $preargs['h'] = $prey ;
+				if ($fullx > 0)
+				    $fullargs['w'] = $fullx ;
+				if ($fully > 0)
+				    $fullargs['h'] = $fully ;
 			}
 
 			// Check for the Thumbnails module and if we need it
@@ -169,7 +175,6 @@ class pmformimageinput extends pnFormUploadInput
 				$tmpargs['filename'] = $newDestOrig;
 				$tmpargs['dstFilename'] = $newDestTmp;
 				$dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $tmpargs);
-
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed
                 $newFilenameTmp = $newFileNameOrig;
@@ -192,7 +197,6 @@ class pmformimageinput extends pnFormUploadInput
                 $fullargs['filename'] = $newDestOrig;
                 $fullargs['dstFilename'] = $newDestFull;
                 $dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $fullargs);
-
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed
                 $newFilenameFull = $newFileNameOrig;
@@ -230,33 +234,62 @@ class pmformimageinput extends pnFormUploadInput
 
     static function getTypeHtml($field, $render)
     {
-        $html = '<div class="z-formrow">
-                     <label for="pmplugin_tmpx_px">Thumbnail x:</label>
-                     <input type="text" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
-                 </div>
-                 <div class="z-formrow">
-                     <label for="pmplugin_tmpy_px">Thumbnail y:</label>
-                     <input type="text" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
-                     <br />
-                 </div>
-                 <div class="z-formrow">
-                     <label for="pmplugin_pre_px">Preview x:</label>
-                     <input type="text" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
-                 </div>
-                 <div class="z-formrow">
-                     <label for="pmplugin_pre_px">Preview y:</label>
-                     <input type="text" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
-                     <br />
-                 </div>
-                 <div class="z-formrow">
-                   <label for="pmplugin_full_px">Full x:</label>
-                   <input type="text" id="pmplugin_fullx_px" name="pmplugin_fullx_px" />
-                 </div>
-                 <div class="z-formrow">
-                   <label for="pmplugin_full_px">Full y:</label>
-                   <input type="text" id="pmplugin_fully_px" name="pmplugin_fully_px" />
-                 </div>';
+        $dom = ZLanguage::getModuleDomain('pagemaster');
+
+        if (pnModAvailable('Thumbnails')) {
+            // TODO Fieldsets and help text explaining how they work
+            $html = '<div class="z-formrow">
+                         <label for="pmplugin_tmpx_px">'.__('Thumbnail width', $dom).':</label>
+                         <input type="text" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
+                     </div>
+                     <div class="z-formrow">
+                         <label for="pmplugin_tmpy_px">'.__('Thumbnail height', $dom).':</label>
+                         <input type="text" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
+                         <br />
+                     </div>
+                     <div class="z-formrow">
+                         <label for="pmplugin_pre_px">'.__('Preview width', $dom).':</label>
+                         <input type="text" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
+                     </div>
+                     <div class="z-formrow">
+                         <label for="pmplugin_pre_px">'.__('Preview height', $dom).':</label>
+                         <input type="text" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
+                         <br />
+                     </div>
+                     <div class="z-formrow">
+                       <label for="pmplugin_full_px">'.__('Full width', $dom).':</label>
+                       <input type="text" id="pmplugin_fullx_px" name="pmplugin_fullx_px" />
+                     </div>
+                     <div class="z-formrow">
+                       <label for="pmplugin_full_px">'.__('Full height', $dom).':</label>
+                       <input type="text" id="pmplugin_fully_px" name="pmplugin_fully_px" />
+                     </div>';
+        } else {
+            $html = '<div class="z-formrow z-warningmsg">
+                         '.__('Warning! The Thumbnails module is not available. This plugin needs it to build the Preview and Thumbnail of each uploaded Image.', $dom).'
+                     </div>';
+        }
 
         return $html;
+    }
+
+    /**
+     * Parse configuration
+     */
+    function parseConfig($typedata = '', $args = array())
+    {
+        $this->config = array();
+
+        // $tmpx, $tmpy ,$prex, $prey, $fullx, $fully 
+        $this->config = explode(':', $typedata);
+        // validate all the values
+        $this->config = array(
+            0 => (int)$this->config[0],
+            1 => isset($this->config[1]) ? (int)$this->config[1] : 0,
+            2 => isset($this->config[2]) ? (int)$this->config[2] : 0,
+            3 => isset($this->config[3]) ? (int)$this->config[3] : 0,
+            4 => isset($this->config[4]) ? (int)$this->config[4] : 0,
+            5 => isset($this->config[5]) ? (int)$this->config[5] : 0
+        );
     }
 }

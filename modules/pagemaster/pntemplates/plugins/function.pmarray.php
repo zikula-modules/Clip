@@ -25,6 +25,6 @@ function smarty_function_pmarray($array)
 {
     $array = array_values($array);
 
-    // removes a useless "\n1"
+    // removes a useless "\n1" ending
     return substr(DataUtil::formatForDisplayHTML(print_r($array[0])), 0, -2);
 }

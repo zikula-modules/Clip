@@ -18,6 +18,8 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     var $title;
     var $filterClass = 'pmMultiList';
 
+    var $config;
+
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -78,7 +80,8 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     function load(&$render, $params)
     {
         if (isset($render->pnFormEventHandler->pubfields[$this->id])) {
-            $params['category'] = $render->pnFormEventHandler->pubfields[$this->id]['typedata'];
+            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+            $params['category'] = $this->config['category'];
         }
 
         parent::load(&$render, $params);
@@ -99,9 +102,12 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field)
+    function getTypeHtml($field)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
+        
+        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : 30;
+        $this->parseConfig($typedata);
 
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
@@ -117,13 +123,24 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
         foreach ($registered as $property => $catID) {
             $cat = CategoryUtil::getCategoryByID($catID);
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+            $selectedText     = ($this->config['category'] == $catID) ? ' selected="selected"' : '';
 
-            $html .= "    <option value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
+            $html .= "    <option{$selectedText} value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
         $html .= '   </select>
                   </div>';
 
         return $html;
+    }
+
+    /**
+     * Parse configuration
+     */
+    function parseConfig($typedata = '', $args = array())
+    {
+        $this->config = array();
+
+        $this->config['category'] = (int)$typedata;
     }
 }

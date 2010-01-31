@@ -17,6 +17,8 @@ class pmformcustomdata extends pnFormTextInput
     var $columnDef = 'X';
     var $title;
 
+    var $config;
+
     function __construct()
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
@@ -36,8 +38,8 @@ class pmformcustomdata extends pnFormTextInput
         parent::create($render, $params);
 
         if (empty($this->text)) {
-            $config = $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0);
-            $defaultvalue = isset($config['configvars'][1]) ? $config['configvars'][1] : '';
+            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0);
+            $defaultvalue = isset($this->config['configvars'][1]) ? $this->config['configvars'][1] : '';
             $this->text = ($defaultvalue != '~' ? $defaultvalue : '');
         }
     }
@@ -47,13 +49,14 @@ class pmformcustomdata extends pnFormTextInput
         $this->textMode = 'singleline';
         $render->assign($this->inputName, @unserialize($this->text));
         if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
-            $render->assign($this->inputName.'_typedata', $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0));
+            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0);
+            $render->assign($this->inputName.'_typedata', $this->config);
         }
 
         return parent::render($render);
     }
 
-    static function postRead($data, $field)
+    function postRead($data, $field)
     {
         // if there's any data, process it
         if (!empty($data)) {
@@ -64,7 +67,8 @@ class pmformcustomdata extends pnFormTextInput
                 return $data;
             } elseif ($data['enabled'] == 'on') {
                 // parse and save the configuration
-                $field['typedata'] = $this->parseConfig($field['typedata'], 0);
+                $this->parseConfig($field['typedata'], 0);
+                $field['typedata'] = $this->config;
                 $ak = array_keys($data['items']);
                 foreach ($ak as $key) {
                     if (!is_null($data['items'][$key]['value'])) {
@@ -95,8 +99,8 @@ class pmformcustomdata extends pnFormTextInput
             $this->text = FormUtil::getPassedValue($this->inputName, null, 'POST');
 
             if (is_null($this->text) || empty($this->text)) {
-                $config = $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0);
-                $this->text = $config['configvars'][1];
+                $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata'], 0);
+                $this->text = isset($this->config['configvars'][1]) ? $this->config['configvars'][1] : '';
                 return;
             }
 
@@ -202,6 +206,7 @@ class pmformcustomdata extends pnFormTextInput
         PageUtil::addVar('javascript', 'javascript/helpers/Zikula.itemlist.js');
 
         // parse the data
+        // TODO Merge in $this->parseConfig
         if (isset($render->_tpl_vars['typedata'])) {
             $vars = explode('||', $render->_tpl_vars['typedata']);
         } else {
@@ -297,29 +302,7 @@ class pmformcustomdata extends pnFormTextInput
     }
 
     /**
-     * Method to extract the config values
-     * @TODO: protect this method
-     */
-    function parseConfig($arrayConfig, $indexKey=null)
-    {
-        $arrayConfig = explode('||', $arrayConfig);
-
-        $result = array();
-        foreach ($arrayConfig as $row) {
-            $tmp = explode('|', $row);
-            if (!is_null($indexKey) && isset($tmp[$indexKey]) && !empty($tmp[$indexKey])) {
-                $result[$tmp[$indexKey]] = $tmp;
-            } else {
-                $result[] = $tmp;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Method to parse a special string call 
-     * @TODO: protect this method
      */
     function parseCall($call, $data=null)
     {
@@ -332,6 +315,7 @@ class pmformcustomdata extends pnFormTextInput
 
         // parse the call
         $call = explode(':', $call);
+
         // call[0] should be the module name
         if (isset($call[0]) && !empty($call[0])) { 
             $modname = $call[0];
@@ -356,6 +340,26 @@ class pmformcustomdata extends pnFormTextInput
 
             return array($modname, $type, $func, $params);
         }
+
         return ''; 
+    }
+
+    /**
+     * Method to extract the config values
+     */
+    function parseConfig($typedata = '', $args = array())
+    {
+        $arrayConfig = explode('||', $typedata);
+        $indexKey    = (int)$args;
+
+        $this->config = array();
+        foreach ($arrayConfig as $row) {
+            $tmp = explode('|', $row);
+            if (!is_null() && isset($tmp[$indexKey]) && !empty($tmp[$indexKey])) {
+                $this->config[$tmp[$indexKey]] = $tmp;
+            } else {
+                $this->config[] = $tmp;
+            }
+        }
     }
 }
