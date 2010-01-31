@@ -25,51 +25,51 @@ function pagemaster_init()
         return false;
     }
 
-    // modvars
-    CacheUtil::createLocalDir('pagemaster', 777);
-    $modvars = array(
-        'uploadpath' => CacheUtil::getLocalDir().'/pagemaster',
-        'devmode' => true
-    );
-    pnModSetVars('pagemaster', $modvars);
-
-    // build the default Category tree
+    // build the default category tree
     $regpath = '/__SYSTEM__/Modules';
+
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
     Loader::loadClassFromModule('Categories', 'CategoryRegistry');
 
-    $rootcat = CategoryUtil::getCategoryByPath($regpath);
-
     $lang = ZLanguage::getLanguageCode();
 
-    $cat = new PNCategory();
-    $cat->setDataField('parent_id', $rootcat['id']);
-    $cat->setDataField('name', 'pagemaster');
-    $cat->setDataField('display_name', array($lang => __('PageMaster', $dom)));
-    $cat->setDataField('display_desc', array($lang => __('PageMaster root category', $dom)));
-    if (!$cat->validate('admin')) {
-        return false;
-    }
-    $cat->insert();
-    $cat->update();
-
     $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster');
-    $cat = new PNCategory();
-    $cat->setDataField('parent_id', $rootcat['id']);
-    $cat->setDataField('name', 'lists');
-    //! this is the 'lists' root category name
-    $cat->setDataField('display_name', array($lang => __('lists', $dom)));
-    $cat->setDataField('display_desc', array($lang => __('PageMaster lists for its publications', $dom)));
-    if (!$cat->validate('admin')) {
-        return false;
+    if (!$rootcat) {
+        $rootcat = CategoryUtil::getCategoryByPath($regpath);
+
+        $cat = new PNCategory();
+        $cat->setDataField('parent_id', $rootcat['id']);
+        $cat->setDataField('name', 'pagemaster');
+        $cat->setDataField('display_name', array($lang => __('PageMaster', $dom)));
+        $cat->setDataField('display_desc', array($lang => __('PageMaster root category', $dom)));
+        if (!$cat->validate('admin')) {
+            return LogUtil::registerError(__f('Error! Could not create the [%s] category.', 'PageMaster', $dom));
+        }
+        $cat->insert();
+        $cat->update();
     }
-    $cat->insert();
-    $cat->update();
+
+    $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster/lists');
+    if (!$rootcat) {
+        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster');
+
+        $cat = new PNCategory();
+        $cat->setDataField('parent_id', $rootcat['id']);
+        $cat->setDataField('name', 'lists');
+        //! this is the 'lists' root category name
+        $cat->setDataField('display_name', array($lang => __('lists', $dom)));
+        $cat->setDataField('display_desc', array($lang => __('PageMaster lists for its publications', $dom)));
+        if (!$cat->validate('admin')) {
+            return LogUtil::registerError(__f('Error! Could not create the [%s] category.', 'lists', $dom));
+        }
+        $cat->insert();
+        $cat->update();
+    }
 
     // create the PM category registry
     $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster/lists');
-    if (!$rootcat) {
+    if ($rootcat) {
         // create an entry in the categories registry to the Lists property
         $registry = new PNCategoryRegistry();
         $registry->setDataField('modname', 'pagemaster');
@@ -78,8 +78,25 @@ function pagemaster_init()
         $registry->setDataField('category_id', $rootcat['id']);
         $registry->insert();
     } else {
-        return false;
+        LogUtil::registerError(__f('Error! Could not create the [%s] Category Registry for PageMaster.', 'Lists', $dom));
     }
+
+    // modvars
+    // upload dir creation if the temp dir is not outside the root (relative path)
+    $tempdir = CacheUtil::getLocalDir();
+    $pmdir   = $tempdir.'/pagemaster';
+    if (StringUtil::left($tempdir, 1) <> '/') {
+        if (CacheUtil::createLocalDir('pagemaster', 777)) {
+            LogUtil::registerStatus(__f('PageMaster created the upload directory successfully at [%s]. Be sure that be accessible via web and writable by the webserver.', $pmdir, $dom));
+        }
+    } else {
+        LogUtil::registerStatus(__f('PageMaster could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $pmdir, $dom));
+    }
+    $modvars = array(
+        'uploadpath' => $pmdir,
+        'devmode'    => true
+    );
+    pnModSetVars('pagemaster', $modvars);
 
     return true;
 }
