@@ -39,13 +39,16 @@ function pubfieldlistorderchanged_response(req)
 
 function pubfieldlistsortinit()
 {
-	Sortable.create('pubfieldlist',
-		{
-	    	dropOnEmpty: true,
-	        only: 'z-sortable',
-	        onUpdate: pubfieldlistorderchanged
-	    }
-	);
+    Sortable.create('pubfieldlist',
+        {
+            dropOnEmpty: true,
+            only: 'z-sortable',
+            onUpdate: pubfieldlistorderchanged
+        }
+    );
+
+    // also add the anchor to the form 
+    $('pnFormForm').action = $('pnFormForm').action + '#newpubfield'
 }
 
 Event.observe(window, 'load', pubfieldlistsortinit, false);
