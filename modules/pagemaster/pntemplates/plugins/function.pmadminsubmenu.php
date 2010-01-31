@@ -38,13 +38,6 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
         $output .= '<a>'.__('Pubtype form', $dom).'</a> | ';
     }
 
-    // pub list link
-    if ($func != 'publist') {
-        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publications list', $dom).'</a> | ';
-    } else {
-        $output .= '<a>'.__('Publications list', $dom).'</a> | ';
-    }
-
     // edit fields link
     if ($func != 'pubfields') {
         $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'pubfields', array('tid' => $tid)).'">'.__('Publication fields', $dom).'</a> | ';
@@ -56,6 +49,13 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // new article link
     $output .= '<a href="'.pnModURL('pagemaster', 'user', 'pubedit', array('tid' => $tid)).'">'.__('New publication', $dom).'</a> | ';
+
+    // pub list link
+    if ($func != 'publist') {
+        $output .= '<a href="'.pnModURL('pagemaster', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publications list', $dom).'</a> | ';
+    } else {
+        $output .= '<a>'.__('Publications list', $dom).'</a> | ';
+    }
 
     // show code links
     if ($func == 'showcode') {
