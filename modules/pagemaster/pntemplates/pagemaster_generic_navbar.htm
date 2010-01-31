@@ -69,8 +69,9 @@
 
 <!--[* PageMaster developer notices*]-->
 <!--[if $pncore.pagemaster.devmode|default:true]-->
-<!--[pnsecauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN]-->
+<!--[case expr='pubview']--><!--[pndebug]--><!--[/if]-->
 
+<!--[pnsecauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN]-->
 <div class="z-warningmsg">
 <!--[switch expr=$section]-->
 	<!--[case expr='publist']-->
@@ -89,6 +90,5 @@
 <!--[pnmodurl modname='pagemaster' type='admin' func='modifyconfig' assign='urlconfig']-->
 <br /><!--[gt text='You can hide this message <a href="%s">disabling the development mode</a>.' tag1=$urlconfig]-->
 </div>
-
 <!--[/pnsecauthaction_block]-->
 <!--[/if]-->

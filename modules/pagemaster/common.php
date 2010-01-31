@@ -18,9 +18,6 @@ function PMgen_viewpub_tplcode($tid, $pubdata, $pubtype, $pubfields)
 
     $template_code = "\n".
                      '<!--[hitcount pid=$core_pid tid=$core_tid]-->'."\n".
-                     '<!--[if $pncore.pagemaster.devmode|default:true]-->'."\n".
-                     '    <!--[pndebug]-->'."\n".
-                     '<!--[/if]-->'."\n".
                      "\n".
                      '<h1><!--[gt text=$pubtype.title]--></h1>'."\n".
                      "\n".
