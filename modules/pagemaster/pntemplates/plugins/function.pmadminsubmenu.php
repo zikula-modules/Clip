@@ -20,7 +20,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
 
-    $tid = $params['tid'];
+    $tid = (int)$params['tid'];
 
     if (!$tid) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
@@ -59,7 +59,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // show code links
     if ($func == 'showcode') {
-        $output .= ($params['mode'] == 'input' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Show form code', $dom).'</a> | ';
+        $output .= ($params['mode'] == 'input'      ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Show form code', $dom).'</a> | ';
         $output .= ($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('Show pub list code', $dom).'</a> | ';
         $output .= ($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.pnModURL('pagemaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Show pub view code', $dom).'</a>';
     } else {

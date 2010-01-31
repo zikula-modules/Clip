@@ -14,21 +14,24 @@
  * Increase Hit Counter
  * This logic is implemented in a plugin to let the user decide if he wants to use it or not
  * Hitcount breaks mysql table cache
+ *
  * @author kundi
  * @param $args['tid'] tid
  * @param $args['pid'] pid
  */
 function smarty_function_hitcount($params, &$smarty)
 {
-    $tid = $params['tid'];
-    $pid = $params['pid'];
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
+    $tid = (int)$params['tid'];
+    $pid = (int)$params['pid'];
 
     if (!$tid) {
-        return 'Required parameter [tid] not provided in smarty_function_hitcount';
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
     }
 
     if (!$pid) {
-        return 'Required parameter [pid] not provided in smarty_function_hitcount';
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'pid', $dom));
     }
 
     DBUtil::incrementObjectFieldByID('pagemaster_pubdata'.$tid, 'core_hitcount', $pid, 'core_pid');

@@ -12,17 +12,20 @@
 
 function smarty_function_multilistdecode($params, &$smarty)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
     $field = $params['field'];
     $value = $params['value'];
 
     if (!$field) {
-        return 'Required parameter [field] not provided in smarty_function_multilistdecode';
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'field', $dom));
     }
 
     if (!$value) {
-        return 'Required parameter [value] not provided in smarty_function_multilistdecode';
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'value', $dom));
     }
 
+    $html = '';
     foreach ($value as $cat) {
         $html .=  $cat['fullTitle'].'<br />';
     }

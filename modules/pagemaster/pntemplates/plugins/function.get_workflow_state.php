@@ -24,8 +24,8 @@ function smarty_function_get_workflow_state($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('pagemaster');
 
-    $tid = $params['tid'];
-    $id  = $params['id'];
+    $tid = (int)$params['tid'];
+    $id  = (int)$params['id'];
 
     if (!$tid) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
@@ -36,7 +36,7 @@ function smarty_function_get_workflow_state($params, &$smarty)
     }
 
     $tablename = 'pagemaster_pubdata'.$tid;
-    $pub['id'] = $id;
+    $pub       = array('id' => $id);
 
     WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
 

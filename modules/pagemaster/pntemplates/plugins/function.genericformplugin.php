@@ -13,30 +13,34 @@
 /**
  * Generic form Plugin
  * Loads the disired plugin from fieldtype definition
+ *
  * @author kundi
  * @param $args['fieldname']
  * @param generic
  */
 function smarty_function_genericformplugin($params, &$render)
 {
+    $dom = ZLanguage::getModuleDomain('pagemaster');
+
     $id  = $params['id'];
     $tid = $render->pnFormEventHandler->tid;
 
     if (!$id) {
-        return 'Required parameter [id] not provided in smarty_function_genericformplugin';
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
     }
 
     if (!$tid) {
-        return 'tid not extractable from pnRender Object in smarty_function_genericformplugin';
+        // tid not extractable from pnRender object
+        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
     }
 
-    $pubfields = PMgetPubFields($tid);
+    $pubfields   = PMgetPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];
 
-    Loader::LoadClass($pluginclass,'modules/pagemaster/classes/FormPlugins');
+    Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');
     //$plugin = new $pluginclass;
 
-    //read settings in pubfields, if set by template ignore settings in pubfields
+    // read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])){
         $params['mandatory'] = $pubfields[$id]['ismandatory'];
     }
