@@ -27,7 +27,7 @@
 				<span class="z-itemcell z-w10"><!--[gt text='Title field']--></span>
 				<span class="z-itemcell z-w10"><!--[gt text='Mandatory']--></span>
 				<span class="z-itemcell z-w10"><!--[gt text='Searchable']--></span>
-				<span class="z-itemcell z-w10"><!--[gt text='Max. Lenght']--></span>
+				<span class="z-itemcell z-w10"><!--[gt text='Max. lenght']--></span>
 				<span class="z-itemcell z-w10"><!--[gt text='Actions']--></span>
 			</li>
 			<!--[foreach from=$pubfields item=pubfield name=pubfields]-->
@@ -66,7 +66,7 @@
 					&nbsp;
 				</span>
 				<span class="z-itemcell z-w10">
-					<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='pubfields' id=$pubfield.id tid=$pubfield.tid fragment='newpubfield']-->">
+					<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='pubfields' tid=$pubfield.tid id=$pubfield.id fragment='newpubfield']-->">
 						<!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit']-->
 					</a>
 				</span>
@@ -102,7 +102,10 @@
 					<!--[pnformlabel for='fieldplugin' text='Fieldtype (Plugin)']-->
 					<!--[pnformplugintype id='fieldplugin']-->
 					<span class="z-formnote"><!--[gt text='Which kind of fieldtype is used (can be extended by plugins). Detailed informations about the individual plugins can be found in the documentation.']--></span>
-					<span class="z-formnote"><!--[pnformtextinput id='typedata' maxLength='4000']--> <span class="z-warningmsg"><!--[gt text='Edit this field only if you know what you are doing.']--></span></span>
+					<span class="z-formnote" id="typedata_wrapper">
+						<!--[pnformtextinput id='typedata' maxLength='4000']--> <span class="z-warningmsg"><!--[gt text='Edit this field only if you know what you are doing.']--></span><br />
+						<!--[gt text="This is the configuration data of the field, if you edit it manually you can get unexpected results. Please use the configuration icon next to the selector to configure the field with ease."]-->
+					</span>
 				</div>
 				<div class="z-formrow">
 					<!--[pnformlabel for='istitle' text='Title field']-->

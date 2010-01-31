@@ -90,7 +90,7 @@ class pnFormPluginType extends pnFormDropdownList
                     </div>
                 </div>';
             } else {
-                $script .= 'Event.observe( window, \'load\', function() { $(\'typedata\').hide(); }, false);';
+                $script .= 'Event.observe( window, \'load\', function() { $(\'typedata_wrapper\').hide(); }, false);';
             }
             $script .= "\n// ]]>\n</script>";
             PageUtil::setVar('rawtext', $script);
