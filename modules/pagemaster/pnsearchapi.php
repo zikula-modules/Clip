@@ -92,7 +92,7 @@ function pagemaster_searchapi_search($args)
                 $where .= " AND pm_showinlist = '1'
                             AND pm_online = '1'
                             AND pm_indepot = '0'
-                            AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCodeLegacy() ."')
+                            AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCode() ."')
                             AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL) AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
 
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];

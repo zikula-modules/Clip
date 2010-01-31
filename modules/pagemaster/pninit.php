@@ -34,10 +34,12 @@ function pagemaster_init()
     pnModSetVars('pagemaster', $modvars);
 
     // build the default Category tree
+    $regpath = '/__SYSTEM__/Modules';
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
+    Loader::loadClassFromModule('Categories', 'CategoryRegistry');
 
-    $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules');
+    $rootcat = CategoryUtil::getCategoryByPath($regpath);
 
     $lang = ZLanguage::getLanguageCode();
 
@@ -46,20 +48,38 @@ function pagemaster_init()
     $cat->setDataField('name', 'pagemaster');
     $cat->setDataField('display_name', array($lang => __('PageMaster', $dom)));
     $cat->setDataField('display_desc', array($lang => __('PageMaster root category', $dom)));
+    if (!$cat->validate('admin')) {
+        return false;
+    }
     $cat->insert();
     $cat->update();
 
-    $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster');
+    $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster');
     $cat = new PNCategory();
     $cat->setDataField('parent_id', $rootcat['id']);
     $cat->setDataField('name', 'lists');
     //! this is the 'lists' root category name
     $cat->setDataField('display_name', array($lang => __('lists', $dom)));
     $cat->setDataField('display_desc', array($lang => __('PageMaster lists for its publications', $dom)));
+    if (!$cat->validate('admin')) {
+        return false;
+    }
     $cat->insert();
     $cat->update();
 
-    // TODO create the Category registry
+    // create the PM category registry
+    $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster/lists');
+    if (!$rootcat) {
+        // create an entry in the categories registry to the Lists property
+        $registry = new PNCategoryRegistry();
+        $registry->setDataField('modname', 'pagemaster');
+        $registry->setDataField('table', 'pagemaster_pubtypes');
+        $registry->setDataField('property', 'Lists');
+        $registry->setDataField('category_id', $rootcat['id']);
+        $registry->insert();
+    } else {
+        return false;
+    }
 
     return true;
 }
@@ -78,10 +98,6 @@ function pagemaster_upgrade($oldversion)
         case '0.1' :
             // add the urltitle field to the pubtypes table
             if (!DBUtil::changeTable('pagemaster_pubtypes')) {
-                return '0.1';
-            }
-            // create the index
-            if (!DBUtil::createIndex('urltitle', 'pagemaster_pubtypes', array('urltitle'))) {
                 return '0.1';
             }
             // update the urltitle field of each existing pubtype
@@ -194,6 +210,8 @@ function pagemaster_upgrade($oldversion)
                     return '0.2';
                 }
             }
+            unset($fieldsinpubtype);
+            unset($fieldsdata);
     
         case '0.2.1':
             $tables = pnDBGetTables();
@@ -207,6 +225,80 @@ function pagemaster_upgrade($oldversion)
         case '0.3.1':
         case '0.3.2':
         case '0.3.3':
+            // new modvar: development mode
+            pnModSetVars('pagemaster', 'devmode', true);
+
+            // update the table definitions of some fields
+            $tochange = array(
+                'pmformcheckboxinput' => 'I1(1)',
+                'pmformintinput' => 'I4',
+                'pmformlistinput' => 'I4',
+                'pmformpubinput' => 'I4',
+                'pmformurlinput' => 'C(512)'
+            );
+            foreach ($tochange as $plugin => $dbtype) {
+                $record = array('fieldtype' => $dbtype);
+                DBUtil::updateObject($record, 'pagemaster_pubfields', "pm_fieldplugin = '$plugin'");
+            }
+
+            // reload the table definitions
+            pnModDBInfoLoad('pagemaster', '', true);
+
+            // update the tables
+            $tables   = pnDBGetTables();
+            $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'tid');
+
+            // process the tables to update
+            $toupdate = array('pubtypes', 'pubfields', 'relations');
+            $pubdatas = array();
+            foreach ($pubtypes as $tid) {
+                if (isset($tables["pagemaster_pubdata$tid"])) {
+                    $pubdatas[] = "pubdata$tid";
+                }
+            }
+
+            $toupdate = array_merge($toupdate, $pubdatas);
+            foreach ($toupdate as $table) {
+                if (!DBUtil::changeTable("pagemaster_$table")) {
+                    return '0.3.3';
+                }
+            }
+
+            // update the publications l2 language codes to l3
+            foreach ($pubdatas as $pubdata) {
+                $langs = DBUtil::selectFieldArray("pagemaster_$pubdata", 'core_language', "pm_language <> ''", '', true);
+                foreach ($langs as $l3) {
+                   if ($l2 = ZLanguage::translateLegacyCode($l3)) {
+                       $record = array('core_language' => $l2);
+                       DBUtil::updateObject($record, "pagemaster_$pubdata", "pm_language = '$l3'");
+                   }
+                }
+            }
+
+        case '0.3.4':
+            // create the PM category registry
+            Loader::loadClass('CategoryUtil');
+            Loader::loadClassFromModule('Categories', 'Category');
+            Loader::loadClassFromModule('Categories', 'CategoryRegistry');
+
+            $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
+            if (!$rootcat) {
+                $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
+                if (!$rootcat) {
+                    LogUtil::registerError(__f('Error! Category path not found [%s].', '/Modules/pagemaster/lists', $dom));
+                    LogUtil::registerError(__f('Error! Category path not found [%s].', '/Modules/Global', $dom));
+                    return '0.3.4';
+                }
+            }
+            // create an entry in the categories registry to the Lists property
+            $registry = new PNCategoryRegistry();
+            $registry->setDataField('modname', 'pagemaster');
+            $registry->setDataField('table', 'pagemaster_pubtypes');
+            $registry->setDataField('property', 'Lists');
+            $registry->setDataField('category_id', $rootcat['id']);
+            $registry->insert();
+
+        case '0.4.0':
             // further upgrade handling
     }
 

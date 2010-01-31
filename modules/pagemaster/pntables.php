@@ -25,12 +25,12 @@ function pagemaster_pntables()
         'id2'  => 'pm_id'
     );
     $pntable['pagemaster_relations_column_def'] = array (
-        'tid1' => 'I NOTNULL',
-        'pid1' => 'I NOTNULL',
-        'id1'  => 'I NOTNULL',
-        'tid2' => 'I NOTNULL',
-        'pid2' => 'I NOTNULL',
-        'id2'  => 'I NOTNULL',
+        'tid1' => 'I4 NOTNULL',
+        'pid1' => 'I4 NOTNULL',
+        'id1'  => 'I4 NOTNULL',
+        'tid2' => 'I4 NOTNULL',
+        'pid2' => 'I4 NOTNULL',
+        'id2'  => 'I4 NOTNULL',
     );
     ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_relations_column'], 'pm_');
     ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_relations_column_def']);
@@ -55,8 +55,8 @@ function pagemaster_pntables()
         'lineno'         => 'pm_lineno'
     );
     $pntable['pagemaster_pubfields_column_def'] = array (
-        'id'             => 'I PRIMARY AUTO',
-        'tid'            => 'I NOTNULL',
+        'id'             => 'I4 PRIMARY AUTO',
+        'tid'            => 'I4 NOTNULL',
         'name'           => "C(255) NOTNULL DEFAULT ''",
         'title'          => "C(255) NOTNULL DEFAULT ''",
         'description'    => "C(255) NOTNULL DEFAULT ''",
@@ -64,11 +64,11 @@ function pagemaster_pntables()
         'fieldplugin'    => "C(50) NOTNULL DEFAULT ''",
         'fieldmaxlength' => 'I NULL',
         'typedata'       => 'C(4000) NULL',
-        'istitle'        => 'I4 NOTNULL',
-        'ispageable'     => 'I4 NOTNULL',
-        'issearchable'   => 'I4 NOTNULL',
-        'ismandatory'    => 'I4 NOTNULL',
-        'lineno'         => 'I NOTNULL'
+        'istitle'        => 'I1(1) NOTNULL',
+        'ispageable'     => 'I1(1) NOTNULL',
+        'issearchable'   => 'I1(1) NOTNULL',
+        'ismandatory'    => 'I1(1) NOTNULL',
+        'lineno'         => 'I4 NOTNULL'
     );
     ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_pubfields_column'], 'pm_');
     ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_pubfields_column_def']);
@@ -97,28 +97,32 @@ function pagemaster_pntables()
         'cachelifetime'   => 'pm_cachelifetime'
     );
     $pntable['pagemaster_pubtypes_column_def'] = array (
-        'tid'             => 'I PRIMARY AUTO',
+        'tid'             => 'I4 PRIMARY AUTO',
         'title'           => "C(255) NOTNULL DEFAULT ''",
         'urltitle'        => "C(255) NOTNULL DEFAULT ''",
         'filename'        => "C(255) NOTNULL DEFAULT ''",
         'formname'        => "C(255) NOTNULL DEFAULT ''",
         'description'     => "C(255) NOTNULL DEFAULT ''",
-        'itemsperpage'    => 'I NOTNULL',
+        'itemsperpage'    => 'I(3) NOTNULL',
         'sortfield1'      => "C(255)",
-        'sortdesc1'       => 'I4',
+        'sortdesc1'       => 'I1(1)',
         'sortfield2'      => "C(255)",
-        'sortdesc2'       => 'I4',
+        'sortdesc2'       => 'I1(1)',
         'sortfield3'      => "C(255)",
-        'sortdesc3'       => 'I4',
+        'sortdesc3'       => 'I1(1)',
         'workflow'        => "C(255) NOTNULL",
         'defaultfilter'   => "C(255)",
-        'enablerevisions' => 'I4 NOTNULL',
-        'enableeditown'   => 'I4 NOTNULL',
+        'enablerevisions' => 'I1(1) NOTNULL',
+        'enableeditown'   => 'I1(1) NOTNULL',
         'cachelifetime'   => 'I8 NULL'
     );
     ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_pubtypes_column'], 'pm_');
     ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_pubtypes_column_def']);
-
+    // indexes
+    $pntable['pagemaster_pubtypes_column_idx'] = array (
+        'urltitle' => 'urltitle'
+    );
+    
 /*
     // revisions table
     $pntable['pagemaster_revisions'] = DBUtil::getLimitedTablename('pagemaster_revisions');
@@ -129,10 +133,10 @@ function pagemaster_pntables()
         'prevversion' => 'pm_prevversion'
     );
     $pntable['pagemaster_revisions_column_def'] = array (
-        'tid'         => 'I PRIMARY NOTNULL',
-        'id'          => 'I PRIMARY NOTNULL',
-        'pid'         => 'I NOTNULL',
-        'prevversion' => 'I NOTNULL'
+        'tid'         => 'I4 PRIMARY NOTNULL',
+        'id'          => 'I4 PRIMARY NOTNULL',
+        'pid'         => 'I4 NOTNULL',
+        'prevversion' => 'I4 NOTNULL'
     );
     ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_revisions_column'], 'pm_');
     ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_revisions_column_def']);
@@ -150,6 +154,13 @@ function pagemaster_pntables()
 
             ObjectUtil::addStandardFieldsToTableDefinition($pntable[$tablename.'_column'], 'pm_');
             ObjectUtil::addStandardFieldsToTableDataDefinition($pntable[$tablename.'_column_def']);
+
+            // TODO indexes
+            /*
+            $pntable[$tablename.'_column_idx'] = array (
+                'core_online' => 'core_online' //core_showinlist
+            );
+            */
         }
     }
 
@@ -169,7 +180,7 @@ function pagemaster_pntables()
     } else {
         $old_tid = 0;
 
-        $tablefirst = array(
+        $tableorder = array(
             'core_title'       => 'pm_pid', // field to be overriden by the title field
             'core_pid'         => 'pm_pid',
             'id'               => 'pm_id'
@@ -189,16 +200,16 @@ function pagemaster_pntables()
             'core_expiredate'  => 'pm_expiredate'
         );
         $tabledefcore = array(
-            'id'               => 'I PRIMARY AUTO',
-            'core_pid'         => 'I NOTNULL',
-            'core_author'      => 'I(11) NOTNULL',
+            'id'               => 'I4 PRIMARY AUTO',
+            'core_pid'         => 'I4 NOTNULL',
+            'core_author'      => 'I4 NOTNULL',
             'core_hitcount'    => 'I(9) DEFAULT 0',
-            'core_language'    => 'C(3) NOTNULL',
-            'core_revision'    => 'I NOTNULL',
-            'core_online'      => 'I4 NOTNULL',
-            'core_indepot'     => 'I4 NOTNULL',
-            'core_showinmenu'  => 'I4 NOTNULL',
-            'core_showinlist'  => 'I4 NOTNULL DEFAULT 1',
+            'core_language'    => 'C(10) NOTNULL', //FIXME how many chars are needed for a gettext code?
+            'core_revision'    => 'I4 NOTNULL',
+            'core_online'      => 'I1(1) NOTNULL',
+            'core_indepot'     => 'I1(1) NOTNULL',
+            'core_showinmenu'  => 'I1(1) NOTNULL',
+            'core_showinlist'  => 'I1(1) NOTNULL DEFAULT 1',
             'core_publishdate' => 'T',
             'core_expiredate'  => 'T'
         );
@@ -217,7 +228,7 @@ function pagemaster_pntables()
             // if we change of publication type
             if ($tid != $old_tid && $old_tid != 0) {
                 // add the table definition to the $pntable array
-                pagemaster_addtable($pntable, $old_tid, array_merge($tablefirst, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+                pagemaster_addtable($pntable, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
                 // and reset the columns and definitions for the next pubtype
                 $tablecolumn = array();
                 $tabledef    = array();
@@ -232,8 +243,8 @@ function pagemaster_pntables()
         }
 
         // the final one doesn't trigger a tid change
-        if (isset($tablecolumn) && !empty($tablecolumn)) {
-            pagemaster_addtable($pntable, $old_tid, array_merge($tablefirst, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+        if (!empty($tablecolumn)) {
+            pagemaster_addtable($pntable, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
         }
     }
 

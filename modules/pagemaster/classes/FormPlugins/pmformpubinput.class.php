@@ -14,7 +14,7 @@ require_once('system/pnForm/plugins/function.pnformdropdownlist.php');
 
 class pmformpubinput extends pnFormDropdownList
 {
-    var $columnDef = 'I';
+    var $columnDef = 'I4';
     var $title;
 
     function __construct()

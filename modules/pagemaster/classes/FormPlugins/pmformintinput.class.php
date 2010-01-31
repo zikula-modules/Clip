@@ -14,7 +14,7 @@ require_once('system/pnForm/plugins/function.pnformintinput.php');
 
 class pmformintinput extends pnFormIntInput
 {
-    var $columnDef = 'I (9,0)';
+    var $columnDef = 'I4';
     var $title;
 
     function __construct()

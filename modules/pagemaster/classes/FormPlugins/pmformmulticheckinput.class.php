@@ -36,6 +36,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
     {
         if (!empty($data) && $data <> '::') {
             $lang = ZLanguage::getLanguageCode();
+
             if (strpos($data, ':') === 0) {
                 $data = substr($data, 1, -1);
             }

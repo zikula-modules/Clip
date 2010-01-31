@@ -14,7 +14,7 @@ require_once('system/pnForm/plugins/function.pnformurlinput.php');
 
 class pmformurlinput extends pnFormURLInput
 {
-    var $columnDef = 'C(500)';
+    var $columnDef = 'C(512)';
     var $title;
 
     function __construct()

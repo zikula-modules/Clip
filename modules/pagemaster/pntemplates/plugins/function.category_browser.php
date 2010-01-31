@@ -41,7 +41,7 @@ function smarty_function_category_browser($params, &$smarty)
 
     $filter = FormUtil::getPassedValue('filter');
     $filter_arr = explode(',', $filter);
-    $lang =ZLanguage::getLanguageCode();
+    $lang = ZLanguage::getLanguageCode();
 
     if (!$tid) {
         return 'Required parameter [tid] not provided in smarty_function_category_browser';
@@ -156,7 +156,7 @@ function smarty_function_category_browser($params, &$smarty)
 
             $v['depth'] = $depth;
             $v['url'] = $url;
-            $v['fullTitle'] = $v['display_name'][$lang];
+            $v['fullTitle'] = isset($v['display_name'][$lang]) ? $v['display_name'][$lang] : $v['name'];
             $cat_arr[] = $v;
         }
     } else {

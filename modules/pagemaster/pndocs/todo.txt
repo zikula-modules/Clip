@@ -5,11 +5,10 @@
 	new admin screen to validate the data integrity (only one online revision, title field, etc)
 	integrate styles to workflow actions, like images and News buttons styles
 
-	text plugins configurable cols?
+	text plugins configurable cols, nl2br if scribite is not enabled?
 	category based plugins should validate if their categories are not in the current plugin tree
 
 	move the common singletons to userapi
+	Review the pntemplates/plugins
 	Hook calls review
 	dedicated screen (or parameter) to review the own publications + revisions
-	add the Category Registry to handle the list tree
-	Move the publangs to l2 (0.4 upgrade routine, queries)

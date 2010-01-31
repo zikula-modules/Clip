@@ -172,7 +172,7 @@ function pagemaster_userapi_pubList($args)
         }
 
         $where[] = "  {$tbl_alias}pm_indepot = '0' ";
-        $where[] = "( {$tbl_alias}pm_language = '' OR {$tbl_alias}pm_language = '".ZLanguage::getLanguageCodeLegacy()."' )";
+        $where[] = "( {$tbl_alias}pm_language = '' OR {$tbl_alias}pm_language = '".ZLanguage::getLanguageCode()."' )";
         $where[] = "( {$tbl_alias}pm_publishdate <= NOW() OR {$tbl_alias}pm_publishdate IS NULL )";
         $where[] = "( {$tbl_alias}pm_expiredate >= NOW() OR {$tbl_alias}pm_expiredate IS NULL )";
     }
@@ -277,7 +277,7 @@ function pagemaster_userapi_getPub($args)
             $where .= " pm_online = '1' ";
         }
         $where .= " AND pm_indepot = '0'
-                    AND (pm_language = '' OR pm_language = '".ZLanguage::getLanguageCodeLegacy()."')
+                    AND (pm_language = '' OR pm_language = '".ZLanguage::getLanguageCode()."')
                     AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)
                     AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
 

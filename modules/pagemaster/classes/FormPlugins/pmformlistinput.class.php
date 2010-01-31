@@ -14,7 +14,7 @@ require_once('system/pnForm/plugins/function.pnformcategoryselector.php');
 
 class pmformlistinput extends pnFormCategorySelector
 {
-    var $columnDef   = 'I (9,0)';
+    var $columnDef   = 'I4';
     var $title;
     var $filterClass = 'pmList';
 
