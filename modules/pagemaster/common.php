@@ -62,7 +62,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                      '                <!--[$'.$field['name'].'.orig_name]--><br />'."\n".
                      '                <img src="<!--[$'.$field['name'].'.thumbnailUrl]-->" title="'.no__('Thumbnail', $dom).'" alt="'.no__('Thumbnail', $dom).'" /><br />'."\n".
                      '                <img src="<!--[$'.$field['name'].'.url]-->" title="'.no__('Image', $dom).'" alt="'.no__('Image', $dom).'" />'."\n".
-                     '            <span>'."\n".
+                     '            </span>'."\n".
                      '        </div>'."\n".
                      '    <!--[/if]-->';
                     break;
@@ -73,7 +73,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                      '    <!--[if $'.$field['name'].'.fullTitle neq \'\']-->'."\n".
                      '        <div class="z-formrow">'."\n".
                      '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
-                     '            <span class="z-formnote"><!--[$'.$key.'.fullTitle]--><span>'."\n".
+                     '            <span class="z-formnote"><!--[$'.$key.'.fullTitle]--></span>'."\n".
                      '        </div>'."\n".
                      '    <!--[/if]-->';
                     break;
@@ -90,7 +90,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                      '                        <li><!--[$item.fullTitle]--></li>'."\n".
                      '                    <!--[/foreach]-->'."\n".
                      '                </ul>'."\n".
-                     '            <span>'."\n".
+                     '            </span>'."\n".
                      '        </div>'."\n".
                      '    <!--[/if]-->';
                     break;
@@ -106,7 +106,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                     '            <span class="z-formnote">'."\n".
                     '                <pre><!--[pmarray array=$'.$key.']--></pre>'."\n".
                     '                <!--[*pnmodapifunc modname=\'pagemaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*]-->'."\n".
-                    '            <span>'."\n".
+                    '            </span>'."\n".
                     '        </div>'."\n".
                     '    <!--[/if]-->';
                     break;
@@ -146,7 +146,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                     '    <!--[if $'.$key.' neq \'\']-->'."\n".
                     '        <div class="z-formrow">'."\n".
                     '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
-                    '            <span class="z-formnote">'.$snippet_body.'<span>'."\n".
+                    '            <span class="z-formnote">'.$snippet_body.'</span>'."\n".
                     '        </div>'."\n".
                     '    <!--[/if]-->';
         }
