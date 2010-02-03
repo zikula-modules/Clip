@@ -68,5 +68,5 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     $output .= '</span></div>';
 
-    return $output;
+    return DataUtil::formatForDisplayHTML($output);
 }

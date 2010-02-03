@@ -785,9 +785,9 @@ msgstr ""
 #: pntemplates/pagemaster_admin_showcode.htm:24
 #, php-format
 msgid ""
-"Create a template named <b>%1$s</b> with this code, and store it in the the "
-"directory: <b>/config/templates/pagemaster/%2$s/%1$s</b>, or within your "
-"theme in the <b>/themes/YourTheme/templates/modules/pagemaster/%2$s/%1$s</b>."
+"Create a template named <strong>%1$s</strong> with this code, and store it in the the "
+"directory: <strong>/config/templates/pagemaster/%2$s/%1$s</strong>, or within your "
+"theme in the <strong>/themes/YourTheme/templates/modules/pagemaster/%2$s/%1$s</strong>."
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:8
@@ -1171,31 +1171,31 @@ msgstr ""
 #, php-format
 msgid ""
 "This is a generic template. Your can <a href=\"%1$s\">get the publist code</"
-"a> and create a customized template (<b>publist_%2$s.htm</b>), then store it "
-"in the the config directory: <b>/config/templates/pagemaster/output/publist_%"
-"2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/"
-"publist_%2$s.htm</b>."
+"a> and create a customized template (<strong>publist_%2$s.htm</strong>), then store it "
+"in the the config directory: <strong>/config/templates/pagemaster/output/publist_%"
+"2$s.htm</strong> or within your theme: <strong>/templates/modules/pagemaster/output/"
+"publist_%2$s.htm</strong>."
 msgstr ""
 
 #: pntemplates/pagemaster_generic_navbar.htm:83
 #, php-format
 msgid ""
 "This is a generic template. Your can <a href=\"%1$s\">get the pubview code</"
-"a> and create a customized template (<b>viewpub_%2$s.htm</b>), then store it "
-"in the the config directory: <b>/config/templates/pagemaster/output/viewpub_%"
-"2$s.htm</b> or within your theme: <b>/templates/modules/pagemaster/output/"
-"viewpub_%2$s.htm</b>."
+"a> and create a customized template (<strong>viewpub_%2$s.htm</strong>), then store it "
+"in the the config directory: <strong>/config/templates/pagemaster/output/viewpub_%"
+"2$s.htm</strong> or within your theme: <strong>/templates/modules/pagemaster/output/"
+"viewpub_%2$s.htm</strong>."
 msgstr ""
 
 #: pntemplates/pagemaster_generic_navbar.htm:87
 #, php-format
 msgid ""
 "This is a generic template. Your can <a href=\"%1$s\">get the form code</a> "
-"and create individuals template (<b>pubedit_%2$s_{STEPNAME}.htm</b> or "
-"<b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/"
-"config/templates/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</b> or within "
-"your theme: <b>/templates/modules/pagemaster/input/pubedit_%2$s_{STEPNAME}."
-"htm</b>."
+"and create individuals template (<strong>pubedit_%2$s_{STEPNAME}.htm</strong> or "
+"<strong>pubedit_%2$s_all.htm</strong>), then store it in the the config directory: <strong>/"
+"config/templates/pagemaster/input/pubedit_%2$s_{STEPNAME}.htm</strong> or within "
+"your theme: <strong>/templates/modules/pagemaster/input/pubedit_%2$s_{STEPNAME}."
+"htm</strong>."
 msgstr ""
 
 #: pntemplates/pagemaster_generic_navbar.htm:91

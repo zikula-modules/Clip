@@ -1,10 +1,9 @@
-
-<h1><!--[gt text=$pubtype.title]--></h1>
+<h2><!--[gt text=$pubtype.title]--></h2>
 
 <!--[include file='pagemaster_generic_navbar.htm' section='publist']-->
 
 <!--[if $pubtype.description neq '']-->
-    <p class="pm-pubdesc"><!--[gt text=$pubtype.description]--></p>
+<p class="pm-pubdesc"><!--[gt text=$pubtype.description]--></p>
 <!--[/if]-->
 
 <table class="z-datatable pm-publist">
@@ -37,7 +36,7 @@
 </table>
 
 <!--[if isset($pager)]-->
-    <!--[pager show='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1]-->
+<!--[pager show='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1]-->
 <!--[/if]-->
 
 <!--[pnmodcallhooks hookobject='category' hookaction='display' module='pagemaster' returnurl=$returnurl]-->

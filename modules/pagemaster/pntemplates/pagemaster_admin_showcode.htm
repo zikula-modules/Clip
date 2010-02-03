@@ -3,28 +3,28 @@
 <!--[include file='pagemaster_admin_header.htm']-->
 
 <div class="z-admincontainer">
-	<div class="z-adminpageicon"><!--[pnimg modname='core' src='exec.gif' set='icons/large' __alt='Show code']--></div>
+    <div class="z-adminpageicon"><!--[pnimg modname='core' src='exec.gif' set='icons/large' __alt='Show code']--></div>
 
-	<h2><!--[gt text='Show code']--></h2>
+    <h2><!--[gt text='Show code']--></h2>
 
-	<!--[pmadminsubmenu tid=$pubtype.tid mode=$mode]-->
+    <!--[pmadminsubmenu tid=$pubtype.tid mode=$mode]-->
 
-	<!--[if $mode eq 'input']-->
-		<!--[assign var='pmtplname' value='pubedit_'|cat:$pubtype.formname|cat:'_all.htm']-->
-		<!--[assign var='pmsubfolder' value='input']-->
-	<!--[elseif $mode eq 'outputlist']-->
-		<!--[assign var='pmtplname' value='publist_'|cat:$pubtype.filename|cat:'.htm']-->
-		<!--[assign var='pmsubfolder' value='output']-->
-	<!--[elseif $mode eq 'outputfull']-->
-		<!--[assign var='pmtplname' value='viewpub_'|cat:$pubtype.filename|cat:'.htm']-->
-		<!--[assign var='pmsubfolder' value='output']-->
-	<!--[/if]-->
+    <!--[if $mode eq 'input']-->
+        <!--[assign var='pmtplname' value='pubedit_'|cat:$pubtype.formname|cat:'_all.htm']-->
+        <!--[assign var='pmsubfolder' value='input']-->
+    <!--[elseif $mode eq 'outputlist']-->
+        <!--[assign var='pmtplname' value='publist_'|cat:$pubtype.filename|cat:'.htm']-->
+        <!--[assign var='pmsubfolder' value='output']-->
+    <!--[elseif $mode eq 'outputfull']-->
+        <!--[assign var='pmtplname' value='viewpub_'|cat:$pubtype.filename|cat:'.htm']-->
+        <!--[assign var='pmsubfolder' value='output']-->
+    <!--[/if]-->
 
-	<div class="z-warningmsg">
-		<!--[gt text='Create a template named <b>%1$s</b> with this code, and store it in the the directory: <b>/config/templates/pagemaster/%2$s/%1$s</b>, or within your theme in the <b>/themes/YourTheme/templates/modules/pagemaster/%2$s/%1$s</b>.' tag1=$pmtplname tag2=$pmsubfolder]-->
-	</div>
+    <div class="z-warningmsg">
+        <!--[gt text='Create a template named <strong>%1$s</strong> with this code, and store it in the the directory: <strong>/config/templates/pagemaster/%2$s/%1$s</strong>, or within your theme in the <strong>/themes/YourTheme/templates/modules/pagemaster/%2$s/%1$s</strong>.' tag1=$pmtplname tag2=$pmsubfolder]-->
+    </div>
 
-	<pre class="pm-showcode">
-		<!--[$code]-->
-	</pre>
+    <pre class="pm-showcode">
+        <!--[$code]-->
+    </pre>
 </div>
