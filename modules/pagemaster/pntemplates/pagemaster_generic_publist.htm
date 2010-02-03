@@ -7,6 +7,12 @@
 <!--[/if]-->
 
 <table class="z-datatable pm-publist">
+    <thead>
+        <tr>
+            <th><!--[gt text='Title']--></th>
+            <th class="z-right"><!--[gt text='Options']--></th>
+        </tr>
+    </thead>
     <tbody>
         <!--[foreach from=$publist item='pubitem']-->
         <tr class="<!--[cycle values='z-even,z-odd']-->">
@@ -29,7 +35,7 @@
         </tr>
         <!--[foreachelse]-->
         <tr>
-            <td><!--[gt text='No publications found.']--></td>
+            <td colspan="2"><!--[gt text='No publications found.']--></td>
         </tr>
         <!--[/foreach]-->
     </tbody>
