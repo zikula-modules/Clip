@@ -236,7 +236,7 @@ class pmformimageinput extends pnFormUploadInput
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
 
-        if (pnModAvailable('Thumbnails')) {
+        if (pnModAvailable('Thumbnail')) {
             // TODO Fieldsets and help text explaining how they work
             $html = '<div class="z-formrow">
                          <label for="pmplugin_tmpx_px">'.__('Thumbnail width', $dom).':</label>
@@ -265,7 +265,7 @@ class pmformimageinput extends pnFormUploadInput
                        <input type="text" id="pmplugin_fully_px" name="pmplugin_fully_px" />
                      </div>';
         } else {
-            $html = '<div class="z-formrow z-warningmsg">
+            $html = '<div class="z-warningmsg">
                          '.__('Warning! The Thumbnails module is not available. This plugin needs it to build the Preview and Thumbnail of each uploaded Image.', $dom).'
                      </div>';
         }
