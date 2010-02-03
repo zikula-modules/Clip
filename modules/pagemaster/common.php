@@ -19,7 +19,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
     $template_code = "\n".
                      '<!--[hitcount pid=$core_pid tid=$core_tid]-->'."\n".
                      "\n".
-                     '<h1><!--[gt text=$pubtype.title]--></h1>'."\n".
+                     '<h2><!--[gt text=$pubtype.title]--></h2>'."\n".
                      "\n".
                      '<!--[include file=\'pagemaster_generic_navbar.htm\' section=\'pubview\']-->'."\n".
                      "\n".
@@ -171,7 +171,7 @@ function PMgen_editpub_tplcode($tid)
     $title_editpub = no__('Edit publication');
 
     $template_code = "\n".
-                     '<h1><!--[gt text=$pubtype.title]--></h1>'."\n".
+                     '<h2><!--[gt text=$pubtype.title]--></h2>'."\n".
                      "\n".
                      '<!--[include file=\'pagemaster_generic_navbar.htm\' section=\'pubedit\']-->'."\n".
                      "\n".
