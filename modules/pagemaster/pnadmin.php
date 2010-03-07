@@ -181,6 +181,16 @@ function pagemaster_admin_publist($args=array())
 }
 
 /**
+ * generate a javascript hierarchical menu of eit links
+ */
+function pagemaster_admin_pubeditlist($args=array())
+{
+    $args['menu']       = 1;
+    $args['returntype'] = 'admin';
+    return pnModFunc ('pagemaster', 'user', 'pubeditlist', $args);
+}
+
+/**
  * History screen
  */
 function pagemaster_admin_history()

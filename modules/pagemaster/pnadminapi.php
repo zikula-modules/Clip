@@ -50,6 +50,10 @@ function pagemaster_adminapi_getlinks()
 
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         $links[] = array (
+            'url'  => pnModURL('pagemaster', 'admin', 'pubeditlist'),
+            'text' => __('Edit publications', $dom)
+        );
+        $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'main'),
             'text' => __('List publication types', $dom)
         );

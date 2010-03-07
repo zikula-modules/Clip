@@ -425,6 +425,49 @@ function pagemaster_userapi_getId($args)
 }
 
 /**
+ * generate hierarchical data of publication types and publications
+ * @author rgasch
+ * @param $args['tid']
+ * @param $args['pid'] (optional)
+ * @param $args['orderby'] (optional)
+ * @return publication data
+ */
+function pagemaster_userapi_pubeditlist($args=array())
+{
+    $orderby    = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
+
+    $allTypes = array();
+    $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
+    foreach ($pubtypes as $pubtype) {
+        $_tid      = $pubtype['tid'];
+        $where     = "pm_tid = $_tid AND pm_istitle = 1";
+        $coreTitle = DBUtil::selectField('pagemaster_pubfields', 'name', $where);
+        if (substr($orderby, 0, 10) == 'core_title') {
+            $orderby = str_replace('core_title', $coreTitle, $orderby);
+        }
+
+        $tablename = 'pagemaster_pubdata'.$_tid;
+        $where     = 'pm_indepot = 0';
+        $sort      = str_replace(':',' ', $orderby);
+        $list      = DBUtil::selectObjectArray($tablename, $where, $sort);
+        foreach ($list as $k=>$v) {
+            if (!SecurityUtil::checkPermission('pagemaster:input:', "$_tid:$v[pid]:", ACCESS_EDIT)) {
+                unset ($list[$k]);
+	    } else {
+                $list[$k]['_title'] = $v[$coreTitle];
+	    }
+	}
+        $publist[$_tid]  = $list;
+	$allTypes[$_tid] = $pubtype['title'];
+    }
+
+    $ret = array();
+    $ret['pubList'] = $publist;
+    $ret['allTypes'] = $allTypes;
+    return $ret;
+}
+
+/**
  * form custom url string
  *
  * @author Philipp Niethammer <webmaster@nochwer.de>
