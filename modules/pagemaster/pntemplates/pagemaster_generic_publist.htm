@@ -1,18 +1,13 @@
-<h2><!--[gt text=$pubtype.title]--></h2>
+
+<h1><!--[gt text=$pubtype.title]--></h1>
 
 <!--[include file='pagemaster_generic_navbar.htm' section='publist']-->
 
 <!--[if $pubtype.description neq '']-->
-<p class="pm-pubdesc"><!--[gt text=$pubtype.description]--></p>
+    <p class="pm-pubdesc"><!--[gt text=$pubtype.description]--></p>
 <!--[/if]-->
 
 <table class="z-datatable pm-publist">
-    <thead>
-        <tr>
-            <th><!--[gt text='Title']--></th>
-            <th class="z-right"><!--[gt text='Options']--></th>
-        </tr>
-    </thead>
     <tbody>
         <!--[foreach from=$publist item='pubitem']-->
         <tr class="<!--[cycle values='z-even,z-odd']-->">
@@ -35,14 +30,14 @@
         </tr>
         <!--[foreachelse]-->
         <tr>
-            <td colspan="2"><!--[gt text='No publications found.']--></td>
+            <td><!--[gt text='No publications found.']--></td>
         </tr>
         <!--[/foreach]-->
     </tbody>
 </table>
 
 <!--[if isset($pager)]-->
-<!--[pager show='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1]-->
+    <!--[pager show='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar=startnum shift=1]-->
 <!--[/if]-->
 
 <!--[pnmodcallhooks hookobject='category' hookaction='display' module='pagemaster' returnurl=$returnurl]-->

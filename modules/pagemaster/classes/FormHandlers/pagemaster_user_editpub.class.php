@@ -129,7 +129,11 @@ class pagemaster_user_editpub
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
 
-         } elseif (empty($this->goto)) {
+        } elseif ($this->goto == 'pubeditlist') {
+            $this->goto = pnModURL('pagemaster', 'admin', 'pubeditlist',
+                                   array('_id' => $data['tid'] . '_' . $data['core_pid']));
+
+        } elseif (empty($this->goto)) {
             $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
                                    array('tid' => $data['tid'],
                                          'pid' => $data['core_pid']));

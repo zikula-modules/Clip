@@ -4,7 +4,7 @@
 
 <!--[foreach from=$pubtypes item=pubtype]-->
 <div>
-    <input type="checkbox" id="pagemaster<!--[$pubtype.tid]-->" name="search_tid[<!--[$pubtype.tid]-->]" value="1" checked="checked" />
-    <label for="pagemaster<!--[$pubtype.tid]-->"><!--[gt text=$pubtype.title domain='module_pagemaster']--></label>
+	<input type="checkbox" id="pagemaster<!--[$pubtype.tid]-->" name="search_tid[<!--[$pubtype.tid]-->]" value="1" checked="checked" />
+	<label for="pagemaster<!--[$pubtype.tid]-->"><!--[gt text=$pubtype.title]--></label>
 </div>
 <!--[/foreach]-->
