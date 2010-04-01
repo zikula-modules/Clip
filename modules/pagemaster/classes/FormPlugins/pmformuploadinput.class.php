@@ -39,7 +39,7 @@ class pmformuploadinput extends pnFormUploadInput
         return $input_html.' '.$this->upl_arr['orig_name'];
     }
 
-    function load(&$render, &$params)
+    function load($render, &$params)
     {
         $this->loadValue($render, $render->get_template_vars());
     }

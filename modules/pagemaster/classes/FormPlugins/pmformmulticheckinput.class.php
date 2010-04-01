@@ -84,7 +84,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
             $params['category'] = $this->config['category'];
         }
 
-        parent::load(&$render, $params);
+        parent::load($render, $params);
 
         if ($this->mandatory) {
             array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes

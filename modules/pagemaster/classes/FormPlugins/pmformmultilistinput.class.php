@@ -104,7 +104,7 @@ class pmformmultilistinput extends pnFormCategorySelector
             $params['category'] = $this->config[0];
         }
 
-        parent::load(&$render, $params);
+        parent::load($render, $params);
 
         array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
     }

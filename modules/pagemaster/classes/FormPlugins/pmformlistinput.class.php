@@ -84,7 +84,7 @@ class pmformlistinput extends pnFormCategorySelector
             $params['category'] = 30; // Global category
         }
 
-        parent::load(&$render, $params);
+        parent::load($render, $params);
     }
 
     static function getSaveTypeDataFunc($field)
