@@ -64,7 +64,7 @@ class pmformuploadinput extends pnFormUploadInput
             }
 
             $url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
-            if (!empty($arrTypeData['tmb_name'])) {
+            if (!empty($arrTypeData['file_name'])) {
                 $this->upl_arr =  array(
                          'orig_name' => $arrTypeData['orig_name'],
                          'file_name' => $url.'/'.$arrTypeData['file_name']
