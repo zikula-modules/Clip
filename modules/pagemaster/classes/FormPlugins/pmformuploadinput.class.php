@@ -63,16 +63,19 @@ class pmformuploadinput extends pnFormUploadInput
                 return LogUtil::registerError('pmformuploadinput: '.__('Stored data is invalid', $dom));
             }
 
-            $url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
+            $path = pnModGetVar('pagemaster', 'uploadpath');
+            $url  = pnGetBaseURL().$path;
             if (!empty($arrTypeData['file_name'])) {
                 $this->upl_arr =  array(
                          'orig_name' => $arrTypeData['orig_name'],
-                         'file_name' => $url.'/'.$arrTypeData['file_name']
+                         'file_name' => $url.'/'.$arrTypeData['file_name'],
+                         'file_size' => isset($arrTypeData['file_size']) && $arrTypeData['file_size'] ? $arrTypeData['file_size'] : filesize("$path/$arrTypeData[file_name]")
                 );
             } else {
                 $this->upl_arr = array(
                          'orig_name' => '',
-                         'file_name' => ''
+                         'file_name' => '',
+                         'file_size' => 0
                 );
             }
         }
@@ -110,7 +113,8 @@ class pmformuploadinput extends pnFormUploadInput
 
             $arrTypeData = array (
                 'orig_name' => $data['name'],
-                'file_name' => $new_filename
+                'file_name' => $new_filename,
+                'file_size' => filesize($dstFilename)
             );
 
             return serialize($arrTypeData);
