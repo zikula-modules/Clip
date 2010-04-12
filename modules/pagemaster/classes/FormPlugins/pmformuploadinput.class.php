@@ -51,7 +51,7 @@ class pmformuploadinput extends pnFormUploadInput
         }
     }
 
-    static function postRead($data, $field)
+    function postRead($data, $field)
     {
         $dom = ZLanguage::getModuleDomain('pagemaster');
 
@@ -80,7 +80,7 @@ class pmformuploadinput extends pnFormUploadInput
         return $this->upl_arr;
     }
 
-    static function preSave($data, $field)
+    function preSave($data, $field)
     {
         $id   = $data['id'];
         $tid  = $data['tid'];
