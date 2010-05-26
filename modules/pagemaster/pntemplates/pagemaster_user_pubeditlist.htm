@@ -13,9 +13,9 @@
 	}
 <!--[/php]-->
 
-<!--[if ($returntype=='admin')]-->
-	<!--[include file='pagemaster_admin_header.htm']-->
-	<div class="z-admincontainer">
+<!--[if $returntype eq 'admin']-->
+<!--[include file='pagemaster_admin_header.htm']-->
+<div class="z-admincontainer">
 	<div class="z-adminpageicon"><!--[pnimg modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list']--></div>
 <!--[/if]-->
 
@@ -23,9 +23,9 @@
 	<table width="100%">
 		<tbody>
 			<tr>
-				<!--[if ($menu && $source!='block')]-->
+				<!--[if $menu AND $source neq 'block']-->
 					<td width="10%" valign="top" nowrap>
-						<!--[include file="pagemaster_inc_pubeditlist_menu.htm"]-->
+						<!--[include file='pagemaster_user_pubeditlist_menu.htm']-->
 					</td>
 				<!--[/if]-->
 				<!--[if ($menu && $edit)]-->
@@ -42,6 +42,6 @@
 		</tbody>
 	</table>
 
-<!--[if ($returntype=='admin')]-->
-	</div>
+<!--[if $returntype eq 'admin']-->
+</div>
 <!--[/if]-->

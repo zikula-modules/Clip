@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-require_once('system/pnForm/plugins/function.pnformcheckbox.php');
+Loader::requireOnce('system/pnForm/plugins/function.pnformcheckbox.php');
 
 class pmformcheckboxinput extends pnFormCheckbox
 {

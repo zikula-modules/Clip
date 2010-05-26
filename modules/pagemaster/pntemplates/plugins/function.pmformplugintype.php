@@ -12,7 +12,7 @@
 
 Loader::requireOnce('system/pnForm/plugins/function.pnformdropdownlist.php');
 
-class pnFormPluginType extends pnFormDropdownList
+class pmFormPluginType extends pnFormDropdownList
 {
     function getFilename()
     {
@@ -99,6 +99,6 @@ class pnFormPluginType extends pnFormDropdownList
     }
 }
 
-function smarty_function_pnformplugintype($params, &$render) {
-    return $render->pnFormRegisterPlugin('pnFormPluginType', $params);
+function smarty_function_pmformplugintype($params, &$render) {
+    return $render->pnFormRegisterPlugin('pmFormPluginType', $params);
 }

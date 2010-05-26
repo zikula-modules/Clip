@@ -464,7 +464,7 @@ function pagemaster_user_executecommand()
 }
 
 /**
- * generate a javascript hierarchical menu of edit links
+ * Generate a javascript hierarchical menu of edit links
  *
  * @author rgasch
  * @param  $args['tid']
@@ -499,5 +499,5 @@ function pagemaster_user_pubeditlist($args=array())
     $render->assign('returntype', $returntype);
     $render->assign('source',     $source);
 
-    return $render->fetch('pagemaster_generic_pubeditlist.htm');
+    return $render->fetch('pagemaster_user_pubeditlist.htm');
 }
