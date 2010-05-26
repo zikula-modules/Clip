@@ -16,22 +16,8 @@ Loader::includeOnce('modules/pagemaster/common.php');
  */
 function pagemaster_admin_main()
 {
-    return pagemaster_admin_pubeditlist();
+    return pagemaster_admin_pubtypes();
 }
-
-function pagemaster_admin_listpubtypes ()
-{
-    if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
-        return LogUtil::registerPermissionError();
-    }
-
-    $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
-
-    // build the output
-    $render = pnRender::getInstance('pagemaster');
-    $render->assign('pubtypes', $pubtypes);
-    return $render->fetch('pagemaster_admin_listpubtypes.htm');
-} 
 
 /**
  * Module configuration
@@ -52,7 +38,26 @@ function pagemaster_admin_modifyconfig()
 }
 
 /**
- * Creates a new pubtype
+ * Publication types list
+ */
+function pagemaster_admin_pubtypes()
+{
+    if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerPermissionError();
+    }
+
+    $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
+
+    // build the output
+    $render = pnRender::getInstance('pagemaster');
+
+    $render->assign('pubtypes', $pubtypes);
+
+    return $render->fetch('pagemaster_admin_pubtypes.htm');
+} 
+
+/**
+ * Publication type edition
  * @author gf
  */
 function pagemaster_admin_pubtype()
@@ -71,7 +76,7 @@ function pagemaster_admin_pubtype()
 }
 
 /**
- * Pubfields management
+ * Publication fields management
  */
 function pagemaster_admin_pubfields()
 {
@@ -291,7 +296,7 @@ function pagemaster_admin_showcode()
 }
 
 /**
- * pagesetter import
+ * Pagesetter import
  */
 function pagemaster_admin_importps()
 {
@@ -316,7 +321,7 @@ function pagemaster_admin_importps()
 }
 
 /**
- * generate a javascript hierarchical menu of eit links
+ * Generate a javascript hierarchical menu of edit links
  */
 function pagemaster_admin_pubeditlist($args=array())
 {
@@ -324,8 +329,9 @@ function pagemaster_admin_pubeditlist($args=array())
         return LogUtil::registerPermissionError();
     }
 
-    $args['menu']       = 1;
-    $args['returntype'] = 'admin';
-    return pnModFunc ('pagemaster', 'user', 'pubeditlist', $args);
-}
+    $args = array(
+        'menu'       => 1,'returntype' => 'admin'
+    );
 
+    return pnModFunc('pagemaster', 'user', 'pubeditlist', $args);
+}

@@ -465,30 +465,31 @@ function pagemaster_user_executecommand()
 
 /**
  * generate a javascript hierarchical menu of edit links
+ *
  * @author rgasch
- * @param $args['tid']
- * @param $args['pid'] (optional)
- * @param $args['edit'] (optional)
- * @param $args['menu'] (optional)
- * @param $args['orderby'] (optional)
- * @param $args['returntype'] (optional)
- * @param $args['source'] (optional)
+ * @param  $args['tid']
+ * @param  $args['pid'] (optional)
+ * @param  $args['edit'] (optional)
+ * @param  $args['menu'] (optional)
+ * @param  $args['orderby'] (optional)
+ * @param  $args['returntype'] (optional)
+ * @param  $args['source'] (optional)
  * @return publication menu and/or edit mask
  */
 function pagemaster_user_pubeditlist($args=array())
 {
-    $dom        = ZLanguage::getModuleDomain('pagemaster');
     $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
     $edit       = isset($args['edit']) ? $args['edit'] : FormUtil::getPassedValue('edit', 1);
     $menu       = isset($args['menu']) ? $args['menu'] : FormUtil::getPassedValue('menu', 1);
-    $orderby    = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
     $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
     $source     = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
 
     $pubData = pnModAPIFunc ('pagemaster', 'user', 'pubeditlist', $args);
 
+    // create the output object
     $render = pnRender::getInstance('pagemaster');
+
     $render->assign('allTypes',   $pubData['allTypes']);
     $render->assign('publist',    $pubData['pubList']);
     $render->assign('tid',        $tid);
@@ -497,6 +498,6 @@ function pagemaster_user_pubeditlist($args=array())
     $render->assign('menu',       $menu);
     $render->assign('returntype', $returntype);
     $render->assign('source',     $source);
+
     return $render->fetch('pagemaster_generic_pubeditlist.htm');
 }
-

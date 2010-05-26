@@ -50,16 +50,16 @@ function pagemaster_adminapi_getlinks()
 
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         $links[] = array (
-            'url'  => pnModURL('pagemaster', 'admin', 'main'),
-            'text' => __('Edit publications', $dom)
-        );
-        $links[] = array (
-            'url'  => pnModURL('pagemaster', 'admin', 'listpubtypes'),
+            'url'  => pnModURL('pagemaster', 'admin', 'pubtypes'),
             'text' => __('List publication types', $dom)
         );
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'pubtype'),
             'text' => __('New publication type', $dom)
+        );
+        $links[] = array (
+            'url'  => pnModURL('pagemaster', 'admin', 'pubeditlist'),
+            'text' => __('Edit publications', $dom)
         );
         $links[] = array (
             'url'  => pnModURL('pagemaster', 'admin', 'modifyconfig'),
