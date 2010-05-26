@@ -486,11 +486,68 @@ function PMgetPlugin($pluginclass)
 {
     static $plugin_arr;
     
-    include_once('includes/pnForm.php');
+    if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
+        if (!isset($plugin_arr[$pluginclass])) {
+            switch ($pluginclass) {
+                case 'pmformcheckboxinput':
+                    $newclass = 'Checkbox';
+                    break;
+                case 'pmformcustomdata':
+                    $newclass = 'CustomData';
+                    break;
+                case 'pmformdateinput':
+                    $newclass = 'Date';
+                    break;
+                case 'pmformemailinput':
+                    $newclass = 'Email';
+                    break;
+                case 'pmformfloatinput':
+                    $newclass = 'Float';
+                    break;
+                case 'pmformimageinput':
+                    $newclass = 'Image';
+                    break;
+                case 'pmformintinput':
+                    $newclass = 'Int';
+                    break;
+                case 'pmformlistinput':
+                    $newclass = 'List';
+                    break;
+                case 'pmformmsinput':
+                    $newclass = 'Ms';
+                    break;
+                case 'pmformmulticheckinput':
+                    $newclass = 'MultiCheck';
+                    break;
+                case 'pmformmultilistinput':
+                    $newclass = 'MultiList';
+                    break;
+                case 'pmformpubinput':
+                    $newclass = 'Pub';
+                    break;
+                case 'pmformstringinput':
+                    $newclass = 'String';
+                    break;
+                case 'pmformtextinput':
+                    $newclass = 'Text';
+                    break;
+                case 'pmformuploadinput':
+                    $newclass = 'Upload';
+                    break;
+                case 'pmformurlinput':
+                    $newclass = 'Url';
+                    break;
+            }
+            $newclass = "pagemaster_Form_Plugin_$newclass";
+            $plugin_arr[$pluginclass] = new $newclass();
+        }
+    } else {
+        include_once('includes/pnForm.php');
 
-    if (!isset($plugin_arr[$pluginclass])) {
-        Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');
-        $plugin_arr[$pluginclass] = new $pluginclass;
+        if (!isset($plugin_arr[$pluginclass])) {
+            Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');
+            $plugin_arr[$pluginclass] = new $pluginclass;
+        }
     }
 
     return $plugin_arr[$pluginclass];

@@ -37,7 +37,61 @@ function smarty_function_genericformplugin($params, &$render)
     $pubfields   = PMgetPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];
 
-    Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');
+    if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
+        switch ($pluginclass) {
+            case 'pmformcheckboxinput':
+                $pluginclass = 'Checkbox';
+                break;
+            case 'pmformcustomdata':
+                $pluginclass = 'CustomData';
+                break;
+            case 'pmformdateinput':
+                $pluginclass = 'Date';
+                break;
+            case 'pmformemailinput':
+                $pluginclass = 'Email';
+                break;
+            case 'pmformfloatinput':
+                $pluginclass = 'Float';
+                break;
+            case 'pmformimageinput':
+                $pluginclass = 'Image';
+                break;
+            case 'pmformintinput':
+                $pluginclass = 'Int';
+                break;
+            case 'pmformlistinput':
+                $pluginclass = 'List';
+                break;
+            case 'pmformmsinput':
+                $pluginclass = 'Ms';
+                break;
+            case 'pmformmulticheckinput':
+                $pluginclass = 'MultiCheck';
+                break;
+            case 'pmformmultilistinput':
+                $pluginclass = 'MultiList';
+                break;
+            case 'pmformpubinput':
+                $pluginclass = 'Pub';
+                break;
+            case 'pmformstringinput':
+                $pluginclass = 'String';
+                break;
+            case 'pmformtextinput':
+                $pluginclass = 'Text';
+                break;
+            case 'pmformuploadinput':
+                $pluginclass = 'Upload';
+                break;
+            case 'pmformurlinput':
+                $pluginclass = 'Url';
+                break;
+        }
+        $pluginclass = "pagemaster_Form_Plugin_$pluginclass";
+    } else {
+        Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');
+    }
     //$plugin = new $pluginclass;
 
     // read settings in pubfields, if set by template ignore settings in pubfields
