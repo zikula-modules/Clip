@@ -20,7 +20,7 @@ class pmformuploadinput extends pnFormUploadInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('File Upload', $dom);
 
@@ -53,7 +53,7 @@ class pmformuploadinput extends pnFormUploadInput
 
     function postRead($data, $field)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         // if there's some data, process it
         if (!empty($data)) {
@@ -63,7 +63,7 @@ class pmformuploadinput extends pnFormUploadInput
                 return LogUtil::registerError('pmformuploadinput: '.__('Stored data is invalid', $dom));
             }
 
-            $path = pnModGetVar('pagemaster', 'uploadpath');
+            $path = pnModGetVar('PageMaster', 'uploadpath');
             $url  = pnGetBaseURL().$path;
             if (!empty($arrTypeData['file_name'])) {
                 $this->upl_arr =  array(
@@ -95,7 +95,7 @@ class pmformuploadinput extends pnFormUploadInput
         }
 
         if (!empty($data['name'])) {
-            $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
+            $uploadpath = pnModGetVar('PageMaster', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {

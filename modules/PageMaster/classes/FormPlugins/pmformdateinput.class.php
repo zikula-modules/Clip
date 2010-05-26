@@ -22,7 +22,7 @@ class pmformdateinput extends pnFormDateInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Date', $dom);
 
@@ -51,7 +51,7 @@ class pmformdateinput extends pnFormDateInput
 
     function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $this->parseConfig($render->_tpl_vars['typedata']);
 

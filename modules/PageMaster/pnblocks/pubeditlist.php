@@ -13,7 +13,7 @@
 /**
  * initialise block
  */
-function pagemaster_pubeditlistblock_init()
+function PageMaster_pubeditlistblock_init()
 {
     // Security
     SecurityUtil::registerPermissionSchema('pagemaster:PubEditListblock:', 'Block title:Block Id:Pubtype Id');
@@ -22,12 +22,12 @@ function pagemaster_pubeditlistblock_init()
 /**
  * get information on block
  */
-function pagemaster_pubeditlistblock_info()
+function PageMaster_pubeditlistblock_info()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     return array (
-        'module'         => 'pagemaster',
+        'module'         => 'PageMaster',
         'text_type'      => __('PageMaster edit list', $dom),
         'text_type_long' => __('PageMaster dynamic edit tree/list', $dom),
         'allow_multiple' => true,
@@ -40,7 +40,7 @@ function pagemaster_pubeditlistblock_info()
 /**
  * display the block according its configuration
  */
-function pagemaster_pubeditlistblock_display($blockinfo)
+function PageMaster_pubeditlistblock_display($blockinfo)
 {
     // Get variables from content block
     $vars = pnBlockVarsFromContent($blockinfo['content']);
@@ -53,16 +53,16 @@ function pagemaster_pubeditlistblock_display($blockinfo)
     $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
     $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-    $dom        = ZLanguage::getModuleDomain('pagemaster');
+    $dom        = ZLanguage::getModuleDomain('PageMaster');
     $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
     $orderby    = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
     $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
     $source     = 'block';
 
-    $pubData = pnModAPIFunc ('pagemaster', 'user', 'pubeditlist', $args);
+    $pubData = pnModAPIFunc ('PageMaster', 'user', 'pubeditlist', $args);
 
-    $render = pnRender::getInstance('pagemaster');
+    $render = pnRender::getInstance('PageMaster');
     $render->assign('allTypes',   $pubData['allTypes']);
     $render->assign('publist',    $pubData['pubList']);
     $render->assign('tid',        $tid);
@@ -81,9 +81,9 @@ function pagemaster_pubeditlistblock_display($blockinfo)
 /**
  * modify block settings
  */
-function pagemaster_pubeditlistblock_modify($blockinfo)
+function PageMaster_pubeditlistblock_modify($blockinfo)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
@@ -97,7 +97,7 @@ function pagemaster_pubeditlistblock_modify($blockinfo)
 /**
  * update block settings
  */
-function pagemaster_pubeditlistblock_update($blockinfo)
+function PageMaster_pubeditlistblock_update($blockinfo)
 {
     $filters = pnVarCleanFromInput('filters');
 
@@ -108,7 +108,7 @@ function pagemaster_pubeditlistblock_update($blockinfo)
 
     $blockinfo['content'] = pnBlockVarsToContent($vars);
 
-    $pnRender = pnRender::getInstance('pagemaster');
+    $pnRender = pnRender::getInstance('PageMaster');
     $pnRender->clear_cache('pagemaster_generic_pubeditlist.htm');
 
     return $blockinfo;

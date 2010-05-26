@@ -16,9 +16,9 @@
  * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_deletePub(&$pub, $params)
+function PageMaster_operation_deletePub(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // process the available parameters
     $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
@@ -33,7 +33,7 @@ function pagemaster_operation_deletePub(&$pub, $params)
 
         if ($count == 0) {
             // if not, let know that the publication was deleted
-            pnModCallHooks('item', 'delete', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+            pnModCallHooks('item', 'delete', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
         }
     }
 

@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Date extends Form_Plugin_DateInput
+class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
 {
     public $columnDef = 'T';
     public $title;
@@ -20,7 +20,7 @@ class pagemaster_Form_Plugin_Date extends Form_Plugin_DateInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Date', $dom);
 
@@ -49,7 +49,7 @@ class pagemaster_Form_Plugin_Date extends Form_Plugin_DateInput
 
     function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $this->parseConfig($render->_tpl_vars['typedata']);
 

@@ -12,19 +12,19 @@
 /**
  * Search plugin info
  */
-function pagemaster_searchapi_info()
+function PageMaster_searchapi_info()
 {
-    return array('title'     => 'pagemaster',
-                 'functions' => array('pagemaster' => 'search'));
+    return array('title'     => 'PageMaster',
+                 'functions' => array('PageMaster' => 'search'));
 }
 
 /**
  * Search form component
  */
-function pagemaster_searchapi_options($args)
+function PageMaster_searchapi_options($args)
 {
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
-        $render = pnRender::getInstance('pagemaster');
+        $render = pnRender::getInstance('PageMaster');
 
         // Looking for pubtype with at least one searchable field
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
@@ -48,15 +48,15 @@ function pagemaster_searchapi_options($args)
 /**
  * Search plugin main function
  */
-function pagemaster_searchapi_search($args)
+function PageMaster_searchapi_search($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $search_tid = FormUtil::getPassedValue('search_tid', '', 'REQUEST');
 
-    Loader::includeOnce('modules/pagemaster/common.php');
+    Loader::includeOnce('modules/PageMaster/common.php');
     pnModDBInfoLoad('Search');
-    pnModDBInfoLoad('pagemaster');
+    pnModDBInfoLoad('PageMaster');
 
     $pntable = pnDBGetTables();
     $searchTable  = $pntable['search_result'];
@@ -110,7 +110,7 @@ function pagemaster_searchapi_search($args)
                     . '\'' . DataUtil::formatForStore('') . '\', '
                     . '\'' . DataUtil::formatForStore($extra) . '\', '
                     . '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '
-                    . '\'' . 'pagemaster' . '\', '
+                    . '\'' . 'PageMaster' . '\', '
                     . '\'' . DataUtil::formatForStore($sessionId) . '\')';
 
                     $insertResult = DBUtil::executeSQL($sql);
@@ -132,11 +132,11 @@ function pagemaster_searchapi_search($args)
  * Access checking is ignored since access check has
  * already been done. But we do add a URL to the found item
  */
-function pagemaster_searchapi_search_check(&$args)
+function PageMaster_searchapi_search_check(&$args)
 {
     $datarow = &$args['datarow'];
     $extra   = unserialize($datarow['extra']);
-    $datarow['url'] = pnModUrl('pagemaster', 'user', 'viewpub',
+    $datarow['url'] = pnModUrl('PageMaster', 'user', 'viewpub',
                                array('tid' => $extra['tid'],
                                      'pid' => $extra['pid']));
     return true;

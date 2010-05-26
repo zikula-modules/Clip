@@ -20,7 +20,7 @@
  */
 function smarty_function_genericformplugin($params, &$render)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $id  = $params['id'];
     $tid = $render->pnFormEventHandler->tid;
@@ -88,9 +88,9 @@ function smarty_function_genericformplugin($params, &$render)
                 $pluginclass = 'Url';
                 break;
         }
-        $pluginclass = "pagemaster_Form_Plugin_$pluginclass";
+        $pluginclass = "PageMaster_Form_Plugin_$pluginclass";
     } else {
-        Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');
+        Loader::LoadClass($pluginclass, 'modules/PageMaster/classes/FormPlugins');
     }
     //$plugin = new $pluginclass;
 

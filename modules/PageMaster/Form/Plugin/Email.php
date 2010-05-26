@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Email extends Form_Plugin_EmailInput
+class PageMaster_Form_Plugin_Email extends Form_Plugin_EmailInput
 {
     public $columnDef = 'C(100)';
     public $title;
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Email', $dom);
 

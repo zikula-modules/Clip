@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
+class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 {
     public $columnDef   = 'C(512)';
     public $title;
@@ -20,7 +20,7 @@ class pagemaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('MultiCheckbox List', $dom);
 
@@ -102,7 +102,7 @@ class pagemaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     function getTypeHtml($field)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         
         $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : 30;
         $this->parseConfig($typedata);
@@ -110,7 +110,7 @@ class pagemaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
-        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 
         $html = ' <div class="z-formrow">
                       <label for="pmplugin_checklist">'.__('Category', $dom).':</label>

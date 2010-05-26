@@ -19,7 +19,7 @@ class pmformmsinput extends pnFormTextInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Mediashare', $dom);
 

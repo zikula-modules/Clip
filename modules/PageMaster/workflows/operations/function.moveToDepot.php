@@ -16,9 +16,9 @@
  * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_moveToDepot($pub, $params)
+function PageMaster_operation_moveToDepot($pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // process the available parameters
     $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
@@ -31,7 +31,7 @@ function pagemaster_operation_moveToDepot($pub, $params)
 
     if ($result) {
         // let know that the publication was updated
-        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
     }
 
     // output message

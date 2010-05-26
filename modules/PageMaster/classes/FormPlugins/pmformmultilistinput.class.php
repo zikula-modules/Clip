@@ -22,7 +22,7 @@ class pmformmultilistinput extends pnFormCategorySelector
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Multiple Selector', $dom);
 
@@ -131,7 +131,7 @@ class pmformmultilistinput extends pnFormCategorySelector
 
     function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         // parse the configuration
         $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : '';
@@ -145,7 +145,7 @@ class pmformmultilistinput extends pnFormCategorySelector
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
-        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 
         $html = '<div class="z-formrow">
                      <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>

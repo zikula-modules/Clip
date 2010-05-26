@@ -17,9 +17,9 @@
  * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_updateOnlineState(&$pub, $params)
+function PageMaster_operation_updateOnlineState(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // process the available parameters
     // set the online parameter, or defaults to offline if it's not set
@@ -30,7 +30,7 @@ function pagemaster_operation_updateOnlineState(&$pub, $params)
 
     if ($result) {
         // let know that the publication was updated
-        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
     }
 
     // output message

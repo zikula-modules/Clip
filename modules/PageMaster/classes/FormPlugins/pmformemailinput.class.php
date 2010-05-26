@@ -19,7 +19,7 @@ class pmformemailinput extends pnFormEMailInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Email', $dom);
 

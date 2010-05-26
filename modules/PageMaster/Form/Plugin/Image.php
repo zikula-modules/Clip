@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Image extends Form_Plugin_UploadInput
+class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 {
 	public $columnDef = 'C(512)';
 	public $title;
@@ -20,7 +20,7 @@ class pagemaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Image Upload', $dom);
 
@@ -53,7 +53,7 @@ class pagemaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
 	static function postRead($data, $field)
 	{
-	    $dom = ZLanguage::getModuleDomain('pagemaster');
+	    $dom = ZLanguage::getModuleDomain('PageMaster');
 
 		// this plugin return an array by default
 	    $upl_arr = array();
@@ -66,7 +66,7 @@ class pagemaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 				return LogUtil::registerError('pmformimageinput: '.__('Stored data is invalid', $dom));
 			}
 
-			$url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
+			$url = pnGetBaseURL().pnModGetVar('PageMaster', 'uploadpath');
 			if (!empty($arrTypeData['orig_name'])) {
 				$upl_arr =  array(
                          'orig_name'    => $arrTypeData['orig_name'],
@@ -101,7 +101,7 @@ class pagemaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         }
 
         if (!empty($PostData['name'])) {
-            $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
+            $uploadpath = pnModGetVar('PageMaster', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {
@@ -232,7 +232,7 @@ class pagemaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
     static function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         if (pnModAvailable('Thumbnail')) {
             // TODO Fieldsets and help text explaining how they work

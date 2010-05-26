@@ -22,7 +22,7 @@ class pmformlistinput extends pnFormCategorySelector
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('List', $dom);
 
@@ -110,7 +110,7 @@ class pmformlistinput extends pnFormCategorySelector
 
     function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : array(30, true);
         $this->parseConfig($typedata);
@@ -120,7 +120,7 @@ class pmformlistinput extends pnFormCategorySelector
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
-        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 
         $html = ' <div class="z-formrow">
                       <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>

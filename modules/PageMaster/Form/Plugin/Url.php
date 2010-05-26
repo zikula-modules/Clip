@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Url extends Form_Plugin_UrlInput
+class PageMaster_Form_Plugin_Url extends Form_Plugin_UrlInput
 {
     public $columnDef = 'C(512)';
     public $title;
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('URL', $dom);
 

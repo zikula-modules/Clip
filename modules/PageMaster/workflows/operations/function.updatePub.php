@@ -19,9 +19,9 @@
  * @param  bool   $params['silent']       (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_updatePub(&$pub, $params)
+function PageMaster_operation_updatePub(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // process the available parameters
     if (isset($params['online'])) {
@@ -64,7 +64,7 @@ function pagemaster_operation_updatePub(&$pub, $params)
             unset($pub['__WORKFLOW__']['id']);
 
             // register the new workflow, return false if failure
-            $workflow = new pnWorkflow($pub['__WORKFLOW__']['schemaname'], 'pagemaster');
+            $workflow = new pnWorkflow($pub['__WORKFLOW__']['schemaname'], 'PageMaster');
 
             if (!$workflow->registerWorkflow($pub, $nextState)) {
                 $result = false;
@@ -82,7 +82,7 @@ function pagemaster_operation_updatePub(&$pub, $params)
 
     if ($result) {
         // let know that the publication was updated
-        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
     }
 
     // output message

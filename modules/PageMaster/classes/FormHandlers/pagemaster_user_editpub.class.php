@@ -14,7 +14,7 @@
  *
  * @author kundi
  */
-class pagemaster_user_editpub
+class PageMaster_user_editpub
 {
     var $id;
     var $core_pid;
@@ -37,7 +37,7 @@ class pagemaster_user_editpub
     
     function initialize(&$render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         // process the input parameters
         $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
@@ -52,14 +52,14 @@ class pagemaster_user_editpub
 
             $this->pubAssign($pubdata);
 
-            Loader::LoadClass('PmWorkflowUtil', 'modules/pagemaster/classes');
-            $actions = PmWorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'pagemaster');
+            Loader::LoadClass('PmWorkflowUtil', 'modules/PageMaster/classes');
+            $actions = PmWorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
 
         } else {
             // initial values
             $this->pubDefault();
 
-            $actions = WorkflowUtil::getActionsByStateArray(str_replace('.xml', '', $this->pubtype['workflow']), 'pagemaster');
+            $actions = WorkflowUtil::getActionsByStateArray(str_replace('.xml', '', $this->pubtype['workflow']), 'PageMaster');
         }
 
         // if there are no actions the user is not allowed to change / submit / delete something.
@@ -67,7 +67,7 @@ class pagemaster_user_editpub
         if (count($actions) < 1) {
             LogUtil::registerError(__('No workflow actions found. This can be a permissions issue.', $dom));
 
-            return $render->pnFormRedirect(pnModURL('pagemaster', 'user', 'main', array('tid' => $tid)));
+            return $render->pnFormRedirect(pnModURL('PageMaster', 'user', 'main', array('tid' => $tid)));
         }
 
         // check for set_* default values
@@ -102,14 +102,14 @@ class pagemaster_user_editpub
         $this->pubExtract($data);
 
         // perform the command
-        $data = pnModAPIFunc('pagemaster', 'user', 'editPub',
+        $data = pnModAPIFunc('PageMaster', 'user', 'editPub',
                              array('data'        => $data,
                                    'commandName' => $args['commandName'],
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // see http://www.smarty.net/manual/en/caching.groups.php
-        $pnr = pnRender::getInstance('pagemaster');
+        $pnr = pnRender::getInstance('PageMaster');
         // clear the view of the current publication
         $pnr->clear_cache(null, 'viewpub'.$this->tid.'|'.$this->core_pid);
         // clear all page of publist
@@ -119,22 +119,22 @@ class pagemaster_user_editpub
         // check the referer (redirect to admin list)
         // if the item moved to the depot or was deleted
         if ($data['core_indepot'] == 1 || isset($data['deletePub'][$data['id']])) {
-            $this->goto = pnModURL('pagemaster', 'user', 'main',
+            $this->goto = pnModURL('PageMaster', 'user', 'main',
                                    array('tid' => $data['tid']));
 
         } elseif ($this->goto == 'stepmode') {
             // stepmode can be used to go automaticaly from one workflowstep to the next
-            $this->goto = pnModURL('pagemaster', 'user', 'pubedit',
+            $this->goto = pnModURL('PageMaster', 'user', 'pubedit',
                                    array('tid'  => $data['tid'],
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
 
         } elseif ($this->goto == 'pubeditlist') {
-            $this->goto = pnModURL('pagemaster', 'admin', 'pubeditlist',
+            $this->goto = pnModURL('PageMaster', 'admin', 'pubeditlist',
                                    array('_id' => $data['tid'] . '_' . $data['core_pid']));
 
         } elseif (empty($this->goto)) {
-            $this->goto = pnModURL('pagemaster', 'user', 'viewpub',
+            $this->goto = pnModURL('PageMaster', 'user', 'viewpub',
                                    array('tid' => $data['tid'],
                                          'pid' => $data['core_pid']));
         }

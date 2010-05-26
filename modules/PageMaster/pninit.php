@@ -12,9 +12,9 @@
 /**
  * PageMaster installation
  */
-function pagemaster_init()
+function PageMaster_init()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // create table
     if (!DBUtil::createTable('pagemaster_pubfields')) {
@@ -40,7 +40,7 @@ function pagemaster_init()
 
         $cat = new PNCategory();
         $cat->setDataField('parent_id', $rootcat['id']);
-        $cat->setDataField('name', 'pagemaster');
+        $cat->setDataField('name', 'PageMaster');
         $cat->setDataField('display_name', array($lang => __('PageMaster', $dom)));
         $cat->setDataField('display_desc', array($lang => __('PageMaster root category', $dom)));
         if (!$cat->validate('admin')) {
@@ -72,7 +72,7 @@ function pagemaster_init()
     if ($rootcat) {
         // create an entry in the categories registry to the Lists property
         $registry = new PNCategoryRegistry();
-        $registry->setDataField('modname', 'pagemaster');
+        $registry->setDataField('modname', 'PageMaster');
         $registry->setDataField('table', 'pagemaster_pubtypes');
         $registry->setDataField('property', 'Lists');
         $registry->setDataField('category_id', $rootcat['id']);
@@ -86,7 +86,7 @@ function pagemaster_init()
     $tempdir = CacheUtil::getLocalDir();
     $pmdir   = $tempdir.'/pagemaster';
     if (StringUtil::left($tempdir, 1) <> '/') {
-        if (CacheUtil::createLocalDir('pagemaster', 777)) {
+        if (CacheUtil::createLocalDir('PageMaster', 777)) {
             LogUtil::registerStatus(__f('PageMaster created the upload directory successfully at [%s]. Be sure that be accessible via web and writable by the webserver.', $pmdir, $dom));
         }
     } else {
@@ -96,7 +96,7 @@ function pagemaster_init()
         'uploadpath' => $pmdir,
         'devmode'    => true
     );
-    pnModSetVars('pagemaster', $modvars);
+    pnModSetVars('PageMaster', $modvars);
 
     return true;
 }
@@ -104,11 +104,11 @@ function pagemaster_init()
 /**
  * PageMaster upgrade
  */
-function pagemaster_upgrade($oldversion)
+function PageMaster_upgrade($oldversion)
 {
     //update pn_pagemaster_pubfields set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1) //FIXME
 
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     switch ($oldversion)
     {
@@ -131,13 +131,13 @@ function pagemaster_upgrade($oldversion)
 
         case '0.2':
             // fix the upload path to a root-relative one
-            $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
+            $uploadpath = pnModGetVar('PageMaster', 'uploadpath');
             $siteroot   = substr(pnServerGetVar('DOCUMENT_ROOT'), 0, -1).pnGetBaseURI().'/';
             $newpath    = str_replace($siteroot, '', $uploadpath);
             if (StringUtil::right($newpath, 1) == '/') {
                 $newpath = StringUtil::left($newpath, strlen($newpath) - 1);
             }
-            pnModSetVar('pagemaster', 'uploadpath', $newpath);
+            pnModSetVar('PageMaster', 'uploadpath', $newpath);
 
             // fix the pm_author field to pn_cr_uid
             $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'tid');
@@ -243,7 +243,7 @@ function pagemaster_upgrade($oldversion)
         case '0.3.2':
         case '0.3.3':
             // new modvar: development mode
-            pnModSetVars('pagemaster', 'devmode', true);
+            pnModSetVars('PageMaster', 'devmode', true);
 
             // update the table definitions of some fields
             $tochange = array(
@@ -259,7 +259,7 @@ function pagemaster_upgrade($oldversion)
             }
 
             // reload the table definitions
-            pnModDBInfoLoad('pagemaster', '', true);
+            pnModDBInfoLoad('PageMaster', '', true);
 
             // update the tables
             $tables   = pnDBGetTables();
@@ -309,7 +309,7 @@ function pagemaster_upgrade($oldversion)
             }
             // create an entry in the categories registry to the Lists property
             $registry = new PNCategoryRegistry();
-            $registry->setDataField('modname', 'pagemaster');
+            $registry->setDataField('modname', 'PageMaster');
             $registry->setDataField('table', 'pagemaster_pubtypes');
             $registry->setDataField('property', 'Lists');
             $registry->setDataField('category_id', $rootcat['id']);
@@ -325,7 +325,7 @@ function pagemaster_upgrade($oldversion)
 /**
  * PageMaster deinstallation
  */
-function pagemaster_delete()
+function PageMaster_delete()
 {
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
@@ -345,7 +345,7 @@ function pagemaster_delete()
 
     Loader::loadClass('CategoryUtil');
     CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/pagemaster', 'path');
-    pnModDelVar('pagemaster');
+    pnModDelVar('PageMaster');
 
     return true;
 }

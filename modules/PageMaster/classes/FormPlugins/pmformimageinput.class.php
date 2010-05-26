@@ -22,7 +22,7 @@ class pmformimageinput extends pnFormUploadInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Image Upload', $dom);
 
@@ -55,7 +55,7 @@ class pmformimageinput extends pnFormUploadInput
 
 	static function postRead($data, $field)
 	{
-	    $dom = ZLanguage::getModuleDomain('pagemaster');
+	    $dom = ZLanguage::getModuleDomain('PageMaster');
 
 		// this plugin return an array by default
 	    $upl_arr = array();
@@ -68,7 +68,7 @@ class pmformimageinput extends pnFormUploadInput
 				return LogUtil::registerError('pmformimageinput: '.__('Stored data is invalid', $dom));
 			}
 
-			$url = pnGetBaseURL().pnModGetVar('pagemaster', 'uploadpath');
+			$url = pnGetBaseURL().pnModGetVar('PageMaster', 'uploadpath');
 			if (!empty($arrTypeData['orig_name'])) {
 				$upl_arr =  array(
                          'orig_name'    => $arrTypeData['orig_name'],
@@ -103,7 +103,7 @@ class pmformimageinput extends pnFormUploadInput
         }
 
         if (!empty($PostData['name'])) {
-            $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
+            $uploadpath = pnModGetVar('PageMaster', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {
@@ -234,7 +234,7 @@ class pmformimageinput extends pnFormUploadInput
 
     static function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         if (pnModAvailable('Thumbnail')) {
             // TODO Fieldsets and help text explaining how they work

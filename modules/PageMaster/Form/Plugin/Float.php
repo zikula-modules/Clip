@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Float extends Form_Plugin_FloatInput
+class PageMaster_Form_Plugin_Float extends Form_Plugin_FloatInput
 {
     public $columnDef = 'F';
     public $title;
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Float Value', $dom);
 

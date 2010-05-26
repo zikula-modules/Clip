@@ -12,7 +12,7 @@
 
 function smarty_function_multilistdecode($params, &$smarty)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $field = $params['field'];
     $value = $params['value'];

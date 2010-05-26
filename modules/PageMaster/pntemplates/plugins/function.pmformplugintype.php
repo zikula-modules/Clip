@@ -45,9 +45,9 @@ class pmFormPluginType extends Form_Plugin_DropdownList
         $typeDataHtml = '';
         if (!empty($this->selectedValue) && !empty($this->items)) {
             if (!file_exists('javascript/livepipe/livepipe.js') || !file_exists('javascript/livepipe/livepipe.css') ||  !file_exists('javascript/livepipe/window.js')) {
-                PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/livepipe/livepipe.js');
-                PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/livepipe/window.js');
-                PageUtil::addVar('stylesheet', 'modules/pagemaster/pnjavascript/livepipe/livepipe.css');
+                PageUtil::addVar('javascript', 'modules/PageMaster/pnjavascript/livepipe/livepipe.js');
+                PageUtil::addVar('javascript', 'modules/PageMaster/pnjavascript/livepipe/window.js');
+                PageUtil::addVar('stylesheet', 'modules/PageMaster/pnjavascript/livepipe/livepipe.css');
             } else {
                 PageUtil::addVar('javascript', 'javascript/livepipe/livepipe.js');
                 PageUtil::addVar('javascript', 'javascript/livepipe/window.js');
@@ -137,9 +137,9 @@ class pmFormPluginType extends pnFormDropdownList
         $typeDataHtml = '';
         if (!empty($this->selectedValue) && !empty($this->items)) {
             if (!file_exists('javascript/livepipe/livepipe.js') || !file_exists('javascript/livepipe/livepipe.css') ||  !file_exists('javascript/livepipe/window.js')) {
-                PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/livepipe/livepipe.js');
-                PageUtil::addVar('javascript', 'modules/pagemaster/pnjavascript/livepipe/window.js');
-                PageUtil::addVar('stylesheet', 'modules/pagemaster/pnjavascript/livepipe/livepipe.css');
+                PageUtil::addVar('javascript', 'modules/PageMaster/pnjavascript/livepipe/livepipe.js');
+                PageUtil::addVar('javascript', 'modules/PageMaster/pnjavascript/livepipe/window.js');
+                PageUtil::addVar('stylesheet', 'modules/PageMaster/pnjavascript/livepipe/livepipe.css');
             } else {
                 PageUtil::addVar('javascript', 'javascript/livepipe/livepipe.js');
                 PageUtil::addVar('javascript', 'javascript/livepipe/window.js');

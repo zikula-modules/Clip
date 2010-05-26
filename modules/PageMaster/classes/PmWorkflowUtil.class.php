@@ -27,7 +27,7 @@ class PmWorkflowUtil extends WorkflowUtil
      */
     function getActionsForObject(&$obj, $dbTable, $idcolumn = 'id', $module = null)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         if (!is_array($obj)) {
             return LogUtil::registerError(__f('Error! Missing argument [%s].', 'obj', $dom));

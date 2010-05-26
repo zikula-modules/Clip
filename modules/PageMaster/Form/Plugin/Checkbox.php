@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
+class PageMaster_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
 {
     public $columnDef = 'I1(1)';
     public $title;
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Checkbox', $dom);
 

@@ -41,30 +41,30 @@
 		<thead>
 			<tr>
 				<th>
-					<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_pid]-->">
+					<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_pid]-->">
 						<!--[gt text='PID']-->
 					</a>
 			 	</th>
 				<th>
-					<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_title]-->">
+					<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_title]-->">
 						<!--[gt text='Title']-->
 					</a>
 			 	</th>
 				<th><!--[gt text='Revision']--></th>
 				<th><!--[gt text='State']--></th>
 				<th>
-					<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_author]-->">
+					<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_core_author]-->">
 						<!--[gt text='Author']-->
 					</a>
 			 	</th>
 				<th><!--[gt text='Online']--></th>
 				<th>
-					<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_cr_date]-->">
+					<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_cr_date]-->">
 						<!--[gt text='Creation date']-->
 					</a>
 			 	</th>
 				<th>
-					<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_lu_date]-->">
+					<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='publist' tid=$core_tid orderby=$orderby_lu_date]-->">
 						<!--[gt text='Update date']-->
 					</a>
 			 	</th>
@@ -85,9 +85,9 @@
 				<td><!--[$pubitem.cr_date]--></td>
 				<td><!--[$pubitem.lu_date]--></td>
 				<td>
-					<a href="<!--[pnmodurl modname='pagemaster' type='user' func='pubedit' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='xedit.gif' set='icons/extrasmall' __alt='Edit']--></a>&nbsp; 
-					<a href="<!--[pnmodurl modname='pagemaster' type='user' func='viewpub' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' __alt='View']--></a>&nbsp; 
-					<a href="<!--[pnmodurl modname='pagemaster' type='admin' func='history' tid=$core_tid pid=$pubitem.core_pid]-->"><!--[pnimg modname='core' src='clock.gif' set='icons/extrasmall' __alt='History']--></a>
+					<a href="<!--[pnmodurl modname='PageMaster' type='user' func='pubedit' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='xedit.gif' set='icons/extrasmall' __alt='Edit']--></a>&nbsp; 
+					<a href="<!--[pnmodurl modname='PageMaster' type='user' func='viewpub' tid=$core_tid id=$pubitem.id]-->"><!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' __alt='View']--></a>&nbsp; 
+					<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='history' tid=$core_tid pid=$pubitem.core_pid]-->"><!--[pnimg modname='core' src='clock.gif' set='icons/extrasmall' __alt='History']--></a>
 				</td>
 			</tr>
 			<!--[foreachelse]-->

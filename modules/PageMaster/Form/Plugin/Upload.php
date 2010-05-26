@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
+class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 {
     public $columnDef = 'C(512)';
     public $title;
@@ -18,7 +18,7 @@ class pagemaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('File Upload', $dom);
 
@@ -51,7 +51,7 @@ class pagemaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
     function postRead($data, $field)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         // if there's some data, process it
         if (!empty($data)) {
@@ -61,7 +61,7 @@ class pagemaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
                 return LogUtil::registerError('pmformuploadinput: '.__('Stored data is invalid', $dom));
             }
 
-            $path = pnModGetVar('pagemaster', 'uploadpath');
+            $path = pnModGetVar('PageMaster', 'uploadpath');
             $url  = pnGetBaseURL().$path;
             if (!empty($arrTypeData['file_name'])) {
                 $this->upl_arr =  array(
@@ -93,7 +93,7 @@ class pagemaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
         }
 
         if (!empty($data['name'])) {
-            $uploadpath = pnModGetVar('pagemaster', 'uploadpath');
+            $uploadpath = pnModGetVar('PageMaster', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {

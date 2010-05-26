@@ -9,38 +9,38 @@
  * @subpackage  pagemaster
  */
 
-Loader::includeOnce('modules/pagemaster/common.php');
+Loader::includeOnce('modules/PageMaster/common.php');
 
 /**
  * Main admin screen
  */
-function pagemaster_admin_main()
+function PageMaster_admin_main()
 {
-    return pagemaster_admin_pubtypes();
+    return PageMaster_admin_pubtypes();
 }
 
 /**
  * Module configuration
  */
-function pagemaster_admin_modifyconfig()
+function PageMaster_admin_modifyconfig()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
     }
 
     // load the form handler
-    Loader::LoadClass('pagemaster_admin_modifyconfig', 'modules/pagemaster/classes/FormHandlers');
+    Loader::LoadClass('PageMaster_admin_modifyconfig', 'modules/PageMaster/classes/FormHandlers');
 
     // build the output
-    $render = FormUtil::newpnForm('pagemaster');
+    $render = FormUtil::newpnForm('PageMaster');
 
-    return $render->pnFormExecute('pagemaster_admin_modifyconfig.htm', new pagemaster_admin_modifyconfig());
+    return $render->pnFormExecute('pagemaster_admin_modifyconfig.htm', new PageMaster_admin_modifyconfig());
 }
 
 /**
  * Publication types list
  */
-function pagemaster_admin_pubtypes()
+function PageMaster_admin_pubtypes()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
@@ -49,7 +49,7 @@ function pagemaster_admin_pubtypes()
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
 
     // build the output
-    $render = pnRender::getInstance('pagemaster');
+    $render = pnRender::getInstance('PageMaster');
 
     $render->assign('pubtypes', $pubtypes);
 
@@ -60,60 +60,60 @@ function pagemaster_admin_pubtypes()
  * Publication type edition
  * @author gf
  */
-function pagemaster_admin_pubtype()
+function PageMaster_admin_pubtype()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
     }
 
     // load the form handler
-    Loader::LoadClass('pagemaster_admin_pubtypes', 'modules/pagemaster/classes/FormHandlers');
+    Loader::LoadClass('PageMaster_admin_pubtypes', 'modules/PageMaster/classes/FormHandlers');
 
     // build the output
-    $render = FormUtil::newpnForm('pagemaster');
+    $render = FormUtil::newpnForm('PageMaster');
 
-    return $render->pnFormExecute('pagemaster_admin_pubtype.htm', new pagemaster_admin_pubtypes());
+    return $render->pnFormExecute('PageMaster_admin_pubtype.htm', new PageMaster_admin_pubtypes());
 }
 
 /**
  * Publication fields management
  */
-function pagemaster_admin_pubfields()
+function PageMaster_admin_pubfields()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
     }
 
     // load the form handler
-    Loader::LoadClass('pagemaster_admin_pubfields', 'modules/pagemaster/classes/FormHandlers');
+    Loader::LoadClass('PageMaster_admin_pubfields', 'modules/PageMaster/classes/FormHandlers');
 
     // build the output
-    $render = FormUtil::newpnForm('pagemaster');
+    $render = FormUtil::newpnForm('PageMaster');
 
-    return $render->pnFormExecute('pagemaster_admin_pubfields.htm', new pagemaster_admin_pubfields());
+    return $render->pnFormExecute('pagemaster_admin_pubfields.htm', new PageMaster_admin_pubfields());
 }
 
 
 /**
  * DB pubtype table update method
  */
-function pagemaster_admin_dbupdate($args=array())
+function PageMaster_admin_dbupdate($args=array())
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
     }
 
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // get the input parameter
     $tid  = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-    $rurl = pnServerGetVar('HTTP_REFERER', pnModURL('pagemaster', 'admin', 'main'));
+    $rurl = pnServerGetVar('HTTP_REFERER', pnModURL('PageMaster', 'admin', 'main'));
 
     if (!PMgetPubType($tid)) {
         return LogUtil::registerError(__('Error! No such publication type found.', $dom), null, $rurl);
     }
 
-    $result = pnModAPIFunc('pagemaster', 'admin', 'updatetabledef',
+    $result = pnModAPIFunc('PageMaster', 'admin', 'updatetabledef',
                            array('tid' => $tid));
 
     if (!$result) {
@@ -126,9 +126,9 @@ function pagemaster_admin_dbupdate($args=array())
 /**
  * Admin publist screen
  */
-function pagemaster_admin_publist($args=array())
+function PageMaster_admin_publist($args=array())
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // get the input parameters
     $tid          = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
@@ -150,7 +150,7 @@ function pagemaster_admin_publist($args=array())
     if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
         return LogUtil::registerError(__('Error! The table of this publication type seems not to exist. Please, update the DB Tables at the bottom of this form.', $dom),
                                       null,
-                                      pnModURL('pagemaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
+                                      pnModURL('PageMaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
     }
 
     // orderby check
@@ -167,7 +167,7 @@ function pagemaster_admin_publist($args=array())
         $pubcount = (int)DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
         // add the workflow information for each publication
         foreach (array_keys($publist) as $key) {
-            WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'pagemaster');
+            WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
         }
     } else {
         $publist  = array();
@@ -175,7 +175,7 @@ function pagemaster_admin_publist($args=array())
     }
 
     // build the output
-    $render = pnRender::getInstance('pagemaster');
+    $render = pnRender::getInstance('PageMaster');
 
     $render->assign('core_tid',   $tid);
     $render->assign('core_title', $core_title);
@@ -191,9 +191,9 @@ function pagemaster_admin_publist($args=array())
 /**
  * History screen
  */
-function pagemaster_admin_history()
+function PageMaster_admin_history()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // get the input parameters
     $pid = FormUtil::getPassedValue('pid');
@@ -215,13 +215,13 @@ function pagemaster_admin_history()
     $publist = DBUtil::selectObjectArray($tablename, "pm_pid = '$pid'", 'pm_revision desc');
 
     foreach (array_keys($publist) as $key) {
-        WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'pagemaster');
+        WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
     }
 
     $core_title = DBUtil::selectField('pagemaster_pubfields', 'name', "pm_tid = '$tid' AND pm_istitle = '1'");
 
     // build the output
-    $render = pnRender::getInstance('pagemaster');
+    $render = pnRender::getInstance('PageMaster');
 
     $render->assign('core_tid',   $tid);
     $render->assign('core_title', $core_title);
@@ -233,13 +233,13 @@ function pagemaster_admin_history()
 /**
  * Code generation
  */
-function pagemaster_admin_showcode()
+function PageMaster_admin_showcode()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
     }
 
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // get the input parameters
     $tid  = (int)FormUtil::getPassedValue('tid');
@@ -254,7 +254,7 @@ function pagemaster_admin_showcode()
     }
 
     // create the renderer
-    $render = pnRender::getInstance('pagemaster');
+    $render = pnRender::getInstance('PageMaster');
 
     // get the code depending of the mode
     switch ($mode)
@@ -268,9 +268,9 @@ function pagemaster_admin_showcode()
             $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
             if ($id <= 0) {
                 return LogUtil::registerError(__('There has to be at least one publication to generate the template code.', $dom), null,
-                                              pnServerGetVar('HTTP_REFERER', pnModURL('pagemaster', 'admin', 'main')));
+                                              pnServerGetVar('HTTP_REFERER', pnModURL('PageMaster', 'admin', 'main')));
             }
-            $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
+            $pubdata = pnModAPIFunc('PageMaster', 'user', 'getPub',
                                     array('tid' => $tid,
                                           'id'  => $id,
                                           'handlePluginFields' => true));
@@ -298,7 +298,7 @@ function pagemaster_admin_showcode()
 /**
  * Pagesetter import
  */
-function pagemaster_admin_importps()
+function PageMaster_admin_importps()
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
@@ -306,14 +306,14 @@ function pagemaster_admin_importps()
 
     $step = FormUtil::getPassedValue('step');
     if (!empty($step)) {
-        pnModAPIFunc('pagemaster', 'import', 'importps'.$step);
+        pnModAPIFunc('PageMaster', 'import', 'importps'.$step);
     }
 
     // check if there are pubtypes already
     $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
 
     // build the output
-    $render = pnRender::getInstance('pagemaster', null, null, true);
+    $render = pnRender::getInstance('PageMaster', null, null, true);
 
     $render->assign('alreadyexists', $numpubtypes > 0 ? true : false);
 
@@ -323,7 +323,7 @@ function pagemaster_admin_importps()
 /**
  * Generate a javascript hierarchical menu of edit links
  */
-function pagemaster_admin_pubeditlist($args=array())
+function PageMaster_admin_pubeditlist($args=array())
 {
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerPermissionError();
@@ -333,5 +333,5 @@ function pagemaster_admin_pubeditlist($args=array())
         'menu'       => 1,'returntype' => 'admin'
     );
 
-    return pnModFunc('pagemaster', 'user', 'pubeditlist', $args);
+    return pnModFunc('PageMaster', 'user', 'pubeditlist', $args);
 }

@@ -14,7 +14,7 @@
  *
  * @author kundi
  */
-class pagemaster_admin_pubfields
+class PageMaster_admin_pubfields
 {
     var $tid;
     var $id;
@@ -24,7 +24,7 @@ class pagemaster_admin_pubfields
      */
     function initialize(&$render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $tid = FormUtil::getPassedValue('tid');
         $id  = FormUtil::getPassedValue('id');
@@ -32,7 +32,7 @@ class pagemaster_admin_pubfields
         // validation check
         if (empty($tid) || !is_numeric($tid)) {
             LogUtil::registerError(__f('Error! %s not set.', 'tid', $dom));
-            $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'main'));
+            $render->pnFormRedirect(pnModURL('PageMaster', 'admin', 'main'));
         }
         $this->tid = $tid;
 
@@ -54,7 +54,7 @@ class pagemaster_admin_pubfields
      */
     function handleCommand(&$render, &$args)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $data = $render->pnFormGetValues();
 
@@ -64,7 +64,7 @@ class pagemaster_admin_pubfields
         $plugin            = PMgetPlugin($data['fieldplugin']);
         $data['fieldtype'] = $plugin->columnDef;
 
-        $returnurl = pnModURL('pagemaster', 'admin', 'pubfields',
+        $returnurl = pnModURL('PageMaster', 'admin', 'pubfields',
                               array('tid' => $data['tid']));
 
         // handle the commands

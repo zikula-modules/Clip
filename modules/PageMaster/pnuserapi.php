@@ -9,7 +9,7 @@
  * @subpackage  pagemaster
  */
 
-Loader::includeOnce('modules/pagemaster/common.php');
+Loader::includeOnce('modules/PageMaster/common.php');
 
 /**
  * Returns a Publication List
@@ -24,9 +24,9 @@ Loader::includeOnce('modules/pagemaster/common.php');
  * @param  bool    $args['getApprovalState']
  * @return array   publication or count
  */
-function pagemaster_userapi_pubList($args)
+function PageMaster_userapi_pubList($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     if (!isset($args['tid'])) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
@@ -101,7 +101,7 @@ function pagemaster_userapi_pubList($args)
     if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
         Loader::LoadClass('FilterUtil');
     } else {
-        Loader::LoadClass('FilterUtil', 'modules/pagemaster/classes');
+        Loader::LoadClass('FilterUtil', 'modules/PageMaster/classes');
     }
 
     foreach ($pubfields as $fieldname => $field)
@@ -150,7 +150,7 @@ function pagemaster_userapi_pubList($args)
     // check if some plugin specific orderby has to be done
     $orderby   = PMhandlePluginOrderBy($orderby, $pubfields, $tbl_alias);
     $tablename = 'pagemaster_pubdata'.$tid;
-    $fu = new FilterUtil('pagemaster', $tablename, $filter_args);
+    $fu = new FilterUtil('PageMaster', $tablename, $filter_args);
 
     if (isset($args['filter']) && !empty($args['filter'])) {
         $fu->setFilter($args['filter']);
@@ -192,7 +192,7 @@ function pagemaster_userapi_pubList($args)
         }
         if ($getApprovalState) {
             foreach (array_keys($publist) as $key) {
-                WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'pagemaster');
+                WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
             }
         }
         if ($handlePluginFields) {
@@ -222,9 +222,9 @@ function pagemaster_userapi_pubList($args)
  * @param  bool    $args['handlePluginFields']
  * @return array   publication
  */
-function pagemaster_userapi_getPub($args)
+function PageMaster_userapi_getPub($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // validation of essential parameters
     if (!isset($args['tid'])) {
@@ -311,7 +311,7 @@ function pagemaster_userapi_getPub($args)
     }
 
     if ($getApprovalState) {
-        WorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'pagemaster');
+        WorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'PageMaster');
     }
 
     // fills the core_title field
@@ -331,9 +331,9 @@ function pagemaster_userapi_getPub($args)
  * @param $args['schema'] schema name (optional, performance)
  * @return true or false
  */
-function pagemaster_userapi_editPub($args)
+function PageMaster_userapi_editPub($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     if (!isset($args['data'])) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'data', $dom));
@@ -363,7 +363,7 @@ function pagemaster_userapi_editPub($args)
         }
     }
 
-    $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'pagemaster');
+    $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'PageMaster');
     if (empty($ret)) {
         return LogUtil::registerError(__('Workflow action error.', $dom));
     }
@@ -381,9 +381,9 @@ function pagemaster_userapi_editPub($args)
  * @param int $args['id']
  * @return int pid
  */
-function pagemaster_userapi_getPid($args)
+function PageMaster_userapi_getPid($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     if (!isset($args['tid'])) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
@@ -406,9 +406,9 @@ function pagemaster_userapi_getPid($args)
  * @param int $args['pid']
  * @return int id
  */
-function pagemaster_userapi_getId($args)
+function PageMaster_userapi_getId($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     if (!isset($args['tid']) || !is_numeric($args['tid'])) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
@@ -432,7 +432,7 @@ function pagemaster_userapi_getId($args)
  * @param $args['orderby'] (optional)
  * @return publication data
  */
-function pagemaster_userapi_pubeditlist($args=array())
+function PageMaster_userapi_pubeditlist($args=array())
 {
     $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
 
@@ -480,7 +480,7 @@ function pagemaster_userapi_pubeditlist($args=array())
  * @param  array   $args Arguments given by pnModUrl
  * @return custom  url string
  */
-function pagemaster_userapi_encodeurl($args)
+function PageMaster_userapi_encodeurl($args)
 {
     if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
         return LogUtil::registerArgsError();
@@ -546,7 +546,7 @@ function pagemaster_userapi_encodeurl($args)
  * @author Philipp Niethammer
  * @return bool true if succeded false otherwise
  */
-function pagemaster_userapi_decodeurl($args)
+function PageMaster_userapi_decodeurl($args)
 {
     $_ = $args['vars'];
 

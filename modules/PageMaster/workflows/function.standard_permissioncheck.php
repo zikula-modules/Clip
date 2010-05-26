@@ -18,7 +18,7 @@
  * @param string $actionId
  * @return bool
  */
-function pagemaster_workflow_standard_permissioncheck($obj, $permLevel, $currentUser, $actionId)
+function PageMaster_workflow_standard_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
     if (!empty($obj)) {
         // process $obj and calculate an instance
@@ -40,7 +40,7 @@ function pagemaster_workflow_standard_permissioncheck($obj, $permLevel, $current
     }
 }
 
-function pagemaster_workflow_standard_gettextstrings()
+function PageMaster_workflow_standard_gettextstrings()
 {
     return array(
         'title' => no__('Standard'),

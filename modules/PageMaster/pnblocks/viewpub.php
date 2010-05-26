@@ -13,7 +13,7 @@
 /**
  * initialise block
  */
-function pagemaster_viewpubblock_init()
+function PageMaster_viewpubblock_init()
 {
     // Security
     SecurityUtil::registerPermissionSchema('pagemaster:Listblock:', 'Block title:Block Id:Pubtype Id');
@@ -22,12 +22,12 @@ function pagemaster_viewpubblock_init()
 /**
  * get information on block
  */
-function pagemaster_viewpubblock_info()
+function PageMaster_viewpubblock_info()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     return array (
-        'module'         => 'pagemaster',
+        'module'         => 'PageMaster',
         'text_type'      => __('PageMaster viewpub', $dom),
         'text_type_long' => __('PageMaster View Publication', $dom),
         'allow_multiple' => true,
@@ -40,14 +40,14 @@ function pagemaster_viewpubblock_info()
 /**
  * display the block according its configuration
  */
-function pagemaster_viewpubblock_display($blockinfo)
+function PageMaster_viewpubblock_display($blockinfo)
 {
     // Get variables from content block
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Validation of required parameters
     if (!isset($vars['tid'])) {
-        $vars['tid'] = pnModGetVar('pagemaster', 'frontpagePubType');
+        $vars['tid'] = pnModGetVar('PageMaster', 'frontpagePubType');
     }
     if (!isset($vars['pid'])) {
         return 'Required parameter [pid] not set';
@@ -62,7 +62,7 @@ function pagemaster_viewpubblock_display($blockinfo)
     $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : 'block_viewpub';
     $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-    $blockinfo['content'] = pnModFunc('pagemaster', 'user', 'viewpub',
+    $blockinfo['content'] = pnModFunc('PageMaster', 'user', 'viewpub',
                                       array('tid'                => $vars['tid'],
                                             'pid'                => $vars['pid'],
                                             'checkPerm'          => true,
@@ -79,16 +79,16 @@ function pagemaster_viewpubblock_display($blockinfo)
 /**
  * modify block settings
  */
-function pagemaster_viewpubblock_modify($blockinfo)
+function PageMaster_viewpubblock_modify($blockinfo)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
     if (!isset($vars['tid'])) {
-        $vars['tid'] = pnModGetVar('pagemaster', 'frontpagePubType');
+        $vars['tid'] = pnModGetVar('PageMaster', 'frontpagePubType');
     }
     if (!isset($vars['pid'])) {
         $vars['pid'] = '';
@@ -105,7 +105,7 @@ function pagemaster_viewpubblock_modify($blockinfo)
     // (no table start/end since the block edit template takes care of that)
 
     // Create a row for "Publication type"
-    pnModDBInfoLoad('pagemaster');
+    pnModDBInfoLoad('PageMaster');
     $pubTypesData = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
     $pubTypes = array ();
@@ -175,7 +175,7 @@ function pagemaster_viewpubblock_modify($blockinfo)
 /**
  * update block settings
  */
-function pagemaster_viewpubblock_update($blockinfo)
+function PageMaster_viewpubblock_update($blockinfo)
 {
     $filters = pnVarCleanFromInput('filters');
 

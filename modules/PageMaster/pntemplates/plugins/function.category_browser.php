@@ -29,7 +29,7 @@
  */
 function smarty_function_category_browser($params, &$smarty)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $tid               = $params['tid'];
     $field             = $params['field'];
@@ -55,7 +55,7 @@ function smarty_function_category_browser($params, &$smarty)
     }
 
     $cacheid = $tid.'-'.$field;
-    $render  = pnRender::getInstance('pagemaster',$cache, $cacheid);
+    $render  = pnRender::getInstance('PageMaster', $cache, $cacheid);
 
     if ($cache) {
         if ($render->is_cached($template,$cacheid)) {
@@ -140,10 +140,10 @@ function smarty_function_category_browser($params, &$smarty)
         }
 
         if ($new_filter == '') {
-            $url = pnModURL('pagemaster', 'user', 'main',
+            $url = pnModURL('PageMaster', 'user', 'main',
                             array('tid'    => $tid));
         } else {
-            $url = pnModURL('pagemaster', 'user', 'main',
+            $url = pnModURL('PageMaster', 'user', 'main',
                             array('tid'    => $tid,
                                   'filter' => $new_filter));
         }
@@ -152,7 +152,7 @@ function smarty_function_category_browser($params, &$smarty)
             if (isset($count_arr[$filter_act])) {
                 $v['count'] = $count_arr[$filter_act];
             } else {
-                $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
+                $pubarr = pnModAPIFunc('PageMaster', 'user', 'pubList',
                                        array('tid'                => $tid,
                                              'countmode'          => 'just',
                                              'filter'             => $filter_act,

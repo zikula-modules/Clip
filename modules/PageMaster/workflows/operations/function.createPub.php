@@ -17,9 +17,9 @@
  * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function pagemaster_operation_createPub(&$pub, $params)
+function PageMaster_operation_createPub(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // process the available parameters
     $pub['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
@@ -40,7 +40,7 @@ function pagemaster_operation_createPub(&$pub, $params)
         $result = true;
 
         // let know that a publication was created
-        pnModCallHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+        pnModCallHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
     }
 
     // output message

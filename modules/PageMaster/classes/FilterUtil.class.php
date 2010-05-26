@@ -15,7 +15,7 @@
 /**
  * Define Class path
  */
-define('FILTERUTIL_CLASS_PATH', 'modules/pagemaster/classes/FilterUtil');
+define('FILTERUTIL_CLASS_PATH', 'modules/PageMaster/classes/FilterUtil');
 
 Loader::loadClass('FilterUtil_Plugin', FILTERUTIL_CLASS_PATH);
 Loader::loadClass('FilterUtil_PluginCommon', FILTERUTIL_CLASS_PATH);

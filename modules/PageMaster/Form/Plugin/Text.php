@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Text extends Form_Plugin_TextInput
+class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
 {
     public $columnDef = 'X';
     public $title;
@@ -19,7 +19,7 @@ class pagemaster_Form_Plugin_Text extends Form_Plugin_TextInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Text', $dom);
 
@@ -40,7 +40,7 @@ class pagemaster_Form_Plugin_Text extends Form_Plugin_TextInput
             static $scribite_arr;
             $scribite_arr[] = $this->id;
             $scribite = pnModFunc('scribite', 'user', 'loader',
-                                  array('modulename' => 'pagemaster',
+                                  array('modulename' => 'PageMaster',
                                         'editor'     => 'xinha',
                                         'areas'      => $scribite_arr));
             PageUtil::setVar('rawtext', $scribite);
@@ -66,7 +66,7 @@ class pagemaster_Form_Plugin_Text extends Form_Plugin_TextInput
 
     function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : false;
         $this->parseConfig($typedata);

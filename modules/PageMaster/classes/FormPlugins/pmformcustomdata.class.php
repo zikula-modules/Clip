@@ -21,7 +21,7 @@ class pmformcustomdata extends pnFormTextInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Custom Data', $dom);
 
@@ -201,7 +201,7 @@ class pmformcustomdata extends pnFormTextInput
 
     static function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         PageUtil::addVar('javascript', 'javascript/helpers/Zikula.itemlist.js');
 

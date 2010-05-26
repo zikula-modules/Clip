@@ -19,7 +19,7 @@ class pmformcheckboxinput extends pnFormCheckbox
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Checkbox', $dom);
 

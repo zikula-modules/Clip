@@ -14,7 +14,7 @@
  *
  * @author kundi
  */
-class pagemaster_admin_pubtypes
+class PageMaster_admin_pubtypes
 {
     var $tid;
 
@@ -23,7 +23,7 @@ class pagemaster_admin_pubtypes
      */
     function initialize(&$render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $tid = FormUtil::getPassedValue('tid');
 
@@ -108,7 +108,7 @@ class pagemaster_admin_pubtypes
      */
     function handleCommand(&$render, &$args)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $data = $render->pnFormGetValues();
         $data['tid'] = $this->tid;
@@ -152,6 +152,6 @@ class pagemaster_admin_pubtypes
                 break;
         }
 
-        return $render->pnFormRedirect(pnModURL('pagemaster', 'admin', 'main'));
+        return $render->pnFormRedirect(pnModURL('PageMaster', 'admin', 'main'));
     }
 }

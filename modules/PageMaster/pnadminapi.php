@@ -16,9 +16,9 @@
  * @param  $args['tid']  tid of publication
  * @return bool          true on success, false otherwise
  */
-function pagemaster_adminapi_updatetabledef($args)
+function PageMaster_adminapi_updatetabledef($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     if (!isset($args['tid'])) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
@@ -28,7 +28,7 @@ function pagemaster_adminapi_updatetabledef($args)
 
     $pntable = &pnDBGetTables();
     if (!isset($pntable[$tablename])) {
-        $urlfields = pnModURL('pagemaster', 'admin', 'pubfields', array('tid' => $args['tid']));
+        $urlfields = pnModURL('PageMaster', 'admin', 'pubfields', array('tid' => $args['tid']));
         return LogUtil::registerError(__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields, $dom));
     }
 
@@ -42,27 +42,27 @@ function pagemaster_adminapi_updatetabledef($args)
  * @author       gf
  * @return       array      array of admin links
  */
-function pagemaster_adminapi_getlinks()
+function PageMaster_adminapi_getlinks()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $links = array ();
 
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         $links[] = array (
-            'url'  => pnModURL('pagemaster', 'admin', 'pubtypes'),
+            'url'  => pnModURL('PageMaster', 'admin', 'pubtypes'),
             'text' => __('List publication types', $dom)
         );
         $links[] = array (
-            'url'  => pnModURL('pagemaster', 'admin', 'pubtype'),
+            'url'  => pnModURL('PageMaster', 'admin', 'pubtype'),
             'text' => __('New publication type', $dom)
         );
         $links[] = array (
-            'url'  => pnModURL('pagemaster', 'admin', 'pubeditlist'),
+            'url'  => pnModURL('PageMaster', 'admin', 'pubeditlist'),
             'text' => __('Edit publications', $dom)
         );
         $links[] = array (
-            'url'  => pnModURL('pagemaster', 'admin', 'modifyconfig'),
+            'url'  => pnModURL('PageMaster', 'admin', 'modifyconfig'),
             'text' => __('Settings', $dom)
         );
     }

@@ -15,9 +15,9 @@
  * @author       kundi
  * @return       boolean
  */
-function pagemaster_importapi_importps1()
+function PageMaster_importapi_importps1()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // convert list's
     pnModLoad('pagesetter');
@@ -103,9 +103,9 @@ function pagemaster_importapi_importps1()
  * @author       kundi
  * @return       boolean
  */
-function pagemaster_importapi_importps2()
+function PageMaster_importapi_importps2()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     pnModLoad('pagesetter');
     pnModDBInfoLoad('Categories');
@@ -292,15 +292,15 @@ function pagemaster_importapi_importps2()
  * @author       kundi
  * @return       boolean
  */
-function pagemaster_importapi_importps3()
+function PageMaster_importapi_importps3()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // create tables
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
     foreach ($pubtypes as $pubtype) {
-        $ret = pnModAPIFunc('pagemaster', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
+        $ret = pnModAPIFunc('PageMaster', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
         if (!$ret) {
             LogUtil::registerError(__('Cannot create the database for tid [%1$s (%2$s)].', array($pubtype['title'], $pubtype['tid']), $dom));
         }
@@ -315,9 +315,9 @@ function pagemaster_importapi_importps3()
  * @author       kundi
  * @return       boolean
  */
-function pagemaster_importapi_importps4()
+function PageMaster_importapi_importps4()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     pnModLoad('pagesetter');
     pnModDBInfoLoad('Workflow');
@@ -330,7 +330,7 @@ function pagemaster_importapi_importps4()
     $pntable = &pnDBGetTables();
     $pubheader_table = $pntable['pagesetter_pubheader'];
 
-    $DirPM = pnModGetVar('pagemaster', 'uploadpath');
+    $DirPM = pnModGetVar('PageMaster', 'uploadpath');
     $DirPS = pnModGetVar('pagesetter', 'uploadDirDocs');
 
     $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes'); //, 'pg_id=11'
@@ -456,7 +456,7 @@ function pagemaster_importapi_importps4()
             DBUtil::executeSQL($sql);
 
             $wfData['metaid']       = 0;
-            $wfData['module']       = 'pagemaster';
+            $wfData['module']       = 'PageMaster';
             $wfData['schemaname']   = $pubtype['workflow'];
             $wfData['state']        = $item['pg_approvalState'];
             $wfData['type']         = 1;

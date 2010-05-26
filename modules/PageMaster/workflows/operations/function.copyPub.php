@@ -18,9 +18,9 @@
  * @param  bool   $params['silent']      (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: clone publication if success, false otherwise
  */
-function pagemaster_operation_copyPub(&$pub, $params)
+function PageMaster_operation_copyPub(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // process the available parameters
     if (isset($params['copyonline'])) {
@@ -46,11 +46,11 @@ function pagemaster_operation_copyPub(&$pub, $params)
         unset($pub['__WORKFLOW__']['id']);
 
         // register the new workflow, return false if failure
-        $workflow = new pnWorkflow($pub['__WORKFLOW__']['schemaname'], 'pagemaster');
+        $workflow = new pnWorkflow($pub['__WORKFLOW__']['schemaname'], 'PageMaster');
 
         if ($workflow->registerWorkflow($pub, $copystate)) {
             // let know that a publication was created
-            pnModCallHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'pagemaster'));
+            pnModCallHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
 
         } else {
             $result = false;

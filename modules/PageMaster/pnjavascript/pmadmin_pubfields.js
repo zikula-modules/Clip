@@ -11,7 +11,7 @@
 
 function pubfieldlistorderchanged()
 {
-    var params = 'module=pagemaster&func=changedlistorder&authid=' + $F('pnFormAuthid')
+    var params = 'module=PageMaster&func=changedlistorder&authid=' + $F('pnFormAuthid')
                    + '&tid=' + $('pm_tid').innerHTML
                    + '&' + Sortable.serialize('pubfieldlist');
 

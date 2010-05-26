@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_String extends Form_Plugin_TextInput
+class PageMaster_Form_Plugin_String extends Form_Plugin_TextInput
 {
     public $columnDef = 'C(512)';
     public $title;
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('String', $dom);
 

@@ -63,10 +63,10 @@ pre.pm-showcode {
 }
 
 /* user interface */
-.pn-module-pagemaster div.z-menu {
+.pn-module-PageMaster div.z-menu {
   margin-bottom: 1em;
 }
-.pn-module-pagemaster div.z-menu .pm-breadtext {
+.pn-module-PageMaster div.z-menu .pm-breadtext {
   color: #444;
   padding: 3px;
 }

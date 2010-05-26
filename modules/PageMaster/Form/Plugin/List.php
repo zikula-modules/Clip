@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_List extends Form_Plugin_CategorySelector
+class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 {
     public $columnDef   = 'I4';
     public $title;
@@ -20,7 +20,7 @@ class pagemaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('List', $dom);
 
@@ -108,7 +108,7 @@ class pagemaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : array(30, true);
         $this->parseConfig($typedata);
@@ -118,7 +118,7 @@ class pagemaster_Form_Plugin_List extends Form_Plugin_CategorySelector
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
-        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 
         $html = ' <div class="z-formrow">
                       <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>

@@ -22,7 +22,7 @@
  */
 function smarty_function_get_workflow_state($params, &$smarty)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $tid = (int)$params['tid'];
     $id  = (int)$params['id'];
@@ -38,7 +38,7 @@ function smarty_function_get_workflow_state($params, &$smarty)
     $tablename = 'pagemaster_pubdata'.$tid;
     $pub       = array('id' => $id);
 
-    WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'pagemaster');
+    WorkflowUtil::getWorkflowForObject($pub, $tablename, 'id', 'PageMaster');
 
     if ($params['assign']) {
         $smarty->assign($params['assign'], $pub['__WORKFLOW__']);

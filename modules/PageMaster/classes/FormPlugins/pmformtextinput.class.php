@@ -21,7 +21,7 @@ class pmformtextinput extends pnFormTextInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Text', $dom);
 
@@ -42,7 +42,7 @@ class pmformtextinput extends pnFormTextInput
             static $scribite_arr;
             $scribite_arr[] = $this->id;
             $scribite = pnModFunc('scribite', 'user', 'loader',
-                                  array('modulename' => 'pagemaster',
+                                  array('modulename' => 'PageMaster',
                                         'editor'     => 'xinha',
                                         'areas'      => $scribite_arr));
             PageUtil::setVar('rawtext', $scribite);
@@ -68,7 +68,7 @@ class pmformtextinput extends pnFormTextInput
 
     function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : false;
         $this->parseConfig($typedata);

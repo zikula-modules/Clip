@@ -21,7 +21,7 @@ class pmformpubinput extends pnFormDropdownList
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Publication', $dom);
 
@@ -35,14 +35,14 @@ class pmformpubinput extends pnFormDropdownList
 
     function postRead($data, $field)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $this->parseConfig($field['typedata']);
 
         $pub = array();
 
         if (!empty($this->config['tid']) && !empty($data)) {
-            $pub = pnModAPIFunc('pagemaster', 'user', 'getPub',
+            $pub = pnModAPIFunc('PageMaster', 'user', 'getPub',
                                 array('tid'                => $this->config['tid'],
                                       'pid'                => (int)$data,
                                       'checkPerm'          => true,
@@ -59,12 +59,12 @@ class pmformpubinput extends pnFormDropdownList
 
     function load($render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
 
         if (!empty($this->config['tid'])) {
-            $pubarr = pnModAPIFunc('pagemaster', 'user', 'pubList',
+            $pubarr = pnModAPIFunc('PageMaster', 'user', 'pubList',
                                    array('tid'                => $this->config['tid'],
                                          'countmode'          => 'no',
                                          'filter'             => $this->config['filter'],
@@ -109,7 +109,7 @@ class pmformpubinput extends pnFormDropdownList
 
     function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : '';
         $this->parseConfig($typedata);

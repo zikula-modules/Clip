@@ -22,7 +22,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('MultiCheckbox List', $dom);
 
@@ -104,7 +104,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
 
     function getTypeHtml($field)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         
         $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : 30;
         $this->parseConfig($typedata);
@@ -112,7 +112,7 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
         Loader::loadClass('CategoryUtil');
         Loader::loadClass('CategoryRegistryUtil');
 
-        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('pagemaster', 'pagemaster_pubtypes');
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 
         $html = ' <div class="z-formrow">
                       <label for="pmplugin_checklist">'.__('Category', $dom).':</label>

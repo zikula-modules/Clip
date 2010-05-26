@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_Int extends Form_Plugin_IntInput
+class PageMaster_Form_Plugin_Int extends Form_Plugin_IntInput
 {
     public $columnDef = 'I4';
     public $title;
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Integer Value', $dom);
 

@@ -9,9 +9,9 @@
  * @subpackage  pagemaster
  */
 
-function pagemaster_ajax_changedlistorder()
+function PageMaster_ajax_changedlistorder()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         AjaxUtil::error(__('Sorry! No authorization to access this module.', $dom));

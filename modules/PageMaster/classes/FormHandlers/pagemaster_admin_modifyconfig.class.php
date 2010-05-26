@@ -14,14 +14,14 @@
  *
  * @author kundi
  */
-class pagemaster_admin_modifyconfig
+class PageMaster_admin_modifyconfig
 {
     /**
      * Initialize function
      */
     function initialize(&$render)
     {
-        $modvars = pnModGetVar('pagemaster');
+        $modvars = pnModGetVar('PageMaster');
 
         $render->assign($modvars);
 
@@ -56,7 +56,7 @@ class pagemaster_admin_modifyconfig
      */
     function handleCommand(&$render, &$args)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $data = $render->pnFormGetValues();
 
@@ -72,21 +72,21 @@ class pagemaster_admin_modifyconfig
                 if (StringUtil::right($data['uploadpath'], 1) == '/') {
                     $data['uploadpath'] = StringUtil::left($data['uploadpath'], strlen($data['uploadpath']) - 1);
                 }
-                pnModSetVar('pagemaster', 'uploadpath', $data['uploadpath']);
+                pnModSetVar('PageMaster', 'uploadpath', $data['uploadpath']);
 
                 // development mode
-                pnModSetVar('pagemaster', 'devmode', $data['devmode']);
+                pnModSetVar('PageMaster', 'devmode', $data['devmode']);
 
                 // let any other modules know that the modules configuration has been updated
-                pnModCallHooks('module', 'updateconfig', 'pagemaster', array('module' => 'pagemaster'));
+                pnModCallHooks('module', 'updateconfig', 'PageMaster', array('module' => 'PageMaster'));
 
                 LogUtil::registerStatus(__('Done! Module configuration updated.', $dom));
     
-                return pnRedirect(pnModURL('pagemaster', 'admin', 'modifyconfig'));
+                return pnRedirect(pnModURL('PageMaster', 'admin', 'modifyconfig'));
 
             // cancel
             case 'cancel':
-                return pnRedirect(pnModURL('pagemaster', 'admin'));
+                return pnRedirect(pnModURL('PageMaster', 'admin'));
         }
 
         return true;

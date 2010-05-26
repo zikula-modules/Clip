@@ -19,7 +19,7 @@ class pmformfloatinput extends pnFormFloatInput {
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Float Value', $dom);
 

@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class pagemaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
+class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
 {
     public $columnDef = 'X';
     public $title;
@@ -19,7 +19,7 @@ class pagemaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
 
     function __construct()
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
         //! field type name
         $this->title = __('Custom Data', $dom);
 
@@ -198,7 +198,7 @@ class pagemaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
 
     static function getTypeHtml($field, $render)
     {
-        $dom = ZLanguage::getModuleDomain('pagemaster');
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         PageUtil::addVar('javascript', 'javascript/helpers/Zikula.itemlist.js');
 

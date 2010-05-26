@@ -18,7 +18,7 @@
  * @param string $actionId
  * @return bool
  */
-function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
+function PageMaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
     if (!empty($obj)) {
         // process $obj and calculate an instance
@@ -40,7 +40,7 @@ function pagemaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
     }
 }
 
-function pagemaster_workflow_none_gettextstrings()
+function PageMaster_workflow_none_gettextstrings()
 {
     return array(
         'title' => no__('None'),

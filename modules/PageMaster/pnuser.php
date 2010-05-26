@@ -9,7 +9,7 @@
  * @subpackage  pagemaster
  */
 
-Loader::includeOnce('modules/pagemaster/common.php');
+Loader::includeOnce('modules/PageMaster/common.php');
 
 /**
  * List of publications
@@ -17,9 +17,9 @@ Loader::includeOnce('modules/pagemaster/common.php');
  * @param $args['tid']
  * @author kundi
  */
-function pagemaster_user_main($args)
+function PageMaster_user_main($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // get the input parameters
     $tid                = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
@@ -81,7 +81,7 @@ function pagemaster_user_main($args)
     }
 
     // buils the output
-    $render = pnRender::getInstance('pagemaster', $cachetid, $cacheid, true);
+    $render = pnRender::getInstance('PageMaster', $cachetid, $cacheid, true);
 
     if ($cachetid) {
         $render->cache_lifetime = $cachelifetime;
@@ -110,7 +110,7 @@ function pagemaster_user_main($args)
     }
 
     // Uses the API to get the list of publications
-    $result = pnModAPIFunc('pagemaster', 'user', 'pubList',
+    $result = pnModAPIFunc('PageMaster', 'user', 'pubList',
                            array('tid'                => $tid,
                                  'pubfields'          => $pubfields,
                                  'pubtype'            => $pubtype,
@@ -138,7 +138,7 @@ function pagemaster_user_main($args)
 
     // Check if template is available
     if ($template != 'pagemaster_generic_publist.htm' && !$render->template_exists($template)) {
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('PageMaster', 'devmode', false);
         if ($alert) {
             LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template, $dom));
         }
@@ -163,9 +163,9 @@ function pagemaster_user_main($args)
  * @param $args['template'] (optional)
  * @return publication view output
  */
-function pagemaster_user_viewpub($args)
+function PageMaster_user_viewpub($args)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // get the input parameters
     $tid      = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
@@ -189,7 +189,7 @@ function pagemaster_user_viewpub($args)
 
     // get the pid if it was not passed
     if (empty($pid)) {
-        $pid = pnModAPIFunc('pagemaster', 'user', 'getPid',
+        $pid = pnModAPIFunc('PageMaster', 'user', 'getPid',
                             array('tid' => $tid,
                                   'id'  => $id));
     }
@@ -234,7 +234,7 @@ function pagemaster_user_viewpub($args)
     }
 
     // build the output
-    $render = pnRender::getInstance('pagemaster', $cachetid, $cacheid, true);
+    $render = pnRender::getInstance('PageMaster', $cachetid, $cacheid, true);
 
     if ($cachetid) {
         $render->cache_lifetime = $cachelt;
@@ -249,7 +249,7 @@ function pagemaster_user_viewpub($args)
         LogUtil::registerError(__('Error! No publication fields found.', $dom));
     }
 
-    $pubdata = pnModAPIFunc('pagemaster', 'user', 'getPub',
+    $pubdata = pnModAPIFunc('PageMaster', 'user', 'getPub',
                             array('tid'                => $tid,
                                   'id'                 => $id,
                                   'pid'                => $pid,
@@ -280,7 +280,7 @@ function pagemaster_user_viewpub($args)
 
     // Check if template is available
     if ($template != 'var:viewpub_template_code' && !$render->template_exists($template)) {
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('PageMaster', 'devmode', false);
         if ($alert) {
             LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template, $dom));
         }
@@ -302,9 +302,9 @@ function pagemaster_user_viewpub($args)
  * @param $args['id']
  * @author kundi
  */
-function pagemaster_user_pubedit()
+function PageMaster_user_pubedit()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // get the input parameters
     $tid = FormUtil::getPassedValue('tid');
@@ -328,11 +328,11 @@ function pagemaster_user_pubedit()
 
     // no security check needed - the security check will be done by the handler class.
     // see the init-part of the handler class for details.
-    Loader::LoadClass('pagemaster_user_editpub', 'modules/pagemaster/classes/FormHandlers');
-    $formHandler = new pagemaster_user_editpub();
+    Loader::LoadClass('PageMaster_user_editpub', 'modules/PageMaster/classes/FormHandlers');
+    $formHandler = new PageMaster_user_editpub();
 
     if (empty($id) && !empty($pid)) {
-        $id = pnModAPIFunc('pagemaster', 'user', 'getId',
+        $id = pnModAPIFunc('PageMaster', 'user', 'getId',
                            array('tid' => $tid,
                                  'pid' => $pid));
         if (empty($id)) {
@@ -355,18 +355,18 @@ function pagemaster_user_pubedit()
 
     if (!empty($id)) {
         $obj = array('id' => $id);
-        WorkflowUtil::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'pagemaster');
+        WorkflowUtil::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'PageMaster');
         $stepname = $obj['__WORKFLOW__']['state'];
     }
 
     // create the output object
-    $render = FormUtil::newpnForm('pagemaster');
+    $render = FormUtil::newpnForm('PageMaster');
     $render->add_core_data();
 
     $render->assign('pubtype', $pubtype);
 
     // resolve the template to use
-    $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('pagemaster', 'devmode', false);
+    $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('PageMaster', 'devmode', false);
 
     // individual step
     $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
@@ -403,9 +403,9 @@ function pagemaster_user_pubedit()
  * @param $args['commandName'] commandName
  * @author kundi
  */
-function pagemaster_user_executecommand()
+function PageMaster_user_executecommand()
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // get the input parameters
     $tid         = FormUtil::getPassedValue('tid');
@@ -439,17 +439,17 @@ function pagemaster_user_executecommand()
         return LogUtil::registerError(__('Error! No such publication found.', $dom));
     }
 
-    WorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'pagemaster');
+    WorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'PageMaster');
 
     if (!empty($goto)) {
         switch ($goto)
         {
             case 'edit':
-                return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
+                return pnRedirect(pnModURL('PageMaster', 'user', 'pubedit',
                                            array('tid' => $tid,
                                                  'id'  => $pub['id'])));
             case 'stepmode':
-                return pnRedirect(pnModURL('pagemaster', 'user', 'pubedit',
+                return pnRedirect(pnModURL('PageMaster', 'user', 'pubedit',
                                            array('tid'  => $tid,
                                                  'id'   => $pub['id'],
                                                  'goto' => 'stepmode')));
@@ -458,7 +458,7 @@ function pagemaster_user_executecommand()
         }
     }
 
-    return pnRedirect(pnModURL('pagemaster', 'user', 'viewpub',
+    return pnRedirect(pnModURL('PageMaster', 'user', 'viewpub',
                                array('tid' => $tid,
                                      'id'  => $pub['id'])));
 }
@@ -476,7 +476,7 @@ function pagemaster_user_executecommand()
  * @param  $args['source'] (optional)
  * @return publication menu and/or edit mask
  */
-function pagemaster_user_pubeditlist($args=array())
+function PageMaster_user_pubeditlist($args=array())
 {
     $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
@@ -485,10 +485,10 @@ function pagemaster_user_pubeditlist($args=array())
     $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
     $source     = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
 
-    $pubData = pnModAPIFunc ('pagemaster', 'user', 'pubeditlist', $args);
+    $pubData = pnModAPIFunc ('PageMaster', 'user', 'pubeditlist', $args);
 
     // create the output object
-    $render = pnRender::getInstance('pagemaster');
+    $render = pnRender::getInstance('PageMaster');
 
     $render->assign('allTypes',   $pubData['allTypes']);
     $render->assign('publist',    $pubData['pubList']);

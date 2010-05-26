@@ -14,7 +14,7 @@
  */
 function PMgen_viewpub_tplcode($tid, $pubdata)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $template_code = "\n".
                      '<!--[hitcount pid=$core_pid tid=$core_tid]-->'."\n".
@@ -49,7 +49,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
             {
                 // text plugin
                 case 'pmformtextinput':
-                    $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay|pnmodcallhooks:\'pagemaster\']-->';
+                    $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay|pnmodcallhooks:\'PageMaster\']-->';
                     break;
 
                 // image plugin
@@ -105,7 +105,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                     '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                     '            <span class="z-formnote">'."\n".
                     '                <pre><!--[pmarray array=$'.$key.']--></pre>'."\n".
-                    '                <!--[*pnmodapifunc modname=\'pagemaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*]-->'."\n".
+                    '                <!--[*pnmodapifunc modname=\'PageMaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*]-->'."\n".
                     '            <span>'."\n".
                     '        </div>'."\n".
                     '    <!--[/if]-->';
@@ -158,8 +158,8 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
     // Add the Hooks support for viewpub
     $template_code .= '</div>'."\n".
                       "\n".
-                      '<!--[pnmodurl modname=\'pagemaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\']-->'."\n".
-                      '<!--[pnmodcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'pagemaster\' returnurl=$returnurl]-->'.
+                      '<!--[pnmodurl modname=\'PageMaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\']-->'."\n".
+                      '<!--[pnmodcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'PageMaster\' returnurl=$returnurl]-->'.
                       "\n";
     
     return $template_code;
@@ -254,9 +254,9 @@ function PMgen_editpub_tplcode($tid)
                      '        </fieldset>'."\n".
                      "\n".
                      '        <!--[if isset($id)]-->'."\n".
-                     '            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'pagemaster\']-->'."\n".
+                     '            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'PageMaster\']-->'."\n".
                      '        <!--[else]-->'."\n".
-                     '            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'new\' module=\'pagemaster\']-->'."\n".
+                     '            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'new\' module=\'PageMaster\']-->'."\n".
                      '        <!--[/if]-->'."\n".
                      "\n".
                      '        <div class="z-formbuttons">'."\n".
@@ -278,8 +278,8 @@ function PMgetPluginsOptionList()
 {
     $classDirs = array();
     //Loader::LoadClass checks these dirs, strange
-    $classDirs[] = 'config/classes/modules/pagemaster/classes/FormPlugins';
-    $classDirs[] = 'modules/pagemaster/classes/FormPlugins';
+    $classDirs[] = 'config/classes/modules/PageMaster/classes/FormPlugins';
+    $classDirs[] = 'modules/PageMaster/classes/FormPlugins';
 
     $plugins = array ();
     foreach ($classDirs as $classDir) {
@@ -326,9 +326,9 @@ function PMgetWorkflowsOptionList()
 
     $plugins = array ();
 
-    $dir = 'modules/pagemaster/workflows';
+    $dir = 'modules/PageMaster/workflows';
     PM_parse_dir($dir, $plugins);
-    $dir = 'config/workflows/pagemaster';
+    $dir = 'config/workflows/PageMaster';
     PM_parse_dir($dir, $plugins);
 
     return $plugins;
@@ -538,14 +538,14 @@ function PMgetPlugin($pluginclass)
                     $newclass = 'Url';
                     break;
             }
-            $newclass = "pagemaster_Form_Plugin_$newclass";
+            $newclass = "PageMaster_Form_Plugin_$newclass";
             $plugin_arr[$pluginclass] = new $newclass();
         }
     } else {
         include_once('includes/pnForm.php');
 
         if (!isset($plugin_arr[$pluginclass])) {
-            Loader::LoadClass($pluginclass, 'modules/pagemaster/classes/FormPlugins');
+            Loader::LoadClass($pluginclass, 'modules/PageMaster/classes/FormPlugins');
             $plugin_arr[$pluginclass] = new $pluginclass;
         }
     }

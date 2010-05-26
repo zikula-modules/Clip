@@ -9,7 +9,7 @@
  * @subpackage  pagemaster
  */
 
-function pagemaster_pntables()
+function PageMaster_pntables()
 {
     $tables = array ();
 
@@ -142,8 +142,8 @@ function pagemaster_pntables()
 */
 
     // dynamic pubdata tables
-    if (!function_exists('pagemaster_addtable')) {
-        function pagemaster_addtable(&$tables, $tid, $tablecolumn, $tabledef)
+    if (!function_exists('PageMaster_addtable')) {
+        function PageMaster_addtable(&$tables, $tid, $tablecolumn, $tabledef)
         {
             $tablename = "pagemaster_pubdata{$tid}";
 
@@ -163,7 +163,6 @@ function pagemaster_pntables()
         }
     }
 
-    // Can't use DBUtil because the pagemaster table definitions are not loaded yet
     $sql = 'SELECT ' . $tables['pagemaster_pubfields_column']['tid']
               . ', ' . $tables['pagemaster_pubfields_column']['id']
               . ', ' . $tables['pagemaster_pubfields_column']['name']
@@ -229,7 +228,7 @@ function pagemaster_pntables()
             // if we change of publication type
             if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
                 // add the table definition to the $tables array
-                pagemaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+                PageMaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
                 // and reset the columns and definitions for the next pubtype
                 $tablecolumn = array();
                 $tabledef    = array();
@@ -245,7 +244,7 @@ function pagemaster_pntables()
 
         // the final one doesn't trigger a tid change
         if (!empty($tablecolumn)) {
-            pagemaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+            PageMaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
         }
     }
 

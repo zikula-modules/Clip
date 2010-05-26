@@ -9,9 +9,10 @@
  * @subpackage  pagemaster
  */
 
-$dom = ZLanguage::getModuleDomain('pagemaster');
+$dom = ZLanguage::getModuleDomain('PageMaster');
 
-$modversion['name']           = 'pagemaster';
+$modversion['name']           = 'PageMaster';
+$modversion['oldnames']       = array('pagemaster');
 $modversion['displayname']    = __('PageMaster', $dom);
 $modversion['description']    = __('Content Module like pagesetter', $dom);
 //! module name that appears in URL

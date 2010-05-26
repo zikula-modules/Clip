@@ -21,7 +21,7 @@
  */
 function smarty_function_hitcount($params, &$smarty)
 {
-    $dom = ZLanguage::getModuleDomain('pagemaster');
+    $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $tid = (int)$params['tid'];
     $pid = (int)$params['pid'];
