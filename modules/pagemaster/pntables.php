@@ -11,12 +11,11 @@
 
 function pagemaster_pntables()
 {
-    $pntable = array ();
-
+    $tables = array ();
 
     // relations table
-    $pntable['pagemaster_relations'] = DBUtil::getLimitedTablename('pagemaster_relations');
-    $pntable['pagemaster_relations_column'] = array (
+    $tables['pagemaster_relations'] = DBUtil::getLimitedTablename('pagemaster_relations');
+    $tables['pagemaster_relations_column'] = array (
         'tid1' => 'pm_tid',
         'pid1' => 'pm_pid',
         'id1'  => 'pm_id',
@@ -24,7 +23,7 @@ function pagemaster_pntables()
         'pid2' => 'pm_pid',
         'id2'  => 'pm_id'
     );
-    $pntable['pagemaster_relations_column_def'] = array (
+    $tables['pagemaster_relations_column_def'] = array (
         'tid1' => 'I4 NOTNULL',
         'pid1' => 'I4 NOTNULL',
         'id1'  => 'I4 NOTNULL',
@@ -32,13 +31,13 @@ function pagemaster_pntables()
         'pid2' => 'I4 NOTNULL',
         'id2'  => 'I4 NOTNULL',
     );
-    ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_relations_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_relations_column_def']);
+    ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_relations_column'], 'pm_');
+    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_relations_column_def']);
 
 
     // pubfields table
-    $pntable['pagemaster_pubfields'] = DBUtil::getLimitedTablename('pagemaster_pubfields');
-    $pntable['pagemaster_pubfields_column'] = array (
+    $tables['pagemaster_pubfields'] = DBUtil::getLimitedTablename('pagemaster_pubfields');
+    $tables['pagemaster_pubfields_column'] = array (
         'id'             => 'pm_id',
         'tid'            => 'pm_tid',
         'name'           => 'pm_name',
@@ -54,7 +53,7 @@ function pagemaster_pntables()
         'ismandatory'    => 'pm_ismandatory',
         'lineno'         => 'pm_lineno'
     );
-    $pntable['pagemaster_pubfields_column_def'] = array (
+    $tables['pagemaster_pubfields_column_def'] = array (
         'id'             => 'I4 PRIMARY AUTO',
         'tid'            => 'I4 NOTNULL',
         'name'           => "C(255) NOTNULL DEFAULT ''",
@@ -70,13 +69,13 @@ function pagemaster_pntables()
         'ismandatory'    => 'I1(1) NOTNULL',
         'lineno'         => 'I4 NOTNULL'
     );
-    ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_pubfields_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_pubfields_column_def']);
+    ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_pubfields_column'], 'pm_');
+    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_pubfields_column_def']);
 
 
     // pubtypes table
-    $pntable['pagemaster_pubtypes'] = DBUtil::getLimitedTablename('pagemaster_pubtypes');
-    $pntable['pagemaster_pubtypes_column'] = array (
+    $tables['pagemaster_pubtypes'] = DBUtil::getLimitedTablename('pagemaster_pubtypes');
+    $tables['pagemaster_pubtypes_column'] = array (
         'tid'             => 'pm_tid',
         'title'           => 'pm_title',
         'urltitle'        => 'pm_urltitle',
@@ -96,7 +95,7 @@ function pagemaster_pntables()
         'enableeditown'   => 'pm_enableeditown',
         'cachelifetime'   => 'pm_cachelifetime'
     );
-    $pntable['pagemaster_pubtypes_column_def'] = array (
+    $tables['pagemaster_pubtypes_column_def'] = array (
         'tid'             => 'I4 PRIMARY AUTO',
         'title'           => "C(255) NOTNULL DEFAULT ''",
         'urltitle'        => "C(255) NOTNULL DEFAULT ''",
@@ -116,48 +115,48 @@ function pagemaster_pntables()
         'enableeditown'   => 'I1(1) NOTNULL',
         'cachelifetime'   => 'I8 NULL'
     );
-    ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_pubtypes_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_pubtypes_column_def']);
+    ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_pubtypes_column'], 'pm_');
+    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_pubtypes_column_def']);
     // indexes
-    $pntable['pagemaster_pubtypes_column_idx'] = array (
+    $tables['pagemaster_pubtypes_column_idx'] = array (
         'urltitle' => 'urltitle'
     );
-    
+
 /*
     // revisions table
-    $pntable['pagemaster_revisions'] = DBUtil::getLimitedTablename('pagemaster_revisions');
-    $pntable['pagemaster_revisions_column'] = array (
+    $tables['pagemaster_revisions'] = DBUtil::getLimitedTablename('pagemaster_revisions');
+    $tables['pagemaster_revisions_column'] = array (
         'tid'         => 'pm_tid',
         'id'          => 'pm_id',
         'pid'         => 'pm_pid',
         'prevversion' => 'pm_prevversion'
     );
-    $pntable['pagemaster_revisions_column_def'] = array (
+    $tables['pagemaster_revisions_column_def'] = array (
         'tid'         => 'I4 PRIMARY NOTNULL',
         'id'          => 'I4 PRIMARY NOTNULL',
         'pid'         => 'I4 NOTNULL',
         'prevversion' => 'I4 NOTNULL'
     );
-    ObjectUtil::addStandardFieldsToTableDefinition($pntable['pagemaster_revisions_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($pntable['pagemaster_revisions_column_def']);
+    ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_revisions_column'], 'pm_');
+    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_revisions_column_def']);
 */
 
     // dynamic pubdata tables
     if (!function_exists('pagemaster_addtable')) {
-        function pagemaster_addtable(&$pntable, $tid, $tablecolumn, $tabledef)
+        function pagemaster_addtable(&$tables, $tid, $tablecolumn, $tabledef)
         {
             $tablename = "pagemaster_pubdata{$tid}";
 
-            $pntable[$tablename] = DBUtil::getLimitedTablename($tablename);
-            $pntable[$tablename.'_column']     = $tablecolumn;
-            $pntable[$tablename.'_column_def'] = $tabledef;
+            $tables[$tablename] = DBUtil::getLimitedTablename($tablename);
+            $tables[$tablename.'_column']     = $tablecolumn;
+            $tables[$tablename.'_column_def'] = $tabledef;
 
-            ObjectUtil::addStandardFieldsToTableDefinition($pntable[$tablename.'_column'], 'pm_');
-            ObjectUtil::addStandardFieldsToTableDataDefinition($pntable[$tablename.'_column_def']);
+            ObjectUtil::addStandardFieldsToTableDefinition($tables[$tablename.'_column'], 'pm_');
+            ObjectUtil::addStandardFieldsToTableDataDefinition($tables[$tablename.'_column_def']);
 
             // TODO indexes
             /*
-            $pntable[$tablename.'_column_idx'] = array (
+            $tables[$tablename.'_column_idx'] = array (
                 'core_online' => 'core_online' //core_showinlist
             );
             */
@@ -165,19 +164,24 @@ function pagemaster_pntables()
     }
 
     // Can't use DBUtil because the pagemaster table definitions are not loaded yet
-    list($dbconn) = pnDBGetConn();
-    $sql = 'SELECT ' . $pntable['pagemaster_pubfields_column']['tid']
-              . ', ' . $pntable['pagemaster_pubfields_column']['id']
-              . ', ' . $pntable['pagemaster_pubfields_column']['name']
-              . ', ' . $pntable['pagemaster_pubfields_column']['fieldtype']
-              . ' FROM ' . $pntable['pagemaster_pubfields']
-              . ' ORDER BY ' . $pntable['pagemaster_pubfields_column']['tid'] . ' ASC, '
-                             . $pntable['pagemaster_pubfields_column']['id']  . ' ASC ';
+    $sql = 'SELECT ' . $tables['pagemaster_pubfields_column']['tid']
+              . ', ' . $tables['pagemaster_pubfields_column']['id']
+              . ', ' . $tables['pagemaster_pubfields_column']['name']
+              . ', ' . $tables['pagemaster_pubfields_column']['fieldtype']
+              . ' FROM ' . $tables['pagemaster_pubfields']
+              . ' ORDER BY ' . $tables['pagemaster_pubfields_column']['tid'] . ' ASC, '
+                             . $tables['pagemaster_pubfields_column']['id']  . ' ASC ';
 
-    $result = $dbconn->execute($sql); 
-    if ($dbconn->errorNo() != 0) {
+    $existingtables = DBUtil::metaTables();
+
+    if (!in_array(DBUtil::getLimitedTablename('pagemaster_pubfields'), $existingtables)) {
         // installation
     } else {
+        $result = DBUtil::executeSQL($sql);
+        if ($result == false) {
+            return LogUtil::registerError('Error! Failed to load the pubfields.');
+        }
+
         $old_tid = 0;
 
         $tableorder = array(
@@ -219,34 +223,31 @@ function pagemaster_pntables()
         $tablecolumn = array();
         $tabledef    = array();
 
-        for (; !$result->EOF; $result->MoveNext()) {
-            $tid       = $result->fields[0];
-            $id        = $result->fields[1];
-            $name      = $result->fields[2];
-            $fieldtype = $result->fields[3];
+        $pubfields = DBUtil::marshallObjects($result, array('tid', 'id', 'name', 'fieldtype'));
 
+        foreach ($pubfields as $pubfield) {
             // if we change of publication type
-            if ($tid != $old_tid && $old_tid != 0) {
-                // add the table definition to the $pntable array
-                pagemaster_addtable($pntable, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+            if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
+                // add the table definition to the $tables array
+                pagemaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
                 // and reset the columns and definitions for the next pubtype
                 $tablecolumn = array();
                 $tabledef    = array();
             }
 
             // add the column and definition for this field
-            $tablecolumn[$name] = "pm_{$id}";
-            $tabledef[$name]    = "{$fieldtype} NULL";
+            $tablecolumn[$pubfield['name']] = "pm_{$pubfield['id']}";
+            $tabledef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
 
             // set the actual tid to check a pubtype change in the next cycle
-            $old_tid = $tid;
+            $old_tid = $pubfield['tid'];
         }
 
         // the final one doesn't trigger a tid change
         if (!empty($tablecolumn)) {
-            pagemaster_addtable($pntable, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+            pagemaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
         }
     }
 
-    return $pntable;
+    return $tables;
 }
