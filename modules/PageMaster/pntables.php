@@ -184,7 +184,6 @@ function PageMaster_pntables()
         $old_tid = 0;
 
         $tableorder = array(
-            'core_title'       => 'pm_pid', // field to be overriden by the title field
             'core_pid'         => 'pm_pid',
             'id'               => 'pm_id'
         );
