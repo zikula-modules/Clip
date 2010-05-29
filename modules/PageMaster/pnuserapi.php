@@ -98,10 +98,8 @@ function PageMaster_userapi_pubList($args)
         $orderby = $args['orderby'];
     }
 
-    if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
-        Loader::LoadClass('FilterUtil');
-    } else {
-        Loader::LoadClass('FilterUtil', 'modules/PageMaster/classes');
+    if (version_compare(PN_VERSION_NUM, '1.3', '<')) {
+        Loader::loadClass('FilterUtil', 'modules/PageMaster/classes');
     }
 
     foreach ($pubfields as $fieldname => $field)

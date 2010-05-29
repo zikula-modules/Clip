@@ -10,8 +10,6 @@
  * @subpackage FilterUtil
 */
 
-Loader::loadClass('filter.category', FILTERUTIL_CLASS_PATH.'/filter');
-
 class FilterUtil_Filter_pmMultiList extends FilterUtil_Filter_category
 {
     /**
@@ -28,7 +26,9 @@ class FilterUtil_Filter_pmMultiList extends FilterUtil_Filter_category
         if (array_search($op, $this->availableOperators()) === false || array_search($field,$this->fields) === false) {
             return '';
         }
-        Loader :: loadClass('CategoryUtil');
+
+        Loader::loadClass('CategoryUtil');
+
         switch($op)
         {
             case 'eq':
@@ -40,10 +40,10 @@ class FilterUtil_Filter_pmMultiList extends FilterUtil_Filter_category
                 break;
 
             case 'sub':
-                $where .= $this->column[$field].' like "%:' . $value . ':%" OR ';
-                $cats = CategoryUtil :: getSubCategories($value);
+                $where .= $this->column[$field]." LIKE '%:" . $value . ":%' OR ";
+                $cats = CategoryUtil::getSubCategories($value);
                 foreach ($cats as $item) {
-                    $where .= $this->column[$field].' like "%:' . $item['id'] . ':%" OR ';
+                    $where .= $this->column[$field]." LIKE '%:" . $item['id'] . ":%' OR ";
                 }
                 $where = substr($where,0,-3);
                 break;
@@ -51,6 +51,7 @@ class FilterUtil_Filter_pmMultiList extends FilterUtil_Filter_category
             default:
                 $where = '';
         }
+
         return array('where' => $where);
     }
 }
