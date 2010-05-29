@@ -29,10 +29,7 @@ function smarty_function_genericformplugin($params, &$render)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
     }
 
-    if (!$tid) {
-        // tid not extractable from pnRender object
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
-    }
+    $tid = $render->EventHandler->pubtype['tid'];
 
     $pubfields   = PMgetPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];

@@ -226,7 +226,7 @@ function PageMaster_pntables()
 
         foreach ($pubfields as $pubfield) {
             // if we change of publication type
-            if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
+            if ($pubfield['pm_tid'] != $old_tid && $old_tid != 0) {
                 // add the table definition to the $tables array
                 PageMaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
                 // and reset the columns and definitions for the next pubtype
@@ -235,11 +235,11 @@ function PageMaster_pntables()
             }
 
             // add the column and definition for this field
-            $tablecolumn[$pubfield['name']] = "pm_{$pubfield['id']}";
-            $tabledef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
+            $tablecolumn[$pubfield['pm_name']] = "pm_{$pubfield['pm_id']}";
+            $tabledef[$pubfield['pm_name']]    = "{$pubfield['pm_fieldtype']} NULL";
 
             // set the actual tid to check a pubtype change in the next cycle
-            $old_tid = $pubfield['tid'];
+            $old_tid = $pubfield['pm_tid'];
         }
 
         // the final one doesn't trigger a tid change

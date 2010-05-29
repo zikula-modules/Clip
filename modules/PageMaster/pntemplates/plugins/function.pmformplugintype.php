@@ -18,7 +18,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
 {
     function getFilename()
     {
-        return __FILE__; // FIXME: may be found in smarty's data???
+        return __FILE__;
     }
 
     function __construct()
@@ -110,7 +110,7 @@ class pmFormPluginType extends pnFormDropdownList
 {
     function getFilename()
     {
-        return __FILE__; // FIXME: may be found in smarty's data???
+        return __FILE__;
     }
 
     function __construct()

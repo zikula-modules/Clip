@@ -84,7 +84,7 @@
 	<!--[/case]-->
 	<!--[case expr='pubedit']-->
 		<!--[pnmodurl modname='PageMaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid assign='urlpecode']-->
-		<!--[gt text='This is a generic template. Your can <a href="%1$s">get the form code</a> and create individuals template (<b>pubedit_%2$s_{STEPNAME}.htm</b> or <b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/config/templates/PageMaster/input/pubedit_%2$s_{STEPNAME}.htm</b> or within your theme: <b>/templates/modules/PageMaster/input/pubedit_%2$s_{STEPNAME}.htm</b>.' tag1=$urlpecode tag2=$pubtype.formname]-->
+		<!--[gt text='This is a generic template. Your can <a href="%1$s">get the form code</a> and create individuals template (<b>pubedit_%2$s_STEPNAME.htm</b> or <b>pubedit_%2$s_all.htm</b>), then store it in the the config directory: <b>/config/templates/PageMaster/input/pubedit_%2$s_STEPNAME.htm</b> or within your theme: <b>/templates/modules/PageMaster/input/pubedit_%2$s_STEPNAME.htm</b>.' tag1=$urlpecode tag2=$pubtype.formname]-->
 	<!--[/case]-->
 <!--[/switch]-->
 <!--[pnmodurl modname='PageMaster' type='admin' func='modifyconfig' assign='urlconfig']-->

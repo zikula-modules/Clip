@@ -9,6 +9,10 @@
  * @subpackage  pagemaster
  */
 
+if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
+    ZLoader::addAutoloader('PageMaster', realpath('modules'));
+}
+
 /**
  * Code generation functions
  */
@@ -485,7 +489,7 @@ function PMgetTitleField($pubfields)
 function PMgetPlugin($pluginclass)
 {
     static $plugin_arr;
-    
+
     if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
         if (!isset($plugin_arr[$pluginclass])) {
             switch ($pluginclass) {
