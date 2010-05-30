@@ -32,7 +32,13 @@ function PageMaster_adminapi_updatetabledef($args)
         return LogUtil::registerError(__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields, $dom));
     }
 
-    DBUtil::createTable($tablename);
+    $existing = DBUtil::metaTables();
+    if (!in_array(DBUtil::getLimitedTablename($tablename), $existing)) {
+        DBUtil::createTable($tablename);
+    } else {
+        DBUtil::changeTable($tablename);
+    }
+
     return true;
 }
 
