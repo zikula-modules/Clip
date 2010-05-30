@@ -52,8 +52,12 @@ class PageMaster_user_editpub
 
             $this->pubAssign($pubdata);
 
-            Loader::LoadClass('PmWorkflowUtil', 'modules/PageMaster/classes');
-            $actions = PmWorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
+            if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
+                $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
+            } else {
+                Loader::LoadClass('PmWorkflowUtil', 'modules/PageMaster/classes');
+                $actions = PmWorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
+            }
 
         } else {
             // initial values
