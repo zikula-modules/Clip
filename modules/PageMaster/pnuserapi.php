@@ -521,7 +521,7 @@ function PageMaster_userapi_encodeurl($args)
 
         $titlefield = PMgetPubtypeTitleField($tid);
 
-        $pubTitle = DBUtil::selectFieldByID("pagemaster_pubdata{$tid}", $titlefield['name'], $pid, 'core_pid');
+        $pubTitle = DBUtil::selectFieldByID("pagemaster_pubdata{$tid}", $titlefield, $pid, 'core_pid');
         $pubTitle = '/'.DataUtil::formatPermalink($pubTitle).'.'.$pid;
     }
 
