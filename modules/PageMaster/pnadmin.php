@@ -72,7 +72,7 @@ function PageMaster_admin_pubtype()
     // build the output
     $render = FormUtil::newpnForm('PageMaster');
 
-    return $render->pnFormExecute('PageMaster_admin_pubtype.htm', new PageMaster_admin_pubtypes());
+    return $render->pnFormExecute('pagemaster_admin_pubtype.htm', new PageMaster_admin_pubtypes());
 }
 
 /**
