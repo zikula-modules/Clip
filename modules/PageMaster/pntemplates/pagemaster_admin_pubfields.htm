@@ -142,7 +142,9 @@
 
 			<div class="z-formbuttons">
 				<!--[pnformbutton commandName='create' __text='Save']-->
-				<!--[pnformbutton commandName='delete' __text='Delete']-->
+				<!--[if isset($id)]-->
+				    <!--[pnformbutton commandName='delete' __text='Delete']-->
+				<!--[/if]-->
 			</div>
 		</div>
 	<!--[/pnform]-->
