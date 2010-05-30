@@ -26,8 +26,8 @@ function PageMaster_adminapi_updatetabledef($args)
 
     $tablename = 'pagemaster_pubdata'.$args['tid'];
 
-    $pntable = &pnDBGetTables();
-    if (!isset($pntable[$tablename])) {
+    $tables = pnDBGetTables();
+    if (!isset($tables[$tablename])) {
         $urlfields = pnModURL('PageMaster', 'admin', 'pubfields', array('tid' => $args['tid']));
         return LogUtil::registerError(__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields, $dom));
     }

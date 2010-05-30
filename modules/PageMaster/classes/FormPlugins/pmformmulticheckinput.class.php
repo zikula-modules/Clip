@@ -48,8 +48,8 @@ class pmformmulticheckinput extends pnFormCategoryCheckboxList
                 Loader::loadClass('CategoryUtil');
                 pnModDBInfoLoad('Categories');
 
-                $pntables        = pnDBGetTables();
-                $category_column = $pntables['categories_category_column'];
+                $tables          = pnDBGetTables();
+                $category_column = $tables['categories_category_column'];
 
                 $where = array();
                 foreach ($catIds as $catId) {

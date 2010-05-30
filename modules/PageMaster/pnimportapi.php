@@ -327,8 +327,8 @@ function PageMaster_importapi_importps4()
 
     $temp_arr = unserialize(pnModGetVar('pagesetter', 'temp_arr'));
 
-    $pntable = &pnDBGetTables();
-    $pubheader_table = $pntable['pagesetter_pubheader'];
+    $tables = &pnDBGetTables();
+    $pubheader_table = $tables['pagesetter_pubheader'];
 
     $DirPM = pnModGetVar('PageMaster', 'uploadpath');
     $DirPS = pnModGetVar('pagesetter', 'uploadDirDocs');
@@ -351,8 +351,8 @@ function PageMaster_importapi_importps4()
                 $multifields[$pubfield['id']] = 1;
             }
         }
-        $tablename   = $pntable['pagesetter_pubdata'].$pubtype['id'];
-        $tablenamePM = $pntable['pagemaster_pubdata'.$pubtype['id']];
+        $tablename   = $tables['pagesetter_pubdata'].$pubtype['id'];
+        $tablenamePM = $tables['pagemaster_pubdata'.$pubtype['id']];
 
         $sql    = 'SELECT pp.pg_hitcount , dyn.*
                    FROM '.$pubheader_table.' pp,

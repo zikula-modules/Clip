@@ -105,7 +105,6 @@ class FilterUtil_Common
     protected function setTable($table)
     {
         $tables = pnDBGetTables();
-        
 
         if (!isset($tables[$table]) || !isset($tables[$table . '_column'])) {
             return false;

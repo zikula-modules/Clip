@@ -35,11 +35,11 @@ function PageMaster_userapi_pubList($args)
     $tid = $args['tid'];
 
     // validate the passed tid
-    $pntables = pnDBGetTables();
-    if (!isset($pntables['pagemaster_pubdata'.$tid])) {
+    $tables = pnDBGetTables();
+    if (!isset($tables['pagemaster_pubdata'.$tid])) {
         return LogUtil::registerError(__('Error! No such publication type found.', $dom));
     }
-    unset($pntables);
+    unset($tables);
 
     // parameters defaults
     $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
@@ -438,8 +438,8 @@ function PageMaster_userapi_pubeditlist($args=array())
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
     foreach ($pubtypes as $pubtype) {
         $tid      = $pubtype['tid'];
-        $pntables = pnDBGetTables();
-        if (!isset($pntables['pagemaster_pubdata'.$tid])) {
+        $tables = pnDBGetTables();
+        if (!isset($tables['pagemaster_pubdata'.$tid])) {
             $allTypes[$tid] = $pubtype['title'];
             continue;
         }

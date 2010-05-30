@@ -58,9 +58,9 @@ function PageMaster_searchapi_search($args)
     pnModDBInfoLoad('Search');
     pnModDBInfoLoad('PageMaster');
 
-    $pntable = pnDBGetTables();
-    $searchTable  = $pntable['search_result'];
-    $searchColumn = $pntable['search_result_column'];
+    $tables = pnDBGetTables();
+    $searchTable  = $tables['search_result'];
+    $searchColumn = $tables['search_result_column'];
     $where_arr    = array();
 
     $sessionId = session_id();
@@ -81,7 +81,7 @@ function PageMaster_searchapi_search($args)
             $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
 
             $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
-            $columnname = $pntable[$tablename.'_column'];
+            $columnname = $tables[$tablename.'_column'];
 
             foreach ($pubfieldnames as $pubfieldname) {
                 $where_arr[] = $columnname[$pubfieldname];

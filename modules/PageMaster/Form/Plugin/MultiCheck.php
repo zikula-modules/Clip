@@ -46,8 +46,8 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
                 Loader::loadClass('CategoryUtil');
                 pnModDBInfoLoad('Categories');
 
-                $pntables        = pnDBGetTables();
-                $category_column = $pntables['categories_category_column'];
+                $tables          = pnDBGetTables();
+                $category_column = $tables['categories_category_column'];
 
                 $where = array();
                 foreach ($catIds as $catId) {
