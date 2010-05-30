@@ -99,8 +99,7 @@ function PageMaster_searchapi_search($args)
 
                 $publist    = DBUtil::selectObjectArray($tablename, $where);
 
-                $pubfields  = PMgetPubFields($pubtype['tid']);
-                $core_title = PMgetTitleField($pubfields);
+                $core_title = PMgetPubtypeTitleField($pubtype['tid']);
 
                 foreach ($publist as $pub)
                 {

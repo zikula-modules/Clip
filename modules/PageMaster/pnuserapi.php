@@ -432,7 +432,7 @@ function PageMaster_userapi_getId($args)
  */
 function PageMaster_userapi_pubeditlist($args=array())
 {
-    $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
+    $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pid');
 
     $allTypes = array();
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
@@ -443,8 +443,7 @@ function PageMaster_userapi_pubeditlist($args=array())
             $allTypes[$tid] = $pubtype['title'];
             continue;
         }
-        $where     = "pm_tid = $tid AND pm_istitle = 1";
-        $coreTitle = DBUtil::selectField('pagemaster_pubfields', 'name', $where);
+        $coreTitle = PMgetPubtypeTitleField($tid);
         if (substr($orderby, 0, 10) == 'core_title') {
             $orderby = str_replace('core_title', $coreTitle, $orderby);
         }
@@ -456,12 +455,12 @@ function PageMaster_userapi_pubeditlist($args=array())
         foreach ($list as $k=>$v) {
             if (!SecurityUtil::checkPermission('pagemaster:input:', "$tid:$v[pid]:", ACCESS_EDIT)) {
                 unset ($list[$k]);
-	    } else {
+	        } else {
                 $list[$k]['_title'] = $v[$coreTitle];
+	        }
 	    }
-	}
         $publist[$tid]  = $list;
-	$allTypes[$tid] = $pubtype['title'];
+	    $allTypes[$tid] = $pubtype['title'];
     }
 
     $ret = array();
@@ -520,7 +519,7 @@ function PageMaster_userapi_encodeurl($args)
             return false;
         }
 
-        $titlefield = PMgetTitleField(PMgetPubFields($tid));
+        $titlefield = PMgetPubtypeTitleField($tid);
 
         $pubTitle = DBUtil::selectFieldByID("pagemaster_pubdata{$tid}", $titlefield['name'], $pid, 'core_pid');
         $pubTitle = '/'.DataUtil::formatPermalink($pubTitle).'.'.$pid;

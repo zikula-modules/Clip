@@ -26,10 +26,13 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
     }
 
-    $func = FormUtil::getPassedValue('func', 'main');
+    $pubtype = PMgetPubType($tid);
 
     // build the output
-    $output = '<div class="z-menu pm-menu"><span class="z-menuitem-title">';
+    $output  = '<div class="z-menu pm-menu"><span class="z-menuitem-title">';
+    $output .= '<span>'.$pubtype['title'].'</span><span class="text_separator">&raquo;</span>';
+
+    $func = FormUtil::getPassedValue('func', 'main');
 
     // pubtype form link
     if ($func != 'pubtype') {

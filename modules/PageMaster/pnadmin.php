@@ -155,7 +155,7 @@ function PageMaster_admin_publist($args=array())
 
     // orderby check
     $old_orderby = $orderby;
-    $core_title  = DBUtil::selectField('pagemaster_pubfields', 'name', "pm_tid = '$tid' AND pm_istitle = '1'");
+    $core_title  = PMgetPubtypeTitleField($tid);
     if (substr($orderby, 0, 10) == 'core_title') {
         $orderby = str_replace('core_title', $core_title, $orderby);
     }
@@ -218,7 +218,7 @@ function PageMaster_admin_history()
         WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
     }
 
-    $core_title = DBUtil::selectField('pagemaster_pubfields', 'name', "pm_tid = '$tid' AND pm_istitle = '1'");
+    $core_title = PMgetPubtypeTitleField($tid);
 
     // build the output
     $render = pnRender::getInstance('PageMaster');

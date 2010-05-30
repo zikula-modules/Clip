@@ -94,7 +94,7 @@ class PageMaster_admin_pubtypes
             $render->assign($pubtype);
         }
 
-        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+        $pubtypes = PMgetPubType(-1);
         $render->assign('pubtypes', $pubtypes);
 
         $workflows = PMgetWorkflowsOptionList();

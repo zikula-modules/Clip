@@ -70,8 +70,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
                                          'checkPerm'          => true,
                                          'handlePluginFields' => false));
 
-            $pubfields  = PMgetPubFields($this->config['tid']);
-            $titleField = PMgetTitleField($pubfields);
+            $titleField = PMgetPubtypeTitleField($this->config['tid']);
 
             $items = array();
             $items[] = array('text'  => '- - -',

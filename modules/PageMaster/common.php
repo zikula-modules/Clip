@@ -557,7 +557,7 @@ function PMgetPlugin($pluginclass)
     return $plugin_arr[$pluginclass];
 }
 
-function PMgetPubFields($tid, $orderBy = 'lineno')
+function PMgetPubFields($tid = -1, $orderBy = 'lineno')
 {
     static $pubfields_arr;
 
@@ -566,10 +566,14 @@ function PMgetPubFields($tid, $orderBy = 'lineno')
         $pubfields_arr[$tid] = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = '$tid'", $orderBy, -1, -1, 'name');
     }
 
+    if ($tid == -1) {
+        return $pubfields_arr;
+    }
+
     return $pubfields_arr[$tid];
 }
 
-function PMgetPubType($tid)
+function PMgetPubType($tid = -1)
 {
     static $pubtype_arr;
 
@@ -577,5 +581,24 @@ function PMgetPubType($tid)
         $pubtype_arr = DBUtil::selectObjectArray('pagemaster_pubtypes', '', 'tid', -1, -1, 'tid');
     }
 
+    if ($tid == -1) {
+        return $pubtype_arr;
+    }
+
     return isset($pubtype_arr[(int)$tid]) ? $pubtype_arr[(int)$tid] : false;
+}
+
+function PMgetPubtypeTitleField($tid = -1)
+{
+    static $pubtitles_arr;
+
+    if (!isset($pubtitles_arr)) {
+        $pubtitles_arr = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', "pm_istitle = '1'", '', false, 'tid');
+    }
+
+    if ($tid == -1) {
+        return $pubtitles_arr;
+    }
+
+    return isset($pubtitles_arr[(int)$tid]) ? $pubtitles_arr[(int)$tid] : false;
 }

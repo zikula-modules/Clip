@@ -72,8 +72,7 @@ class pmformpubinput extends pnFormDropdownList
                                          'checkPerm'          => true,
                                          'handlePluginFields' => false));
 
-            $pubfields  = PMgetPubFields($this->config['tid']);
-            $titleField = PMgetTitleField($pubfields);
+            $titleField = PMgetPubtypeTitleField($this->config['tid']);
 
             $items = array();
             $items[] = array('text'  => '- - -',

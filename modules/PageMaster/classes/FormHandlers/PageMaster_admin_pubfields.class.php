@@ -78,7 +78,7 @@ class PageMaster_admin_pubfields
 
                 if ($data['istitle'] == 1) {
                     $istitle = array('istitle' => '0');
-                    DBUtil::updateObject($istitle, 'pagemaster_pubfields', 'pm_tid = '.$data['tid']);
+                    DBUtil::updateObject($istitle, 'pagemaster_pubfields', "pm_tid = '$data[tid]'");
                 }
 
                 $data['name']  = str_replace("'", '', $data['name']);
