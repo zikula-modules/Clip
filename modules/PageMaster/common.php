@@ -74,10 +74,11 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                 // list input
                 case 'pmformlistinput':
                     $template_code_add = 
-                     '    <!--[if $'.$field['name'].'.fullTitle neq \'\']-->'."\n".
+                     '    <!--[if $'.$field['name'].' neq \'\']-->'."\n".
                      '        <div class="z-formrow">'."\n".
                      '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                      '            <span class="z-formnote"><!--[$'.$key.'.fullTitle]--><span>'."\n".
+                     '            <pre><!--[pmarray array=$'.$key.']--></pre>'."\n".
                      '        </div>'."\n".
                      '    <!--[/if]-->';
                     break;
