@@ -313,8 +313,8 @@ function PageMaster_userapi_getPub($args)
     }
 
     // fills the core_title field
-    $core_title            = PMgetTitleField($pubfields);
-    $pubdata['core_title'] = $pubdata[$core_title];
+    $core_title = PMgetTitleField($pubfields);
+    $pubdata    = array('core_title' => $pubdata[$core_title]) + $pubdata;
 
     return $pubdata;
 }
