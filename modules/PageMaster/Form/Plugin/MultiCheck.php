@@ -77,15 +77,15 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     function load(&$render, $params)
     {
-        if (isset($render->pnFormEventHandler->pubfields[$this->id])) {
-            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+        if (isset($render->EventHandler->pubfields[$this->id])) {
+            $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
             $params['category'] = $this->config['category'];
         }
 
         parent::load($render, $params);
 
         if ($this->mandatory) {
-            array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+            array_shift($this->items); //CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
         }
     }
 

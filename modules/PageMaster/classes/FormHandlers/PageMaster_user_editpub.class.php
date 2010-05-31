@@ -71,7 +71,7 @@ class PageMaster_user_editpub
         if (count($actions) < 1) {
             LogUtil::registerError(__('No workflow actions found. This can be a permissions issue.', $dom));
 
-            return $render->pnFormRedirect(pnModURL('PageMaster', 'user', 'main', array('tid' => $tid)));
+            return $render->pnFormRedirect(pnModURL('PageMaster', 'user', 'main', array('tid' => $this->tid)));
         }
 
         // check for set_* default values

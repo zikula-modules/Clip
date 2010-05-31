@@ -59,7 +59,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+        $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
 
         if (!empty($this->config['tid'])) {
             $pubarr = pnModAPIFunc('PageMaster', 'user', 'pubList',
@@ -94,7 +94,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
     static function getSaveTypeDataFunc($field)
     {
         // TODO Implement effects for the checkbox enabled
-        // TODO Implement pnFormPostBack to check if the fields are correct?
+        // TODO Implement postBack to check if the fields are correct?
         $saveTypeDataFunc = 'function saveTypeData()
                              {
                                  $(\'typedata\').value = $F(\'pmplugin_pubtid\')+\';\'+$F(\'pmplugin_pubfilter\')+\';\'+$F(\'pmplugin_pubjoin\')+\';\'+$F(\'pmplugin_pubjoinfields\')+\';\'+$F(\'pmplugin_puborderbyfield\');

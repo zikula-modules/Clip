@@ -67,8 +67,8 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function load(&$render, $params)
     {
-        if (!empty($render->pnFormEventHandler->pubfields[$this->id]['typedata'])) {
-            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata'], (int)$params['mandatory']);
+        if (!empty($render->EventHandler->pubfields[$this->id]['typedata'])) {
+            $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata'], (int)$params['mandatory']);
 
             $params['category'] = $this->config[0];
 
@@ -78,7 +78,7 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
                 $this->includeEmptyElement = $params['includeEmptyElement'];
             }
         } else {
-            // TODO Extract the List property category rrot?
+            // TODO Extract the List property category root?
             $params['category'] = 30; // Global category
         }
 

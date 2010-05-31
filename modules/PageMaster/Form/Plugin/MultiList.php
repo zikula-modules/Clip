@@ -74,8 +74,8 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
     function render(&$render)
     {
         // extract the configuration {category, size}
-        if (isset($render->pnFormEventHandler->pubfields[$this->inputName])) {
-            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->inputName]['typedata']);;
+        if (isset($render->EventHandler->pubfields[$this->inputName])) {
+            $this->parseConfig($render->EventHandler->pubfields[$this->inputName]['typedata']);;
         } else {
             $this->parseConfig();
         }
@@ -97,14 +97,14 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
 
     function load(&$render, $params)
     {
-        if (isset($render->pnFormEventHandler->pubfields[$this->id])) {
-            $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+        if (isset($render->EventHandler->pubfields[$this->id])) {
+            $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
             $params['category'] = $this->config[0];
         }
 
         parent::load($render, $params);
 
-        array_shift($this->items); //pnFormCategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+        array_shift($this->items); //CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
     }
 
     static function getSaveTypeDataFunc($field)
@@ -183,8 +183,8 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
     }
 
     /**
-     * these two methods are others in pnFormCategoryCheckboxList
-     * then pnFormCategorySelector(original pnForm classes).
+     * these two methods are others in CategoryCheckboxList
+     * then CategorySelector(original Form classes).
      * To be able to switch form multilsit to checkbox
      * it is important that both act the same way.
      */

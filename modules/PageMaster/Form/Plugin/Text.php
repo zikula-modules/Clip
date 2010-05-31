@@ -33,7 +33,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
 
     function render(&$render)
     {
-        $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
+        $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
 
         $this->textMode = 'multiline';
         if ($this->config['usescribite'] && pnModAvailable('scribite')) {
