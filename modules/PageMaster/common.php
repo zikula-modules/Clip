@@ -74,7 +74,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                 // list input
                 case 'pmformlistinput':
                     $template_code_add = 
-                     '    <!--[if $'.$field['name'].' neq \'\']-->'."\n".
+                     '    <!--[if !empty($'.$field['name'].')]-->'."\n".
                      '        <div class="z-formrow">'."\n".
                      '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                      '            <span class="z-formnote"><!--[$'.$key.'.fullTitle]--><span>'."\n".
@@ -86,7 +86,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                 // multilist input
                 case 'pmformmultilistinput':
                     $template_code_add = 
-                     '    <!--[if $'.$field['name'].' neq \'\']-->'."\n".
+                     '    <!--[if !empty($'.$field['name'].')]-->'."\n".
                      '        <div class="z-formrow">'."\n".
                      '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                      '            <span class="z-formnote">'."\n".
@@ -105,7 +105,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                     $plugin = PMgetPlugin('pmformpubinput');
                     $plugin->parseConfig($field['typedata']);
                     $template_code_add = 
-                    '    <!--[if $'.$key.' neq \'\']-->'."\n".
+                    '    <!--[if !empty($'.$key.')]-->'."\n".
                     '        <div class="z-formrow">'."\n".
                     '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                     '            <span class="z-formnote">'."\n".
@@ -148,7 +148,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
 
             // build the final snippet
             $template_code_add = 
-                    '    <!--[if $'.$key.' neq \'\']-->'."\n".
+                    '    <!--[if !empty($'.$key.')]-->'."\n".
                     '        <div class="z-formrow">'."\n".
                     '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                     '            <span class="z-formnote">'.$snippet_body.'<span>'."\n".
