@@ -330,7 +330,8 @@ function PageMaster_admin_pubeditlist($args=array())
     }
 
     $args = array(
-        'menu'       => 1,'returntype' => 'admin'
+        'menu'       => 1,
+        'returntype' => 'admin'
     );
 
     return pnModFunc('PageMaster', 'user', 'pubeditlist', $args);
