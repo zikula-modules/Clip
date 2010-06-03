@@ -122,7 +122,7 @@ class PageMaster_user_editpub
 
         // check the referer (redirect to admin list)
         // if the item moved to the depot or was deleted
-        if ($data['core_indepot'] == 1 || isset($data['deletePub'][$data['id']])) {
+        if ($data['core_indepot'] == 1 || (isset($data['deletePub'][$data['id']]) && $data['deletePub'][$data['id']])) {
             $this->goto = pnModURL('PageMaster', 'user', 'main',
                                    array('tid' => $data['tid']));
 
