@@ -93,6 +93,8 @@ function PageMaster_userapi_pubList($args)
                     $orderby .= ', '.$pubtype['sortfield3'].' ASC ';
                 }
             }
+        } else {
+            $orderby = 'cr_date';
         }
     } else {
         $orderby = $args['orderby'];
