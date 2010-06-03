@@ -33,6 +33,7 @@ class PageMaster_user_editpub
     var $tablename;
     var $pubtype;
     var $pubfields;
+    var $referer;
     var $goto;
     
     function initialize(&$render)
@@ -72,6 +73,16 @@ class PageMaster_user_editpub
             LogUtil::registerError(__('No workflow actions found. This can be a permissions issue.', $dom));
 
             return $render->pnFormRedirect(pnModURL('PageMaster', 'user', 'main', array('tid' => $this->tid)));
+        } else {
+            $actions['cancel'] = array(
+                'id' => 'cancel',
+                'title' => no__('Cancel'),
+                'description' => no__('Cancel the operation'),
+                'state' => '',
+                'nextState' => '',
+                'operations' => array(),
+                'permission' => 'comment'
+            );
         }
 
         // check for set_* default values
@@ -90,12 +101,21 @@ class PageMaster_user_editpub
             $render->assign($pubdata);
         }
 
+        // stores the first referer
+        if (empty($this->referer)) {
+            $this->referer = pnServerGetVar('HTTP_REFERER', pnModURL('PageMaster', 'user', 'main', array('tid' => $this->tid)));
+        }
+
         $render->assign('actions', $actions);
         return true;
     }
 
     function handleCommand(&$render, &$args)
     {
+        if ($args['commandName'] == 'cancel') {
+            return pnRedirect($this->referer);
+        }
+
         if (!$render->pnFormIsValid()) {
             return false;
         }
@@ -132,6 +152,9 @@ class PageMaster_user_editpub
                                    array('tid'  => $data['tid'],
                                          'id'   => $data['id'],
                                          'goto' => 'stepmode'));
+
+        } elseif ($this->goto == 'referer') {
+            $this->goto = $this->referer;
 
         } elseif ($this->goto == 'pubeditlist') {
             $this->goto = pnModURL('PageMaster', 'admin', 'pubeditlist',
