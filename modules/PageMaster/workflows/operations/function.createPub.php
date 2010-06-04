@@ -52,6 +52,6 @@ function PageMaster_operation_createPub(&$pub, $params)
         }
     }
 
-    // returns the indexed result flag
-    return array($pub['id'] => $result);
+    // returns the result
+    return $result;
 }

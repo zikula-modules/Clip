@@ -143,8 +143,8 @@ class PageMaster_admin_pubtypes
 
             // delete
             case 'delete':
-                DBUtil::deleteObject(null, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
-                DBUtil::deleteObject(null, 'pagemaster_pubfields', 'pm_tid='.$this->tid);
+                DBUtil::deleteObject(null, 'pagemaster_pubtypes', "pm_tid = '{$this->tid}'");
+                DBUtil::deleteObject(null, 'pagemaster_pubfields', "pm_tid = '{$this->tid}'");
                 DBUtil::dropTable('pagemaster_pubdata' . $this->tid);
                 // FIXME no more related stuff is needed? Hooks, Workflows registers? 
 

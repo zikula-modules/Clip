@@ -46,6 +46,6 @@ function PageMaster_operation_deletePub(&$pub, $params)
         }
     }
 
-    // returns the indexed result flag
-    return array($pub['id'] => $result);
+    // returns the result
+    return $result;
 }

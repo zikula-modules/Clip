@@ -94,6 +94,6 @@ function PageMaster_operation_updatePub(&$pub, $params)
         }
     }
 
-    // return the updated object
-    return array($pub['id'] => true);
+    // return the update result
+    return $result;
 }

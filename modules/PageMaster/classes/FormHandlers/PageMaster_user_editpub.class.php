@@ -33,6 +33,7 @@ class PageMaster_user_editpub
     var $tablename;
     var $pubtype;
     var $pubfields;
+    var $itemurl;
     var $referer;
     var $goto;
     
@@ -59,7 +60,6 @@ class PageMaster_user_editpub
                 Loader::LoadClass('PmWorkflowUtil', 'modules/PageMaster/classes');
                 $actions = PmWorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
             }
-
         } else {
             // initial values
             $this->pubDefault();
@@ -73,16 +73,6 @@ class PageMaster_user_editpub
             LogUtil::registerError(__('No workflow actions found. This can be a permissions issue.', $dom));
 
             return $render->pnFormRedirect(pnModURL('PageMaster', 'user', 'main', array('tid' => $this->tid)));
-        } else {
-            $actions['cancel'] = array(
-                'id' => 'cancel',
-                'title' => no__('Cancel'),
-                'description' => no__('Cancel the operation'),
-                'state' => '',
-                'nextState' => '',
-                'operations' => array(),
-                'permission' => 'comment'
-            );
         }
 
         // check for set_* default values
@@ -101,9 +91,13 @@ class PageMaster_user_editpub
             $render->assign($pubdata);
         }
 
-        // stores the first referer
+        // stores the first referer and the item URL
         if (empty($this->referer)) {
-            $this->referer = pnServerGetVar('HTTP_REFERER', pnModURL('PageMaster', 'user', 'main', array('tid' => $this->tid)));
+            $viewurl = pnModURL('PageMaster', 'user', 'main', array('tid' => $this->tid), null, null, true);
+            $this->referer = pnServerGetVar('HTTP_REFERER', $viewurl);
+        }
+        if (!empty($this->id)) {
+            $this->itemurl = pnModURL('PageMaster', 'user', 'viewpub', array('tid' => $this->tid, 'pid' => $this->core_pid), null, null, true);
         }
 
         $render->assign('actions', $actions);
@@ -113,7 +107,7 @@ class PageMaster_user_editpub
     function handleCommand(&$render, &$args)
     {
         if ($args['commandName'] == 'cancel') {
-            return pnRedirect($this->referer);
+            return $render->pnFormRedirect($this->referer);
         }
 
         if (!$render->pnFormIsValid()) {
@@ -140,30 +134,63 @@ class PageMaster_user_editpub
         $pnr->clear_cache(null, 'publist'.$this->tid);
         unset($pnr);
 
-        // check the referer (redirect to admin list)
-        // if the item moved to the depot or was deleted
-        if ($data['core_indepot'] == 1 || (isset($data['deletePub'][$data['id']]) && $data['deletePub'][$data['id']])) {
-            $this->goto = pnModURL('PageMaster', 'user', 'main',
-                                   array('tid' => $data['tid']));
+        // core operations processing
+        $goto = $this->itemurl;
+        $ops  = $data['core_operations'];
+        if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
+            // if the item moved to the depot or was deleted
+            $urltid = pnModURL('PageMaster', 'user', 'main', array('tid' => $data['tid']));
+            // check if the user comes of the viewpub screen or not
+            $goto = (strpos($this->referer, $this->itemurl) === 0) ? $urltid : $this->referer;
 
-        } elseif ($this->goto == 'stepmode') {
-            // stepmode can be used to go automaticaly from one workflowstep to the next
-            $this->goto = pnModURL('PageMaster', 'user', 'pubedit',
-                                   array('tid'  => $data['tid'],
-                                         'id'   => $data['id'],
-                                         'goto' => 'stepmode'));
+        } elseif (isset($ops['createPub']) && $ops['createPub']) {
+            // the publication was created
+            $goto = pnModURL('PageMaster', 'user', 'viewpub', array('tid' => $data['tid'], 'pid' => $data['core_pid']));
 
-        } elseif ($this->goto == 'referer') {
-            $this->goto = $this->referer;
+        } else {
+            // check if an operation thrown a goto value
+            foreach (array_keys($ops) as $op) {
+                if (isset($ops[$op]['goto'])) {
+                    $goto = $ops[$op]['goto'];
+                }
+            }
+        }
 
-        } elseif ($this->goto == 'pubeditlist') {
-            $this->goto = pnModURL('PageMaster', 'admin', 'pubeditlist',
-                                   array('_id' => $data['tid'] . '_' . $data['core_pid']));
+        // check the goto parameter
+        switch ($this->goto) {
+            case 'stepmode':
+                // stepmode can be used to go automatically from one workflowstep to the next
+                $this->goto = pnModURL('PageMaster', 'user', 'pubedit',
+                                       array('tid'  => $data['tid'],
+                                             'id'   => $data['id'],
+                                             'goto' => 'stepmode'));
+                break;
 
-        } elseif (empty($this->goto)) {
-            $this->goto = pnModURL('PageMaster', 'user', 'viewpub',
-                                   array('tid' => $data['tid'],
-                                         'pid' => $data['core_pid']));
+            case 'referer':
+                $this->goto = $this->referer;
+                break;
+
+            case 'pubeditlist':
+                $this->goto = pnModURL('PageMaster', 'admin', 'pubeditlist',
+                                       array('_id' => $data['tid'].'_'.$data['core_pid']));
+                break;
+
+            case 'admin':
+                $this->goto = pnModURL('PageMaster', 'admin', 'publist', array('tid' => $data['tid']));
+                break;
+
+            case 'index':
+                $this->goto = pnModURL('PageMaster', 'user', 'main', array('tid' => $data['tid']));
+                break;
+
+            case 'home':
+                $this->goto = pnGetHomepageURL();
+                break;
+
+            default:
+                //if (empty($this->goto)) {
+                    $this->goto = $goto;
+                //}
         }
 
         if (empty($data)) {

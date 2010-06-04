@@ -37,7 +37,6 @@ function PageMaster_operation_copyPub(&$pub, $params)
     $pub['core_pid'] = $maxpid + 1;
 
     // save the publication
-    $id = $pub['id'];
     unset($pub['id']);
     if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
         $result = true;
@@ -70,5 +69,5 @@ function PageMaster_operation_copyPub(&$pub, $params)
     }
 
     // returns the cloned publication if success, false otherwise
-    return array($id => $result ? $pub : false);
+    return $result ? $pub : false;
 }

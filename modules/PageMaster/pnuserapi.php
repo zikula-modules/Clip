@@ -364,11 +364,12 @@ function PageMaster_userapi_editPub($args)
     }
 
     $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'PageMaster');
+
     if (empty($ret)) {
         return LogUtil::registerError(__('Workflow action error.', $dom));
     }
 
-    $data = array_merge($data, $ret);
+    $data = array_merge($data, array('core_operations' => $ret));
 
     return $data;
 }
