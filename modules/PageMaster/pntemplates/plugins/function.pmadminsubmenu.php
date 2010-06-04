@@ -51,7 +51,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     }
 
     // new article link
-    $output .= '<a href="'.pnModURL('PageMaster', 'user', 'pubedit', array('tid' => $tid)).'">'.__('New publication', $dom).'</a> | ';
+    $output .= '<a href="'.pnModURL('PageMaster', 'user', 'pubedit', array('tid' => $tid, 'goto' => 'referer')).'">'.__('New publication', $dom).'</a> | ';
 
     // pub list link
     if ($func != 'publist') {
