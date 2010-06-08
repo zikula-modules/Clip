@@ -311,6 +311,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         }
 
         // parse the call
+        // {modname:function&param=value:type}
         $call = explode(':', $call);
 
         // call[0] should be the module name

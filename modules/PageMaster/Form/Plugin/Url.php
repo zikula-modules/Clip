@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_Url extends Form_Plugin_UrlInput
+class PageMaster_Form_Plugin_Url extends Form_Plugin_TextInput
 {
     public $columnDef = 'C(512)';
     public $title;
@@ -27,5 +27,73 @@ class PageMaster_Form_Plugin_Url extends Form_Plugin_UrlInput
     function getFilename()
     {
         return __FILE__;
+    }
+
+    function create(&$render, &$params)
+    {
+        $this->maxLength = 2000;
+
+        parent::create($render, $params);
+
+        $this->cssClass .= ' url';
+    }
+
+    /**
+     * Overrides the validation check to allow
+     * {modname:func&param=value:type}
+     */
+    function validate(&$render)
+    {
+        parent::validate($render);
+        if (!$this->isValid) {
+            return;
+        }
+
+        if (!empty($this->text)) {
+            if (!System::varValidate($this->text, 'url')) {
+                if (!$this->parseURL($this->text)) {
+                    $this->setError(__('Error! Invalid URL.'));
+                }
+            }
+        }
+    }
+
+    /**
+     * Method to parse an internal URL 
+     */
+    function parseURL($url)
+    {
+        // parse the URL
+        if (strpos($url, '{') === 0 && strpos($url, '}') === strlen($url)-1) {
+            // {modname:function&param=value:type}
+            $url = explode(':', $url);
+
+            // call[0] should be the module name
+            if (isset($url[0]) && !empty($url[0])) { 
+                $modname = $url[0];
+                // default for params
+                $params = array();
+                // call[1] can be a function or function&param=value
+                if (isset($url[1]) && !empty($url[1])) {
+                    $urlparts = explode('&', $url[1]); 
+                    $func = $urlparts[0];
+                    unset($urlparts[0]);
+                    if (count($urlparts) > 0) {
+                        foreach ($urlparts as $urlpart) {
+                            $part = explode('=', $urlpart);
+                            $params[trim($part[0])] = trim($part[1]);
+                        }
+                    }
+                } else {
+                    $func = 'main';
+                } 
+                // addon: call[2] can be the type parameter, default 'user'
+                $type = (isset($url[2]) &&!empty($url[2])) ? $url[2] : 'user';
+
+                return ModUtil::url($modname, $type, $func, $params, null, null, true);
+            }
+        }
+
+        return false; 
     }
 }
