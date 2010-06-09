@@ -30,34 +30,43 @@
 				<!--[$pubtypedesc|truncate:30:'...']--><br />
 			</td>
 			<td>
-				<!--[pnimg modname='core' src='db_status.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='pubtype' tid=$pubtype.tid]-->" title="<!--[gt text='Edit this publication type']-->"><!--[gt text='Edit']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='pubtype' tid=$pubtype.tid]-->" title="<!--[gt text='Edit this publication type']-->">
+					<!--[pnimg modname='core' src='db_status.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Edit']-->
+				</a>
 				&nbsp;
-				<!--[pnimg modname='core' src='db_comit.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='pubfields' tid=$pubtype.tid]-->" title="<!--[gt text='Add, edit or modify the fields of this pubtype']-->"><!--[gt text='Fields']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='pubfields' tid=$pubtype.tid]-->" title="<!--[gt text='Add, edit or modify the fields of this pubtype']-->">
+					<!--[pnimg modname='core' src='db_comit.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Fields']-->
+				</a>
 				&nbsp;
-				<!--[pnimg modname='core' src='db_update.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='dbupdate' tid=$pubtype.tid]-->" title="<!--[gt text='Update the database table of this pubtype to any recent change in the fields']-->"><!--[gt text='DB update']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='dbupdate' tid=$pubtype.tid]-->" title="<!--[gt text='Update the database table of this pubtype to any recent change in the fields']-->">
+					<!--[pnimg modname='core' src='db_update.gif' set='icons/extrasmall' alt='']--> <!--[gt text='DB update']-->
+				</a>
 				&nbsp;
-				<!--[pnimg modname='core' src='db_add.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='user' func='pubedit' tid=$pubtype.tid]-->" title="<!--[gt text='Add new publications to this pubtype']-->"><!--[gt text='New pub' comment='Abbreviated text for the admin main screen']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='user' func='pubedit' tid=$pubtype.tid]-->" title="<!--[gt text='Add new publications to this pubtype']-->">
+					<!--[pnimg modname='core' src='db_add.gif' set='icons/extrasmall' alt='']--> <!--[gt text='New pub' comment='Abbreviated text for the admin main screen']-->
+				</a>
 			</td>
 			<td>
-				<!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='publist' tid=$pubtype.tid]-->" title="<!--[gt text='Go to the Admin publication list']-->"><!--[gt text='Admin']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='publist' tid=$pubtype.tid]-->" title="<!--[gt text='Go to the Admin publication list']-->">
+					<!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Admin']-->
+				</a>
 				&nbsp;
-				<!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='user' func='main' tid=$pubtype.tid]-->" title="<!--[gt text='Go to the public publication list']-->"><!--[gt text='Public']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='user' func='main' tid=$pubtype.tid]-->" title="<!--[gt text='Go to the public publication list']-->">
+					<!--[pnimg modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Public']-->
+				</a>
 			</td>
 			<td>
-				<!--[pnimg modname='core' src='runprog.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid]-->" title="<!--[gt text='Get the input form code of this pubtype']-->"><!--[gt text='Form']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid]-->" title="<!--[gt text='Get the input form code of this pubtype']-->">
+					<!--[pnimg modname='core' src='runprog.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Form']-->
+				</a>
 				&nbsp;
-				<!--[pnimg modname='core' src='runprog.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid]-->" title="<!--[gt text='Get the publist code of this pubtype']-->"><!--[gt text='List']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid]-->" title="<!--[gt text='Get the publist code of this pubtype']-->">
+					<!--[pnimg modname='core' src='runprog.gif' set='icons/extrasmall' alt='']--> <!--[gt text='List']-->
+				</a>
 				&nbsp;
-				<!--[pnimg modname='core' src='runprog.gif' set='icons/extrasmall' alt='']-->
-				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid]-->" title="<!--[gt text='Get the pubview code of this pubtype']-->"><!--[gt text='Display']--></a>
+				<a href="<!--[pnmodurl modname='PageMaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid]-->" title="<!--[gt text='Get the pubview code of this pubtype']-->">
+					<!--[pnimg modname='core' src='runprog.gif' set='icons/extrasmall' alt='']--> <!--[gt text='Display']-->
+				</a>
 			</td>
 		</tr>
 		<!--[foreachelse]-->
