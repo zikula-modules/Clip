@@ -12,7 +12,7 @@
 
 require_once('system/pnForm/plugins/function.pnformurlinput.php');
 
-class pmformurlinput extends pnFormURLInput
+class pmformurlinput extends pnFormTextInput
 {
     var $columnDef = 'C(512)';
     var $title;
@@ -29,6 +29,25 @@ class pmformurlinput extends pnFormURLInput
     function getFilename()
     {
         return __FILE__; // FIXME: may be found in smarty's data???
+    }
+
+    function create(&$render, &$params)
+    {
+        $this->maxLength = 2000;
+
+        parent::create($render, $params);
+
+        $this->cssClass .= ' url';
+    }
+
+    function postRead($data, $field)
+    {
+        // if there's an URL, process it
+        if (!empty($data)) {
+            $data = $this->parseURL($data);
+        }
+
+        return $data;
     }
 
     /**
@@ -57,8 +76,9 @@ class pmformurlinput extends pnFormURLInput
     function parseURL($url)
     {
         // parse the URL
+        // {modname:function&param=value:type}
         if (strpos($url, '{') === 0 && strpos($url, '}') === strlen($url)-1) {
-            // {modname:function&param=value:type}
+            $url = substr($url, 1, -1);
             $url = explode(':', $url);
 
             // call[0] should be the module name
