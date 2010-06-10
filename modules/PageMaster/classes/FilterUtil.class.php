@@ -73,7 +73,8 @@ class FilterUtil extends FilterUtil_Common
         $args['module'] = $module;
         $args['table'] = $table;
         parent::__construct($args);
-        $this->addCommon();
+
+        $this->addCommon($args);
         $this->plugin = new FilterUtil_Plugin($args, array('default' => array()));
 
         if (isset($args['plugins'])) {

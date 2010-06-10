@@ -50,7 +50,7 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
             $this->activateOperators(array('eq', 'ne', 'lt', 'le', 'gt', 'ge', 'like', 'likefirst' , 'null', 'notnull'));
         }
 
-        if ($config['default'] == true || count($this->fields) <= 0) {
+        if (isset($config['default']) && $config['default'] == true || count($this->fields) <= 0) {
             $this->default = true;
         }
     }
