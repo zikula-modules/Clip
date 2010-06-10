@@ -84,7 +84,7 @@ function PageMaster_init()
     // modvars
     // upload dir creation if the temp dir is not outside the root (relative path)
     $tempdir = CacheUtil::getLocalDir();
-    $pmdir   = $tempdir.'/pagemaster';
+    $pmdir   = $tempdir.'/PageMaster';
     if (StringUtil::left($tempdir, 1) <> '/') {
         if (CacheUtil::createLocalDir('PageMaster', 777)) {
             LogUtil::registerStatus(__f('PageMaster created the upload directory successfully at [%s]. Be sure that be accessible via web and writable by the webserver.', $pmdir, $dom));
