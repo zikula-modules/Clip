@@ -27,29 +27,28 @@ class FilterUtil_Filter_pmMultiList extends FilterUtil_Filter_category
             return '';
         }
 
-        Loader::loadClass('CategoryUtil');
+        $column = $this->column[$field];
 
         switch($op)
         {
             case 'eq':
-                $where = $this->column[$field] . ' = ' . $value;
+                $where =  "$column = '$value'";
                 break;
 
             case 'ne':
-                $where = $this->column[$field] . ' != ' . $value;
+                $where =  "$column != '$value'";
                 break;
 
             case 'sub':
-                $where .= $this->column[$field]." LIKE '%:" . $value . ":%' OR ";
+                if (version_compare(PN_VERSION_NUM, '1.3', '<')) {
+                    Loader::loadClass('CategoryUtil');
+                }
+                $where = "$column LIKE '%:$value:%'";
                 $cats = CategoryUtil::getSubCategories($value);
                 foreach ($cats as $item) {
-                    $where .= $this->column[$field]." LIKE '%:" . $item['id'] . ":%' OR ";
+                    $where .= " OR $column LIKE '%:$item[id]:%'";
                 }
-                $where = substr($where,0,-3);
                 break;
-
-            default:
-                $where = '';
         }
 
         return array('where' => $where);

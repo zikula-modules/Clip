@@ -27,34 +27,33 @@ class FilterUtil_Filter_pmList extends FilterUtil_Filter_category
             return '';
         }
 
-        Loader::loadClass('CategoryUtil');
+        $column = $this->column[$field];
 
         switch ($op)
         {
             case 'eq':
-                $where = $this->column[$field] . ' = ' . $value;
+                $where =  "$column = '$value'";
                 break;
 
             case 'ne':
-                $where = $this->column[$field] . ' != ' . $value;
+                $where =  "$column != '$value'";
                 break;
 
             case 'sub':
+                if (version_compare(PN_VERSION_NUM, '1.3', '<')) {
+                    Loader::loadClass('CategoryUtil');
+                }
                 $cats = CategoryUtil::getSubCategories($value);
-                $items = array();
-                $items[] = $value;
+                $items = array($value);
                 foreach ($cats as $item) {
                     $items[] = $item['id'];
                 }
                 if (count($items) == 1) {
-                    $where = $this->column[$field].' = ' . implode('', $items);
+                    $where = "$column = '$value'";
                 } else {
-                    $where = $this->column[$field].' IN (' . implode(',', $items) . ')';
+                    $where = "$column IN (".implode(',', $items).")";
                 }
                 break;
-
-            default:
-                $where = '';
         }
 
         return array('where' => $where);
