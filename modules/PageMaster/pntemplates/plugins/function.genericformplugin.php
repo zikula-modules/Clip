@@ -23,13 +23,16 @@ function smarty_function_genericformplugin($params, &$render)
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
     $id  = $params['id'];
-    $tid = $render->pnFormEventHandler->tid;
 
     if (!$id) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
     }
 
-    $tid = $render->EventHandler->pubtype['tid'];
+    if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
+        $tid = $render->eventHandler->pubtype['tid'];
+    } else {
+        $tid = $render->pnFormEventHandler->tid;
+    }
 
     $pubfields   = PMgetPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];

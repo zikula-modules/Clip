@@ -46,7 +46,15 @@ function PageMaster_operation_createPub(&$pub, $params)
     // output message
     if (!$silent) {
         if ($result) {
-            LogUtil::registerStatus(__('Done! Publication created.', $dom));
+            if ($pub['core_online']) {
+                LogUtil::registerStatus(__('Done! Publication created.', $dom));
+            } else {
+                // redirect to the simple pending template
+                $result = array('goto' => pnModURL('PageMaster', 'user', 'viewpub',
+                                                   array('tid' => $pub['tid'],
+                                                         'pid' => $pub['core_pid'],
+                                                         'template' => 'pending')));
+            }
         } else {
             LogUtil::registerError(__('Error! Failed to create the publication.', $dom));
         }

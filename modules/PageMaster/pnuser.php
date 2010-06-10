@@ -212,6 +212,11 @@ function PageMaster_user_viewpub($args)
         $sec_template = $template;
         // template comes from parameter
         $template     = 'output/viewpub_'.$template.'.htm';
+
+        // workaround for related plain templates
+        if (in_array($sec_template, array('pending'))) {
+            $simpletemplate = "output/viewpub_{$pubtype['filename']}_{$sec_template}.htm";
+        }
     }
 
     // security check as early as possible
@@ -240,6 +245,20 @@ function PageMaster_user_viewpub($args)
         $render->cache_lifetime = $cachelt;
         if ($render->is_cached($template, $cacheid)) {
             return $render->fetch($template, $cacheid);
+        }
+    }
+
+    // fetch plain templates
+    if (isset($simpletemplate)) {
+        if (!$render->template_exists($simpletemplate)) {
+            $simpletemplate = "pagemaster_generic_{$sec_template}.htm";
+            if (!$render->template_exists($simpletemplate)) {
+                $simpletemplate = '';
+            }
+        }
+        if ($simpletemplate != '') {
+            $render->assign('pubtype', $pubtype);
+            return $render->fetch($simpletemplate, $cacheid);
         }
     }
 

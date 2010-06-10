@@ -145,7 +145,12 @@ class PageMaster_user_editpub
 
         } elseif (isset($ops['createPub']) && $ops['createPub']) {
             // the publication was created
-            $goto = pnModURL('PageMaster', 'user', 'viewpub', array('tid' => $data['tid'], 'pid' => $data['core_pid']));
+            if ($data['core_online'] == 1) {
+                $goto = pnModURL('PageMaster', 'user', 'viewpub', array('tid' => $data['tid'], 'pid' => $data['core_pid']));
+            } else {
+                // back to the pubtype pending template or referer page if it is not approved yet
+                $goto = isset($ops['createPub']['goto']) ? $ops['createPub']['goto'] : $this->referer;
+            }
 
         } else {
             // check if an operation thrown a goto value
