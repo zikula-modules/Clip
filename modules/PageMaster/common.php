@@ -425,7 +425,8 @@ function PMcreateOrderBy($orderby)
         }
         // $value = {col[:ascdesc]}
         $value    = explode(':', $value);
-        $orderby .= $value[0].(isset($value[1]) ? ' '.$value[1] : '');
+        $orderby .= DataUtil::formatForStore($value[0]);
+        $orderby .= (isset($value[1]) ? ' '.DataUtil::formatForStore($value[1]) : '');
     }
 
     return trim($orderby);

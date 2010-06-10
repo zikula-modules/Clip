@@ -134,7 +134,7 @@ function PageMaster_admin_publist($args=array())
     $tid          = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
     $startnum     = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
     $itemsperpage = isset($args['itemsperpage']) ? $args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', 50);
-    $orderby      = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
+    $orderby      = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
 
     // validate the essential parameters
     if (empty($tid) || !is_numeric($tid)) {
@@ -153,15 +153,46 @@ function PageMaster_admin_publist($args=array())
                                       pnModURL('PageMaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
     }
 
-    // orderby check
+    $pubtype = PMgetPubType($tid);
+
+    // set the order
     $old_orderby = $orderby;
+    if (!isset($orderby) || empty($orderby)) {
+        if (!empty($pubtype['sortfield1'])) {
+            if ($pubtype['sortdesc1'] == 1) {
+                $orderby = $pubtype['sortfield1'].':DESC ';
+            } else {
+                $orderby = $pubtype['sortfield1'].':ASC ';
+            }
+
+            if (!empty($pubtype['sortfield2'])) {
+                if ($pubtype['sortdesc2'] == 1) {
+                    $orderby .= ', '.$pubtype['sortfield2'].':DESC ';
+                } else {
+                    $orderby .= ', '.$pubtype['sortfield2'].':ASC ';
+                }
+            }
+
+            if (!empty($pubtype['sortfield3'])) {
+                if ($pubtype['sortdesc3'] == 1) {
+                    $orderby .= ', '.$pubtype['sortfield3'].':DESC ';
+                } else {
+                    $orderby .= ', '.$pubtype['sortfield3'].':ASC ';
+                }
+            }
+        } else {
+            $orderby = 'pm_pid';
+        }
+    }
+
     $core_title  = PMgetPubtypeTitleField($tid);
     if (substr($orderby, 0, 10) == 'core_title') {
         $orderby = str_replace('core_title', $core_title, $orderby);
     }
+    $orderby = PMcreateOrderBy($orderby);
 
     // query the list
-    $publist  = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', str_replace(':',' ', $orderby), $startnum-1, $itemsperpage);
+    $publist  = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', $orderby, $startnum-1, $itemsperpage);
 
     if ($publist !== false) {
         $pubcount = (int)DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
