@@ -27,6 +27,7 @@ Loader::loadClass('FilterUtil_Replace', FILTERUTIL_CLASS_PATH);
 class FilterUtil_Filter_replaceName extends FilterUtil_PluginCommon implements FilterUtil_Replace
 {
     protected $pair = array();
+
     /**
      * Constructor
      *
@@ -37,6 +38,7 @@ class FilterUtil_Filter_replaceName extends FilterUtil_PluginCommon implements F
     public function __construct($config)
     {
         parent::__construct($config);
+
         if (isset($config['pair']) && is_array($config['pair'])) {
             $this->addPair($config['pair']);
         }
@@ -76,5 +78,4 @@ class FilterUtil_Filter_replaceName extends FilterUtil_PluginCommon implements F
 
          return array($field, $op, $value);
      }
-
 }

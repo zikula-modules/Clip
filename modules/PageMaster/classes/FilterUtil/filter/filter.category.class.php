@@ -26,7 +26,8 @@ Loader::loadClass('FilterUtil_Build', FILTERUTIL_CLASS_PATH);
  */
 class FilterUtil_Filter_category extends FilterUtil_PluginCommon implements FilterUtil_Build
 {
-
+    private $ops = array();
+    private $fields = array();
     private $property;
     
     /**
@@ -39,14 +40,17 @@ class FilterUtil_Filter_category extends FilterUtil_PluginCommon implements Filt
     public function __construct($config)
     {
         parent::__construct($config);
-        
-        if (isset($config['fields']) && is_array($config['fields']))
+
+        if (isset($config['fields']) && is_array($config['fields'])) {
             $this->addFields($config['fields']);
+        }
+
         if (isset($config['property'])) {
             $this->setProperty($config['property']);
         } else {
             $this->setProperty('Main');
         }
+
         if (isset($config['ops']) && (!isset($this->ops) || !is_array($this->ops))) {
             $this->activateOperators($config['ops']);
         } else {
@@ -105,10 +109,12 @@ class FilterUtil_Filter_category extends FilterUtil_PluginCommon implements Filt
         if ($this->default == true) {
             $fields[] = '-';
         }
+
         $ops = array();
         foreach ($this->ops as $op) {
             $ops[$op] = $fields;
         }
+
         return $ops;
     }
     
@@ -142,6 +148,7 @@ class FilterUtil_Filter_category extends FilterUtil_PluginCommon implements Filt
         if (array_search($op, $this->availableOperators()) === false || array_search($field,$this->fields) === false) {
             return '';
         }
+
         Loader :: loadClass('CategoryUtil');
 
         $items = array();
@@ -152,16 +159,17 @@ class FilterUtil_Filter_category extends FilterUtil_PluginCommon implements Filt
                 $items[] = $item['id'];
             }
         }    
-        
+
         $filter = array('__META__' => array('module' => $this->module));
         foreach ($this->property as $prop) {
             $filter[$prop] = $items;
         }
-        
+
         $where = DBUtil::generateCategoryFilterWhere($this->pntable, false, $filter);
         if ($op == 'ne') {
             $where = 'NOT ' . $where;
         }
+
         return array('where' => $where);
     }
 }

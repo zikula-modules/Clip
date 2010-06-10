@@ -27,9 +27,9 @@ Loader::loadClass('FilterUtil_Replace', FILTERUTIL_CLASS_PATH);
  */
 class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUtil_Build, FilterUtil_Replace
 {
-    private $fields;
-    private $ops;
-    
+    private $ops = array();
+    private $fields = array();
+
     public function __construct($config)
     {
         parent::__construct($config);
@@ -66,7 +66,7 @@ class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUt
             $this->ops[] = $op;
         }
     }
-    
+
     public function addFields($fields)
     {
         if (is_array($fields)) {
@@ -78,12 +78,12 @@ class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUt
             $this->fields[] = $fields;
         }
     }
-    
+
     public function getFields()
     {
         return $this->fields;
     }
-    
+
     /**
      * Get operators
      *
@@ -96,10 +96,12 @@ class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUt
         if ($this->default == true) {
             $fields[] = '-';
         }
+
         $ops = array();
         foreach ($this->ops as $op) {
             $ops[$op] = $fields;
         }
+
         return $ops;
     }
     
@@ -115,12 +117,11 @@ class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUt
     {
         // First check if this plugin have to work with this field
         if (array_search($field, $this->fields) === false) {
-            return array($field, $op, $value); //If not, return given set
+            return array($field, $op, $value); // If not, return given set
         }
 
         // Now, work!
-
-        //convert to unix timestamp
+        // convert to unix timestamp
         if (($date = $this->DateConvert($value)) === false) {
             return false;
         }
@@ -130,23 +131,13 @@ class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUt
 
     protected function DateConvert($date)
     {
-        switch(true) {
-        case strptime($date, "%d.%m.%Y %H:%M:%S") !== false:
+        if (strptime($date, "%d.%m.%Y %H:%M:%S") !== false) {
             $arr = strptime($date, "%d.%m.%Y %H:%M:%S");
-            $time = DateUtil::buildDatetime(
-                            $arr['tm_year'],
-                            $arr['tm_mon'],
-                            $arr['tm_monday'],
-                            $arr['tm_hour'],
-                            $arr['tm_min'],
-                            $arr['tm_sec']);
-            break;
-        case is_numeric($date):
+            $time = DateUtil::buildDatetime($arr['tm_year'], $arr['tm_mon'], $arr['tm_monday'], $arr['tm_hour'], $arr['tm_min'], $arr['tm_sec']);
+        } elseif (is_numeric($date)) {
             $time = DateUtil::getDatetime($date);
-            break;
-        default:
-            $time = str_replace('_', ' ',$date);
-            break;
+        } else {
+            $time = str_replace('_', ' ', $date);
         }
 
         return $time;
@@ -155,35 +146,40 @@ class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUt
     private function makePeriod($date, $type)
     {
         $datearray = getdate($date);
-        switch($type) {
+
+        switch ($type) {
             case 'year':
                 $from = mktime(0, 0, 0, 1, 1, $datearray['year']);
                 $to = strtotime('+1 year', $from);
                 break;
+
             case 'month':
                 $from = mktime(0, 0, 0, $datearray['mon'], 1, $datearray['year']);
                 $to = strtotime('+1 month', $from);
                 break;
-            /**case 'week':
+            /*
+            case 'week':
                 $from = DateUtil::getDatetime("substr ($date, 0, strpos ($date, ' '));
                 $to = DateUtil::getDatetime("$from +1 year");
-                break;*/
+            */
             case 'day':
             case 'tomorrow':
                 $from = mktime(0, 0, 0, $datearray['mon'], $datearray['mday'], $datearray['year']);
                 $to = strtotime('+1 day', $from);
                 break;
+
             case 'hour':
                 $from = mktime($datearray['hours'], 0, 0, $datearray['mon'], $datearray['mday'], $datearray['year']);
                 $to = $from + 3600;
                 break;
+
             case 'min':
             case 'minute':
                 $from = mktime($datearray['hours'], $datearray['minutes'], 0, $datearray['mon'], $datearray['mday'], $datearray['year']);
                 $to = $from + 60;
                 break;
         }
-        
+
         return array($from, $to);
     }
     
@@ -192,6 +188,7 @@ class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUt
         if (array_search($op, $this->ops) === false || array_search($field, $this->fields) === false) {
             return '';
         }
+
         $type = 'point';
         if (preg_match('~^(year|month|week|day|hour|min):\s*(.*)$~i', $value, $res)) {
             $type = strtolower($res[1]);
@@ -203,44 +200,52 @@ class FilterUtil_Filter_date extends FilterUtil_PluginCommon implements FilterUt
             $time = strtotime($value);
         }
         
-        switch($op) {
+        $column = $this->column[$field];
+
+        switch ($op) {
             case 'eq':
                 if ($type != 'point') {
                     list($from, $to) = $this->makePeriod($time, $type);
-                    $where = $this->column[$field] . ' >= \'' . DateUtil::getDatetime($from) . '\' AND ' . $this->column[$field] . ' < \'' . DateUtil::getDatetime($to) . '\'';
+                    $where =  "$column >= '".DateUtil::getDatetime($from)."' AND ".
+                              "$column < '".DateUtil::getDatetime($to)."'";
                 } else {
-                    $where = $this->column[$field] . ' = \'' . DateUtil::getDatetime($time) . '\'';
+                    $where = "$column = '".DateUtil::getDatetime($time)."'";
                 }
                 break;
+
             case 'ne':
                 if ($type != 'point') {
                     list($from, $to) = $this->makePeriod($time, $type);
-                    $where = $this->column[$field] . ' < \'' . DateUtil::getDatetime($from) . '\' AND ' . $this->column[$field] . ' >= \'' . DateUtil::getDatetime($to) . '\'';
+                    $where =  "$column < '".DateUtil::getDatetime($from)."' AND ".
+                              "$column >= '".DateUtil::getDatetime($to)."'";
                 } else {
-                    $where = $this->column[$field] . ' <> \'' . DateUtil::getDatetime($time) . '\'';
+                    $where = "$column <> '".DateUtil::getDatetime($time)."'";
                 }
                 break;
+
             case 'gt':
                 if ($type != 'point') {
                     list($from, $time) = $this->makePeriod($time, $type);
                 }
-                $where = $this->column[$field] . ' > \'' . DateUtil::getDatetime($time) . '\'';
+                $where = "$column > '".DateUtil::getDatetime($time)."'";
                 break;
+
             case 'ge':
-                $where = $this->column[$field] . ' >= \'' . DateUtil::getDatetime($time) . '\'';
+                $where = "$column >= '".DateUtil::getDatetime($time)."'";
                 break;
+
             case 'lt':
-                $where = $this->column[$field] . ' < \'' . DateUtil::getDatetime($time) . '\'';
+                $where = "$column < '".DateUtil::getDatetime($time)."'";
                 break;
+
             case 'le':
                 if ($type != 'point') {
                     list($from, $time) = $this->makePeriod($time, $type);
                 }
-                $where = $this->column[$field] . ' <= \'' . DateUtil::getDatetime($time) . '\'';
+                $where = "$column <= '".DateUtil::getDatetime($time)."'";
                 break;
         }
-        
+
         return array('where' => $where);
-        
     }
 }

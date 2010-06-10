@@ -49,7 +49,7 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
         } else {
             $this->activateOperators(array('eq', 'ne', 'lt', 'le', 'gt', 'ge', 'like', 'likefirst' , 'null', 'notnull'));
         }
-        
+
         if ($config['default'] == true || count($this->fields) <= 0) {
             $this->default = true;
         }
@@ -63,7 +63,8 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
      */
     public function activateOperators($op)
     {
-        static $ops = array('eq', 'ne', 'lt', 'le', 'gt', 'ge', 'like','likefirst' , 'null', 'notnull');
+        static $ops = array('eq', 'ne', 'lt', 'le', 'gt', 'ge', 'like', 'likefirst' , 'null', 'notnull');
+
         if (is_array($op)) {
             foreach($op as $v) {
                 $this->activateOperators($v);
@@ -72,7 +73,7 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
             $this->ops[] = $op;
         }
     }
-    
+
     public function addFields($fields)
     {
         if (is_array($fields)) {
@@ -84,12 +85,12 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
             $this->fields[] = $fields;
         }
     }
-    
+
     public function getFields()
     {
         return $this->fields;
     }
-    
+
     /**
      * Get operators
      *
@@ -99,12 +100,15 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
     public function getOperators()
     {
         $fields = $this->getFields();
-        if ($this->default == true)
+        if ($this->default == true) {
             $fields[] = '-';
+        }
+
         $ops = array();
         foreach ($this->ops as $op) {
             $ops[$op] = $fields;
         }
+
         return $ops;
     }
 
@@ -122,39 +126,52 @@ class FilterUtil_Filter_default extends FilterUtil_PluginCommon implements Filte
         if (!$this->fieldExists($field)) {
             return '';
         }
+
+        $where = '';
+        $column = $this->column[$field];
+
         switch ($op) {
             case 'ne':
-                return array('where' => $this->column[$field] . " <> '" . $value . "'");
+                $where = "$column <> '$value'";
                 break;
+
             case 'lt':
-                return array('where' => $this->column[$field] . " < '" . $value . "'");
+                $where = "$column < '$value'";
                 break;
+
             case 'le':
-                return array('where' => $this->column[$field] . " <= '" . $value . "'");
+                $where = "$column <= '$value'";
                 break;
+
             case 'gt':
-                return array('where' => $this->column[$field] . " > '" . $value . "'");
+                $where = "$column > '$value'";
                 break;
+
             case 'ge':
-                return array('where' => $this->column[$field] . " >= '" . $value . "'");
+                $where = "$column >= '$value'";
                 break;
+
             case 'like':
-                return array('where' => $this->column[$field] . " like '%" . $value . "%'");
+                $where = "$column LIKE '$value'";
                 break;
+
             case 'likefirst':
-                return array('where' => $this->column[$field] . " like '" . $value . "%'");
+                $where = "$column LIKE '$value%'";
                 break;
+
             case 'null':
-                return array('where' => $this->column[$field] . " = '' OR " . $this->column[$field] . " IS NULL");
+                $where = "$column = '' OR $column IS NULL";
                 break;
+
             case 'notnull':
-                return array('where' => $this->column[$field] . " <> '' AND " . $this->column[$field] . " IS NOT NULL");
+                $where = "$column <> '' OR $column IS NOT NULL";
                 break;
+
             case 'eq':
-                return array('where' => $this->column[$field] . " = '" . $value . "'");
+                $where = "$column = '$value'";
                 break;
-            default:
-                return '';
         }
+
+        return array('where' => $where); 
     }
 }
