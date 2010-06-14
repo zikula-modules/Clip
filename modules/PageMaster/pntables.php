@@ -63,10 +63,10 @@ function PageMaster_pntables()
         'fieldplugin'    => "C(50) NOTNULL DEFAULT ''",
         'fieldmaxlength' => 'I NULL',
         'typedata'       => 'C(4000) NULL',
-        'istitle'        => 'I1(1) NOTNULL',
-        'ispageable'     => 'I1(1) NOTNULL',
-        'issearchable'   => 'I1(1) NOTNULL',
-        'ismandatory'    => 'I1(1) NOTNULL',
+        'istitle'        => 'L NOTNULL',
+        'ispageable'     => 'L NOTNULL',
+        'issearchable'   => 'L NOTNULL',
+        'ismandatory'    => 'L NOTNULL',
         'lineno'         => 'I4 NOTNULL'
     );
     ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_pubfields_column'], 'pm_');
@@ -102,17 +102,17 @@ function PageMaster_pntables()
         'filename'        => "C(255) NOTNULL DEFAULT ''",
         'formname'        => "C(255) NOTNULL DEFAULT ''",
         'description'     => "C(255) NOTNULL DEFAULT ''",
-        'itemsperpage'    => 'I(3) NOTNULL',
+        'itemsperpage'    => 'I3 NOTNULL',
         'sortfield1'      => "C(255)",
-        'sortdesc1'       => 'I1(1)',
+        'sortdesc1'       => 'L',
         'sortfield2'      => "C(255)",
-        'sortdesc2'       => 'I1(1)',
+        'sortdesc2'       => 'L',
         'sortfield3'      => "C(255)",
-        'sortdesc3'       => 'I1(1)',
+        'sortdesc3'       => 'L',
         'workflow'        => "C(255) NOTNULL",
         'defaultfilter'   => "C(255)",
-        'enablerevisions' => 'I1(1) NOTNULL',
-        'enableeditown'   => 'I1(1) NOTNULL',
+        'enablerevisions' => 'L NOTNULL',
+        'enableeditown'   => 'L NOTNULL',
         'cachelifetime'   => 'I8 NULL'
     );
     ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_pubtypes_column'], 'pm_');
@@ -205,13 +205,13 @@ function PageMaster_pntables()
             'id'               => 'I4 PRIMARY AUTO',
             'core_pid'         => 'I4 NOTNULL',
             'core_author'      => 'I4 NOTNULL',
-            'core_hitcount'    => 'I(9) DEFAULT 0',
+            'core_hitcount'    => 'I8 DEFAULT 0',
             'core_language'    => 'C(10) NOTNULL', //FIXME how many chars are needed for a gettext code?
             'core_revision'    => 'I4 NOTNULL',
-            'core_online'      => 'I1(1) NOTNULL',
-            'core_indepot'     => 'I1(1) NOTNULL',
-            'core_showinmenu'  => 'I1(1) NOTNULL',
-            'core_showinlist'  => 'I1(1) NOTNULL DEFAULT 1',
+            'core_online'      => 'L NOTNULL',
+            'core_indepot'     => 'L NOTNULL',
+            'core_showinmenu'  => 'L NOTNULL',
+            'core_showinlist'  => 'L NOTNULL DEFAULT 1',
             'core_publishdate' => 'T',
             'core_expiredate'  => 'T'
         );
