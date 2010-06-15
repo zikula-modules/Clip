@@ -87,7 +87,7 @@ function PageMaster_init()
     $pmdir   = $tempdir.'/PageMaster';
     if (StringUtil::left($tempdir, 1) <> '/') {
         if (CacheUtil::createLocalDir('PageMaster')) {
-            LogUtil::registerStatus(__f('PageMaster created the upload directory successfully at [%s]. Be sure that be accessible via web and writable by the webserver.', $pmdir, $dom));
+            LogUtil::registerStatus(__f('PageMaster created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $pmdir, $dom));
         }
     } else {
         LogUtil::registerStatus(__f('PageMaster could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $pmdir, $dom));
