@@ -247,7 +247,7 @@ function PageMaster_upgrade($oldversion)
 
             // update the table definitions of some fields
             $tochange = array(
-                'pmformcheckboxinput' => 'I1(1)',
+                'pmformcheckboxinput' => 'L',
                 'pmformintinput' => 'I4',
                 'pmformlistinput' => 'I4',
                 'pmformpubinput' => 'I4',

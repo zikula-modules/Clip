@@ -12,7 +12,7 @@
 
 class PageMaster_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
 {
-    public $columnDef = 'I1(1)';
+    public $columnDef = 'L';
     public $title;
 
     function __construct()

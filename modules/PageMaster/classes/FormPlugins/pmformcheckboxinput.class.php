@@ -14,7 +14,7 @@ require_once('system/pnForm/plugins/function.pnformcheckbox.php');
 
 class pmformcheckboxinput extends pnFormCheckbox
 {
-    var $columnDef = 'I1(1)';
+    var $columnDef = 'L';
     var $title;
 
     function __construct()
