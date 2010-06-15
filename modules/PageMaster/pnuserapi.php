@@ -435,17 +435,19 @@ function PageMaster_userapi_getId($args)
  */
 function PageMaster_userapi_pubeditlist($args=array())
 {
-    $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pid');
+    $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid');
 
     $allTypes = array();
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
+
     foreach ($pubtypes as $pubtype) {
-        $tid      = $pubtype['tid'];
+        $tid    = $pubtype['tid'];
         $tables = pnDBGetTables();
         if (!isset($tables['pagemaster_pubdata'.$tid])) {
             $allTypes[$tid] = $pubtype['title'];
             continue;
         }
+
         $coreTitle = PMgetPubtypeTitleField($tid);
         if (substr($orderby, 0, 10) == 'core_title') {
             $orderby = str_replace('core_title', $coreTitle, $orderby);
@@ -453,11 +455,12 @@ function PageMaster_userapi_pubeditlist($args=array())
 
         $tablename = 'pagemaster_pubdata'.$tid;
         $where     = 'pm_indepot = 0';
-        $sort      = str_replace(':',' ', $orderby);
+        $sort      = str_replace(':', ' ', $orderby);
         $list      = DBUtil::selectObjectArray($tablename, $where, $sort);
+
         foreach ($list as $k=>$v) {
             if (!SecurityUtil::checkPermission('pagemaster:input:', "$tid:$v[pid]:", ACCESS_EDIT)) {
-                unset ($list[$k]);
+                unset($list[$k]);
 	        } else {
                 $list[$k]['_title'] = $v[$coreTitle];
 	        }
@@ -471,7 +474,6 @@ function PageMaster_userapi_pubeditlist($args=array())
     $ret['allTypes'] = $allTypes;
     return $ret;
 }
-
 
 /**
  * form custom url string
