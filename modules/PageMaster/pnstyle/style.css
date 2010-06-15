@@ -10,6 +10,7 @@
 */
 
 /* general */
+
 img {
     vertical-align: middle;
 }
@@ -27,6 +28,7 @@ pre.pm-showcode {
 }
 
 /* pubfield type selector and modalbox */
+
 .z-form div.z-formrow select.pm-plugintypeselector {
     display: inline;
     width: 66.2%;
@@ -46,4 +48,10 @@ pre.pm-showcode {
 
 .pm-pubdesc {
     margin: 0 5px;
+}
+
+.pm-option,
+.pm-menu span {
+    color: #444;
+    padding: 0 3px;
 }
