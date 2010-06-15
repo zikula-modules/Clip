@@ -26,7 +26,11 @@ class PageMaster_admin_modifyconfig
         $render->assign($modvars);
 
         // upload dir check
-        $siteroot = substr(pnServerGetVar('DOCUMENT_ROOT'), 0, -1).pnGetBaseURI().'/';
+        $siteroot = pnServerGetVar('DOCUMENT_ROOT');
+        if (substr($siteroot, -1) == DIRECTORY_SEPARATOR) {
+            $siteroot = substr($siteroot, 0, -1);
+        }
+        $siteroot .= pnGetBaseURI().DIRECTORY_SEPARATOR;
 
         $render->assign('siteroot', DataUtil::formatForDisplay($siteroot));
 
