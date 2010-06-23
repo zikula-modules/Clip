@@ -66,6 +66,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                      '                <!--[$'.$field['name'].'.orig_name]--><br />'."\n".
                      '                <img src="<!--[$'.$field['name'].'.thumbnailUrl]-->" title="'.no__('Thumbnail', $dom).'" alt="'.no__('Thumbnail', $dom).'" /><br />'."\n".
                      '                <img src="<!--[$'.$field['name'].'.url]-->" title="'.no__('Image', $dom).'" alt="'.no__('Image', $dom).'" />'."\n".
+                     '                <pre><!--[pmarray array=$'.$key.']--></pre>'."\n".
                      '            <span>'."\n".
                      '        </div>'."\n".
                      '    <!--[/if]-->';

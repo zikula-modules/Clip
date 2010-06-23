@@ -230,37 +230,40 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field, $render)
+    function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-
+        
         if (pnModAvailable('Thumbnail')) {
+            $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : false;
+            $this->parseConfig($typedata);
+
             // TODO Fieldsets and help text explaining how they work
             $html = '<div class="z-formrow">
                          <label for="pmplugin_tmpx_px">'.__('Thumbnail width', $dom).':</label>
-                         <input type="text" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
+                         <input type="text" value="'.$this->config[0].'" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
                      </div>
                      <div class="z-formrow">
                          <label for="pmplugin_tmpy_px">'.__('Thumbnail height', $dom).':</label>
-                         <input type="text" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
+                         <input type="text" value="'.$this->config[1].'" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
                          <br />
                      </div>
                      <div class="z-formrow">
                          <label for="pmplugin_pre_px">'.__('Preview width', $dom).':</label>
-                         <input type="text" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
+                         <input type="text" value="'.$this->config[2].'" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
                      </div>
                      <div class="z-formrow">
                          <label for="pmplugin_pre_px">'.__('Preview height', $dom).':</label>
-                         <input type="text" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
+                         <input type="text" value="'.$this->config[3].'" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
                          <br />
                      </div>
                      <div class="z-formrow">
-                       <label for="pmplugin_full_px">'.__('Full width', $dom).':</label>
-                       <input type="text" id="pmplugin_fullx_px" name="pmplugin_fullx_px" />
+                         <label for="pmplugin_full_px">'.__('Full width', $dom).':</label>
+                         <input type="text" value="'.$this->config[4].'" id="pmplugin_fullx_px" name="pmplugin_fullx_px" />
                      </div>
                      <div class="z-formrow">
-                       <label for="pmplugin_full_px">'.__('Full height', $dom).':</label>
-                       <input type="text" id="pmplugin_fully_px" name="pmplugin_fully_px" />
+                         <label for="pmplugin_full_px">'.__('Full height', $dom).':</label>
+                         <input type="text" value="'.$this->config[5].'" id="pmplugin_fully_px" name="pmplugin_fully_px" />
                      </div>';
         } else {
             $html = '<div class="z-warningmsg">
