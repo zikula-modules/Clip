@@ -38,10 +38,6 @@ $modversion['securityschema'] = array(
 
 // Module depedencies
 $modversion['dependencies'] = array(
-                                    array('modname'    => 'Workflow',
-                                          'minversion' => '1.0',
-                                          'maxversion' => '',
-                                          'status'     => PNMODULE_DEPENDENCY_REQUIRED),
                                     array('modname'    => 'scribite',
                                           'minversion' => '2.0',
                                           'maxversion' => '',
