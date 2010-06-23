@@ -39,7 +39,7 @@ function PageMaster_user_main($args)
 
     $pubtype = PMgetPubType($tid);
     if (empty($pubtype)) {
-        return LogUtil::registerError(__('Error! No such publication type [%s] found.', $tid, $dom));
+        return LogUtil::registerError(__f('Error! No such publication type [%s] found.', $tid, $dom));
     }
 
     if (empty($template)) {
@@ -279,7 +279,7 @@ function PageMaster_user_viewpub($args)
                                   'handlePluginFields' => true));
 
     if (!$pubdata) {
-        return LogUtil::registerError(__('No such publication [%s, %s, %s] found.', $tid, $pid, $id, $dom));
+        return LogUtil::registerError(__f('No such publication [%s - %s, %s] found.', array($tid, $pid, $id), $dom));
     }
 
     $core_title            = PMgetTitleField($pubfields);
@@ -337,7 +337,7 @@ function PageMaster_user_pubedit()
 
     $pubtype = PMgetPubType($tid);
     if (empty($pubtype)) {
-        return LogUtil::registerError(__('Error! No such publication type [%s] found.', $tid, $dom));
+        return LogUtil::registerError(__f('Error! No such publication type [%s] found.', $tid, $dom));
     }
 
     $pubfields = PMgetPubFields($tid, 'pm_lineno');
@@ -355,7 +355,7 @@ function PageMaster_user_pubedit()
                            array('tid' => $tid,
                                  'pid' => $pid));
         if (empty($id)) {
-            return LogUtil::registerError(__('Error! No such publication [%s, %s] found.', $tid, $pid, $dom));
+            return LogUtil::registerError(__f('Error! No such publication [%s - %s] found.', array($tid, $pid), $dom));
         }
     }
 
@@ -455,7 +455,7 @@ function PageMaster_user_executecommand()
 
     $pub = DBUtil::selectObjectByID($tablename, $id, 'id');
     if (!$pub) {
-        return LogUtil::registerError(__('Error! No such publication [%s] found.', $id, $dom));
+        return LogUtil::registerError(__f('Error! No such publication [%s] found.', $id, $dom));
     }
 
     WorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'PageMaster');

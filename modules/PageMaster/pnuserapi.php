@@ -37,7 +37,7 @@ function PageMaster_userapi_pubList($args)
     // validate the passed tid
     $tables = pnDBGetTables();
     if (!isset($tables['pagemaster_pubdata'.$tid])) {
-        return LogUtil::registerError(__('Error! No such publication type [%s] found.', $tid, $dom));
+        return LogUtil::registerError(__f('Error! No such publication type [%s] found.', $tid, $dom));
     }
     unset($tables);
 
@@ -251,7 +251,7 @@ function PageMaster_userapi_getPub($args)
         $pubtype = PMgetPubType($tid);
         // validate the result
         if (!$pubtype) {
-            return LogUtil::registerError(__('Error! No such publication type [%s] found.', $tid, $dom));
+            return LogUtil::registerError(__f('Error! No such publication type [%s] found.', $tid, $dom));
         }
     }
 
