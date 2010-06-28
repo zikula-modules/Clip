@@ -232,7 +232,7 @@ class pmformimageinput extends pnFormUploadInput
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field, $render)
+    function getTypeHtml($field, $render)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
