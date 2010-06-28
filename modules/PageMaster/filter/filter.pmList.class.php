@@ -10,6 +10,10 @@
  * @subpackage FilterUtil
 */
 
+if (version_compare(PN_VERSION_NUM, '1.3', '<')) {
+    Loader::loadClass('filter.category', FILTERUTIL_CLASS_PATH.'/filter');
+}
+
 class FilterUtil_Filter_pmList extends FilterUtil_Filter_category
 {
     /**
