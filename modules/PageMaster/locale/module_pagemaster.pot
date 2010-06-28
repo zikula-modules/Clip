@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula component\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 08:35-0300\n"
+"POT-Creation-Date: 2010-06-28 08:36-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,8 +27,8 @@ msgstr ""
 #: pntemplates/plugins/function.genericformplugin.php:28
 #: pntemplates/plugins/function.multilistdecode.php:21
 #: pntemplates/plugins/function.multilistdecode.php:25
-#: pntemplates/plugins/function.category_browser.php:50
-#: pntemplates/plugins/function.category_browser.php:54
+#: pntemplates/plugins/function.category_browser.php:38
+#: pntemplates/plugins/function.category_browser.php:42
 #: pntemplates/plugins/function.pmadminsubmenu.php:26
 #: pntemplates/plugins/function.hitcount.php:30
 #: pntemplates/plugins/function.hitcount.php:34
@@ -463,7 +463,7 @@ msgstr ""
 
 #. ! field type name
 #: Form/Plugin/List.php:25 classes/FormPlugins/pmformlistinput.class.php:27
-#: pntemplates/pagemaster_admin_pubtypes.htm:64
+#: pntemplates/pagemaster_admin_pubtypes.htm:67
 msgid "List"
 msgstr ""
 
@@ -644,26 +644,26 @@ msgstr ""
 msgid "Error! Deletion attempt failed."
 msgstr ""
 
-#: pnadminapi.php:32
+#: pnadminapi.php:33
 #, php-format
 msgid ""
 "Error! No table definitions found. Please <a href=\"%s\">define the fields</"
 "a> of your publication."
 msgstr ""
 
-#: pnadminapi.php:60
+#: pnadminapi.php:61
 msgid "List publication types"
 msgstr ""
 
-#: pnadminapi.php:64
+#: pnadminapi.php:65
 msgid "New publication type"
 msgstr ""
 
-#: pnadminapi.php:68
+#: pnadminapi.php:69
 msgid "Edit publications"
 msgstr ""
 
-#: pnadminapi.php:72 pntemplates/pagemaster_admin_modifyconfig.htm:6
+#: pnadminapi.php:73 pntemplates/pagemaster_admin_modifyconfig.htm:6
 #: pntemplates/pagemaster_admin_modifyconfig.htm:8
 msgid "Settings"
 msgstr ""
@@ -796,7 +796,7 @@ msgstr ""
 msgid "PID"
 msgstr ""
 
-#: pntemplates/plugins/function.category_browser.php:74
+#: pntemplates/plugins/function.category_browser.php:79
 #, php-format
 msgid "Error! No such category found for the ID passed [%s]."
 msgstr ""
@@ -804,7 +804,7 @@ msgstr ""
 #: pntemplates/plugins/function.pmadminsubmenu.php:49
 #: pntemplates/plugins/function.pmadminsubmenu.php:51
 #: pntemplates/plugins/function.pmadminsubmenu.php:53
-#: pntemplates/pagemaster_admin_pubtypes.htm:38
+#: pntemplates/pagemaster_admin_pubtypes.htm:41
 msgid "Fields"
 msgstr ""
 
@@ -929,7 +929,7 @@ msgstr ""
 #: pntemplates/pagemaster_admin_publist.htm:88
 #: pntemplates/pagemaster_generic_publist.htm:24
 #: pntemplates/pagemaster_generic_navbar.htm:44
-#: pntemplates/pagemaster_admin_pubtypes.htm:34
+#: pntemplates/pagemaster_admin_pubtypes.htm:37
 msgid "Edit"
 msgstr ""
 
@@ -1005,7 +1005,7 @@ msgid "Add new publication"
 msgstr ""
 
 #: pntemplates/pagemaster_user_pubeditlist_menu.htm:24
-#: pntemplates/pagemaster_admin_pubtypes.htm:33
+#: pntemplates/pagemaster_admin_pubtypes.htm:36
 msgid "Edit this publication type"
 msgstr ""
 
@@ -1018,7 +1018,7 @@ msgid "View this publication"
 msgstr ""
 
 #: pntemplates/pagemaster_user_pubeditlist_menu.htm:42
-#: pntemplates/pagemaster_admin_pubtypes.htm:73
+#: pntemplates/pagemaster_admin_pubtypes.htm:76
 msgid "No publication types found."
 msgstr ""
 
@@ -1270,60 +1270,60 @@ msgstr ""
 msgid "Show publists"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:37
+#: pntemplates/pagemaster_admin_pubtypes.htm:40
 msgid "Add, edit or modify the fields of this pubtype"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:41
+#: pntemplates/pagemaster_admin_pubtypes.htm:44
 msgid ""
 "Update the database table of this pubtype to any recent change in the fields"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:42
+#: pntemplates/pagemaster_admin_pubtypes.htm:45
 msgid "DB update"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:45
+#: pntemplates/pagemaster_admin_pubtypes.htm:48
 msgid "Add new publications to this pubtype"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:46
+#: pntemplates/pagemaster_admin_pubtypes.htm:49
 msgid "New pub"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:50
+#: pntemplates/pagemaster_admin_pubtypes.htm:53
 msgid "Go to the Admin publication list"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:51
+#: pntemplates/pagemaster_admin_pubtypes.htm:54
 msgid "Admin"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:54
+#: pntemplates/pagemaster_admin_pubtypes.htm:57
 msgid "Go to the public publication list"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:55
+#: pntemplates/pagemaster_admin_pubtypes.htm:58
 msgid "Public"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:59
+#: pntemplates/pagemaster_admin_pubtypes.htm:62
 msgid "Get the input form code of this pubtype"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:60
+#: pntemplates/pagemaster_admin_pubtypes.htm:63
 msgid "Form"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:63
+#: pntemplates/pagemaster_admin_pubtypes.htm:66
 msgid "Get the publist code of this pubtype"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:67
+#: pntemplates/pagemaster_admin_pubtypes.htm:70
 msgid "Get the pubview code of this pubtype"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:68
+#: pntemplates/pagemaster_admin_pubtypes.htm:71
 msgid "Display"
 msgstr ""
 
