@@ -206,7 +206,7 @@ function PageMaster_userapi_pubList($args)
 
     return array (
         'publist'  => $publist,
-        'pubcount' => $pubcount
+        'pubcount' => isset($pubcount) ? $pubcount : null
     );
 }
 

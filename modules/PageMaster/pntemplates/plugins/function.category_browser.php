@@ -33,18 +33,6 @@ function smarty_function_category_browser($params, &$smarty)
 
     $tid               = $params['tid'];
     $field             = $params['field'];
-    $template          = isset($params['template']) ? $params['template'] : 'pagemaster_category_browser.htm';
-    $count             = isset($params['count']) ? $params['count'] : false;
-    $togglediv         = isset($params['togglediv']) ? $params['togglediv'] : false;
-    $assign            = isset($params['assign']) ? $params['assign'] : null;
-    $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;
-    $globalmultiselect = isset($params['globalmultiselect']) ? $params['globalmultiselect'] : false;
-    $cache             = isset($params['cache']) ? $params['cache'] : false;
-    $cache_count       = isset($params['cache_count']) ? $params['cache_count'] : true;
-
-    $filter     = FormUtil::getPassedValue('filter');
-    $filter_arr = explode(',', $filter);
-    $lang       = ZLanguage::getLanguageCode();
 
     if (!$tid) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
@@ -53,6 +41,21 @@ function smarty_function_category_browser($params, &$smarty)
     if (!$field) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'field', $dom));
     }
+
+    $count             = isset($params['count']) ? $params['count'] : false;
+    $togglediv         = isset($params['togglediv']) ? $params['togglediv'] : false;
+
+    $template          = isset($params['template']) ? $params['template'] : 'pagemaster_category_browser.htm';
+    $assign            = isset($params['assign']) ? $params['assign'] : null;
+    $operator          = isset($params['operator']) ? $params['operator'] : 'sub';
+    $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;
+    $globalmultiselect = isset($params['globalmultiselect']) ? $params['globalmultiselect'] : false;
+    $cache             = isset($params['cache']) ? $params['cache'] : false;
+    $cache_count       = isset($params['cache_count']) ? $params['cache_count'] : true;
+
+    $filter     = FormUtil::getPassedValue('filter');
+    $filter_arr = explode(',', $filter);
+    $lang       = ZLanguage::getLanguageCode();
 
     $cacheid = $tid.'-'.$field;
     $render  = pnRender::getInstance('PageMaster', $cache, $cacheid);
@@ -63,7 +66,9 @@ function smarty_function_category_browser($params, &$smarty)
         }
     }
 
-    Loader::loadClass('CategoryUtil');
+    if (version_compare(PN_VERSION_NUM, '1.3', '<')) {
+        Loader::loadClass('CategoryUtil');
+    }
 
     $pubfields = PMgetPubFields($tid);
     $id = $pubfields[$field]['typedata'];
@@ -75,51 +80,51 @@ function smarty_function_category_browser($params, &$smarty)
     }
 
     if ($count) {
-        // get it only once
-        $pubtype = PMgetPubType($tid);
-
         if (function_exists('apc_fetch') && $cache_count) {
             $count_arr_old = $count_arr = apc_fetch('cat_browser_count_'.$tid);
         }
     }
 
     $one_selected = false;
-    foreach ($cats as $k => $v)
-    {
-        $v['selected'] = 0;
-        $path = $v['path'];
+    $keys = array_keys($cats);
+
+    $catIDs = array();
+    foreach ($keys as $k) {
+        $catIDs[] = $cats[$k]['id'];
+    }
+
+    $basedepth = -1;
+    foreach ($keys as $k) {
+        $cats[$k]['selected'] = 0;
 
         $old_filter = '';
-        $filter_act = $field.':sub:'.$v['id'];
+        $filter_act = $field.':'.$operator.':'.$cats[$k]['id'];
 
-        $depth = StringUtil::countInstances($path, '/');
-        if (strlen($path) > 1) {
+        $depth = StringUtil::countInstances($cats[$k]['path'], '/');
+        if (strlen($cats[$k]['path']) > 1) {
             $depth++;
         }
-        $depth = $depth-7;
+        if ($basedepth == -1) {
+            $basedepth = $depth;
+        }
+        $depth = $depth - $basedepth;
 
         // check if this cat is filtered
-        foreach ($filter_arr as $fkey => $fv)
+        foreach ($filter_arr as $fv)
         {
             if ($fv == $filter_act) {
-                $v['selected'] = 1;
+                $cats[$k]['selected'] = 1;
                 $one_selected = true;
             } else {
                 if ($multiselect) {
-                    $old_filter = $old_filter.','.$fv;
+                    $old_filter .= ','.$fv;
                 } else {
                     // just add if from another browser
                     if ($globalmultiselect) {
                         list($fx, $subx, $idx) = explode(':', $fv);
 
-                        $found = false;
-                        foreach ($cats as $k2 => $v2) {
-                            if ($v2['id'] == $idx) {
-                                $found = true;
-                            }
-                        }
-                        if (!$found) {
-                            $old_filter = $old_filter.','.$fv;
+                        if (!in_array($idx, $catIDs)) {
+                            $old_filter .= ','.$fv;
                         }
                     }
                 }
@@ -129,7 +134,7 @@ function smarty_function_category_browser($params, &$smarty)
         // delete the ,
         $old_filter = substr($old_filter, 1);
 
-        if ($v['selected'] == 1) {
+        if ($cats[$k]['selected'] == 1) {
             $new_filter = $old_filter;
         } else {
             if (!empty($old_filter)) {
@@ -150,26 +155,22 @@ function smarty_function_category_browser($params, &$smarty)
 
         if ($count) {
             if (isset($count_arr[$filter_act])) {
-                $v['count'] = $count_arr[$filter_act];
+                $cats[$k]['count'] = $count_arr[$filter_act];
             } else {
                 $pubarr = pnModAPIFunc('PageMaster', 'user', 'pubList',
                                        array('tid'                => $tid,
                                              'countmode'          => 'just',
                                              'filter'             => $filter_act,
                                              'checkPerm'          => false,
-                                             'pubfields'          => $pubfields,
-                                             'pubtype'            => $pubtype,
                                              'handlePluginFields' => false));
 
-                $count_arr[$filter_act] = $v['count'] = $pubarr['pubcount'];
+                $cats[$k]['count'] = $count_arr[$filter_act] = $pubarr['pubcount'];
             }
         }
 
-        $v['depth']     = $depth;
-        $v['url']       = $url;
-        $v['fullTitle'] = isset($v['display_name'][$lang]) ? $v['display_name'][$lang] : $v['name'];
-
-        $cats[$k] = $v;
+        $cats[$k]['depth']     = $depth;
+        $cats[$k]['url']       = $url;
+        $cats[$k]['fullTitle'] = isset($cats[$k]['display_name'][$lang]) ? $cats[$k]['display_name'][$lang] : $cats[$k]['name'];
     }
 
     // TODO Remove this in 1.3 to use DBUtil cache
@@ -179,14 +180,17 @@ function smarty_function_category_browser($params, &$smarty)
 
     $render->assign('cats', $cats);
 
-    $html = $render->fetch($template, $cacheid);
+    // assign the plugin options
+    $options = array(
+      'tid'       => $tid,
+      'field'     => $field,
+      'count'     => $count,
+      'togglediv' => $togglediv,
+      'selected'  => $one_selected
+    );
+    $render->assign('options', $options);
 
-    if ($togglediv <> false && $one_selected) {
-        $html .= '<script type=\'text/javascript\'>';
-        //$html .= 'Effect.toggle(\''.$setup['field'].'\', \'blind\', {duration:0.0});';
-        $html .= 'document.getElementById(\''.$togglediv.'\').style.display = \'block\';';
-        $html .= '</script>';
-    }
+    $html = $render->fetch($template, $cacheid);
 
     if ($assign) {
         $smarty->assign($params['assign'], $html);
