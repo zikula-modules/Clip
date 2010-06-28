@@ -25,9 +25,12 @@
             <!--[foreach from=$pubtypes item='pubtype']-->
             <tr class="<!--[cycle values='z-odd,z-even']-->">
                 <td>
-                    <strong><!--[gt text=$pubtype.title]--></strong><br />
+                    <strong><!--[gt text=$pubtype.title]--></strong>
+                    <!--[if $pubtype.description neq '']-->
+                    <br />
                     <!--[gt text=$pubtype.description assign='pubtypedesc']-->
                     <!--[$pubtypedesc|truncate:30:'...']--><br />
+                    <!--[/if]-->
                 </td>
                 <td>
                     <a href="<!--[pnmodurl modname='PageMaster' type='admin' func='pubtype' tid=$pubtype.tid]-->" title="<!--[gt text='Edit this publication type']-->">
