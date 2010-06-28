@@ -12,7 +12,7 @@
 function PageMaster_pntables()
 {
     $tables = array ();
-
+/*
     // relations table
     $tables['pagemaster_relations'] = DBUtil::getLimitedTablename('pagemaster_relations');
     $tables['pagemaster_relations_column'] = array (
@@ -33,7 +33,7 @@ function PageMaster_pntables()
     );
     ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_relations_column'], 'pm_');
     ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_relations_column_def']);
-
+*/
 
     // pubfields table
     $tables['pagemaster_pubfields'] = DBUtil::getLimitedTablename('pagemaster_pubfields');
@@ -163,20 +163,19 @@ function PageMaster_pntables()
         }
     }
 
-    $sql = 'SELECT ' . $tables['pagemaster_pubfields_column']['tid']
-              . ', ' . $tables['pagemaster_pubfields_column']['id']
-              . ', ' . $tables['pagemaster_pubfields_column']['name']
-              . ', ' . $tables['pagemaster_pubfields_column']['fieldtype']
-              . ' FROM ' . $tables['pagemaster_pubfields']
-              . ' ORDER BY ' . $tables['pagemaster_pubfields_column']['tid'] . ' ASC, '
-                             . $tables['pagemaster_pubfields_column']['id']  . ' ASC ';
-
     $existingtables = DBUtil::metaTables();
 
-    if (!in_array(DBUtil::getLimitedTablename('pagemaster_pubfields'), $existingtables)) {
-        // installation
-    } else {
+    if (in_array(DBUtil::getLimitedTablename('pagemaster_pubfields'), $existingtables)) {
+        $sql = 'SELECT ' . $tables['pagemaster_pubfields_column']['tid']
+                  . ', ' . $tables['pagemaster_pubfields_column']['id']
+                  . ', ' . $tables['pagemaster_pubfields_column']['name']
+                  . ', ' . $tables['pagemaster_pubfields_column']['fieldtype']
+                  . ' FROM ' . $tables['pagemaster_pubfields']
+                  . ' ORDER BY ' . $tables['pagemaster_pubfields_column']['tid'] . ' ASC, '
+                                 . $tables['pagemaster_pubfields_column']['id']  . ' ASC ';
+
         $result = DBUtil::executeSQL($sql);
+
         if ($result == false) {
             return LogUtil::registerError('Error! Failed to load the pubfields.');
         }
@@ -225,7 +224,7 @@ function PageMaster_pntables()
 
         foreach ($pubfields as $pubfield) {
             // if we change of publication type
-            if ($pubfield['pm_tid'] != $old_tid && $old_tid != 0) {
+            if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
                 // add the table definition to the $tables array
                 PageMaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
                 // and reset the columns and definitions for the next pubtype
@@ -234,11 +233,11 @@ function PageMaster_pntables()
             }
 
             // add the column and definition for this field
-            $tablecolumn[$pubfield['pm_name']] = "pm_{$pubfield['pm_id']}";
-            $tabledef[$pubfield['pm_name']]    = "{$pubfield['pm_fieldtype']} NULL";
+            $tablecolumn[$pubfield['name']] = "pm_{$pubfield['id']}";
+            $tabledef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
 
             // set the actual tid to check a pubtype change in the next cycle
-            $old_tid = $pubfield['pm_tid'];
+            $old_tid = $pubfield['tid'];
         }
 
         // the final one doesn't trigger a tid change
