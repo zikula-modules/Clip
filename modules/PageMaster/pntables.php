@@ -102,7 +102,7 @@ function PageMaster_pntables()
         'filename'        => "C(255) NOTNULL DEFAULT ''",
         'formname'        => "C(255) NOTNULL DEFAULT ''",
         'description'     => "C(255) NOTNULL DEFAULT ''",
-        'itemsperpage'    => 'I3 NOTNULL',
+        'itemsperpage'    => 'I4 NOTNULL',
         'sortfield1'      => "C(255)",
         'sortdesc1'       => 'L',
         'sortfield2'      => "C(255)",
