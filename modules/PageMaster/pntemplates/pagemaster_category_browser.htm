@@ -1,6 +1,6 @@
 <!--[* $Id$ *]-->
 <!--[assign var='depth' value=0]-->
-<!--[pndebug]-->
+
 <ul>
     <!--[foreach from=$cats item='cat' name='pmcb']-->
     <!--[if $smarty.foreach.pmcb.first neq true]-->
@@ -34,8 +34,11 @@
 </ul>
 
 <!--[if $options.selected AND $options.togglediv]-->
-<script type="text/javascript">';
-    <!--[* Effect.toggle('<!--[$options.togglediv]-->', 'blind', {duration:0.0}); *]-->
+<script type="text/javascript">
+    <!--[*
+    <!--[pnajaxheader effects=1]-->
+    Effect.toggle('<!--[$options.togglediv]-->', 'blind', {duration:0.0});
+    *]-->
     document.getElementById('<!--[$options.togglediv]-->').style.display = 'block';
 </script>
 <!--[/if]-->
