@@ -316,6 +316,7 @@ function PageMaster_upgrade($oldversion)
             $registry->insert();
 
         case '0.4.0':
+        case '0.4.1':
             // further upgrade handling
     }
 

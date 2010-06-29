@@ -17,7 +17,7 @@ $modversion['displayname']    = __('PageMaster', $dom);
 $modversion['description']    = __('Content Module like pagesetter', $dom);
 //! module name that appears in URL
 $modversion['url']            = __('pagemaster', $dom);
-$modversion['version']        = '0.4.0'; // 10 chars or less
+$modversion['version']        = '0.4.1'; // 10 chars or less
 
 $modversion['credits']        = 'pndocs/credits.txt';
 $modversion['changelog']      = 'pndocs/changelog.txt';
