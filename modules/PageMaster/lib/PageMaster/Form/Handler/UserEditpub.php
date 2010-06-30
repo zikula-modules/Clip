@@ -14,7 +14,7 @@
  *
  * @author kundi
  */
-class PageMaster_user_editpub
+class PageMaster_Form_Handler_UserEditpub
 {
     var $id;
     var $core_pid;
@@ -36,7 +36,7 @@ class PageMaster_user_editpub
     var $itemurl;
     var $referer;
     var $goto;
-    
+
     function initialize(&$render)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
