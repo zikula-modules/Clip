@@ -208,8 +208,6 @@ class PageMaster_Admin extends Zikula_Controller
      */
     public function history()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         // get the input parameters
         $pid = FormUtil::getPassedValue('pid');
         $tid = FormUtil::getPassedValue('tid');
@@ -253,8 +251,6 @@ class PageMaster_Admin extends Zikula_Controller
         if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
-
-        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         // get the input parameters
         $tid  = (int)FormUtil::getPassedValue('tid');
