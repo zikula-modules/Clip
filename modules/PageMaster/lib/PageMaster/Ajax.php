@@ -31,7 +31,7 @@ class PageMaster_Ajax extends Zikula_Controller
             $where  = "pm_id = '".DataUtil::formatForStore($value)."' AND pm_tid = '".DataUtil::formatForStore($tid)."'";
             $result = DBUtil::updateObject($data, 'pagemaster_pubfields', $where);
             if (!$result) {
-                AjaxUtil::error($this->___('Error! Update attempt failed.'));
+                AjaxUtil::error($this->__('Error! Update attempt failed.'));
             }
         }
 

@@ -16,8 +16,6 @@ class PageMaster_Installer extends Zikula_Installer
      */
     public function install()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         // create table
         if (!DBUtil::createTable('pagemaster_pubfields')) {
             return false;
@@ -30,23 +28,19 @@ class PageMaster_Installer extends Zikula_Installer
         // build the default category tree
         $regpath = '/__SYSTEM__/Modules';
 
-        Loader::loadClass('CategoryUtil');
-        Loader::loadClassFromModule('Categories', 'Category');
-        Loader::loadClassFromModule('Categories', 'CategoryRegistry');
-
         $lang = ZLanguage::getLanguageCode();
 
         $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster');
         if (!$rootcat) {
             $rootcat = CategoryUtil::getCategoryByPath($regpath);
 
-            $cat = new PNCategory();
+            $cat = new Categories_DBObject_Category();
             $cat->setDataField('parent_id', $rootcat['id']);
             $cat->setDataField('name', 'PageMaster');
-            $cat->setDataField('display_name', array($lang => __('PageMaster', $dom)));
-            $cat->setDataField('display_desc', array($lang => __('PageMaster root category', $dom)));
+            $cat->setDataField('display_name', array($lang => $this->__('PageMaster')));
+            $cat->setDataField('display_desc', array($lang => $this->__('PageMaster root category')));
             if (!$cat->validate('admin')) {
-                return LogUtil::registerError(__f('Error! Could not create the [%s] category.', 'PageMaster', $dom));
+                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'PageMaster'));
             }
             $cat->insert();
             $cat->update();
@@ -56,14 +50,14 @@ class PageMaster_Installer extends Zikula_Installer
         if (!$rootcat) {
             $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster');
 
-            $cat = new PNCategory();
+            $cat = new Categories_DBObject_Category();
             $cat->setDataField('parent_id', $rootcat['id']);
             $cat->setDataField('name', 'lists');
             //! this is the 'lists' root category name
-            $cat->setDataField('display_name', array($lang => __('lists', $dom)));
-            $cat->setDataField('display_desc', array($lang => __('PageMaster lists for its publications', $dom)));
+            $cat->setDataField('display_name', array($lang => $this->__('lists')));
+            $cat->setDataField('display_desc', array($lang => $this->__('PageMaster lists for its publications')));
             if (!$cat->validate('admin')) {
-                return LogUtil::registerError(__f('Error! Could not create the [%s] category.', 'lists', $dom));
+                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'lists'));
             }
             $cat->insert();
             $cat->update();
@@ -80,7 +74,7 @@ class PageMaster_Installer extends Zikula_Installer
             $registry->setDataField('category_id', $rootcat['id']);
             $registry->insert();
         } else {
-            LogUtil::registerError(__f('Error! Could not create the [%s] Category Registry for PageMaster.', 'Lists', $dom));
+            LogUtil::registerError($this->__f('Error! Could not create the [%s] Category Registry for PageMaster.', 'Lists'));
         }
 
         // modvars
@@ -89,16 +83,16 @@ class PageMaster_Installer extends Zikula_Installer
         $pmdir   = $tempdir.'/PageMaster';
         if (StringUtil::left($tempdir, 1) <> '/') {
             if (CacheUtil::createLocalDir('PageMaster')) {
-                LogUtil::registerStatus(__f('PageMaster created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $pmdir, $dom));
+                LogUtil::registerStatus($this->__f('PageMaster created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $pmdir));
             }
         } else {
-            LogUtil::registerStatus(__f('PageMaster could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $pmdir, $dom));
+            LogUtil::registerStatus($this->__f('PageMaster could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $pmdir));
         }
         $modvars = array(
         'uploadpath' => $pmdir,
         'devmode'    => true
         );
-        ModUtil::setVars('PageMaster', $modvars);
+        $this->setVars($modvars);
 
         return true;
     }
@@ -109,8 +103,6 @@ class PageMaster_Installer extends Zikula_Installer
     public function upgrade($oldversion)
     {
         //update pn_pagemaster_pubfields set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1) //FIXME
-
-        $dom = ZLanguage::getModuleDomain('PageMaster');
 
         switch ($oldversion)
         {
@@ -126,7 +118,7 @@ class PageMaster_Installer extends Zikula_Installer
                         $types[$k]['urltitle'] = DataUtil::formatPermalink($types[$k]['title']);
                     }
                     if (!DBUtil::updateObjectArray($types, 'pagemaster_pubtypes', 'tid')) {
-                        LogUtil::registerError(__('Error! Update attempt failed.', $dom));
+                        LogUtil::registerError($this->__('Error! Update attempt failed.'));
                         return '0.1';
                     }
                 }
@@ -156,7 +148,7 @@ class PageMaster_Installer extends Zikula_Installer
                     }
                     $sql = "UPDATE {$tables['pagemaster_pubdata'.$tid]} SET pm_author = pm_cr_uid WHERE pm_author = '0'";
                     if (!DBUtil::executeSQL($sql)) {
-                        LogUtil::registerError(__('Error! Update attempt failed.', $dom));
+                        LogUtil::registerError($this->__('Error! Update attempt failed.'));
                         return '0.2';
                     }
                 }
@@ -225,7 +217,7 @@ class PageMaster_Installer extends Zikula_Installer
                     }
                     // update the publications data
                     if (!DBUtil::updateObjectArray($fieldsdata, 'pagemaster_pubdata'.$tid)) {
-                        LogUtil::registerError(__('Error! Update attempt failed.', $dom));
+                        LogUtil::registerError($this->__('Error! Update attempt failed.'));
                         return '0.2';
                     }
                 }
@@ -236,7 +228,7 @@ class PageMaster_Installer extends Zikula_Installer
                 $tables = DBUtil::getTables();
                 $sql = "UPDATE {$tables['pagemaster_pubfields']} set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1)";
                 if (!DBUtil::executeSQL($sql)) {
-                    LogUtil::registerError(__('Error! Update attempt failed.', $dom));
+                    LogUtil::registerError($this->__('Error! Update attempt failed.'));
                     return '0.2.1';
                 }
 
@@ -245,7 +237,7 @@ class PageMaster_Installer extends Zikula_Installer
             case '0.3.2':
             case '0.3.3':
                 // new modvar: development mode
-                ModUtil::setVars('PageMaster', 'devmode', true);
+                $this->setVar('devmode', true);
 
                 // update the table definitions of some fields
                 $tochange = array(
@@ -296,21 +288,17 @@ class PageMaster_Installer extends Zikula_Installer
 
             case '0.3.4':
                 // create the PM category registry
-                Loader::loadClass('CategoryUtil');
-                Loader::loadClassFromModule('Categories', 'Category');
-                Loader::loadClassFromModule('Categories', 'CategoryRegistry');
-
                 $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
                 if (!$rootcat) {
                     $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
                     if (!$rootcat) {
-                        LogUtil::registerError(__f('Error! Category path not found [%s].', '/Modules/pagemaster/lists', $dom));
-                        LogUtil::registerError(__f('Error! Category path not found [%s].', '/Modules/Global', $dom));
+                        LogUtil::registerError($this->__f('Error! Category path not found [%s].', '/Modules/pagemaster/lists'));
+                        LogUtil::registerError($this->__f('Error! Category path not found [%s].', '/Modules/Global'));
                         return '0.3.4';
                     }
                 }
                 // create an entry in the categories registry to the Lists property
-                $registry = new PNCategoryRegistry();
+                $registry = new Categories_DBObject_Registry();
                 $registry->setDataField('modname', 'PageMaster');
                 $registry->setDataField('table', 'pagemaster_pubtypes');
                 $registry->setDataField('property', 'Lists');
@@ -346,9 +334,8 @@ class PageMaster_Installer extends Zikula_Installer
             return false;
         }
 
-        Loader::loadClass('CategoryUtil');
         CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/pagemaster', 'path');
-        ModUtil::delVar('PageMaster');
+        $this->delVars();
 
         return true;
     }

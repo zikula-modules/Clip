@@ -11,7 +11,6 @@
 
 class PageMaster_Admin extends Zikula_Controller
 {
-
     /**
      * Main admin screen
      */
@@ -122,7 +121,7 @@ class PageMaster_Admin extends Zikula_Controller
 
         // validate the essential parameters
         if (empty($tid) || !is_numeric($tid)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
         if (!SecurityUtil::checkPermission('pagemaster::', $tid.'::', ACCESS_EDIT)) {
@@ -213,10 +212,10 @@ class PageMaster_Admin extends Zikula_Controller
         $tid = FormUtil::getPassedValue('tid');
 
         if (empty($tid) || !is_numeric($tid)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
         if (empty($pid) || !is_numeric($pid)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'pid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'pid'));
         }
 
         if (!SecurityUtil::checkPermission('pagemaster::', "$tid:$pid:", ACCESS_ADMIN)) {
@@ -258,10 +257,10 @@ class PageMaster_Admin extends Zikula_Controller
 
         // validate the essential parameters
         if (empty($tid) || !is_numeric($tid)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
         if (empty($mode)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'mode'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'mode'));
         }
 
         // create the renderer

@@ -32,12 +32,12 @@ class PageMaster_User extends Zikula_Controller
 
         // essential validation
         if (empty($tid) || !is_numeric($tid)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
         $pubtype = PMgetPubType($tid);
         if (empty($pubtype)) {
-            return LogUtil::registerError(__f('Error! No such publication type [%s] found.', $tid));
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
 
         if (empty($template)) {
@@ -138,7 +138,7 @@ class PageMaster_User extends Zikula_Controller
         if ($template != 'pagemaster_generic_publist.htm' && !$render->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
-                LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template));
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
             $template = 'pagemaster_generic_publist.htm';
         }
@@ -172,15 +172,15 @@ class PageMaster_User extends Zikula_Controller
 
         // essential validation
         if (empty($tid) || !is_numeric($tid)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
         if ((empty($pid) || !is_numeric($pid)) && (empty($id) || !is_numeric($id))) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id | pid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
         $pubtype = PMgetPubType($tid);
         if (empty($pubtype)) {
-            return LogUtil::registerError(__f('Error! No such publication type [%s] found.', $tid));
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
 
         // get the pid if it was not passed
@@ -275,7 +275,7 @@ class PageMaster_User extends Zikula_Controller
                                   'handlePluginFields' => true));
 
         if (!$pubdata) {
-            return LogUtil::registerError(__f('No such publication [%s - %s, %s] found.', array($tid, $pid, $id)));
+            return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($tid, $pid, $id)));
         }
 
         $core_title            = PMgetTitleField($pubfields);
@@ -297,7 +297,7 @@ class PageMaster_User extends Zikula_Controller
         if ($template != 'var:viewpub_template_code' && !$render->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
-                LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template));
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
             $template = 'var:viewpub_template_code';
         }
@@ -326,12 +326,12 @@ class PageMaster_User extends Zikula_Controller
 
         // essential validation
         if (empty($tid) || !is_numeric($tid)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
         $pubtype = PMgetPubType($tid);
         if (empty($pubtype)) {
-            return LogUtil::registerError(__f('Error! No such publication type [%s] found.', $tid));
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
 
         $pubfields = PMgetPubFields($tid, 'pm_lineno');
@@ -349,7 +349,7 @@ class PageMaster_User extends Zikula_Controller
             array('tid' => $tid,
                                  'pid' => $pid));
             if (empty($id)) {
-                return LogUtil::registerError(__f('Error! No such publication [%s - %s] found.', array($tid, $pid)));
+                return LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($tid, $pid)));
             }
         }
 
@@ -387,7 +387,7 @@ class PageMaster_User extends Zikula_Controller
         if (!empty($stepname) && $render->template_exists($template_step)) {
             return $render->pnFormExecute($template_step, $formHandler);
         } elseif ($alert) {
-            LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template_step));
+            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template_step));
         }
 
         // generic edit
@@ -396,7 +396,7 @@ class PageMaster_User extends Zikula_Controller
         if ($render->template_exists($template_all)) {
             return $render->pnFormExecute($template_all, $formHandler);
         } elseif ($alert) {
-            LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template_all));
+            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template_all));
         }
 
         // autogenerated edit template
@@ -427,15 +427,15 @@ class PageMaster_User extends Zikula_Controller
 
         // essential validation
         if (empty($tid) || !is_numeric($tid)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
         if (!isset($id) || empty($id) || !is_numeric($id)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'));
         }
 
         if (empty($commandName)) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'commandName'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'commandName'));
         }
 
         if (empty($schema)) {
@@ -447,7 +447,7 @@ class PageMaster_User extends Zikula_Controller
 
         $pub = DBUtil::selectObjectByID($tablename, $id, 'id');
         if (!$pub) {
-            return LogUtil::registerError(__f('Error! No such publication [%s] found.', $id));
+            return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', $id));
         }
 
         WorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'PageMaster');

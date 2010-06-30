@@ -22,7 +22,7 @@ class PageMaster_Api_Admin extends Zikula_Api
     public function updatetabledef($args)
     {
         if (!isset($args['tid'])) {
-            return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
         $tablename = 'pagemaster_pubdata'.$args['tid'];
@@ -31,7 +31,7 @@ class PageMaster_Api_Admin extends Zikula_Api
 
         if (!isset($tables[$tablename])) {
             $urlfields = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $args['tid']));
-            return LogUtil::registerError(__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields));
+            return LogUtil::registerError($this->__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields));
         }
 
         $existing = DBUtil::metaTables();
