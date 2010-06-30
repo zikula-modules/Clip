@@ -12,8 +12,7 @@ $this->assign ('referer', 'index.php');
 }
 }
 {/php}
-
-<script type="text/javascript" src="modules/PageMaster/pnjavascript/listcontrol.js"></script>
+{pageaddvar name="javascript" value="modules/PageMaster/javascript/listcontrol.js"}
 <div id="productcategorylist">
     <ul id="pubeditlist" style="margin-left:14px;">
         {foreach from=$allTypes item=type key=tid}
