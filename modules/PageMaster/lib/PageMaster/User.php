@@ -79,12 +79,12 @@ class PageMaster_User extends Zikula_Controller
         }
 
         // buils the output
-        $render = Renderer::getInstance('PageMaster', $cachetid, $cacheid, true);
+        $this->renderer->setCache_Id($cacheid)->setCaching($cachetid);
 
         if ($cachetid) {
-            $render->cache_lifetime = $cachelifetime;
-            if ($render->is_cached($template, $cacheid)) {
-                return $render->fetch($template, $cacheid);
+            $this->renderer->setCache_lifetime($cachelifetime);
+            if ($this->renderer->is_cached($template, $cacheid)) {
+                return $this->renderer->fetch($template, $cacheid);
             }
         }
 
@@ -122,15 +122,15 @@ class PageMaster_User extends Zikula_Controller
                                  'getApprovalState'   => $getApprovalState));
 
         // Assign the data to the output
-        $render->assign('tid',       $tid);
-        $render->assign('pubtype',   $pubtype);
-        $render->assign('publist',   $result['publist']);
-        $render->assign('returnurl', $returnurl);
-        $render->assign('core_titlefield', PMgetTitleField($pubfields));
+        $this->renderer->assign('tid',       $tid)
+                       ->assign('pubtype',   $pubtype)
+                       ->assign('publist',   $result['publist'])
+                       ->assign('returnurl', $returnurl)
+                       ->assign('core_titlefield', PMgetTitleField($pubfields));
 
         // Assign the pager values if needed
         if ($itemsperpage != 0) {
-            $render->assign('pager', array('numitems'     => $result['pubcount'],
+            $this->renderer->assign('pager', array('numitems'     => $result['pubcount'],
                                        'itemsperpage' => $itemsperpage));
         }
 
@@ -144,11 +144,11 @@ class PageMaster_User extends Zikula_Controller
         }
 
         if ($rss) {
-            echo $render->display($template, $cacheid);
+            echo $this->renderer->display($template, $cacheid);
             System::shutdown();
         }
 
-        return $render->fetch($template, $cacheid);
+        return $this->renderer->fetch($template, $cacheid);
     }
 
     /**
@@ -235,26 +235,26 @@ class PageMaster_User extends Zikula_Controller
         }
 
         // build the output
-        $render = Renderer::getInstance('PageMaster', $cachetid, $cacheid, true);
+        $this->renderer->setCaching($cachetid)->setCache_Id($cacheid)->add_core_data();
 
         if ($cachetid) {
-            $render->cache_lifetime = $cachelt;
-            if ($render->is_cached($template, $cacheid)) {
-                return $render->fetch($template, $cacheid);
+            $this->renderer->setCache_lifetime($cachelt);
+            if ($this->renderer->is_cached($template, $cacheid)) {
+                return $this->renderer->fetch($template, $cacheid);
             }
         }
 
         // fetch plain templates
         if (isset($simpletemplate)) {
-            if (!$render->template_exists($simpletemplate)) {
+            if (!$this->renderer->template_exists($simpletemplate)) {
                 $simpletemplate = "pagemaster_generic_{$sec_template}.htm";
-                if (!$render->template_exists($simpletemplate)) {
+                if (!$this->renderer->template_exists($simpletemplate)) {
                     $simpletemplate = '';
                 }
             }
             if ($simpletemplate != '') {
-                $render->assign('pubtype', $pubtype);
-                return $render->fetch($simpletemplate, $cacheid);
+                $this->renderer->assign('pubtype', $pubtype);
+                return $this->renderer->fetch($simpletemplate, $cacheid);
             }
         }
 
@@ -285,16 +285,16 @@ class PageMaster_User extends Zikula_Controller
         $render->assign($pubdata);
 
         // process the output
-        $render->assign('pubtype',            $pubtype);
-        $render->assign('core_tid',           $tid);
-        $render->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state']);
-        $render->assign('core_titlefield',    $core_title);
-        $render->assign('core_title',         $pubdata[$core_title]);
-        $render->assign('core_uniqueid',      $tid.'-'.$pubdata['core_pid']);
-        $render->assign('core_creator',       ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false);
+        $this->renderer->assign('pubtype',            $pubtype)
+                       ->assign('core_tid',           $tid)
+                       ->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state'])
+                       ->assign('core_titlefield',    $core_title)
+                       ->assign('core_title',         $pubdata[$core_title])
+                       ->assign('core_uniqueid',      $tid.'-'.$pubdata['core_pid'])
+                       ->assign('core_creator',       ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false);
 
         // Check if template is available
-        if ($template != 'var:viewpub_template_code' && !$render->template_exists($template)) {
+        if ($template != 'var:viewpub_template_code' && !$this->renderer->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
@@ -303,11 +303,11 @@ class PageMaster_User extends Zikula_Controller
         }
 
         if ($template == 'var:viewpub_template_code') {
-            $render->compile_check = true;
-            $render->assign('viewpub_template_code', PMgen_viewpub_tplcode($tid, $pubdata));
+            $this->renderer->setCompile_check(true);
+            $this->renderer->assign('viewpub_template_code', PMgen_viewpub_tplcode($tid, $pubdata));
         }
 
-        return $render->fetch($template, $cacheid);
+        return $this->renderer->fetch($template, $cacheid);
     }
 
     /**
@@ -341,8 +341,7 @@ class PageMaster_User extends Zikula_Controller
 
         // no security check needed - the security check will be done by the handler class.
         // see the init-part of the handler class for details.
-        Loader::LoadClass('PageMaster_user_editpub', 'modules/PageMaster/classes/FormHandlers');
-        $formHandler = new PageMaster_user_editpub();
+        $formHandler = new PageMaster_Form_Handler_UserEditpub();
 
         if (empty($id) && !empty($pid)) {
             $id = ModUtil::apiFunc('PageMaster', 'user', 'getId',
@@ -373,7 +372,7 @@ class PageMaster_User extends Zikula_Controller
         }
 
         // create the output object
-        $render = FormUtil::newpnForm('PageMaster');
+        $render = FormUtil::newForm('PageMaster');
         $render->add_core_data();
 
         $render->assign('pubtype', $pubtype);
@@ -385,7 +384,7 @@ class PageMaster_User extends Zikula_Controller
         $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
 
         if (!empty($stepname) && $render->template_exists($template_step)) {
-            return $render->pnFormExecute($template_step, $formHandler);
+            return $render->formExecute($template_step, $formHandler);
         } elseif ($alert) {
             LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template_step));
         }
@@ -394,7 +393,7 @@ class PageMaster_User extends Zikula_Controller
         $template_all = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
 
         if ($render->template_exists($template_all)) {
-            return $render->pnFormExecute($template_all, $formHandler);
+            return $render->formExecute($template_all, $formHandler);
         } elseif ($alert) {
             LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template_all));
         }
@@ -403,7 +402,7 @@ class PageMaster_User extends Zikula_Controller
         $render->force_compile = true;
         $render->assign('editpub_template_code', PMgen_editpub_tplcode($tid));
 
-        return $render->pnFormExecute('var:editpub_template_code', $formHandler);
+        return $render->formExecute('var:editpub_template_code', $formHandler);
     }
 
     /**
