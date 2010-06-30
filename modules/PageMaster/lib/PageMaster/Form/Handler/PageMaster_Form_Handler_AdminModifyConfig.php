@@ -14,7 +14,7 @@
  *
  * @author kundi
  */
-class PageMaster_admin_modifyconfig
+class PageMaster_Form_Handler_AdminModifyConfig
 {
     /**
      * Initialize function
@@ -80,7 +80,7 @@ class PageMaster_admin_modifyconfig
                 ModUtil::callHooks('module', 'updateconfig', 'PageMaster', array('module' => 'PageMaster'));
 
                 LogUtil::registerStatus(__('Done! Module configuration updated.', $dom));
-    
+
                 return System::redirect(ModUtil::url('PageMaster', 'admin', 'modifyconfig'));
 
             // cancel
