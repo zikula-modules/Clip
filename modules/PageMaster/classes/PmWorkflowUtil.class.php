@@ -38,7 +38,7 @@ class PmWorkflowUtil extends WorkflowUtil
         }
 
         if (empty($module)) {
-            $module = pnModGetName();
+            $module = ModUtil::getName();
         }
 
         if (!WorkflowUtil::getWorkflowForObject($obj, $dbTable, $idcolumn, $module)) {

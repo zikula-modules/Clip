@@ -52,9 +52,9 @@ class pmformmultilistinput extends pnFormCategorySelector
             $catIds = explode(':', $data);
             if (!empty($catIds)) {
                 Loader::loadClass('CategoryUtil');
-                pnModDBInfoLoad('Categories');
+                ModUtil::dbInfoLoad('Categories');
 
-                $tables          = pnDBGetTables();
+                $tables          = DBUtil::getTables();
                 $category_column = $tables['categories_category_column'];
 
                 $where = array();

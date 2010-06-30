@@ -73,7 +73,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
                         $type = $data['items'][$key]['type'];
                         $call = $this->parseCall($field['typedata'][$type][2], $data['items'][$key]);
                         // execute the defined API call
-                        $data['items'][$key]['data'] = pnModAPIFunc($call[0], $call[1], $call[2], $call[3]);
+                        $data['items'][$key]['data'] = ModUtil::apiFunc($call[0], $call[1], $call[2], $call[3]);
                     } else {
                         $data['items'][$key]['data'] = '';
                     }

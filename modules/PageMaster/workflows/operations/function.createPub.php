@@ -33,14 +33,14 @@ function PageMaster_operation_createPub(&$pub, $params)
     $pub['core_pid'] = $maxpid + 1;
 
     // assign the author
-    $pub['core_author'] = pnUserGetVar('uid');
+    $pub['core_author'] = UserUtil::getVar('uid');
 
     // save the object
     if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
         $result = true;
 
         // let know that a publication was created
-        pnModCallHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
     }
 
     // output message
@@ -50,7 +50,7 @@ function PageMaster_operation_createPub(&$pub, $params)
                 LogUtil::registerStatus(__('Done! Publication created.', $dom));
             } else {
                 // redirect to the simple pending template
-                $result = array('goto' => pnModURL('PageMaster', 'user', 'viewpub',
+                $result = array('goto' => ModUtil::url('PageMaster', 'user', 'viewpub',
                                                    array('tid' => $pub['tid'],
                                                          'pid' => $pub['core_pid'],
                                                          'template' => 'pending')));

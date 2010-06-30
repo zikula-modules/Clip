@@ -26,10 +26,10 @@ function PageMaster_adminapi_updatetabledef($args)
 
     $tablename = 'pagemaster_pubdata'.$args['tid'];
 
-    $tables = pnDBGetTables();
+    $tables = DBUtil::getTables();
 
     if (!isset($tables[$tablename])) {
-        $urlfields = pnModURL('PageMaster', 'admin', 'pubfields', array('tid' => $args['tid']));
+        $urlfields = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $args['tid']));
         return LogUtil::registerError(__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields, $dom));
     }
 
@@ -57,19 +57,19 @@ function PageMaster_adminapi_getlinks()
 
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
         $links[] = array (
-            'url'  => pnModURL('PageMaster', 'admin', 'pubtypes'),
+            'url'  => ModUtil::url('PageMaster', 'admin', 'pubtypes'),
             'text' => __('List publication types', $dom)
         );
         $links[] = array (
-            'url'  => pnModURL('PageMaster', 'admin', 'pubtype'),
+            'url'  => ModUtil::url('PageMaster', 'admin', 'pubtype'),
             'text' => __('New publication type', $dom)
         );
         $links[] = array (
-            'url'  => pnModURL('PageMaster', 'admin', 'pubeditlist'),
+            'url'  => ModUtil::url('PageMaster', 'admin', 'pubeditlist'),
             'text' => __('Edit publications', $dom)
         );
         $links[] = array (
-            'url'  => pnModURL('PageMaster', 'admin', 'modifyconfig'),
+            'url'  => ModUtil::url('PageMaster', 'admin', 'modifyconfig'),
             'text' => __('Settings', $dom)
         );
     }

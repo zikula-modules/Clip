@@ -36,10 +36,10 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
         $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
 
         $this->textMode = 'multiline';
-        if ($this->config['usescribite'] && pnModAvailable('scribite')) {
+        if ($this->config['usescribite'] && ModUtil::available('scribite')) {
             static $scribite_arr;
             $scribite_arr[] = $this->id;
-            $scribite = pnModFunc('scribite', 'user', 'loader',
+            $scribite = ModUtil::func('scribite', 'user', 'loader',
                                   array('modulename' => 'PageMaster',
                                         'editor'     => 'xinha',
                                         'areas'      => $scribite_arr));
@@ -74,7 +74,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
         $checked = $this->config['usescribite'] ? 'checked="checked"' : '';
 
         // TODO Formatting config
-        if (pnModAvailable('scribite')) {
+        if (ModUtil::available('scribite')) {
             $html = '<div class="z-formrow">
                          <label for="pmplugin_usescribite">'.__('Use Scribite!', $dom).':</label>
                          <input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />

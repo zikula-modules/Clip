@@ -49,7 +49,7 @@ function PageMaster_operation_copyPub(&$pub, $params)
 
         if ($workflow->registerWorkflow($pub, $copystate)) {
             // let know that a publication was created
-            pnModCallHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+            ModUtil::callHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
 
         } else {
             $result = false;

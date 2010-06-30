@@ -42,7 +42,7 @@ class pmformpubinput extends pnFormDropdownList
         $pub = array();
 
         if (!empty($this->config['tid']) && !empty($data)) {
-            $pub = pnModAPIFunc('PageMaster', 'user', 'getPub',
+            $pub = ModUtil::apiFunc('PageMaster', 'user', 'getPub',
                                 array('tid'                => $this->config['tid'],
                                       'pid'                => (int)$data,
                                       'checkPerm'          => true,
@@ -64,7 +64,7 @@ class pmformpubinput extends pnFormDropdownList
         $this->parseConfig($render->pnFormEventHandler->pubfields[$this->id]['typedata']);
 
         if (!empty($this->config['tid'])) {
-            $pubarr = pnModAPIFunc('PageMaster', 'user', 'pubList',
+            $pubarr = ModUtil::apiFunc('PageMaster', 'user', 'pubList',
                                    array('tid'                => $this->config['tid'],
                                          'countmode'          => 'no',
                                          'filter'             => $this->config['filter'],

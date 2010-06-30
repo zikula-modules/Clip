@@ -53,7 +53,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
             {
                 // text plugin
                 case 'pmformtextinput':
-                    $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay|pnmodcallhooks:\'PageMaster\']-->';
+                    $snippet_body = '<!--[$'.$key.'|DataUtil::formatForDisplayHTML|ModUtil::callHooks:\'PageMaster\']-->';
                     break;
 
                 // image plugin
@@ -111,7 +111,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                     '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                     '            <span class="z-formnote">'."\n".
                     '                <pre><!--[pmarray array=$'.$key.']--></pre>'."\n".
-                    '                <!--[*pnmodapifunc modname=\'PageMaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*]-->'."\n".
+                    '                <!--[*ModUtil::apiFunc modname=\'PageMaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*]-->'."\n".
                     '            <span>'."\n".
                     '        </div>'."\n".
                     '    <!--[/if]-->';
@@ -130,7 +130,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                 if (in_array($key, array('core_author', 'cr_uid', 'lu_uid'))) {
                     $snippet_body = "\n".
                         '                <!--[$'.$key.'|userprofilelink]-->'."\n".
-                        '                <span class="z-sub">[<!--[$'.$key.'|pnvarprephtmldisplay]-->]</span>'."\n".
+                        '                <span class="z-sub">[<!--[$'.$key.'|DataUtil::formatForDisplayHTML]-->]</span>'."\n".
                         '            ';
     
                 // flags
@@ -143,7 +143,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
     
                 // generic strings
                 } else {
-                    $snippet_body = '<!--[$'.$key.'|pnvarprephtmldisplay]-->';
+                    $snippet_body = '<!--[$'.$key.'|DataUtil::formatForDisplayHTML]-->';
                 }
             }
 
@@ -164,8 +164,8 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
     // Add the Hooks support for viewpub
     $template_code .= '</div>'."\n".
                       "\n".
-                      '<!--[pnmodurl modname=\'PageMaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\']-->'."\n".
-                      '<!--[pnmodcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'PageMaster\' returnurl=$returnurl]-->'.
+                      '<!--[ModUtil::url modname=\'PageMaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\']-->'."\n".
+                      '<!--[ModUtil::callHooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'PageMaster\' returnurl=$returnurl]-->'.
                       "\n";
     
     return $template_code;
@@ -260,9 +260,9 @@ function PMgen_editpub_tplcode($tid)
                      '        </fieldset>'."\n".
                      "\n".
                      '        <!--[if isset($id)]-->'."\n".
-                     '            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'PageMaster\']-->'."\n".
+                     '            <!--[ModUtil::callHooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'PageMaster\']-->'."\n".
                      '        <!--[else]-->'."\n".
-                     '            <!--[pnmodcallhooks hookobject=\'item\' hookaction=\'new\' module=\'PageMaster\']-->'."\n".
+                     '            <!--[ModUtil::callHooks hookobject=\'item\' hookaction=\'new\' module=\'PageMaster\']-->'."\n".
                      '        <!--[/if]-->'."\n".
                      "\n".
                      '        <div class="z-formbuttons">'."\n".
@@ -450,7 +450,7 @@ function PMgetNewFileReference()
 function PMgetExtension($filename, $keepDot = false)
 {
     if (!$filename) {
-        return pn_exit('PMgetExtension pm: filename is empty');
+        return z_exit('PMgetExtension pm: filename is empty');
     }
 
     $p = strrpos($filename, '.');

@@ -62,7 +62,7 @@ class pmformurlinput extends pnFormTextInput
         }
 
         if (!empty($this->text)) {
-            if (!pnVarValidate($this->text, 'url')) {
+            if (!System::varValidate($this->text, 'url')) {
                 if (!$this->parseURL($this->text)) {
                     $this->setError(__('Error! Invalid URL.'));
                 }
@@ -103,7 +103,7 @@ class pmformurlinput extends pnFormTextInput
                 // addon: call[2] can be the type parameter, default 'user'
                 $type = (isset($url[2]) &&!empty($url[2])) ? $url[2] : 'user';
 
-                return pnModURL($modname, $type, $func, $params, null, null, true);
+                return ModUtil::url($modname, $type, $func, $params, null, null, true);
             }
         }
 

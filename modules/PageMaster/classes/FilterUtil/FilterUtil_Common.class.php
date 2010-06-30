@@ -84,8 +84,8 @@ class FilterUtil_Common
      */
     protected function setModule($module)
     {
-        if (pnModAvailable($module)) {
-            pnModDBInfoLoad($module);
+        if (ModUtil::available($module)) {
+            ModUtil::dbInfoLoad($module);
             $this->module = $module;
             return true;
         } elseif (strtolower($module) == 'core') {
@@ -104,7 +104,7 @@ class FilterUtil_Common
      */
     protected function setTable($table)
     {
-        $tables = pnDBGetTables();
+        $tables = DBUtil::getTables();
 
         if (!isset($tables[$table]) || !isset($tables[$table . '_column'])) {
             return false;
@@ -143,7 +143,7 @@ class FilterUtil_Common
         if (count($this->join) <= 0)
             return;
 
-        $tables = pnDBGetTables();
+        $tables = DBUtil::getTables();
         
         $c =& $this->column;
         // reset column array...
@@ -161,7 +161,7 @@ class FilterUtil_Common
                 $a = $join['object_field_name'][$k];
                 if (isset($c[$a])) {
                     //Oh, that won't work! Two fields with the same alias!
-                    return pn_exit('Invalid join information!');
+                    return z_exit('Invalid join information!');
                 }
                 //so, let's add the field to the column array
                 $c[$a] = $alias . '.' . $jc[$f];                

@@ -96,7 +96,7 @@ function PageMaster_init()
         'uploadpath' => $pmdir,
         'devmode'    => true
     );
-    pnModSetVars('PageMaster', $modvars);
+    ModUtil::setVars('PageMaster', $modvars);
 
     return true;
 }
@@ -131,13 +131,13 @@ function PageMaster_upgrade($oldversion)
 
         case '0.2':
             // fix the upload path to a root-relative one
-            $uploadpath = pnModGetVar('PageMaster', 'uploadpath');
-            $siteroot   = substr(pnServerGetVar('DOCUMENT_ROOT'), 0, -1).pnGetBaseURI().'/';
+            $uploadpath = ModUtil::getVar('PageMaster', 'uploadpath');
+            $siteroot   = substr(System::serverGetVar('DOCUMENT_ROOT'), 0, -1).System::getBaseUri().'/';
             $newpath    = str_replace($siteroot, '', $uploadpath);
             if (StringUtil::right($newpath, 1) == '/') {
                 $newpath = StringUtil::left($newpath, strlen($newpath) - 1);
             }
-            pnModSetVar('PageMaster', 'uploadpath', $newpath);
+            ModUtil::setVar('PageMaster', 'uploadpath', $newpath);
 
             // fix the pm_author field to pn_cr_uid
             $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'tid');
@@ -145,7 +145,7 @@ function PageMaster_upgrade($oldversion)
                 // nothing to update
                 break;
             }
-            $tables = pnDBGetTables();
+            $tables = DBUtil::getTables();
             // update each pubdata table
             // and update the new field value with the good old pm_cr_uid
             foreach ($pubtypes as $tid) {
@@ -231,7 +231,7 @@ function PageMaster_upgrade($oldversion)
             unset($fieldsdata);
     
         case '0.2.1':
-            $tables = pnDBGetTables();
+            $tables = DBUtil::getTables();
             $sql = "UPDATE {$tables['pagemaster_pubfields']} set pm_fieldplugin = SUBSTRING( SUBSTRING( pm_fieldplugin,10 ),1,INSTR(SUBSTRING( pm_fieldplugin,10 ),'.')-1)";
             if (!DBUtil::executeSQL($sql)) {
                 LogUtil::registerError(__('Error! Update attempt failed.', $dom));
@@ -243,7 +243,7 @@ function PageMaster_upgrade($oldversion)
         case '0.3.2':
         case '0.3.3':
             // new modvar: development mode
-            pnModSetVars('PageMaster', 'devmode', true);
+            ModUtil::setVars('PageMaster', 'devmode', true);
 
             // update the table definitions of some fields
             $tochange = array(
@@ -259,10 +259,10 @@ function PageMaster_upgrade($oldversion)
             }
 
             // reload the table definitions
-            pnModDBInfoLoad('PageMaster', '', true);
+            ModUtil::dbInfoLoad('PageMaster', '', true);
 
             // update the tables
-            $tables   = pnDBGetTables();
+            $tables   = DBUtil::getTables();
             $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'tid');
 
             // process the tables to update
@@ -346,7 +346,7 @@ function PageMaster_delete()
 
     Loader::loadClass('CategoryUtil');
     CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/pagemaster', 'path');
-    pnModDelVar('PageMaster');
+    ModUtil::delVar('PageMaster');
 
     return true;
 }

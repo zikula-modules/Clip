@@ -24,7 +24,7 @@ function PageMaster_searchapi_info()
 function PageMaster_searchapi_options($args)
 {
     if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
-        $render = pnRender::getInstance('PageMaster');
+        $render = Renderer::getInstance('PageMaster');
 
         // Looking for pubtype with at least one searchable field
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
@@ -55,10 +55,10 @@ function PageMaster_searchapi_search($args)
     $search_tid = FormUtil::getPassedValue('search_tid', '', 'REQUEST');
 
     Loader::includeOnce('modules/PageMaster/common.php');
-    pnModDBInfoLoad('Search');
-    pnModDBInfoLoad('PageMaster');
+    ModUtil::dbInfoLoad('Search');
+    ModUtil::dbInfoLoad('PageMaster');
 
-    $tables = pnDBGetTables();
+    $tables = DBUtil::getTables();
     $searchTable  = $tables['search_result'];
     $searchColumn = $tables['search_result_column'];
     $where_arr    = array();
@@ -135,7 +135,7 @@ function PageMaster_searchapi_search_check(&$args)
 {
     $datarow = &$args['datarow'];
     $extra   = unserialize($datarow['extra']);
-    $datarow['url'] = pnModUrl('PageMaster', 'user', 'viewpub',
+    $datarow['url'] = ModUtil::url('PageMaster', 'user', 'viewpub',
                                array('tid' => $extra['tid'],
                                      'pid' => $extra['pid']));
     return true;

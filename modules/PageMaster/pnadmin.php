@@ -49,7 +49,7 @@ function PageMaster_admin_pubtypes()
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
 
     // build the output
-    $render = pnRender::getInstance('PageMaster');
+    $render = Renderer::getInstance('PageMaster');
 
     $render->assign('pubtypes', $pubtypes);
 
@@ -107,13 +107,13 @@ function PageMaster_admin_dbupdate($args=array())
 
     // get the input parameter
     $tid  = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-    $rurl = pnServerGetVar('HTTP_REFERER', pnModURL('PageMaster', 'admin', 'main'));
+    $rurl = System::serverGetVar('HTTP_REFERER', ModUtil::url('PageMaster', 'admin', 'main'));
 
     if (!PMgetPubType($tid)) {
         return LogUtil::registerError(__('Error! No such publication type found.', $dom), null, $rurl);
     }
 
-    $result = pnModAPIFunc('PageMaster', 'admin', 'updatetabledef',
+    $result = ModUtil::apiFunc('PageMaster', 'admin', 'updatetabledef',
                            array('tid' => $tid));
 
     if (!$result) {
@@ -150,7 +150,7 @@ function PageMaster_admin_publist($args=array())
     if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
         return LogUtil::registerError(__('Error! The table of this publication type seems not to exist. Please, update the DB Tables at the bottom of this form.', $dom),
                                       null,
-                                      pnModURL('PageMaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
+                                      ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
     }
 
     $pubtype = PMgetPubType($tid);
@@ -206,7 +206,7 @@ function PageMaster_admin_publist($args=array())
     }
 
     // build the output
-    $render = pnRender::getInstance('PageMaster');
+    $render = Renderer::getInstance('PageMaster');
 
     $render->assign('core_tid',   $tid);
     $render->assign('core_title', $core_title);
@@ -252,7 +252,7 @@ function PageMaster_admin_history()
     $core_title = PMgetPubtypeTitleField($tid);
 
     // build the output
-    $render = pnRender::getInstance('PageMaster');
+    $render = Renderer::getInstance('PageMaster');
 
     $render->assign('core_tid',   $tid);
     $render->assign('core_title', $core_title);
@@ -285,7 +285,7 @@ function PageMaster_admin_showcode()
     }
 
     // create the renderer
-    $render = pnRender::getInstance('PageMaster');
+    $render = Renderer::getInstance('PageMaster');
 
     // get the code depending of the mode
     switch ($mode)
@@ -299,9 +299,9 @@ function PageMaster_admin_showcode()
             $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
             if ($id <= 0) {
                 return LogUtil::registerError(__('There has to be at least one publication to generate the template code.', $dom), null,
-                                              pnServerGetVar('HTTP_REFERER', pnModURL('PageMaster', 'admin', 'main')));
+                                              System::serverGetVar('HTTP_REFERER', ModUtil::url('PageMaster', 'admin', 'main')));
             }
-            $pubdata = pnModAPIFunc('PageMaster', 'user', 'getPub',
+            $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'getPub',
                                     array('tid' => $tid,
                                           'id'  => $id,
                                           'handlePluginFields' => true));
@@ -337,14 +337,14 @@ function PageMaster_admin_importps()
 
     $step = FormUtil::getPassedValue('step');
     if (!empty($step)) {
-        pnModAPIFunc('PageMaster', 'import', 'importps'.$step);
+        ModUtil::apiFunc('PageMaster', 'import', 'importps'.$step);
     }
 
     // check if there are pubtypes already
     $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
 
     // build the output
-    $render = pnRender::getInstance('PageMaster', null, null, true);
+    $render = Renderer::getInstance('PageMaster', null, null, true);
 
     $render->assign('alreadyexists', $numpubtypes > 0 ? true : false);
 
@@ -365,5 +365,5 @@ function PageMaster_admin_pubeditlist($args=array())
         'returntype' => 'admin'
     );
 
-    return pnModFunc('PageMaster', 'user', 'pubeditlist', $args);
+    return ModUtil::func('PageMaster', 'user', 'pubeditlist', $args);
 }

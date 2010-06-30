@@ -1,42 +1,42 @@
-<h1><!--[gt text=$pubtype.title]--></h1>
+<h1>{gt text=$pubtype.title}</h1>
 
-<!--[include file='pagemaster_generic_navbar.htm' section='publist']-->
+{include file='pagemaster_generic_navbar.htm' section='publist'}
 
-<!--[if $pubtype.description neq '']-->
-<p class="pm-pubdesc"><!--[gt text=$pubtype.description]--></p>
-<!--[/if]-->
+{if $pubtype.description neq ''}
+<p class="pm-pubdesc">{gt text=$pubtype.description}</p>
+{/if}
 
 <table class="z-datatable pm-publist">
     <tbody>
-        <!--[foreach from=$publist item='pubitem']-->
-        <tr class="<!--[cycle values='z-even,z-odd']-->">
+        {foreach from=$publist item='pubitem'}
+        <tr class="{cycle values='z-even,z-odd'}">
             <td>
-                <a href="<!--[pnmodurl modname='PageMaster' type='user' func='viewpub' tid=$pubtype.tid pid=$pubitem.core_pid]-->"><!--[$pubitem.$core_titlefield]--></a>
+                <a href="{modurl modname='PageMaster' type='user' func='viewpub' tid=$pubtype.tid pid=$pubitem.core_pid}">{$pubitem.$core_titlefield}</a>
             </td>
             <td class="z-right">
-                <!--[strip]-->
-                <a href="<!--[pnmodurl modname='PageMaster' type='user' func='viewpub' tid=$pubtype.tid pid=$pubitem.core_pid]-->">
-                    <!--[pnimg modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View']-->
+                {strip}
+                <a href="{modurl modname='PageMaster' type='user' func='viewpub' tid=$pubtype.tid pid=$pubitem.core_pid}">
+                    {img modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View'}
                 </a>
-                <!--[pnsecauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD]-->
+                {secauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
                 &nbsp;
-                <a href="<!--[pnmodurl modname='PageMaster' type='user' func='pubedit' tid=$pubtype.tid pid=$pubitem.core_pid]-->">
-                    <!--[pnimg modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit']-->
+                <a href="{modurl modname='PageMaster' type='user' func='pubedit' tid=$pubtype.tid pid=$pubitem.core_pid}">
+                    {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                 </a>
-                <!--[/pnsecauthaction_block]-->
-                <!--[/strip]-->
+                {/secauthaction_block}
+                {/strip}
             </td>
         </tr>
-        <!--[foreachelse]-->
+        {foreachelse}
         <tr class="z-datatableempty">
-            <td><!--[gt text='No publications found.']--></td>
+            <td>{gt text='No publications found.'}</td>
         </tr>
-        <!--[/foreach]-->
+        {/foreach}
     </tbody>
 </table>
 
-<!--[if isset($pager)]-->
-<!--[pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum']-->
-<!--[/if]-->
+{if isset($pager)}
+{pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum'}
+{/if}
 
-<!--[pnmodcallhooks hookobject='category' hookaction='display' module='PageMaster' returnurl=$returnurl]-->
+{modcallhooks hookobject='category' hookaction='display' module='PageMaster' returnurl=$returnurl}

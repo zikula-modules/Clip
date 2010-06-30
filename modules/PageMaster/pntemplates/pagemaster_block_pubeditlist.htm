@@ -1,4 +1,4 @@
-<!--[php]-->
+{php}
 // if the request came from the pubeditlist block, we figure out
 // the referer and pass it through the url to the form handler
 if ($this->_tpl_vars['source'] == 'block') {
@@ -11,13 +11,13 @@ $this->assign ('referer', DataUtil::formatForDisplayHTML($zkURI));
 $this->assign ('referer', 'index.php');
 }
 }
-<!--[/php]-->
+{/php}
 
 <table>
     <tbody>
         <tr>
             <td valign="top" nowrap>
-                <!--[include file="pagemaster_user_pubeditlist_menu.htm"]-->
+                {include file="pagemaster_user_pubeditlist_menu.htm"}
             </td>
         </tr>
     </tbody>

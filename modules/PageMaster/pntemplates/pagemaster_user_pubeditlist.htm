@@ -1,4 +1,4 @@
-<!--[php]-->
+{php}
 // if the request came from the pubeditlist block, we figure out
 // the referer and pass it through the url to the form handler
 if ($this->_tpl_vars['source'] == 'block') {
@@ -11,37 +11,37 @@ $this->assign ('referer', DataUtil::formatForDisplayHTML($zkURI));
 $this->assign ('referer', 'index.php');
 }
 }
-<!--[/php]-->
+{/php}
 
-<!--[if $returntype eq 'admin']-->
-<!--[include file='pagemaster_admin_header.htm']-->
+{if $returntype eq 'admin'}
+{include file='pagemaster_admin_header.htm'}
 <div class="z-admincontainer">
-    <div class="z-adminpageicon"><!--[pnimg modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list']--></div>
-    <!--[/if]-->
+    <div class="z-adminpageicon">{img modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list'}</div>
+    {/if}
 
-    <h2><!--[gt text='Publications edit list']--></h2>
+    <h2>{gt text='Publications edit list'}</h2>
     <table class="z-datatable">
         <tbody>
             <tr>
-                <!--[if $menu AND $source neq 'block']-->
+                {if $menu AND $source neq 'block'}
                 <td width="10%" valign="top" class="z-nowrap">
-                    <!--[include file='pagemaster_user_pubeditlist_menu.htm']-->
+                    {include file='pagemaster_user_pubeditlist_menu.htm'}
                 </td>
-                <!--[/if]-->
-                <!--[if ($menu && $edit)]-->
+                {/if}
+                {if ($menu && $edit)}
                 <td style="width: 1px; background-color: #cccccc;"><td>
-                    <!--[/if]-->
-                    <!--[if ($edit)]-->
+                    {/if}
+                    {if ($edit)}
                     <td>
-                        <!--[if ($tid)]-->
-                        <!--[pnmodfunc modname='PageMaster' type='user' func='pubedit' tid=$tid pid=$pid]-->
-                        <!--[/if]-->
+                        {if ($tid)}
+                        {modfunc modname='PageMaster' type='user' func='pubedit' tid=$tid pid=$pid}
+                        {/if}
                     </td>
-                    <!--[/if]-->
+                    {/if}
                 </tr>
             </tbody>
         </table>
 
-        <!--[if $returntype eq 'admin']-->
+        {if $returntype eq 'admin'}
     </div>
-    <!--[/if]-->
+    {/if}

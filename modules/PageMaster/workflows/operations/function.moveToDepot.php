@@ -31,7 +31,7 @@ function PageMaster_operation_moveToDepot($pub, $params)
 
     if ($result) {
         // let know that the publication was updated
-        pnModCallHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
     }
 
     // output message

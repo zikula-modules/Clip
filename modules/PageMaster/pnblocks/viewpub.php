@@ -43,11 +43,11 @@ function PageMaster_viewpubblock_info()
 function PageMaster_viewpubblock_display($blockinfo)
 {
     // Get variables from content block
-    $vars = pnBlockVarsFromContent($blockinfo['content']);
+    $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
     // Validation of required parameters
     if (!isset($vars['tid'])) {
-        $vars['tid'] = pnModGetVar('PageMaster', 'frontpagePubType');
+        $vars['tid'] = ModUtil::getVar('PageMaster', 'frontpagePubType');
     }
     if (!isset($vars['pid'])) {
         return 'Required parameter [pid] not set';
@@ -62,7 +62,7 @@ function PageMaster_viewpubblock_display($blockinfo)
     $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : 'block_viewpub';
     $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-    $blockinfo['content'] = pnModFunc('PageMaster', 'user', 'viewpub',
+    $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'viewpub',
                                       array('tid'                => $vars['tid'],
                                             'pid'                => $vars['pid'],
                                             'checkPerm'          => true,
@@ -73,7 +73,7 @@ function PageMaster_viewpubblock_display($blockinfo)
         return;
     }
 
-    return pnBlockThemeBlock($blockinfo);
+    return BlockUtil::themeBlock($blockinfo);
 }
 
 /**
@@ -84,11 +84,11 @@ function PageMaster_viewpubblock_modify($blockinfo)
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // Get current content
-    $vars = pnBlockVarsFromContent($blockinfo['content']);
+    $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
     // Defaults
     if (!isset($vars['tid'])) {
-        $vars['tid'] = pnModGetVar('PageMaster', 'frontpagePubType');
+        $vars['tid'] = ModUtil::getVar('PageMaster', 'frontpagePubType');
     }
     if (!isset($vars['pid'])) {
         $vars['pid'] = '';
@@ -105,7 +105,7 @@ function PageMaster_viewpubblock_modify($blockinfo)
     // (no table start/end since the block edit template takes care of that)
 
     // Create a row for "Publication type"
-    pnModDBInfoLoad('PageMaster');
+    ModUtil::dbInfoLoad('PageMaster');
     $pubTypesData = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
     $pubTypes = array ();
@@ -177,7 +177,7 @@ function PageMaster_viewpubblock_modify($blockinfo)
  */
 function PageMaster_viewpubblock_update($blockinfo)
 {
-    $filters = pnVarCleanFromInput('filters');
+    $filters = FormUtil::getPassedValue('filters');
 
     $vars = array (
         'tid'           => FormUtil::getPassedValue('tid'),
@@ -186,7 +186,7 @@ function PageMaster_viewpubblock_update($blockinfo)
         'cachelifetime' => FormUtil::getPassedValue('cachelifetime')
     );
 
-    $blockinfo['content'] = pnBlockVarsToContent($vars);
+    $blockinfo['content'] = BlockUtil::varsToContent($vars);
 
     return $blockinfo;
 }

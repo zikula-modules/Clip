@@ -20,7 +20,7 @@ function PageMaster_importapi_importps1()
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // convert list's
-    pnModLoad('pagesetter');
+    ModUtil::load('pagesetter');
 
     function guppy_translate($str)
     {
@@ -42,7 +42,7 @@ function PageMaster_importapi_importps1()
         return LogUtil::registerError('Category /__SYSTEM__/Modules/pagemaster/lists not found');
     }
 
-    //$temp_arr = unserialize(pnModGetVar('pagesetter','temp_arr'));
+    //$temp_arr = unserialize(ModUtil::getVar('pagesetter','temp_arr'));
     $temp_arr = array();
 
     $lang  = ZLanguage::getLanguageCode();
@@ -92,7 +92,7 @@ function PageMaster_importapi_importps1()
     }
 
     // save link between list id's and category id's
-    pnModSetVar('pagesetter', 'temp_arr', serialize($temp_arr));
+    ModUtil::setVar('pagesetter', 'temp_arr', serialize($temp_arr));
 
     return LogUtil::registerStatus(__('Lists import succeded!', $dom));
 }
@@ -107,8 +107,8 @@ function PageMaster_importapi_importps2()
 {
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
-    pnModLoad('pagesetter');
-    pnModDBInfoLoad('Categories');
+    ModUtil::load('pagesetter');
+    ModUtil::dbInfoLoad('Categories');
 
     // import the DB Structure
     $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes');
@@ -300,7 +300,7 @@ function PageMaster_importapi_importps3()
     $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
     foreach ($pubtypes as $pubtype) {
-        $ret = pnModAPIFunc('PageMaster', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
+        $ret = ModUtil::apiFunc('PageMaster', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
         if (!$ret) {
             LogUtil::registerError(__('Cannot create the database for tid [%1$s (%2$s)].', array($pubtype['title'], $pubtype['tid']), $dom));
         }
@@ -319,19 +319,19 @@ function PageMaster_importapi_importps4()
 {
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
-    pnModLoad('pagesetter');
-    pnModDBInfoLoad('Workflow');
+    ModUtil::load('pagesetter');
+    ModUtil::dbInfoLoad('Workflow');
 
     Loader::loadClass('CategoryUtil');
     Loader::loadClassFromModule('Categories', 'Category');
 
-    $temp_arr = unserialize(pnModGetVar('pagesetter', 'temp_arr'));
+    $temp_arr = unserialize(ModUtil::getVar('pagesetter', 'temp_arr'));
 
-    $tables = &pnDBGetTables();
+    $tables = &DBUtil::getTables();
     $pubheader_table = $tables['pagesetter_pubheader'];
 
-    $DirPM = pnModGetVar('PageMaster', 'uploadpath');
-    $DirPS = pnModGetVar('pagesetter', 'uploadDirDocs');
+    $DirPM = ModUtil::getVar('PageMaster', 'uploadpath');
+    $DirPS = ModUtil::getVar('pagesetter', 'uploadDirDocs');
 
     $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes'); //, 'pg_id=11'
 

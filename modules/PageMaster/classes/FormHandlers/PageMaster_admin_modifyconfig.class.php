@@ -21,16 +21,16 @@ class PageMaster_admin_modifyconfig
      */
     function initialize(&$render)
     {
-        $modvars = pnModGetVar('PageMaster');
+        $modvars = ModUtil::getVar('PageMaster');
 
         $render->assign($modvars);
 
         // upload dir check
-        $siteroot = pnServerGetVar('DOCUMENT_ROOT');
+        $siteroot = System::serverGetVar('DOCUMENT_ROOT');
         if (substr($siteroot, -1) == DIRECTORY_SEPARATOR) {
             $siteroot = substr($siteroot, 0, -1);
         }
-        $siteroot .= pnGetBaseURI().DIRECTORY_SEPARATOR;
+        $siteroot .= System::getBaseUri().DIRECTORY_SEPARATOR;
 
         $render->assign('siteroot', DataUtil::formatForDisplay($siteroot));
 
@@ -66,26 +66,26 @@ class PageMaster_admin_modifyconfig
             case 'update':
                 // upload path
                 // remove the siteroot if was included
-                $siteroot = substr(pnServerGetVar('DOCUMENT_ROOT'), 0, -1).pnGetBaseURI().'/';
+                $siteroot = substr(System::serverGetVar('DOCUMENT_ROOT'), 0, -1).System::getBaseUri().'/';
                 $data['uploadpath'] = str_replace($siteroot, '', $data['uploadpath']);
                 if (StringUtil::right($data['uploadpath'], 1) == '/') {
                     $data['uploadpath'] = StringUtil::left($data['uploadpath'], strlen($data['uploadpath']) - 1);
                 }
-                pnModSetVar('PageMaster', 'uploadpath', $data['uploadpath']);
+                ModUtil::setVar('PageMaster', 'uploadpath', $data['uploadpath']);
 
                 // development mode
-                pnModSetVar('PageMaster', 'devmode', $data['devmode']);
+                ModUtil::setVar('PageMaster', 'devmode', $data['devmode']);
 
                 // let any other modules know that the modules configuration has been updated
-                pnModCallHooks('module', 'updateconfig', 'PageMaster', array('module' => 'PageMaster'));
+                ModUtil::callHooks('module', 'updateconfig', 'PageMaster', array('module' => 'PageMaster'));
 
                 LogUtil::registerStatus(__('Done! Module configuration updated.', $dom));
     
-                return pnRedirect(pnModURL('PageMaster', 'admin', 'modifyconfig'));
+                return System::redirect(ModUtil::url('PageMaster', 'admin', 'modifyconfig'));
 
             // cancel
             case 'cancel':
-                return pnRedirect(pnModURL('PageMaster', 'admin'));
+                return System::redirect(ModUtil::url('PageMaster', 'admin'));
         }
 
         return true;

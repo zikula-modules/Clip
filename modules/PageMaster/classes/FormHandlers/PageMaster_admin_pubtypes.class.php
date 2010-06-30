@@ -152,6 +152,6 @@ class PageMaster_admin_pubtypes
                 break;
         }
 
-        return $render->pnFormRedirect(pnModURL('PageMaster', 'admin', 'main'));
+        return $render->pnFormRedirect(ModUtil::url('PageMaster', 'admin', 'main'));
     }
 }

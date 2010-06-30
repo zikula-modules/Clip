@@ -72,7 +72,7 @@ class PageMaster_user_editpub
         if (count($actions) < 1) {
             LogUtil::registerError(__('No workflow actions found. This can be a permissions issue.', $dom));
 
-            return $render->pnFormRedirect(pnModURL('PageMaster', 'user', 'main', array('tid' => $this->tid)));
+            return $render->pnFormRedirect(ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid)));
         }
 
         // check for set_* default values
@@ -93,11 +93,11 @@ class PageMaster_user_editpub
 
         // stores the first referer and the item URL
         if (empty($this->referer)) {
-            $viewurl = pnModURL('PageMaster', 'user', 'main', array('tid' => $this->tid), null, null, true);
-            $this->referer = pnServerGetVar('HTTP_REFERER', $viewurl);
+            $viewurl = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid), null, null, true);
+            $this->referer = System::serverGetVar('HTTP_REFERER', $viewurl);
         }
         if (!empty($this->id)) {
-            $this->itemurl = pnModURL('PageMaster', 'user', 'viewpub', array('tid' => $this->tid, 'pid' => $this->core_pid), null, null, true);
+            $this->itemurl = ModUtil::url('PageMaster', 'user', 'viewpub', array('tid' => $this->tid, 'pid' => $this->core_pid), null, null, true);
         }
 
         $render->assign('actions', $actions);
@@ -120,14 +120,14 @@ class PageMaster_user_editpub
         $this->pubExtract($data);
 
         // perform the command
-        $data = pnModAPIFunc('PageMaster', 'user', 'editPub',
+        $data = ModUtil::apiFunc('PageMaster', 'user', 'editPub',
                              array('data'        => $data,
                                    'commandName' => $args['commandName'],
                                    'pubfields'   => $this->pubfields,
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // see http://www.smarty.net/manual/en/caching.groups.php
-        $pnr = pnRender::getInstance('PageMaster');
+        $pnr = Renderer::getInstance('PageMaster');
         // clear the view of the current publication
         $pnr->clear_cache(null, 'viewpub'.$this->tid.'|'.$this->core_pid);
         // clear all page of publist
@@ -139,14 +139,14 @@ class PageMaster_user_editpub
         $ops  = $data['core_operations'];
         if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
             // if the item moved to the depot or was deleted
-            $urltid = pnModURL('PageMaster', 'user', 'main', array('tid' => $data['tid']));
+            $urltid = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $data['tid']));
             // check if the user comes of the viewpub screen or not
             $goto = (strpos($this->referer, $this->itemurl) === 0) ? $urltid : $this->referer;
 
         } elseif (isset($ops['createPub']) && $ops['createPub']) {
             // the publication was created
             if ($data['core_online'] == 1) {
-                $goto = pnModURL('PageMaster', 'user', 'viewpub', array('tid' => $data['tid'], 'pid' => $data['core_pid']));
+                $goto = ModUtil::url('PageMaster', 'user', 'viewpub', array('tid' => $data['tid'], 'pid' => $data['core_pid']));
             } else {
                 // back to the pubtype pending template or referer page if it is not approved yet
                 $goto = isset($ops['createPub']['goto']) ? $ops['createPub']['goto'] : $this->referer;
@@ -165,7 +165,7 @@ class PageMaster_user_editpub
         switch ($this->goto) {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
-                $this->goto = pnModURL('PageMaster', 'user', 'pubedit',
+                $this->goto = ModUtil::url('PageMaster', 'user', 'pubedit',
                                        array('tid'  => $data['tid'],
                                              'id'   => $data['id'],
                                              'goto' => 'stepmode'));
@@ -176,20 +176,20 @@ class PageMaster_user_editpub
                 break;
 
             case 'pubeditlist':
-                $this->goto = pnModURL('PageMaster', 'admin', 'pubeditlist',
+                $this->goto = ModUtil::url('PageMaster', 'admin', 'pubeditlist',
                                        array('_id' => $data['tid'].'_'.$data['core_pid']));
                 break;
 
             case 'admin':
-                $this->goto = pnModURL('PageMaster', 'admin', 'publist', array('tid' => $data['tid']));
+                $this->goto = ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $data['tid']));
                 break;
 
             case 'index':
-                $this->goto = pnModURL('PageMaster', 'user', 'main', array('tid' => $data['tid']));
+                $this->goto = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $data['tid']));
                 break;
 
             case 'home':
-                $this->goto = pnGetHomepageURL();
+                $this->goto = System::getHomepageUrl();
                 break;
 
             default:
@@ -211,7 +211,7 @@ class PageMaster_user_editpub
     function pubDefault()
     {
         $this->core_pid         = NULL;
-        $this->core_author      = pnUserGetVar('uid');
+        $this->core_author      = UserUtil::getVar('uid');
         $this->core_hitcount    = 0;
         $this->core_revision    = 0;
         $this->core_language    = '';

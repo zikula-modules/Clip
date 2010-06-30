@@ -32,7 +32,7 @@ class PageMaster_admin_pubfields
         // validation check
         if (empty($tid) || !is_numeric($tid)) {
             LogUtil::registerError(__f('Error! %s not set.', 'tid', $dom));
-            $render->pnFormRedirect(pnModURL('PageMaster', 'admin', 'main'));
+            $render->pnFormRedirect(ModUtil::url('PageMaster', 'admin', 'main'));
         }
         $this->tid = $tid;
 
@@ -64,7 +64,7 @@ class PageMaster_admin_pubfields
         $plugin            = PMgetPlugin($data['fieldplugin']);
         $data['fieldtype'] = $plugin->columnDef;
 
-        $returnurl = pnModURL('PageMaster', 'admin', 'pubfields',
+        $returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields',
                               array('tid' => $data['tid']));
 
         // handle the commands

@@ -9,7 +9,7 @@
  * @subpackage  pagemaster
  */
 
-function PageMaster_pntables()
+function PageMaster_tables()
 {
     $tables = array ();
 /*

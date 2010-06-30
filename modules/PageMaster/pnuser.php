@@ -81,7 +81,7 @@ function PageMaster_user_main($args)
     }
 
     // buils the output
-    $render = pnRender::getInstance('PageMaster', $cachetid, $cacheid, true);
+    $render = Renderer::getInstance('PageMaster', $cachetid, $cacheid, true);
 
     if ($cachetid) {
         $render->cache_lifetime = $cachelifetime;
@@ -90,7 +90,7 @@ function PageMaster_user_main($args)
         }
     }
 
-    $returnurl = pnGetCurrentURL();
+    $returnurl = System::getCurrentUrl();
 
     if (isset($args['itemsperpage'])) {
         $itemsperpage = (int)$args['itemsperpage'];
@@ -110,7 +110,7 @@ function PageMaster_user_main($args)
     }
 
     // Uses the API to get the list of publications
-    $result = pnModAPIFunc('PageMaster', 'user', 'pubList',
+    $result = ModUtil::apiFunc('PageMaster', 'user', 'pubList',
                            array('tid'                => $tid,
                                  'pubfields'          => $pubfields,
                                  'pubtype'            => $pubtype,
@@ -138,7 +138,7 @@ function PageMaster_user_main($args)
 
     // Check if template is available
     if ($template != 'pagemaster_generic_publist.htm' && !$render->template_exists($template)) {
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('PageMaster', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
         if ($alert) {
             LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template, $dom));
         }
@@ -147,7 +147,7 @@ function PageMaster_user_main($args)
 
     if ($rss) {
         echo $render->display($template, $cacheid);
-        pnShutDown();
+        System::shutdown();
     }
 
     return $render->fetch($template, $cacheid);
@@ -189,7 +189,7 @@ function PageMaster_user_viewpub($args)
 
     // get the pid if it was not passed
     if (empty($pid)) {
-        $pid = pnModAPIFunc('PageMaster', 'user', 'getPid',
+        $pid = ModUtil::apiFunc('PageMaster', 'user', 'getPid',
                             array('tid' => $tid,
                                   'id'  => $id));
     }
@@ -239,7 +239,7 @@ function PageMaster_user_viewpub($args)
     }
 
     // build the output
-    $render = pnRender::getInstance('PageMaster', $cachetid, $cacheid, true);
+    $render = Renderer::getInstance('PageMaster', $cachetid, $cacheid, true);
 
     if ($cachetid) {
         $render->cache_lifetime = $cachelt;
@@ -268,7 +268,7 @@ function PageMaster_user_viewpub($args)
         LogUtil::registerError(__('Error! No publication fields found.', $dom));
     }
 
-    $pubdata = pnModAPIFunc('PageMaster', 'user', 'getPub',
+    $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'getPub',
                             array('tid'                => $tid,
                                   'id'                 => $id,
                                   'pid'                => $pid,
@@ -295,11 +295,11 @@ function PageMaster_user_viewpub($args)
     $render->assign('core_titlefield',    $core_title);
     $render->assign('core_title',         $pubdata[$core_title]);
     $render->assign('core_uniqueid',      $tid.'-'.$pubdata['core_pid']);
-    $render->assign('core_creator',       ($pubdata['core_author'] == pnUserGetVar('uid')) ? true : false);
+    $render->assign('core_creator',       ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false);
 
     // Check if template is available
     if ($template != 'var:viewpub_template_code' && !$render->template_exists($template)) {
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('PageMaster', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
         if ($alert) {
             LogUtil::registerStatus(__f('Notice: Template [%s] not found.', $template, $dom));
         }
@@ -351,7 +351,7 @@ function PageMaster_user_pubedit()
     $formHandler = new PageMaster_user_editpub();
 
     if (empty($id) && !empty($pid)) {
-        $id = pnModAPIFunc('PageMaster', 'user', 'getId',
+        $id = ModUtil::apiFunc('PageMaster', 'user', 'getId',
                            array('tid' => $tid,
                                  'pid' => $pid));
         if (empty($id)) {
@@ -385,7 +385,7 @@ function PageMaster_user_pubedit()
     $render->assign('pubtype', $pubtype);
 
     // resolve the template to use
-    $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && pnModGetVar('PageMaster', 'devmode', false);
+    $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
 
     // individual step
     $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
@@ -464,20 +464,20 @@ function PageMaster_user_executecommand()
         switch ($goto)
         {
             case 'edit':
-                return pnRedirect(pnModURL('PageMaster', 'user', 'pubedit',
+                return System::redirect(ModUtil::url('PageMaster', 'user', 'pubedit',
                                            array('tid' => $tid,
                                                  'id'  => $pub['id'])));
             case 'stepmode':
-                return pnRedirect(pnModURL('PageMaster', 'user', 'pubedit',
+                return System::redirect(ModUtil::url('PageMaster', 'user', 'pubedit',
                                            array('tid'  => $tid,
                                                  'id'   => $pub['id'],
                                                  'goto' => 'stepmode')));
             default:
-                return pnRedirect($goto);
+                return System::redirect($goto);
         }
     }
 
-    return pnRedirect(pnModURL('PageMaster', 'user', 'viewpub',
+    return System::redirect(ModUtil::url('PageMaster', 'user', 'viewpub',
                                array('tid' => $tid,
                                      'id'  => $pub['id'])));
 }
@@ -504,10 +504,10 @@ function PageMaster_user_pubeditlist($args=array())
     $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
     $source     = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
 
-    $pubData = pnModAPIFunc ('PageMaster', 'user', 'pubeditlist', $args);
+    $pubData = ModUtil::apiFunc ('PageMaster', 'user', 'pubeditlist', $args);
 
     // create the output object
-    $render = pnRender::getInstance('PageMaster');
+    $render = Renderer::getInstance('PageMaster');
 
     $render->assign('allTypes',   $pubData['allTypes']);
     $render->assign('publist',    $pubData['pubList']);

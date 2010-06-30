@@ -43,11 +43,11 @@ function PageMaster_listblock_info()
 function PageMaster_listblock_display($blockinfo)
 {
     // Get variables from content block
-    $vars = pnBlockVarsFromContent($blockinfo['content']);
+    $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
     // Validation of required parameters
     if (!isset($vars['tid'])) {
-        $vars['tid'] = pnModGetVar('PageMaster', 'frontpagePubType');
+        $vars['tid'] = ModUtil::getVar('PageMaster', 'frontpagePubType');
     }
 
     // Security check
@@ -63,7 +63,7 @@ function PageMaster_listblock_display($blockinfo)
     $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
     $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-    $blockinfo['content'] = pnModFunc('PageMaster', 'user', 'main',
+    $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'main',
                                       array('tid'                => $vars['tid'],
                                             'filter'             => $filterStr,
                                             'orderby'            => $orderBy,
@@ -78,7 +78,7 @@ function PageMaster_listblock_display($blockinfo)
         return;
     }
 
-    return pnBlockThemeBlock($blockinfo);
+    return BlockUtil::themeBlock($blockinfo);
 }
 
 /**
@@ -89,11 +89,11 @@ function PageMaster_listblock_modify($blockinfo)
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
     // Get current content
-    $vars = pnBlockVarsFromContent($blockinfo['content']);
+    $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
     // Defaults
     if (!isset($vars['tid'])) {
-        $vars['tid'] = pnModGetVar('PageMaster', 'frontpagePubType');
+        $vars['tid'] = ModUtil::getVar('PageMaster', 'frontpagePubType');
     }
     if (!isset($vars['listCount'])) {
         $vars['listCount'] = 5;
@@ -119,7 +119,7 @@ function PageMaster_listblock_modify($blockinfo)
     // (no table start/end since the block edit template takes care of that)
 
     // Create a row for "Publication type"
-    pnModDBInfoLoad('PageMaster');
+    ModUtil::dbInfoLoad('PageMaster');
     $pubTypesData = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
     $pubTypes = array ();
@@ -228,7 +228,7 @@ function PageMaster_listblock_modify($blockinfo)
  */
 function PageMaster_listblock_update($blockinfo)
 {
-    $filters = pnVarCleanFromInput('filters');
+    $filters = FormUtil::getPassedValue('filters');
 
     $vars = array (
         'tid'           => FormUtil::getPassedValue('tid'),
@@ -240,7 +240,7 @@ function PageMaster_listblock_update($blockinfo)
         'orderBy'       => FormUtil::getPassedValue('orderBy')
     );
 
-    $blockinfo['content'] = pnBlockVarsToContent($vars);
+    $blockinfo['content'] = BlockUtil::varsToContent($vars);
 
     return $blockinfo;
 }

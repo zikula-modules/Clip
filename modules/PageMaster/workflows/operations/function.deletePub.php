@@ -33,7 +33,7 @@ function PageMaster_operation_deletePub(&$pub, $params)
 
         if ($count == 0) {
             // if not, let know that the publication was deleted
-            pnModCallHooks('item', 'delete', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+            ModUtil::callHooks('item', 'delete', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
         }
     }
 

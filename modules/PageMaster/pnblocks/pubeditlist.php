@@ -43,7 +43,7 @@ function PageMaster_pubeditlistblock_info()
 function PageMaster_pubeditlistblock_display($blockinfo)
 {
     // Get variables from content block
-    $vars = pnBlockVarsFromContent($blockinfo['content']);
+    $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
     // Security check
     if (!SecurityUtil::checkPermission('pagemaster:PubEditListblock:', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
@@ -60,9 +60,9 @@ function PageMaster_pubeditlistblock_display($blockinfo)
     $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
     $source     = 'block';
 
-    $pubData = pnModAPIFunc ('PageMaster', 'user', 'pubeditlist', $args);
+    $pubData = ModUtil::apiFunc ('PageMaster', 'user', 'pubeditlist', $args);
 
-    $render = pnRender::getInstance('PageMaster');
+    $render = Renderer::getInstance('PageMaster');
     $render->assign('allTypes',   $pubData['allTypes']);
     $render->assign('publist',    $pubData['pubList']);
     $render->assign('tid',        $tid);
@@ -75,7 +75,7 @@ function PageMaster_pubeditlistblock_display($blockinfo)
         return;
     }
 
-    return pnBlockThemeBlock($blockinfo);
+    return BlockUtil::themeBlock($blockinfo);
 }
 
 /**
@@ -85,7 +85,7 @@ function PageMaster_pubeditlistblock_modify($blockinfo)
 {
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
-    $vars = pnBlockVarsFromContent($blockinfo['content']);
+    $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
     if (!isset($vars['orderBy'])) {
         $vars['orderBy'] = '';
@@ -99,17 +99,17 @@ function PageMaster_pubeditlistblock_modify($blockinfo)
  */
 function PageMaster_pubeditlistblock_update($blockinfo)
 {
-    $filters = pnVarCleanFromInput('filters');
+    $filters = FormUtil::getPassedValue('filters');
 
     $vars = array (
         'cachelifetime' => FormUtil::getPassedValue('cachelifetime'),
         'orderBy'       => FormUtil::getPassedValue('orderBy')
     );
 
-    $blockinfo['content'] = pnBlockVarsToContent($vars);
+    $blockinfo['content'] = BlockUtil::varsToContent($vars);
 
-    $pnRender = pnRender::getInstance('PageMaster');
-    $pnRender->clear_cache('pagemaster_generic_pubeditlist.htm');
+    $renderer = Renderer::getInstance('PageMaster');
+    $renderer->clear_cache('pagemaster_generic_pubeditlist.htm');
 
     return $blockinfo;
 }

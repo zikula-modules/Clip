@@ -37,7 +37,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     // pubtype form link
     $output .= '<span>';
     if ($func != 'pubtype') {
-        $output .= '<a href="'.pnModURL('PageMaster', 'admin', 'pubtype', array('tid' => $tid)).'">'.__('Options', $dom).'</a>';
+        $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $tid)).'">'.__('Options', $dom).'</a>';
     } else {
         $output .= '<a>'.__('Options', $dom).'</a>';
     }
@@ -46,9 +46,9 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     // edit fields link
     $output .= '<span>';
     if ($func != 'pubfields') {
-        $output .= '<a href="'.pnModURL('PageMaster', 'admin', 'pubfields', array('tid' => $tid)).'">'.__('Fields', $dom).'</a>';
+        $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $tid)).'">'.__('Fields', $dom).'</a>';
     } elseif ($params['id'] != '') {
-        $output .= '<a href="'.pnModURL('PageMaster', 'admin', 'pubfields', array('tid' => $tid)).'#newpubfield">'.__('Fields', $dom).'</a>';
+        $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $tid)).'#newpubfield">'.__('Fields', $dom).'</a>';
     } else {
         $output .= '<a href="#newpubfield">'.__('Fields', $dom).'</a>';
     }
@@ -56,13 +56,13 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // new article link
     $output .= '<span>';
-    $output .= '<a href="'.pnModURL('PageMaster', 'user', 'pubedit', array('tid' => $tid, 'goto' => 'referer')).'">'.__('New publication', $dom).'</a>';
+    $output .= '<a href="'.ModUtil::url('PageMaster', 'user', 'pubedit', array('tid' => $tid, 'goto' => 'referer')).'">'.__('New publication', $dom).'</a>';
     $output .= '</span> | ';
 
     // pub list link
     $output .= '<span>';
     if ($func != 'publist') {
-        $output .= '<a href="'.pnModURL('PageMaster', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publication list', $dom).'</a>';
+        $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publication list', $dom).'</a>';
     } else {
         $output .= '<a>'.__('Publication list', $dom).'</a>';
     }
@@ -70,11 +70,11 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // show code links
     if ($func == 'showcode') {
-        $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.pnModURL('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Input template', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.pnModURL('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('List template', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.pnModURL('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Display template', $dom).'</a></span>';
+        $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Input template', $dom).'</a></span> | ';
+        $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('List template', $dom).'</a></span> | ';
+        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Display template', $dom).'</a></span>';
     } else {
-        $output .= '<span><a href="'.pnModURL('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Generate templates', $dom).'</a></span>';
+        $output .= '<span><a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Generate templates', $dom).'</a></span>';
     }
 
     $output .= '</span></div>';

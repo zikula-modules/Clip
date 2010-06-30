@@ -63,8 +63,8 @@ class pmformuploadinput extends pnFormUploadInput
                 return LogUtil::registerError('pmformuploadinput: '.__('Stored data is invalid', $dom));
             }
 
-            $path = pnModGetVar('PageMaster', 'uploadpath');
-            $url  = pnGetBaseURL().$path;
+            $path = ModUtil::getVar('PageMaster', 'uploadpath');
+            $url  = System::getBaseUrl().$path;
             if (!empty($arrTypeData['file_name'])) {
                 $this->upl_arr =  array(
                          'orig_name' => $arrTypeData['orig_name'],
@@ -95,7 +95,7 @@ class pmformuploadinput extends pnFormUploadInput
         }
 
         if (!empty($data['name'])) {
-            $uploadpath = pnModGetVar('PageMaster', 'uploadpath');
+            $uploadpath = ModUtil::getVar('PageMaster', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {

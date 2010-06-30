@@ -66,7 +66,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 				return LogUtil::registerError('pmformimageinput: '.__('Stored data is invalid', $dom));
 			}
 
-			$url = pnGetBaseURL().pnModGetVar('PageMaster', 'uploadpath');
+			$url = System::getBaseUrl().ModUtil::getVar('PageMaster', 'uploadpath');
 			if (!empty($arrTypeData['orig_name'])) {
 				$upl_arr =  array(
                          'orig_name'    => $arrTypeData['orig_name'],
@@ -101,7 +101,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         }
 
         if (!empty($PostData['name'])) {
-            $uploadpath = pnModGetVar('PageMaster', 'uploadpath');
+            $uploadpath = ModUtil::getVar('PageMaster', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {
@@ -167,34 +167,34 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 			}
 
 			// Check for the Thumbnails module and if we need it
-			if (!empty($tmpargs) && pnModAvailable('Thumbnail')) {
+			if (!empty($tmpargs) && ModUtil::available('Thumbnail')) {
 				$newFilenameTmp = "{$randName}-tmb.{$ext}";
 				$newDestTmp  = "{$uploadpath}/{$newFilenameTmp}";
 				$tmpargs['filename'] = $newDestOrig;
 				$tmpargs['dstFilename'] = $newDestTmp;
-				$dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $tmpargs);
+				$dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $tmpargs);
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed
                 $newFilenameTmp = $newFileNameOrig;
             }
 
-            if (!empty($preargs) && pnModAvailable('Thumbnail')) {
+            if (!empty($preargs) && ModUtil::available('Thumbnail')) {
                 $newFilenamePre = "{$randName}-pre.{$ext}";
                 $newDestPre  = "{$uploadpath}/{$newFilenamePre}";
                 $preargs['filename'] = $newDestOrig;
                 $preargs['dstFilename'] = $newDestPre;
-                $dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $preargs);
+                $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $preargs);
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed
                 $newFilenamePre = $newFileNameOrig;
             }
 
-            if (!empty($fullargs) && pnModAvailable('Thumbnail')) {
+            if (!empty($fullargs) && ModUtil::available('Thumbnail')) {
                 $newFilenameFull = "{$randName}-full.{$ext}";
                 $newDestFull  = "{$uploadpath}/{$newFilenameFull}";
                 $fullargs['filename'] = $newDestOrig;
                 $fullargs['dstFilename'] = $newDestFull;
-                $dstName = pnModAPIFunc('Thumbnail', 'user', 'generateThumbnail', $fullargs);
+                $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $fullargs);
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed
                 $newFilenameFull = $newFileNameOrig;
@@ -234,7 +234,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
         
-        if (pnModAvailable('Thumbnail')) {
+        if (ModUtil::available('Thumbnail')) {
             $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : false;
             $this->parseConfig($typedata);
 

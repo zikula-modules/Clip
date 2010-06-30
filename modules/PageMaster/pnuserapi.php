@@ -35,7 +35,7 @@ function PageMaster_userapi_pubList($args)
     $tid = $args['tid'];
 
     // validate the passed tid
-    $tables = pnDBGetTables();
+    $tables = DBUtil::getTables();
     if (!isset($tables['pagemaster_pubdata'.$tid])) {
         return LogUtil::registerError(__f('Error! No such publication type [%s] found.', $tid, $dom));
     }
@@ -162,7 +162,7 @@ function PageMaster_userapi_pubList($args)
 
     // build the where clause
     $where = array();
-    $uid   = pnUserGetVar('uid');
+    $uid   = UserUtil::getVar('uid');
 
     if ($isadmin) {
         if (!empty($uid) && $pubtype['enableeditown'] == 1) {
@@ -266,7 +266,7 @@ function PageMaster_userapi_getPub($args)
 
     // build the where clause
     $tablename = 'pagemaster_pubdata'.$tid;
-    $uid       = pnUserGetVar('uid');
+    $uid       = UserUtil::getVar('uid');
     $where     = '';
 
     if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN))
@@ -442,7 +442,7 @@ function PageMaster_userapi_pubeditlist($args=array())
 
     foreach ($pubtypes as $pubtype) {
         $tid    = $pubtype['tid'];
-        $tables = pnDBGetTables();
+        $tables = DBUtil::getTables();
         if (!isset($tables['pagemaster_pubdata'.$tid])) {
             $allTypes[$tid] = $pubtype['title'];
             continue;
@@ -479,7 +479,7 @@ function PageMaster_userapi_pubeditlist($args=array())
  * form custom url string
  *
  * @author Philipp Niethammer <webmaster@nochwer.de>
- * @param  array   $args Arguments given by pnModUrl
+ * @param  array   $args Arguments given by ModUtil::url
  * @return custom  url string
  */
 function PageMaster_userapi_encodeurl($args)
@@ -555,7 +555,7 @@ function PageMaster_userapi_decodeurl($args)
     $functions = array('executecommand', 'pubedit', 'main', 'viewpub');
     $argsnum   = count($_);
     if (!isset($_[2]) || empty($_[2])) {
-        pnQueryStringSetVar('func', 'main');
+        System::queryStringSetVar('func', 'main');
         return true;
     }
 
@@ -569,25 +569,25 @@ function PageMaster_userapi_decodeurl($args)
     if (!$tid) {
         return false;
     } else {
-        pnQueryStringSetVar('func', 'main');
-        pnQueryStringSetVar('tid', $tid);
+        System::queryStringSetVar('func', 'main');
+        System::queryStringSetVar('tid', $tid);
     }
 
     if (isset($_[3]) && !empty($_[3])) {
-        $permalinksseparator = pnConfigGetVar('shorturlsseparator');
+        $permalinksseparator = System::getVar('shorturlsseparator');
         $match = '';
         $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+$~i', $_[3], $match);
         if ($isPub) {
             $pid = $match[1];
-            pnQueryStringSetVar('func', 'viewpub');
-            pnQueryStringSetVar('pid', $pid);
+            System::queryStringSetVar('func', 'viewpub');
+            System::queryStringSetVar('pid', $pid);
             $nextvar = 4;
         }
     }
 
     if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
         for ($i = $nextvar; $i < $argsnum; $i+=2) {
-            pnQueryStringSetVar($_[$i], $_[$i+1]);
+            System::queryStringSetVar($_[$i], $_[$i+1]);
         }
     }
 
