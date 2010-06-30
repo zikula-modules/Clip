@@ -362,7 +362,7 @@ class PageMaster_User extends Zikula_Controller
         $formHandler->pubfields = $pubfields;
         $formHandler->tablename = 'pagemaster_pubdata'.$tid;
 
-        // get actual state for selecting pnForm Template
+        // get actual state for selecting form Template
         $stepname = 'initial';
 
         if (!empty($id)) {
@@ -384,7 +384,7 @@ class PageMaster_User extends Zikula_Controller
         $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
 
         if (!empty($stepname) && $render->template_exists($template_step)) {
-            return $render->formExecute($template_step, $formHandler);
+            return $render->execute($template_step, $formHandler);
         } elseif ($alert) {
             LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template_step));
         }
@@ -393,7 +393,7 @@ class PageMaster_User extends Zikula_Controller
         $template_all = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
 
         if ($render->template_exists($template_all)) {
-            return $render->formExecute($template_all, $formHandler);
+            return $render->execute($template_all, $formHandler);
         } elseif ($alert) {
             LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template_all));
         }
@@ -402,7 +402,7 @@ class PageMaster_User extends Zikula_Controller
         $render->force_compile = true;
         $render->assign('editpub_template_code', PMgen_editpub_tplcode($tid));
 
-        return $render->formExecute('var:editpub_template_code', $formHandler);
+        return $render->execute('var:editpub_template_code', $formHandler);
     }
 
     /**
