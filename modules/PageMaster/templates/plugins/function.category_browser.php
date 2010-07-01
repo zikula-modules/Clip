@@ -66,9 +66,6 @@ function smarty_function_category_browser($params, &$smarty)
         }
     }
 
-    if (version_compare(PN_VERSION_NUM, '1.3', '<')) {
-        Loader::loadClass('CategoryUtil');
-    }
 
     $pubfields = PMgetPubFields($tid);
     $id = $pubfields[$field]['typedata'];

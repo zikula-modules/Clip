@@ -28,16 +28,11 @@ function smarty_function_genericformplugin($params, &$render)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
     }
 
-    if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
-        $tid = $render->eventHandler->pubtype['tid'];
-    } else {
-        $tid = $render->pnFormEventHandler->tid;
-    }
+    $tid = $render->eventHandler->pubtype['tid'];
 
     $pubfields   = PMgetPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];
 
-    if (version_compare(PN_VERSION_NUM, '1.3', '>=')) {
         switch ($pluginclass) {
             case 'pmformcheckboxinput':
                 $pluginclass = 'Checkbox';
@@ -89,9 +84,8 @@ function smarty_function_genericformplugin($params, &$render)
                 break;
         }
         $pluginclass = "PageMaster_Form_Plugin_$pluginclass";
-    } else {
-        Loader::LoadClass($pluginclass, 'modules/PageMaster/classes/FormPlugins');
     }
+
     //$plugin = new $pluginclass;
 
     // read settings in pubfields, if set by template ignore settings in pubfields

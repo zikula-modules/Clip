@@ -98,10 +98,6 @@ class PageMaster_Api_User extends Zikula_Api
             $orderby = $args['orderby'];
         }
 
-        if (version_compare(PN_VERSION_NUM, '1.3', '<')) {
-            Loader::loadClass('FilterUtil', 'modules/PageMaster/classes');
-        }
-
         foreach ($pubfields as $fieldname => $field)
         {
             $pluginclass = $field['fieldplugin'];
@@ -139,7 +135,7 @@ class PageMaster_Api_User extends Zikula_Api
         if (isset($joinInfo)) {
             $tbl_alias = 'tbl.';
             $filter_args = array('join' => array('join_table' => $joinInfo['join_table']),
-	                                         'plugins'    => $filterPlugins);
+                                             'plugins'    => $filterPlugins);
         } else {
             $tbl_alias = '';
             $filter_args = array('plugins' => $filterPlugins);
