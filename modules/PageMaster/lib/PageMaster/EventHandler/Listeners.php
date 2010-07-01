@@ -1,6 +1,6 @@
 <?php
 
-class Listeners
+class PageMaster_EventHandler_Listeners
 {
     public static function getFormPlugins(Zikula_Event $event)
     {
