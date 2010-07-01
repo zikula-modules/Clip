@@ -278,23 +278,8 @@ function PMgen_editpub_tplcode($tid)
  */
 function PMgetPluginsOptionList()
 {
-    $classDirs = array();
-    //Loader::LoadClass checks these dirs, strange
-    $classDirs[] = 'config/classes/modules/PageMaster/lib/PageMaster/Form/Plugin';
-    $classDirs[] = 'modules/PageMaster/lib/PageMaster/Form/Plugin';
-
-    $plugins = array ();
-    foreach ($classDirs as $classDir) {
-        $files = FileUtil::getFiles($classDir, false, true, 'php', 'f');
-        foreach ($files as $file) {
-                $pluginclass = substr($file, 0, strlen($file)-4);
-                $plugin = PMgetPlugin($pluginclass);
-                $plugins[] = array (
-                        'plugin' => $plugin,
-                        'class' => $pluginclass
-                );
-        }
-    }
+    $event = new Zikula_Event('pagemaster.get_form_plugins');
+    $plugins = EventUtil::getManager()->notify($event)->getData();
 
     uasort($plugins, '_PMsortPluginList');
 
