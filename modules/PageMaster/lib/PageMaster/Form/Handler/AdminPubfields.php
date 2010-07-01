@@ -32,7 +32,7 @@ class PageMaster_Form_Handler_AdminPubfields
         // validation check
         if (empty($tid) || !is_numeric($tid)) {
             LogUtil::registerError(__f('Error! %s not set.', 'tid', $dom));
-            $render->pnFormRedirect(ModUtil::url('PageMaster', 'admin', 'main'));
+            $render->redirect(ModUtil::url('PageMaster', 'admin', 'main'));
         }
         $this->tid = $tid;
 

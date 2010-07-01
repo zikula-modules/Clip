@@ -280,21 +280,19 @@ function PMgetPluginsOptionList()
 {
     $classDirs = array();
     //Loader::LoadClass checks these dirs, strange
-    $classDirs[] = 'config/classes/modules/PageMaster/classes/FormPlugins';
-    $classDirs[] = 'modules/PageMaster/classes/FormPlugins';
+    $classDirs[] = 'config/classes/modules/PageMaster/lib/PageMaster/Form/Plugin';
+    $classDirs[] = 'modules/PageMaster/lib/PageMaster/Form/Plugin';
 
     $plugins = array ();
     foreach ($classDirs as $classDir) {
         $files = FileUtil::getFiles($classDir, false, true, 'php', 'f');
         foreach ($files as $file) {
-            if (substr($file, 0, 6) == 'pmform') {
-                $pluginclass = substr($file, 0, -10);
+                $pluginclass = substr($file, 0, strlen($file)-4);
                 $plugin = PMgetPlugin($pluginclass);
                 $plugins[] = array (
                         'plugin' => $plugin,
                         'class' => $pluginclass
                 );
-            }
         }
     }
 
@@ -341,9 +339,6 @@ function PMgetWorkflowsOptionList()
  */
 function PMhandlePluginFields($publist, $pubfields, $islist=true)
 {
-    // TODO have to load pnForm, otherwise plugins can not be loaded...
-    include_once('includes/pnForm.php');
-
     foreach ($pubfields as $fieldname => $field) {
         $pluginclass = $field['fieldplugin'];
         $plugin = PMgetPlugin($pluginclass);
@@ -489,59 +484,8 @@ function PMgetPlugin($pluginclass)
 {
     static $plugin_arr;
 
-
     if (!isset($plugin_arr[$pluginclass])) {
-        switch ($pluginclass) {
-            case 'pmformcheckboxinput':
-                $newclass = 'Checkbox';
-                break;
-            case 'pmformcustomdata':
-                $newclass = 'CustomData';
-                break;
-            case 'pmformdateinput':
-                $newclass = 'Date';
-                break;
-            case 'pmformemailinput':
-                $newclass = 'Email';
-                break;
-            case 'pmformfloatinput':
-                $newclass = 'Float';
-                break;
-            case 'pmformimageinput':
-                $newclass = 'Image';
-                break;
-            case 'pmformintinput':
-                $newclass = 'Int';
-                break;
-            case 'pmformlistinput':
-                $newclass = 'List';
-                break;
-            case 'pmformmsinput':
-                $newclass = 'Ms';
-                break;
-            case 'pmformmulticheckinput':
-                $newclass = 'MultiCheck';
-                break;
-            case 'pmformmultilistinput':
-                $newclass = 'MultiList';
-                break;
-            case 'pmformpubinput':
-                $newclass = 'Pub';
-                break;
-            case 'pmformstringinput':
-                $newclass = 'String';
-                break;
-            case 'pmformtextinput':
-                $newclass = 'Text';
-                break;
-            case 'pmformuploadinput':
-                $newclass = 'Upload';
-                break;
-            case 'pmformurlinput':
-                $newclass = 'Url';
-                break;
-        }
-        $newclass = "PageMaster_Form_Plugin_$newclass";
+        $newclass = "PageMaster_Form_Plugin_$pluginclass";
         $plugin_arr[$pluginclass] = new $newclass();
     }
     
