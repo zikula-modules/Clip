@@ -57,7 +57,7 @@ class PageMaster_Form_Handler_AdminModifyConfig
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $data = $render->pnFormGetValues();
+        $data = $render->getValues();
 
         // handle the commands
         switch ($args['commandName'])

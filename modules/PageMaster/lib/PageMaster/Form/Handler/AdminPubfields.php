@@ -56,7 +56,7 @@ class PageMaster_Form_Handler_AdminPubfields
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $data = $render->pnFormGetValues();
+        $data = $render->getValues();
 
         $data['id']        = (int)$this->id;
         $data['tid']       = (int)$this->tid;
@@ -72,7 +72,7 @@ class PageMaster_Form_Handler_AdminPubfields
         {
             // create a field
             case 'create':
-                if (!$render->pnFormIsValid()) {
+                if (!$render->isValid()) {
                     return false;
                 }
 
@@ -119,7 +119,7 @@ class PageMaster_Form_Handler_AdminPubfields
                 break;
         }
 
-        $render->pnFormRedirect($returnurl);
+        $render->redirect($returnurl);
         return true;
     }
 }

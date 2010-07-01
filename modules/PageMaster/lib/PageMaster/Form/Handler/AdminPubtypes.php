@@ -110,7 +110,7 @@ class PageMaster_Form_Handler_AdminPubtypes
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $data = $render->pnFormGetValues();
+        $data = $render->getValues();
         $data['tid'] = $this->tid;
 
         // handle the commands
@@ -118,7 +118,7 @@ class PageMaster_Form_Handler_AdminPubtypes
         {
             // create a pubtype
             case 'create':
-                if (!$render->pnFormIsValid()) {
+                if (!$render->isValid()) {
                     return false;
                 }
 
@@ -152,6 +152,6 @@ class PageMaster_Form_Handler_AdminPubtypes
                 break;
         }
 
-        return $render->pnFormRedirect(ModUtil::url('PageMaster', 'admin', 'main'));
+        return $render->redirect(ModUtil::url('PageMaster', 'admin', 'main'));
     }
 }

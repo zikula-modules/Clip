@@ -67,7 +67,7 @@ class PageMaster_Form_Handler_UserEditpub
         if (count($actions) < 1) {
             LogUtil::registerError(__('No workflow actions found. This can be a permissions issue.', $dom));
 
-            return $render->pnFormRedirect(ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid)));
+            return $render->redirect(ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid)));
         }
 
         // check for set_* default values
@@ -105,11 +105,11 @@ class PageMaster_Form_Handler_UserEditpub
             return $render->pnFormRedirect($this->referer);
         }
 
-        if (!$render->pnFormIsValid()) {
+        if (!$render->isValid()) {
             return false;
         }
 
-        $data = $render->pnFormGetValues();
+        $data = $render->getValues();
 
         // restore the core values
         $this->pubExtract($data);
@@ -197,7 +197,7 @@ class PageMaster_Form_Handler_UserEditpub
             return false;
         }
 
-        return $render->pnFormRedirect($this->goto);
+        return $render->redirect($this->goto);
     }
 
     /**
