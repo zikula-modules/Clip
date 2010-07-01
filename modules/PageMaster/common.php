@@ -49,7 +49,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
             {
                 // text plugin
                 case 'pmformtextinput':
-                    $snippet_body = '{$'.$key.'|DataUtil::formatForDisplayHTML|modcallhooks:\'PageMaster\'}';
+                    $snippet_body = '{$'.$key.'|safehtml|modcallhooks:\'PageMaster\'}';
                     break;
 
                 // image plugin
@@ -126,7 +126,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                 if (in_array($key, array('core_author', 'cr_uid', 'lu_uid'))) {
                     $snippet_body = "\n".
                             '                {$'.$key.'|userprofilelink}'."\n".
-                            '                <span class="z-sub">[{$'.$key.'|DataUtil::formatForDisplayHTML}]</span>'."\n".
+                            '                <span class="z-sub">[{$'.$key.'|safehtml}]</span>'."\n".
                             '            ';
 
                     // flags
@@ -139,7 +139,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
 
                     // generic strings
                 } else {
-                    $snippet_body = '{$'.$key.'|DataUtil::formatForDisplayHTML}';
+                    $snippet_body = '{$'.$key.'|safehtml}';
                 }
             }
 
