@@ -26,7 +26,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
     }
 
-    $pubtype = PMgetPubType($tid);
+    $pubtype = PageMaster_Util::getPubType($tid);
 
     // build the output
     $output  = '<div class="z-menu"><span class="z-menuitem-title">';

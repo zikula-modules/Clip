@@ -30,7 +30,7 @@ function smarty_function_genericformplugin($params, &$render)
 
     $tid = $render->eventHandler->pubtype['tid'];
 
-    $pubfields   = PMgetPubFields($tid);
+    $pubfields   = PageMaster_Util::getPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];
 
         switch ($pluginclass) {

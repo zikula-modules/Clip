@@ -66,8 +66,7 @@ function smarty_function_category_browser($params, &$smarty)
         }
     }
 
-
-    $pubfields = PMgetPubFields($tid);
+    $pubfields = PageMaster_Util::getPubFields($tid);
     $id = $pubfields[$field]['typedata'];
 
     $cats = CategoryUtil::getSubCategories($id);

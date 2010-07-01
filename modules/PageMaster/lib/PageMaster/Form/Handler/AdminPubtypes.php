@@ -30,8 +30,8 @@ class PageMaster_Form_Handler_AdminPubtypes
         if (!empty($tid) && is_numeric($tid)) {
             $this->tid = $tid;
 
-            $pubtype   = PMgetPubType($tid);
-            $pubfields = PMgetPubFields($tid);
+            $pubtype   = PageMaster_Util::getPubType($tid);
+            $pubfields = PageMaster_Util::getPubFields($tid);
 
             $arraysort = array(
                 'core_empty' => array(),
@@ -94,10 +94,10 @@ class PageMaster_Form_Handler_AdminPubtypes
             $render->assign($pubtype);
         }
 
-        $pubtypes = PMgetPubType(-1);
+        $pubtypes = PageMaster_Util::getPubType(-1);
         $render->assign('pubtypes', $pubtypes);
 
-        $workflows = PMgetWorkflowsOptionList();
+        $workflows = PageMaster_Util::getWorkflowsOptionList();
         $render->assign('pmWorkflows', $workflows);
 
         return true;

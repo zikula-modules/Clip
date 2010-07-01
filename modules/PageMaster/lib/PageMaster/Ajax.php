@@ -11,16 +11,15 @@
 
 class PageMaster_Ajax extends Zikula_Controller
 {
-
     public function changedlistorder()
     {
         if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
             AjaxUtil::error($this->__('Sorry! No authorization to access this module.'));
         }
 
-        //    if (!SecurityUtil::confirmAuthKey()) {
-        //        AjaxUtil::error($this->___("Invalid authorisation key ('authkey'). This is probably either because you pressed the 'Back' button to return to a page which does not allow that, or else because the page's authorisation key expired due to prolonged inactivity. Please refresh the page and try again."));
-        //    }
+        //if (!SecurityUtil::confirmAuthKey()) {
+        //    AjaxUtil::error($this->___("Invalid authorisation key ('authkey'). This is probably either because you pressed the 'Back' button to return to a page which does not allow that, or else because the page's authorisation key expired due to prolonged inactivity. Please refresh the page and try again."));
+        //}
 
         $pubfields = FormUtil::getPassedValue('pubfieldlist');
         $tid       = FormUtil::getPassedValue('tid');

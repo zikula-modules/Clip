@@ -102,8 +102,8 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
             }
 
             $srcTempFilename = $data['tmp_name'];
-            $ext             = strtolower(PMgetExtension($data['name']));
-            $randName        = PMgetNewFileReference();
+            $ext             = strtolower(FileUtil::getExtension($data['name']));
+            $randName        = PageMaster_Util::getNewFileReference();
             $new_filename    = "{$randName}.{$ext}";
             $dstFilename     = "{$uploadpath}/{$new_filename}";
 

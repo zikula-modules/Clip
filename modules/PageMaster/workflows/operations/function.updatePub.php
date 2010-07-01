@@ -33,7 +33,7 @@ function PageMaster_operation_updatePub(&$pub, $params)
 
     // overrides newrevision in pubtype. gives the dev. the possibility to not genereate a new revision
     // e.g. when the revision is pending (waiting state) and will be updated
-    $pubtype = PMgetPubType($pub['tid']);
+    $pubtype = PageMaster_Util::getPubType($pub['tid']);
 
     if ($pubtype['enablerevisions'] && $pub['core_online'] == 1) {
         // set all other to offline

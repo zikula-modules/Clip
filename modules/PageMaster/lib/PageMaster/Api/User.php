@@ -60,8 +60,8 @@ class PageMaster_Api_User extends Zikula_Api
             $args['justcount'] = 'no';
         }
 
-        $pubtype   = isset($args['pubtype']) ? $args['pubtype'] : PMgetPubType($tid);
-        $pubfields = isset($args['pubfields']) ? $args['pubfields'] : PMgetPubFields($tid);
+        $pubtype   = isset($args['pubtype']) ? $args['pubtype'] : PageMaster_Util::getPubType($tid);
+        $pubfields = isset($args['pubfields']) ? $args['pubfields'] : PageMaster_Util::getPubFields($tid);
 
         // mode check
         $isadmin = !SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || (!isset($args['admin']) || !$args['admin']);
@@ -101,7 +101,7 @@ class PageMaster_Api_User extends Zikula_Api
         foreach ($pubfields as $fieldname => $field)
         {
             $pluginclass = $field['fieldplugin'];
-            $plugin = PMgetPlugin($pluginclass);
+            $plugin = PageMaster_Util::getPlugin($pluginclass);
 
             if (isset($plugin->filterClass)) {
                 $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
@@ -142,7 +142,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // check if some plugin specific orderby has to be done
-        $orderby   = PMhandlePluginOrderBy($orderby, $pubfields, $tbl_alias);
+        $orderby   = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
         $tablename = 'pagemaster_pubdata'.$tid;
         $fu = new FilterUtil('PageMaster', $tablename, $filter_args);
 
@@ -190,7 +190,7 @@ class PageMaster_Api_User extends Zikula_Api
                 }
             }
             if ($handlePluginFields) {
-                $publist = PMhandlePluginFields($publist, $pubfields);
+                $publist = PageMaster_Util::handlePluginFields($publist, $pubfields);
             }
         }
 
@@ -199,8 +199,8 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         return array (
-        'publist'  => $publist,
-        'pubcount' => isset($pubcount) ? $pubcount : null
+            'publist'  => $publist,
+            'pubcount' => isset($pubcount) ? $pubcount : null
         );
     }
 
@@ -240,7 +240,7 @@ class PageMaster_Api_User extends Zikula_Api
 
         // get the pubtype if not set
         if (empty($pubtype)) {
-            $pubtype = PMgetPubType($tid);
+            $pubtype = PageMaster_Util::getPubType($tid);
             // validate the result
             if (!$pubtype) {
                 return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
@@ -249,7 +249,7 @@ class PageMaster_Api_User extends Zikula_Api
 
         // get the pubfields if not set
         if (empty($pubfields)) {
-            $pubfields = PMgetPubFields($tid);
+            $pubfields = PageMaster_Util::getPubFields($tid);
             // validate the result
             if (!$pubfields) {
                 return LogUtil::registerError($this->__('Error! No publication fields found.'));
@@ -269,9 +269,9 @@ class PageMaster_Api_User extends Zikula_Api
                 $where .= " pm_online = '1' ";
             }
             $where .= " AND pm_indepot = '0'
-                    AND (pm_language = '' OR pm_language = '".ZLanguage::getLanguageCode()."')
-                    AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)
-                    AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
+                        AND (pm_language = '' OR pm_language = '".ZLanguage::getLanguageCode()."')
+                        AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)
+                        AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
 
             if (empty($args['id'])) {
                 $where .= " AND pm_pid = '$pid'";
@@ -280,7 +280,6 @@ class PageMaster_Api_User extends Zikula_Api
             }
         } else {
             if (empty($id)) {
-                $tablem = DBUtil::getLimitedTablename($tablename);
                 $where .= " pm_pid = '$pid' AND pm_online = '1'";
             } else {
                 $where .= " pm_id = '$id'";
@@ -299,7 +298,7 @@ class PageMaster_Api_User extends Zikula_Api
 
         // handle the plugins data if needed
         if ($handlePluginFields){
-            $pubdata = PMhandlePluginFields($pubdata, $pubfields, false);
+            $pubdata = PageMaster_Util::handlePluginFields($pubdata, $pubfields, false);
         }
 
         if ($getApprovalState) {
@@ -307,7 +306,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // fills the core_title field
-        $core_title = PMgetTitleField($pubfields);
+        $core_title = PageMaster_Util::findTitleField($pubfields);
         $pubdata    = array('core_title' => $pubdata[$core_title]) + $pubdata;
 
         return $pubdata;
@@ -336,10 +335,10 @@ class PageMaster_Api_User extends Zikula_Api
         $data        = $args['data'];
         $tid         = $data['tid'];
 
-        $pubfields = isset($args['pubfields']) ? $args['pubfields'] : PMgetPubFields($tid);
+        $pubfields = isset($args['pubfields']) ? $args['pubfields'] : PageMaster_Util::getPubFields($tid);
 
         if (!isset($args['schema'])) {
-            $pubtype = PMgetPubType($tid);
+            $pubtype = PageMaster_Util::getPubType($tid);
             $schema  = str_replace('.xml', '', $pubtype['workflow']);
         } else {
             $schema = $args['schema'];
@@ -347,7 +346,7 @@ class PageMaster_Api_User extends Zikula_Api
 
         foreach ($pubfields as $fieldname => $field)
         {
-            $plugin = PMgetPlugin($field['fieldplugin']);
+            $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
             if (method_exists($plugin, 'preSave')) {
                 $data[$fieldname] = $plugin->preSave($data, $field);
             }
@@ -388,7 +387,7 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * Returns the ID of the online publication
+     * Returns the ID of the online publication.
      *
      * @author kundi
      * @param int $args['tid']
@@ -412,7 +411,8 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * generate hierarchical data of publication types and publications
+     * Generate hierarchical data of publication types and publications.
+     *
      * @author rgasch
      * @param $args['tid']
      * @param $args['pid'] (optional)
@@ -434,7 +434,7 @@ class PageMaster_Api_User extends Zikula_Api
                 continue;
             }
 
-            $coreTitle = PMgetPubtypeTitleField($tid);
+            $coreTitle = PageMaster_Util::getTitleField($tid);
             if (substr($orderby, 0, 10) == 'core_title') {
                 $orderby = str_replace('core_title', $coreTitle, $orderby);
             }
@@ -462,7 +462,7 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * form custom url string
+     * Form custom url string.
      *
      * @author Philipp Niethammer <webmaster@nochwer.de>
      * @param  array   $args Arguments given by ModUtil::url
@@ -486,7 +486,7 @@ class PageMaster_Api_User extends Zikula_Api
             return false;
         } else {
             $tid          = (int)$args['args']['tid'];
-            $pubtype      = PMgetPubType($tid);
+            $pubtype      = PageMaster_Util::getPubType($tid);
             $pubtypeTitle = DataUtil::formatPermalink($pubtype['urltitle']);
 
             unset($args['args']['tid']);
@@ -510,7 +510,7 @@ class PageMaster_Api_User extends Zikula_Api
                 return false;
             }
 
-            $titlefield = PMgetPubtypeTitleField($tid);
+            $titlefield = PageMaster_Util::getTitleField($tid);
 
             $pubTitle = DBUtil::selectFieldByID("pagemaster_pubdata{$tid}", $titlefield, $pid, 'core_pid');
             $pubTitle = '/'.DataUtil::formatPermalink($pubTitle).'.'.$pid;

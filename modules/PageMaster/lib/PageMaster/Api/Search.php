@@ -17,7 +17,7 @@ class PageMaster_Api_Search extends Zikula_Api
     public function info()
     {
         return array('title'     => 'PageMaster',
-                 'functions' => array('PageMaster' => 'search'));
+                     'functions' => array('PageMaster' => 'search'));
     }
 
     /**
@@ -64,13 +64,13 @@ class PageMaster_Api_Search extends Zikula_Api
 
         $sessionId = session_id();
         $insertSql = "INSERT INTO $searchTable
-                      ($searchColumn[title],
-                      $searchColumn[text],
-                      $searchColumn[extra],
-                      $searchColumn[created],
-                      $searchColumn[module],
-                      $searchColumn[session])
-                  VALUES ";
+                          ($searchColumn[title],
+                          $searchColumn[text],
+                          $searchColumn[extra],
+                          $searchColumn[created],
+                          $searchColumn[module],
+                          $searchColumn[session])
+                      VALUES ";
 
                       $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
@@ -89,16 +89,17 @@ class PageMaster_Api_Search extends Zikula_Api
                               if (is_array($where_arr)) {
                                   $where  = search_construct_where($args, $where_arr);
                                   $where .= " AND pm_showinlist = '1'
-                            AND pm_online = '1'
-                            AND pm_indepot = '0'
-                            AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCode() ."')
-                            AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL) AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
+                                              AND pm_online = '1'
+                                              AND pm_indepot = '0'
+                                              AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCode() ."')
+                                              AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)
+                                              AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
 
                                   $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
 
                                   $publist    = DBUtil::selectObjectArray($tablename, $where);
 
-                                  $core_title = PMgetPubtypeTitleField($pubtype['tid']);
+                                  $core_title = PageMaster_Util::getTitleField($pubtype['tid']);
 
                                   foreach ($publist as $pub)
                                   {
@@ -135,8 +136,8 @@ class PageMaster_Api_Search extends Zikula_Api
         $datarow = &$args['datarow'];
         $extra   = unserialize($datarow['extra']);
         $datarow['url'] = ModUtil::url('PageMaster', 'user', 'viewpub',
-        array('tid' => $extra['tid'],
-                                     'pid' => $extra['pid']));
+                                       array('tid' => $extra['tid'],
+                                             'pid' => $extra['pid']));
         return true;
     }
 }

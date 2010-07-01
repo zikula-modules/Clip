@@ -94,7 +94,7 @@ class PageMaster_Api_Import extends Zikula_Api
         // save link between list id's and category id's
         ModUtil::setVar('pagesetter', 'temp_arr', serialize($temp_arr));
 
-        return LogUtil::registerStatus(__('Lists import succeded!', $dom));
+        return LogUtil::registerStatus($this->__('Lists import succeded!'));
     }
 
     /**
@@ -264,11 +264,11 @@ class PageMaster_Api_Import extends Zikula_Api
                             $datafield['typedata'] = $cat[0]['id'];
 
                         } else {
-                            LogUtil::registerError(__f('Error! Unsupported field type [%s].', $pubfield['type'], $dom));
+                            LogUtil::registerError($this->__f('Error! Unsupported field type [%s].', $pubfield['type']));
                         }
                 }
 
-                $plugin                    = PMgetPlugin($datafield['fieldplugin']);
+                $plugin                    = PageMaster_Util::getPlugin($datafield['fieldplugin']);
 
                 $datafield['fieldtype']    = $plugin->columnDef;
                 $datafield['istitle']      = $pubfield['isTitle'];
@@ -281,7 +281,7 @@ class PageMaster_Api_Import extends Zikula_Api
             }
         }
 
-        return LogUtil::registerStatus(__('Fields import succeded!', $dom));
+        return LogUtil::registerStatus($this->__('Fields import succeded!'));
     }
 
     /**
@@ -298,11 +298,11 @@ class PageMaster_Api_Import extends Zikula_Api
         foreach ($pubtypes as $pubtype) {
             $ret = ModUtil::apiFunc('PageMaster', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
             if (!$ret) {
-                LogUtil::registerError(__('Cannot create the database for tid [%1$s (%2$s)].', array($pubtype['title'], $pubtype['tid']), $dom));
+                LogUtil::registerError($this->__('Cannot create the database for tid [%1$s (%2$s)].', array($pubtype['title'], $pubtype['tid'])));
             }
         }
 
-        return LogUtil::registerStatus(__('Database update succeded!', $dom));
+        return LogUtil::registerStatus($this->__('Database update succeded!'));
     }
 
     /**
@@ -345,10 +345,10 @@ class PageMaster_Api_Import extends Zikula_Api
             $tablename   = $tables['pagesetter_pubdata'].$pubtype['id'];
             $tablenamePM = $tables['pagemaster_pubdata'.$pubtype['id']];
 
-            $sql    = 'SELECT pp.pg_hitcount , dyn.*
-                   FROM '.$pubheader_table.' pp,
-                        '.$tablename.' dyn
-                   WHERE  pp.pg_pid = dyn.pg_pid AND pp.pg_tid = \''.$pubtype['id'].'\'';
+            $sql = 'SELECT pp.pg_hitcount , dyn.*
+                      FROM '.$pubheader_table.' pp,
+                           '.$tablename.' dyn
+                     WHERE pp.pg_pid = dyn.pg_pid AND pp.pg_tid = \''.$pubtype['id'].'\'';
 
             $result = DBUtil::executeSQL($sql);
             if (!$result) {
@@ -469,6 +469,6 @@ class PageMaster_Api_Import extends Zikula_Api
                 DBUtil::executeSQL($sql);
         }
 
-        return LogUtil::registerStatus(__('Data import succeded!', $dom));
+        return LogUtil::registerStatus($this->__('Data import succeded!'));
     }
 }

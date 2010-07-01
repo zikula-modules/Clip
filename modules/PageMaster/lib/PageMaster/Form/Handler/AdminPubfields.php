@@ -61,7 +61,7 @@ class PageMaster_Form_Handler_AdminPubfields
         $data['id']        = (int)$this->id;
         $data['tid']       = (int)$this->tid;
 
-        $plugin            = PMgetPlugin($data['fieldplugin']);
+        $plugin            = PageMaster_Util::getPlugin($data['fieldplugin']);
         $data['fieldtype'] = $plugin->columnDef;
 
         $returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields',

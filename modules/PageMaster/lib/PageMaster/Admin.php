@@ -94,12 +94,11 @@ class PageMaster_Admin extends Zikula_Controller
         $tid  = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
         $rurl = System::serverGetVar('HTTP_REFERER', ModUtil::url('PageMaster', 'admin', 'main'));
 
-        if (!PMgetPubType($tid)) {
+        if (!PageMaster_Util::getPubType($tid)) {
             return LogUtil::registerError($this->__('Error! No such publication type found.'), null, $rurl);
         }
 
-        $result = ModUtil::apiFunc('PageMaster', 'admin', 'updatetabledef',
-        array('tid' => $tid));
+        $result = ModUtil::apiFunc('PageMaster', 'admin', 'updatetabledef', array('tid' => $tid));
 
         if (!$result) {
             return LogUtil::registerError($this->__('Error! Update attempt failed.'), null, $rurl);
@@ -132,11 +131,11 @@ class PageMaster_Admin extends Zikula_Controller
         $tablename = 'pagemaster_pubdata'.$tid;
         if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
             return LogUtil::registerError($this->__('Error! The table of this publication type seems not to exist. Please, update the DB Tables at the bottom of this form.'),
-            null,
-            ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
+                                          null,
+                                          ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
         }
 
-        $pubtype = PMgetPubType($tid);
+        $pubtype = PageMaster_Util::getPubType($tid);
 
         // set the order
         $old_orderby = $orderby;
@@ -168,11 +167,11 @@ class PageMaster_Admin extends Zikula_Controller
             }
         }
 
-        $core_title  = PMgetPubtypeTitleField($tid);
+        $core_title  = PageMaster_Util::getTitleField($tid);
         if (substr($orderby, 0, 10) == 'core_title') {
             $orderby = str_replace('core_title', $core_title, $orderby);
         }
-        $orderby = PMcreateOrderBy($orderby);
+        $orderby = PageMaster_Util::createOrderBy($orderby);
 
         // query the list
         $publist  = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', $orderby, $startnum-1, $itemsperpage);
@@ -193,10 +192,10 @@ class PageMaster_Admin extends Zikula_Controller
                        ->assign('core_title', $core_title)
                        ->assign('publist',    $publist)
                        ->assign('orderby',    $old_orderby)
-                       ->assign('pager', array('numitems'     => $pubcount,
-                                   'itemsperpage' => $itemsperpage));
+                       ->assign('pager',      array('numitems'     => $pubcount,
+                                                    'itemsperpage' => $itemsperpage));
 
-        return $render->fetch('pagemaster_admin_publist.tpl');
+        return $this->renderer->fetch('pagemaster_admin_publist.tpl');
     }
 
     /**
@@ -227,7 +226,7 @@ class PageMaster_Admin extends Zikula_Controller
             WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
         }
 
-        $core_title = PMgetPubtypeTitleField($tid);
+        $core_title = PageMaster_Util::getTitleField($tid);
 
         // build the output
         $this->renderer->assign('core_tid',   $tid)
@@ -262,7 +261,7 @@ class PageMaster_Admin extends Zikula_Controller
         switch ($mode)
         {
             case 'input':
-                $code = PMgen_editpub_tplcode($tid);
+                $code = PageMaster_Generator::editpub($tid);
                 break;
 
             case 'outputfull':
@@ -273,11 +272,11 @@ class PageMaster_Admin extends Zikula_Controller
                     System::serverGetVar('HTTP_REFERER', ModUtil::url('PageMaster', 'admin', 'main')));
                 }
                 $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'getPub',
-                array('tid' => $tid,
+                                    array('tid' => $tid,
                                           'id'  => $id,
                                           'handlePluginFields' => true));
 
-                $code = PMgen_viewpub_tplcode($tid, $pubdata);
+                $code = PageMaster_Generator::viewpub($tid, $pubdata);
                 break;
 
             case 'outputlist':
@@ -292,7 +291,7 @@ class PageMaster_Admin extends Zikula_Controller
 
         $this->renderer->assign('code',    $code)
                        ->assign('mode',    $mode)
-                       ->assign('pubtype', PMgetPubType($tid));
+                       ->assign('pubtype', PageMaster_Util::getPubType($tid));
 
         return $this->renderer->fetch('pagemaster_admin_showcode.tpl');
     }
@@ -332,8 +331,8 @@ class PageMaster_Admin extends Zikula_Controller
         }
 
         $args = array(
-        'menu'       => 1,
-        'returntype' => 'admin'
+            'menu'       => 1,
+            'returntype' => 'admin'
         );
 
         return ModUtil::func('PageMaster', 'user', 'pubeditlist', $args);

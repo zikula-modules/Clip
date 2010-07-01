@@ -11,7 +11,6 @@
 
 class PageMaster_Api_Admin extends Zikula_Api
 {
-
     /**
      * Updates the database tables (DDL), based on pubfields.
      *
@@ -56,20 +55,20 @@ class PageMaster_Api_Admin extends Zikula_Api
 
         if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
             $links[] = array (
-            'url'  => ModUtil::url('PageMaster', 'admin', 'pubtypes'),
-            'text' => $this->__('List publication types')
+                'url'  => ModUtil::url('PageMaster', 'admin', 'pubtypes'),
+                'text' => $this->__('List publication types')
             );
             $links[] = array (
-            'url'  => ModUtil::url('PageMaster', 'admin', 'pubtype'),
-            'text' => $this->__('New publication type')
+                'url'  => ModUtil::url('PageMaster', 'admin', 'pubtype'),
+                'text' => $this->__('New publication type')
             );
             $links[] = array (
-            'url'  => ModUtil::url('PageMaster', 'admin', 'pubeditlist'),
-            'text' => $this->__('Edit publications')
+                'url'  => ModUtil::url('PageMaster', 'admin', 'pubeditlist'),
+                'text' => $this->__('Edit publications')
             );
             $links[] = array (
-            'url'  => ModUtil::url('PageMaster', 'admin', 'modifyconfig'),
-            'text' => $this->__('Settings')
+                'url'  => ModUtil::url('PageMaster', 'admin', 'modifyconfig'),
+                'text' => $this->__('Settings')
             );
         }
 

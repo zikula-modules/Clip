@@ -113,8 +113,8 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
             }
 
             $srcFilename     = $PostData['tmp_name'];
-            $ext             = strtolower(PMgetExtension($PostData['name']));
-            $randName        = PMgetNewFileReference();
+            $ext             = strtolower(FileUtil::getExtension($PostData['name']));
+            $randName        = PageMaster_Util::getNewFileReference();
             $newFileNameOrig = $randName.'.'.$ext;
             $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
             copy($srcFilename, $newDestOrig);
@@ -140,8 +140,8 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
             } 
 
 			$srcFilename =   $PostData['tmp_name'];
-			$ext             = strtolower(PMgetExtension($PostData['name']));
-			$randName        = PMgetNewFileReference();
+			$ext             = strtolower(FileUtil::getExtension($PostData['name']));
+			$randName        = PageMaster_Util::getNewFileReference();
 			$newFileNameOrig = $randName.'.'.$ext;
 			$newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
 			copy($srcFilename, $newDestOrig);

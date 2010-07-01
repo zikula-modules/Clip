@@ -20,7 +20,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
     function __construct()
     {
         $this->autoPostBack = true;
-        $plugins = PMgetPluginsOptionList();
+        $plugins = PageMaster::getWorkflowsOptionList();
 
         foreach ($plugins as $plugin) {
             $items[] = array (
@@ -42,7 +42,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
         if (!empty($this->selectedValue) && !empty($this->items)) {
             PageUtil::addVar('javascript', 'livepipe');
             $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
-            $plugin = PMgetPlugin($this->selectedValue);
+            $plugin = PageMaster_Util::getPlugin($this->selectedValue);
             if (method_exists($plugin, 'getTypeHtml'))
             {
                 if (method_exists($plugin, 'getSaveTypeDataFunc')) {
