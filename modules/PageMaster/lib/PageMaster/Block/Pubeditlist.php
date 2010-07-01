@@ -68,7 +68,7 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
         $render->assign('pid',        $pid);
         $render->assign('returntype', $returntype);
         $render->assign('source',     $source);
-        $blockinfo['content'] = $render->fetch('pagemaster_block_pubeditlist.htm');
+        $blockinfo['content'] = $render->fetch('pagemaster_block_pubeditlist.tpl');
 
         if (empty($blockinfo['content'])) {
             return;
@@ -106,7 +106,7 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
         $blockinfo['content'] = BlockUtil::varsToContent($vars);
 
         $renderer = Renderer::getInstance('PageMaster');
-        $renderer->clear_cache('pagemaster_generic_pubeditlist.htm');
+        $renderer->clear_cache('pagemaster_generic_pubeditlist.tpl');
 
         return $blockinfo;
     }

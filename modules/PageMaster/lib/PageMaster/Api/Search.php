@@ -41,7 +41,7 @@ class PageMaster_Api_Search extends Zikula_Api
 
             $render->assign('pubtypes', $pubtypes);
 
-            return $render->fetch('pagemaster_search_options.htm');
+            return $render->fetch('pagemaster_search_options.tpl');
         }
 
         return '';

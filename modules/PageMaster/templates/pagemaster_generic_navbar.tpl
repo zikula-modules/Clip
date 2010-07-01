@@ -76,15 +76,15 @@
     {switch expr=$section}
     {case expr='publist'}
     {modurl modname='PageMaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid assign='urlplcode'}
-    {gt text='This is a generic template. Your can <a href="%1$s">get the publist code</a> and create a customized template (<strong>publist_%2$s.htm</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/output/publist_%2$s.htm</strong> or within your theme: <strong>/templates/modules/PageMaster/output/publist_%2$s.htm</strong>.' tag1=$urlplcode|safetext tag2=$pubtype.filename|safetext}
+    {gt text='This is a generic template. Your can <a href="%1$s">get the publist code</a> and create a customized template (<strong>publist_%2$s.tpl</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/output/publist_%2$s.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/output/publist_%2$s.tpl</strong>.' tag1=$urlplcode|safetext tag2=$pubtype.filename|safetext}
     {/case}
     {case expr='pubview'}
     {modurl modname='PageMaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid assign='urlpvcode'}
-    {gt text='This is a generic template. Your can <a href="%1$s">get the pubview code</a> and create a customized template (<strong>viewpub_%2$s.htm</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/output/viewpub_%2$s.htm</strong> or within your theme: <strong>/templates/modules/PageMaster/output/viewpub_%2$s.htm</strong>.' tag1=$urlpvcode|safetext tag2=$pubtype.filename|safetext}
+    {gt text='This is a generic template. Your can <a href="%1$s">get the pubview code</a> and create a customized template (<strong>viewpub_%2$s.tpl</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/output/viewpub_%2$s.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/output/viewpub_%2$s.tpl</strong>.' tag1=$urlpvcode|safetext tag2=$pubtype.filename|safetext}
     {/case}
     {case expr='pubedit'}
     {modurl modname='PageMaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid assign='urlpecode'}
-    {gt text='This is a generic template. Your can <a href="%1$s">get the form code</a> and create individual templates (<strong>pubedit_%2$s_STEPNAME.htm</strong> or <strong>pubedit_%2$s_all.htm</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/input/pubedit_%2$s_STEPNAME.htm</strong> or within your theme: <strong>/templates/modules/PageMaster/input/pubedit_%2$s_STEPNAME.htm</strong>.' tag1=$urlpecode|safetext tag2=$pubtype.formname|safetext}
+    {gt text='This is a generic template. Your can <a href="%1$s">get the form code</a> and create individual templates (<strong>pubedit_%2$s_STEPNAME.tpl</strong> or <strong>pubedit_%2$s_all.tpl</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/input/pubedit_%2$s_STEPNAME.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/input/pubedit_%2$s_STEPNAME.tpl</strong>.' tag1=$urlpecode|safetext tag2=$pubtype.formname|safetext}
     {/case}
     {/switch}
     {modurl modname='PageMaster' type='admin' func='modifyconfig' assign='urlconfig'}

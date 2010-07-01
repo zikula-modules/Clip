@@ -1,6 +1,6 @@
 <h1>{gt text=$pubtype.title}</h1>
 
-{include file='pagemaster_generic_navbar.htm' section='publist'}
+{include file='pagemaster_generic_navbar.tpl' section='publist'}
 
 {if $pubtype.description neq ''}
 <p class="pm-pubdesc">{gt text=$pubtype.description}</p>

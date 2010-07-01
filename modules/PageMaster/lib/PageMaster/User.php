@@ -61,17 +61,17 @@ class PageMaster_User extends Zikula_Controller
             if (!empty($pubtype['filename'])) {
                 // template comes from pubtype
                 $sec_template = $pubtype['filename'];
-                $template     = 'output/publist_'.$pubtype['filename'].'.htm';
+                $template     = 'output/publist_'.$pubtype['filename'].'.tpl';
             } else {
                 // do not check permission for dynamic template
                 $sec_template = '';
                 // standart template
-                $template     = 'pagemaster_generic_publist.htm';
+                $template     = 'pagemaster_generic_publist.tpl';
             }
         } else {
             // template comes from parameter
             $sec_template = $template;
-            $template     = 'output/publist_'.$template.'.htm';
+            $template     = 'output/publist_'.$template.'.tpl';
         }
 
         // security check as early as possible
@@ -152,12 +152,12 @@ class PageMaster_User extends Zikula_Controller
         }
 
         // Check if template is available
-        if ($template != 'pagemaster_generic_publist.htm' && !$render->template_exists($template)) {
+        if ($template != 'pagemaster_generic_publist.tpl' && !$render->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
-            $template = 'pagemaster_generic_publist.htm';
+            $template = 'pagemaster_generic_publist.tpl';
         }
 
         if ($rss) {
@@ -213,7 +213,7 @@ class PageMaster_User extends Zikula_Controller
                 // template for the security check
                 $sec_template = $pubtype['filename'];
                 // template comes from pubtype
-                $template     = 'output/viewpub_'.$pubtype['filename'].'.htm';
+                $template     = 'output/viewpub_'.$pubtype['filename'].'.tpl';
             } else {
                 // do not check permission for dynamic template
                 $sec_template = '';
@@ -224,7 +224,7 @@ class PageMaster_User extends Zikula_Controller
             // template for the security check
             $sec_template = $template;
             // template comes from parameter
-            $template     = 'output/viewpub_'.$template.'.htm';
+            $template     = 'output/viewpub_'.$template.'.tpl';
 
             // workaround for related plain templates
             if (in_array($sec_template, array('pending'))) {
@@ -398,7 +398,7 @@ class PageMaster_User extends Zikula_Controller
         $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
 
         // individual step
-        $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.htm';
+        $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.tpl';
 
         if (!empty($stepname) && $render->template_exists($template_step)) {
             return $render->execute($template_step, $formHandler);
@@ -407,7 +407,7 @@ class PageMaster_User extends Zikula_Controller
         }
 
         // generic edit
-        $template_all = 'input/pubedit_'.$pubtype['formname'].'_all.htm';
+        $template_all = 'input/pubedit_'.$pubtype['formname'].'_all.tpl';
 
         if ($render->template_exists($template_all)) {
             return $render->execute($template_all, $formHandler);
@@ -524,6 +524,6 @@ class PageMaster_User extends Zikula_Controller
                        ->assign('returntype', $returntype)
                        ->assign('source',     $source);
 
-        return $this->renderer->fetch('pagemaster_user_pubeditlist.htm');
+        return $this->renderer->fetch('pagemaster_user_pubeditlist.tpl');
     }
 }

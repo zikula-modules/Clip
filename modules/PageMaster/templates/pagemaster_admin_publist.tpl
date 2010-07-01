@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{include file='pagemaster_admin_header.htm'}
+{include file='pagemaster_admin_header.tpl'}
 
 {if $orderby eq 'core_pid'}
 {assign var='orderby_core_pid' value='core_pid:desc'}

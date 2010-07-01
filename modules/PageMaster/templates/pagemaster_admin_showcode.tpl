@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{include file='pagemaster_admin_header.htm'}
+{include file='pagemaster_admin_header.tpl'}
 
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='exec.gif' set='icons/large' __alt='Show code'}</div>
@@ -11,17 +11,17 @@
 
     {switch expr=$mode}
     {case expr='input'}
-    {assign var='pmtplname' value='pubedit_'|cat:$pubtype.formname|cat:'_all.htm'}
+    {assign var='pmtplname' value='pubedit_'|cat:$pubtype.formname|cat:'_all.tpl'}
     {assign var='pmsubfolder' value='input'}
     <h3>{gt text='Input form template'}</h3>
     {/case}
     {case expr='outputlist'}
-    {assign var='pmtplname' value='publist_'|cat:$pubtype.filename|cat:'.htm'}
+    {assign var='pmtplname' value='publist_'|cat:$pubtype.filename|cat:'.tpl'}
     {assign var='pmsubfolder' value='output'}
     <h3>{gt text='Publication list template'}</h3>
     {/case}
     {case expr='outputfull'}
-    {assign var='pmtplname' value='viewpub_'|cat:$pubtype.filename|cat:'.htm'}
+    {assign var='pmtplname' value='viewpub_'|cat:$pubtype.filename|cat:'.tpl'}
     {assign var='pmsubfolder' value='output'}
     <h3>{gt text='Publication display template'}</h3>
     {/case}

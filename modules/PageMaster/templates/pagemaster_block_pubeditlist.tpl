@@ -17,7 +17,7 @@ $this->assign ('referer', 'index.php');
     <tbody>
         <tr>
             <td valign="top" nowrap>
-                {include file="pagemaster_user_pubeditlist_menu.htm"}
+                {include file="pagemaster_user_pubeditlist_menu.tpl"}
             </td>
         </tr>
     </tbody>

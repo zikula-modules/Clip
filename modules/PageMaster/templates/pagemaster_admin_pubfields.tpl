@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{include file='pagemaster_admin_header.htm'}
+{include file='pagemaster_admin_header.tpl'}
 
 {ajaxheader module='PageMaster' filename='pmadmin_pubfields.js' dragdrop=true}
 

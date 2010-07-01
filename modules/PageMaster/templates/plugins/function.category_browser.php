@@ -45,7 +45,7 @@ function smarty_function_category_browser($params, &$smarty)
     $count             = isset($params['count']) ? $params['count'] : false;
     $togglediv         = isset($params['togglediv']) ? $params['togglediv'] : false;
 
-    $template          = isset($params['template']) ? $params['template'] : 'pagemaster_category_browser.htm';
+    $template          = isset($params['template']) ? $params['template'] : 'pagemaster_category_browser.tpl';
     $assign            = isset($params['assign']) ? $params['assign'] : null;
     $operator          = isset($params['operator']) ? $params['operator'] : 'sub';
     $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;

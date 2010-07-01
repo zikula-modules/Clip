@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{include file='pagemaster_admin_header.htm'}
+{include file='pagemaster_admin_header.tpl'}
 
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='configure.gif' set='icons/large' __alt='Settings'}</div>
