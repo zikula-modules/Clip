@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<workflow>
+
+	<title>Enterprise</title>
+	<description>This is a three staged workflow with stages for untrusted
+		submissions, editor's acceptance,
+		and final approval control by a moderator.</description>
+
+	<configuration>
+
+		<setting id="editorMails" title="Editors mail addresses" type="text"
+			height="100" />
+		<setting id="moderatorMails" title="Moderators mail addresses"
+			type="text" height="100" />
+		<setting id="notificationText" title="Text on notification mails"
+			type="text" height="100" />
+		<setting id="notificationSubject" title="Subject for notification mails"
+			type="string" />
+
+	</configuration>
+
+	<states>
+
+		<state id="waiting">
+			<title>Waiting</title>
+			<description>Content has been submitted and is waiting for acceptance</description>
+		</state>
+
+		<state id="preview">
+			<title>Preview</title>
+			<description>Content has been accepted and is waiting for approval</description>
+		</state>
+
+		<state id="approved">
+			<title>Approved</title>
+			<description>Content has been approved is available online</description>
+		</state>
+
+	</states>
+
+
+	<actions>
+
+		<!-- From initial state -->
+
+		<action id="submit">
+			<title>Submit</title>
+			<description>Submit new content for acceptance by the local editor</description>
+			<permission>author</permission>
+			<nextState>waiting</nextState>
+
+			<operation>createPublication</operation>
+			<operation recipient="$editorMails" message="$notificationText"
+				subject="$notificationSubject">mailNewContentMessage</operation>
+		</action>
+
+		<action id="accept">
+			<title>Submit+Accept</title>
+			<description>Submit new content for approval</description>
+			<permission>editor</permission>
+			<nextState>preview</nextState>
+
+			<operation>createPublication</operation>
+		</action>
+
+		<action id="approve">
+			<title>Submit+Approve</title>
+			<description>Submit new content and approve immediately</description>
+			<permission>moderator</permission>
+			<nextState>approved</nextState>
+
+			<operation online="1">createPublication</operation>
+		</action>
+
+		<!-- State: waiting -->
+
+		<action id="reject">
+			<title>Reject</title>
+			<description>Reject and delete submitted content</description>
+			<permission>editor</permission>
+			<state>waiting</state>
+
+			<operation>eraseRevision</operation>
+		</action>
+
+		<action id="update">
+			<title>Update</title>
+			<description>Save content with no workflow change</description>
+			<permission>editor</permission>
+			<state>waiting</state>
+
+			<operation>updatePublication</operation>
+		</action>
+
+		<action id="accept">
+			<title>Accept</title>
+			<description>Accept submitted content for later approval</description>
+			<permission>editor</permission>
+			<state>waiting</state>
+			<nextState>preview</nextState>
+
+			<operation>updatePublication</operation>
+			<operation recipient="$moderatorMails" message="$notificationText"
+				subject="$notificationSubject">mailNewContentMessage</operation>
+		</action>
+
+		<action id="approve">
+			<title>Approve</title>
+			<description>Approve content for online publishing</description>
+			<permission>moderator</permission>
+			<state>waiting</state>
+			<nextState>approved</nextState>
+
+			<online>1</online>
+			<operation>updatePublication</operation>
+		</action>
+
+		<!-- State: preview -->
+
+		<action id="update">
+			<title>Update</title>
+			<description>Update content</description>
+			<permission>editor</permission>
+			<state>preview</state>
+
+			<operation>updatePublication</operation>
+		</action>
+
+		<action id="approve">
+			<title>Approve</title>
+			<description>Approve content for online publishing</description>
+			<permission>moderator</permission>
+			<state>preview</state>
+			<nextState>approved</nextState>
+
+			<online>1</online>
+			<operation>moveOthersToDepot</operation>
+			<operation>updatePublication</operation>
+		</action>
+
+		<action id="delete">
+			<title>Delete</title>
+			<description>Delete content</description>
+			<permission>moderator</permission>
+			<state>preview</state>
+
+			<operation>eraseRevision</operation>
+		</action>
+
+		<!-- State: approved -->
+
+		<action id="delete">
+			<title>Delete</title>
+			<description>Delete content</description>
+			<permission>moderator</permission>
+			<state>approved</state>
+
+			<online>0</online>
+			<operation>moveToDepot</operation>
+			<operation>deletePublication</operation>
+		</action>
+
+		<action id="update">
+			<title>Update</title>
+			<description>Update content for approval</description>
+			<permission>editor</permission>
+			<state>approved</state>
+
+			<operation nextState="preview">createNewRevision</operation>
+			<operation recipient="$moderatorMails" message="$notificationText"
+				subject="$notificationSubject">mailNewContentMessage</operation>
+		</action>
+
+		<action id="updateApprove">
+			<title>Update and Approve</title>
+			<description>Update content and approve for online publishing</description>
+			<permission>moderator</permission>
+			<state>approved</state>
+
+			<online>0</online>
+			<operation>moveToDepot</operation>
+			<operation nextState="approved" online="1">createNewRevision</operation>
+		</action>
+
+		<action id="online">
+			<title>Go online</title>
+			<description>Set publication online</description>
+			<permission>moderator</permission>
+			<state>approved</state>
+
+			<online>1</online>
+		</action>
+
+		<action id="offline">
+			<title>Take offline</title>
+			<description>Set publication offline</description>
+			<permission>moderator</permission>
+			<state>approved</state>
+
+			<online>0</online>
+		</action>
+
+	</actions>
+
+
+</workflow>
+
+
+	<!--
+		[none] submit [author] == create new publication (online but not
+		current) == [waiting] [waiting] reject [editor] == delete revision,
+		notify author if possible with reason ==| accept [editor] == ==
+		[preview] approve [moderator] == mark as current == [approved]
+
+
+
+		[preview] update [editor] == change data == [preview] approve
+		[moderator] == mark as current == [approved] reject [moderator] ==
+		notify editor, notify editor with reason == [preview] delete [editor]
+		== notify moderator == [preview] delete [moderator] == clear cache,
+		remove "current" mark == [preview] [approved] delete [editor] ==
+		notify moderator == [approved] delete [moderator] == clear cache,
+		remove "current" mark == [approved] move offline [moderator] == clear
+		cache, mark as offline == [approved] move online [moderator] == remove
+		"offline" mark == [approved] update [author] == create new revision,
+		notify editor == [waiting] (new) , [approved] (old) update [editor] ==
+		create new revision, notify moderator == [preview] (new) , [approved]
+		(old) update [moderator] == create new revision, clear cache, mark new
+		as current == [approved] (new) , [approved] (old)
+	-->
