@@ -12,6 +12,24 @@
 class PageMaster_User extends Zikula_Controller
 {
     /**
+     * PageMaster Util instance
+     *
+     * @var PageMaster_Util
+     */
+    protected $pmutil;
+
+    /**
+     * (non-PHPdoc)
+     * @see src/lib/Zikula/Zikula_Controller::_postSetup()
+     */
+    protected function _postSetup()
+    {
+        parent::_postSetup();
+        $this->pmutil = $this->serviceManager->getService('module.pagemaster.util');
+    }
+
+
+    /**
      * List of publications
      *
      * @param $args['tid']
