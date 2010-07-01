@@ -21,7 +21,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
             "\n".
             '<h1>{gt text=$pubtype.title}</h1>'."\n".
             "\n".
-            '{include file=\'pagemaster_generic_navbar.htm\' section=\'pubview\'}'."\n".
+            '{include file=\'pagemaster_generic_navbar.tpl\' section=\'pubview\'}'."\n".
             "\n".
             '{if $pubtype.description neq \'\'}'."\n".
             '    <div class="pm-pubdesc">{gt text=$pubtype.description}</div>'."\n".
@@ -175,7 +175,7 @@ function PMgen_editpub_tplcode($tid)
     $template_code = "\n".
             '<h1>{gt text=$pubtype.title}</h1>'."\n".
             "\n".
-            '{include file=\'pagemaster_generic_navbar.htm\' section=\'pubedit\'}'."\n".
+            '{include file=\'pagemaster_generic_navbar.tpl\' section=\'pubedit\'}'."\n".
             "\n".
             '{if $pubtype.description neq \'\'}'."\n".
             '    <div class="pm-pubdesc">{gt text=$pubtype.description}</div>'."\n".
