@@ -20,11 +20,10 @@ class PageMaster_User extends Zikula_Controller
 
     /**
      * (non-PHPdoc)
-     * @see src/lib/Zikula/Zikula_Controller::_postSetup()
+     * @see src/lib/Zikula/Zikula_Base::initialize()
      */
-    protected function _postSetup()
+    protected function initialize()
     {
-        parent::_postSetup();
         $this->pmutil = $this->serviceManager->getService('module.pagemaster.util');
     }
 
