@@ -228,7 +228,7 @@ class PageMaster_User extends Zikula_Controller
 
             // workaround for related plain templates
             if (in_array($sec_template, array('pending'))) {
-                $simpletemplate = "output/viewpub_{$pubtype['filename']}_{$sec_template}.htm";
+                $simpletemplate = "output/viewpub_{$pubtype['filename']}_{$sec_template}.tpl";
             }
         }
 
@@ -264,7 +264,7 @@ class PageMaster_User extends Zikula_Controller
         // fetch plain templates
         if (isset($simpletemplate)) {
             if (!$this->renderer->template_exists($simpletemplate)) {
-                $simpletemplate = "pagemaster_generic_{$sec_template}.htm";
+                $simpletemplate = "pagemaster_generic_{$sec_template}.tpl";
                 if (!$this->renderer->template_exists($simpletemplate)) {
                     $simpletemplate = '';
                 }
