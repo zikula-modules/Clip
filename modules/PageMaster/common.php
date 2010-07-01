@@ -49,7 +49,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
             {
                 // text plugin
                 case 'pmformtextinput':
-                    $snippet_body = '{$'.$key.'|DataUtil::formatForDisplayHTML|ModUtil::callHooks:\'PageMaster\'}';
+                    $snippet_body = '{$'.$key.'|DataUtil::formatForDisplayHTML|modcallhooks:\'PageMaster\'}';
                     break;
 
                 // image plugin
@@ -107,7 +107,7 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
                             '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                             '            <span class="z-formnote">'."\n".
                             '                <pre>{pmarray array=$'.$key.'}</pre>'."\n".
-                            '                {*ModUtil::apiFunc modname=\'PageMaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
+                            '                {*modapifunc modname=\'PageMaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
                             '            <span>'."\n".
                             '        </div>'."\n".
                             '    {/if}';
@@ -160,8 +160,8 @@ function PMgen_viewpub_tplcode($tid, $pubdata)
     // Add the Hooks support for viewpub
     $template_code .= '</div>'."\n".
             "\n".
-            '{ModUtil::url modname=\'PageMaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\'}'."\n".
-            '{ModUtil::callHooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'PageMaster\' returnurl=$returnurl}'.
+            '{modurl modname=\'PageMaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\'}'."\n".
+            '{callhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'PageMaster\' returnurl=$returnurl}'.
             "\n";
 
     return $template_code;
@@ -256,9 +256,9 @@ function PMgen_editpub_tplcode($tid)
             '        </fieldset>'."\n".
             "\n".
             '        {if isset($id)}'."\n".
-            '            {ModUtil::callHooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'PageMaster\'}'."\n".
+            '            {modcallhooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'PageMaster\'}'."\n".
             '        {else}'."\n".
-            '            {ModUtil::callHooks hookobject=\'item\' hookaction=\'new\' module=\'PageMaster\'}'."\n".
+            '            {modcallhooks hookobject=\'item\' hookaction=\'new\' module=\'PageMaster\'}'."\n".
             '        {/if}'."\n".
             "\n".
             '        <div class="z-formbuttons">'."\n".
@@ -472,7 +472,7 @@ function PMgetPlugin($pluginclass)
         $plugin = new $pluginclass;
         $sm->attachService($pluginclass, $plugin);
     }
-    
+
     return $sm->getService($pluginclass);
 }
 
