@@ -5,27 +5,27 @@ class PageMaster_EventHandler_Listeners
     public static function getFormPlugins(Zikula_Event $event)
     {
         $classNames = array();
-        $classNames[] = 'PageMaster_Form_Plugin_Date';
-        $classNames[] = 'PageMaster_Form_Plugin_Email';
-        $classNames[] = 'PageMaster_Form_Plugin_Float';
-        $classNames[] = 'PageMaster_Form_Plugin_Image';
-        $classNames[] = 'PageMaster_Form_Plugin_Int';
-        $classNames[] = 'PageMaster_Form_Plugin_List';
-        $classNames[] = 'PageMaster_Form_Plugin_Ms';
-        $classNames[] = 'PageMaster_Form_Plugin_MultiCheck';
-        $classNames[] = 'PageMaster_Form_Plugin_MultiList';
-        $classNames[] = 'PageMaster_Form_Plugin_Pub';
-        $classNames[] = 'PageMaster_Form_Plugin_String';
-        $classNames[] = 'PageMaster_Form_Plugin_Text';
-        $classNames[] = 'PageMaster_Form_Plugin_Upload';
-        $classNames[] = 'PageMaster_Form_Plugin_Url';
+        $classNames['Date'] = 'PageMaster_Form_Plugin_Date';
+        $classNames['Email'] = 'PageMaster_Form_Plugin_Email';
+        $classNames['Float'] = 'PageMaster_Form_Plugin_Float';
+        $classNames['Image'] = 'PageMaster_Form_Plugin_Image';
+        $classNames['Int'] = 'PageMaster_Form_Plugin_Int';
+        $classNames['List'] = 'PageMaster_Form_Plugin_List';
+        $classNames['Ms'] = 'PageMaster_Form_Plugin_Ms';
+        $classNames['MultiCheck'] = 'PageMaster_Form_Plugin_MultiCheck';
+        $classNames['MultiList'] = 'PageMaster_Form_Plugin_MultiList';
+        $classNames['Pub'] = 'PageMaster_Form_Plugin_Pub';
+        $classNames['String'] = 'PageMaster_Form_Plugin_String';
+        $classNames['Text'] = 'PageMaster_Form_Plugin_Text';
+        $classNames['Upload'] = 'PageMaster_Form_Plugin_Upload';
+        $classNames['Url'] = 'PageMaster_Form_Plugin_Url';
 
         $plugins = array();
-        foreach ($classNames as $className) {
+        foreach ($classNames as $name => $className) {
             $plugin = PMgetPlugin($className);
-            $plugins[] = array (
+            $plugins[$name] = array (
                     'plugin' => $plugin,
-                    'class' => str_replace('PageMaster_Form_Plugin_', '', $className)
+                    'class' => $className,
             );
         }
 
