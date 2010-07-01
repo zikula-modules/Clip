@@ -467,15 +467,13 @@ function PMgetTitleField($pubfields)
  */
 function PMgetPlugin($pluginclass)
 {
-    static $plugin_arr;
-
-    if (!isset($plugin_arr[$pluginclass])) {
-        $newclass = "PageMaster_Form_Plugin_$pluginclass";
-        $plugin_arr[$pluginclass] = new $newclass();
+    $sm = ServiceUtil::getManager();
+    if (!$sm->hasService($pluginclass)) {
+        $plugin = new $pluginclass;
+        $sm->attachService($pluginclass, $plugin);
     }
     
-
-    return $plugin_arr[$pluginclass];
+    return $sm->getService($pluginclass);
 }
 
 function PMgetPubFields($tid = -1, $orderBy = 'lineno')

@@ -4,21 +4,29 @@ class PageMaster_EventHandler_Listeners
 {
     public static function getFormPlugins(Zikula_Event $event)
     {
-        $classDirs = array();
-        $classDirs[] = 'config/classes/modules/PageMaster/lib/PageMaster/Form/Plugin';
-        $classDirs[] = 'modules/PageMaster/lib/PageMaster/Form/Plugin';
+        $classNames = array();
+        $classNames[] = 'PageMaster_Form_Plugin_Date';
+        $classNames[] = 'PageMaster_Form_Plugin_Email';
+        $classNames[] = 'PageMaster_Form_Plugin_Float';
+        $classNames[] = 'PageMaster_Form_Plugin_Image';
+        $classNames[] = 'PageMaster_Form_Plugin_Int';
+        $classNames[] = 'PageMaster_Form_Plugin_List';
+        $classNames[] = 'PageMaster_Form_Plugin_Ms';
+        $classNames[] = 'PageMaster_Form_Plugin_MultiCheck';
+        $classNames[] = 'PageMaster_Form_Plugin_MultiList';
+        $classNames[] = 'PageMaster_Form_Plugin_Pub';
+        $classNames[] = 'PageMaster_Form_Plugin_String';
+        $classNames[] = 'PageMaster_Form_Plugin_Text';
+        $classNames[] = 'PageMaster_Form_Plugin_Upload';
+        $classNames[] = 'PageMaster_Form_Plugin_Url';
 
         $plugins = array();
-        foreach ($classDirs as $classDir) {
-            $files = FileUtil::getFiles($classDir, false, true, 'php', 'f');
-            foreach ($files as $file) {
-                $pluginclass = substr($file, 0, strlen($file)-4);
-                $plugin = PMgetPlugin($pluginclass);
-                $plugins[] = array (
-                        'plugin' => $plugin,
-                        'class' => $pluginclass
-                );
-            }
+        foreach ($classNames as $className) {
+            $plugin = PMgetPlugin($className);
+            $plugins[] = array (
+                    'plugin' => $plugin,
+                    'class' => str_replace('PageMaster_Form_Plugin_', '', $className)
+            );
         }
 
         $event->data = $plugins;
