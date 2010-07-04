@@ -9,7 +9,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Admin extends Zikula_Controller
+class PageMaster_Controller_Admin extends Zikula_Controller
 {
     /**
      * Main admin screen
@@ -44,9 +44,9 @@ class PageMaster_Admin extends Zikula_Controller
         }
 
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
-        $this->renderer->assign('pubtypes', $pubtypes);
+        $this->view->assign('pubtypes', $pubtypes);
 
-        return $this->renderer->fetch('pagemaster_admin_pubtypes.tpl');
+        return $this->view->fetch('pagemaster_admin_pubtypes.tpl');
     }
 
     /**
@@ -188,14 +188,14 @@ class PageMaster_Admin extends Zikula_Controller
         }
 
         // build the output
-        $this->renderer->assign('core_tid',   $tid)
+        $this->view->assign('core_tid',   $tid)
                        ->assign('core_title', $core_title)
                        ->assign('publist',    $publist)
                        ->assign('orderby',    $old_orderby)
                        ->assign('pager',      array('numitems'     => $pubcount,
                                                     'itemsperpage' => $itemsperpage));
 
-        return $this->renderer->fetch('pagemaster_admin_publist.tpl');
+        return $this->view->fetch('pagemaster_admin_publist.tpl');
     }
 
     /**
@@ -229,11 +229,11 @@ class PageMaster_Admin extends Zikula_Controller
         $core_title = PageMaster_Util::getTitleField($tid);
 
         // build the output
-        $this->renderer->assign('core_tid',   $tid)
+        $this->view->assign('core_tid',   $tid)
                        ->assign('core_title', $core_title)
                        ->assign('publist',    $publist);
 
-        return $this->renderer->fetch('pagemaster_admin_history.tpl');
+        return $this->view->fetch('pagemaster_admin_history.tpl');
     }
 
     /**
@@ -280,7 +280,7 @@ class PageMaster_Admin extends Zikula_Controller
                 break;
 
             case 'outputlist':
-                $path = $this->renderer->get_template_path('pagemaster_generic_publist.tpl');
+                $path = $this->view->get_template_path('pagemaster_generic_publist.tpl');
                 $code = file_get_contents($path.'/pagemaster_generic_publist.tpl');
                 break;
         }
@@ -289,11 +289,11 @@ class PageMaster_Admin extends Zikula_Controller
         $code = DataUtil::formatForDisplay($code);
         $code = str_replace("\n", '<br />', $code);
 
-        $this->renderer->assign('code',    $code)
+        $this->view->assign('code',    $code)
                        ->assign('mode',    $mode)
                        ->assign('pubtype', PageMaster_Util::getPubType($tid));
 
-        return $this->renderer->fetch('pagemaster_admin_showcode.tpl');
+        return $this->view->fetch('pagemaster_admin_showcode.tpl');
     }
 
     /**
@@ -314,11 +314,11 @@ class PageMaster_Admin extends Zikula_Controller
         $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
 
         // build the output
-        $this->renderer->add_core_data();
+        $this->view->add_core_data();
 
-        $this->renderer->assign('alreadyexists', $numpubtypes > 0 ? true : false);
+        $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false);
 
-        return $this->renderer->fetch('pagemaster_admin_importps.tpl');
+        return $this->view->fetch('pagemaster_admin_importps.tpl');
     }
 
     /**

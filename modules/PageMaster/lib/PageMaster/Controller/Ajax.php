@@ -9,7 +9,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Ajax extends Zikula_Controller
+class PageMaster_Controller_Ajax extends Zikula_Controller
 {
     public function changedlistorder()
     {
