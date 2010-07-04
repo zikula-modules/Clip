@@ -332,7 +332,8 @@ class PageMaster_Controller_Admin extends Zikula_Controller
 
         $args = array(
             'menu'       => 1,
-            'returntype' => 'admin'
+            'returntype' => 'admin',
+            'orderby'    => 'core_title'
         );
 
         return ModUtil::func('PageMaster', 'user', 'pubeditlist', $args);

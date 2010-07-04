@@ -490,6 +490,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
         $edit       = isset($args['edit']) ? $args['edit'] : FormUtil::getPassedValue('edit', 1);
         $menu       = isset($args['menu']) ? $args['menu'] : FormUtil::getPassedValue('menu', 1);
+        $orderby    = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
         $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
         $source     = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
 
