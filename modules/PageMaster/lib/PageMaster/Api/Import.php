@@ -50,7 +50,7 @@ class PageMaster_Api_Import extends Zikula_Api
 
         foreach ($lists as $list)
         {
-            $cat = new PNCategory();
+            $cat = new Categories_DBObject_Category();
             $cat->setDataField('parent_id', $rootcat['id']);
             $cat->setDataField('name', $list['title']);
             $cat->setDataField('is_leaf', 0);
@@ -64,7 +64,7 @@ class PageMaster_Api_Import extends Zikula_Api
             foreach ($items as $item)
             {
                 // FIXME [Lists are "flat" after import, means only one hirachical step]
-                $cat = new PNCategory();
+                $cat = new Categories_DBObject_Category();
                 $cat->setDataField('name', $item['title']);
                 if ($item['parentID'] == -1){
                     $cat->setDataField('parent_id', $dr);

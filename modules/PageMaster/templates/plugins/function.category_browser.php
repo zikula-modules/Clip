@@ -58,7 +58,7 @@ function smarty_function_category_browser($params, &$smarty)
     $lang       = ZLanguage::getLanguageCode();
 
     $cacheid = $tid.'-'.$field;
-    $render  = Renderer::getInstance('PageMaster', $cache, $cacheid);
+    $render  = Zikula_View::getInstance('PageMaster', $cache, $cacheid);
 
     if ($cache) {
         if ($render->is_cached($template,$cacheid)) {

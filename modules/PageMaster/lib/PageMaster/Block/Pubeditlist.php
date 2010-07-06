@@ -61,7 +61,7 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
 
         $pubData = ModUtil::apiFunc ('PageMaster', 'user', 'pubeditlist', $args);
 
-        $render = Renderer::getInstance('PageMaster');
+        $render = Zikula_View::getInstance('PageMaster');
         $render->assign('allTypes',   $pubData['allTypes']);
         $render->assign('publist',    $pubData['pubList']);
         $render->assign('tid',        $tid);
@@ -105,7 +105,7 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
 
         $blockinfo['content'] = BlockUtil::varsToContent($vars);
 
-        $renderer = Renderer::getInstance('PageMaster');
+        $renderer = Zikula_View::getInstance('PageMaster');
         $renderer->clear_cache('pagemaster_generic_pubeditlist.tpl');
 
         return $blockinfo;

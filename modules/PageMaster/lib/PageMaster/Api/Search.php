@@ -26,7 +26,7 @@ class PageMaster_Api_Search extends Zikula_Api
     public function options($args)
     {
         if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
-            $render = Renderer::getInstance('PageMaster');
+            $render = Zikula_View::getInstance('PageMaster');
 
             // Looking for pubtype with at least one searchable field
             $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');

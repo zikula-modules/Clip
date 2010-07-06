@@ -67,7 +67,7 @@ class PageMaster_Installer extends Zikula_Installer
         $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster/lists');
         if ($rootcat) {
             // create an entry in the categories registry to the Lists property
-            $registry = new PNCategoryRegistry();
+            $registry = new Categories_DBObject_CategoryRegistry();
             $registry->setDataField('modname', 'PageMaster');
             $registry->setDataField('table', 'pagemaster_pubtypes');
             $registry->setDataField('property', 'Lists');

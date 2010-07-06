@@ -30,7 +30,7 @@ function PageMaster_operation_mailNotification(&$pub, $params)
 
     $ok = false;
 
-    $render = Renderer::getInstance('PageMaster');
+    $render = Zikula_View::getInstance('PageMaster');
 
     if ($render->template_exists("emails/$template.tpl")) {
         $render->assign('pub', $pub);

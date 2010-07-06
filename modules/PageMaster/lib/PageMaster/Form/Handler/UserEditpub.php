@@ -122,7 +122,7 @@ class PageMaster_Form_Handler_UserEditpub
                                    'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // see http://www.smarty.net/manual/en/caching.groups.php
-        $pnr = Renderer::getInstance('PageMaster');
+        $pnr = Zikula_View::getInstance('PageMaster');
         // clear the view of the current publication
         $pnr->clear_cache(null, 'viewpub'.$this->tid.'|'.$this->core_pid);
         // clear all page of publist
