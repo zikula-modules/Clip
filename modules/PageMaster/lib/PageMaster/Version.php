@@ -12,12 +12,13 @@ class PageMaster_Version extends Zikula_Version
     public function getMetaData()
     {
         $meta = array();
-        $meta['displayname']    = __('PageMaster', $dom);
-        $meta['description']    = __('Content Module like pagesetter', $dom);
+        $meta['displayname']    = $this->__('PageMaster');
+        $meta['description']    = $this->__('Content Module like pagesetter');
         //! module name that appears in URL
-        $meta['url']            = __('pagemaster', $dom);
-        $meta['version']        = '0.4.1'; // 10 chars or less
-        $meta['contact']        = ' ';
+        $meta['url']            = $this->__('pagemaster');
+        $meta['version']        = '0.4.3';
+        $meta['contact']        = 'http://code.zikula.org/pagemaster/';
+        $meta['core_min'] = '1.3.0';
 
         // Permissions schema
         $meta['securityschema'] = array(
@@ -30,14 +31,14 @@ class PageMaster_Version extends Zikula_Version
 
         // Module depedencies
         $meta['dependencies'] = array(
-                array('modname'    => 'scribite',
-                        'minversion' => '2.0',
+                array('modname'    => 'Scribite',
+                        'minversion' => '4.2.1',
                         'maxversion' => '',
-                        'status'     => PNMODULE_DEPENDENCY_RECOMMENDED),
+                        'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
                 array('modname'    => 'Thumbnail',
                         'minversion' => '1.1',
                         'maxversion' => '',
-                        'status'     => PNMODULE_DEPENDENCY_RECOMMENDED)
+                        'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
         );
         return $meta;
     }
