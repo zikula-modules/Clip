@@ -11,33 +11,21 @@
 
 class PageMaster_EventHandler_Listeners
 {
+    /**
+     * Example provider handler.
+     *
+     * Simple add to, or override elements of the the array contained in $event->data
+     *
+     * @param Zikula_Event $event
+     */
     public static function getFormPlugins(Zikula_Event $event)
     {
+        /*
         $classNames = array();
         $classNames['Date']       = 'PageMaster_Form_Plugin_Date';
         $classNames['Email']      = 'PageMaster_Form_Plugin_Email';
-        $classNames['Float']      = 'PageMaster_Form_Plugin_Float';
-        $classNames['Image']      = 'PageMaster_Form_Plugin_Image';
-        $classNames['Int']        = 'PageMaster_Form_Plugin_Int';
-        $classNames['List']       = 'PageMaster_Form_Plugin_List';
-        $classNames['Ms']         = 'PageMaster_Form_Plugin_Ms';
-        $classNames['MultiCheck'] = 'PageMaster_Form_Plugin_MultiCheck';
-        $classNames['MultiList']  = 'PageMaster_Form_Plugin_MultiList';
-        $classNames['Pub']        = 'PageMaster_Form_Plugin_Pub';
-        $classNames['String']     = 'PageMaster_Form_Plugin_String';
-        $classNames['Text']       = 'PageMaster_Form_Plugin_Text';
-        $classNames['Upload']     = 'PageMaster_Form_Plugin_Upload';
-        $classNames['Url']        = 'PageMaster_Form_Plugin_Url';
-
-        $plugins = array();
-        foreach ($classNames as $name => $className) {
-            $plugin = PageMaster_Util::getPlugin($className);
-            $plugins[$name] = array(
-                'plugin' => $plugin,
-                'class'  => $className,
-            );
-        }
-
-        $event->data = array_merge((array)$event->data, $plugins);
+        
+        $event->setData(array_merge((array)$event->getData(), $classNames));
+        */
     }
 }
