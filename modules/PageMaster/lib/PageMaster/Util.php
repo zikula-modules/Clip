@@ -219,6 +219,12 @@ class PageMaster_Util
         $event->setData($classNames);
         $classNames = EventUtil::getManager()->notify($event)->getData();
 
+        // allow final override.  since user event handlers are loaded first,
+        // we have to dispatch a separate event - drak
+        $event = new Zikula_Event('pagemaster.get_field_plugin_classes.overrides');
+        $event->setData($classNames);
+        $classNames = EventUtil::getManager()->notify($event)->getData();
+
         $plugins = array();
         foreach ($classNames as $name => $className) {
             $plugin = PageMaster_Util::getPlugin($className);
