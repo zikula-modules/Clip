@@ -20,7 +20,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
     function __construct()
     {
         $this->autoPostBack = true;
-        $plugins = PageMaster_Util::getWorkflowsOptionList();
+        $plugins = PageMaster_Util::getPluginsOptionList();
 
         foreach ($plugins as $plugin) {
             $items[] = array (
