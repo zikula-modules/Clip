@@ -31,7 +31,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         // build the output
         $render = FormUtil::newForm('PageMaster');
 
-        return $render->execute('pagemaster_admin_modifyconfig.tpl', new PageMaster_Form_Handler_AdminModifyConfig());
+        return $render->execute('pagemaster_admin_modifyconfig.tpl', new PageMaster_Form_Handler_Admin_ModifyConfig());
     }
 
     /**
@@ -62,7 +62,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         // build the output
         $render = FormUtil::newForm('PageMaster');
 
-        return $render->execute('pagemaster_admin_pubtype.tpl', new PageMaster_Form_Handler_AdminPubtypes());
+        return $render->execute('pagemaster_admin_pubtype.tpl', new PageMaster_Form_Handler_Admin_Pubtypes());
     }
 
     /**
@@ -77,7 +77,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         // build the output
         $render = FormUtil::newForm('PageMaster');
 
-        return $render->execute('pagemaster_admin_pubfields.tpl', new PageMaster_Form_Handler_AdminPubfields());
+        return $render->execute('pagemaster_admin_pubfields.tpl', new PageMaster_Form_Handler_Admin_Pubfields());
     }
 
 

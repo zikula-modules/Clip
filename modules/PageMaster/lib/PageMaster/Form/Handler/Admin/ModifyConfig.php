@@ -14,7 +14,7 @@
  *
  * @author kundi
  */
-class PageMaster_Form_Handler_AdminModifyConfig
+class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
 {
     /**
      * Initialize function

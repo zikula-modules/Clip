@@ -14,7 +14,7 @@
  *
  * @author kundi
  */
-class PageMaster_Form_Handler_AdminPubfields
+class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
 {
     var $tid;
     var $id;

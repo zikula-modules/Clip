@@ -340,7 +340,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // no security check needed - the security check will be done by the handler class.
         // see the init-part of the handler class for details.
-        $formHandler = new PageMaster_Form_Handler_UserEditpub();
+        $formHandler = new PageMaster_Form_Handler_User_Editpub();
 
         if (empty($id) && !empty($pid)) {
             $id = ModUtil::apiFunc('PageMaster', 'user', 'getId',
