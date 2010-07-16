@@ -17,7 +17,6 @@ class PageMaster_Version extends Zikula_Version
         //! module name that appears in URL
         $meta['url']            = $this->__('pagemaster');
         $meta['version']        = '0.4.3';
-        $meta['contact']        = 'http://code.zikula.org/pagemaster/';
         $meta['core_min'] = '1.3.0';
 
         // Permissions schema
