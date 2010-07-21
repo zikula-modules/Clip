@@ -189,11 +189,11 @@ class PageMaster_Controller_Admin extends Zikula_Controller
 
         // build the output
         $this->view->assign('core_tid',   $tid)
-                       ->assign('core_title', $core_title)
-                       ->assign('publist',    $publist)
-                       ->assign('orderby',    $old_orderby)
-                       ->assign('pager',      array('numitems'     => $pubcount,
-                                                    'itemsperpage' => $itemsperpage));
+                   ->assign('core_title', $core_title)
+                   ->assign('publist',    $publist)
+                   ->assign('orderby',    $old_orderby)
+                   ->assign('pager',      array('numitems'     => $pubcount,
+                                                'itemsperpage' => $itemsperpage));
 
         return $this->view->fetch('pagemaster_admin_publist.tpl');
     }
@@ -230,8 +230,8 @@ class PageMaster_Controller_Admin extends Zikula_Controller
 
         // build the output
         $this->view->assign('core_tid',   $tid)
-                       ->assign('core_title', $core_title)
-                       ->assign('publist',    $publist);
+                   ->assign('core_title', $core_title)
+                   ->assign('publist',    $publist);
 
         return $this->view->fetch('pagemaster_admin_history.tpl');
     }
@@ -290,8 +290,8 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         $code = str_replace("\n", '<br />', $code);
 
         $this->view->assign('code',    $code)
-                       ->assign('mode',    $mode)
-                       ->assign('pubtype', PageMaster_Util::getPubType($tid));
+                   ->assign('mode',    $mode)
+                   ->assign('pubtype', PageMaster_Util::getPubType($tid));
 
         return $this->view->fetch('pagemaster_admin_showcode.tpl');
     }

@@ -42,15 +42,17 @@ class PageMaster_Block_Viewpub extends Zikula_Block
      */
     public function display($blockinfo)
     {
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
+
         // Get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
         // Validation of required parameters
         if (!isset($vars['tid']) || empty($vars['tid'])) {
-            return $this->__('Required parameter [%s] not set or empty.', 'tid');
+            return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
         }
         if (!isset($vars['pid']) || empty($vars['pid'])) {
-            return $this->__('Required parameter [%s] not set or empty.', 'pid');
+            return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'pid') : null;
         }
 
         // Security check
@@ -58,15 +60,20 @@ class PageMaster_Block_Viewpub extends Zikula_Block
             return;
         }
 
+        $pubtype = PageMaster_Util::getPubType((int)$vars['tid']);
+        if (!$pubtype) {
+            return;
+        }
+
         // Default values
-        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : 'block_viewpub';
+        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['filename'];
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
         $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'viewpub',
                                               array('tid'                => $vars['tid'],
                                                     'pid'                => $vars['pid'],
                                                     'checkPerm'          => true,
-                                                    'template'           => $template,
+                                                    'template'           => 'block_pub_'.$template,
                                                     'cachelifetime'      => $cachelifetime));
 
         if (empty($blockinfo['content'])) {
@@ -95,7 +102,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
             $vars['cachelifetime'] = 0;
         }
         if (!isset($vars['template'])) {
-            $vars['template'] = 'block_viewpub';
+            $vars['template'] = '';
         }
 
         // Builds the pubtypes selector

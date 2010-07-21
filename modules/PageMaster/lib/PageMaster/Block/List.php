@@ -17,7 +17,7 @@ class PageMaster_Block_List extends Zikula_Block
      */
     public function init()
     {
-        // Security
+        // Security schema
         SecurityUtil::registerPermissionSchema('pagemaster:block:list', 'Block Id:Pubtype Id:');
     }
 
@@ -42,12 +42,14 @@ class PageMaster_Block_List extends Zikula_Block
      */
     public function display($blockinfo)
     {
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
+
         // Get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
         // Validation of required parameters
         if (!isset($vars['tid']) || empty($vars['tid'])) {
-            return $this->__('Required parameter [%s] not set or empty.', 'tid');
+            return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
         }
 
         // Security check
@@ -55,9 +57,14 @@ class PageMaster_Block_List extends Zikula_Block
             return;
         }
 
+        $pubtype = PageMaster_Util::getPubType((int)$vars['tid']);
+        if (!$pubtype) {
+            return;
+        }
+
         // Default values
-        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : 'block_list';
-        $listCount     = (isset($vars['listCount']) && (int)$vars['listCount'] > 1) ? $vars['listCount'] : 5;
+        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['filename'];
+        $listCount     = (isset($vars['listCount']) && (int)$vars['listCount'] > 0) ? $vars['listCount'] : 5;
         $listOffset    = (isset($vars['listOffset'])) ? $vars['listOffset'] : 0;
         $filterStr     = (isset($vars['filters'])) ? $vars['filters'] : '';
         $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
@@ -70,7 +77,7 @@ class PageMaster_Block_List extends Zikula_Block
                                                     'itemsperpage'       => $listCount,
                                                     'startnum'           => $listOffset,
                                                     'checkPerm'          => true,
-                                                    'template'           => $template,
+                                                    'template'           => 'block_list_'.$template,
                                                     'handlePluginFields' => true,
                                                     'cachelifetime'      => $cachelifetime));
 
@@ -111,7 +118,7 @@ class PageMaster_Block_List extends Zikula_Block
             $vars['orderBy'] = '';
         }
         if (!isset($vars['template'])) {
-            $vars['template'] = 'block_list';
+            $vars['template'] = '';
         }
 
         // Builds the pubtypes selector
@@ -139,35 +146,35 @@ class PageMaster_Block_List extends Zikula_Block
                     'value' => ''
                 ),
                 'core_cr_date' => array(
-                    'text'  => __('Creation date', $dom),
+                    'text'  => $this->__('Creation date'),
                     'value' => 'cr_date'
                 ),
                 'core_lu_date' => array(
-                    'text'  => __('Update date', $dom),
+                    'text'  => $this->__('Update date'),
                     'value' => 'lu_date'
                 ),
                 'core_cr_uid' => array(
-                    'text'  => __('Creator', $dom),
+                    'text'  => $this->__('Creator'),
                     'value' => 'core_author'
                 ),
                 'core_lu_uid' => array(
-                    'text'  => __('Updater', $dom),
+                    'text'  => $this->__('Updater'),
                     'value' => 'lu_uid'
                 ),
                 'core_pu_date' => array(
-                    'text'  => __('Publish date', $dom),
+                    'text'  => $this->__('Publish date'),
                     'value' => 'pm_publishdate'
                 ),
                 'core_ex_date' => array(
-                    'text'  => __('Expire date', $dom),
+                    'text'  => $this->__('Expire date'),
                     'value' => 'pm_expiredate'
                 ),
                 'core_language' => array(
-                    'text'  => __('Language', $dom),
+                    'text'  => $this->__('Language'),
                     'value' => 'pm_language'
                 ),
                 'core_hitcount' => array(
-                    'text'  => __('Number of reads', $dom),
+                    'text'  => $this->__('Number of reads'),
                     'value' => 'pm_hitcount'
                 )
             );
@@ -175,7 +182,7 @@ class PageMaster_Block_List extends Zikula_Block
             foreach (array_keys($fields) as $fieldname) {
                 $index = ($fields[$fieldname]['istitle'] == 1) ? 'core_title' : $fieldname;
                 $pubarr[$index] = array(
-                    'text'  => __($fields[$fieldname]['title'], $dom),
+                    'text'  => $this->__($fields[$fieldname]['title']),
                     'value' => $fieldname
                 );
             }

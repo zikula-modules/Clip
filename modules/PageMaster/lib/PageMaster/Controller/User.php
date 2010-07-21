@@ -123,15 +123,15 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // Assign the data to the output
         $this->view->assign('tid',       $tid)
-                       ->assign('pubtype',   $pubtype)
-                       ->assign('publist',   $result['publist'])
-                       ->assign('returnurl', $returnurl)
-                       ->assign('core_titlefield', PageMaster_Util::findTitleField($pubfields));
+                   ->assign('pubtype',   $pubtype)
+                   ->assign('publist',   $result['publist'])
+                   ->assign('returnurl', $returnurl)
+                   ->assign('core_titlefield', PageMaster_Util::findTitleField($pubfields));
 
         // Assign the pager values if needed
         if ($itemsperpage != 0) {
             $this->view->assign('pager', array('numitems'     => $result['pubcount'],
-                                                   'itemsperpage' => $itemsperpage));
+                                               'itemsperpage' => $itemsperpage));
         }
 
         // Check if template is available
@@ -139,6 +139,10 @@ class PageMaster_Controller_User extends Zikula_Controller
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
+            }
+            // return an error/void if a block template does not exists
+            if (strpos($sec_template, 'block_') === 0) {
+                return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
             $template = 'pagemaster_generic_publist.tpl';
         }
@@ -235,7 +239,9 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         // build the output
-        $this->view->setCaching($cachetid)->setCache_Id($cacheid)->add_core_data();
+        $this->view->setCaching($cachetid)
+                   ->setCache_Id($cacheid)
+                   ->add_core_data();
 
         if ($cachetid) {
             $this->view->setCache_lifetime($cachelt);
@@ -286,18 +292,22 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // process the output
         $this->view->assign('pubtype',            $pubtype)
-                       ->assign('core_tid',           $tid)
-                       ->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state'])
-                       ->assign('core_titlefield',    $core_title)
-                       ->assign('core_title',         $pubdata[$core_title])
-                       ->assign('core_uniqueid',      $tid.'-'.$pubdata['core_pid'])
-                       ->assign('core_creator',       ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false);
+                   ->assign('core_tid',           $tid)
+                   ->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state'])
+                   ->assign('core_titlefield',    $core_title)
+                   ->assign('core_title',         $pubdata[$core_title])
+                   ->assign('core_uniqueid',      $tid.'-'.$pubdata['core_pid'])
+                   ->assign('core_creator',       ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false);
 
         // Check if template is available
         if ($template != 'var:viewpub_template_code' && !$this->view->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
+            }
+            // return an error/void if a block template does not exists
+            if (strpos($sec_template, 'block_') === 0) {
+                return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
             $template = 'var:viewpub_template_code';
         }
@@ -498,13 +508,13 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // create the output object
         $this->view->assign('allTypes',   $pubData['allTypes'])
-                       ->assign('publist',    $pubData['pubList'])
-                       ->assign('tid',        $tid)
-                       ->assign('pid',        $pid)
-                       ->assign('edit',       $edit)
-                       ->assign('menu',       $menu)
-                       ->assign('returntype', $returntype)
-                       ->assign('source',     $source);
+                   ->assign('publist',    $pubData['pubList'])
+                   ->assign('tid',        $tid)
+                   ->assign('pid',        $pid)
+                   ->assign('edit',       $edit)
+                   ->assign('menu',       $menu)
+                   ->assign('returntype', $returntype)
+                   ->assign('source',     $source);
 
         return $this->view->fetch('pagemaster_user_pubeditlist.tpl');
     }

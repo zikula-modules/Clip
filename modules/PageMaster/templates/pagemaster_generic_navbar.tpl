@@ -69,7 +69,7 @@
 
 {* PageMaster developer notices*}
 {if $pncore.PageMaster.devmode|default:true}
-{if $section eq 'pubview'}{debug}{/if}
+{if $section eq 'pubview'}{zdebug}{/if}
 
 {secauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN}
 <div class="z-warningmsg">
