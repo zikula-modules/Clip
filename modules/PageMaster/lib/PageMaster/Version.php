@@ -14,6 +14,7 @@ class PageMaster_Version extends Zikula_Version
         $meta = array();
         $meta['displayname']    = $this->__('PageMaster');
         $meta['description']    = $this->__('Content Module like pagesetter');
+        $meta['oldnames']       = array('pagemaster');
         //! module name that appears in URL
         $meta['url']            = $this->__('pagemaster');
         $meta['version']        = '0.4.3';
