@@ -13,32 +13,32 @@
 class PageMaster_Block_Pubeditlist extends Zikula_Block
 {
     /**
-     * initialise block
+     * Initialise block
      */
     public function init()
     {
-        // Security
-        SecurityUtil::registerPermissionSchema('pagemaster:PubEditListblock:', 'Block title:Block Id:Pubtype Id');
+        // Security schema
+        SecurityUtil::registerPermissionSchema('pagemaster:block:pubeditlist', 'Block Id:Pubtype Id:');
     }
 
     /**
-     * get information on block
+     * Get information on block
      */
     public function info()
     {
         return array (
-        'module'         => 'PageMaster',
-        'text_type'      => $this->__('PageMaster edit list'),
-        'text_type_long' => $this->__('PageMaster dynamic edit tree/list'),
-        'allow_multiple' => true,
-        'form_content'   => false,
-        'form_refresh'   => false,
-        'show_preview'   => true
+            'module'         => 'PageMaster',
+            'text_type'      => $this->__('PageMaster edit list'),
+            'text_type_long' => $this->__('PageMaster dynamic edit tree/list'),
+            'allow_multiple' => true,
+            'form_content'   => false,
+            'form_refresh'   => false,
+            'show_preview'   => true
         );
     }
 
     /**
-     * display the block according its configuration
+     * Display the block according its configuration
      */
     public function display($blockinfo)
     {
@@ -46,7 +46,7 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
         // Security check
-        if (!SecurityUtil::checkPermission('pagemaster:PubEditListblock:', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('pagemaster:block:pubeditlist', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
             return;
         }
 
@@ -55,20 +55,20 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
 
         $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
         $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
-        $orderby    = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'pm_pid');
+        $orderby    = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
         $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
         $source     = 'block';
 
-        $pubData = ModUtil::apiFunc ('PageMaster', 'user', 'pubeditlist', $args);
+        $pubData = ModUtil::apiFunc('PageMaster', 'user', 'pubeditlist', $args);
 
-        $render = Zikula_View::getInstance('PageMaster');
-        $render->assign('allTypes',   $pubData['allTypes']);
-        $render->assign('publist',    $pubData['pubList']);
-        $render->assign('tid',        $tid);
-        $render->assign('pid',        $pid);
-        $render->assign('returntype', $returntype);
-        $render->assign('source',     $source);
-        $blockinfo['content'] = $render->fetch('pagemaster_block_pubeditlist.tpl');
+        $this->view->assign('allTypes',   $pubData['allTypes'])
+                   ->assign('publist',    $pubData['pubList'])
+                   ->assign('tid',        $tid)
+                   ->assign('pid',        $pid)
+                   ->assign('returntype', $returntype)
+                   ->assign('source',     $source);
+
+        $blockinfo['content'] = $this->view->fetch('pagemaster_block_pubeditlist.tpl');
 
         if (empty($blockinfo['content'])) {
             return;
@@ -78,35 +78,28 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
     }
 
     /**
-     * modify block settings
+     * Modify block settings
      */
     public function modify($blockinfo)
     {
-        $vars = BlockUtil::varsFromContent($blockinfo['content']);
-
-        if (!isset($vars['orderBy'])) {
-            $vars['orderBy'] = '';
-        }
-
         return '';
     }
 
     /**
-     * update block settings
+     * Update block settings
      */
     public function update($blockinfo)
     {
         $filters = FormUtil::getPassedValue('filters');
 
         $vars = array (
-        'cachelifetime' => FormUtil::getPassedValue('cachelifetime'),
-        'orderBy'       => FormUtil::getPassedValue('orderBy')
+            'cachelifetime' => FormUtil::getPassedValue('cachelifetime'),
+            'orderBy'       => FormUtil::getPassedValue('orderBy')
         );
 
         $blockinfo['content'] = BlockUtil::varsToContent($vars);
 
-        $renderer = Zikula_View::getInstance('PageMaster');
-        $renderer->clear_cache('pagemaster_generic_pubeditlist.tpl');
+        $this->view->clear_cache('pagemaster_generic_pubeditlist.tpl');
 
         return $blockinfo;
     }

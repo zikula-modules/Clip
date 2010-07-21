@@ -17,7 +17,7 @@ class PageMaster_Version extends Zikula_Version
         //! module name that appears in URL
         $meta['url']            = $this->__('pagemaster');
         $meta['version']        = '0.4.3';
-        $meta['core_min'] = '1.3.0';
+        $meta['core_min']       = '1.3.0';
 
         // Permissions schema
         $meta['securityschema'] = array(
@@ -39,6 +39,7 @@ class PageMaster_Version extends Zikula_Version
                         'maxversion' => '',
                         'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
         );
+
         return $meta;
     }
 }

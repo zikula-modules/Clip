@@ -13,32 +13,32 @@
 class PageMaster_Block_Viewpub extends Zikula_Block
 {
     /**
-     * initialise block
+     * Initialise block
      */
     public function init()
     {
-        // Security
-        SecurityUtil::registerPermissionSchema('pagemaster:Listblock:', 'Block title:Block Id:Pubtype Id');
+        // Security schema
+        SecurityUtil::registerPermissionSchema('pagemaster:block:viewpub', 'Block Id:Pubtype Id:');
     }
 
     /**
-     * get information on block
+     * Get information on block
      */
     public function info()
     {
-        return array (
-        'module'         => 'PageMaster',
-        'text_type'      => $this->__('PageMaster viewpub'),
-        'text_type_long' => $this->__('PageMaster View Publication'),
-        'allow_multiple' => true,
-        'form_content'   => false,
-        'form_refresh'   => false,
-        'show_preview'   => true
+        return array(
+            'module'         => 'PageMaster',
+            'text_type'      => $this->__('PageMaster viewpub'),
+            'text_type_long' => $this->__('PageMaster View Publication'),
+            'allow_multiple' => true,
+            'form_content'   => false,
+            'form_refresh'   => false,
+            'show_preview'   => true
         );
     }
 
     /**
-     * display the block according its configuration
+     * Display the block according its configuration
      */
     public function display($blockinfo)
     {
@@ -46,15 +46,15 @@ class PageMaster_Block_Viewpub extends Zikula_Block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
         // Validation of required parameters
-        if (!isset($vars['tid'])) {
-            $vars['tid'] = ModUtil::getVar('PageMaster', 'frontpagePubType');
+        if (!isset($vars['tid']) || empty($vars['tid'])) {
+            return $this->__('Required parameter [%s] not set or empty.', 'tid');
         }
-        if (!isset($vars['pid'])) {
-            return 'Required parameter [pid] not set';
+        if (!isset($vars['pid']) || empty($vars['pid'])) {
+            return $this->__('Required parameter [%s] not set or empty.', 'pid');
         }
 
         // Security check
-        if (!SecurityUtil::checkPermission('pagemaster:viewpubblock:', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('pagemaster:block:viewpub', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
             return;
         }
 
@@ -63,11 +63,11 @@ class PageMaster_Block_Viewpub extends Zikula_Block
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
         $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'viewpub',
-        array('tid'                => $vars['tid'],
-                                            'pid'                => $vars['pid'],
-                                            'checkPerm'          => true,
-                                            'template'           => $template,
-                                            'cachelifetime'      => $cachelifetime));
+                                              array('tid'                => $vars['tid'],
+                                                    'pid'                => $vars['pid'],
+                                                    'checkPerm'          => true,
+                                                    'template'           => $template,
+                                                    'cachelifetime'      => $cachelifetime));
 
         if (empty($blockinfo['content'])) {
             return;
@@ -86,10 +86,10 @@ class PageMaster_Block_Viewpub extends Zikula_Block
 
         // Defaults
         if (!isset($vars['tid'])) {
-            $vars['tid'] = ModUtil::getVar('PageMaster', 'frontpagePubType');
+            $vars['tid'] = 0;
         }
         if (!isset($vars['pid'])) {
-            $vars['pid'] = '';
+            $vars['pid'] = 0;
         }
         if (!isset($vars['cachelifetime'])) {
             $vars['cachelifetime'] = 0;
@@ -98,90 +98,31 @@ class PageMaster_Block_Viewpub extends Zikula_Block
             $vars['template'] = 'block_viewpub';
         }
 
-        $output = new pnHTML();
+        // Builds the pubtypes selector
+        $pubtypes = PageMaster_Util::getPubType(-1);
 
-        // (no table start/end since the block edit template takes care of that)
-
-        // Create a row for "Publication type"
-        ModUtil::dbInfoLoad('PageMaster'); // not required any more under 1.3
-        $pubTypesData = DBUtil::selectObjectArray('pagemaster_pubtypes');
-
-        $pubTypes = array ();
-        foreach ($pubTypesData as $pubType) {
-            $pubTypes[] = array(
-            'name' => $pubType['title'],
-            'id'   => $pubType['tid']
-            );
-
-            if ($pubType['tid'] == $vars['tid']) {
-                $pubTypes[count($pubTypes)-1]['selected'] = 1;
-            }
+        foreach (array_keys($pubtypes) as $tid) {
+            $pubtypes[$tid] = $pubtypes[$tid]['title'];
         }
-        unset($pubTypesData);
 
-        $row = array ();
-        $output->SetOutputMode(_PNH_RETURNOUTPUT);
-        $row[] = $output->Text($this->__('Publication type'));
-        $row[] = $output->FormSelectMultiple('tid', $pubTypes);
-        $output->SetOutputMode(_PNH_KEEPOUTPUT);
-
-        // Add row
-        $output->SetInputMode(_PNH_VERBATIMINPUT);
-        $output->TableAddRow($row, 'left');
-        $output->SetInputMode(_PNH_PARSEINPUT);
-
-        // Add filter
-        $row = array ();
-        $output->SetOutputMode(_PNH_RETURNOUTPUT);
-        $row[] = $output->Text($this->__('PID'));
-        $row[] = $output->FormText('pid', $vars['pid']);
-        $output->SetOutputMode(_PNH_KEEPOUTPUT);
-
-        // Add row
-        $output->SetInputMode(_PNH_VERBATIMINPUT);
-        $output->TableAddRow($row, 'left');
-        $output->SetInputMode(_PNH_PARSEINPUT);
-
-        // Add cachelifetime
-        $row = array ();
-        $output->SetOutputMode(_PNH_RETURNOUTPUT);
-        $row[] = $output->Text($this->__('Cache lifetime'));
-        $row[] = $output->FormText('cachelifetime', $vars['cachelifetime']);
-        $output->SetOutputMode(_PNH_KEEPOUTPUT);
-
-        // Add row
-        $output->SetInputMode(_PNH_VERBATIMINPUT);
-        $output->TableAddRow($row, 'left');
-        $output->SetInputMode(_PNH_PARSEINPUT);
-
-        // Add template
-        $row = array ();
-        $output->SetOutputMode(_PNH_RETURNOUTPUT);
-        $row[] = $output->Text($this->__('Template'));
-        $row[] = $output->FormText('template', $vars['template']);
-        $output->SetOutputMode(_PNH_KEEPOUTPUT);
-
-        // Add row
-        $output->SetInputMode(_PNH_VERBATIMINPUT);
-        $output->TableAddRow($row, 'left');
-        $output->SetInputMode(_PNH_PARSEINPUT);
+        // Builds the output
+        $this->view->assign('vars', $vars)
+                   ->assign('pubtypes', $pubtypes);
 
         // Return output
-        return $output->GetOutput();
+        return $this->view->fetch('pagemaster_block_viewpub_modify.tpl');
     }
 
     /**
-     * update block settings
+     * Update block settings
      */
     public function update($blockinfo)
     {
-        $filters = FormUtil::getPassedValue('filters');
-
         $vars = array (
-        'tid'           => FormUtil::getPassedValue('tid'),
-        'pid'           => FormUtil::getPassedValue('pid'),
-        'template'      => FormUtil::getPassedValue('template'),
-        'cachelifetime' => FormUtil::getPassedValue('cachelifetime')
+            'tid'           => FormUtil::getPassedValue('tid'),
+            'pid'           => FormUtil::getPassedValue('pid'),
+            'template'      => FormUtil::getPassedValue('template'),
+            'cachelifetime' => FormUtil::getPassedValue('cachelifetime')
         );
 
         $blockinfo['content'] = BlockUtil::varsToContent($vars);
