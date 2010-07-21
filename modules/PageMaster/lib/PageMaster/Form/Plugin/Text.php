@@ -31,9 +31,9 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
         return __FILE__;
     }
 
-    function render(&$render)
+    function render(&$view)
     {
-        $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
+        $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
 
         $this->textMode = 'multiline';
         if ($this->config['usescribite'] && ModUtil::available('scribite')) {
@@ -46,7 +46,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
             PageUtil::setVar('rawtext', $scribite);
         }
 
-        return parent::render($render);
+        return parent::render($view);
     }
 
     static function getSaveTypeDataFunc($field)
@@ -64,11 +64,11 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    function getTypeHtml($field, $view)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : false;
+        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : false;
         $this->parseConfig($typedata);
 
         $checked = $this->config['usescribite'] ? 'checked="checked"' : '';

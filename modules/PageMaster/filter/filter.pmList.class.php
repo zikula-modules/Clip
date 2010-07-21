@@ -23,7 +23,7 @@ class FilterUtil_Filter_pmList extends FilterUtil_Filter_category
      */
     function getSQL($field, $op, $value)
     {
-        if (array_search($op, $this->availableOperators()) === false || array_search($field,$this->fields) === false) {
+        if (array_search($op, $this->availableOperators()) === false || array_search($field, $this->getFields()) === false) {
             return '';
         }
 

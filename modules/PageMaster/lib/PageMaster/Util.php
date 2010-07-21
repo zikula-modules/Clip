@@ -121,7 +121,11 @@ class PageMaster_Util
             $orderby_new = '';
 
             foreach ($orderby_arr as $orderby_field) {
-                list($orderby_col, $orderby_dir) = explode(' ', trim($orderby_field));
+                $orderby_field = trim($orderby_field);
+                if (strpos($orderby_field, ' ') === false) {
+                    $orderby_field .= ' ';
+                }
+                list($orderby_col, $orderby_dir) = explode(' ', $orderby_field);
                 $plugin_name = '';
                 $field_name  = '';
 

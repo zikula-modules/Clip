@@ -199,8 +199,7 @@ class PageMaster_Generator
 
         foreach (array_keys($pubfields) as $k) {
             // get the plugin pnform name of the plugin filename
-            $pmformname = explode('.', $pubfields[$k]['fieldplugin']);
-            $pmformname = $pmformname[1];
+            $pmformname = $pubfields[$k]['fieldplugin'];
 
             if (!empty($pubfields[$k]['fieldmaxlength'])) {
                 $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
@@ -213,7 +212,7 @@ class PageMaster_Generator
             $toolTip = !empty($pubfields[$k]['description']) ? str_replace("'", "\'", $pubfields[$k]['description']) : '';
 
             // specific plugins
-            $linecol = ($pmformname == 'pmformtextinput') ? " rows='20' cols='70'" : '';
+            $linecol = ($pmformname == 'pmformtextinput') ? " rows='15' cols='70'" : '';
 
             // scape simple quotes where needed
             $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']);

@@ -47,11 +47,11 @@ class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    function getTypeHtml($field, $view)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $this->parseConfig($render->_tpl_vars['typedata']);
+        $this->parseConfig($view->_tpl_vars['typedata']);
 
         $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
 
@@ -63,12 +63,12 @@ class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
         return $html;
     }
 
-    function create(&$render, &$params)
+    function create(&$view, &$params)
     {
-        $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
+        $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
         $params['includeTime'] = $this->config['includeTime'];
 
-        parent::create($render, $params);
+        parent::create($view, $params);
     }
 
     /**

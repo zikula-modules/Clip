@@ -14,7 +14,7 @@
  *
  * @author kundi
  */
-class PageMaster_Form_Handler_UserEditpub extends Form_Handler
+class PageMaster_Form_Handler_User_Editpub extends Form_Handler
 {
     var $id;
     var $core_pid;

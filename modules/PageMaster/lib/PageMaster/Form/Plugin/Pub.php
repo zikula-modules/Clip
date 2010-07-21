@@ -55,11 +55,11 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         return $pub;    
     }
 
-    function load($render)
+    function load($view)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
+        $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
 
         if (!empty($this->config['tid'])) {
             $pubarr = ModUtil::apiFunc('PageMaster', 'user', 'pubList',
@@ -88,7 +88,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
                            );
         }
 
-        parent::load($render);
+        parent::load($view);
     }
 
     static function getSaveTypeDataFunc($field)
@@ -104,11 +104,11 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    function getTypeHtml($field, $view)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : '';
+        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : '';
         $this->parseConfig($typedata);
 
         $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'title', '', '', false, 'tid');

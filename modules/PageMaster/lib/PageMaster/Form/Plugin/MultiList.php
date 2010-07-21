@@ -71,11 +71,11 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         return $cat_arr;
     }
 
-    function render(&$render)
+    function render(&$view)
     {
         // extract the configuration {category, size}
-        if (isset($render->EventHandler->pubfields[$this->inputName])) {
-            $this->parseConfig($render->EventHandler->pubfields[$this->inputName]['typedata']);;
+        if (isset($view->eventHandler->pubfields[$this->inputName])) {
+            $this->parseConfig($view->eventHandler->pubfields[$this->inputName]['typedata']);;
         } else {
             $this->parseConfig();
         }
@@ -84,25 +84,25 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
             $this->size = $this->config[1];
         }
 
-        return parent::render($render);
+        return parent::render($view);
     }
 
-    function create(&$render, &$params)
+    function create(&$view, &$params)
     {
         $this->saveAsString  = 1;
         $this->selectionMode = 'multiple';
 
-        parent::create($render, $params);
+        parent::create($view, $params);
     }
 
-    function load(&$render, $params)
+    function load(&$view, $params)
     {
-        if (isset($render->EventHandler->pubfields[$this->id])) {
-            $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
+        if (isset($view->eventHandler->pubfields[$this->id])) {
+            $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
             $params['category'] = $this->config[0];
         }
 
-        parent::load($render, $params);
+        parent::load($view, $params);
 
         array_shift($this->items); //CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
     }
@@ -127,12 +127,12 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    function getTypeHtml($field, $view)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
         // parse the configuration
-        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : '';
+        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : '';
         $this->parseConfig($typedata);
 
         $size = '';

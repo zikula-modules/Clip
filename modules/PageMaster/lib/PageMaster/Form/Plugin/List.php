@@ -58,17 +58,17 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
         return $cat;
     }
 
-    function render(&$render)
+    function render(&$view)
     {
         $mand = ($this->mandatory == '1') ? ' <span class="z-mandatorysym">*</span>' : '';
 
-        return parent::render($render).$mand;
+        return parent::render($view).$mand;
     }
 
-    function load(&$render, $params)
+    function load(&$view, $params)
     {
-        if (!empty($render->EventHandler->pubfields[$this->id]['typedata'])) {
-            $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata'], (int)$params['mandatory']);
+        if (!empty($view->eventHandler->pubfields[$this->id]['typedata'])) {
+            $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata'], (int)$params['mandatory']);
 
             $params['category'] = $this->config[0];
 
@@ -82,7 +82,7 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
             $params['category'] = 30; // Global category
         }
 
-        parent::load($render, $params);
+        parent::load($view, $params);
     }
 
     static function getSaveTypeDataFunc($field)
@@ -106,11 +106,11 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    function getTypeHtml($field, $view)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : array(30, true);
+        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : array(30, true);
         $this->parseConfig($typedata);
 
         Loader::loadClass('CategoryUtil');

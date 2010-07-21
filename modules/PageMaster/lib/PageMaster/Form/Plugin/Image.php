@@ -32,19 +32,19 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         return __FILE__;
     }
 
-    function render(&$render)
+    function render(&$view)
     {
-        $input_html = parent::render($render);
+        $input_html = parent::render($view);
 
         return $input_html.' '.$this->upl_arr['orig_name'];
     }
 
-    function load(&$render, &$params)
+    function load(&$view, &$params)
     {
-        $this->loadValue($render, $render->get_template_vars());
+        $this->loadValue($view, $view->get_template_vars());
     }
 
-    function loadValue(&$render, &$values)
+    function loadValue(&$view, &$values)
     {
         if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
             $this->upl_arr = unserialize($values[$this->dataField]);
@@ -230,12 +230,12 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $render)
+    function getTypeHtml($field, $view)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
         
         if (ModUtil::available('Thumbnail')) {
-            $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : false;
+            $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : false;
             $this->parseConfig($typedata);
 
             // TODO Fieldsets and help text explaining how they work

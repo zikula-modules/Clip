@@ -31,27 +31,27 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         return __FILE__;
     }
 
-    function create(&$render, $params)
+    function create(&$view, $params)
     {
-        parent::create($render, $params);
+        parent::create($view, $params);
 
         if (empty($this->text)) {
-            $this->parseConfig($render->EventHandler->pubfields[$this->inputName]['typedata'], 0);
+            $this->parseConfig($view->eventHandler->pubfields[$this->inputName]['typedata'], 0);
             $defaultvalue = isset($this->config['configvars'][1]) ? $this->config['configvars'][1] : '';
             $this->text = ($defaultvalue != '~' ? $defaultvalue : '');
         }
     }
 
-    function render(&$render)
+    function render(&$view)
     {
         $this->textMode = 'singleline';
-        $render->assign($this->inputName, @unserialize($this->text));
-        if (isset($render->EventHandler->pubfields[$this->inputName])) {
-            $this->parseConfig($render->EventHandler->pubfields[$this->inputName]['typedata'], 0);
-            $render->assign($this->inputName.'_typedata', $this->config);
+        $view->assign($this->inputName, @unserialize($this->text));
+        if (isset($view->eventHandler->pubfields[$this->inputName])) {
+            $this->parseConfig($view->eventHandler->pubfields[$this->inputName]['typedata'], 0);
+            $view->assign($this->inputName.'_typedata', $this->config);
         }
 
-        return parent::render($render);
+        return parent::render($view);
     }
 
     function postRead($data, $field)
@@ -89,7 +89,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         return array();
     }
 
-    function decode(&$render)
+    function decode(&$view)
     {
         // Do not read new value if readonly (evil submiter might have forged it)
         if (!$this->readOnly)
@@ -97,7 +97,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
             $this->text = FormUtil::getPassedValue($this->inputName, null, 'POST');
 
             if (is_null($this->text) || empty($this->text)) {
-                $this->parseConfig($render->EventHandler->pubfields[$this->inputName]['typedata'], 0);
+                $this->parseConfig($view->eventHandler->pubfields[$this->inputName]['typedata'], 0);
                 $this->text = isset($this->config['configvars'][1]) ? $this->config['configvars'][1] : '';
                 return;
             }
@@ -196,7 +196,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         return $saveTypeDataFunc;
     }
 
-    static function getTypeHtml($field, $render)
+    static function getTypeHtml($field, $view)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
@@ -204,8 +204,8 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
 
         // parse the data
         // TODO Merge in $this->parseConfig
-        if (isset($render->_tpl_vars['typedata'])) {
-            $vars = explode('||', $render->_tpl_vars['typedata']);
+        if (isset($view->_tpl_vars['typedata'])) {
+            $vars = explode('||', $view->_tpl_vars['typedata']);
         } else {
             $vars = array();
         }

@@ -63,26 +63,26 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         return $cat_arr;
     }
 
-    function render(&$render)
+    function render(&$view)
     {
-        return parent::render($render);
+        return parent::render($view);
     }
 
-    function create(&$render, &$params)
+    function create(&$view, &$params)
     {
         $this->saveAsString = 1;
 
-        parent::create($render, $params);
+        parent::create($view, $params);
     }
 
-    function load(&$render, $params)
+    function load(&$view, $params)
     {
-        if (isset($render->EventHandler->pubfields[$this->id])) {
-            $this->parseConfig($render->EventHandler->pubfields[$this->id]['typedata']);
+        if (isset($view->eventHandler->pubfields[$this->id])) {
+            $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
             $params['category'] = $this->config['category'];
         }
 
-        parent::load($render, $params);
+        parent::load($view, $params);
 
         if ($this->mandatory) {
             array_shift($this->items); //CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
@@ -104,7 +104,7 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
         
-        $typedata = isset($render->_tpl_vars['typedata']) ? $render->_tpl_vars['typedata'] : 30;
+        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : 30;
         $this->parseConfig($typedata);
 
         Loader::loadClass('CategoryUtil');

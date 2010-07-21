@@ -29,11 +29,11 @@ class PageMaster_Form_Plugin_Url extends Form_Plugin_TextInput
         return __FILE__;
     }
 
-    function create(&$render, &$params)
+    function create(&$view, &$params)
     {
         $this->maxLength = 2000;
 
-        parent::create($render, $params);
+        parent::create($view, $params);
 
         $this->cssClass .= ' url';
     }
@@ -52,9 +52,9 @@ class PageMaster_Form_Plugin_Url extends Form_Plugin_TextInput
      * Overrides the validation check to allow
      * {modname:func&param=value:type}
      */
-    function validate(&$render)
+    function validate(&$view)
     {
-        parent::validate($render);
+        parent::validate($view);
         if (!$this->isValid) {
             return;
         }

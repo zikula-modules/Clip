@@ -199,7 +199,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         return array (
-            'publist'  => $publist,
+            'publist'  => isset($publist) ? $publist : null,
             'pubcount' => isset($pubcount) ? $pubcount : null
         );
     }
