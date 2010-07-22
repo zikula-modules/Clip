@@ -123,10 +123,10 @@ class PageMaster_Api_User extends Zikula_Api
                             $object_field_name_arr[] = $y;
                         }
                         $joinInfo[] = array('join_table'         =>  'pagemaster_pubdata'.$join_tid,
-                                        'join_field'         =>  $join_field_arr,
-                                        'object_field_name'  =>  $object_field_name_arr,
-                                        'compare_field_table'=>  $fieldname,
-                                        'compare_field_join' =>  'core_pid');
+                                            'join_field'         =>  $join_field_arr,
+                                            'object_field_name'  =>  $object_field_name_arr,
+                                            'compare_field_table'=>  $fieldname,
+                                            'compare_field_join' =>  'core_pid');
                     }
                 }
             }
@@ -135,7 +135,7 @@ class PageMaster_Api_User extends Zikula_Api
         if (isset($joinInfo)) {
             $tbl_alias = 'tbl.';
             $filter_args = array('join' => array('join_table' => $joinInfo['join_table']),
-                                             'plugins'    => $filterPlugins);
+                                                 'plugins'    => $filterPlugins);
         } else {
             $tbl_alias = '';
             $filter_args = array('plugins' => $filterPlugins);
@@ -429,6 +429,7 @@ class PageMaster_Api_User extends Zikula_Api
         foreach ($pubtypes as $pubtype) {
             $tid    = $pubtype['tid'];
             $tables = DBUtil::getTables();
+
             if (!isset($tables['pagemaster_pubdata'.$tid])) {
                 $allTypes[$tid] = $pubtype['title'];
                 continue;
@@ -451,6 +452,7 @@ class PageMaster_Api_User extends Zikula_Api
                     $list[$k]['_title'] = $v[$coreTitle];
                 }
             }
+
             $publist[$tid]  = $list;
             $allTypes[$tid] = $pubtype['title'];
         }

@@ -85,6 +85,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
             $script .= "\n// ]]>\n</script>";
             PageUtil::setVar('rawtext', $script);
         }
+
         return $result . $typeDataHtml;
     }
 }

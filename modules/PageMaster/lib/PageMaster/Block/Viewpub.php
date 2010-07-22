@@ -17,7 +17,6 @@ class PageMaster_Block_Viewpub extends Zikula_Block
      */
     public function init()
     {
-        // Security schema
         SecurityUtil::registerPermissionSchema('pagemaster:block:viewpub', 'Block Id:Pubtype Id:');
     }
 

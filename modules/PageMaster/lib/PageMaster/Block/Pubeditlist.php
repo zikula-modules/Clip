@@ -17,7 +17,6 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
      */
     public function init()
     {
-        // Security schema
         SecurityUtil::registerPermissionSchema('pagemaster:block:pubeditlist', 'Block Id:Pubtype Id:');
     }
 

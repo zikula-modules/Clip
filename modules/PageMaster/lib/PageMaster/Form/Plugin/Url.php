@@ -55,6 +55,7 @@ class PageMaster_Form_Plugin_Url extends Form_Plugin_TextInput
     function validate(&$view)
     {
         parent::validate($view);
+
         if (!$this->isValid) {
             return;
         }

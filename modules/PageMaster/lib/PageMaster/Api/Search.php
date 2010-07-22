@@ -72,57 +72,57 @@ class PageMaster_Api_Search extends Zikula_Api
                           $searchColumn[session])
                       VALUES ";
 
-                      $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
-                      foreach ($pubtypes as $pubtype)
-                      {
-                          if ($search_tid == '' || $search_tid[$pubtype['tid']] == 1){
-                              $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
+        foreach ($pubtypes as $pubtype)
+        {
+            if ($search_tid == '' || $search_tid[$pubtype['tid']] == 1){
+                $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
 
-                              $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
-                              $columnname = $tables[$tablename.'_column'];
+                $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
+                $columnname = $tables[$tablename.'_column'];
 
-                              foreach ($pubfieldnames as $pubfieldname) {
-                                  $where_arr[] = $columnname[$pubfieldname];
-                              }
+                foreach ($pubfieldnames as $pubfieldname) {
+                    $where_arr[] = $columnname[$pubfieldname];
+                }
 
-                              if (is_array($where_arr)) {
-                                  $where  = search_construct_where($args, $where_arr);
-                                  $where .= " AND pm_showinlist = '1'
-                                              AND pm_online = '1'
-                                              AND pm_indepot = '0'
-                                              AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCode() ."')
-                                              AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)
-                                              AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
+                if (is_array($where_arr)) {
+                    $where  = search_construct_where($args, $where_arr);
+                    $where .= " AND pm_showinlist = '1'
+                                AND pm_online = '1'
+                                AND pm_indepot = '0'
+                                AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCode() ."')
+                                AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)
+                                AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
 
-                                  $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
+                    $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
 
-                                  $publist    = DBUtil::selectObjectArray($tablename, $where);
+                    $publist    = DBUtil::selectObjectArray($tablename, $where);
 
-                                  $core_title = PageMaster_Util::getTitleField($pubtype['tid']);
+                    $core_title = PageMaster_Util::getTitleField($pubtype['tid']);
 
-                                  foreach ($publist as $pub)
-                                  {
-                                      $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
-                                      $sql = $insertSql . '('
-                                      . '\'' . DataUtil::formatForStore($pub[$core_title]) . '\', '
-                                      . '\'' . DataUtil::formatForStore('') . '\', '
-                                      . '\'' . DataUtil::formatForStore($extra) . '\', '
-                                      . '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '
-                                      . '\'' . 'PageMaster' . '\', '
-                                      . '\'' . DataUtil::formatForStore($sessionId) . '\')';
+                    foreach ($publist as $pub)
+                    {
+                        $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
+                        $sql = $insertSql . '('
+                        . '\'' . DataUtil::formatForStore($pub[$core_title]) . '\', '
+                        . '\'' . DataUtil::formatForStore('') . '\', '
+                        . '\'' . DataUtil::formatForStore($extra) . '\', '
+                        . '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '
+                        . '\'' . 'PageMaster' . '\', '
+                        . '\'' . DataUtil::formatForStore($sessionId) . '\')';
 
-                                      $insertResult = DBUtil::executeSQL($sql);
-                                      if (!$insertResult) {
-                                          return LogUtil::registerError($this->__('Error! Could not save the search results.'));
-                                      }
-                                  }
-                              }
-                          }
-                          $where_arr = array();
-                      }
+                        $insertResult = DBUtil::executeSQL($sql);
+                        if (!$insertResult) {
+                            return LogUtil::registerError($this->__('Error! Could not save the search results.'));
+                        }
+                    }
+                }
+            }
+            $where_arr = array();
+        }
 
-                      return true;
+        return true;
     }
 
     /**

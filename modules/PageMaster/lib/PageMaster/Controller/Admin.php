@@ -44,9 +44,9 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         }
 
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
-        $this->view->assign('pubtypes', $pubtypes);
 
-        return $this->view->fetch('pagemaster_admin_pubtypes.tpl');
+        return $this->view->assign('pubtypes', $pubtypes)
+                    ->fetch('pagemaster_admin_pubtypes.tpl');
     }
 
     /**
@@ -314,9 +314,8 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
 
         // build the output
-        $this->view->add_core_data();
-
-        $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false);
+        $this->view->add_core_data()
+                   ->assign('alreadyexists', $numpubtypes > 0 ? true : false);
 
         return $this->view->fetch('pagemaster_admin_importps.tpl');
     }

@@ -36,8 +36,6 @@ class PageMaster_Form_Plugin_Ms extends Form_Plugin_TextInput
 
         // if there's a value extract the category
         if (!empty($data) && is_numeric($data)) {
-            Loader::loadClass('CategoryUtil');
-
             $cat  = CategoryUtil::getCategoryByID($data);
 
             if (empty($cat)) {

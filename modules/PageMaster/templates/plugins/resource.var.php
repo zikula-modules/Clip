@@ -31,6 +31,7 @@ function smarty_resource_var_source($tpl_name, &$tpl_source, &$smarty)
             global $$tpl_name;
             $tpl_source = $$tpl_name;
         }
+
         return true;
     }
 

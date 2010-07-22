@@ -43,7 +43,6 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
             $catIds = explode(':', $data);
             if (!empty($catIds)) {
-                Loader::loadClass('CategoryUtil');
                 ModUtil::dbInfoLoad('Categories');
 
                 $tables          = DBUtil::getTables();
@@ -60,6 +59,7 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
                 }
             }
         }
+
         return $cat_arr;
     }
 
@@ -106,9 +106,6 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : 30;
         $this->parseConfig($typedata);
-
-        Loader::loadClass('CategoryUtil');
-        Loader::loadClass('CategoryRegistryUtil');
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 

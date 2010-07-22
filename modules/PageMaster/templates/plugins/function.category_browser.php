@@ -31,8 +31,8 @@ function smarty_function_category_browser($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
-    $tid               = $params['tid'];
-    $field             = $params['field'];
+    $tid   = $params['tid'];
+    $field = $params['field'];
 
     if (!$tid) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
@@ -142,11 +142,11 @@ function smarty_function_category_browser($params, &$smarty)
 
         if ($new_filter == '') {
             $url = ModUtil::url('PageMaster', 'user', 'main',
-                            array('tid'    => $tid));
+                                array('tid'    => $tid));
         } else {
             $url = ModUtil::url('PageMaster', 'user', 'main',
-                            array('tid'    => $tid,
-                                  'filter' => $new_filter));
+                                array('tid'    => $tid,
+                                      'filter' => $new_filter));
         }
 
         if ($count) {
@@ -178,11 +178,11 @@ function smarty_function_category_browser($params, &$smarty)
 
     // assign the plugin options
     $options = array(
-      'tid'       => $tid,
-      'field'     => $field,
-      'count'     => $count,
-      'togglediv' => $togglediv,
-      'selected'  => $one_selected
+        'tid'       => $tid,
+        'field'     => $field,
+        'count'     => $count,
+        'togglediv' => $togglediv,
+        'selected'  => $one_selected
     );
     $render->assign('options', $options);
 

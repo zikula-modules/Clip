@@ -8,136 +8,136 @@
   */
 var ListControl={
 
-	tree:null,
+    tree:null,
 
-	/**
-	  * Initializes the folded tree
-	  * @param HTMLElement object - where the tree is stored.
-	  */
-	init:function(object){
-		this.tree=object;
+    /**
+      * Initializes the folded tree
+      * @param HTMLElement object - where the tree is stored.
+      */
+    init:function(object){
+        this.tree=object;
 
-		this.SetHandlers(); // Go trough all sub elements and set handlers , do so recursivelly
+        this.SetHandlers(); // Go trough all sub elements and set handlers , do so recursivelly
 
-		// Unfold a path if the selected in the url is visible filter[category_id]=
-		var id=this.find_id(window.location.href);
-		if (id) { 
-			this.UnFoldIt(id);
-		}
-	},
-	
+        // Unfold a path if the selected in the url is visible filter[category_id]=
+        var id=this.find_id(window.location.href);
+        if (id) {
+            this.UnFoldIt(id);
+        }
+    },
 
-	/**
-	  * Unfolds the given directory structure
-	  * @param Int id - of the link specified
-	  */
-	UnFoldIt:function(id) {
-		// Get All anchors from the tree
-		var lists=this.tree.getElementsByTagName('li');
 
-		// Pass trought the anchors and find which has the given id inside it
-		for (var i=0;i<lists.length;i++) {
-			if(id==lists[i].id.replace('item_','')) { // find the id of the current list item
-				break; 
-			}
-		}
+    /**
+      * Unfolds the given directory structure
+      * @param Int id - of the link specified
+      */
+    UnFoldIt:function(id) {
+        // Get All anchors from the tree
+        var lists=this.tree.getElementsByTagName('li');
 
-		// Get the list on focus
-		var parentLi=lists[i];
+        // Pass trought the anchors and find which has the given id inside it
+        for (var i=0;i<lists.length;i++) {
+            if(id==lists[i].id.replace('item_','')) { // find the id of the current list item
+                break;
+            }
+        }
 
-		// If the parents has a ul unfold it
-		var childUl=parentLi.getElementsByTagName('ul');
-		if (childUl.length>0) {
-			childUl[0].style.display='';
-		}
+        // Get the list on focus
+        var parentLi=lists[i];
 
-		// Now go up throuh the tree and unfold each predecessor ul up to the top
-		var top=parentLi.parentNode;
-		while(top){
-			if (top.nodeName.toLowerCase()=='ul') {
-				top.style.display='';
-				top=top.parentNode.parentNode; // Now find its parent and make it top or false
-			} else {
-				break;
-			}
-		}
-	},
+        // If the parents has a ul unfold it
+        var childUl=parentLi.getElementsByTagName('ul');
+        if (childUl.length>0) {
+            childUl[0].style.display='';
+        }
 
-	/**
-	  * Find number of the product inside the ulr string
-	  * @param String url
-	  * @return int - id , or false if not found
-	  */
-	find_id:function(url) {
-		// Set the id As False per default
-		id=false;
+        // Now go up throuh the tree and unfold each predecessor ul up to the top
+        var top=parentLi.parentNode;
+        while(top){
+            if (top.nodeName.toLowerCase()=='ul') {
+                top.style.display='';
+                top=top.parentNode.parentNode; // Now find its parent and make it top or false
+            } else {
+                break;
+            }
+        }
+    },
 
-		// Take the object number
-		re=/_id=(\w+)/gi;
-		str=url;
-		str.replace(re,function(glob,num){id=num;return num;});
-		return id;
-	},
+    /**
+      * Find number of the product inside the ulr string
+      * @param String url
+      * @return int - id , or false if not found
+      */
+    find_id:function(url) {
+        // Set the id As False per default
+        id=false;
 
-	/**
-	  * Sets handlers on the sub lists
-	  */
-	SetHandlers:function() {
+        // Take the object number
+        re=/_id=(\w+)/gi;
+        str=url;
+        str.replace(re,function(glob,num){id=num;return num;});
+        return id;
+    },
 
-		// Get the sublists
-		var sublists=this.tree.getElementsByTagName('ul');
+    /**
+      * Sets handlers on the sub lists
+      */
+    SetHandlers:function() {
 
-		// The object
-		var ListCont=this;
+        // Get the sublists
+        var sublists=this.tree.getElementsByTagName('ul');
 
-		for(var i=0;i<sublists.length;i++) {
+        // The object
+        var ListCont=this;
 
-			// Add the cursors the event
-			sublists[i].parentNode.style.cursor='pointer';
+        for(var i=0;i<sublists.length;i++) {
 
-			// Ad the event
-			sublists[i].parentNode.onclick=function(e) {
-				// Stop the propagation of the event
-				ListControl.stopBubble(e);
+            // Add the cursors the event
+            sublists[i].parentNode.style.cursor='pointer';
 
-				// Get the first ul
-				var ul=this.getElementsByTagName('ul')[0];
+            // Ad the event
+            sublists[i].parentNode.onclick=function(e) {
+                // Stop the propagation of the event
+                ListControl.stopBubble(e);
 
-				// Display logic
-				if (ul.style.display=='none') { 
-					ul.style.display='';
-				} else { 
-					ul.style.display='none';
-				}
-			}
+                // Get the first ul
+                var ul=this.getElementsByTagName('ul')[0];
 
-			// Fold the tree Luke, fold it
-			sublists[i].style.display='none';
-		}
+                // Display logic
+                if (ul.style.display=='none') {
+                    ul.style.display='';
+                } else {
+                    ul.style.display='none';
+                }
+            }
 
-		// Add the normal curos on thos li elements which don't have a ul subtype, prevent Bubbling on click
-		var li=this.tree.getElementsByTagName('li');
+            // Fold the tree Luke, fold it
+            sublists[i].style.display='none';
+        }
 
-		for(var i=0;i<li.length;i++) {
-			if (li[i].getElementsByTagName('ul').length==0) {
-				li[i].style.cursor='text';
-				
-				// Prevent bubbling
-				li[i].onclick=function(e) {
-					ListControl.stopBubble(e);
-				}
-			} 
-		}
-	},
+        // Add the normal curos on thos li elements which don't have a ul subtype, prevent Bubbling on click
+        var li=this.tree.getElementsByTagName('li');
 
-	/**
-	  * Stops the bubbling of the event
-	  */ 
-	stopBubble:function(e) {
-		if (e && e.stopPropagation) {
-			e.stopPropagation();  // the DOM way
-		} else {
-			window.event.cancelBubble=true; // My way
-		}
-	}
+        for(var i=0;i<li.length;i++) {
+            if (li[i].getElementsByTagName('ul').length==0) {
+                li[i].style.cursor='text';
+
+                // Prevent bubbling
+                li[i].onclick=function(e) {
+                    ListControl.stopBubble(e);
+                }
+            }
+        }
+    },
+
+    /**
+      * Stops the bubbling of the event
+      */
+    stopBubble:function(e) {
+        if (e && e.stopPropagation) {
+            e.stopPropagation();  // the DOM way
+        } else {
+            window.event.cancelBubble=true; // My way
+        }
+    }
 }

@@ -17,7 +17,6 @@ class PageMaster_Block_List extends Zikula_Block
      */
     public function init()
     {
-        // Security schema
         SecurityUtil::registerPermissionSchema('pagemaster:block:list', 'Block Id:Pubtype Id:');
     }
 
@@ -93,8 +92,6 @@ class PageMaster_Block_List extends Zikula_Block
      */
     public function modify($blockinfo)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         // Get current content
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
@@ -194,13 +191,11 @@ class PageMaster_Block_List extends Zikula_Block
             }
         }
 
-        // Builds the output
-        $this->view->assign('vars', $vars)
-                   ->assign('pubtypes', $pubtypes)
-                   ->assign('pubfields', $pubfields);
-
-        // Return output
-        return $this->view->fetch('pagemaster_block_list_modify.tpl');
+        // Builds and return the output
+        return $this->view->assign('vars', $vars)
+                          ->assign('pubtypes', $pubtypes)
+                          ->assign('pubfields', $pubfields)
+                          ->fetch('pagemaster_block_list_modify.tpl');
     }
 
     /**

@@ -12,9 +12,9 @@
 
 class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 {
-	public $columnDef = 'C(512)';
-	public $title;
-	public $upl_arr;
+    public $columnDef = 'C(512)';
+    public $title;
+    public $upl_arr;
 
     public $config;
 
@@ -27,7 +27,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         parent::__construct();
     }
 
-	function getFilename()
+    function getFilename()
     {
         return __FILE__;
     }
@@ -51,40 +51,40 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         }
     }
 
-	static function postRead($data, $field)
-	{
-	    $dom = ZLanguage::getModuleDomain('PageMaster');
+    static function postRead($data, $field)
+    {
+        $dom = ZLanguage::getModuleDomain('PageMaster');
 
-		// this plugin return an array by default
-	    $upl_arr = array();
+        // this plugin return an array by default
+        $upl_arr = array();
 
-		// if the data is not empty, process it
-	    if (!empty($data)) {
-			$arrTypeData = @unserialize($data);
+        // if the data is not empty, process it
+        if (!empty($data)) {
+            $arrTypeData = @unserialize($data);
 
-			if (!is_array($arrTypeData)) {
-				return LogUtil::registerError('pmformimageinput: '.__('Stored data is invalid', $dom));
-			}
+            if (!is_array($arrTypeData)) {
+                return LogUtil::registerError('pmformimageinput: '.__('Stored data is invalid', $dom));
+            }
 
-			$url = System::getBaseUrl().ModUtil::getVar('PageMaster', 'uploadpath');
-			if (!empty($arrTypeData['orig_name'])) {
-				$upl_arr =  array(
-                         'orig_name'    => $arrTypeData['orig_name'],
-                         'preUrl'       => !empty($arrTypeData['pre_name']) ? $url.'/'.$arrTypeData['pre_name'] : '',
-                         'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
-                         'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
-                         'url'          => $url.'/'.$arrTypeData['file_name']
+            $url = System::getBaseUrl().ModUtil::getVar('PageMaster', 'uploadpath');
+            if (!empty($arrTypeData['orig_name'])) {
+                $upl_arr =  array(
+                                'orig_name'    => $arrTypeData['orig_name'],
+                                'preUrl'       => !empty($arrTypeData['pre_name']) ? $url.'/'.$arrTypeData['pre_name'] : '',
+                                'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
+                                'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
+                                'url'          => $url.'/'.$arrTypeData['file_name']
                 );
             } else {
                 $upl_arr = array(
-                         'orig_name'    => '',
-                         'preUrl'       => '',
-                         'fullUrl'      => '',
-                         'thumbnailUrl' => '',
-                         'url'          => ''
-                         );
+                               'orig_name'    => '',
+                               'preUrl'       => '',
+                               'fullUrl'      => '',
+                               'thumbnailUrl' => '',
+                               'url'          => ''
+                           );
             }
-		}
+        }
 
         return $upl_arr;
     }
@@ -125,54 +125,66 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
             if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
                 $this->parseConfig($field['typedata']);
                 list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = $this->config;
-                if ($tmpx > 0)
-                    $tmpargs['w'] = $tmpx ;
-                if ($tmpy > 0)
+                if ($tmpx > 0) {
+                    $tmpargs['w'] = $tmpx;
+                }
+                if ($tmpy > 0) {
                     $tmpargs['h'] = $tmpy;
-                if ($prex > 0)
-                    $preargs['w'] = $prex ;
-                if ($prey > 0)
-                    $preargs['h'] = $prey ;
-                if ($fullx > 0)
-                    $fullargs['w'] = $fullx ;
-                if ($fully > 0)
-                    $fullargs['h'] = $fully ;
+                }
+                if ($prex > 0) {
+                    $preargs['w'] = $prex;
+                }
+                if ($prey > 0) {
+                    $preargs['h'] = $prey;
+                }
+                if ($fullx > 0) {
+                    $fullargs['w'] = $fullx;
+                }
+                if ($fully > 0) {
+                    $fullargs['h'] = $fully;
+                }
             } 
 
-			$srcFilename =   $PostData['tmp_name'];
-			$ext             = strtolower(FileUtil::getExtension($PostData['name']));
-			$randName        = PageMaster_Util::getNewFileReference();
-			$newFileNameOrig = $randName.'.'.$ext;
-			$newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
-			copy($srcFilename, $newDestOrig);
+            $srcFilename =   $PostData['tmp_name'];
+            $ext             = strtolower(FileUtil::getExtension($PostData['name']));
+            $randName        = PageMaster_Util::getNewFileReference();
+            $newFileNameOrig = $randName.'.'.$ext;
+            $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
+            copy($srcFilename, $newDestOrig);
 
-			$tmpargs = array();
-			$preargs = array();
-			$fullargs = array();
-			if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
+            $tmpargs = array();
+            $preargs = array();
+            $fullargs = array();
+            if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
                 $this->parseConfig($field['typedata']);
                 list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = $this->config;
-				if ($tmpx > 0)
-				    $tmpargs['w'] = $tmpx ;
-				if ($tmpy > 0)
-				    $tmpargs['h'] = $tmpy;
-				if ($prex > 0)
-				    $preargs['w'] = $prex ;
-				if ($prey > 0)
-				    $preargs['h'] = $prey ;
-				if ($fullx > 0)
-				    $fullargs['w'] = $fullx ;
-				if ($fully > 0)
-				    $fullargs['h'] = $fully ;
-			}
+                if ($tmpx > 0) {
+                    $tmpargs['w'] = $tmpx;
+                }
+                if ($tmpy > 0) {
+                    $tmpargs['h'] = $tmpy;
+                }
+                if ($prex > 0) {
+                    $preargs['w'] = $prex;
+                }
+                if ($prey > 0) {
+                    $preargs['h'] = $prey;
+                }
+                if ($fullx > 0) {
+                    $fullargs['w'] = $fullx;
+                }
+                if ($fully > 0) {
+                    $fullargs['h'] = $fully;
+                }
+            }
 
-			// Check for the Thumbnails module and if we need it
-			if (!empty($tmpargs) && ModUtil::available('Thumbnail')) {
-				$newFilenameTmp = "{$randName}-tmb.{$ext}";
-				$newDestTmp  = "{$uploadpath}/{$newFilenameTmp}";
-				$tmpargs['filename'] = $newDestOrig;
-				$tmpargs['dstFilename'] = $newDestTmp;
-				$dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $tmpargs);
+            // Check for the Thumbnails module and if we need it
+            if (!empty($tmpargs) && ModUtil::available('Thumbnail')) {
+                $newFilenameTmp = "{$randName}-tmb.{$ext}";
+                $newDestTmp  = "{$uploadpath}/{$newFilenameTmp}";
+                $tmpargs['filename'] = $newDestOrig;
+                $tmpargs['dstFilename'] = $newDestTmp;
+                $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $tmpargs);
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed
                 $newFilenameTmp = $newFileNameOrig;

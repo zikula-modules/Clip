@@ -88,9 +88,10 @@ class PageMaster_Installer extends Zikula_Installer
         } else {
             LogUtil::registerStatus($this->__f('PageMaster could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $pmdir));
         }
+
         $modvars = array(
-        'uploadpath' => $pmdir,
-        'devmode'    => true
+            'uploadpath' => $pmdir,
+            'devmode'    => true
         );
         $this->setVars($modvars);
 
@@ -139,6 +140,7 @@ class PageMaster_Installer extends Zikula_Installer
                     // nothing to update
                     break;
                 }
+
                 $tables = DBUtil::getTables();
                 // update each pubdata table
                 // and update the new field value with the good old pm_cr_uid
@@ -241,11 +243,11 @@ class PageMaster_Installer extends Zikula_Installer
 
                 // update the table definitions of some fields
                 $tochange = array(
-                'pmformcheckboxinput' => 'L',
-                'pmformintinput' => 'I4',
-                'pmformlistinput' => 'I4',
-                'pmformpubinput' => 'I4',
-                'pmformurlinput' => 'C(512)'
+                    'pmformcheckboxinput' => 'L',
+                    'pmformintinput' => 'I4',
+                    'pmformlistinput' => 'I4',
+                    'pmformpubinput' => 'I4',
+                    'pmformurlinput' => 'C(512)'
                 );
                 foreach ($tochange as $plugin => $dbtype) {
                     $record = array('fieldtype' => $dbtype);
@@ -297,6 +299,7 @@ class PageMaster_Installer extends Zikula_Installer
                         return '0.3.4';
                     }
                 }
+
                 // create an entry in the categories registry to the Lists property
                 $registry = new Categories_DBObject_Registry();
                 $registry->setDataField('modname', 'PageMaster');

@@ -39,8 +39,6 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
         // if there's a value extract the category
         if (!empty($data) && is_numeric($data)) {
-            Loader::loadClass('CategoryUtil');
-
             $cat  = CategoryUtil::getCategoryByID($data);
 
             if (empty($cat)) {
@@ -112,11 +110,6 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : array(30, true);
         $this->parseConfig($typedata);
-
-        Loader::loadClass('CategoryUtil');
-
-        Loader::loadClass('CategoryUtil');
-        Loader::loadClass('CategoryRegistryUtil');
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 

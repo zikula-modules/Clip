@@ -49,7 +49,6 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
 
             $catIds = explode(':', $data);
             if (!empty($catIds)) {
-                Loader::loadClass('CategoryUtil');
                 ModUtil::dbInfoLoad('Categories');
 
                 $tables          = DBUtil::getTables();
@@ -139,9 +138,6 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         if ($this->config[1] > 0) {
             $size = $this->config[1];
         }
-
-        Loader::loadClass('CategoryUtil');
-        Loader::loadClass('CategoryRegistryUtil');
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 

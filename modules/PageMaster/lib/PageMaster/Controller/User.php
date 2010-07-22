@@ -284,7 +284,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($tid, $pid, $id)));
         }
 
-        $core_title            = PageMaster_Util::findTitleField($pubfields);
+        $core_title = PageMaster_Util::findTitleField($pubfields);
         $pubtype['titlefield'] = $core_title;
 
         // assign each field of the pubdata to the output
@@ -354,8 +354,8 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         if (empty($id) && !empty($pid)) {
             $id = ModUtil::apiFunc('PageMaster', 'user', 'getId',
-            array('tid' => $tid,
-                                 'pid' => $pid));
+                                   array('tid' => $tid,
+                                         'pid' => $pid));
             if (empty($id)) {
                 return LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($tid, $pid)));
             }

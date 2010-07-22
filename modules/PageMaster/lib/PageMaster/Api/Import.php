@@ -33,10 +33,6 @@ class PageMaster_Api_Import extends Zikula_Api
             return $str;
         }
 
-        Loader::loadClass('CategoryUtil');
-        Loader::loadClassFromModule('Categories', 'Category');
-        //Loader::loadClassFromModule('Categories', 'CategoryRegistry');
-
         $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
         if (empty($rootcat)) {
             return LogUtil::registerError('Category /__SYSTEM__/Modules/pagemaster/lists not found');
@@ -268,7 +264,7 @@ class PageMaster_Api_Import extends Zikula_Api
                         }
                 }
 
-                $plugin                    = PageMaster_Util::getPlugin($datafield['fieldplugin']);
+                $plugin = PageMaster_Util::getPlugin($datafield['fieldplugin']);
 
                 $datafield['fieldtype']    = $plugin->columnDef;
                 $datafield['istitle']      = $pubfield['isTitle'];
@@ -314,7 +310,6 @@ class PageMaster_Api_Import extends Zikula_Api
     public function importps4()
     {
         ModUtil::load('pagesetter');
-        ModUtil::dbInfoLoad('Workflow');
 
         $temp_arr = unserialize(ModUtil::getVar('pagesetter', 'temp_arr'));
 
@@ -385,9 +380,9 @@ class PageMaster_Api_Import extends Zikula_Api
 
                             $tmb_file_name = str_replace('.dat', '-tmb.dat', $file_name);
                             $arrTypeData = array (
-                            'orig_name' => $orig_name,
-                            'tmb_name' => $tmb_file_name,
-                            'file_name' => $file_name
+                                'orig_name' => $orig_name,
+                                'tmb_name' => $tmb_file_name,
+                                'file_name' => $file_name
                             );
                             $field = serialize($arrTypeData);
 
