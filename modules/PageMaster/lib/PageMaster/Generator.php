@@ -263,12 +263,12 @@ class PageMaster_Generator
                 '            {modcallhooks hookobject=\'item\' hookaction=\'new\' module=\'PageMaster\'}'."\n".
                 '        {/if}'."\n".
                 "\n".
-                '        <div class="z-formbuttons">'."\n".
+                '        <div class="z-buttons z-formbuttons">'."\n".
                 '            {foreach item=\'action\' from=$actions}'."\n".
                 '                {gt text=$action.title assign=\'actiontitle\'}'."\n".
-                '                {formbutton commandName=$action.id text=$actiontitle}'."\n".
+                '                {formbutton commandName=$action.id text=$actiontitle params=$action.params.button|default:\'\'}'."\n".
                 '            {/foreach}'."\n".
-                '            {formbutton commandName=\'cancel\' __text=\'' . $button_cancel . '\'}'."\n".
+                '            {formbutton commandName=\'cancel\' __text=\'' . $button_cancel . '\' imgsrc=\'button_cancel.gif\'}'."\n".
                 '        </div>'."\n".
                 '    </div>'."\n".
                 '{/form}'."\n\n";

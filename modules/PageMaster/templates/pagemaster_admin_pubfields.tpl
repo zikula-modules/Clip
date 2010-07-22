@@ -140,12 +140,12 @@
             </div>
         </fieldset>
 
-        <div class="z-formbuttons">
-            {formbutton commandName='create' __text='Save'}
+        <div class="z-buttons z-formbuttons">
+            {formbutton commandName='create' __text='Save' imgsrc='button_ok.gif'}
             {if isset($id)}
-            {formbutton commandName='delete' __text='Delete'}
+            {formbutton commandName='delete' __text='Delete' imgsrc='14_layer_deletelayer.gif'}
             {/if}
-            {formbutton commandName='cancel' __text='Cancel'}
+            {formbutton commandName='cancel' __text='Cancel' imgsrc='button_cancel.gif'}
         </div>
     </div>
     {/form}

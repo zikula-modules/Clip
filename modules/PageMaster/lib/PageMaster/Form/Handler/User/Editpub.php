@@ -50,12 +50,12 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
 
             $this->pubAssign($pubdata);
 
-            $actions = WorkflowUtil::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
+            $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
         } else {
             // initial values
             $this->pubDefault();
 
-            $actions = WorkflowUtil::getActionsByStateArray(str_replace('.xml', '', $this->pubtype['workflow']), 'PageMaster');
+            $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype['workflow']), 'PageMaster');
         }
 
         // if there are no actions the user is not allowed to change / submit / delete something.

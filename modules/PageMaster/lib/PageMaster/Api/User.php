@@ -186,7 +186,7 @@ class PageMaster_Api_User extends Zikula_Api
             }
             if ($getApprovalState) {
                 foreach (array_keys($publist) as $key) {
-                    WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
+                    Zikula_Workflow_Util::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
                 }
             }
             if ($handlePluginFields) {
@@ -302,7 +302,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         if ($getApprovalState) {
-            WorkflowUtil::getWorkflowForObject($pubdata, $tablename, 'id', 'PageMaster');
+            Zikula_Workflow_Util::getWorkflowForObject($pubdata, $tablename, 'id', 'PageMaster');
         }
 
         // fills the core_title field
@@ -352,7 +352,7 @@ class PageMaster_Api_User extends Zikula_Api
             }
         }
 
-        $ret = WorkflowUtil::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'PageMaster');
+        $ret = Zikula_Workflow_Util::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'PageMaster');
 
         if (empty($ret)) {
             return LogUtil::registerError($this->__('Workflow action error.'));

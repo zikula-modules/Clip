@@ -376,7 +376,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         if (!empty($id)) {
             $obj = array('id' => $id);
-            WorkflowUtil::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'PageMaster');
+            Zikula_Workflow_Util::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'PageMaster');
             $stepname = $obj['__WORKFLOW__']['state'];
         }
 
@@ -457,7 +457,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', $id));
         }
 
-        WorkflowUtil::executeAction($schema, $pub, $commandName, $tablename, 'PageMaster');
+        Zikula_Workflow_Util::executeAction($schema, $pub, $commandName, $tablename, 'PageMaster');
 
         if (!empty($goto)) {
             switch ($goto)

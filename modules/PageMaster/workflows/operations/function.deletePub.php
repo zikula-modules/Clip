@@ -25,7 +25,7 @@ function PageMaster_operation_deletePub(&$pub, $params)
 
     // process the deletion
     $result = false;
-    if (WorkflowUtil::deleteWorkflow($pub)) {
+    if (Zikula_Workflow_Util::deleteWorkflow($pub)) {
         $result = true;
 
         // checks if there's any other revision of this publication

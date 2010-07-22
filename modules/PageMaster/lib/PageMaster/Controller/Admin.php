@@ -180,7 +180,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             $pubcount = (int)DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
             // add the workflow information for each publication
             foreach (array_keys($publist) as $key) {
-                WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
+                Zikula_Workflow_Util::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
             }
         } else {
             $publist  = array();
@@ -223,7 +223,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         $publist = DBUtil::selectObjectArray($tablename, "pm_pid = '$pid'", 'pm_revision desc');
 
         foreach (array_keys($publist) as $key) {
-            WorkflowUtil::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
+            Zikula_Workflow_Util::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
         }
 
         $core_title = PageMaster_Util::getTitleField($tid);

@@ -48,9 +48,9 @@
 
         {modcallhooks hookobject='module' hookaction='modifyconfig' hookid='PageMaster' module='PageMaster'}
 
-        <div class="z-formbuttons">
-            {formbutton id='update' commandName='update' __text='Save'}
-            {formbutton id='cancel' commandName='cancel' __text='Cancel'}
+        <div class="z-buttons z-formbuttons">
+            {formbutton id='update' commandName='update' __text='Save' imgsrc='button_ok.gif'}
+            {formbutton id='cancel' commandName='cancel' __text='Cancel' imgsrc='button_cancel.gif'}
         </div>
     </div>
     {/form}

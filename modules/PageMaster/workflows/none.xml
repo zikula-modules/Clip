@@ -29,6 +29,8 @@
       <permission>comment</permission>
       <nextState>approved</nextState>
       <operation online="1">createPub</operation>
+
+      <param imgsrc="button_ok.gif">button</param>
     </action>
 
     <!-- State: approved -->
@@ -39,6 +41,8 @@
       <permission>editor</permission>
       <state>approved</state>
       <operation nextState="approved" online="1">updatePub</operation>
+
+      <param imgsrc="filesave.gif">button</param>
     </action>
 
     <action id="delete">
@@ -47,6 +51,8 @@
       <permission>delete</permission>
       <state>approved</state>
       <operation>deletePub</operation>
+
+      <param imgsrc="14_layer_deletelayer.gif">button</param>
     </action>
 
   </actions>
