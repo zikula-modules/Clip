@@ -15,7 +15,7 @@
 class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
 {
     var $tid;
-    var $referer;
+    var $returnurl;
 
     /**
      * Initialize function
@@ -92,9 +92,9 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
         }
 
         // stores the first referer and the item URL
-        if (empty($this->referer)) {
+        if (empty($this->returnurl)) {
             $adminurl = ModUtil::url('PageMaster', 'admin');
-            $this->referer = System::serverGetVar('HTTP_REFERER', $adminurl);
+            $this->returnurl = System::serverGetVar('HTTP_REFERER', $adminurl);
         }
 
         $pubtypes = PageMaster_Util::getPubType(-1);
@@ -113,7 +113,7 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
     function handleCommand(&$view, &$args)
     {
         if ($args['commandName'] == 'cancel') {
-            return $view->redirect($this->referer);
+            return $view->redirect($this->returnurl);
         }
 
         $data = $view->getValues();
@@ -147,17 +147,46 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 }
                 break;
 
+            // clone the current pubtype
+            case 'clone':
+                // clone the pubtype info
+                $pubtype = PageMaster_Util::getPubType($this->tid);
+                unset($pubtype['tid']);
+                $pubtype['title'] = $this->__f('%s Clon', $pubtype['title']);
+                $pubtype = DBUtil::insertObject($pubtype, 'pagemaster_pubtypes', 'tid');
+
+                // clone the pubtype fields
+                $pubfields = PageMaster_Util::getPubFields($this->tid);
+                if (!empty($pubfields)) {
+                    foreach (array_keys($pubfields) as $k) {
+                        $pubfields[$k]['tid'] = $pubtype['tid'];
+                        unset($pubfields[$k]['id']);
+                    }
+                    DBUtil::insertObjectArray($pubfields, 'pagemaster_pubfields');
+                }
+
+                LogUtil::registerStatus($this->__('Done! Publication type cloned.'));
+
+                $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $pubtype['tid']));
+                break;
+
             // delete
             case 'delete':
                 DBUtil::deleteObject(null, 'pagemaster_pubtypes', "pm_tid = '{$this->tid}'");
                 DBUtil::deleteObject(null, 'pagemaster_pubfields', "pm_tid = '{$this->tid}'");
-                DBUtil::dropTable('pagemaster_pubdata' . $this->tid);
+
+                $existingtables = DBUtil::metaTables();
+                if (in_array(DBUtil::getLimitedTablename('pagemaster_pubdata'.$this->tid), $existingtables)) {
+                    DBUtil::dropTable('pagemaster_pubdata'.$this->tid);
+                }
                 // FIXME no more related stuff is needed? Hooks, Workflows registries?
 
                 LogUtil::registerStatus($this->__('Done! Publication type deleted.'));
+
+                $this->returnurl = ModUtil::url('PageMaster', 'admin');
                 break;
         }
 
-        return $view->redirect(ModUtil::url('PageMaster', 'admin'));
+        return $view->redirect($this->returnurl);
     }
 }

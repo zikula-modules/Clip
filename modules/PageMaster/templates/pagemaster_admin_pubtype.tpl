@@ -109,6 +109,7 @@
         <div class="z-buttons z-formbuttons">
             {formbutton commandName='create' __text='Save' class='z-bt-ok'}
             {if isset($tid)}
+            {formbutton commandName='clone' __text='Clone' class='z-bt-icon pm-bt-copy'}
             {formbutton commandName='delete' __text='Delete' class='z-bt-icon pm-bt-delete'}
             {/if}
             {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
