@@ -228,6 +228,7 @@ class PageMaster_Generator
         $title_pdate  = no__('Publish date');
         $title_edate  = no__('Expire date');
         $title_inlist = no__('Show in list');
+        $button_cancel = no__('Cancel');
 
         $template_code .=
                 '        </fieldset>'."\n".
@@ -267,6 +268,7 @@ class PageMaster_Generator
                 '                {gt text=$action.title assign=\'actiontitle\'}'."\n".
                 '                {formbutton commandName=$action.id text=$actiontitle}'."\n".
                 '            {/foreach}'."\n".
+                '            {formbutton commandName=\'cancel\' __text=\'' . $button_cancel . '\'}'."\n".
                 '        </div>'."\n".
                 '    </div>'."\n".
                 '{/form}'."\n\n";

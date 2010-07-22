@@ -10,21 +10,18 @@
  */
 
 /**
- * pnForm handler for updating publication types
- *
- * @author kundi
+ * Form handler for updating publication types
  */
 class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
 {
     var $tid;
+    var $referer;
 
     /**
      * Initialize function
      */
-    function initialize(&$render)
+    function initialize(&$view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         $tid = FormUtil::getPassedValue('tid');
 
         if (!empty($tid) && is_numeric($tid)) {
@@ -47,35 +44,35 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                     'value' => ''
                 ),
                 'core_cr_date' => array(
-                    'text'  => __('Creation date', $dom),
+                    'text'  => $this->__('Creation date'),
                     'value' => 'cr_date'
                 ),
                 'core_lu_date' => array(
-                    'text'  => __('Update date', $dom),
+                    'text'  => $this->__('Update date'),
                     'value' => 'lu_date'
                 ),
                 'core_cr_uid' => array(
-                    'text'  => __('Creator', $dom),
+                    'text'  => $this->__('Creator'),
                     'value' => 'core_author'
                 ),
                 'core_lu_uid' => array(
-                    'text'  => __('Updater', $dom),
+                    'text'  => $this->__('Updater'),
                     'value' => 'lu_uid'
                 ),
                 'core_pu_date' => array(
-                    'text'  => __('Publish date', $dom),
+                    'text'  => $this->__('Publish date'),
                     'value' => 'pm_publishdate'
                 ),
                 'core_ex_date' => array(
-                    'text'  => __('Expire date', $dom),
+                    'text'  => $this->__('Expire date'),
                     'value' => 'pm_expiredate'
                 ),
                 'core_language' => array(
-                    'text'  => __('Language', $dom),
+                    'text'  => $this->__('Language'),
                     'value' => 'pm_language'
                 ),
                 'core_hitcount' => array(
-                    'text'  => __('Number of reads', $dom),
+                    'text'  => $this->__('Number of reads'),
                     'value' => 'pm_hitcount'
                 )
             );
@@ -83,22 +80,29 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
             foreach (array_keys($pubfields) as $fieldname) {
                 $index = ($pubfields[$fieldname]['istitle'] == 1) ? 'core_title' : $fieldname;
                 $pubarr[$index] = array(
-                    'text'  => __($pubfields[$fieldname]['title'], $dom),
+                    'text'  => $this->__($pubfields[$fieldname]['title']),
                     'value' => $fieldname
                 );
             }
 
-            $pubarr = array_values(array_merge($arraysort, $pubarr));
+            $pubarr = array_values(array_filter(array_merge($arraysort, $pubarr)));
 
-            $render->assign('pubfields', $pubarr);
-            $render->assign($pubtype);
+            $view->assign('pubfields', $pubarr)
+                 ->assign($pubtype);
+        }
+
+        // stores the first referer and the item URL
+        if (empty($this->referer)) {
+            $adminurl = ModUtil::url('PageMaster', 'admin');
+            $this->referer = System::serverGetVar('HTTP_REFERER', $adminurl);
         }
 
         $pubtypes = PageMaster_Util::getPubType(-1);
-        $render->assign('pubtypes', $pubtypes);
 
         $workflows = PageMaster_Util::getWorkflowsOptionList();
-        $render->assign('pmWorkflows', $workflows);
+
+        $view->assign('pmworkflows', $workflows)
+             ->assign('pubtypes', $pubtypes);
 
         return true;
     }
@@ -106,11 +110,13 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
     /**
      * Command handler
      */
-    function handleCommand(&$render, &$args)
+    function handleCommand(&$view, &$args)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        if ($args['commandName'] == 'cancel') {
+            return $view->redirect($this->referer);
+        }
 
-        $data = $render->getValues();
+        $data = $view->getValues();
         $data['tid'] = $this->tid;
 
         // handle the commands
@@ -118,7 +124,7 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
         {
             // create a pubtype
             case 'create':
-                if (!$render->isValid()) {
+                if (!$view->isValid()) {
                     return false;
                 }
 
@@ -134,10 +140,10 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
 
                 if (empty($this->tid)) {
                     DBUtil::insertObject($data, 'pagemaster_pubtypes');
-                    LogUtil::registerStatus(__('Done! Publication type created.', $dom));
+                    LogUtil::registerStatus($this->__('Done! Publication type created.'));
                 } else {
                     DBUtil::updateObject($data, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
-                    LogUtil::registerStatus(__('Done! Publication type updated.', $dom));
+                    LogUtil::registerStatus($this->__('Done! Publication type updated.'));
                 }
                 break;
 
@@ -146,12 +152,12 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 DBUtil::deleteObject(null, 'pagemaster_pubtypes', "pm_tid = '{$this->tid}'");
                 DBUtil::deleteObject(null, 'pagemaster_pubfields', "pm_tid = '{$this->tid}'");
                 DBUtil::dropTable('pagemaster_pubdata' . $this->tid);
-                // FIXME no more related stuff is needed? Hooks, Workflows registers?
+                // FIXME no more related stuff is needed? Hooks, Workflows registries?
 
-                LogUtil::registerStatus(__('Done! Publication type deleted.', $dom));
+                LogUtil::registerStatus($this->__('Done! Publication type deleted.'));
                 break;
         }
 
-        return $render->redirect(ModUtil::url('PageMaster', 'admin', 'main'));
+        return $view->redirect(ModUtil::url('PageMaster', 'admin'));
     }
 }

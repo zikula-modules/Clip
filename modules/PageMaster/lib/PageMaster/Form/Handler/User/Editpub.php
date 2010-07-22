@@ -10,9 +10,7 @@
  */
 
 /**
- * pnForm handler for updating pubdata tables.
- *
- * @author kundi
+ * Form handler for updating pubdata tables.
  */
 class PageMaster_Form_Handler_User_Editpub extends Form_Handler
 {
@@ -37,10 +35,8 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
     var $referer;
     var $goto;
 
-    function initialize(&$render)
+    function initialize(&$view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         // process the input parameters
         $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
         $this->goto = FormUtil::getPassedValue('goto', '');
@@ -65,16 +61,15 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
         // if there are no actions the user is not allowed to change / submit / delete something.
         // We will redirect the user to the overview page
         if (count($actions) < 1) {
-            LogUtil::registerError(__('No workflow actions found. This can be a permissions issue.', $dom));
+            LogUtil::registerError($this->__('No workflow actions found. This can be a permissions issue.'));
 
-            return $render->redirect(ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid)));
+            return $view->redirect(ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid)));
         }
 
         // check for set_* default values
         $fieldnames = array_keys($this->pubfields);
 
-        foreach ($fieldnames as $fieldname)
-        {
+        foreach ($fieldnames as $fieldname) {
             $val = FormUtil::getPassedValue('set_'.$fieldname, '');
             if (!empty($val)) {
                 $pubdata[$fieldname] = $val;
@@ -83,7 +78,7 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
 
         // add the pub information to the render if exists
         if (count($pubdata) > 0) {
-            $render->assign($pubdata);
+            $view->assign($pubdata);
         }
 
         // stores the first referer and the item URL
@@ -91,43 +86,45 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
             $viewurl = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid), null, null, true);
             $this->referer = System::serverGetVar('HTTP_REFERER', $viewurl);
         }
+
         if (!empty($this->id)) {
             $this->itemurl = ModUtil::url('PageMaster', 'user', 'viewpub', array('tid' => $this->tid, 'pid' => $this->core_pid), null, null, true);
         }
 
-        $render->assign('actions', $actions);
+        $view->assign('actions', $actions);
+
         return true;
     }
 
-    function handleCommand(&$render, &$args)
+    function handleCommand(&$view, &$args)
     {
         if ($args['commandName'] == 'cancel') {
-            return $render->pnFormRedirect($this->referer);
+            return $view->redirect($this->referer);
         }
 
-        if (!$render->isValid()) {
+        if (!$view->isValid()) {
             return false;
         }
 
-        $data = $render->getValues();
+        $data = $view->getValues();
 
         // restore the core values
         $this->pubExtract($data);
 
         // perform the command
         $data = ModUtil::apiFunc('PageMaster', 'user', 'editPub',
-                             array('data'        => $data,
-                                   'commandName' => $args['commandName'],
-                                   'pubfields'   => $this->pubfields,
-                                   'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
+                                 array('data'        => $data,
+                                       'commandName' => $args['commandName'],
+                                       'pubfields'   => $this->pubfields,
+                                       'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // see http://www.smarty.net/manual/en/caching.groups.php
-        $pnr = Zikula_View::getInstance('PageMaster');
+        $vw = Zikula_View::getInstance('PageMaster');
         // clear the view of the current publication
-        $pnr->clear_cache(null, 'viewpub'.$this->tid.'|'.$this->core_pid);
+        $vw->clear_cache(null, 'viewpub'.$this->tid.'|'.$this->core_pid);
         // clear all page of publist
-        $pnr->clear_cache(null, 'publist'.$this->tid);
-        unset($pnr);
+        $vw->clear_cache(null, 'publist'.$this->tid);
+        unset($vw);
 
         // core operations processing
         $goto = $this->itemurl;
@@ -197,7 +194,7 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
             return false;
         }
 
-        return $render->redirect($this->goto);
+        return $view->redirect($this->goto);
     }
 
     /**

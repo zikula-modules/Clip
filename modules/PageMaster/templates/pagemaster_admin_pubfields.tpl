@@ -145,6 +145,7 @@
             {if isset($id)}
             {formbutton commandName='delete' __text='Delete'}
             {/if}
+            {formbutton commandName='cancel' __text='Cancel'}
         </div>
     </div>
     {/form}

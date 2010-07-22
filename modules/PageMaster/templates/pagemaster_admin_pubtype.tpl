@@ -49,7 +49,7 @@
             </div>
             <div class="z-formrow">
                 {formlabel for='workflow' text='Workflow'}
-                {formdropdownlist id='workflow' items=$pmWorkflows}
+                {formdropdownlist id='workflow' items=$pmworkflows}
                 <div class="z-formnote">{gt text='You can choose a special workflow for the publications.'}</div>
             </div>
         </fieldset>
@@ -109,6 +109,7 @@
         <div class="z-formbuttons">
             {formbutton commandName='create' __text='Save'}
             {formbutton commandName='delete' __text='Delete'}
+            {formbutton commandName='cancel' __text='Cancel'}
         </div>
     </div>
     {/form}

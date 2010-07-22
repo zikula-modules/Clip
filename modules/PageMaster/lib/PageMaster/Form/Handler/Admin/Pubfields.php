@@ -18,45 +18,53 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
 {
     var $tid;
     var $id;
+    var $referer;
 
     /**
      * Initialize function
      */
-    function initialize(&$render)
+    function initialize(&$view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         $tid = FormUtil::getPassedValue('tid');
         $id  = FormUtil::getPassedValue('id');
 
         // validation check
         if (empty($tid) || !is_numeric($tid)) {
-            LogUtil::registerError(__f('Error! %s not set.', 'tid', $dom));
-            $render->redirect(ModUtil::url('PageMaster', 'admin', 'main'));
+            $view->setErrorMsg($this->__f('Error! %s not set.', 'tid'));
+            return $view->redirect(ModUtil::url('PageMaster', 'admin'));
         }
         $this->tid = $tid;
 
         if (!empty($id)) {
             $this->id = $id;
             $pubfield = DBUtil::selectObjectByID('pagemaster_pubfields', $id);
-            $render->assign($pubfield);
+            $view->assign($pubfield);
+        }
+
+        // stores the first referer and the item URL
+        if (empty($this->referer)) {
+            $adminurl = ModUtil::url('PageMaster', 'admin');
+            $this->referer = System::serverGetVar('HTTP_REFERER', $adminurl);
         }
 
         $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = '$tid'", 'pm_lineno', -1, -1, 'name');
 
-        $render->assign('pubfields', $pubfields);
-        $render->assign('tid', $tid);
+        $view->assign('pubfields', $pubfields)
+             ->assign('tid', $tid);
+
         return true;
     }
 
     /**
      * Command handler
      */
-    function handleCommand(&$render, &$args)
+    function handleCommand(&$view, &$args)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        if ($args['commandName'] == 'cancel') {
+            return $view->redirect($this->referer);
+        }
 
-        $data = $render->getValues();
+        $data = $view->getValues();
 
         $data['id']        = (int)$this->id;
         $data['tid']       = (int)$this->tid;
@@ -65,14 +73,14 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
         $data['fieldtype'] = $plugin->columnDef;
 
         $returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields',
-                              array('tid' => $data['tid']));
+                                  array('tid' => $data['tid']));
 
         // handle the commands
         switch ($args['commandName'])
         {
             // create a field
             case 'create':
-                if (!$render->isValid()) {
+                if (!$view->isValid()) {
                     return false;
                 }
 
@@ -91,7 +99,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
 
                 $nameUnique = DBUtil::selectFieldMax('pagemaster_pubfields', 'id', 'COUNT', $where);
                 if ($nameUnique > 0) {
-                    return LogUtil::registerError(__('Error! Name has to be unique.', $dom));
+                    return $view->setErrorMsg($this->__('Error! Name has to be unique.'));
                 }
 
                 if (empty($this->id)) {
@@ -101,25 +109,24 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                         $data['istitle'] = 1;
                     }
                     DBUtil::insertObject($data, 'pagemaster_pubfields');
-                    LogUtil::registerStatus(__('Done! Field created.', $dom));
+                    LogUtil::registerStatus($this->__('Done! Field created.'));
 
                 } else {
                     DBUtil::updateObject($data, 'pagemaster_pubfields', 'pm_id = '.$this->id);
-                    LogUtil::registerStatus(__('Done! Field updated.', $dom));
+                    LogUtil::registerStatus($this->__('Done! Field updated.'));
                 }
                 break;
 
             // delete the field
             case 'delete':
                 if (DBUtil::deleteObject($data, 'pagemaster_pubfields')) {
-                    LogUtil::registerStatus(__('Done! Field deleted.', $dom));
+                    LogUtil::registerStatus($this->__('Done! Field deleted.'));
                 } else {
-                    LogUtil::registerError(__('Error! Deletion attempt failed.', $dom));
+                    return $view->setErrorMsg($this->__('Error! Deletion attempt failed.'));
                 }
                 break;
         }
 
-        $render->redirect($returnurl);
-        return true;
+        return $view->redirect($returnurl);
     }
 }

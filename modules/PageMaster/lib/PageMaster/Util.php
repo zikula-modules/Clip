@@ -169,7 +169,7 @@ class PageMaster_Util
         $path = 'config/workflows/PageMaster';
         self::_addFiles($path, $workflows, 'xml');
 
-        foreach (array_keys($workflows) as $k => $v) {
+        foreach ($workflows as $k => $v) {
             $workflows[$k] = array(
                 'text'  => $v,
                 'value' => $v

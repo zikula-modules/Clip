@@ -10,20 +10,16 @@
  */
 
 /**
- * pnForm handler for updating module vars
- *
- * @author kundi
+ * Form handler to update module vars
  */
 class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
 {
     /**
      * Initialize function
      */
-    function initialize(&$render)
+    function initialize(&$view)
     {
         $modvars = ModUtil::getVar('PageMaster');
-
-        $render->assign($modvars);
 
         // upload dir check
         $siteroot = System::serverGetVar('DOCUMENT_ROOT');
@@ -32,20 +28,21 @@ class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
         }
         $siteroot .= System::getBaseUri().DIRECTORY_SEPARATOR;
 
-        $render->assign('siteroot', DataUtil::formatForDisplay($siteroot));
-
         // fills the directory state
+        $updirstatus = 0;// doesn't exists
         if (file_exists($modvars['uploadpath'].'/')) {
-            $render->assign('updirstatus', 1); // exists
+            $updirstatus = 1; // exists
             if (is_dir($modvars['uploadpath'].'/')) {
-                $render->assign('updirstatus', 2); // is a directory
+                $updirstatus = 2; // is a directory
                 if (is_writable($modvars['uploadpath'].'/')) {
-                    $render->assign('updirstatus', 3); // is writable
+                    $updirstatus = 3; // is writable
                 }
             }
-        } else {
-            $render->assign('updirstatus', 0); // doesn't exists
         }
+
+        $view->assign('siteroot', DataUtil::formatForDisplay($siteroot))
+             ->assign('updirstatus', $updirstatus)
+             ->assign($modvars);
 
         return true;
     }
@@ -53,11 +50,9 @@ class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
     /**
      * Command handler
      */
-    function handleCommand(&$render, &$args)
+    function handleCommand(&$view, &$args)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
-        $data = $render->getValues();
+        $data = $view->getValues();
 
         // handle the commands
         switch ($args['commandName'])
@@ -79,13 +74,14 @@ class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
                 // let any other modules know that the modules configuration has been updated
                 ModUtil::callHooks('module', 'updateconfig', 'PageMaster', array('module' => 'PageMaster'));
 
-                LogUtil::registerStatus(__('Done! Module configuration updated.', $dom));
+                LogUtil::registerStatus($this->__('Done! Module configuration updated.'));
 
-                return System::redirect(ModUtil::url('PageMaster', 'admin', 'modifyconfig'));
+                $view->redirect(ModUtil::url('PageMaster', 'admin', 'modifyconfig'));
+                break;
 
             // cancel
             case 'cancel':
-                return System::redirect(ModUtil::url('PageMaster', 'admin'));
+                $view->redirect(ModUtil::url('PageMaster', 'admin'));
         }
 
         return true;
