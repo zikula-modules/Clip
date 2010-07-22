@@ -107,11 +107,11 @@
         </fieldset>
 
         <div class="z-buttons z-formbuttons">
-            {formbutton commandName='create' __text='Save' imgsrc='button_ok.gif'}
+            {formbutton commandName='create' __text='Save' class='z-bt-ok'}
             {if isset($tid)}
-            {formbutton commandName='delete' __text='Delete' imgsrc='14_layer_deletelayer.gif'}
+            {formbutton commandName='delete' __text='Delete' class='z-bt-icon pm-bt-delete'}
             {/if}
-            {formbutton commandName='cancel' __text='Cancel' imgsrc='button_cancel.gif'}
+            {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
         </div>
     </div>
     {/form}

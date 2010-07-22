@@ -31,7 +31,7 @@
       <nextState>approved</nextState>
       <operation online="1">createPub</operation>
 
-      <param imgsrc="button_ok.gif">button</param>
+      <param class="z-bt-ok">button</param>
     </action>
 
     <action id="submit">
@@ -41,7 +41,7 @@
       <nextState>waiting</nextState>
       <operation>createPub</operation>
 
-      <param imgsrc="button_ok.gif">button</param>
+      <param class="z-bt-icon pm-bt-submit">button</param>
     </action>
 
     <!-- State: waiting -->
@@ -54,7 +54,7 @@
       <nextState>approved</nextState>
       <operation online="1" nextstate="approved">updatePub</operation>
 
-      <param imgsrc="button_ok.gif">button</param>
+      <param class="z-bt-ok">button</param>
     </action>
 
     <action id="approve">
@@ -65,7 +65,7 @@
       <nextState>approved</nextState>
       <operation online="1" newrevision="0">updatePub</operation><!-- only update online state -->      
 
-      <param imgsrc="button_ok.gif">button</param>
+      <param class="z-bt-ok">button</param>
     </action>
 
     <action id="update">
@@ -75,7 +75,7 @@
       <state>waiting</state>
       <operation newrevision="0">updatePub</operation>
 
-      <param imgsrc="filesave.gif">button</param>
+      <param class="z-bt-icon pm-bt-update">button</param>
     </action>
 
     <action id="delete">
@@ -85,7 +85,7 @@
       <state>waiting</state>
       <operation>deletePub</operation>
 
-      <param imgsrc="14_layer_deletelayer.gif">button</param>
+      <param class="z-bt-icon pm-bt-delete">button</param>
     </action>
 
     <!-- State: approved -->
@@ -97,7 +97,7 @@
       <state>approved</state>
       <operation>updatePub</operation>
 
-      <param imgsrc="button_ok.gif">button</param>
+      <param class="z-bt-ok">button</param>
     </action>
 
     <action id="online">
@@ -107,7 +107,7 @@
       <state>approved</state>
       <operation online="1">updateOnlineState</operation>
 
-      <param imgsrc="greenled.gif">button</param>
+      <param class="z-bt-icon pm-bt-activate">button</param>
     </action>
 
     <action id="offline">
@@ -117,7 +117,7 @@
       <state>approved</state>
       <operation online="0">updateOnlineState</operation>
 
-      <param imgsrc="redled.gif">button</param>
+      <param class="z-bt-icon pm-bt-deactivate">button</param>
     </action>
 
     <action id="MoveToDepot">
@@ -127,7 +127,7 @@
       <state>approved</state>
       <operation>moveToDepot</operation>
 
-      <param imgsrc="folder_grey.gif">button</param>
+      <param class="z-bt-icon pm-bt-archive">button</param>
     </action>
 
     <action id="delete">
@@ -137,7 +137,7 @@
       <state>approved</state>
       <operation>deletePub</operation>
 
-      <param imgsrc="14_layer_deletelayer.gif">button</param>
+      <param class="z-bt-icon pm-bt-delete">button</param>
     </action>
 
   </actions>

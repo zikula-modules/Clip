@@ -30,7 +30,7 @@
       <nextState>approved</nextState>
       <operation online="1">createPub</operation>
 
-      <param imgsrc="button_ok.gif">button</param>
+      <param class="z-bt-ok">button</param>
     </action>
 
     <!-- State: approved -->
@@ -42,7 +42,7 @@
       <state>approved</state>
       <operation nextState="approved" online="1">updatePub</operation>
 
-      <param imgsrc="filesave.gif">button</param>
+      <param class="pm-bt-update">button</param>
     </action>
 
     <action id="delete">
@@ -52,7 +52,7 @@
       <state>approved</state>
       <operation>deletePub</operation>
 
-      <param imgsrc="14_layer_deletelayer.gif">button</param>
+      <param class="pm-bt-delete">button</param>
     </action>
 
   </actions>
