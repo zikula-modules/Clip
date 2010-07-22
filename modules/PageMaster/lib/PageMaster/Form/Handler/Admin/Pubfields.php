@@ -18,7 +18,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
 {
     var $tid;
     var $id;
-    var $referer;
+    var $returnurl;
 
     /**
      * Initialize function
@@ -41,10 +41,10 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
             $view->assign($pubfield);
         }
 
-        // stores the first referer and the item URL
-        if (empty($this->referer)) {
+        // stores the return URL and the item URL
+        if (empty($this->returnurl)) {
             $adminurl = ModUtil::url('PageMaster', 'admin');
-            $this->referer = System::serverGetVar('HTTP_REFERER', $adminurl);
+            $this->returnurl = System::serverGetVar('HTTP_REFERER', $adminurl);
         }
 
         $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = '$tid'", 'pm_lineno', -1, -1, 'name');
@@ -61,7 +61,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
     function handleCommand(&$view, &$args)
     {
         if ($args['commandName'] == 'cancel') {
-            return $view->redirect($this->referer);
+            return $view->redirect($this->returnurl);
         }
 
         $data = $view->getValues();
@@ -72,8 +72,8 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
         $plugin            = PageMaster_Util::getPlugin($data['fieldplugin']);
         $data['fieldtype'] = $plugin->columnDef;
 
-        $returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields',
-                                  array('tid' => $data['tid']));
+        $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields',
+                                        array('tid' => $data['tid']));
 
         // handle the commands
         switch ($args['commandName'])
@@ -122,11 +122,11 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                 if (DBUtil::deleteObject($data, 'pagemaster_pubfields')) {
                     LogUtil::registerStatus($this->__('Done! Field deleted.'));
                 } else {
-                    return $view->setErrorMsg($this->__('Error! Deletion attempt failed.'));
+                    return LogUtil::registerError($this->__('Error! Deletion attempt failed.'));
                 }
                 break;
         }
 
-        return $view->redirect($returnurl);
+        return $view->redirect($this->returnurl);
     }
 }

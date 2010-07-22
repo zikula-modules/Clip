@@ -91,7 +91,7 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                  ->assign($pubtype);
         }
 
-        // stores the first referer and the item URL
+        // stores the return URL and the item URL
         if (empty($this->returnurl)) {
             $adminurl = ModUtil::url('PageMaster', 'admin');
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $adminurl);

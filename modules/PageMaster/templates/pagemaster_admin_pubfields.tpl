@@ -141,9 +141,11 @@
         </fieldset>
 
         <div class="z-buttons z-formbuttons">
-            {formbutton commandName='create' __text='Save' class='z-bt-ok'}
             {if isset($id)}
+            {formbutton commandName='create' __text='Save' class='z-bt-icon pm-bt-update'}
             {formbutton commandName='delete' __text='Delete' class='z-bt-icon pm-bt-delete'}
+            {else}
+            {formbutton commandName='create' __text='Create' class='z-bt-ok'}
             {/if}
             {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
         </div>
