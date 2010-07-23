@@ -20,7 +20,7 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
     /**
      * Initialize function
      */
-    function initialize(&$view)
+    function initialize($view)
     {
         $tid = FormUtil::getPassedValue('tid');
 
@@ -110,7 +110,7 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
     /**
      * Command handler
      */
-    function handleCommand(&$view, &$args)
+    function handleCommand($view, &$args)
     {
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);

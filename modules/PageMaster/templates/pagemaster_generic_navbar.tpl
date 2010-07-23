@@ -14,13 +14,13 @@
         <span class="pm-breadtext">
             {gt text=$pubtype.title}
         </span>
-        {secauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT}
+        {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT}
         <span>
             <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
             </a>
         </span>
-        {/secauthaction_block}
+        {/checkpermissionblock}
         {/if}
 
         {if $section neq 'list' and $section neq 'pending'}
@@ -38,13 +38,13 @@
         <span class="pm-breadtext">
             {$title}
         </span>
-        {secauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
+        {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
         <span>
             <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid pid=$core_pid}">
                 {img width='12' height='12' modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
             </a>
         </span>
-        {/secauthaction_block}
+        {/checkpermissionblock}
         {/if}
 
         {if $section neq 'display'}
@@ -71,7 +71,7 @@
 {if $zcore.PageMaster.devmode|default:true}
 {if $section eq 'display'}{zdebug}{/if}
 
-{secauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN}
+{checkpermissionblock component='pagemaster::' instance='::' level=ACCESS_ADMIN}
 <div class="z-warningmsg">
     {switch expr=$section}
         {case expr='list'}
@@ -92,5 +92,5 @@
     <br /><br />
     {gt text='You can hide this message <a href="%s">disabling the development mode</a>.' tag1=$urlconfig|safetext}
 </div>
-{/secauthaction_block}
+{/checkpermissionblock}
 {/if}

@@ -35,7 +35,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
     var $referer;
     var $goto;
 
-    function initialize(&$view)
+    function initialize($view)
     {
         // process the input parameters
         $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
@@ -96,7 +96,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         return true;
     }
 
-    function handleCommand(&$view, &$args)
+    function handleCommand($view, &$args)
     {
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->referer);

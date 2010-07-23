@@ -19,12 +19,12 @@
                 <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$pubitem.core_pid}">
                     {img modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View'}
                 </a>
-                {secauthaction_block component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
+                {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
                 &nbsp;
                 <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid pid=$pubitem.core_pid}">
                     {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                 </a>
-                {/secauthaction_block}
+                {/checkpermissionblock}
                 {/strip}
             </td>
         </tr>

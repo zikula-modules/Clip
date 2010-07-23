@@ -17,7 +17,7 @@ class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
     /**
      * Initialize function
      */
-    function initialize(&$view)
+    function initialize($view)
     {
         $modvars = ModUtil::getVar('PageMaster');
 
@@ -50,7 +50,7 @@ class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
     /**
      * Command handler
      */
-    function handleCommand(&$view, &$args)
+    function handleCommand($view, &$args)
     {
         $data = $view->getValues();
 
