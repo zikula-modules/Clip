@@ -19,7 +19,6 @@
 
   </states>
 
-
   <actions>
 
     <!-- From initial state -->
@@ -41,7 +40,7 @@
       <nextState>waiting</nextState>
       <operation>createPub</operation>
 
-      <param class="z-bt-icon pm-bt-submit">button</param>
+      <param class="z-bt-new">button</param>
     </action>
 
     <!-- State: waiting -->
@@ -75,7 +74,7 @@
       <state>waiting</state>
       <operation newrevision="0">updatePub</operation>
 
-      <param class="z-bt-icon pm-bt-update">button</param>
+      <param class="z-bt-save">button</param>
     </action>
 
     <action id="delete">
@@ -85,7 +84,7 @@
       <state>waiting</state>
       <operation>deletePub</operation>
 
-      <param class="z-bt-icon pm-bt-delete">button</param>
+      <param class="z-bt-delete">button</param>
     </action>
 
     <!-- State: approved -->
@@ -127,7 +126,7 @@
       <state>approved</state>
       <operation>moveToDepot</operation>
 
-      <param class="z-bt-icon pm-bt-archive">button</param>
+      <param class="z-bt-archive">button</param>
     </action>
 
     <action id="delete">
@@ -137,7 +136,7 @@
       <state>approved</state>
       <operation>deletePub</operation>
 
-      <param class="z-bt-icon pm-bt-delete">button</param>
+      <param class="z-bt-delete">button</param>
     </action>
 
   </actions>

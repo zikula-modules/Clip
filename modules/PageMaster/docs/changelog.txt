@@ -19,3 +19,4 @@
             $core_uniqueid => $pubdata.core_uniqueid
             $core_creator => $pubdata.core_creator
             $core_approvalstate => $pubdata.core_approvalstate
+    Support of styled buttons through worfkflow action parameters

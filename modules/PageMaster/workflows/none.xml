@@ -42,7 +42,7 @@
       <state>approved</state>
       <operation nextState="approved" online="1">updatePub</operation>
 
-      <param class="pm-bt-update">button</param>
+      <param class="z-bt-save">button</param>
     </action>
 
     <action id="delete">
@@ -52,10 +52,9 @@
       <state>approved</state>
       <operation>deletePub</operation>
 
-      <param class="pm-bt-delete">button</param>
+      <param class="z-bt-delete">button</param>
     </action>
 
   </actions>
-
 
 </workflow>

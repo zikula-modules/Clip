@@ -24,7 +24,6 @@
 
   </states>
 
-
   <actions>
 
     <!-- From initial state -->
@@ -37,7 +36,7 @@
       <operation>createPub</operation>
       <operation type="contentnew" group="editors">mailNotification</operation>
 
-      <param class="z-bt-icon pm-bt-submit">button</param>
+      <param class="z-bt-new">button</param>
     </action>
 
     <action id="accept">
@@ -47,7 +46,7 @@
       <nextState>preview</nextState>
       <operation>createPub</operation>
 
-      <param class="z-bt-icon pm-bt-submit">button</param>
+      <param class="z-bt-icon pm-bt-accept">button</param>
     </action>
 
     <action id="approve">
@@ -79,7 +78,7 @@
       <state>waiting</state>
       <operation newrevision="0">updatePub</operation>
 
-      <param class="z-bt-icon pm-bt-update">button</param>
+      <param class="z-bt-save">button</param>
     </action>
 
     <action id="accept">
@@ -114,7 +113,7 @@
       <state>preview</state>
       <operation>updatePub</operation>
 
-      <param class="z-bt-icon pm-bt-update">button</param>
+      <param class="z-bt-save">button</param>
     </action>
 
     <action id="approve">
@@ -135,7 +134,7 @@
       <state>preview</state>
       <operation>deletePub</operation>
 
-      <param class="z-bt-icon pm-bt-delete">button</param>
+      <param class="z-bt-delete">button</param>
     </action>
 
     <!-- State: approved -->
@@ -147,7 +146,7 @@
       <state>approved</state>
       <operation>deletePub</operation>
 
-      <param class="z-bt-icon pm-bt-delete">button</param>
+      <param class="z-bt-delete">button</param>
     </action>
 
     <action id="update">
@@ -158,7 +157,7 @@
       <operation nextState="preview">updatePub</operation>
       <operation type="contentupdate" group="moderators">mailNotification</operation>
 
-      <param class="z-bt-icon pm-bt-update">button</param>
+      <param class="z-bt-save">button</param>
     </action>
 
     <action id="updateApprove">
