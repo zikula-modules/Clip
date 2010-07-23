@@ -9,10 +9,13 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * Search Model.
+ */
 class PageMaster_Api_Search extends Zikula_Api
 {
     /**
-     * Search plugin info
+     * Search plugin info.
      */
     public function info()
     {
@@ -21,7 +24,7 @@ class PageMaster_Api_Search extends Zikula_Api
     }
 
     /**
-     * Search form component
+     * Search form component.
      */
     public function options($args)
     {
@@ -48,7 +51,7 @@ class PageMaster_Api_Search extends Zikula_Api
     }
 
     /**
-     * Search plugin main function
+     * Search plugin main function.
      */
     public function search($args)
     {
@@ -126,16 +129,16 @@ class PageMaster_Api_Search extends Zikula_Api
     }
 
     /**
-     * Do last minute access checking and assign URL to items
+     * Do last minute access checking and assign URL to items.
      *
      * Access checking is ignored since access check has
-     * already been done. But we do add a URL to the found item
+     * already been done. But we do add a URL to the found item.
      */
     public function search_check(&$args)
     {
         $datarow = &$args['datarow'];
         $extra   = unserialize($datarow['extra']);
-        $datarow['url'] = ModUtil::url('PageMaster', 'user', 'viewpub',
+        $datarow['url'] = ModUtil::url('PageMaster', 'user', 'display',
                                        array('tid' => $extra['tid'],
                                              'pid' => $extra['pid']));
         return true;

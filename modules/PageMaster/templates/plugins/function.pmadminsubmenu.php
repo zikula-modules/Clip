@@ -56,7 +56,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // new article link
     $output .= '<span>';
-    $output .= '<a href="'.ModUtil::url('PageMaster', 'user', 'pubedit', array('tid' => $tid, 'goto' => 'referer')).'">'.__('New publication', $dom).'</a>';
+    $output .= '<a href="'.ModUtil::url('PageMaster', 'user', 'edit', array('tid' => $tid, 'goto' => 'referer')).'">'.__('New publication', $dom).'</a>';
     $output .= '</span> | ';
 
     // pub list link

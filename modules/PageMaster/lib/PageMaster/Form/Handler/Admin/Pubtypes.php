@@ -10,7 +10,7 @@
  */
 
 /**
- * Form handler for updating publication types
+ * Form handler to update publication types.
  */
 class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
 {

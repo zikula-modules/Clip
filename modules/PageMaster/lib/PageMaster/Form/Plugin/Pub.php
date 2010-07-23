@@ -40,7 +40,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         $pub = array();
 
         if (!empty($this->config['tid']) && !empty($data)) {
-            $pub = ModUtil::apiFunc('PageMaster', 'user', 'getPub',
+            $pub = ModUtil::apiFunc('PageMaster', 'user', 'get',
                                 array('tid'                => $this->config['tid'],
                                       'pid'                => (int)$data,
                                       'checkPerm'          => true,
@@ -62,7 +62,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
 
         if (!empty($this->config['tid'])) {
-            $pubarr = ModUtil::apiFunc('PageMaster', 'user', 'pubList',
+            $pubarr = ModUtil::apiFunc('PageMaster', 'user', 'getall',
                                    array('tid'                => $this->config['tid'],
                                          'countmode'          => 'no',
                                          'filter'             => $this->config['filter'],

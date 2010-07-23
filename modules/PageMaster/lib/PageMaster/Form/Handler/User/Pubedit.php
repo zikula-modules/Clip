@@ -10,9 +10,9 @@
  */
 
 /**
- * Form handler for updating pubdata tables.
+ * Form handler to update publications.
  */
-class PageMaster_Form_Handler_User_Editpub extends Form_Handler
+class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 {
     var $id;
     var $core_pid;
@@ -88,7 +88,7 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
         }
 
         if (!empty($this->id)) {
-            $this->itemurl = ModUtil::url('PageMaster', 'user', 'viewpub', array('tid' => $this->tid, 'pid' => $this->core_pid), null, null, true);
+            $this->itemurl = ModUtil::url('PageMaster', 'user', 'display', array('tid' => $this->tid, 'pid' => $this->core_pid), null, null, true);
         }
 
         $view->assign('actions', $actions);
@@ -112,7 +112,7 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
         $this->pubExtract($data);
 
         // perform the command
-        $data = ModUtil::apiFunc('PageMaster', 'user', 'editPub',
+        $data = ModUtil::apiFunc('PageMaster', 'user', 'edit',
                                  array('data'        => $data,
                                        'commandName' => $args['commandName'],
                                        'pubfields'   => $this->pubfields,
@@ -121,9 +121,9 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
         // see http://www.smarty.net/manual/en/caching.groups.php
         $vw = Zikula_View::getInstance('PageMaster');
         // clear the view of the current publication
-        $vw->clear_cache(null, 'viewpub'.$this->tid.'|'.$this->core_pid);
+        $vw->clear_cache(null, 'display'.$this->tid.'|'.$this->core_pid);
         // clear all page of publist
-        $vw->clear_cache(null, 'publist'.$this->tid);
+        $vw->clear_cache(null, 'view'.$this->tid);
         unset($vw);
 
         // core operations processing
@@ -132,13 +132,13 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
         if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
             // if the item moved to the depot or was deleted
             $urltid = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $data['tid']));
-            // check if the user comes of the viewpub screen or not
+            // check if the user comes of the display screen or not
             $goto = (strpos($this->referer, $this->itemurl) === 0) ? $urltid : $this->referer;
 
         } elseif (isset($ops['createPub']) && $ops['createPub']) {
             // the publication was created
             if ($data['core_online'] == 1) {
-                $goto = ModUtil::url('PageMaster', 'user', 'viewpub', array('tid' => $data['tid'], 'pid' => $data['core_pid']));
+                $goto = ModUtil::url('PageMaster', 'user', 'display', array('tid' => $data['tid'], 'pid' => $data['core_pid']));
             } else {
                 // back to the pubtype pending template or referer page if it is not approved yet
                 $goto = isset($ops['createPub']['goto']) ? $ops['createPub']['goto'] : $this->referer;
@@ -157,7 +157,7 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
         switch ($this->goto) {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
-                $this->goto = ModUtil::url('PageMaster', 'user', 'pubedit',
+                $this->goto = ModUtil::url('PageMaster', 'user', 'edit',
                                        array('tid'  => $data['tid'],
                                              'id'   => $data['id'],
                                              'goto' => 'stepmode'));
@@ -167,8 +167,8 @@ class PageMaster_Form_Handler_User_Editpub extends Form_Handler
                 $this->goto = $this->referer;
                 break;
 
-            case 'pubeditlist':
-                $this->goto = ModUtil::url('PageMaster', 'admin', 'pubeditlist',
+            case 'editlist':
+                $this->goto = ModUtil::url('PageMaster', 'admin', 'editlist',
                                        array('_id' => $data['tid'].'_'.$data['core_pid']));
                 break;
 

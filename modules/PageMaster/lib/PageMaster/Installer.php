@@ -9,6 +9,9 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * PageMaster Installer.
+ */
 class PageMaster_Installer extends Zikula_Installer
 {
     /**

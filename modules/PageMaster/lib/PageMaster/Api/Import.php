@@ -9,13 +9,16 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * Import Model.
+ */
 class PageMaster_Api_Import extends Zikula_Api
 {
     /**
-     * Convert Lists to Categories
+     * Convert Lists to Categories.
      *
-     * @author       kundi
-     * @return       boolean
+     * @author kundi
+     * @return boolean
      */
     public function importps1()
     {
@@ -94,10 +97,10 @@ class PageMaster_Api_Import extends Zikula_Api
     }
 
     /**
-     * Import DB Structure
+     * Import DB Structure.
      *
-     * @author       kundi
-     * @return       boolean
+     * @author kundi
+     * @return boolean
      */
     public function importps2()
     {
@@ -281,10 +284,10 @@ class PageMaster_Api_Import extends Zikula_Api
     }
 
     /**
-     * Create DB Tables
+     * Create DB Tables.
      *
-     * @author       kundi
-     * @return       boolean
+     * @author kundi
+     * @return boolean
      */
     public function importps3()
     {
@@ -302,10 +305,10 @@ class PageMaster_Api_Import extends Zikula_Api
     }
 
     /**
-     * Load Data
+     * Load Data.
      *
-     * @author       kundi
-     * @return       boolean
+     * @author kundi
+     * @return boolean
      */
     public function importps4()
     {

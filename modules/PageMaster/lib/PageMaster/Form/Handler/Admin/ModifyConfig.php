@@ -10,7 +10,7 @@
  */
 
 /**
- * Form handler to update module vars
+ * Form handler to update module vars.
  */
 class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
 {

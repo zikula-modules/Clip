@@ -10,7 +10,7 @@
  */
 
 /**
- * PageMaster_Util
+ * PageMaster Util.
  */
 class PageMaster_Util
 {

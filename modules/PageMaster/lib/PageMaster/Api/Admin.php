@@ -9,14 +9,17 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * Admin Model.
+ */
 class PageMaster_Api_Admin extends Zikula_Api
 {
     /**
      * Updates the database tables (DDL), based on pubfields.
      *
      * @author kundi
-     * @param  $args['tid']  tid of publication
-     * @return bool          true on success, false otherwise
+     * @param  $args['tid'] tid of publication.
+     * @return bool         true on success, false otherwise.
      */
     public function updatetabledef($args)
     {
@@ -44,10 +47,9 @@ class PageMaster_Api_Admin extends Zikula_Api
     }
 
     /**
-     * get admin panel links
+     * Get admin panel links.
      *
-     * @author       gf
-     * @return       array      array of admin links
+     * @return array Array of admin links.
      */
     public function getlinks()
     {
@@ -63,7 +65,7 @@ class PageMaster_Api_Admin extends Zikula_Api
                 'text' => $this->__('New publication type')
             );
             $links[] = array (
-                'url'  => ModUtil::url('PageMaster', 'admin', 'pubeditlist'),
+                'url'  => ModUtil::url('PageMaster', 'admin', 'editlist'),
                 'text' => $this->__('Edit publications')
             );
             $links[] = array (

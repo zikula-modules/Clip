@@ -153,7 +153,7 @@ function smarty_function_category_browser($params, &$smarty)
             if (isset($count_arr[$filter_act])) {
                 $cats[$k]['count'] = $count_arr[$filter_act];
             } else {
-                $pubarr = ModUtil::apiFunc('PageMaster', 'user', 'pubList',
+                $pubarr = ModUtil::apiFunc('PageMaster', 'user', 'getall',
                                        array('tid'                => $tid,
                                              'countmode'          => 'just',
                                              'filter'             => $filter_act,

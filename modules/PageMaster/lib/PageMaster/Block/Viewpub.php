@@ -10,10 +10,13 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * Viewpub Block.
+ */
 class PageMaster_Block_Viewpub extends Zikula_Block
 {
     /**
-     * Initialise block
+     * Initialise block.
      */
     public function init()
     {
@@ -21,7 +24,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
     }
 
     /**
-     * Get information on block
+     * Get information on block.
      */
     public function info()
     {
@@ -37,7 +40,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
     }
 
     /**
-     * Display the block according its configuration
+     * Display the block according its configuration.
      */
     public function display($blockinfo)
     {
@@ -68,7 +71,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
         $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['filename'];
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-        $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'viewpub',
+        $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'display',
                                               array('tid'                => $vars['tid'],
                                                     'pid'                => $vars['pid'],
                                                     'checkPerm'          => true,
@@ -83,7 +86,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
     }
 
     /**
-     * modify block settings
+     * Modify block settings.
      */
     public function modify($blockinfo)
     {
@@ -120,7 +123,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
     }
 
     /**
-     * Update block settings
+     * Update block settings.
      */
     public function update($blockinfo)
     {

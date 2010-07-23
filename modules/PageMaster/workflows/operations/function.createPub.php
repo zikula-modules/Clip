@@ -50,7 +50,7 @@ function PageMaster_operation_createPub(&$pub, $params)
                 LogUtil::registerStatus(__('Done! Publication created.', $dom));
             } else {
                 // redirect to the simple pending template
-                $result = array('goto' => ModUtil::url('PageMaster', 'user', 'viewpub',
+                $result = array('goto' => ModUtil::url('PageMaster', 'user', 'display',
                                                    array('tid' => $pub['tid'],
                                                          'pid' => $pub['core_pid'],
                                                          'template' => 'pending')));

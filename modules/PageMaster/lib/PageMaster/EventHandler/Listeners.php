@@ -9,6 +9,9 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * Listeners EventHandler.
+ */
 class PageMaster_EventHandler_Listeners
 {
     /**

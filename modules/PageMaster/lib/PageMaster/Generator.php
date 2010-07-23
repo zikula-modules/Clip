@@ -10,11 +10,11 @@
  */
 
 /**
- * PageMaster template generator
+ * PageMaster Template Generator.
  */
 class PageMaster_Generator
 {
-    public static function viewpub($tid, $pubdata)
+    public static function pubview($tid, $pubdata)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
@@ -23,7 +23,7 @@ class PageMaster_Generator
                 "\n".
                 '<h1>{gt text=$pubtype.title}</h1>'."\n".
                 "\n".
-                '{include file=\'pagemaster_generic_navbar.tpl\' section=\'pubview\'}'."\n".
+                '{include file=\'pagemaster_generic_navbar.tpl\' section=\'display\'}'."\n".
                 "\n".
                 '{if $pubtype.description neq \'\'}'."\n".
                 '    <div class="pm-pubdesc">{gt text=$pubtype.description}</div>'."\n".
@@ -109,7 +109,7 @@ class PageMaster_Generator
                                 '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                                 '            <span class="z-formnote">'."\n".
                                 '                <pre>{pmarray array=$'.$key.'}</pre>'."\n".
-                                '                {*modapifunc modname=\'PageMaster\' func=\'getPub\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
+                                '                {*modapifunc modname=\'PageMaster\' func=\'get\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
                                 '            <span>'."\n".
                                 '        </div>'."\n".
                                 '    {/if}';
@@ -159,17 +159,17 @@ class PageMaster_Generator
             $template_code .= "\n".$template_code_add."\n";
         }
 
-        // Add the Hooks support for viewpub
+        // Add the Hooks support for display
         $template_code .= '</div>'."\n".
                 "\n".
-                '{modurl modname=\'PageMaster\' func=\'viewpub\' tid=$core_tid pid=$core_pid assign=\'returnurl\'}'."\n".
+                '{modurl modname=\'PageMaster\' func=\'display\' tid=$core_tid pid=$core_pid assign=\'returnurl\'}'."\n".
                 '{modcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'PageMaster\' returnurl=$returnurl}'.
                 "\n";
 
         return $template_code;
     }
 
-    public static function editpub($tid)
+    public static function pubedit($tid)
     {
         $title_newpub  = no__('New publication');
         $title_editpub = no__('Edit publication');
@@ -177,13 +177,13 @@ class PageMaster_Generator
         $template_code = "\n".
                 '<h1>{gt text=$pubtype.title}</h1>'."\n".
                 "\n".
-                '{include file=\'pagemaster_generic_navbar.tpl\' section=\'pubedit\'}'."\n".
+                '{include file=\'pagemaster_generic_navbar.tpl\' section=\'edit\'}'."\n".
                 "\n".
                 '{if $pubtype.description neq \'\'}'."\n".
                 '    <div class="pm-pubdesc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".
-                '{form cssClass=\'z-form pm-pubedit\' enctype=\'multipart/form-data\'}'."\n".
+                '{form cssClass=\'z-form pm-editform\' enctype=\'multipart/form-data\'}'."\n".
                 '    <div>'."\n".
                 '        {formvalidationsummary}'."\n".
                 '        <fieldset>'."\n".

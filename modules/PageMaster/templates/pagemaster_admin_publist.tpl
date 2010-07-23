@@ -85,8 +85,8 @@
                 <td>{$pubitem.cr_date}</td>
                 <td>{$pubitem.lu_date}</td>
                 <td>
-                    <a href="{modurl modname='PageMaster' type='user' func='pubedit' tid=$core_tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.gif' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
-                    <a href="{modurl modname='PageMaster' type='user' func='viewpub' tid=$core_tid id=$pubitem.id}" title="{gt text='View'}">{img modname='core' src='demo.gif' set='icons/extrasmall' __title='View'}</a>&nbsp;
+                    <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$core_tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.gif' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
+                    <a href="{modurl modname='PageMaster' type='user' func='display' tid=$core_tid id=$pubitem.id}" title="{gt text='View'}">{img modname='core' src='demo.gif' set='icons/extrasmall' __title='View'}</a>&nbsp;
                     <a href="{modurl modname='PageMaster' type='admin' func='history' tid=$core_tid pid=$pubitem.core_pid}" title="{gt text='History'}">{img modname='core' src='clock.gif' set='icons/extrasmall' __title='History'}</a>
                 </td>
             </tr>

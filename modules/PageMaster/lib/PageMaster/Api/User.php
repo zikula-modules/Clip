@@ -9,22 +9,26 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * User Model.
+ */
 class PageMaster_Api_User extends Zikula_Api
 {
     /**
-     * Returns a Publication List
+     * Returns a Publication List.
      *
      * @author kundi
      * @param  int     $args['tid']
      * @param  int     $args['startnum']
      * @param  int     $args['itemsperpage']
-     * @param  string  $args['countmode'] no, just, both
+     * @param  string  $args['countmode'] no, just, both.
      * @param  bool    $args['checkperm']
      * @param  bool    $args['handlePluginFields']
      * @param  bool    $args['getApprovalState']
-     * @return array   publication or count
+     *
+     * @return array   Publication list and/or count.
      */
-    public function pubList($args)
+    public function getall($args)
     {
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
@@ -205,18 +209,19 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * Returns a Publication
+     * Returns a Publication.
      *
      * @author kundi
-     * @param  int     $args['tid']
-     * @param  int     $args['pid']
-     * @param  int     $args['id']
-     * @param  bool    $args['checkPerm']
-     * @param  bool    $args['getApprovalState']
-     * @param  bool    $args['handlePluginFields']
-     * @return array   publication
+     * @param  int  $args['tid']
+     * @param  int  $args['pid']
+     * @param  int  $args['id']
+     * @param  bool $args['checkPerm']
+     * @param  bool $args['getApprovalState']
+     * @param  bool $args['handlePluginFields']
+     *
+     * @return array One publication.
      */
-    public function getPub($args)
+    public function get($args)
     {
         // validation of essential parameters
         if (!isset($args['tid'])) {
@@ -313,16 +318,17 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * Edit or creates a new publication
+     * Edit or creates a new publication.
      *
      * @author kundi
-     * @param $args['data'] array of pubfields data
-     * @param $args['commandName'] commandName has to be a valid workflow action for the currenct state
-     * @param $args['pubfields'] array of pubfields (optional, performance)
-     * @param $args['schema'] schema name (optional, performance)
-     * @return true or false
+     * @param $args['data'] array of pubfields data.
+     * @param $args['commandName'] commandName has to be a valid workflow action for the currenct state.
+     * @param $args['pubfields'] array of pubfields (optional, performance).
+     * @param $args['schema'] schema name (optional, performance).
+     *
+     * @return boolean true or false.
      */
-    public function editPub($args)
+    public function edit($args)
     {
         if (!isset($args['data'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'data'));
@@ -364,12 +370,13 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * Returns pid
+     * Returns pid.
      *
      * @author kundi
      * @param int $args['tid']
      * @param int $args['id']
-     * @return int pid
+     *
+     * @return int pid.
      */
     public function getPid($args)
     {
@@ -392,7 +399,8 @@ class PageMaster_Api_User extends Zikula_Api
      * @author kundi
      * @param int $args['tid']
      * @param int $args['pid']
-     * @return int id
+     *
+     * @return int id.
      */
     public function getId($args)
     {
@@ -411,15 +419,16 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * Generate hierarchical data of publication types and publications.
+     * Hierarchical data of publication types and publications.
      *
      * @author rgasch
      * @param $args['tid']
      * @param $args['pid'] (optional)
      * @param $args['orderby'] (optional)
-     * @return publication data
+     *
+     * @return publication data.
      */
-    public function pubeditlist($args=array())
+    public function editlist($args=array())
     {
         $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid');
 
@@ -457,9 +466,11 @@ class PageMaster_Api_User extends Zikula_Api
             $allTypes[$tid] = $pubtype['title'];
         }
 
-        $ret = array();
-        $ret['pubList'] = $publist;
-        $ret['allTypes'] = $allTypes;
+        $ret = array(
+            'pubList'  => $publist,
+            'allTypes' => $allTypes
+        );
+
         return $ret;
     }
 
@@ -467,8 +478,9 @@ class PageMaster_Api_User extends Zikula_Api
      * Form custom url string.
      *
      * @author Philipp Niethammer <webmaster@nochwer.de>
-     * @param  array   $args Arguments given by ModUtil::url
-     * @return custom  url string
+     * @param  array $args Arguments given by ModUtil::url.
+     *
+     * @return string Custom URL string.
      */
     public function encodeurl($args)
     {
@@ -478,7 +490,7 @@ class PageMaster_Api_User extends Zikula_Api
 
         static $cache = array();
 
-        $supportedfunctions = array('main', 'viewpub');
+        $supportedfunctions = array('main', 'display', 'viewpub');
         if (!in_array($args['func'], $supportedfunctions)) {
             return '';
         }
@@ -531,16 +543,17 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * decode custom url string
+     * Decode custom url string.
      *
      * @author Philipp Niethammer
-     * @return bool true if succeded false otherwise
+     *
+     * @return bool true if succeded false otherwise.
      */
     public function decodeurl($args)
     {
         $_ = $args['vars'];
 
-        $functions = array('executecommand', 'pubedit', 'main', 'viewpub');
+        $functions = array('executecommand', 'main', 'view', 'display', 'edit', 'viewpub', 'pubedit');
         $argsnum   = count($_);
         if (!isset($_[2]) || empty($_[2])) {
             System::queryStringSetVar('func', 'main');
@@ -557,7 +570,7 @@ class PageMaster_Api_User extends Zikula_Api
         if (!$tid) {
             return false;
         } else {
-            System::queryStringSetVar('func', 'main');
+            System::queryStringSetVar('func', 'view');
             System::queryStringSetVar('tid', $tid);
         }
 
@@ -567,7 +580,7 @@ class PageMaster_Api_User extends Zikula_Api
             $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+$~i', $_[3], $match);
             if ($isPub) {
                 $pid = $match[1];
-                System::queryStringSetVar('func', 'viewpub');
+                System::queryStringSetVar('func', 'display');
                 System::queryStringSetVar('pid', $pid);
                 $nextvar = 4;
             }
@@ -580,5 +593,41 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         return true;
+    }
+
+    /**
+     * @see PageMaster_Api_User::getall
+     * @deprecated
+     */
+    public function pubList($args)
+    {
+        return $this->getall($args);
+    }
+
+    /**
+     * @see PageMaster_Api_User::get
+     * @deprecated
+     */
+    public function getPub($args)
+    {
+        return $this->get($args);
+    }
+
+    /**
+     * @see PageMaster_Api_User::edit
+     * @deprecated
+     */
+    public function editPub($args)
+    {
+        return $this->edit($args);
+    }
+
+    /**
+     * @see PageMaster_Api_User::editlist
+     * @deprecated
+     */
+    public function pubeditlist($args)
+    {
+        return $this->editlist($args);
     }
 }

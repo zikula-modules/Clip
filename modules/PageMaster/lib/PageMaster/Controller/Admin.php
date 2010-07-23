@@ -9,10 +9,13 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * Admin Controller.
+ */
 class PageMaster_Controller_Admin extends Zikula_Controller
 {
     /**
-     * Main admin screen
+     * Main admin screen.
      */
     public function main()
     {
@@ -20,7 +23,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * Module configuration
+     * Module configuration.
      */
     public function modifyconfig()
     {
@@ -35,7 +38,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * Publication types list
+     * Publication types list.
      */
     public function pubtypes()
     {
@@ -50,8 +53,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * Publication type edition
-     * @author gf
+     * Publication type edition.
      */
     public function pubtype()
     {
@@ -66,7 +68,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * Publication fields management
+     * Publication fields management.
      */
     public function pubfields()
     {
@@ -82,7 +84,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
 
 
     /**
-     * DB pubtype table update method
+     * DB pubtype table update method.
      */
     public function dbupdate($args=array())
     {
@@ -108,7 +110,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * Admin publist screen
+     * Admin publist screen.
      */
     public function publist($args=array())
     {
@@ -199,7 +201,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * History screen
+     * History screen.
      */
     public function history()
     {
@@ -237,7 +239,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * Code generation
+     * Code generation.
      */
     public function showcode()
     {
@@ -261,7 +263,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         switch ($mode)
         {
             case 'input':
-                $code = PageMaster_Generator::editpub($tid);
+                $code = PageMaster_Generator::pubedit($tid);
                 break;
 
             case 'outputfull':
@@ -271,17 +273,17 @@ class PageMaster_Controller_Admin extends Zikula_Controller
                     return LogUtil::registerError($this->__('There has to be at least one publication to generate the template code.'), null,
                     System::serverGetVar('HTTP_REFERER', ModUtil::url('PageMaster', 'admin', 'main')));
                 }
-                $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'getPub',
-                                    array('tid' => $tid,
-                                          'id'  => $id,
-                                          'handlePluginFields' => true));
+                $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get',
+                                            array('tid' => $tid,
+                                                  'id'  => $id,
+                                                  'handlePluginFields' => true));
 
-                $code = PageMaster_Generator::viewpub($tid, $pubdata);
+                $code = PageMaster_Generator::pubview($tid, $pubdata);
                 break;
 
             case 'outputlist':
-                $path = $this->view->get_template_path('pagemaster_generic_publist.tpl');
-                $code = file_get_contents($path.'/pagemaster_generic_publist.tpl');
+                $path = $this->view->get_template_path('pagemaster_generic_list.tpl');
+                $code = file_get_contents($path.'/pagemaster_generic_list.tpl');
                 break;
         }
 
@@ -297,7 +299,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * Pagesetter import
+     * Pagesetter import.
      */
     public function importps()
     {
@@ -321,9 +323,9 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     }
 
     /**
-     * Generate a javascript hierarchical menu of edit links
+     * Javascript hierarchical menu of edit links.
      */
-    public function pubeditlist($args=array())
+    public function editlist($args=array())
     {
         if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
@@ -335,6 +337,6 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             'orderby'    => 'core_title'
         );
 
-        return ModUtil::func('PageMaster', 'user', 'pubeditlist', $args);
+        return ModUtil::func('PageMaster', 'user', 'editlist', $args);
     }
 }

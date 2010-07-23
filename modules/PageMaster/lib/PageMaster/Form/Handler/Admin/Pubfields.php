@@ -10,9 +10,7 @@
  */
 
 /**
- * pnForm handler for updating publication fields
- *
- * @author kundi
+ * Form handler to update publication fields.
  */
 class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
 {

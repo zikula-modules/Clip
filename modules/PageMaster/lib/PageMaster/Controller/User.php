@@ -9,15 +9,23 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * User Controller.
+ */
 class PageMaster_Controller_User extends Zikula_Controller
 {
     /**
-     * List of publications
-     *
-     * @param $args['tid']
-     * @author kundi
+     * Main user function.
      */
     public function main($args)
+    {
+        return $this->view($args);
+    }
+
+    /**
+     * Publications list.
+     */
+    public function view($args)
     {
         // get the input parameters
         $tid                = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
@@ -49,7 +57,7 @@ class PageMaster_Controller_User extends Zikula_Controller
                 // do not check permission for dynamic template
                 $sec_template = '';
                 // standart template
-                $template     = 'pagemaster_generic_publist.tpl';
+                $template     = 'pagemaster_generic_list.tpl';
             }
         } else {
             // template comes from parameter
@@ -69,7 +77,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         if (!empty($cachelifetime)) {
             $cachetid = true;
-            $cacheid  = 'publist'.$tid
+            $cacheid  = 'view'.$tid
                         .'|'.(!empty($filter) ? $filter : 'nofilter')
                         .'|'.(!empty($orderby) ? $orderby : 'noorderby')
                         .'|'.(!empty($startnum) ? $startnum : 'nostartnum');
@@ -108,18 +116,18 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         // Uses the API to get the list of publications
-        $result = ModUtil::apiFunc('PageMaster', 'user', 'pubList',
-                           array('tid'                => $tid,
-                                 'pubfields'          => $pubfields,
-                                 'pubtype'            => $pubtype,
-                                 'countmode'          => $countmode,
-                                 'startnum'           => $startnum,
-                                 'filter'             => $filter,
-                                 'orderby'            => $orderby,
-                                 'itemsperpage'       => $itemsperpage,
-                                 'checkPerm'          => false, // already checked
-                                 'handlePluginFields' => $handlePluginFields,
-                                 'getApprovalState'   => $getApprovalState));
+        $result = ModUtil::apiFunc('PageMaster', 'user', 'getall',
+                                   array('tid'                => $tid,
+                                         'pubfields'          => $pubfields,
+                                         'pubtype'            => $pubtype,
+                                         'countmode'          => $countmode,
+                                         'startnum'           => $startnum,
+                                         'filter'             => $filter,
+                                         'orderby'            => $orderby,
+                                         'itemsperpage'       => $itemsperpage,
+                                         'checkPerm'          => false, // already checked
+                                         'handlePluginFields' => $handlePluginFields,
+                                         'getApprovalState'   => $getApprovalState));
 
         // Assign the data to the output
         $this->view->assign('tid',       $tid)
@@ -135,7 +143,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         // Check if template is available
-        if ($template != 'pagemaster_generic_publist.tpl' && !$this->view->template_exists($template)) {
+        if ($template != 'pagemaster_generic_list.tpl' && !$this->view->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
@@ -144,7 +152,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             if (strpos($sec_template, 'block_') === 0) {
                 return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
-            $template = 'pagemaster_generic_publist.tpl';
+            $template = 'pagemaster_generic_list.tpl';
         }
 
         if ($rss) {
@@ -156,16 +164,16 @@ class PageMaster_Controller_User extends Zikula_Controller
     }
 
     /**
-     * View a publication
+     * Display a publication.
      *
      * @param $args['tid']
      * @param $args['pid']
      * @param $args['id'] (optional)
      * @param $args['template'] (optional)
      *
-     * @return publication view output
+     * @return Publication output.
      */
-    public function viewpub($args)
+    public function display($args)
     {
         // get the input parameters
         $tid      = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
@@ -205,7 +213,7 @@ class PageMaster_Controller_User extends Zikula_Controller
                 // do not check permission for dynamic template
                 $sec_template = '';
                 // standart template
-                $template     = 'var:viewpub_template_code';
+                $template     = 'var:display_template_code';
             }
         } else {
             // template for the security check
@@ -230,9 +238,9 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         if (!empty($cachelt) && !SecurityUtil::checkPermission('pagemaster:input:', "$tid:$pid:", ACCESS_ADMIN)) {
-            // second clause allow developer to add an edit button on the "viewpub" template
+            // second clause allow developer to add an edit button on the "display" template
             $cachetid = true;
-            $cacheid = 'viewpub'.$tid.'|'.$pid;
+            $cacheid = 'display'.$tid.'|'.$pid;
         } else {
             $cachetid = false;
             $cacheid  = null;
@@ -270,15 +278,15 @@ class PageMaster_Controller_User extends Zikula_Controller
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'getPub',
-                            array('tid'                => $tid,
-                                  'id'                 => $id,
-                                  'pid'                => $pid,
-                                  'pubtype'            => $pubtype,
-                                  'pubfields'          => $pubfields,
-                                  'checkPerm'          => false, //check later, together with template
-                                  'getApprovalState'   => true,
-                                  'handlePluginFields' => true));
+        $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get',
+                                    array('tid'                => $tid,
+                                          'id'                 => $id,
+                                          'pid'                => $pid,
+                                          'pubtype'            => $pubtype,
+                                          'pubfields'          => $pubfields,
+                                          'checkPerm'          => false, //check later, together with template
+                                          'getApprovalState'   => true,
+                                          'handlePluginFields' => true));
 
         if (!$pubdata) {
             return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($tid, $pid, $id)));
@@ -300,7 +308,7 @@ class PageMaster_Controller_User extends Zikula_Controller
                    ->assign('core_creator',       ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false);
 
         // Check if template is available
-        if ($template != 'var:viewpub_template_code' && !$this->view->template_exists($template)) {
+        if ($template != 'var:display_template_code' && !$this->view->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
@@ -309,24 +317,24 @@ class PageMaster_Controller_User extends Zikula_Controller
             if (strpos($sec_template, 'block_') === 0) {
                 return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
-            $template = 'var:viewpub_template_code';
+            $template = 'var:display_template_code';
         }
 
-        if ($template == 'var:viewpub_template_code') {
+        if ($template == 'var:display_template_code') {
             $this->view->setCompile_check(true);
-            $this->view->assign('viewpub_template_code', PageMaster_Generator::viewpub($tid, $pubdata));
+            $this->view->assign('display_template_code', PageMaster_Generator::pubview($tid, $pubdata));
         }
 
         return $this->view->fetch($template, $cacheid);
     }
 
     /**
-     * Edit/Create a publication
+     * Edit/Create a publication.
      *
      * @param $args['tid']
      * @param $args['id']
      */
-    public function pubedit()
+    public function edit()
     {
         // get the input parameters
         $tid = FormUtil::getPassedValue('tid');
@@ -350,7 +358,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // no security check needed - the security check will be done by the handler class.
         // see the init-part of the handler class for details.
-        $formHandler = new PageMaster_Form_Handler_User_Editpub();
+        $formHandler = new PageMaster_Form_Handler_User_Pubedit();
 
         if (empty($id) && !empty($pid)) {
             $id = ModUtil::apiFunc('PageMaster', 'user', 'getId',
@@ -409,18 +417,18 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // autogenerated edit template
         $render->force_compile = true;
-        $render->assign('editpub_template_code', PageMaster_Generator::editpub($tid));
+        $render->assign('edit_template_code', PageMaster_Generator::pubedit($tid));
 
-        return $render->execute('var:editpub_template_code', $formHandler);
+        return $render->execute('var:edit_template_code', $formHandler);
     }
 
     /**
-     * Executes a Workflow command over a direct URL Request
+     * Executes a Workflow command over a direct URL Request.
      *
      * @param $args['tid']
      * @param $args['id']
-     * @param $args['goto'] redirect to after execution
-     * @param $args['schema'] optional workflow shema
+     * @param $args['goto'] redirect to after execution.
+     * @param $args['schema'] optional workflow shema.
      * @param $args['commandName'] commandName
      */
     public function executecommand()
@@ -463,11 +471,11 @@ class PageMaster_Controller_User extends Zikula_Controller
             switch ($goto)
             {
                 case 'edit':
-                    return System::redirect(ModUtil::url('PageMaster', 'user', 'pubedit',
+                    return System::redirect(ModUtil::url('PageMaster', 'user', 'edit',
                                             array('tid' => $tid,
                                                   'id'  => $pub['id'])));
                 case 'stepmode':
-                    return System::redirect(ModUtil::url('PageMaster', 'user', 'pubedit',
+                    return System::redirect(ModUtil::url('PageMaster', 'user', 'edit',
                                             array('tid'  => $tid,
                                                   'id'   => $pub['id'],
                                                   'goto' => 'stepmode')));
@@ -476,13 +484,13 @@ class PageMaster_Controller_User extends Zikula_Controller
             }
         }
 
-        return System::redirect(ModUtil::url('PageMaster', 'user', 'viewpub',
+        return System::redirect(ModUtil::url('PageMaster', 'user', 'display',
                                 array('tid' => $tid,
                                       'id'  => $pub['id'])));
     }
 
     /**
-     * Generate a javascript hierarchical menu of edit links
+     * Javascript hierarchical menu of edit links.
      *
      * @author rgasch
      * @param  $args['tid']
@@ -492,9 +500,10 @@ class PageMaster_Controller_User extends Zikula_Controller
      * @param  $args['orderby'] (optional)
      * @param  $args['returntype'] (optional)
      * @param  $args['source'] (optional)
-     * @return publication menu and/or edit mask
+     *
+     * @return Publication menu and/or edit mask.
      */
-    public function pubeditlist($args=array())
+    public function editlist($args=array())
     {
         $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
         $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
@@ -504,7 +513,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
         $source     = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
 
-        $pubData = ModUtil::apiFunc('PageMaster', 'user', 'pubeditlist', $args);
+        $pubData = ModUtil::apiFunc('PageMaster', 'user', 'editlist', $args);
 
         // create the output object
         $this->view->assign('allTypes',   $pubData['allTypes'])
@@ -516,6 +525,33 @@ class PageMaster_Controller_User extends Zikula_Controller
                    ->assign('returntype', $returntype)
                    ->assign('source',     $source);
 
-        return $this->view->fetch('pagemaster_user_pubeditlist.tpl');
+        return $this->view->fetch('pagemaster_user_editlist.tpl');
+    }
+
+    /**
+     * @see PageMaster_Controller_User::display
+     * @deprecated
+     */
+    public function viewpub($args)
+    {
+        return $this->display($args);
+    }
+
+    /**
+     * @see PageMaster_Controller_User::edit
+     * @deprecated
+     */
+    public function pubedit($args)
+    {
+        return $this->edit($args);
+    }
+
+    /**
+     * @see PageMaster_Controller_User::editlist
+     * @deprecated
+     */
+    public function pubeditlist($args)
+    {
+        return $this->editlist($args);
     }
 }

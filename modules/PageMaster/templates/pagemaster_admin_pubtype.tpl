@@ -92,12 +92,12 @@
             <div class="z-formrow">
                 {formlabel for='filename' text='Output template name'}
                 {formtextinput id='filename' maxLength='255'}
-                <div class="z-formnote">{gt text='Name of the output template, used in the publist and pubview template names.'}</div>
+                <div class="z-formnote">{gt text='Output name, used in the list and display template names.'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='formname' text='Input template name'}
                 {formtextinput id='formname' maxLength='255'}
-                <div class="z-formnote">{gt text='Name of the output, used in the pubedit template name.'}</div>
+                <div class="z-formnote">{gt text='Input name, used in the edit form template name.'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='cachelifetime' text='Caching time'}

@@ -10,10 +10,13 @@
  * @subpackage  pagemaster
  */
 
+/**
+ * List Block.
+ */
 class PageMaster_Block_List extends Zikula_Block
 {
     /**
-     * Initialise block
+     * Initialise block.
      */
     public function init()
     {
@@ -21,7 +24,7 @@ class PageMaster_Block_List extends Zikula_Block
     }
 
     /**
-     * Get information on block
+     * Get information on block.
      */
     public function info()
     {
@@ -37,7 +40,7 @@ class PageMaster_Block_List extends Zikula_Block
     }
 
     /**
-     * Display the block according its configuration
+     * Display the block according its configuration.
      */
     public function display($blockinfo)
     {
@@ -88,7 +91,7 @@ class PageMaster_Block_List extends Zikula_Block
     }
 
     /**
-     * Modify block settings
+     * Modify block settings.
      */
     public function modify($blockinfo)
     {
@@ -199,7 +202,7 @@ class PageMaster_Block_List extends Zikula_Block
     }
 
     /**
-     * Update block settings
+     * Update block settings.
      */
     public function update($blockinfo)
     {

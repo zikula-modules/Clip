@@ -20,12 +20,12 @@ $this->assign ('referer', 'index.php');
     {/if}
 
     <h2>{gt text='Publications edit list'}</h2>
-    <table class="z-datatable">
+    <table>
         <tbody>
             <tr>
                 {if $menu AND $source neq 'block'}
                 <td width="10%" valign="top" class="z-nowrap">
-                    {include file='pagemaster_user_pubeditlist_menu.tpl'}
+                    {include file='pagemaster_user_editlist_menu.tpl'}
                 </td>
                 {/if}
                 {if ($menu && $edit)}
@@ -34,7 +34,7 @@ $this->assign ('referer', 'index.php');
                     {if ($edit)}
                     <td>
                         {if ($tid)}
-                        {modfunc modname='PageMaster' type='user' func='pubedit' tid=$tid pid=$pid}
+                        {modfunc modname='PageMaster' type='user' func='edit' tid=$tid pid=$pid}
                         {/if}
                     </td>
                     {/if}

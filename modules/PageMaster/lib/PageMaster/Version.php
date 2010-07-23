@@ -7,6 +7,9 @@
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
+/**
+ * PageMaster Version Info.
+ */
 class PageMaster_Version extends Zikula_Version
 {
     public function getMetaData()
