@@ -31,7 +31,7 @@ class PageMaster_Block_List extends Zikula_Block
         return array (
             'module'         => 'PageMaster',
             'text_type'      => $this->__('PageMaster List'),
-            'text_type_long' => $this->__('PageMaster N publications list'),
+            'text_type_long' => $this->__('PageMaster list of publications'),
             'allow_multiple' => true,
             'form_content'   => false,
             'form_refresh'   => false,
@@ -65,7 +65,7 @@ class PageMaster_Block_List extends Zikula_Block
         }
 
         // Default values
-        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['filename'];
+        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['outputset'];
         $listCount     = (isset($vars['listCount']) && (int)$vars['listCount'] > 0) ? $vars['listCount'] : 5;
         $listOffset    = (isset($vars['listOffset'])) ? $vars['listOffset'] : 0;
         $filterStr     = (isset($vars['filters'])) ? $vars['filters'] : '';

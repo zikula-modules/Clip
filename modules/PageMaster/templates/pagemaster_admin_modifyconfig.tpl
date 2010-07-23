@@ -20,17 +20,17 @@
                 {formlabel for='uploadpath' __text='Upload path'}
                 {formtextinput maxLength='200' id='uploadpath'}
                 {if $updirstatus < 3}
-                {assign var='updir_msgcolor' value='#ff0000'}
-                {if $updirstatus == 0}
-                {assign var='updir_message' __value='The given path doesn\'t exists'}
-                {elseif $updirstatus == 1}
-                {assign var='updir_message' __value='The given path is not a directory'}
-                {elseif $updirstatus == 2}
-                {assign var='updir_message' __value='The given path is not writeable'}
-                {/if}
+                    {assign var='updir_msgcolor' value='#ff0000'}
+                    {if $updirstatus == 0}
+                        {assign var='updir_message' __value='The given path doesn\'t exists'}
+                    {elseif $updirstatus == 1}
+                        {assign var='updir_message' __value='The given path is not a directory'}
+                    {elseif $updirstatus == 2}
+                        {assign var='updir_message' __value='The given path is not writeable'}
+                    {/if}
                 {else}
-                {assign var='updir_msgcolor' value='#00d900'}
-                {assign var='updir_message' __value='The given path is writeable'}
+                    {assign var='updir_msgcolor' value='#00d900'}
+                    {assign var='updir_message' __value='The given path is writeable'}
                 {/if}
                 <span class="z-formnote">
                     {gt text='Path where uploaded files will be stored, relative to the site root (%s)' tag1=$siteroot}<br />

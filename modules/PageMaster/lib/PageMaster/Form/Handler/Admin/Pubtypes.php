@@ -131,12 +131,8 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 if (!isset($data['urltitle']) || empty($data['urltitle'])) {
                     $data['urltitle'] = DataUtil::formatPermalink($data['title']);
                 }
-                if (empty($data['filename'])) {
-                    $data['filename'] = $data['title'];
-                }
-                if (empty($data['formname'])) {
-                    $data['formname'] = $data['title'];
-                }
+                $data['outputset'] = DataUtil::formatPermalink($data['outputset']);
+                $data['inputset']  = DataUtil::formatPermalink($data['inputset']);
 
                 if (empty($this->tid)) {
                     DBUtil::insertObject($data, 'pagemaster_pubtypes');

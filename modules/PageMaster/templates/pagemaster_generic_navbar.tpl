@@ -74,18 +74,18 @@
 {secauthaction_block component='pagemaster::' instance='::' level=ACCESS_ADMIN}
 <div class="z-warningmsg">
     {switch expr=$section}
-    {case expr='list'}
-    {modurl modname='PageMaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid assign='urlplcode'}
-    {gt text='This is a generic template. Your can <a href="%1$s">get the publist code</a> and create a customized template (<strong>publist_%2$s.tpl</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/output/publist_%2$s.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/output/publist_%2$s.tpl</strong>.' tag1=$urlplcode|safetext tag2=$pubtype.filename|safetext}
-    {/case}
-    {case expr='display'}
-    {modurl modname='PageMaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid assign='urlpvcode'}
-    {gt text='This is a generic template. Your can <a href="%1$s">get the pubview code</a> and create a customized template (<strong>viewpub_%2$s.tpl</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/output/viewpub_%2$s.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/output/viewpub_%2$s.tpl</strong>.' tag1=$urlpvcode|safetext tag2=$pubtype.filename|safetext}
-    {/case}
-    {case expr='edit'}
-    {modurl modname='PageMaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid assign='urlpecode'}
-    {gt text='This is a generic template. Your can <a href="%1$s">get the form code</a> and create individual templates (<strong>pubedit_%2$s_STEPNAME.tpl</strong> or <strong>pubedit_%2$s_all.tpl</strong>), then store it in the the config directory: <strong>/config/templates/PageMaster/input/pubedit_%2$s_STEPNAME.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/input/pubedit_%2$s_STEPNAME.tpl</strong>.' tag1=$urlpecode|safetext tag2=$pubtype.formname|safetext}
-    {/case}
+        {case expr='list'}
+            {modurl modname='PageMaster' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid assign='urlplcode'}
+            {gt text='This is a generic template. Your can <a href="%1$s">get the list template code</a> of this publication type, create the <strong>list.tpl</strong> file, customized it, and store it in the the config directory: <strong>/config/templates/PageMaster/%2$s/list.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/%2$s/list.tpl</strong>.' tag1=$urlplcode|safetext tag2=$pubtype.outputset|safetext}
+        {/case}
+        {case expr='display'}
+            {modurl modname='PageMaster' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid assign='urlpvcode'}
+            {gt text='This is a generic template. Your can <a href="%1$s">get the display template code</a> of this publication type, create the <strong>display.tpl</strong> file, customize it, and store it in the the config directory: <strong>/config/templates/PageMaster/%2$s/display.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/%2$s/display.tpl</strong>.' tag1=$urlpvcode|safetext tag2=$pubtype.outputset|safetext}
+        {/case}
+        {case expr='form'}
+            {modurl modname='PageMaster' type='admin' func='showcode' mode='input' tid=$pubtype.tid assign='urlpecode'}
+            {gt text='This is a generic template. Your can <a href="%1$s">get the form template code</a> of this publication type, and create individual templates (<strong>form_<em>STEPNAME</em>.tpl</strong> or a general <strong>form_all.tpl</strong>), then store them in the the config directory: <strong>/config/templates/PageMaster/%2$s/form_<em>STEPNAME</em>.tpl</strong> or within your theme: <strong>/templates/modules/PageMaster/%2$s/form_<em>STEPNAME</em>.tpl</strong>.' tag1=$urlpecode|safetext tag2=$pubtype.inputset|safetext}
+        {/case}
     {/switch}
     {modurl modname='PageMaster' type='admin' func='modifyconfig' assign='urlconfig'}
     {assign var='urlconfig' value=$urlconfig|safetext}

@@ -1,0 +1,9 @@
+
+  0.9
+    Blocks refactored and reworked. Template names changed.
+    User methods renamed from main/viewpub/pubedit/pubeditlist to view/display/edit/editlist
+    User Api methods renamed from pubList/getPub/editPub/pubeditlist to getall/get/edit/editlist
+    Template paths changed to a folder per pubtype, and with filenames: list.tpl, display.tpl and form_all.tpl
+    Template permission check altered:
+        pagemaster:list: | tid::outputset_templateArg
+        pagemaster:full: | tid:pid:outputset_templateArg

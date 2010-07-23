@@ -1,12 +1,13 @@
-<h1>{gt text=$pubtype.title}</h1>
+
+<h2>{gt text=$pubtype.title}</h2>
 
 {include file='pagemaster_generic_navbar.tpl' section='list'}
 
 {if $pubtype.description neq ''}
-<p class="pm-pubdesc">{gt text=$pubtype.description}</p>
+    <p class="pm-pubtype-desc">{gt text=$pubtype.description}</p>
 {/if}
 
-<table class="z-datatable pm-publist">
+<table class="z-datatable pm-pub-list">
     <tbody>
         {foreach from=$publist item='pubitem'}
         <tr class="{cycle values='z-even,z-odd'}">
@@ -36,7 +37,7 @@
 </table>
 
 {if isset($pager)}
-{pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum'}
+    {pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum'}
 {/if}
 
 {modcallhooks hookobject='category' hookaction='display' module='PageMaster' returnurl=$returnurl}

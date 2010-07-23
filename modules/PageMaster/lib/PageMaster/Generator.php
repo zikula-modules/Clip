@@ -21,15 +21,15 @@ class PageMaster_Generator
         $template_code = "\n".
                 '{hitcount pid=$core_pid tid=$core_tid}'."\n".
                 "\n".
-                '<h1>{gt text=$pubtype.title}</h1>'."\n".
+                '<h2>{gt text=$pubtype.title}</h2>'."\n".
                 "\n".
                 '{include file=\'pagemaster_generic_navbar.tpl\' section=\'display\'}'."\n".
                 "\n".
                 '{if $pubtype.description neq \'\'}'."\n".
-                '    <div class="pm-pubdesc">{gt text=$pubtype.description}</div>'."\n".
+                '    <div class="pm-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".
-                '<div class="z-form pm-pubdetails">';
+                '<div class="z-form pm-pub-details">';
 
         $pubfields = PageMaster_Util::getPubFields($tid);
 
@@ -175,12 +175,12 @@ class PageMaster_Generator
         $title_editpub = no__('Edit publication');
 
         $template_code = "\n".
-                '<h1>{gt text=$pubtype.title}</h1>'."\n".
+                '<h2>{gt text=$pubtype.title}</h2>'."\n".
                 "\n".
-                '{include file=\'pagemaster_generic_navbar.tpl\' section=\'edit\'}'."\n".
+                '{include file=\'pagemaster_generic_navbar.tpl\' section=\'form\'}'."\n".
                 "\n".
                 '{if $pubtype.description neq \'\'}'."\n".
-                '    <div class="pm-pubdesc">{gt text=$pubtype.description}</div>'."\n".
+                '    <div class="pm-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".
                 '{form cssClass=\'z-form pm-editform\' enctype=\'multipart/form-data\'}'."\n".
@@ -198,12 +198,12 @@ class PageMaster_Generator
         $pubfields = PageMaster_Util::getPubFields($tid);
 
         foreach (array_keys($pubfields) as $k) {
-            // get the plugin pnform name of the plugin filename
-            $pmformname = $pubfields[$k]['fieldplugin'];
+            // get the formplugin name
+            $formplugin = $pubfields[$k]['fieldplugin'];
 
             if (!empty($pubfields[$k]['fieldmaxlength'])) {
                 $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
-            } elseif($pmformname == 'pmformtextinput') {
+            } elseif($formplugin == 'pmformtextinput') {
                 $maxlength = " maxLength='65535'";
             } else {
                 $maxlength = ''; //" maxLength='255'"; //TODO Not a clean solution. MaxLength is not needed for ever plugin
@@ -212,7 +212,7 @@ class PageMaster_Generator
             $toolTip = !empty($pubfields[$k]['description']) ? str_replace("'", "\'", $pubfields[$k]['description']) : '';
 
             // specific plugins
-            $linecol = ($pmformname == 'pmformtextinput') ? " rows='15' cols='70'" : '';
+            $linecol = ($formplugin == 'pmformtextinput') ? " rows='15' cols='70'" : '';
 
             // scape simple quotes where needed
             $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']);
@@ -238,17 +238,17 @@ class PageMaster_Generator
                 "\n".
                 '            <div class="z-formrow">'."\n".
                 '                {formlabel for=\'core_language\' _'.'_text=\'' . $title_lang . '\'}'."\n".
-                '                {formlanguageselector id=\'core_language\' mandatory=\'0\'}'."\n".
+                '                {formlanguageselector id=\'core_language\' mandatory=false}'."\n".
                 '            </div>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".
                 '                {formlabel for=\'core_publishdate\' _'.'_text=\'' . $title_pdate . '\'}'."\n".
-                '                {formdateinput id=\'core_publishdate\' includeTime=\'1\'}'."\n".
+                '                {formdateinput id=\'core_publishdate\' includeTime=true}'."\n".
                 '            </div>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".
                 '                {formlabel for=\'core_expiredate\' _'.'_text=\'' . $title_edate . '\'}'."\n".
-                '                {formdateinput id=\'core_expiredate\' includeTime=\'1\'}'."\n".
+                '                {formdateinput id=\'core_expiredate\' includeTime=true}'."\n".
                 '            </div>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".

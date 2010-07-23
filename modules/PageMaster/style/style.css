@@ -9,8 +9,18 @@
 * @subpackage  pagemaster
 */
 
-/* general */
+/* GUI */
+.pm-option,
+.pm-menu span {
+    color: #444;
+    padding: 0 3px;
+}
 
+.pm-pubtype-desc {
+    margin: 0 5px 5px;
+}
+
+/* general */
 img {
     vertical-align: middle;
 }
@@ -28,7 +38,6 @@ pre.pm-showcode {
 }
 
 /* pubfield type selector and modalbox */
-
 .z-form div.z-formrow select.pm-plugintypeselector {
     display: inline;
     width: 66.2%;
@@ -46,18 +55,7 @@ pre.pm-showcode {
     padding:10px;
 }
 
-.pm-pubdesc {
-    margin: 0 5px;
-}
-
-.pm-option,
-.pm-menu span {
-    color: #444;
-    padding: 0 3px;
-}
-
 /* input buttons classes */
-
 .z-buttons input.pm-bt-display {
     background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE);
     background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede));

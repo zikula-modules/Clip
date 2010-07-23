@@ -49,20 +49,14 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         if (empty($template)) {
-            if (!empty($pubtype['filename'])) {
-                // template comes from pubtype
-                $sec_template = $pubtype['filename'];
-                $template     = 'output/publist_'.$pubtype['filename'].'.tpl';
-            } else {
-                // do not check permission for dynamic template
-                $sec_template = '';
-                // standart template
-                $template     = 'pagemaster_generic_list.tpl';
-            }
+            // template comes from pubtype
+            $sec_template = $pubtype['outputset'];
+            $template     = $pubtype['outputset'].'/list.tpl';
         } else {
             // template comes from parameter
-            $sec_template = $template;
-            $template     = 'output/publist_'.$template.'.tpl';
+            $template     = DataUtil::formatForOS($template);
+            $sec_template = $pubtype['outputset']."_{$template}";
+            $template     = $pubtype['outputset']."/list_{$template}.tpl";
         }
 
         // security check as early as possible
@@ -143,13 +137,13 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         // Check if template is available
-        if ($template != 'pagemaster_generic_list.tpl' && !$this->view->template_exists($template)) {
+        if (!$this->view->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
             // return an error/void if a block template does not exists
-            if (strpos($sec_template, 'block_') === 0) {
+            if (strpos($sec_template, $pubtype['outputset'].'_list_block_') === 0) {
                 return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
             $template = 'pagemaster_generic_list.tpl';
@@ -204,26 +198,19 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // determine the template to use
         if (empty($template)) {
-            if (!empty($pubtype['filename'])) {
-                // template for the security check
-                $sec_template = $pubtype['filename'];
-                // template comes from pubtype
-                $template     = 'output/viewpub_'.$pubtype['filename'].'.tpl';
-            } else {
-                // do not check permission for dynamic template
-                $sec_template = '';
-                // standart template
-                $template     = 'var:display_template_code';
-            }
-        } else {
             // template for the security check
-            $sec_template = $template;
+            $sec_template = $pubtype['outputset'];
+            // template comes from pubtype
+            $template     = $pubtype['outputset'].'/display.tpl';
+        } else {
             // template comes from parameter
-            $template     = 'output/viewpub_'.$template.'.tpl';
-
-            // workaround for related plain templates
-            if (in_array($sec_template, array('pending'))) {
-                $simpletemplate = "output/viewpub_{$pubtype['filename']}_{$sec_template}.tpl";
+            $template     = DataUtil::formatForOS($template);
+            $sec_template = $pubtype['outputset']."_{$template}";
+            // check for related plain templates
+            if (in_array($template, array('pending'))) {
+                $simpletemplate = $pubtype['outputset']."/display_{$template}.tpl";
+            } else {
+                $template = $pubtype['outputset']."/display_{$template}.tpl";
             }
         }
 
@@ -261,7 +248,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         // fetch plain templates
         if (isset($simpletemplate)) {
             if (!$this->view->template_exists($simpletemplate)) {
-                $simpletemplate = "pagemaster_generic_{$sec_template}.tpl";
+                $simpletemplate = "pagemaster_general_{$template}.tpl";
                 if (!$this->view->template_exists($simpletemplate)) {
                     $simpletemplate = '';
                 }
@@ -308,13 +295,13 @@ class PageMaster_Controller_User extends Zikula_Controller
                    ->assign('core_creator',       ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false);
 
         // Check if template is available
-        if ($template != 'var:display_template_code' && !$this->view->template_exists($template)) {
+        if (!$this->view->template_exists($template)) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
             // return an error/void if a block template does not exists
-            if (strpos($sec_template, 'block_') === 0) {
+            if (strpos($sec_template, $pubtype['outputset'].'_display_block_') === 0) {
                 return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
             $template = 'var:display_template_code';
@@ -398,26 +385,26 @@ class PageMaster_Controller_User extends Zikula_Controller
         $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
 
         // individual step
-        $template_step = 'input/pubedit_'.$pubtype['formname'].'_'.$stepname.'.tpl';
+        $template = $pubtype['inputset']."/form_{$stepname}.tpl";
 
-        if (!empty($stepname) && $render->template_exists($template_step)) {
-            return $render->execute($template_step, $formHandler);
+        if (!empty($stepname) && $render->template_exists($template)) {
+            return $render->execute($template, $formHandler);
         } elseif ($alert) {
-            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template_step));
+            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
         }
 
         // generic edit
-        $template_all = 'input/pubedit_'.$pubtype['formname'].'_all.tpl';
+        $template = $pubtype['inputset'].'/form_all.tpl';
 
-        if ($render->template_exists($template_all)) {
-            return $render->execute($template_all, $formHandler);
+        if ($render->template_exists($template)) {
+            return $render->execute($template, $formHandler);
         } elseif ($alert) {
-            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template_all));
+            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
         }
 
         // autogenerated edit template
-        $render->force_compile = true;
-        $render->assign('edit_template_code', PageMaster_Generator::pubedit($tid));
+        $render->setForce_compile(true)
+               ->assign('edit_template_code', PageMaster_Generator::pubedit($tid));
 
         return $render->execute('var:edit_template_code', $formHandler);
     }

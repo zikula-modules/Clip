@@ -114,9 +114,8 @@ class PageMaster_Api_Import extends Zikula_Api
         {
             $datatype['tid']             = $pubtype['id'];
             $datatype['title']           = $pubtype['title'];
-            $datatype['filename']        = $pubtype['filename'];
-            $datatype['filename']        = $pubtype['filename'];
-            $datatype['formname']        = $pubtype['formname'];
+            $datatype['outputset']       = $pubtype['filename'];
+            $datatype['inputset']        = $pubtype['formname'];
             $datatype['description']     = $pubtype['description'];
             $datatype['itemsperpage']    = $pubtype['listCount'];
             $datatype['sortfield1']      = '';

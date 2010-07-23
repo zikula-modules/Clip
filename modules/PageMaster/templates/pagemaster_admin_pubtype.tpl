@@ -6,10 +6,10 @@
     <div class="z-adminpageicon">{img modname='core' src='database.gif' set='icons/large' __alt='Create / Edit publication type' }</div>
 
     {if isset($tid)}
-    <h2>{gt text='Edit publication type'}</h2>
-    {pmadminsubmenu tid=$tid}
+        <h2>{gt text='Edit publication type'}</h2>
+        {pmadminsubmenu tid=$tid}
     {else}
-    <h2>{gt text='Create publication type'}</h2>
+        <h2>{gt text='Create publication type'}</h2>
     {/if}
 
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
@@ -90,14 +90,14 @@
         <fieldset>
             <legend>{gt text='Output options'}</legend>
             <div class="z-formrow">
-                {formlabel for='filename' text='Output template name'}
-                {formtextinput id='filename' maxLength='255'}
-                <div class="z-formnote">{gt text='Output name, used in the list and display template names.'}</div>
+                {formlabel for='outputset' text='Output template set' mandatorysym=true}
+                {formtextinput id='outputset' maxLength='255' mandatory=true}
+                <div class="z-formnote">{gt text='Folder where the list and display template are.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='formname' text='Input template name'}
-                {formtextinput id='formname' maxLength='255'}
-                <div class="z-formnote">{gt text='Input name, used in the edit form template name.'}</div>
+                {formlabel for='inputset' text='Input template set' mandatorysym=true}
+                {formtextinput id='inputset' maxLength='255' mandatory=true}
+                <div class="z-formnote">{gt text='Folder where the edit form template is.'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='cachelifetime' text='Caching time'}
@@ -108,11 +108,11 @@
 
         <div class="z-buttons z-formbuttons">
             {if isset($tid)}
-            {formbutton commandName='create' __text='Save' class='z-bt-icon pm-bt-update'}
-            {formbutton commandName='clone' __text='Clone' class='z-bt-icon pm-bt-copy'}
-            {formbutton commandName='delete' __text='Delete' class='z-bt-icon pm-bt-delete'}
+                {formbutton commandName='create' __text='Save' class='z-bt-icon pm-bt-update'}
+                {formbutton commandName='clone' __text='Clone' class='z-bt-icon pm-bt-copy'}
+                {formbutton commandName='delete' __text='Delete' class='z-bt-icon pm-bt-delete'}
             {else}
-            {formbutton commandName='create' __text='Create' class='z-bt-ok'}
+                {formbutton commandName='create' __text='Create' class='z-bt-ok'}
             {/if}
             {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
         </div>
