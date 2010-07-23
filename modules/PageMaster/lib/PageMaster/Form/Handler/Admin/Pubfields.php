@@ -82,6 +82,8 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                     return false;
                 }
 
+                // FIXME validate that name != 'id'
+
                 if ($data['istitle'] == 1) {
                     $istitle = array('istitle' => '0');
                     DBUtil::updateObject($istitle, 'pagemaster_pubfields', "pm_tid = '$data[tid]'");

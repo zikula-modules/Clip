@@ -9,19 +9,19 @@
 
 <table class="z-datatable pm-pub-list">
     <tbody>
-        {foreach from=$publist item='pubitem'}
+        {foreach from=$publist item='item'}
         <tr class="{cycle values='z-even,z-odd'}">
             <td>
-                <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$pubitem.core_pid}">{$pubitem.$core_titlefield}</a>
+                <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">{$item[$pubtype.titlefield]}</a>
             </td>
             <td class="z-right">
                 {strip}
-                <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$pubitem.core_pid}">
+                <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">
                     {img modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View'}
                 </a>
                 {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
                 &nbsp;
-                <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid pid=$pubitem.core_pid}">
+                <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid pid=$item.core_pid}">
                     {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                 </a>
                 {/checkpermissionblock}

@@ -15,6 +15,30 @@
 class PageMaster_Util
 {
     /**
+     * Process some core fields.
+     *
+     * @param array &$pubdata Publication data.
+     *
+     * @return void
+     */
+    public static function pubPostProcess(&$pubdata)
+    {
+        $tid = self::getTidFromTablename($pubdata['__WORKFLOW__']['obj_table']);
+
+        $fields = array(
+            'core_title' => '',
+            'core_uniqueid' => "{$tid}-{$pubdata['core_pid']}",
+            'core_tid' => $tid,
+            'core_pid' => '',
+            'core_author' => '',
+            'core_creator' => ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false,
+            'core_approvalstate' => $pubdata['__WORKFLOW__']['state']
+        );
+
+        $pubdata = array_merge($fields, $pubdata);
+    }
+
+    /**
      * Extract the TID from the tablename.
      *
      * @param string $tablename
@@ -29,7 +53,7 @@ class PageMaster_Util
             $tablename = substr($tablename, 0, strlen($tablename) - 1);
         }
 
-        return (int)$tid;
+        return $tid;
     }
 
     /**

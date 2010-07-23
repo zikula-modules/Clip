@@ -148,6 +148,7 @@ class PageMaster_Api_User extends Zikula_Api
         // check if some plugin specific orderby has to be done
         $orderby   = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
         $tablename = 'pagemaster_pubdata'.$tid;
+
         $fu = new FilterUtil('PageMaster', $tablename, $filter_args);
 
         if (isset($args['filter']) && !empty($args['filter'])) {

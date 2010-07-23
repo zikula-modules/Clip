@@ -19,7 +19,7 @@ class PageMaster_Generator
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
         $template_code = "\n".
-                '{hitcount pid=$core_pid tid=$core_tid}'."\n".
+                '{hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
                 '<h2>{gt text=$pubtype.title}</h2>'."\n".
                 "\n".
@@ -51,20 +51,20 @@ class PageMaster_Generator
                 {
                     // text plugin
                     case 'pmformtextinput':
-                        $snippet_body = '{$'.$key.'|safehtml|modcallhooks:\'PageMaster\'}';
+                        $snippet_body = '{$pubdata.'.$key.'|safehtml|modcallhooks:\'PageMaster\'}';
                         break;
 
                     // image plugin
                     case 'pmformimageinput':
                         $template_code_add =
-                                '    {if $'.$field['name'].'.url neq \'\'}'."\n".
+                                '    {if $pubdata.'.$field['name'].'.url neq \'\'}'."\n".
                                 '        <div class="z-formrow">'."\n".
                                 '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                                 '            <span class="z-formnote">'."\n".
-                                '                {$'.$field['name'].'.orig_name}<br />'."\n".
-                                '                <img src="{$'.$field['name'].'.thumbnailUrl}" title="'.no__('Thumbnail', $dom).'" alt="'.no__('Thumbnail', $dom).'" /><br />'."\n".
-                                '                <img src="{$'.$field['name'].'.url}" title="'.no__('Image', $dom).'" alt="'.no__('Image', $dom).'" />'."\n".
-                                '                <pre>{pmarray array=$'.$key.'}</pre>'."\n".
+                                '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
+                                '                <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail', $dom).'\'}" alt="{gt text=\''.no__('Thumbnail', $dom).'\'}" /><br />'."\n".
+                                '                <img src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image', $dom).'\'}" alt="{gt text=\''.no__('Image', $dom).'\'}" />'."\n".
+                                '                <pre>{pmarray array=$pubdata.'.$key.'}</pre>'."\n".
                                 '            <span>'."\n".
                                 '        </div>'."\n".
                                 '    {/if}';
@@ -73,11 +73,11 @@ class PageMaster_Generator
                     // list input
                     case 'pmformlistinput':
                         $template_code_add =
-                                '    {if !empty($'.$field['name'].')}'."\n".
+                                '    {if !empty($pubdata.'.$field['name'].')}'."\n".
                                 '        <div class="z-formrow">'."\n".
                                 '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
-                                '            <span class="z-formnote">{$'.$key.'.fullTitle}<span>'."\n".
-                                '            <pre>{pmarray array=$'.$key.'}</pre>'."\n".
+                                '            <span class="z-formnote">{$pubdata.'.$key.'.fullTitle}<span>'."\n".
+                                '            <pre>{pmarray array=$pubdata.'.$key.'}</pre>'."\n".
                                 '        </div>'."\n".
                                 '    {/if}';
                         break;
@@ -85,12 +85,12 @@ class PageMaster_Generator
                     // multilist input
                     case 'pmformmultilistinput':
                         $template_code_add =
-                                '    {if !empty($'.$field['name'].')}'."\n".
+                                '    {if !empty($pubdata.'.$field['name'].')}'."\n".
                                 '        <div class="z-formrow">'."\n".
                                 '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                                 '            <span class="z-formnote">'."\n".
                                 '                <ul>'."\n".
-                                '                    {foreach from=$'.$key.' item=\'item\'}'."\n".
+                                '                    {foreach from=$pubdata.'.$key.' item=\'item\'}'."\n".
                                 '                        <li>{$item.fullTitle}</li>'."\n".
                                 '                    {/foreach}'."\n".
                                 '                </ul>'."\n".
@@ -104,12 +104,12 @@ class PageMaster_Generator
                         $plugin = PageMaster_Util::getPlugin('PageMaster_Form_Plugin_Pub');
                         $plugin->parseConfig($field['typedata']);
                         $template_code_add =
-                                '    {if !empty($'.$key.')}'."\n".
+                                '    {if !empty($pubdata.'.$key.')}'."\n".
                                 '        <div class="z-formrow">'."\n".
                                 '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                                 '            <span class="z-formnote">'."\n".
-                                '                <pre>{pmarray array=$'.$key.'}</pre>'."\n".
-                                '                {*modapifunc modname=\'PageMaster\' func=\'get\' tid=\''.$plugin->config['tid'].'\' pid=$'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
+                                '                <pre>{pmarray array=$pubdata.'.$key.'}</pre>'."\n".
+                                '                {*modapifunc modname=\'PageMaster\' func=\'get\' tid=\''.$plugin->config['tid'].'\' pid=$pubdata.'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
                                 '            <span>'."\n".
                                 '        </div>'."\n".
                                 '    {/if}';
@@ -127,27 +127,27 @@ class PageMaster_Generator
                     // filter some core fields (uids)
                     if (in_array($key, array('core_author', 'cr_uid', 'lu_uid'))) {
                         $snippet_body = "\n".
-                                '                {$'.$key.'|userprofilelink}'."\n".
-                                '                <span class="z-sub">[{$'.$key.'|safehtml}]</span>'."\n".
+                                '                {$pubdata.'.$key.'|userprofilelink}'."\n".
+                                '                <span class="z-sub">[{$pubdata.'.$key.'|safehtml}]</span>'."\n".
                                 '            ';
 
                         // flags
-                    } elseif (in_array($key, array('core_online', 'core_indepot', 'core_showinmenu', 'core_showinlist'))) {
-                        $snippet_body = '{$'.$key.'|yesno}';
+                    } elseif (in_array($key, array('core_creator', 'core_online', 'core_indepot', 'core_showinmenu', 'core_showinlist'))) {
+                        $snippet_body = '{$pubdata.'.$key.'|yesno}';
 
                         // generic arrays
                     } elseif (is_array($pubfield)) {
-                        $snippet_body = '<pre>{pmarray array=$'.$key.'}</pre>';
+                        $snippet_body = '<pre>{pmarray array=$pubdata.'.$key.'}</pre>';
 
                         // generic strings
                     } else {
-                        $snippet_body = '{$'.$key.'|safehtml}';
+                        $snippet_body = '{$pubdata.'.$key.'|safehtml}';
                     }
                 }
 
                 // build the final snippet
                 $template_code_add =
-                        '    {if !empty($'.$key.')}'."\n".
+                        '    {if !empty($pubdata.'.$key.')}'."\n".
                         '        <div class="z-formrow">'."\n".
                         '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
                         '            <span class="z-formnote">'.$snippet_body.'<span>'."\n".
@@ -162,8 +162,8 @@ class PageMaster_Generator
         // Add the Hooks support for display
         $template_code .= '</div>'."\n".
                 "\n".
-                '{modurl modname=\'PageMaster\' func=\'display\' tid=$core_tid pid=$core_pid assign=\'returnurl\'}'."\n".
-                '{modcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$core_uniqueid module=\'PageMaster\' returnurl=$returnurl}'.
+                '{modurl modname=\'PageMaster\' func=\'display\' tid=$pubdata.core_tid pid=$pubdata.core_pid assign=\'returnurl\'}'."\n".
+                '{modcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$pubdata.core_uniqueid module=\'PageMaster\' returnurl=$returnurl}'.
                 "\n";
 
         return $template_code;

@@ -7,3 +7,15 @@
     Template permission check altered:
         pagemaster:list: | tid::outputset_templateArg
         pagemaster:full: | tid:pid:outputset_templateArg
+    Rework of the available variables in the list and display templates.
+        list:
+            $tid => $pubtype.tid
+            $core_titlefield => $pubtype.tittlefield
+        display:
+            Publication data embeded in the $pubdata array
+            $core_titlefield => $pubtype.tittlefield
+            $core_tid => $pubdata.core_tid or $pubtype.tid
+            $core_approvalstate => $pubdata.core_approvalstate
+            $core_uniqueid => $pubdata.core_uniqueid
+            $core_creator => $pubdata.core_creator
+            $core_approvalstate => $pubdata.core_approvalstate

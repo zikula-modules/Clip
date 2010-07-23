@@ -100,8 +100,6 @@ class PageMaster_Controller_User extends Zikula_Controller
             $itemsperpage = ((int)$pubtype['itemsperpage'] > 0 ? (int)$pubtype['itemsperpage'] : -1 );
         }
 
-        $countmode = ($itemsperpage != 0) ? 'both' : 'no';
-
         $orderby   = PageMaster_Util::createOrderBy($orderby);
 
         $pubfields = PageMaster_Util::getPubFields($tid, 'pm_lineno');
@@ -109,26 +107,26 @@ class PageMaster_Controller_User extends Zikula_Controller
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
+        $pubtype['titlefield'] = PageMaster_Util::findTitleField($pubfields);
+
         // Uses the API to get the list of publications
         $result = ModUtil::apiFunc('PageMaster', 'user', 'getall',
                                    array('tid'                => $tid,
                                          'pubfields'          => $pubfields,
                                          'pubtype'            => $pubtype,
-                                         'countmode'          => $countmode,
                                          'startnum'           => $startnum,
-                                         'filter'             => $filter,
-                                         'orderby'            => $orderby,
                                          'itemsperpage'       => $itemsperpage,
+                                         'countmode'          => ($itemsperpage != 0) ? 'both' : 'no',
+                                         'orderby'            => $orderby,
+                                         'filter'             => $filter,
                                          'checkPerm'          => false, // already checked
                                          'handlePluginFields' => $handlePluginFields,
                                          'getApprovalState'   => $getApprovalState));
 
         // Assign the data to the output
-        $this->view->assign('tid',       $tid)
-                   ->assign('pubtype',   $pubtype)
+        $this->view->assign('pubtype',   $pubtype)
                    ->assign('publist',   $result['publist'])
-                   ->assign('returnurl', $returnurl)
-                   ->assign('core_titlefield', PageMaster_Util::findTitleField($pubfields));
+                   ->assign('returnurl', $returnurl);
 
         // Assign the pager values if needed
         if ($itemsperpage != 0) {
@@ -265,6 +263,8 @@ class PageMaster_Controller_User extends Zikula_Controller
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
+        $pubtype['titlefield'] = PageMaster_Util::findTitleField($pubfields);
+
         $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get',
                                     array('tid'                => $tid,
                                           'id'                 => $id,
@@ -274,25 +274,18 @@ class PageMaster_Controller_User extends Zikula_Controller
                                           'checkPerm'          => false, //check later, together with template
                                           'getApprovalState'   => true,
                                           'handlePluginFields' => true));
-
         if (!$pubdata) {
             return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($tid, $pid, $id)));
         }
 
-        $core_title = PageMaster_Util::findTitleField($pubfields);
-        $pubtype['titlefield'] = $core_title;
+        // publication processing
+        PageMaster_Util::pubPostProcess($pubdata);
 
         // assign each field of the pubdata to the output
-        $this->view->assign($pubdata);
+        $this->view->assign('pubdata', $pubdata);
 
         // process the output
-        $this->view->assign('pubtype',            $pubtype)
-                   ->assign('core_tid',           $tid)
-                   ->assign('core_approvalstate', $pubdata['__WORKFLOW__']['state'])
-                   ->assign('core_titlefield',    $core_title)
-                   ->assign('core_title',         $pubdata[$core_title])
-                   ->assign('core_uniqueid',      $tid.'-'.$pubdata['core_pid'])
-                   ->assign('core_creator',       ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false);
+        $this->view->assign('pubtype', $pubtype);
 
         // Check if template is available
         if (!$this->view->template_exists($template)) {
@@ -308,8 +301,8 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         if ($template == 'var:display_template_code') {
-            $this->view->setCompile_check(true);
-            $this->view->assign('display_template_code', PageMaster_Generator::pubview($tid, $pubdata));
+            $this->view->setCompile_check(true)
+                       ->assign('display_template_code', PageMaster_Generator::pubview($tid, $pubdata));
         }
 
         return $this->view->fetch($template, $cacheid);

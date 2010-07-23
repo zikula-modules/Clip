@@ -5,61 +5,61 @@
         {strip}
         <span>&raquo;</span>
         {if $section neq 'list'}
-        <span>
-            <a href="{modurl modname='PageMaster' tid=$pubtype.tid}">
-                {gt text=$pubtype.title}
-            </a>
-        </span>
+            <span>
+                <a href="{modurl modname='PageMaster' tid=$pubtype.tid}">
+                    {gt text=$pubtype.title}
+                </a>
+            </span>
         {else}
-        <span class="pm-breadtext">
-            {gt text=$pubtype.title}
-        </span>
-        {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT}
-        <span>
-            <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid}">
-                {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
-            </a>
-        </span>
-        {/checkpermissionblock}
+            <span class="pm-breadtext">
+                {gt text=$pubtype.title}
+            </span>
+            {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT}
+            <span>
+                <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid}">
+                    {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
+                </a>
+            </span>
+            {/checkpermissionblock}
         {/if}
 
         {if $section neq 'list' and $section neq 'pending'}
-        <span class="text_separator">&raquo;</span>
+            <span class="text_separator">&raquo;</span>
 
-        {if $section neq 'display'}
-        {if isset($id)}
-        <span>
-            <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$core_pid}">
-                {$title}
-            </a>
-        </span>
-        {/if}
-        {else}
-        <span class="pm-breadtext">
-            {$title}
-        </span>
-        {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
-        <span>
-            <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid pid=$core_pid}">
-                {img width='12' height='12' modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
-            </a>
-        </span>
-        {/checkpermissionblock}
-        {/if}
-
-        {if $section neq 'display'}
-        {if isset($id)}
-        <span class="text_separator">&raquo;</span>
-        {/if}
-
-        <span class="pm-breadtext">
-            {if isset($id)}
-            {gt text='Edit form'}
+            {if $section neq 'display'}
+                {if isset($pubdata.id)}
+                <span>
+                    <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid}">
+                        {$pubdata.title}
+                    </a>
+                </span>
+                {/if}
             {else}
-            {gt text='Create form'}
+                <span class="pm-breadtext">
+                    {$pubdata.title}
+                </span>
+                {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
+                <span>
+                    <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubdata.core_tid pid=$pubdata.core_pid}">
+                        {img width='12' height='12' modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                    </a>
+                </span>
+                {/checkpermissionblock}
             {/if}
-        </span>
-        {/if}
+
+            {if $section neq 'display'}
+                {if isset($pubdata.id)}
+                <span class="text_separator">&raquo;</span>
+                {/if}
+
+                <span class="pm-breadtext">
+                    {if isset($pubdata.id)}
+                        {gt text='Edit form'}
+                    {else}
+                        {gt text='Create form'}
+                    {/if}
+                </span>
+            {/if}
         {/if}
         {/strip}
     </span>
