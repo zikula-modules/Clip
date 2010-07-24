@@ -42,6 +42,8 @@ function PageMaster_workflow_standard_permissioncheck($obj, $permLevel, $current
 
 function PageMaster_workflow_standard_gettextstrings()
 {
+    no__('Are you sure you want to delete this publication?');
+
     return array(
         'title' => no__('Standard'),
         'description' => no__('This is a two staged workflow with stages for untrusted submissions and finally approved publications. It does not allow untrusted corrections to published pages.'),

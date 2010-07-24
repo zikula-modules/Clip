@@ -68,6 +68,21 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
             return $view->redirect(ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid)));
         }
 
+        // translate any gt string on the action parameters
+        foreach (array_keys($actions) as $aid) {
+            if (isset($actions[$aid]['parameters'])) {
+                foreach (array_keys($actions[$aid]['parameters']) as $pname) {
+                    foreach ($actions[$aid]['parameters'][$pname] as $k => $v) {
+                        if (strpos($k, '__') === 0) {
+                            unset($actions[$aid]['parameters'][$pname][$k]);
+                            $k = substr($k, 2);
+                            $actions[$aid]['parameters'][$pname][$k] = $this->__($v);
+                        }
+                    }
+                }
+            }
+        }
+
         // check for set_* default values
         $fieldnames = array_keys($this->pubfields);
 

@@ -28,15 +28,14 @@
 
     <!-- From initial state -->
 
-    <action id="submit">
-      <title>Submit</title>
-      <description>Submit new content for acceptance by the local editor</description>
-      <permission>author</permission>
-      <nextState>waiting</nextState>
-      <operation>createPub</operation>
-      <operation type="contentnew" group="editors">mailNotification</operation>
+    <action id="approve">
+      <title>Submit and Approve</title>
+      <description>Submit new content and approve immediately</description>
+      <permission>moderator</permission>
+      <nextState>approved</nextState>
+      <operation online="1">createPub</operation>
 
-      <param class="z-bt-new">button</param>
+      <parameter class="z-bt-ok">button</parameter>
     </action>
 
     <action id="accept">
@@ -46,39 +45,31 @@
       <nextState>preview</nextState>
       <operation>createPub</operation>
 
-      <param class="z-bt-icon pm-bt-accept">button</param>
+      <parameter class="z-bt-icon pm-bt-accept">button</parameter>
     </action>
 
-    <action id="approve">
-      <title>Submit and Approve</title>
-      <description>Submit new content and approve immediately</description>
-      <permission>moderator</permission>
-      <nextState>approved</nextState>
-      <operation online="1">createPub</operation>
+    <action id="submit">
+      <title>Submit</title>
+      <description>Submit new content for acceptance by the local editor</description>
+      <permission>author</permission>
+      <nextState>waiting</nextState>
+      <operation>createPub</operation>
+      <operation type="contentnew" group="editors">mailNotification</operation>
 
-      <param class="z-bt-ok">button</param>
+      <parameter class="z-bt-new">button</parameter>
     </action>
 
     <!-- State: waiting -->
 
-    <action id="reject">
-      <title>Reject</title>
-      <description>Reject and delete submitted content</description>
-      <permission>editor</permission>
+    <action id="approve">
+      <title>Approve</title>
+      <description>Approve content for online publishing</description>
+      <permission>moderator</permission>
       <state>waiting</state>
-      <operation>deletePub</operation>
+      <nextState>approved</nextState>
+      <operation online="1">updatePub</operation>
 
-      <param class="z-bt-icon pm-bt-reject">button</param>
-    </action>
-
-    <action id="update">
-      <title>Update</title>
-      <description>Save content with no workflow change</description>
-      <permission>editor</permission>
-      <state>waiting</state>
-      <operation newrevision="0">updatePub</operation>
-
-      <param class="z-bt-save">button</param>
+      <parameter class="z-bt-ok">button</parameter>
     </action>
 
     <action id="accept">
@@ -90,21 +81,41 @@
       <operation>updatePub</operation>
       <operation type="contentnew" group="moderators">mailNotification</operation>
 
-      <param class="z-bt-icon pm-bt-accept">button</param>
+      <parameter class="z-bt-icon pm-bt-accept">button</parameter>
     </action>
+
+    <action id="update">
+      <title>Update</title>
+      <description>Save content with no workflow change</description>
+      <permission>editor</permission>
+      <state>waiting</state>
+      <operation newrevision="0">updatePub</operation>
+
+      <parameter class="z-bt-save">button</parameter>
+    </action>
+
+    <action id="reject">
+      <title>Reject</title>
+      <description>Reject and delete submitted content</description>
+      <permission>editor</permission>
+      <state>waiting</state>
+      <operation>deletePub</operation>
+
+      <parameter class="z-bt-icon pm-bt-reject" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
+    </action>
+
+    <!-- State: preview -->
 
     <action id="approve">
       <title>Approve</title>
       <description>Approve content for online publishing</description>
       <permission>moderator</permission>
-      <state>waiting</state>
+      <state>preview</state>
       <nextState>approved</nextState>
       <operation online="1">updatePub</operation>
 
-      <param class="z-bt-ok">button</param>
+      <parameter class="z-bt-ok">button</parameter>
     </action>
-
-    <!-- State: preview -->
 
     <action id="update">
       <title>Update</title>
@@ -113,18 +124,7 @@
       <state>preview</state>
       <operation>updatePub</operation>
 
-      <param class="z-bt-save">button</param>
-    </action>
-
-    <action id="approve">
-      <title>Approve</title>
-      <description>Approve content for online publishing</description>
-      <permission>moderator</permission>
-      <state>preview</state>
-      <nextState>approved</nextState>
-      <operation online="1">updatePub</operation>
-
-      <param class="z-bt-ok">button</param>
+      <parameter class="z-bt-save">button</parameter>
     </action>
 
     <action id="delete">
@@ -134,19 +134,19 @@
       <state>preview</state>
       <operation>deletePub</operation>
 
-      <param class="z-bt-delete">button</param>
+      <parameter class="z-bt-delete" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
     </action>
 
     <!-- State: approved -->
 
-    <action id="delete">
-      <title>Delete</title>
-      <description>Delete the publication</description>
+    <action id="updateApprove">
+      <title>Update and Approve</title>
+      <description>Update content and approve for online publishing</description>
       <permission>moderator</permission>
       <state>approved</state>
-      <operation>deletePub</operation>
+      <operation online="1" nextState="approved">updatePub</operation>
 
-      <param class="z-bt-delete">button</param>
+      <parameter class="z-bt-ok">button</parameter>
     </action>
 
     <action id="update">
@@ -157,17 +157,7 @@
       <operation nextState="preview">updatePub</operation>
       <operation type="contentupdate" group="moderators">mailNotification</operation>
 
-      <param class="z-bt-save">button</param>
-    </action>
-
-    <action id="updateApprove">
-      <title>Update and Approve</title>
-      <description>Update content and approve for online publishing</description>
-      <permission>moderator</permission>
-      <state>approved</state>
-      <operation online="1" nextState="approved">updatePub</operation>
-
-      <param class="z-bt-ok">button</param>
+      <parameter class="z-bt-save">button</parameter>
     </action>
 
     <action id="online">
@@ -177,7 +167,7 @@
       <state>approved</state>
       <operation online="1">updateOnlineState</operation>
 
-      <param class="z-bt-icon pm-bt-activate">button</param>
+      <parameter class="z-bt-icon pm-bt-activate">button</parameter>
     </action>
 
     <action id="offline">
@@ -187,7 +177,17 @@
       <state>approved</state>
       <operation online="0">updateOnlineState</operation>
 
-      <param class="z-bt-icon pm-bt-deactivate">button</param>
+      <parameter class="z-bt-icon pm-bt-deactivate">button</parameter>
+    </action>
+
+    <action id="delete">
+      <title>Delete</title>
+      <description>Delete the publication</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation>deletePub</operation>
+
+      <parameter class="z-bt-delete" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
     </action>
 
   </actions>
