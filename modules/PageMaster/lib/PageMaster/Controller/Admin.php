@@ -129,12 +129,17 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             return LogUtil::registerPermissionError();
         }
 
+        $pubtype = PageMaster_Util::getPubType($tid);
+        if (empty($pubtype)) {
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+        }
+
         // db table check
         $tablename = 'pagemaster_pubdata'.$tid;
         if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
-            return LogUtil::registerError($this->__('Error! The table of this publication type seems not to exist. Please, update the DB Tables at the bottom of this form.'),
+            return LogUtil::registerError($this->__f("Error! The table of this publication type [%s] seems not to exist. Please, click the respective 'DB update' link to create it.", $pubtype['title']),
                                           null,
-                                          ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $tid), null, 'pn-maincontent'));
+                                          ModUtil::url('PageMaster', 'admin', 'pubtypes'));
         }
 
         $pubtype = PageMaster_Util::getPubType($tid);

@@ -32,8 +32,8 @@ class PageMaster_Api_Admin extends Zikula_Api
         $tables = DBUtil::getTables();
 
         if (!isset($tables[$tablename])) {
-            $urlfields = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $args['tid']));
-            return LogUtil::registerError($this->__f('Error! No table definitions found. Please <a href="%s">define the fields</a> of your publication.', $urlfields));
+            $fieldsurl = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $args['tid']));
+            return LogUtil::registerError($this->__f('Error! Please <a href="%s">define the fields</a> of your publication first.', DataUtil::formatForDisplay($fieldsurl)));
         }
 
         $existing = DBUtil::metaTables();
