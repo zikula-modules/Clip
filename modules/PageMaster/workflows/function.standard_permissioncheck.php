@@ -60,13 +60,13 @@ function PageMaster_workflow_standard_gettextstrings()
                 no__('Submit and Approve') => no__('Submit a publication and approve immediately'),
                 no__('Submit') => no__('Submit a publication for acceptance by a moderator')
             ),
-            'Waiting' => array(
+            'waiting' => array(
                 no__('Update and Approve') => no__('Update the content and approve for immediate publishing'),
                 no__('Approve') => no__('Approve the publication for immediate publishing'),
                 no__('Update') => no__('Update the content for later publishing'),
                 no__('Delete') => no__('Delete the publication')
             ),
-            'Approved' => array(
+            'approved' => array(
                 no__('Update') => no__('Update the publication'),
                 no__('Publish') => no__('Make the publication available'),
                 no__('Unpublish') => no__('Hide the publication'),

@@ -102,6 +102,7 @@ class PageMaster_Api_User extends Zikula_Api
             $orderby = $args['orderby'];
         }
 
+        $filterPlugins = array();
         foreach ($pubfields as $fieldname => $field)
         {
             $pluginclass = $field['fieldplugin'];

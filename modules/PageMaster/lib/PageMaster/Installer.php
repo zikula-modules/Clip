@@ -315,6 +315,7 @@ class PageMaster_Installer extends Zikula_Installer
             case '0.4.1':
             case '0.4.2':
                 // further upgrade handling
+                // * update the field classnames
                 // * rename the filename/formname columns
                 // * fill the output/input sets if empty
         }

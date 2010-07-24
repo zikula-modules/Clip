@@ -71,12 +71,12 @@ class pmFormPluginType extends Form_Plugin_DropdownList
                 ';
 
                 $typeDataHtml  = '
-                <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/utilities.gif" alt="'.__('Modify config', $dom).'" /></a>
+                <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/utilities.gif" alt="'.$this->__('Modify config').'" /></a>
                 <div id="typeDataDiv" class="pm-modalpopup z-form">
                     '.$plugin->getTypeHtml($this, $render).'
                     <div class="z-formbuttons">
-                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/small/filesave.gif" alt="'.__('Save', $dom).'" /></button>&nbsp;
-                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/small/button_cancel.gif" alt="'.__('Cancel', $dom).'" /></button>
+                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/small/filesave.gif" alt="'.$this->__('Save').'" /></button>&nbsp;
+                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/small/button_cancel.gif" alt="'.$this->__('Cancel').'" /></button>
                     </div>
                 </div>';
             } else {

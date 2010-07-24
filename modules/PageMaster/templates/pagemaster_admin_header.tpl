@@ -4,5 +4,5 @@
 
 <div class="z-adminbox">
     <h1>{modgetinfo modname='PageMaster' info='displayname'} v{modgetinfo modname='PageMaster' info='version'}</h1>
-    <div class="z-menu">{modulelinks modname='PageMaster'}</div>
+    {modulelinks modname='PageMaster'}
 </div>

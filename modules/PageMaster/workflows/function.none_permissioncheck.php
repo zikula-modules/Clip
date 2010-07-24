@@ -57,7 +57,7 @@ function PageMaster_workflow_none_gettextstrings()
             'initial' => array(
                 no__('Submit') => no__('Submit a publication')
             ),
-            'Approved' => array(
+            'approved' => array(
                 no__('Update') => no__('Update the publication'),
                 no__('Delete') => no__('Delete the publication')
             )
