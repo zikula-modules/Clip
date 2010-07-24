@@ -42,7 +42,7 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
         $this->loadValue($view, $view->get_template_vars());
     }
 
-    function loadValue(&$view, &$values)
+    function loadValue($view, &$values)
     {
         if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
             $this->upl_arr = unserialize($values[$this->dataField]);

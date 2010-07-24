@@ -63,19 +63,19 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         return $cat_arr;
     }
 
-    function render(&$view)
+    function render($view)
     {
         return parent::render($view);
     }
 
-    function create(&$view, &$params)
+    function create($view, &$params)
     {
         $this->saveAsString = 1;
 
         parent::create($view, $params);
     }
 
-    function load(&$view, $params)
+    function load($view, &$params)
     {
         if (isset($view->eventHandler->pubfields[$this->id])) {
             $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
@@ -132,7 +132,7 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
     /**
      * Parse configuration
      */
-    function parseConfig($typedata = '', $args = array())
+    function parseConfig($typedata='', $args=array())
     {
         $this->config = array();
 

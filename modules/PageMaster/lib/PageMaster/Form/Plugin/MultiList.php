@@ -70,7 +70,7 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         return $cat_arr;
     }
 
-    function render(&$view)
+    function render($view)
     {
         // extract the configuration {category, size}
         if (isset($view->eventHandler->pubfields[$this->inputName])) {
@@ -86,7 +86,7 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         return parent::render($view);
     }
 
-    function create(&$view, &$params)
+    function create($view, &$params)
     {
         $this->saveAsString  = 1;
         $this->selectionMode = 'multiple';
@@ -94,7 +94,7 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         parent::create($view, $params);
     }
 
-    function load(&$view, $params)
+    function load($view, &$params)
     {
         if (isset($view->eventHandler->pubfields[$this->id])) {
             $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
@@ -168,7 +168,7 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
     /**
      * Parse configuration
      */
-    function parseConfig($typedata = '', $args = array())
+    function parseConfig($typedata='', $args=array())
     {
         $this->config = explode('|', $typedata);
 
@@ -179,7 +179,7 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
     }
 
     /**
-     * these two methods are others in CategoryCheckboxList
+     * These two methods are others in CategoryCheckboxList
      * then CategorySelector(original Form classes).
      * To be able to switch form multilsit to checkbox
      * it is important that both act the same way.

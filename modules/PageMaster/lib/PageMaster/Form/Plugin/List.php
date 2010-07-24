@@ -56,14 +56,14 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
         return $cat;
     }
 
-    function render(&$view)
+    function render($view)
     {
         $mand = ($this->mandatory == '1') ? ' <span class="z-mandatorysym">*</span>' : '';
 
         return parent::render($view).$mand;
     }
 
-    function load(&$view, $params)
+    function load($view, &$params)
     {
         if (!empty($view->eventHandler->pubfields[$this->id]['typedata'])) {
             $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata'], (int)$params['mandatory']);
@@ -142,7 +142,7 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
     /**
      * Parse configuration
      */
-    function parseConfig($typedata = '', $args = array())
+    function parseConfig($typedata='', $args=array())
     {
         // config string: "(int)categoryID, (bool)includeEmpty"
         $this->config = array();

@@ -32,19 +32,19 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         return __FILE__;
     }
 
-    function render(&$view)
+    function render($view)
     {
         $input_html = parent::render($view);
 
         return $input_html.' '.$this->upl_arr['orig_name'];
     }
 
-    function load(&$view, &$params)
+    function load($view, &$params)
     {
         $this->loadValue($view, $view->get_template_vars());
     }
 
-    function loadValue(&$view, &$values)
+    function loadValue($view, &$values)
     {
         if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
             $this->upl_arr = unserialize($values[$this->dataField]);
@@ -289,7 +289,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata = '', $args = array())
+    function parseConfig($typedata='', $args=array())
     {
         $this->config = array();
 

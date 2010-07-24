@@ -31,7 +31,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
         return __FILE__;
     }
 
-    function render(&$view)
+    function render($view)
     {
         $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
 
@@ -91,7 +91,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata = '', $args = array())
+    function parseConfig($typedata='', $args=array())
     {
         $this->config = array();
 

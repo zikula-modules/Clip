@@ -31,7 +31,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         return __FILE__;
     }
 
-    function create(&$view, $params)
+    function create($view, &$params)
     {
         parent::create($view, $params);
 
@@ -42,7 +42,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         }
     }
 
-    function render(&$view)
+    function render($view)
     {
         $this->textMode = 'singleline';
         $view->assign($this->inputName, @unserialize($this->text));
@@ -89,7 +89,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         return array();
     }
 
-    function decode(&$view)
+    function decode($view)
     {
         // Do not read new value if readonly (evil submiter might have forged it)
         if (!$this->readOnly)
@@ -345,7 +345,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
     /**
      * Method to extract the config values
      */
-    function parseConfig($typedata = '', $args = array())
+    function parseConfig($typedata='', $args=array())
     {
         $arrayConfig = explode('||', $typedata);
         $indexKey    = (int)$args;

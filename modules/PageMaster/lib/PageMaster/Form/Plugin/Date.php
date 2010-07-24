@@ -63,7 +63,7 @@ class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
         return $html;
     }
 
-    function create(&$view, &$params)
+    function create($view, &$params)
     {
         $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
         $params['includeTime'] = $this->config['includeTime'];
@@ -74,7 +74,7 @@ class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata = '', $args = array())
+    function parseConfig($typedata='', $args=array())
     {
         $this->config = array();
 

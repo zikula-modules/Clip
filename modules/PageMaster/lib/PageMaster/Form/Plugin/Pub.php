@@ -153,7 +153,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
     /**
      * Parse configuration
      */
-    function parseConfig($typedata = '', $args = array())
+    function parseConfig($typedata='', $args=array())
     {
         $this->config = explode(';', $typedata);
 
