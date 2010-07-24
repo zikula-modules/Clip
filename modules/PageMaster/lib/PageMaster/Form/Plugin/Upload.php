@@ -30,7 +30,7 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
         return __FILE__;
     }
 
-    function render(&$view)
+    function render($view)
     {
         $input_html = parent::render($view);
 

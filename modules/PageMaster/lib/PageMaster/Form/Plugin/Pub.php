@@ -55,7 +55,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         return $pub;    
     }
 
-    function load($view)
+    function load($view, &$params)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
