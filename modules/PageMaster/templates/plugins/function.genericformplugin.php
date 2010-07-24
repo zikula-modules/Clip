@@ -33,59 +33,7 @@ function smarty_function_genericformplugin($params, &$render)
     $pubfields   = PageMaster_Util::getPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];
 
-    switch ($pluginclass) {
-        case 'pmformcheckboxinput':
-            $pluginclass = 'Checkbox';
-            break;
-        case 'pmformcustomdata':
-            $pluginclass = 'CustomData';
-            break;
-        case 'pmformdateinput':
-            $pluginclass = 'Date';
-            break;
-        case 'pmformemailinput':
-            $pluginclass = 'Email';
-            break;
-        case 'pmformfloatinput':
-            $pluginclass = 'Float';
-            break;
-        case 'pmformimageinput':
-            $pluginclass = 'Image';
-            break;
-        case 'pmformintinput':
-            $pluginclass = 'Int';
-            break;
-        case 'pmformlistinput':
-            $pluginclass = 'List';
-            break;
-        case 'pmformmsinput':
-            $pluginclass = 'Ms';
-            break;
-        case 'pmformmulticheckinput':
-            $pluginclass = 'MultiCheck';
-            break;
-        case 'pmformmultilistinput':
-            $pluginclass = 'MultiList';
-            break;
-        case 'pmformpubinput':
-            $pluginclass = 'Pub';
-            break;
-        case 'pmformstringinput':
-            $pluginclass = 'String';
-            break;
-        case 'pmformtextinput':
-            $pluginclass = 'Text';
-            break;
-        case 'pmformuploadinput':
-            $pluginclass = 'Upload';
-            break;
-        case 'pmformurlinput':
-            $pluginclass = 'Url';
-            break;
-    }
-    $pluginclass = "PageMaster_Form_Plugin_$pluginclass";
-
-    //$plugin = new $pluginclass;
+    $pluginclass = PageMaster_Util::processPluginClassname($pluginclass);
 
     // read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])){

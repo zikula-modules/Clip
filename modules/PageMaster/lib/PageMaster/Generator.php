@@ -47,15 +47,16 @@ class PageMaster_Generator
 
                 // handle some special plugins
                 // FIXME move this to each plugin?
-                switch ($field['fieldplugin'])
+                $pluginClassname = PageMaster_Util::processPluginClassname($field['fieldplugin']);
+                switch ($pluginClassname)
                 {
                     // text plugin
-                    case 'pmformtextinput':
+                    case 'PageMaster_Form_Plugin_Text':
                         $snippet_body = '{$pubdata.'.$key.'|safehtml|modcallhooks:\'PageMaster\'}';
                         break;
 
                     // image plugin
-                    case 'pmformimageinput':
+                    case 'PageMaster_Form_Plugin_Image':
                         $template_code_add =
                                 '    {if $pubdata.'.$field['name'].'.url neq \'\'}'."\n".
                                 '        <div class="z-formrow">'."\n".
@@ -71,7 +72,7 @@ class PageMaster_Generator
                         break;
 
                     // list input
-                    case 'pmformlistinput':
+                    case 'PageMaster_Form_Plugin_List':
                         $template_code_add =
                                 '    {if !empty($pubdata.'.$field['name'].')}'."\n".
                                 '        <div class="z-formrow">'."\n".
@@ -83,7 +84,7 @@ class PageMaster_Generator
                         break;
 
                     // multilist input
-                    case 'pmformmultilistinput':
+                    case 'PageMaster_Form_Plugin_MultiList':
                         $template_code_add =
                                 '    {if !empty($pubdata.'.$field['name'].')}'."\n".
                                 '        <div class="z-formrow">'."\n".
@@ -100,7 +101,7 @@ class PageMaster_Generator
                         break;
 
                     // publication input
-                    case 'pmformpubinput':
+                    case 'PageMaster_Form_Plugin_Pub':
                         $plugin = PageMaster_Util::getPlugin('PageMaster_Form_Plugin_Pub');
                         $plugin->parseConfig($field['typedata']);
                         $template_code_add =
@@ -199,11 +200,11 @@ class PageMaster_Generator
 
         foreach (array_keys($pubfields) as $k) {
             // get the formplugin name
-            $formplugin = $pubfields[$k]['fieldplugin'];
+            $formplugin = PageMaster_Util::processPluginClassname($pubfields[$k]['fieldplugin']);
 
             if (!empty($pubfields[$k]['fieldmaxlength'])) {
                 $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
-            } elseif($formplugin == 'pmformtextinput') {
+            } elseif($formplugin == 'PageMaster_Form_Plugin_Text') {
                 $maxlength = " maxLength='65535'";
             } else {
                 $maxlength = ''; //" maxLength='255'"; //TODO Not a clean solution. MaxLength is not needed for ever plugin
@@ -212,7 +213,7 @@ class PageMaster_Generator
             $toolTip = !empty($pubfields[$k]['description']) ? str_replace("'", "\'", $pubfields[$k]['description']) : '';
 
             // specific plugins
-            $linecol = ($formplugin == 'pmformtextinput') ? " rows='15' cols='70'" : '';
+            $linecol = ($formplugin == 'PageMaster_Form_Plugin_Text') ? " rows='15' cols='70'" : '';
 
             // scape simple quotes where needed
             $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']);
