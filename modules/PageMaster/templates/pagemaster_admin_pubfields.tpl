@@ -142,8 +142,9 @@
 
         <div class="z-buttons z-formbuttons">
             {if isset($id)}
-                {formbutton commandName='create' __text='Save' class='z-bt-icon pm-bt-update'}
-                {formbutton commandName='delete' __text='Delete' class='z-bt-icon pm-bt-delete'}
+                {formbutton commandName='create' __text='Save' class='z-bt-save'}
+                {gt text='Are you sure you want to delete this field?' assign='confirmdeletion'}
+                {formbutton commandName='delete' __text='Delete' class='z-bt-delete' confirmMessage=$confirmdeletion}
             {else}
                 {formbutton commandName='create' __text='Create' class='z-bt-ok'}
             {/if}
