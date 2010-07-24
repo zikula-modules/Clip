@@ -336,6 +336,8 @@ class PageMaster_Controller_User extends Zikula_Controller
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
+        $pubtype['titlefield'] = PageMaster_Util::findTitleField($pubfields);
+
         // no security check needed - the security check will be done by the handler class.
         // see the init-part of the handler class for details.
         $formHandler = new PageMaster_Form_Handler_User_Pubedit();

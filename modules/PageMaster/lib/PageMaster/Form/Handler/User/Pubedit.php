@@ -50,6 +50,8 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
             $this->pubAssign($pubdata);
 
+            $pubdata['core_title'] = $pubdata[$this->pubtype['titlefield']];
+
             $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
         } else {
             // initial values

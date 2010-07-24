@@ -14,7 +14,7 @@
             <span class="pm-breadtext">
                 {gt text=$pubtype.title}
             </span>
-            {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_EDIT}
+            {checkpermissionblock component='pagemaster:input:' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
             <span>
                 <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid}">
                     {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
@@ -27,10 +27,11 @@
             <span class="text_separator">&raquo;</span>
 
             {if $section neq 'display'}
-                {if isset($pubdata.id)}
+                {* edit check *}
+                {if isset($id)}
                 <span>
-                    <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid}">
-                        {$pubdata.title}
+                    <a href="{modurl modname='PageMaster' type='user' func='display' tid=$pubtype.tid pid=$core_pid}">
+                        {$core_title}
                     </a>
                 </span>
                 {/if}
@@ -38,7 +39,7 @@
                 <span class="pm-breadtext">
                     {$pubdata.title}
                 </span>
-                {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
+                {checkpermissionblock component='pagemaster:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD}
                 <span>
                     <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubdata.core_tid pid=$pubdata.core_pid}">
                         {img width='12' height='12' modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
@@ -48,12 +49,12 @@
             {/if}
 
             {if $section neq 'display'}
-                {if isset($pubdata.id)}
+                {if isset($id)}
                 <span class="text_separator">&raquo;</span>
                 {/if}
 
                 <span class="pm-breadtext">
-                    {if isset($pubdata.id)}
+                    {if isset($id)}
                         {gt text='Edit form'}
                     {else}
                         {gt text='Create form'}
