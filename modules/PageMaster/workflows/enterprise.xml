@@ -129,7 +129,7 @@
 
     <action id="delete">
       <title>Delete</title>
-      <description>Delete content</description>
+      <description>Delete the publication</description>
       <permission>moderator</permission>
       <state>preview</state>
       <operation>deletePub</operation>
@@ -154,7 +154,7 @@
       <description>Update content for approval</description>
       <permission>editor</permission>
       <state>approved</state>
-      <operation nextState="preview">updatePub</operation>
+      <operation nextstate="preview">updatePub</operation>
       <operation type="contentupdate" group="moderators">mailNotification</operation>
 
       <parameter class="z-bt-save">button</parameter>
@@ -178,6 +178,16 @@
       <operation online="0">updateOnlineState</operation>
 
       <parameter class="z-bt-icon pm-bt-deactivate">button</parameter>
+    </action>
+
+    <action id="MoveToDepot">
+      <title>Move to depot</title>
+      <description>Move the publication to the depot</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation>moveToDepot</operation>
+
+      <parameter class="z-bt-archive">button</parameter>
     </action>
 
     <action id="delete">

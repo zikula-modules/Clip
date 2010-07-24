@@ -14,12 +14,12 @@
  *
  * @param  array  $pub                    publication to update
  * @param  int    $params['online']       (optional) online value for the publication
- * @param  bool   $params['newrevision']  (optional) flag to create a new revision or not, default: true
- * @param  string $params['nextstate']    (optional) state of the updated publication
+ * @param  bool   $params['newrevision']  (optional) flag to disable a new revision creation, default: true
+ * @param  string $params['nextstate']    (optional) state for the updated publication
  * @param  bool   $params['silent']       (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function PageMaster_operation_updatePub(&$pub, $params)
+function PageMaster_operation_updatePub(&$pub, &$params)
 {
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
@@ -28,7 +28,6 @@ function PageMaster_operation_updatePub(&$pub, $params)
         $pub['core_online'] = (int)(bool)$params['online'];
     }
     $newrevision = isset($params['newrevision']) ? (bool)$params['newrevision'] : true;
-    $nextState   = isset($params['nextstate']) ? $params['nextstate'] : $pub['__WORKFLOW__']['state'];
     $silent      = isset($params['silent']) ? (bool)$params['silent'] : false;
 
     // overrides newrevision in pubtype. gives the dev. the possibility to not genereate a new revision
@@ -52,29 +51,37 @@ function PageMaster_operation_updatePub(&$pub, $params)
 
     // get the max revision
     $maxrev = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_revision', 'MAX', "pm_pid = '{$pub['core_pid']}'");
-    $pub['core_revision'] = $maxrev + 1;
 
     if ($pubtype['enablerevisions'] && $newrevision) {
-        // insert the new record
-        unset($pub['id']);
-        if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
+        // create the new revision
+        $rev = $pub;
+
+        $rev['core_revision'] = $maxrev + 1;
+        unset($rev['id']);
+
+        if (DBUtil::insertObject($rev, $pub['__WORKFLOW__']['obj_table'], 'id')) {
             $result = true;
 
-            $pub['__WORKFLOW__']['obj_id'] = $pub['id'];
-            unset($pub['__WORKFLOW__']['id']);
+            $rev['__WORKFLOW__']['obj_id'] = $rev['id'];
+            unset($rev['__WORKFLOW__']['id']);
 
             // register the new workflow, return false if failure
-            $workflow = new pnWorkflow($pub['__WORKFLOW__']['schemaname'], 'PageMaster');
+            $workflow = new Zikula_Workflow($rev['__WORKFLOW__']['schemaname'], 'PageMaster');
 
-            if (!$workflow->registerWorkflow($pub, $nextState)) {
+            if (!$workflow->registerWorkflow($rev, $params['nextstate'])) {
                 $result = false;
-    
+
                 // delete the previously inserted record
-                DBUtil::deleteObjectByID($pub['__WORKFLOW__']['obj_table'], $pub['id'], 'id');
+                DBUtil::deleteObjectByID($rev['__WORKFLOW__']['obj_table'], $rev['id'], 'id');
             }
+
+            // revert the next state of the old revision
+            $params['nextstate'] = $pub['__WORKFLOW__']['state'];
         }
     } else {
-        // update the object without a new revision
+        // update the object with a new revision
+        $pub['core_revision'] = $maxrev + 1;
+
         if (DBUtil::updateObject($pub, $pub['__WORKFLOW__']['obj_table'], null, 'id')) {
             $result = true;
         }

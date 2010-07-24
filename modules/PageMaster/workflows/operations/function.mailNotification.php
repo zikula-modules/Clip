@@ -63,5 +63,5 @@ function PageMaster_operation_mailNotification(&$pub, $params)
         }
     }
 
-    return $ok;
+    return true;//$ok;
 }

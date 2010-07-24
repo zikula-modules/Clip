@@ -45,7 +45,7 @@ function PageMaster_operation_copyPub(&$pub, $params)
         unset($pub['__WORKFLOW__']['id']);
 
         // register the new workflow, return false if failure
-        $workflow = new pnWorkflow($pub['__WORKFLOW__']['schemaname'], 'PageMaster');
+        $workflow = new Zikula_Workflow($pub['__WORKFLOW__']['schemaname'], 'PageMaster');
 
         if ($workflow->registerWorkflow($pub, $copystate)) {
             // let know that a publication was created
