@@ -108,9 +108,10 @@
 
         <div class="z-buttons z-formbuttons">
             {if isset($tid)}
-                {formbutton commandName='create' __text='Save' class='z-bt-icon pm-bt-update'}
+                {formbutton commandName='create' __text='Save' class='z-bt-save'}
                 {formbutton commandName='clone' __text='Clone' class='z-bt-icon pm-bt-copy'}
-                {formbutton commandName='delete' __text='Delete' class='z-bt-icon pm-bt-delete'}
+                {gt text='Are you sure you want to delete this publication type and all its fields and publications?' assign='confirmdeletion'}
+                {formbutton commandName='delete' __text='Delete' class='z-bt-delete' confirmMessage=$confirmdeletion}
             {else}
                 {formbutton commandName='create' __text='Create' class='z-bt-ok'}
             {/if}
