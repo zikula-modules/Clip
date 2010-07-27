@@ -11,7 +11,7 @@
 
 function pubfieldlistorderchanged()
 {
-    var params = 'module=PageMaster&func=changedlistorder&authid=' + $F('pnFormAuthid')
+    var params = 'module=PageMaster&func=changedlistorder&authid=' + $F('FormAuthid')
                    + '&tid=' + $('pm_tid').innerHTML
                    + '&' + Sortable.serialize('pubfieldlist');
 
@@ -48,7 +48,7 @@ function pubfieldlistsortinit()
     );
 
     // also add the anchor to the form 
-    $('pnFormForm').action = $('pnFormForm').action + '#newpubfield'
+    $('FormForm').action = $('FormForm').action + '#newpubfield'
 }
 
 Event.observe(window, 'load', pubfieldlistsortinit, false);
