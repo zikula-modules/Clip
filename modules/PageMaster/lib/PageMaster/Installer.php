@@ -314,10 +314,29 @@ class PageMaster_Installer extends Zikula_Installer
             case '0.4.0':
             case '0.4.1':
             case '0.4.2':
+                $tables = DBUtil::getTables();
                 // further upgrade handling
                 // * update the field classnames
                 // * rename the filename/formname columns
                 // * fill the output/input sets if empty
+
+                // fills the empty publish dates
+                $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'tid');
+                if (!empty($pubtypes)) {
+                    // update each pubdata table
+                    // and update the new field value with the good old pm_cr_uid
+                    $existingtables = DBUtil::metaTables();
+                    foreach ($pubtypes as $tid) {
+                        if (in_array(DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid), $existingtables)) {
+                            $sql = "UPDATE {$tables['pagemaster_pubdata'.$tid]} SET pm_publishdate = pm_cr_date WHERE pm_publishdate IS NULL";
+
+                            if (!DBUtil::executeSQL($sql)) {
+                                LogUtil::registerError($this->__('Error! Update attempt failed.'));
+                                return '0.4.2';
+                            }
+                        }
+                    }
+                }
         }
 
         return true;
