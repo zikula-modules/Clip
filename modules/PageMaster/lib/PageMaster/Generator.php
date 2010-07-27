@@ -258,7 +258,6 @@ class PageMaster_Generator
                 '                {formlabel for=\'core_showinlist\' _'.'_text=\'' . $title_inlist . '\'}'."\n".
                 '                {formcheckbox id=\'core_showinlist\' checked=\'checked\'}'."\n".
                 '            </div>'."\n".
-                '            {formtextinput id=\'core_pid\' textMode="hidden"}'."\n".
                 '        </fieldset>'."\n".
                 "\n".
                 '        {if isset($id)}'."\n".
