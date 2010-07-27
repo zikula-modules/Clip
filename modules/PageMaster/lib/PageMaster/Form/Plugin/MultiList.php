@@ -103,7 +103,10 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
 
         parent::load($view, $params);
 
-        array_shift($this->items); //CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+        if ($this->mandatory) {
+            // CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+            array_shift($this->items);
+        }
     }
 
     static function getSaveTypeDataFunc($field)
