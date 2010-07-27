@@ -12,16 +12,16 @@
 
 class PageMaster_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
 {
+    public $pluginTitle;
     public $columnDef = 'L';
-    public $title;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Checkbox', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Checkbox');
     }
 
     function getFilename()

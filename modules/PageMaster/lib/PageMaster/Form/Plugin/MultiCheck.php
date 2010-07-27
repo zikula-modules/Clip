@@ -12,19 +12,19 @@
 
 class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 {
+    public $pluginTitle;
     public $columnDef   = 'C(512)';
-    public $title;
     public $filterClass = 'pmMultiList';
 
     public $config;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('MultiCheckbox List', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('MultiCheckbox List');
     }
 
     function getFilename()
@@ -106,15 +106,13 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     function getTypeHtml($field)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-        
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : 30;
         $this->parseConfig($typedata);
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 
         $html = ' <div class="z-formrow">
-                      <label for="pmplugin_checklist">'.__('Category', $dom).':</label>
+                      <label for="pmplugin_checklist">'.$this->__('Category').':</label>
                       <select id="pmplugin_checklist" name="pmplugin_checklist">';
 
         $lang = ZLanguage::getLanguageCode();

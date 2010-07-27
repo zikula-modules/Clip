@@ -12,19 +12,19 @@
 
 class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
 {
+    public $pluginTitle;
     public $columnDef   = 'C(512)';
-    public $title;
     public $filterClass = 'pmMultiList';
 
     public $config;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Multiple Selector', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Multiple Selector');
     }
 
     function getFilename()
@@ -132,8 +132,6 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
 
     function getTypeHtml($field, $view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         // parse the configuration
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : '';
         $this->parseConfig($typedata);
@@ -146,7 +144,7 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 
         $html = '<div class="z-formrow">
-                     <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>
+                     <label for="pmplugin_categorylist">'.$this->__('Category').':</label>
                      <select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         $lang = ZLanguage::getLanguageCode();
@@ -162,7 +160,7 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         $html .= '    </select>
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_multisize">'.__('Size', $dom).':</label>
+                      <label for="pmplugin_multisize">'.$this->__('Size').':</label>
                       <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
                   </div>';
 

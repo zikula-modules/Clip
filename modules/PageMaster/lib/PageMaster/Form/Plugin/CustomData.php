@@ -12,18 +12,18 @@
 
 class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
 {
+    public $pluginTitle;
     public $columnDef = 'X';
-    public $title;
 
     public $config;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Custom Data', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Custom Data');
     }
 
     function getFilename()
@@ -198,8 +198,6 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
 
     static function getTypeHtml($field, $view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         PageUtil::addVar('javascript', 'javascript/helpers/Zikula.itemlist.js');
 
         // parse the data
@@ -228,19 +226,19 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         }
 
         $html = '<div class="z-formrow">
-                     <label for="pmplugin_defaultdata">'.__('Default:', $dom).'</label> <input type="text" id="pmplugin_defaultdata" name="pmplugin_defaultdata" value="'.str_replace('"', '&quot;', $configvars[1]).'" />
+                     <label for="pmplugin_defaultdata">'.$this->__('Default:').'</label> <input type="text" id="pmplugin_defaultdata" name="pmplugin_defaultdata" value="'.str_replace('"', '&quot;', $configvars[1]).'" />
                  </div>
                  <div class="z-formrow">
                      <p>
-                         <a onclick="javascript:list_pmcustomdata.appenditem();" href="javascript:void(0);">'.__('Add a new item type', $dom).'</a>
+                         <a onclick="javascript:list_pmcustomdata.appenditem();" href="javascript:void(0);">'.$this->__('Add a new item type').'</a>
                      </p>
                      <ul id="pmcustomdata" class="z-itemlist">
                          <li class="z-itemheader z-clearfix">
-                             <span class="z-itemcell z-w22">'.__('Type name', $dom).'</span>
-                             <span class="z-itemcell z-w22">'.__('Display name', $dom).'</span>
-                             <span class="z-itemcell z-w22">'.__('API to use', $dom).'</span>
-                             <span class="z-itemcell z-w22">'.__('Ajax call', $dom).'</span>
-                             <span class="z-itemcell z-w10">'.__('Options', $dom).'</span>
+                             <span class="z-itemcell z-w22">'.$this->__('Type name').'</span>
+                             <span class="z-itemcell z-w22">'.$this->__('Display name').'</span>
+                             <span class="z-itemcell z-w22">'.$this->__('API to use').'</span>
+                             <span class="z-itemcell z-w22">'.$this->__('Ajax call').'</span>
+                             <span class="z-itemcell z-w10">'.$this->__('Options').'</span>
                          </li>';
 
         foreach ($vars as $key => $var) {
@@ -258,7 +256,9 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
                                  <input class="iteminput" id="itemajax_'.$key.'" name="itemajax[]" value="'.($var[3] != '~'? $var[3] : '').'" />
                              </span>
                              <span class="z-itemcell z-w10">
-                                 <button id="buttondelete_pmcustomdata_'.$key.'" class="buttondelete"><img height="16" width="16" title="'.__('Delete', $dom).'" alt="'.__('Delete', $dom).'" src="images/icons/extrasmall/14_layer_deletelayer.gif"/></button>
+                                 <button id="buttondelete_pmcustomdata_'.$key.'" class="buttondelete">
+                                     <img height="16" width="16" title="'.$this->__('Delete').'" alt="'.$this->__('Delete').'" src="images/icons/extrasmall/14_layer_deletelayer.gif"/>
+                                 </button>
                              </span>
                          </li>';
         }
@@ -279,7 +279,9 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
                                  <input class="iteminput" id="itemajax_" name="dummy[]" />
                              </span>
                              <span class="z-itemcell z-w10">
-                                 <button id="buttondelete_pmcustomdata_X" class="buttondelete"><img height="16" width="16" title="'.__('Delete', $dom).'" alt="'.__('Delete', $dom).'" src="images/icons/extrasmall/14_layer_deletelayer.gif"/></button>
+                                 <button id="buttondelete_pmcustomdata_X" class="buttondelete">
+                                     <img height="16" width="16" title="'.$this->__('Delete').'" alt="'.$this->__('Delete').'" src="images/icons/extrasmall/14_layer_deletelayer.gif"/>
+                                 </button>
                              </span>
                          </li>
                      </ul>';

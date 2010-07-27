@@ -12,19 +12,19 @@
 
 class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 {
+    public $pluginTitle;
     public $columnDef = 'C(512)';
-    public $title;
     public $upl_arr;
 
     public $config;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Image Upload', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Image Upload');
     }
 
     function getFilename()
@@ -53,8 +53,6 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
     static function postRead($data, $field)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         // this plugin return an array by default
         $upl_arr = array();
 
@@ -63,7 +61,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
             $arrTypeData = @unserialize($data);
 
             if (!is_array($arrTypeData)) {
-                return LogUtil::registerError('pmformimageinput: '.__('Stored data is invalid', $dom));
+                return LogUtil::registerError('pmformimageinput: '.$this->__('Stored data is invalid.'));
             }
 
             $url = System::getBaseUrl().ModUtil::getVar('PageMaster', 'uploadpath');
@@ -244,42 +242,40 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
     function getTypeHtml($field, $view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-        
         if (ModUtil::available('Thumbnail')) {
             $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : false;
             $this->parseConfig($typedata);
 
             // TODO Fieldsets and help text explaining how they work
             $html = '<div class="z-formrow">
-                         <label for="pmplugin_tmpx_px">'.__('Thumbnail width', $dom).':</label>
+                         <label for="pmplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
                          <input type="text" value="'.$this->config[0].'" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_tmpy_px">'.__('Thumbnail height', $dom).':</label>
+                         <label for="pmplugin_tmpy_px">'.$this->__('Thumbnail height').':</label>
                          <input type="text" value="'.$this->config[1].'" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
                          <br />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_pre_px">'.__('Preview width', $dom).':</label>
+                         <label for="pmplugin_pre_px">'.$this->__('Preview width').':</label>
                          <input type="text" value="'.$this->config[2].'" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_pre_px">'.__('Preview height', $dom).':</label>
+                         <label for="pmplugin_pre_px">'.$this->__('Preview height').':</label>
                          <input type="text" value="'.$this->config[3].'" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
                          <br />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_full_px">'.__('Full width', $dom).':</label>
+                         <label for="pmplugin_full_px">'.$this->__('Full width').':</label>
                          <input type="text" value="'.$this->config[4].'" id="pmplugin_fullx_px" name="pmplugin_fullx_px" />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_full_px">'.__('Full height', $dom).':</label>
+                         <label for="pmplugin_full_px">'.$this->__('Full height').':</label>
                          <input type="text" value="'.$this->config[5].'" id="pmplugin_fully_px" name="pmplugin_fully_px" />
                      </div>';
         } else {
             $html = '<div class="z-warningmsg">
-                         '.__('Warning! The Thumbnails module is not available. This plugin needs it to build the Preview and Thumbnail of each uploaded Image.', $dom).'
+                         '.$this->__('Warning! The Thumbnails module is not available. This plugin needs it to build the Preview and Thumbnail of each uploaded Image.').'
                      </div>';
         }
 

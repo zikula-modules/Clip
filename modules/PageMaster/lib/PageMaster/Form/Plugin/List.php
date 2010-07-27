@@ -12,19 +12,19 @@
 
 class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 {
+    public $pluginTitle;
     public $columnDef   = 'I4';
-    public $title;
     public $filterClass = 'pmList';
 
     public $config;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('List', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('List');
     }
 
     function getFilename()
@@ -106,15 +106,13 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function getTypeHtml($field, $view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : array(30, true);
         $this->parseConfig($typedata);
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
 
         $html = ' <div class="z-formrow">
-                      <label for="pmplugin_categorylist">'.__('Category', $dom).':</label>
+                      <label for="pmplugin_categorylist">'.$this->__('Category').':</label>
                       <select id="pmplugin_categorylist" name="pmplugin_categorylist">';
 
         $lang = ZLanguage::getLanguageCode();
@@ -132,7 +130,7 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
         $checked = $this->config[1] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
-                      <label for="pmplugin_categoryempty">'.__('Include an empty item?', $dom).'</label>
+                      <label for="pmplugin_categoryempty">'.$this->__('Include an empty item?').'</label>
                       <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
                   </div>';
 

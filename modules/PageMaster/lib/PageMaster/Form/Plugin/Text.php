@@ -12,18 +12,18 @@
 
 class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
 {
+    public $pluginTitle;
     public $columnDef = 'X';
-    public $title;
 
     public $config;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Text', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Text');
     }
 
     function getFilename()
@@ -66,8 +66,6 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
 
     function getTypeHtml($field, $view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : false;
         $this->parseConfig($typedata);
 
@@ -76,12 +74,12 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
         // TODO Formatting config
         if (ModUtil::available('scribite')) {
             $html = '<div class="z-formrow">
-                         <label for="pmplugin_usescribite">'.__('Use Scribite!', $dom).':</label>
+                         <label for="pmplugin_usescribite">'.$this->__('Use Scribite!').':</label>
                          <input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />
                      </div>';
         } else {
             $html = '<div class="z-formrow">
-                         <span class="z-informationmsg">'.__('Install Scribite! if you want to use it in this text field', $dom).'</span>
+                         <span class="z-informationmsg">'.$this->__('Install Scribite! if you want to use it in this text field.').'</span>
                      </div>';
         }
 

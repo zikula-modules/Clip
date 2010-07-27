@@ -17,20 +17,20 @@ class pmFormPluginType extends Form_Plugin_DropdownList
         return __FILE__;
     }
 
-    function __construct()
+    function __construct($view, &$params)
     {
         $this->autoPostBack = true;
         $plugins = PageMaster_Util::getPluginsOptionList();
 
         foreach ($plugins as $plugin) {
             $items[] = array (
-                'text'  => $plugin['plugin']->title,
+                'text'  => $plugin['plugin']->pluginTitle,
                 'value' => $plugin['class']
             );
         }
         $this->items = $items;
 
-        parent::__construct();
+        parent::__construct($view, $params);
     }
 
     function render($render)

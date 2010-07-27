@@ -12,16 +12,16 @@
 
 class PageMaster_Form_Plugin_Ms extends Form_Plugin_TextInput
 {
+    public $pluginTitle;
     public $columnDef = 'C(255)';
-    public $title;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Mediashare', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Mediashare');
     }
 
     function getFilename()

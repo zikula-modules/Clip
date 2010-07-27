@@ -12,16 +12,16 @@
 
 class PageMaster_Form_Plugin_Email extends Form_Plugin_EmailInput
 {
+    public $pluginTitle;
     public $columnDef = 'C(100)';
-    public $title;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Email', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Email');
     }
 
     function getFilename()

@@ -12,19 +12,19 @@
 
 class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
 {
+    public $pluginTitle;
     public $columnDef = 'T';
-    public $title;
     public $filterClass = 'date';
 
     public $config;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Date', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Date');
     }
 
     function getFilename()
@@ -49,14 +49,12 @@ class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
 
     function getTypeHtml($field, $view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         $this->parseConfig($view->_tpl_vars['typedata']);
 
         $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
 
         $html .= '<div class="z-formrow z-warningmsg">
-                      <label for="pmplugin_usedatetime">'.__('Include time', $dom).':</label>
+                      <label for="pmplugin_usedatetime">'.$this->__('Include time').':</label>
                       <input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
                   </div>';
 

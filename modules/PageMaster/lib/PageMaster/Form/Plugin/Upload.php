@@ -12,17 +12,17 @@
 
 class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 {
+    public $pluginTitle;
     public $columnDef = 'C(512)';
-    public $title;
     public $upl_arr;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('File Upload', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('File Upload');
     }
 
     function getFilename()
@@ -51,14 +51,12 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
     function postRead($data, $field)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         // if there's some data, process it
         if (!empty($data)) {
             $arrTypeData = @unserialize($data);
 
             if (!is_array($arrTypeData)) {
-                return LogUtil::registerError('pmformuploadinput: '.__('Stored data is invalid', $dom));
+                return LogUtil::registerError('pmformuploadinput: '.$this->__('Stored data is invalid'));
             }
 
             $path = ModUtil::getVar('PageMaster', 'uploadpath');

@@ -12,18 +12,18 @@
 
 class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
 {
+    public $pluginTitle;
     public $columnDef = 'I4';
-    public $title;
 
     public $config;
 
-    function __construct()
+    function setup()
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
-        //! field type name
-        $this->title = __('Publication', $dom);
+        $this->setDomain($dom);
 
-        parent::__construct();
+        //! field type name
+        $this->pluginTitle = $this->__('Publication');
     }
 
     function getFilename()
@@ -33,8 +33,6 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
 
     function postRead($data, $field)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         $this->parseConfig($field['typedata']);
 
         $pub = array();
@@ -48,7 +46,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
                                       'handlePluginFields' => true));
 
             if (!$pub) {
-                $pub = array('core_error' => __('No such publication found.', $dom));
+                $pub = array('core_error' => $this->__('No such publication found.'));
             }
         }
 
@@ -57,8 +55,6 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
 
     function load($view, &$params)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
 
         if (!empty($this->config['tid'])) {
@@ -83,7 +79,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
             $this->items = $items;
         } else {
             $this->items = array(
-                               array('text'  => __('Plugin not configured.', $dom),
+                               array('text'  => $this->__('Plugin not configured.'),
                                      'value' => '')
                            );
         }
@@ -106,19 +102,17 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
 
     function getTypeHtml($field, $view)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
-
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : '';
         $this->parseConfig($typedata);
 
         $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'title', '', '', false, 'tid');
         foreach ($pubtypes as $tid => $title) {
-            $pubtypes[$tid] = __($title, $dom);
+            $pubtypes[$tid] = $this->__($title);
         }
         asort($pubtypes);
 
         $html = ' <div class="z-formrow">
-                      <label for="pmplugin_pubtid">'.__('Publication', $dom).':</label>
+                      <label for="pmplugin_pubtid">'.$this->__('Publication').':</label>
                       <select id="pmplugin_pubtid" name="pmplugin_pubtid">';
 
         foreach ($pubtypes as $tid => $title) {
@@ -130,20 +124,20 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         $html .= '    </select>
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_pubfilter">'.__('Filter', $dom).':</label>
+                      <label for="pmplugin_pubfilter">'.$this->__('Filter').':</label>
                       <input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$this->config['filter'].'" />
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_pubjoin">'.__('Join', $dom).':</label>
+                      <label for="pmplugin_pubjoin">'.$this->__('Join').':</label>
                       <input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.($this->config['join'] == 'on' ? 'checked="checked"' : '').' />
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_pubjoinfields">'.__('Join fields', $dom).':</label>
+                      <label for="pmplugin_pubjoinfields">'.$this->__('Join fields').':</label>
                       <input type="text" id="pmplugin_pubjoinfields" name="pmplugin_pubjoinfields" value="'.$this->config['alias'].'" >
-                      <span class="z-formnote z-sub">'.__('format: fieldname:alias,fieldname:alias', $dom).'</span>
+                      <span class="z-formnote z-sub">'.$this->__('format: fieldname:alias,fieldname:alias').'</span>
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_puborderbyfield">'.__('Orderby field', $dom).':</label>
+                      <label for="pmplugin_puborderbyfield">'.$this->__('Orderby field').':</label>
                       <input type="text" id="pmplugin_puborderbyfield" name="pmplugin_puborderbyfield" value="'.$this->config['orderby'].'" >
                   </div>';
 

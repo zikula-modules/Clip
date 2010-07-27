@@ -340,7 +340,7 @@ class PageMaster_Util
      */
     public function _sortPluginList($a, $b)
     {
-        return strcmp($a['plugin']->title, $b['plugin']->title);
+        return strcmp($a['plugin']->pluginTitle, $b['plugin']->pluginTitle);
     }
 
     /**
@@ -407,14 +407,24 @@ class PageMaster_Util
             $pluginclass = "PageMaster_Form_Plugin_$pluginclass";
         }
 
+        $pluginName = strtolower(substr($pluginclass, strrpos($pluginclass, '_') + 1));
+
         $sm = ServiceUtil::getManager();
 
-        if (!$sm->hasService($pluginclass)) {
-            $plugin = new $pluginclass;
-            $sm->attachService($pluginclass, $plugin);
+        if (!$sm->hasService("pagemaster.plugin.$pluginName")) {
+            $view = Zikula_View::getInstance('PageMaster');
+
+            $params = array();
+            $plugin = new $pluginclass($view, $params);
+            if (!$plugin instanceof Form_Plugin) {
+                throw new InvalidArgumentException(__f('Plugin %s must be an instance of Form_Plugin', $pluginName));
+            }
+            $plugin->setup();
+
+            $sm->attachService("pagemaster.plugin.$pluginName", $plugin);
         }
 
-        return $sm->getService($pluginclass);
+        return $sm->getService("pagemaster.plugin.$pluginName");
     }
 
     /**
