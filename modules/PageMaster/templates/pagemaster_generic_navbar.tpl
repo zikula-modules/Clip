@@ -97,4 +97,6 @@
         {gt text='You can hide this message <a href="%s">disabling the development mode</a>.' tag1=$urlconfig|safetext}
     </div>
     {/checkpermissionblock}
+
+    {/if}
 {/if}
