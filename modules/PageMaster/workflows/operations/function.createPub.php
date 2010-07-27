@@ -35,6 +35,11 @@ function PageMaster_operation_createPub(&$pub, $params)
     // assign the author
     $pub['core_author'] = UserUtil::getVar('uid');
 
+    // fills the publish date automatically
+    if (empty($pub['core_publishdate'])) {
+        $pub['core_publishdate'] = DateUtil::getDatetime();
+    }
+
     // save the object
     if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
         $result = true;
