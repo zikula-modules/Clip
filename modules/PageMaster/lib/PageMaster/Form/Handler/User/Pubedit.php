@@ -80,6 +80,9 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
                         }
                     }
                 }
+                if (!isset($actions[$aid]['parameters']['button']['title'])) {
+                    $actions[$aid]['parameters']['button']['title'] = $this->__($actions[$aid]['description']);
+                }
             }
         }
 
