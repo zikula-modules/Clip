@@ -370,6 +370,9 @@ class PageMaster_Controller_User extends Zikula_Controller
             $stepname = $obj['__WORKFLOW__']['state'];
         }
 
+        // adds the stepname to the pubtype array
+        $pubtype['stepname'] = $stepname;
+
         // create the output object
         $render = FormUtil::newForm('PageMaster');
         $render->add_core_data();

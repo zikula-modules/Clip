@@ -184,7 +184,9 @@ class PageMaster_Generator
                 '    <div class="pm-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".
-                '{form cssClass=\'z-form pm-editform\' enctype=\'multipart/form-data\'}'."\n".
+                '{assign var=\'zformclass\' value="z-form pm-editform pm-editform-`$pubtype.tid` pm-editform-`$pubtype.tid`-`$pubtype.stepname`"}'."\n".
+                "\n".
+                '{form cssClass=$zformclass enctype=\'multipart/form-data\'}'."\n".
                 '    <div>'."\n".
                 '        {formvalidationsummary}'."\n".
                 '        <fieldset>'."\n".
