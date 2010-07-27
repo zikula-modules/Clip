@@ -71,6 +71,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         // translate any gt string on the action parameters
         foreach (array_keys($actions) as $aid) {
             if (isset($actions[$aid]['parameters'])) {
+                // check if the action parameter is translatable
                 foreach (array_keys($actions[$aid]['parameters']) as $pname) {
                     foreach ($actions[$aid]['parameters'][$pname] as $k => $v) {
                         if (strpos($k, '__') === 0) {
@@ -80,6 +81,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
                         }
                     }
                 }
+                // set the button title with the description if not set
                 if (!isset($actions[$aid]['parameters']['button']['title'])) {
                     $actions[$aid]['parameters']['button']['title'] = $this->__($actions[$aid]['description']);
                 }
@@ -139,16 +141,17 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
                                        'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // see http://www.smarty.net/manual/en/caching.groups.php
-        $vw = Zikula_View::getInstance('PageMaster');
+        $tmp = Zikula_View::getInstance('PageMaster');
         // clear the view of the current publication
-        $vw->clear_cache(null, 'display'.$this->tid.'|'.$this->core_pid);
+        $tmp->clear_cache(null, 'display'.$this->tid.'|'.$this->core_pid);
         // clear all page of publist
-        $vw->clear_cache(null, 'view'.$this->tid);
-        unset($vw);
+        $tmp->clear_cache(null, 'view'.$this->tid);
+        unset($tmp);
 
         // core operations processing
         $goto = $this->itemurl;
-        $ops  = $data['core_operations'];
+        $ops  = isset($data['core_operations']) ? $data['core_operations'] : array();
+
         if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
             // if the item moved to the depot or was deleted
             $urltid = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $data['tid']));
@@ -164,7 +167,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
                 $goto = isset($ops['createPub']['goto']) ? $ops['createPub']['goto'] : $this->referer;
             }
 
-        } else {
+        } elseif (!empty($ops)) {
             // check if an operation thrown a goto value
             foreach (array_keys($ops) as $op) {
                 if (isset($ops[$op]['goto'])) {
@@ -210,7 +213,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
                 //}
         }
 
-        if (empty($data)) {
+        if (!$data) {
             return false;
         }
 
@@ -254,7 +257,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
     {
         $data['tid']              = $this->tid;
         $data['id']               = $this->id;
-        $data['core_pid']         = $this->core_pid;
+        $data['core_pid']         = isset($data['core_pid']) && !empty($data['core_pid']) ? $data['core_pid'] : $this->core_pid;
         $data['core_author']      = $this->core_author;
         $data['core_revision']    = $this->core_revision;
         $data['core_hitcount']    = $this->core_hitcount;

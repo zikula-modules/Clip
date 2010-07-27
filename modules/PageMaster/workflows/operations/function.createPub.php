@@ -28,9 +28,15 @@ function PageMaster_operation_createPub(&$pub, $params)
     // initializes the result flag
     $result = false;
 
-    // find a new pid
-    $maxpid = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
-    $pub['core_pid'] = $maxpid + 1;
+    // validate or find a new pid
+    if (isset($pub['core_pid']) && !empty($pub['core_pid'])) {
+        if (DBUtil::selectFieldByID($pub['__WORKFLOW__']['obj_table'], 'id', $pub['core_pid'], 'core_pid')) {
+            return LogUtil::registerError(__('Error! The fixed publication id already exists on the database. Please contact the administrator.', $dom));
+        }
+    } else {
+        $maxpid = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
+        $pub['core_pid'] = $maxpid + 1;
+    }
 
     // assign the author
     $pub['core_author'] = UserUtil::getVar('uid');
