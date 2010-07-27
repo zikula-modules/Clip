@@ -51,7 +51,8 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
             if (!empty($catIds)) {
                 ModUtil::dbInfoLoad('Categories');
 
-                $tables          = DBUtil::getTables();
+                $tables = DBUtil::getTables();
+
                 $category_column = $tables['categories_category_column'];
 
                 $where = array();

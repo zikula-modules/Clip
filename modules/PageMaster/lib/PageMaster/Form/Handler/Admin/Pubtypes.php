@@ -135,8 +135,10 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 $data['inputset']  = DataUtil::formatPermalink($data['inputset']);
 
                 if (empty($this->tid)) {
-                    DBUtil::insertObject($data, 'pagemaster_pubtypes');
-                    LogUtil::registerStatus($this->__('Done! Publication type created.'));
+                    DBUtil::insertObject($data, 'pagemaster_pubtypes', 'tid');
+                    LogUtil::registerStatus($this->__('Done! Publication type created. Now you can proceed to define its fields.'));
+
+                    $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $data['tid']));
                 } else {
                     DBUtil::updateObject($data, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
                     LogUtil::registerStatus($this->__('Done! Publication type updated.'));

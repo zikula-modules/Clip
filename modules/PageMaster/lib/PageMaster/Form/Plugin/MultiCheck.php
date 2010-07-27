@@ -34,6 +34,9 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     static function postRead($data, $field)
     {
+        // this plugin return an array by default
+        $cat_arr = array();
+
         if (!empty($data) && $data <> '::') {
             $lang = ZLanguage::getLanguageCode();
 
@@ -45,7 +48,8 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
             if (!empty($catIds)) {
                 ModUtil::dbInfoLoad('Categories');
 
-                $tables          = DBUtil::getTables();
+                $tables = DBUtil::getTables();
+
                 $category_column = $tables['categories_category_column'];
 
                 $where = array();
