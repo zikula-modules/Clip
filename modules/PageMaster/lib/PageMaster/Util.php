@@ -492,7 +492,7 @@ class PageMaster_Util
             return $pubtitles_arr;
         }
 
-        return isset($pubtitles_arr[(int)$tid]) ? $pubtitles_arr[(int)$tid] : false;
+        return isset($pubtitles_arr[(int)$tid]) ? $pubtitles_arr[(int)$tid] : 'id';
     }
 
     /**
