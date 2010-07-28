@@ -32,6 +32,13 @@ class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
         return __FILE__;
     }
 
+    static function getPluginOutput($field)
+    {
+        $body = '{$pubdata.'.$field['name'].'|dateformat:\'datetimelong\'}';
+
+        return array('body' => $body);
+    }
+
     static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()

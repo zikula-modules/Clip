@@ -272,18 +272,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
                 break;
 
             case 'outputfull':
-                $tablename = 'pagemaster_pubdata'.$tid;
-                $id = DBUtil::selectFieldMax($tablename, 'id', 'MAX');
-                if ($id <= 0) {
-                    return LogUtil::registerError($this->__('There has to be at least one publication to generate the template code.'), null,
-                    System::serverGetVar('HTTP_REFERER', ModUtil::url('PageMaster', 'admin', 'main')));
-                }
-                $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get',
-                                            array('tid' => $tid,
-                                                  'id'  => $id,
-                                                  'handlePluginFields' => true));
-
-                $code = PageMaster_Generator::pubview($tid, $pubdata);
+                $code = PageMaster_Generator::pubdisplay($tid, false);
                 break;
 
             case 'outputlist':

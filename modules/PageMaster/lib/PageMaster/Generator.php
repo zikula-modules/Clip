@@ -14,10 +14,30 @@
  */
 class PageMaster_Generator
 {
-    public static function pubview($tid, $pubdata)
+    public static function pubdisplay($tid, $public=true)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
+        $tables = DBUtil::getTables();
+        // initial pubdata is the table definition
+        $pubdata = $tables["pagemaster_pubdata{$tid}_column"];
+
+        // add the display fields
+        $displayfields = array(
+            'core_title' => '',
+            'core_uniqueid' => '',
+            'core_tid' => $tid,
+            'core_pid' => '',
+            'core_author' => '',
+            'core_creator' => false,
+            'core_approvalstate' => ''
+        );
+
+        $pubdata = array_merge($displayfields, $pubdata);
+
+        $pubdata['__WORKFLOW__'] = array();
+
+        // build the display code
         $template_code = "\n".
                 '{hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
@@ -35,129 +55,126 @@ class PageMaster_Generator
 
         foreach ($pubdata as $key => $pubfield)
         {
-            $template_code_add       = '';
-            $template_code_fielddesc = '';
-            $snippet_body            = '';
+            $rowcode = array(
+                'full'  => '',
+                'label' => '',
+                'body'  => ''
+            );
 
             // check if field is to handle special
             if (isset($pubfields[$key])) {
+                // $key is $field.name
                 $field = $pubfields[$key];
 
-                $template_code_fielddesc = '{gt text=\''.$field['title'].'\'}:';
+                $rowcode['label'] = '{gt text=\''.$field['title'].'\'}:';
 
-                // handle some special plugins
-                // FIXME move this to each plugin?
-                $pluginClassname = PageMaster_Util::processPluginClassname($field['fieldplugin']);
-                switch ($pluginClassname)
-                {
-                    // text plugin
-                    case 'PageMaster_Form_Plugin_Text':
-                        $snippet_body = '{$pubdata.'.$key.'|safehtml|modcallhooks:\'PageMaster\'}';
-                        break;
+                // process the postRead and getPluginOutput
+                $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
 
-                    // image plugin
-                    case 'PageMaster_Form_Plugin_Image':
-                        $template_code_add =
-                                '    {if $pubdata.'.$field['name'].'.url neq \'\'}'."\n".
-                                '        <div class="z-formrow">'."\n".
-                                '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
-                                '            <span class="z-formnote">'."\n".
-                                '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
-                                '                <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail', $dom).'\'}" alt="{gt text=\''.no__('Thumbnail', $dom).'\'}" /><br />'."\n".
-                                '                <img src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image', $dom).'\'}" alt="{gt text=\''.no__('Image', $dom).'\'}" />'."\n".
-                                '                <pre>{pmarray array=$pubdata.'.$key.'}</pre>'."\n".
-                                '            <span>'."\n".
-                                '        </div>'."\n".
-                                '    {/if}';
-                        break;
+                if (method_exists($plugin, 'postRead')) {
+                    $pubdata[$key] = $plugin->postRead('', $key);
+                } else {
+                    $pubdata[$key] = '';
+                }
 
-                    // list input
-                    case 'PageMaster_Form_Plugin_List':
-                        $template_code_add =
-                                '    {if !empty($pubdata.'.$field['name'].')}'."\n".
-                                '        <div class="z-formrow">'."\n".
-                                '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
-                                '            <span class="z-formnote">{$pubdata.'.$key.'.fullTitle}<span>'."\n".
-                                '            <pre>{pmarray array=$pubdata.'.$key.'}</pre>'."\n".
-                                '        </div>'."\n".
-                                '    {/if}';
-                        break;
-
-                    // multilist input
-                    case 'PageMaster_Form_Plugin_MultiList':
-                        $template_code_add =
-                                '    {if !empty($pubdata.'.$field['name'].')}'."\n".
-                                '        <div class="z-formrow">'."\n".
-                                '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
-                                '            <span class="z-formnote">'."\n".
-                                '                <ul>'."\n".
-                                '                    {foreach from=$pubdata.'.$key.' item=\'item\'}'."\n".
-                                '                        <li>{$item.fullTitle}</li>'."\n".
-                                '                    {/foreach}'."\n".
-                                '                </ul>'."\n".
-                                '            <span>'."\n".
-                                '        </div>'."\n".
-                                '    {/if}';
-                        break;
-
-                    // publication input
-                    case 'PageMaster_Form_Plugin_Pub':
-                        $plugin = PageMaster_Util::getPlugin('PageMaster_Form_Plugin_Pub');
-                        $plugin->parseConfig($field['typedata']);
-                        $template_code_add =
-                                '    {if !empty($pubdata.'.$key.')}'."\n".
-                                '        <div class="z-formrow">'."\n".
-                                '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
-                                '            <span class="z-formnote">'."\n".
-                                '                <pre>{pmarray array=$pubdata.'.$key.'}</pre>'."\n".
-                                '                {*modapifunc modname=\'PageMaster\' func=\'get\' tid=\''.$plugin->config['tid'].'\' pid=$pubdata.'.$key.' assign=\''.$key.'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
-                                '            <span>'."\n".
-                                '        </div>'."\n".
-                                '    {/if}';
-                        break;
+                if (method_exists($plugin, 'getPluginOutput')) {
+                    $plugincode = $plugin->getPluginOutput($field);
+                    $rowcode = array_merge($rowcode, (array)$plugincode);
                 }
             }
 
-            // if it was no special field handle it normal
-            if (empty($template_code_add)) {
-                if (empty($template_code_fielddesc)) {
-                    $template_code_fielddesc = $key.':';
+            // if the row is not defined yet
+            if (empty($rowcode['full'])) {
+                // fill the label if empty
+                if (empty($rowcode['label'])) {
+                    $rowcode['label'] = $key.':';
                 }
 
-                if (empty($snippet_body)) {
-                    // filter some core fields (uids)
-                    if (in_array($key, array('core_author', 'cr_uid', 'lu_uid'))) {
-                        $snippet_body = "\n".
+                // fill the body if empty
+                if (empty($rowcode['body'])) {
+                    // filter some core fields
+                    switch ($key) {
+                        // title
+                        case 'core_title':
+                            $rowcode['full'] = '    <h3'.($public ? ' class="z-center"' : '').'>{gt text=$pubdata.'.$key.'}</h3>';
+                            break;
+
+                        // reads
+                        case 'core_hitcount':
+                            $rowcode['body'] = '{gt text=\'%s read\' plural=\'%s reads\' count=$pubdata.'.$key.' tag1=$pubdata.'.$key.'}';
+                            break;
+
+                        // language
+                        case 'core_language':
+                            $rowcode['full'] = "\n".
+                                '    <div class="z-formrow">'."\n".
+                                '        <span class="z-label">'.$rowcode['label'].'</span>'."\n".
+                                '            {if !empty($pubdata.'.$key.')}'."\n".
+                                '                <span class="z-formnote">{$pubdata.'.$key.'|getlanguagename}<span>'."\n".
+                                '            {else}'."\n".
+                                '                <span class="z-formnote">{gt text=\''.no__('Available for all languages').'\'}<span>'."\n".
+                                '            {/if}'."\n".
+                                '        </span>'."\n".
+                                '    </div>'."\n";
+                            break;
+
+                        // flags
+                        case 'core_creator':
+                        case 'core_online':
+                        case 'core_indepot':
+                        case 'core_showinmenu':
+                        case 'core_showinlist':
+                            $rowcode['body'] = '{$pubdata.'.$key.'|yesno}';
+                            break;
+
+                        // user ids
+                        case 'core_author':
+                        case 'cr_uid':
+                        case 'lu_uid':
+                            $rowcode['body'] = "\n".
                                 '                {$pubdata.'.$key.'|userprofilelink}'."\n".
                                 '                <span class="z-sub">[{$pubdata.'.$key.'|safehtml}]</span>'."\n".
                                 '            ';
+                            break;
 
-                        // flags
-                    } elseif (in_array($key, array('core_creator', 'core_online', 'core_indepot', 'core_showinmenu', 'core_showinlist'))) {
-                        $snippet_body = '{$pubdata.'.$key.'|yesno}';
+                        // dates
+                        case 'core_publishdate':
+                        case 'core_expiredate':
+                        case 'cr_date':
+                        case 'lu_date':
+                            $rowcode['body'] = '{$pubdata.'.$key.'|dateformat:\'datetimelong\'}';
+                            break;
 
-                        // generic arrays
-                    } elseif (is_array($pubfield)) {
-                        $snippet_body = '<pre>{pmarray array=$pubdata.'.$key.'}</pre>';
+                        default:
+                            if (is_array($pubfield)) {
+                                // generic arrays
+                                $rowcode['body'] = '<pre>{pmarray array=$pubdata.'.$key.'}</pre>';
 
-                        // generic strings
-                    } else {
-                        $snippet_body = '{$pubdata.'.$key.'|safehtml}';
+                            } elseif (is_bool($pubfield)) {
+                                // generic booleans
+                                $rowcode['body'] = '{$pubdata.'.$key.'|yesno}';
+
+                            } else {
+                                // generic strings
+                                $rowcode['body'] = '{$pubdata.'.$key.'|safetext}';
+                            }
                     }
                 }
 
-                // build the final snippet
-                $template_code_add =
-                        '    {if !empty($pubdata.'.$key.')}'."\n".
+                // build the final row if not filled
+                if (empty($rowcode['full'])) {
+                    $rowcode['full'] =
+                        '    {if $pubdata.'.$key.' neq \'\'}'."\n".
                         '        <div class="z-formrow">'."\n".
-                        '            <span class="z-label">'.$template_code_fielddesc.'</span>'."\n".
-                        '            <span class="z-formnote">'.$snippet_body.'<span>'."\n".
+                        '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
+                        '            <span class="z-formnote">'.$rowcode['body'].'<span>'."\n".
                         '        </div>'."\n".
                         '    {/if}';
+                }
             }
 
             // add the snippet to the final template
-            $template_code .= "\n".$template_code_add."\n";
+            $template_code .= "\n".$rowcode['full']."\n";
         }
 
         // Add the Hooks support for display
@@ -166,6 +183,12 @@ class PageMaster_Generator
                 '{modurl modname=\'PageMaster\' func=\'display\' tid=$pubdata.core_tid pid=$pubdata.core_pid assign=\'returnurl\'}'."\n".
                 '{modcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$pubdata.core_uniqueid module=\'PageMaster\' returnurl=$returnurl}'.
                 "\n";
+
+        // if the template is a public output
+        if ($public) {
+            // add the row cycles
+            $template_code = str_replace('z-formrow', 'z-formrow {cycle values=\'z-odd,z-even\'}', $template_code);
+        }
 
         return $template_code;
     }

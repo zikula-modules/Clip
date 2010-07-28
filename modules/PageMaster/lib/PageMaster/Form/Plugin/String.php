@@ -28,4 +28,11 @@ class PageMaster_Form_Plugin_String extends Form_Plugin_TextInput
     {
         return __FILE__;
     }
+
+    static function getPluginOutput($field)
+    {
+        $body = '{$pubdata.'.$field['name'].'|safehtml|modcallhooks:\'PageMaster\'}';
+
+        return array('body' => $body);
+    }
 }

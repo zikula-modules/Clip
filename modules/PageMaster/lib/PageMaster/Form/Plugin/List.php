@@ -32,6 +32,19 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
         return __FILE__;
     }
 
+    static function getPluginOutput($field)
+    {
+        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
+                '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '            <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
+                '            <pre>{pmarray array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '        </div>'."\n".
+                '    {/if}';
+
+        return array('full' => $full);
+    }
+
     static function postRead($data, $field)
     {
         // this plugin return an array

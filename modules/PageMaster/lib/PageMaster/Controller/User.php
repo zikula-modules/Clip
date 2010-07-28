@@ -81,7 +81,9 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         // buils the output
-        $this->view->setCache_Id($cacheid)->setCaching($cachetid);
+        $this->view->setCache_Id($cacheid)
+                   ->setCaching($cachetid)
+                   ->add_core_data();
 
         if ($cachetid) {
             $this->view->setCache_lifetime($cachelifetime);
@@ -302,7 +304,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         if ($template == 'var:display_template_code') {
             $this->view->setCompile_check(true)
-                       ->assign('display_template_code', PageMaster_Generator::pubview($tid, $pubdata));
+                       ->assign('display_template_code', PageMaster_Generator::pubdisplay($tid, $pubdata));
         }
 
         return $this->view->fetch($template, $cacheid);

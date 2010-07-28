@@ -32,6 +32,24 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         return __FILE__;
     }
 
+    static function getPluginOutput($field)
+    {
+        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
+                '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '            <span class="z-formnote">'."\n".
+                '                <ul>'."\n".
+                '                    {foreach from=$pubdata.'.$field['name'].' item=\'item\'}'."\n".
+                '                        <li>{$item.fullTitle}</li>'."\n".
+                '                    {/foreach}'."\n".
+                '                </ul>'."\n".
+                '            <span>'."\n".
+                '        </div>'."\n".
+                '    {/if}';
+
+        return array('full' => $full);
+    }
+
     static function postRead($data, $field)
     {
         // this plugin return an array by default

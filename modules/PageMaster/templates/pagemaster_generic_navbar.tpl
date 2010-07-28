@@ -92,7 +92,6 @@
             {/case}
         {/switch}
         {modurl modname='PageMaster' type='admin' func='modifyconfig' assign='urlconfig'}
-        {assign var='urlconfig' value=$urlconfig|safetext}
         <br /><br />
         {gt text='You can hide this message <a href="%s">disabling the development mode</a>.' tag1=$urlconfig|safetext}
     </div>

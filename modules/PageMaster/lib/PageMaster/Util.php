@@ -41,64 +41,64 @@ class PageMaster_Util
     /**
      * Temporary pre-0.9 upgrade script classnames convertor
      */
-    public static function processPluginClassname($pluginclass)
+    public static function processPluginClassname($pluginClass)
     {
-        if (strpos($pluginclass, 'PageMaster_') !== 0) {
-            switch ($pluginclass) {
+        if (strpos($pluginClass, 'PageMaster_') !== 0) {
+            switch ($pluginClass) {
                 case 'pmformcheckboxinput':
-                    $pluginclass = 'Checkbox';
+                    $pluginClass = 'Checkbox';
                     break;
                 case 'pmformcustomdata':
-                    $pluginclass = 'CustomData';
+                    $pluginClass = 'CustomData';
                     break;
                 case 'pmformdateinput':
-                    $pluginclass = 'Date';
+                    $pluginClass = 'Date';
                     break;
                 case 'pmformemailinput':
-                    $pluginclass = 'Email';
+                    $pluginClass = 'Email';
                     break;
                 case 'pmformfloatinput':
-                    $pluginclass = 'Float';
+                    $pluginClass = 'Float';
                     break;
                 case 'pmformimageinput':
-                    $pluginclass = 'Image';
+                    $pluginClass = 'Image';
                     break;
                 case 'pmformintinput':
-                    $pluginclass = 'Int';
+                    $pluginClass = 'Int';
                     break;
                 case 'pmformlistinput':
-                    $pluginclass = 'List';
+                    $pluginClass = 'List';
                     break;
                 case 'pmformmsinput':
-                    $pluginclass = 'Ms';
+                    $pluginClass = 'Ms';
                     break;
                 case 'pmformmulticheckinput':
-                    $pluginclass = 'MultiCheck';
+                    $pluginClass = 'MultiCheck';
                     break;
                 case 'pmformmultilistinput':
-                    $pluginclass = 'MultiList';
+                    $pluginClass = 'MultiList';
                     break;
                 case 'pmformpubinput':
-                    $pluginclass = 'Pub';
+                    $pluginClass = 'Pub';
                     break;
                 case 'pmformstringinput':
-                    $pluginclass = 'String';
+                    $pluginClass = 'String';
                     break;
                 case 'pmformtextinput':
-                    $pluginclass = 'Text';
+                    $pluginClass = 'Text';
                     break;
                 case 'pmformuploadinput':
-                    $pluginclass = 'Upload';
+                    $pluginClass = 'Upload';
                     break;
                 case 'pmformurlinput':
-                    $pluginclass = 'Url';
+                    $pluginClass = 'Url';
                     break;
             }
 
-            $pluginclass = "PageMaster_Form_Plugin_$pluginclass";
+            $pluginClass = "PageMaster_Form_Plugin_$pluginClass";
         }
 
-        return $pluginclass;
+        return $pluginClass;
     }
 
     /**
@@ -175,8 +175,7 @@ class PageMaster_Util
     public static function handlePluginFields($publist, $pubfields, $islist=true)
     {
         foreach ($pubfields as $fieldname => $field) {
-            $pluginclass = $field['fieldplugin'];
-            $plugin = PageMaster_Util::getPlugin($pluginclass);
+            $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
 
             if (method_exists($plugin, 'postRead')) {
                 if ($islist) {
@@ -346,68 +345,16 @@ class PageMaster_Util
     /**
      * Plugin getter.
      *
-     * @param string $pluginclass Class name of the plugin.
+     * @param string $pluginClass Class name of the plugin.
      *
      * @return mixed Class instance.
      */
-    public static function getPlugin($pluginclass)
+    public static function getPlugin($pluginClass)
     {
-        // temporary conversion table
-        if (strpos($pluginclass, 'pmform') === 0) {
-            switch ($pluginclass) {
-                case 'pmformcheckboxinput':
-                    $pluginclass = 'Checkbox';
-                    break;
-                case 'pmformcustomdata':
-                    $pluginclass = 'CustomData';
-                    break;
-                case 'pmformdateinput':
-                    $pluginclass = 'Date';
-                    break;
-                case 'pmformemailinput':
-                    $pluginclass = 'Email';
-                    break;
-                case 'pmformfloatinput':
-                    $pluginclass = 'Float';
-                    break;
-                case 'pmformimageinput':
-                    $pluginclass = 'Image';
-                    break;
-                case 'pmformintinput':
-                    $pluginclass = 'Int';
-                    break;
-                case 'pmformlistinput':
-                    $pluginclass = 'List';
-                    break;
-                case 'pmformmsinput':
-                    $pluginclass = 'Ms';
-                    break;
-                case 'pmformmulticheckinput':
-                    $pluginclass = 'MultiCheck';
-                    break;
-                case 'pmformmultilistinput':
-                    $pluginclass = 'MultiList';
-                    break;
-                case 'pmformpubinput':
-                    $pluginclass = 'Pub';
-                    break;
-                case 'pmformstringinput':
-                    $pluginclass = 'String';
-                    break;
-                case 'pmformtextinput':
-                    $pluginclass = 'Text';
-                    break;
-                case 'pmformuploadinput':
-                    $pluginclass = 'Upload';
-                    break;
-                case 'pmformurlinput':
-                    $pluginclass = 'Url';
-                    break;
-            }
-            $pluginclass = "PageMaster_Form_Plugin_$pluginclass";
-        }
+        // temporary 0.4.x conversion table
+        $pluginClass = self::processPluginClassname($pluginClass);
 
-        $pluginName = strtolower(substr($pluginclass, strrpos($pluginclass, '_') + 1));
+        $pluginName = strtolower(substr($pluginClass, strrpos($pluginClass, '_') + 1));
 
         $sm = ServiceUtil::getManager();
 
@@ -415,7 +362,7 @@ class PageMaster_Util
             $view = Zikula_View::getInstance('PageMaster');
 
             $params = array();
-            $plugin = new $pluginclass($view, $params);
+            $plugin = new $pluginClass($view, $params);
             if (!$plugin instanceof Form_Plugin) {
                 throw new InvalidArgumentException(__f('Plugin %s must be an instance of Form_Plugin', $pluginName));
             }

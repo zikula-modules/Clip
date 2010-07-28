@@ -32,6 +32,24 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
         return __FILE__;
     }
 
+    static function getPluginOutput($field)
+    {
+        $full = '    {if $pubdata.'.$field['name'].'.url neq \'\'}'."\n".
+                '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '            <span class="z-formnote">'."\n".
+                '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
+                '                <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
+              //'                <br />'."\n".
+              //'                <img src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
+                '                <pre>{pmarray array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '            <span>'."\n".
+                '        </div>'."\n".
+                '    {/if}';
+
+        return array('full' => $full);
+    }
+
     function render($view)
     {
         $input_html = parent::render($view);

@@ -31,6 +31,23 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         return __FILE__;
     }
 
+    function getPluginOutput($field)
+    {
+        $this->parseConfig($field['typedata']);
+
+        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
+                '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '            <span class="z-formnote">'."\n".
+                '                <pre>{pmarray array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '                {*modapifunc modname=\'PageMaster\' func=\'get\' tid=\''.$this->config['tid'].'\' pid=$pubdata.'.$field['name'].' assign=\''.$field['name'].'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
+                '            <span>'."\n".
+                '        </div>'."\n".
+                '    {/if}';
+
+        return array('full' => $full);
+    }
+
     function postRead($data, $field)
     {
         $this->parseConfig($field['typedata']);

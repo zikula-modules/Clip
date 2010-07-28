@@ -14,6 +14,7 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 {
     public $pluginTitle;
     public $columnDef = 'C(512)';
+
     public $upl_arr;
 
     function setup()
@@ -51,6 +52,8 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
     function postRead($data, $field)
     {
+        $this->upl_arr = array();
+
         // if there's some data, process it
         if (!empty($data)) {
             $arrTypeData = @unserialize($data);
