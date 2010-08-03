@@ -39,7 +39,7 @@ function PageMaster_operation_moveToDepot($pub, $params)
         if ($result) {
             LogUtil::registerStatus(__('Done! Publication archived.', $dom));
         } else {
-            LogUtil::registerError(__('Error! Failed to update publication.', $dom));
+            LogUtil::registerError(__('Error! Failed to update the publication.', $dom));
         }
     }
 

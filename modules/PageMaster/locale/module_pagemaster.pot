@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula component\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-28 08:36-0300\n"
+"POT-Creation-Date: 2010-07-04 20:45-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -132,7 +132,7 @@ msgstr ""
 #: classes/FormPlugins/pmformcustomdata.class.php:264
 #: classes/FormPlugins/pmformcustomdata.class.php:285
 #: pntemplates/pagemaster_admin_pubfields.htm:146
-#: pntemplates/pagemaster_admin_pubtype.htm:111
+#: pntemplates/pagemaster_admin_pubtype.htm:114
 msgid "Delete"
 msgstr ""
 
@@ -151,6 +151,7 @@ msgid "Done! Publication updated."
 msgstr ""
 
 #: workflows/operations/function.updatePub.php:93
+#: workflows/operations/function.moveToDepot.php:42
 #: workflows/operations/function.updateOnlineState.php:45
 msgid "Error! Failed to update the publication."
 msgstr ""
@@ -173,10 +174,6 @@ msgstr ""
 
 #: workflows/operations/function.moveToDepot.php:40
 msgid "Done! Publication archived."
-msgstr ""
-
-#: workflows/operations/function.moveToDepot.php:42
-msgid "Error! Failed to update publication."
 msgstr ""
 
 #: workflows/operations/function.createPub.php:50
@@ -337,6 +334,7 @@ msgstr ""
 
 #: Form/Plugin/CustomData.php:240
 #: classes/FormPlugins/pmformcustomdata.class.php:243
+#: pntemplates/pagemaster_admin_pubfields.htm:93
 msgid "Display name"
 msgstr ""
 
@@ -463,7 +461,7 @@ msgstr ""
 
 #. ! field type name
 #: Form/Plugin/List.php:25 classes/FormPlugins/pmformlistinput.class.php:27
-#: pntemplates/pagemaster_admin_pubtypes.htm:67
+#: pntemplates/pagemaster_admin_pubtypes.htm:68
 msgid "List"
 msgstr ""
 
@@ -804,7 +802,7 @@ msgstr ""
 #: pntemplates/plugins/function.pmadminsubmenu.php:49
 #: pntemplates/plugins/function.pmadminsubmenu.php:51
 #: pntemplates/plugins/function.pmadminsubmenu.php:53
-#: pntemplates/pagemaster_admin_pubtypes.htm:41
+#: pntemplates/pagemaster_admin_pubtypes.htm:42
 msgid "Fields"
 msgstr ""
 
@@ -837,7 +835,7 @@ msgstr ""
 #: pntemplates/plugins/function.pmformplugintype.php:90
 #: pntemplates/plugins/function.pmformplugintype.php:182
 #: pntemplates/pagemaster_admin_pubfields.htm:144
-#: pntemplates/pagemaster_admin_pubtype.htm:110
+#: pntemplates/pagemaster_admin_pubtype.htm:113
 #: pntemplates/pagemaster_admin_modifyconfig.htm:52
 msgid "Save"
 msgstr ""
@@ -892,33 +890,40 @@ msgid "Existing publication fields"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:25
+#: pntemplates/pagemaster_admin_pubfields.htm:88
 msgid "Name"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:26
 #: pntemplates/pagemaster_admin_publist.htm:50
+#: pntemplates/pagemaster_admin_pubtype.htm:24
 #: pntemplates/pagemaster_admin_history.htm:16
 msgid "Title"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:27
+#: pntemplates/pagemaster_admin_pubtype.htm:29
 msgid "Description"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:28
+#: pntemplates/pagemaster_admin_pubfields.htm:112
 msgid "Title field"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:29
+#: pntemplates/pagemaster_admin_pubfields.htm:122
 msgid "Mandatory"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:30
+#: pntemplates/pagemaster_admin_pubfields.htm:127
 msgid "Searchable"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:31
-msgid "Max. lenght"
+#: pntemplates/pagemaster_admin_pubfields.htm:132
+msgid "Max. length"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:32
@@ -929,7 +934,7 @@ msgstr ""
 #: pntemplates/pagemaster_admin_publist.htm:88
 #: pntemplates/pagemaster_generic_publist.htm:24
 #: pntemplates/pagemaster_generic_navbar.htm:44
-#: pntemplates/pagemaster_admin_pubtypes.htm:37
+#: pntemplates/pagemaster_admin_pubtypes.htm:38
 msgid "Edit"
 msgstr ""
 
@@ -951,10 +956,18 @@ msgid ""
 "custom gettext string."
 msgstr ""
 
+#: pntemplates/pagemaster_admin_pubfields.htm:98
+msgid "Note"
+msgstr ""
+
 #: pntemplates/pagemaster_admin_pubfields.htm:100
 msgid ""
 "Optional tooltip of this field used on the input form, and can be a custom "
 "gettext string."
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubfields.htm:103
+msgid "Fieldtype (Plugin)"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:105
@@ -978,6 +991,10 @@ msgstr ""
 msgid "The content of this field will be used as the title?"
 msgstr ""
 
+#: pntemplates/pagemaster_admin_pubfields.htm:117
+msgid "Pageable"
+msgstr ""
+
 #: pntemplates/pagemaster_admin_pubfields.htm:119
 msgid "The content of this field is pageable?"
 msgstr ""
@@ -991,7 +1008,11 @@ msgid "The content of this field can be searched?"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:134
-msgid "The maximum lenght for the content of this field."
+msgid "The maximum length for the content of this field."
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubfields.htm:137
+msgid "Weight order"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubfields.htm:139
@@ -1000,35 +1021,36 @@ msgid ""
 "Drag & Drop in the full list."
 msgstr ""
 
-#: pntemplates/pagemaster_user_pubeditlist_menu.htm:23
+#: pntemplates/pagemaster_user_pubeditlist_menu.htm:25
 msgid "Add new publication"
 msgstr ""
 
-#: pntemplates/pagemaster_user_pubeditlist_menu.htm:24
-#: pntemplates/pagemaster_admin_pubtypes.htm:36
+#: pntemplates/pagemaster_user_pubeditlist_menu.htm:26
+#: pntemplates/pagemaster_admin_pubtypes.htm:37
 msgid "Edit this publication type"
 msgstr ""
 
-#: pntemplates/pagemaster_user_pubeditlist_menu.htm:25
+#: pntemplates/pagemaster_user_pubeditlist_menu.htm:27
 msgid "Add, edit or modify the fields of this publication type"
 msgstr ""
 
-#: pntemplates/pagemaster_user_pubeditlist_menu.htm:36
+#: pntemplates/pagemaster_user_pubeditlist_menu.htm:38
 msgid "View this publication"
 msgstr ""
 
-#: pntemplates/pagemaster_user_pubeditlist_menu.htm:42
-#: pntemplates/pagemaster_admin_pubtypes.htm:76
+#: pntemplates/pagemaster_user_pubeditlist_menu.htm:44
+#: pntemplates/pagemaster_admin_pubtypes.htm:78
 msgid "No publication types found."
 msgstr ""
 
 #: pntemplates/pagemaster_admin_publist.htm:32
 #: pntemplates/pagemaster_admin_publist.htm:34
-#: pntemplates/pagemaster_user_pubeditlist.htm:17
+#: pntemplates/pagemaster_user_pubeditlist.htm:19
 msgid "Publications list"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_publist.htm:53
+#: pntemplates/pagemaster_admin_pubtype.htm:39
 #: pntemplates/pagemaster_admin_history.htm:17
 msgid "Revision"
 msgstr ""
@@ -1065,78 +1087,114 @@ msgstr ""
 msgid "No publications found."
 msgstr ""
 
-#: pntemplates/pagemaster_user_pubeditlist.htm:20
+#: pntemplates/pagemaster_user_pubeditlist.htm:22
 msgid "Publications edit list"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:6
-msgid "Create / Edit publication type"
-msgstr ""
-
-#: pntemplates/pagemaster_admin_pubtype.htm:9
+#: pntemplates/pagemaster_admin_pubtype.htm:3
 msgid "Edit publication type"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:12
+#: pntemplates/pagemaster_admin_pubtype.htm:5
 msgid "Create publication type"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:19
+#: pntemplates/pagemaster_admin_pubtype.htm:22
 msgid "General options"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:23
+#: pntemplates/pagemaster_admin_pubtype.htm:26
 msgid "Title of the publication type, can be a custom gettext string."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:28
+#: pntemplates/pagemaster_admin_pubtype.htm:31
 msgid "Description of the publication type, can be a custom gettext string."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:33
+#: pntemplates/pagemaster_admin_pubtype.htm:34
+msgid "Items per page"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:36
 msgid "After how many publications the list will be paged. 0 for no paging."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:38
+#: pntemplates/pagemaster_admin_pubtype.htm:41
 msgid "Enable revisioning."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:43
+#: pntemplates/pagemaster_admin_pubtype.htm:44
+msgid "Edit own"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:46
 msgid "Allow editing of own publications."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:48
+#: pntemplates/pagemaster_admin_pubtype.htm:49
+msgid "Default filter"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:51
 msgid "The filter which is used by default."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:53
+#: pntemplates/pagemaster_admin_pubtype.htm:54
+msgid "Workflow"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:56
 msgid "You can choose a special workflow for the publications."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:59
+#: pntemplates/pagemaster_admin_pubtype.htm:62
 msgid "Sort options"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:63
-#: pntemplates/pagemaster_admin_pubtype.htm:72
-#: pntemplates/pagemaster_admin_pubtype.htm:81
+#: pntemplates/pagemaster_admin_pubtype.htm:64
+#: pntemplates/pagemaster_admin_pubtype.htm:73
+#: pntemplates/pagemaster_admin_pubtype.htm:82
+msgid "Sort field"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:66
+#: pntemplates/pagemaster_admin_pubtype.htm:75
+#: pntemplates/pagemaster_admin_pubtype.htm:84
 msgid "Field for sorting."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:91
+#: pntemplates/pagemaster_admin_pubtype.htm:69
+#: pntemplates/pagemaster_admin_pubtype.htm:78
+#: pntemplates/pagemaster_admin_pubtype.htm:87
+msgid "Sort descending"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:94
 msgid "Output options"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:95
+#: pntemplates/pagemaster_admin_pubtype.htm:96
+msgid "Output template name"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:98
 msgid ""
 "Name of the output template, used in the publist and pubview template names."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:100
+#: pntemplates/pagemaster_admin_pubtype.htm:101
+msgid "Input template name"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:103
 msgid "Name of the output, used in the pubedit template name."
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtype.htm:105
+#: pntemplates/pagemaster_admin_pubtype.htm:106
+msgid "Caching time"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtype.htm:108
 msgid "How long should the publications be cached. Empty for no cache."
 msgstr ""
 
@@ -1270,60 +1328,60 @@ msgstr ""
 msgid "Show publists"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:40
+#: pntemplates/pagemaster_admin_pubtypes.htm:41
 msgid "Add, edit or modify the fields of this pubtype"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:44
+#: pntemplates/pagemaster_admin_pubtypes.htm:45
 msgid ""
 "Update the database table of this pubtype to any recent change in the fields"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:45
+#: pntemplates/pagemaster_admin_pubtypes.htm:46
 msgid "DB update"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:48
+#: pntemplates/pagemaster_admin_pubtypes.htm:49
 msgid "Add new publications to this pubtype"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:49
+#: pntemplates/pagemaster_admin_pubtypes.htm:50
 msgid "New pub"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:53
+#: pntemplates/pagemaster_admin_pubtypes.htm:54
 msgid "Go to the Admin publication list"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:54
+#: pntemplates/pagemaster_admin_pubtypes.htm:55
 msgid "Admin"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:57
+#: pntemplates/pagemaster_admin_pubtypes.htm:58
 msgid "Go to the public publication list"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:58
+#: pntemplates/pagemaster_admin_pubtypes.htm:59
 msgid "Public"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:62
+#: pntemplates/pagemaster_admin_pubtypes.htm:63
 msgid "Get the input form code of this pubtype"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:63
+#: pntemplates/pagemaster_admin_pubtypes.htm:64
 msgid "Form"
 msgstr ""
 
-#: pntemplates/pagemaster_admin_pubtypes.htm:66
-msgid "Get the publist code of this pubtype"
-msgstr ""
-
-#: pntemplates/pagemaster_admin_pubtypes.htm:70
-msgid "Get the pubview code of this pubtype"
+#: pntemplates/pagemaster_admin_pubtypes.htm:67
+msgid "Get the list code of this pubtype"
 msgstr ""
 
 #: pntemplates/pagemaster_admin_pubtypes.htm:71
+msgid "Get the display code of this pubtype"
+msgstr ""
+
+#: pntemplates/pagemaster_admin_pubtypes.htm:72
 msgid "Display"
 msgstr ""
 

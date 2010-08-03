@@ -25,12 +25,12 @@
             <!--[foreach from=$publist item='pubitem']-->
             <tr class="<!--[cycle values='z-odd,z-even']-->">
                 <td><!--[$pubitem.core_pid]--></td>
-                <td><!--[$pubitem.$core_title]--></td>
+                <td><!--[$pubitem.$core_title|pnvarprepfordisplay]--></td>
                 <td><!--[$pubitem.core_revision]--></td>
                 <td><!--[$pubitem.__WORKFLOW__.state]--> </td>
                 <td><!--[pnusergetvar name='uname' uid=$pubitem.core_author]--> </td>
-                <td><!--[$pubitem.core_online]--></td>
-                <td><!--[$pubitem.core_indepot]--></td>
+                <td><!--[$pubitem.core_online|yesno]--></td>
+                <td><!--[$pubitem.core_indepot|yesno]--></td>
             </tr>
             <!--[foreachelse]-->
             <tr class="z-admintableempty"><td colspan="7"><!--[gt text='No publications found.']--></td></tr>

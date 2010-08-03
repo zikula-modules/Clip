@@ -362,7 +362,8 @@ function PageMaster_admin_pubeditlist($args=array())
 
     $args = array(
         'menu'       => 1,
-        'returntype' => 'admin'
+        'returntype' => 'admin',
+        'orderby'    => 'core_title'
     );
 
     return pnModFunc('PageMaster', 'user', 'pubeditlist', $args);
