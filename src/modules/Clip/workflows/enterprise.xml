@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<workflow>
+
+  <title>Enterprise</title>
+  <description>This is a three staged workflow with stages for untrusted submissions, editor's acceptance, and final approval control by a moderator.</description>
+
+  <states>
+
+    <state id="waiting">
+      <title>Waiting</title>
+      <description>Content has been submitted and is waiting for acceptance</description>
+    </state>
+
+    <state id="preview">
+      <title>Preview</title>
+      <description>Content has been accepted and is waiting for approval</description>
+    </state>
+
+    <state id="approved">
+      <title>Approved</title>
+      <description>Content has been approved is available online</description>
+    </state>
+
+  </states>
+
+  <actions>
+
+    <!-- From initial state -->
+
+    <action id="approve">
+      <title>Submit and Approve</title>
+      <description>Submit new content and approve immediately</description>
+      <permission>moderator</permission>
+      <nextState>approved</nextState>
+      <operation online="1">createPub</operation>
+
+      <parameter class="z-bt-ok">button</parameter>
+    </action>
+
+    <action id="accept">
+      <title>Submit and Accept</title>
+      <description>Submit new content for approval</description>
+      <permission>editor</permission>
+      <nextState>preview</nextState>
+      <operation>createPub</operation>
+
+      <parameter class="z-bt-icon pm-bt-accept">button</parameter>
+    </action>
+
+    <action id="submit">
+      <title>Submit</title>
+      <description>Submit new content for acceptance by the local editor</description>
+      <permission>author</permission>
+      <nextState>waiting</nextState>
+      <operation>createPub</operation>
+      <operation type="contentnew" group="editors">mailNotification</operation>
+
+      <parameter class="z-bt-new">button</parameter>
+    </action>
+
+    <!-- State: waiting -->
+
+    <action id="approve">
+      <title>Approve</title>
+      <description>Approve content for online publishing</description>
+      <permission>moderator</permission>
+      <state>waiting</state>
+      <nextState>approved</nextState>
+      <operation online="1">updatePub</operation>
+
+      <parameter class="z-bt-ok">button</parameter>
+    </action>
+
+    <action id="accept">
+      <title>Accept</title>
+      <description>Accept submitted content for later approval</description>
+      <permission>editor</permission>
+      <state>waiting</state>
+      <nextState>preview</nextState>
+      <operation>updatePub</operation>
+      <operation type="contentnew" group="moderators">mailNotification</operation>
+
+      <parameter class="z-bt-icon pm-bt-accept">button</parameter>
+    </action>
+
+    <action id="update">
+      <title>Update</title>
+      <description>Save content with no workflow change</description>
+      <permission>editor</permission>
+      <state>waiting</state>
+      <operation newrevision="0">updatePub</operation>
+
+      <parameter class="z-bt-save">button</parameter>
+    </action>
+
+    <action id="reject">
+      <title>Reject</title>
+      <description>Reject and delete submitted content</description>
+      <permission>editor</permission>
+      <state>waiting</state>
+      <operation>deletePub</operation>
+
+      <parameter class="z-bt-icon pm-bt-reject" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
+    </action>
+
+    <!-- State: preview -->
+
+    <action id="approve">
+      <title>Approve</title>
+      <description>Approve content for online publishing</description>
+      <permission>moderator</permission>
+      <state>preview</state>
+      <nextState>approved</nextState>
+      <operation online="1">updatePub</operation>
+
+      <parameter class="z-bt-ok">button</parameter>
+    </action>
+
+    <action id="update">
+      <title>Update</title>
+      <description>Update the publication</description>
+      <permission>editor</permission>
+      <state>preview</state>
+      <operation>updatePub</operation>
+
+      <parameter class="z-bt-save">button</parameter>
+    </action>
+
+    <action id="delete">
+      <title>Delete</title>
+      <description>Delete the publication</description>
+      <permission>moderator</permission>
+      <state>preview</state>
+      <operation>deletePub</operation>
+
+      <parameter class="z-bt-delete" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
+    </action>
+
+    <!-- State: approved -->
+
+    <action id="updateApprove">
+      <title>Update and Approve</title>
+      <description>Update content and approve for online publishing</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation online="1" nextState="approved">updatePub</operation>
+
+      <parameter class="z-bt-ok">button</parameter>
+    </action>
+
+    <action id="update">
+      <title>Update</title>
+      <description>Update content for approval</description>
+      <permission>editor</permission>
+      <state>approved</state>
+      <operation nextstate="preview">updatePub</operation>
+      <operation type="contentupdate" group="moderators">mailNotification</operation>
+
+      <parameter class="z-bt-save">button</parameter>
+    </action>
+
+    <action id="online">
+      <title>Publish</title>
+      <description>Make the publication available</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation online="1">updateOnlineState</operation>
+
+      <parameter class="z-bt-icon pm-bt-activate">button</parameter>
+    </action>
+
+    <action id="offline">
+      <title>Unpublish</title>
+      <description>Hide the publication</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation online="0">updateOnlineState</operation>
+
+      <parameter class="z-bt-icon pm-bt-deactivate">button</parameter>
+    </action>
+
+    <action id="MoveToDepot">
+      <title>Move to depot</title>
+      <description>Move the publication to the depot</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation>moveToDepot</operation>
+
+      <parameter class="z-bt-archive">button</parameter>
+    </action>
+
+    <action id="delete">
+      <title>Delete</title>
+      <description>Delete the publication</description>
+      <permission>moderator</permission>
+      <state>approved</state>
+      <operation>deletePub</operation>
+
+      <parameter class="z-bt-delete" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
+    </action>
+
+  </actions>
+
+</workflow>
