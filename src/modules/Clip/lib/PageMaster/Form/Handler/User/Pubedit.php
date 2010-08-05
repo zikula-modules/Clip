@@ -46,7 +46,9 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         // process a new or existing pub, and it's available actions
         if (!empty($this->id)) {
-            $pubdata = DBUtil::selectObjectByID($this->tablename, $this->id, 'id');
+            $pubdata = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$this->tid)
+                       ->find($this->id)
+                       ->toArray();
 
             $this->pubAssign($pubdata);
 
@@ -89,9 +91,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         }
 
         // check for set_* default values
-        $fieldnames = array_keys($this->pubfields);
-
-        foreach ($fieldnames as $fieldname) {
+        foreach (array_keys($this->pubfields->toArray()) as $fieldname) {
             $val = FormUtil::getPassedValue('set_'.$fieldname, '');
             if (!empty($val)) {
                 $pubdata[$fieldname] = $val;

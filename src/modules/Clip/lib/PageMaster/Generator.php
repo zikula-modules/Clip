@@ -14,6 +14,8 @@
  */
 class PageMaster_Generator
 {
+    protected static $tablesloaded = false;
+
     public static function pubdisplay($tid, $public=true)
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
@@ -106,7 +108,7 @@ class PageMaster_Generator
 
                         // language
                         case 'core_language':
-                            $rowcode['full'] = "\n".
+                            $rowcode['full'] = 
                                 '    <div class="z-formrow">'."\n".
                                 '        <span class="z-label">'.$rowcode['label'].'</span>'."\n".
                                 '            {if !empty($pubdata.'.$key.')}'."\n".
@@ -115,7 +117,7 @@ class PageMaster_Generator
                                 '                <span class="z-formnote">{gt text=\''.no__('Available for all languages').'\'}<span>'."\n".
                                 '            {/if}'."\n".
                                 '        </span>'."\n".
-                                '    </div>'."\n";
+                                '    </div>';
                             break;
 
                         // flags
@@ -221,12 +223,13 @@ class PageMaster_Generator
                 '                {/if}'."\n".
                 '            </legend>'."\n";
 
-        $pubfields = PageMaster_Util::getPubFields($tid);
+        $pubfields = PageMaster_Util::getPubFields($tid)->toArray();
 
         foreach (array_keys($pubfields) as $k) {
             // get the formplugin name
             $formplugin = PageMaster_Util::processPluginClassname($pubfields[$k]['fieldplugin']);
 
+            // FIXME lenghts
             if (!empty($pubfields[$k]['fieldmaxlength'])) {
                 $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
             } elseif($formplugin == 'PageMaster_Form_Plugin_Text') {
@@ -300,5 +303,242 @@ class PageMaster_Generator
                 '{/form}'."\n\n";
 
         return $template_code;
+    }
+
+    /**
+     * Build the Doctrine Model code dynamically.
+     *
+     * @param integer $tid Publication type ID.
+     *
+     * @return string The model class code.
+     */
+    public static function pubmodel($tid)
+    {
+        self::addtables();
+
+        $table = "pagemaster_pubdata{$tid}";
+
+        $def = DBUtil::getTableDefinition($table);
+        $opt = DBUtil::getTableOptions($table);
+
+        $tables = DBUtil::getTables();
+        $columns = $tables["pagemaster_pubdata{$tid}_column"];
+        $columns = array_flip($columns);
+
+        $hasColumns = '';
+        foreach ($def as $columnName => $array) {
+            $columnAlias = $columns[$columnName];
+            // removes the basic type and lenght
+            $type   = $array['type'];
+            $length = (is_null($array['length']) ? 'null' : $array['length']);
+            unset($array['type']);
+            unset($array['length']);
+            $array = array_filter($array);
+            // process the modifiers
+            $array = !empty($array) ? ', '.var_export($array, true) : null;
+            if (!empty($array)) {
+                $array = str_replace('array (', 'array(', $array);
+                $array = str_replace(",\n)", "\n)", $array);
+                $array = str_replace("\n", "\n            ", $array);
+                $array = str_replace("\n            )", "\n        )", $array);
+            }
+            // verify the lenght
+            $length = (!empty($array) || $length != 'null') ? ", $length" : '';
+            // add the column
+            $hasColumns .= !empty($hasColumns) ? "\n\n        " : '';
+            $hasColumns .= "\$this->hasColumn('$columnName as $columnAlias', '$type'{$length}{$array});";
+        }
+
+        $options = '';
+        foreach ($opt as $k => $v) {
+            if (in_array($k, array('type', 'charset', 'collate'))) {
+                continue;
+            }
+            $options .= (!empty($options) ? "\n        " : '')."\$this->option('$k', '$v');";
+        }
+
+        // generate the model code
+        $code = "
+/**
+ * PageMaster
+ * Generated Model Class
+ *
+ * @link http://code.zikula.org/pagemaster/
+ */
+
+/**
+ * This is the model class that define the entity structure and behaviours.
+ */
+class PageMaster_Model_Pubdata{$tid} extends Doctrine_Record
+{
+    /**
+     * Set table definition.
+     *
+     * @return void
+     */
+    public function setTableDefinition()
+    {
+        \$this->setTableName('$table');
+
+        $hasColumns
+
+        $options
+    }
+
+    /**
+     * Record setup.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        \$this->actAs('Zikula_Doctrine_Template_StandardFields', array('oldColumnPrefix' => 'pm_'));
+    }
+}
+";
+        return $code;
+    }
+
+    /**
+     * Build the Doctrine Table code dynamically.
+     *
+     * @param integer $tid Publication type ID.
+     *
+     * @return string The table class code.
+     */
+    public static function pubtable($tid)
+    {
+        // generate the model code
+        $code = "
+/**
+ * PageMaster
+ * Generated Model Class
+ *
+ * @link http://code.zikula.org/pagemaster/
+ */
+
+/**
+ * Doctrine_Table class used to implement own special entity methods.
+ */
+class PageMaster_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
+{
+
+}
+";
+        return $code;
+    }
+
+    // dynamic pubdata tables
+    private static function _addtable(&$tables, $tid, $tablecolumn, $tabledef)
+    {
+        $tablename = "pagemaster_pubdata{$tid}";
+
+        $tables[$tablename] = DBUtil::getLimitedTablename($tablename);
+        $tables[$tablename.'_column']     = $tablecolumn;
+        $tables[$tablename.'_column_def'] = $tabledef;
+
+        //ObjectUtil::addStandardFieldsToTableDefinition($tables[$tablename.'_column'], 'pm_');
+        //ObjectUtil::addStandardFieldsToTableDataDefinition($tables[$tablename.'_column_def']);
+
+        // TODO indexes
+        /*
+        $tables[$tablename.'_column_idx'] = array (
+            'core_online' => 'core_online' //core_showinlist
+        );
+        */
+    }
+
+    private static function addtables()
+    {
+        if (self::$tablesloaded) {
+            return;
+        }
+        self::$tablesloaded = true;
+
+        $tables  = array();
+        $modinfo = ModUtil::getInfoFromName('PageMaster');
+
+        if ($modinfo['state'] != ModUtil::STATE_UNINITIALISED) {
+            $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubfields')
+                         ->selectCollection('', 'tid ASC, id ASC');
+
+            if ($pubfields === false) {
+                return LogUtil::registerError('Error! Failed to load the pubfields.');
+            }
+
+            $old_tid = 0;
+
+            $tableorder = array(
+                'core_pid'         => 'pm_pid',
+                'id'               => 'pm_id'
+            );
+            $tablecolumncore = array(
+                'id'               => 'pm_id',
+                'core_pid'         => 'pm_pid',
+                'core_author'      => 'pm_author',
+                'core_hitcount'    => 'pm_hitcount',
+                'core_language'    => 'pm_language',
+                'core_revision'    => 'pm_revision',
+                'core_online'      => 'pm_online',
+                'core_indepot'     => 'pm_indepot',
+                'core_showinmenu'  => 'pm_showinmenu',
+                'core_showinlist'  => 'pm_showinlist',
+                'core_publishdate' => 'pm_publishdate',
+                'core_expiredate'  => 'pm_expiredate'
+            );
+            $tabledefcore = array(
+                'id'               => 'I4 PRIMARY AUTO',
+                'core_pid'         => 'I4 NOTNULL',
+                'core_author'      => 'I4 NOTNULL',
+                'core_hitcount'    => 'I8 DEFAULT 0',
+                'core_language'    => 'C(10) NOTNULL', //FIXME how many chars are needed for a gettext code?
+                'core_revision'    => 'I4 NOTNULL',
+                'core_online'      => 'L',
+                'core_indepot'     => 'L',
+                'core_showinmenu'  => 'L',
+                'core_showinlist'  => 'L DEFAULT 1',
+                'core_publishdate' => 'T',
+                'core_expiredate'  => 'T'
+            );
+
+            // loop the pubfields adding their definitions
+            // to their pubdata tables
+            $tablecolumn = array();
+            $tabledef    = array();
+
+            foreach ($pubfields as $pubfield) {
+                // if we change of publication type
+                if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
+                    // add the table definition to the $tables array
+                    self::_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+                    // and reset the columns and definitions for the next pubtype
+                    $tablecolumn = array();
+                    $tabledef    = array();
+                }
+
+                // add the column and definition for this field
+                $tablecolumn[$pubfield['name']] = "pm_{$pubfield['id']}";
+                $tabledef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
+
+                // set the actual tid to check a pubtype change in the next cycle
+                $old_tid = $pubfield['tid'];
+            }
+
+            // the final one doesn't trigger a tid change
+            if (!empty($tablecolumn)) {
+                self::_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+            }
+
+            // validates the existence of all the pubdata tables
+            // to ensure the creation of all the dynamic classes
+            $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
+            foreach ($pubtypes as $tid) {
+                if (!isset($tables["pagemaster_pubdata{$tid}"])) {
+                    self::_addtable($tables, $tid, array(), array());
+                }
+            }
+
+            $GLOBALS['dbtables'] = array_merge((array)$GLOBALS['dbtables'], (array)$tables);
+        }
     }
 }

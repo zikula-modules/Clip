@@ -319,6 +319,7 @@ class PageMaster_Installer extends Zikula_Installer
                 // * update the field classnames
                 // * rename the filename/formname columns
                 // * fill the output/input sets if empty
+                // * change C(512) to C(255) and X to C(65535)
 
                 // fills the empty publish dates
                 $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'tid');

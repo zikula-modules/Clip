@@ -37,11 +37,10 @@ class PageMaster_Api_User extends Zikula_Api
         $tid = $args['tid'];
 
         // validate the passed tid
-        $tables = DBUtil::getTables();
-        if (!isset($tables['pagemaster_pubdata'.$tid])) {
+        $pubtype = PageMaster_Util::getPubType($tid);
+        if (!$pubtype) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
-        unset($tables);
 
         // parameters defaults
         $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
@@ -63,9 +62,6 @@ class PageMaster_Api_User extends Zikula_Api
         if (!isset($args['justcount']) || !is_numeric($args['justcount'])) {
             $args['justcount'] = 'no';
         }
-
-        $pubtype   = isset($args['pubtype']) ? $args['pubtype'] : PageMaster_Util::getPubType($tid);
-        $pubfields = isset($args['pubfields']) ? $args['pubfields'] : PageMaster_Util::getPubFields($tid);
 
         // mode check
         $isadmin = !SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN) || (!isset($args['admin']) || !$args['admin']);
@@ -102,6 +98,8 @@ class PageMaster_Api_User extends Zikula_Api
             $orderby = $args['orderby'];
         }
 
+        $pubfields = PageMaster_Util::getPubFields($tid);
+
         $filterPlugins = array();
         foreach ($pubfields as $fieldname => $field)
         {
@@ -111,10 +109,11 @@ class PageMaster_Api_User extends Zikula_Api
             if (isset($plugin->filterClass)) {
                 $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
             }
+            /* TODO: REWORK
             // check for tables to join
             if ($args['countmode'] <> 'just'){
                 // do not join for just
-                if ($field['fieldplugin'] == 'pmformpubinput'){
+                if ($field['fieldplugin'] == 'PageMaster_Form_Plugin_Pub'){
                     $vars        = explode(';', $field['typedata']);
                     $join_tid    = $vars[0];
                     $join_filter = $vars[1]; // TODO Use?
@@ -135,6 +134,7 @@ class PageMaster_Api_User extends Zikula_Api
                     }
                 }
             }
+            */
         }
 
         if (isset($joinInfo)) {
@@ -148,7 +148,9 @@ class PageMaster_Api_User extends Zikula_Api
 
         // check if some plugin specific orderby has to be done
         $orderby   = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
-        $tablename = 'pagemaster_pubdata'.$tid;
+
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid);
+        $tablename = $tableObj->getInternalTableName();
 
         $fu = new FilterUtil('PageMaster', $tablename, $filter_args);
 
@@ -166,15 +168,15 @@ class PageMaster_Api_User extends Zikula_Api
 
         if ($isadmin) {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-                $where[] = "( {$tbl_alias}pm_online = '1' AND ( {$tbl_alias}pm_author = '$uid' OR {$tbl_alias}pm_showinlist = '1') )";
+                $where[] = "( {$tbl_alias}core_online = '1' AND ( {$tbl_alias}core_author = '$uid' OR {$tbl_alias}core_showinlist = '1') )";
             } else {
-                $where[] = "  {$tbl_alias}pm_online = '1' AND {$tbl_alias}pm_showinlist = '1'";
+                $where[] = "  {$tbl_alias}core_online = '1' AND {$tbl_alias}core_showinlist = '1'";
             }
 
-            $where[] = "  {$tbl_alias}pm_indepot = '0' ";
-            $where[] = "( {$tbl_alias}pm_language = '' OR {$tbl_alias}pm_language = '".ZLanguage::getLanguageCode()."' )";
-            $where[] = "( {$tbl_alias}pm_publishdate <= NOW() OR {$tbl_alias}pm_publishdate IS NULL )";
-            $where[] = "( {$tbl_alias}pm_expiredate >= NOW() OR {$tbl_alias}pm_expiredate IS NULL )";
+            $where[] = "  {$tbl_alias}core_indepot = '0' ";
+            $where[] = "( {$tbl_alias}core_language = '' OR {$tbl_alias}core_language = '".ZLanguage::getLanguageCode()."' )";
+            $where[] = "( {$tbl_alias}core_publishdate <= NOW() OR {$tbl_alias}core_publishdate IS NULL )";
+            $where[] = "( {$tbl_alias}core_expiredate >= NOW() OR {$tbl_alias}core_expiredate IS NULL )";
         }
         // TODO Implement author condition
 
@@ -188,7 +190,7 @@ class PageMaster_Api_User extends Zikula_Api
             if (isset($joinInfo)) {
                 $publist = DBUtil::selectExpandedObjectArray($tablename, $joinInfo, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
             } else {
-                $publist = DBUtil::selectObjectArray($tablename, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
+                $publist = $tableObj->selectCollection($where, $orderby, $args['startnum']-1, $args['itemsperpage'])->toArray();
             }
             if ($getApprovalState) {
                 foreach (array_keys($publist) as $key) {
@@ -201,7 +203,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         if ($args['countmode'] == 'just' || $args['countmode'] == 'both') {
-            $pubcount = DBUtil::selectObjectCount($tablename, str_replace(' tbl.', ' ', $where));
+            $pubcount = $tableObj->selectCount($where);
         }
 
         return array (
@@ -234,8 +236,6 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // defaults
-        $pubtype            = isset($args['pubtype']) ? $args['pubtype'] : null;
-        $pubfields          = isset($args['pubfields']) ? $args['pubfields'] : null;
         $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
         $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
         $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
@@ -245,22 +245,16 @@ class PageMaster_Api_User extends Zikula_Api
         $id  = isset($args['id']) ? (int)$args['id'] : null;
         unset($args);
 
-        // get the pubtype if not set
-        if (empty($pubtype)) {
-            $pubtype = PageMaster_Util::getPubType($tid);
-            // validate the result
-            if (!$pubtype) {
-                return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
-            }
+        $pubtype = PageMaster_Util::getPubType($tid);
+        // validate the result
+        if (!$pubtype) {
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
 
-        // get the pubfields if not set
-        if (empty($pubfields)) {
-            $pubfields = PageMaster_Util::getPubFields($tid);
-            // validate the result
-            if (!$pubfields) {
-                return LogUtil::registerError($this->__('Error! No publication fields found.'));
-            }
+        $pubfields = PageMaster_Util::getPubFields($tid);
+        // validate the result
+        if (!$pubfields) {
+            return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
         // build the where clause
@@ -293,7 +287,8 @@ class PageMaster_Api_User extends Zikula_Api
             }
         }
 
-        $pubdata = DBUtil::selectObject($tablename, $where);
+        // FIXME $pubdata = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+        DBUtil::selectObject($tablename, $where);
 
         if (!$pubdata) {
             return false;
@@ -389,10 +384,8 @@ class PageMaster_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'));
         }
 
-        $tablename = 'pagemaster_pubdata'.$args['tid'];
-        $pub       = DBUtil::selectObjectByID($tablename, $args['id'], 'id');
-
-        return $pub['id'];
+        return Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid'])
+               ->selectFieldBy('pid', $args['id'], 'id');
     }
 
     /**
@@ -413,11 +406,11 @@ class PageMaster_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'pid'));
         }
 
-        // build the query
-        $tablename = 'pagemaster_pubdata'.$args['tid'];
-        $where     = "pm_pid = '$args[pid]' AND pm_online = '1'";
+        // build the where clause
+        $where = "core_pid = '$args[pid]' AND core_online = '1'";
 
-        return DBUtil::selectField($tablename, 'id', $where);
+        return Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid'])
+               ->selectField('id', $where);
     }
 
     /**
@@ -435,7 +428,9 @@ class PageMaster_Api_User extends Zikula_Api
         $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid');
 
         $allTypes = array();
-        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
+        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+                    ->getPubtypes()
+                    ->toArray();
 
         foreach ($pubtypes as $pubtype) {
             $tid    = $pubtype['tid'];
@@ -451,12 +446,13 @@ class PageMaster_Api_User extends Zikula_Api
                 $orderby = str_replace('core_title', $coreTitle, $orderby);
             }
 
-            $tablename = 'pagemaster_pubdata'.$tid;
-            $where     = 'pm_indepot = 0';
+            $where     = 'core_indepot = 0';
             $sort      = str_replace(':', ' ', $orderby);
-            $list      = DBUtil::selectObjectArray($tablename, $where, $sort);
+            $list      = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+                         ->selectCollection($where, $sort)
+                         ->toArray();
 
-            foreach ($list as $k=>$v) {
+            foreach ($list as $k => $v) {
                 if (!SecurityUtil::checkPermission('pagemaster:input:', "$tid:$v[pid]:", ACCESS_EDIT)) {
                     unset($list[$k]);
                 } else {
@@ -518,7 +514,8 @@ class PageMaster_Api_User extends Zikula_Api
                 $id = (int)$args['args']['id'];
                 unset($args['args']['id']);
                 if (!isset($cache['id'][$id])) {
-                    $pid = $cache['id'][$id] = DBUtil::selectFieldByID("pagemaster_pubdata{$tid}", 'core_pid', $id, 'id');
+                    $pid = $cache['id'][$id] = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+                                               ->selectFieldBy('core_pid', $id, 'id');
                 } else {
                     $pid = $cache['id'][$id];
                 }
@@ -528,7 +525,9 @@ class PageMaster_Api_User extends Zikula_Api
 
             $titlefield = PageMaster_Util::getTitleField($tid);
 
-            $pubTitle = DBUtil::selectFieldByID("pagemaster_pubdata{$tid}", $titlefield, $pid, 'core_pid');
+            $pubTitle = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+                        ->selectFieldBy($titlefield, $pid, 'core_pid');
+
             $pubTitle = '/'.DataUtil::formatPermalink($pubTitle).'.'.$pid;
         }
 
@@ -568,7 +567,9 @@ class PageMaster_Api_User extends Zikula_Api
 
         $nextvar = 3;
 
-        $tid = DBUtil::selectFieldByID('pagemaster_pubtypes', 'tid', $_[2], 'urltitle');
+        $tid = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+               ->selectFieldBy('tid', $_[2], 'urltitle');
+
         if (!$tid) {
             return false;
         } else {

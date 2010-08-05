@@ -29,10 +29,14 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
 
         foreach ($pubfields as $key => $value)
         {
-            $data['lineno'] = $key;
-            $where  = "pm_id = '".DataUtil::formatForStore($value)."' AND pm_tid = '".DataUtil::formatForStore($tid)."'";
-            $result = DBUtil::updateObject($data, 'pagemaster_pubfields', $where);
-            if (!$result) {
+            $result = Doctrine_Query::create()
+                      ->update('PageMaster_Model_Pubfields pf')
+                      ->set('pf.lineno', '?', $key)
+                      ->where('pf.id = ?', $value)
+                      ->addWhere('pf.tid = ?', $tid)
+                      ->execute();
+
+            if ($result === false) {
                 AjaxUtil::error($this->__('Error! Update attempt failed.'));
             }
         }

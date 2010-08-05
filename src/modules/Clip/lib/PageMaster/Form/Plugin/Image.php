@@ -113,7 +113,8 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
         // ugly to get old image from DB
         if ($id != NULL) {
-            $old_image = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
+            $old_image = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+                         ->selectFieldBy($field['name'], $id, 'id');
         }
 
         if (!empty($PostData['name'])) {

@@ -46,10 +46,10 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             return LogUtil::registerPermissionError();
         }
 
-        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes', null, 'title');
+        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')->getPubtypes();
 
         return $this->view->assign('pubtypes', $pubtypes)
-                    ->fetch('pagemaster_admin_pubtypes.tpl');
+                          ->fetch('pagemaster_admin_pubtypes.tpl');
     }
 
     /**
@@ -130,11 +130,12 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         }
 
         $pubtype = PageMaster_Util::getPubType($tid);
-        if (empty($pubtype)) {
+        if (!$pubtype) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
 
         // db table check
+        // FIXME: May remove this?
         $tablename = 'pagemaster_pubdata'.$tid;
         if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
             return LogUtil::registerError($this->__f("Error! The table of this publication type [%s] seems not to exist. Please, click the respective 'DB update' link to create it.", $pubtype['title']),
@@ -174,17 +175,20 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             }
         }
 
-        $core_title  = PageMaster_Util::getTitleField($tid);
+        $core_title = PageMaster_Util::getTitleField($tid);
         if (substr($orderby, 0, 10) == 'core_title') {
             $orderby = str_replace('core_title', $core_title, $orderby);
         }
         $orderby = PageMaster_Util::createOrderBy($orderby);
 
+        // get the Doctrine_Table object
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid);
+
         // query the list
-        $publist  = DBUtil::selectObjectArray($tablename, 'pm_indepot = 0', $orderby, $startnum-1, $itemsperpage);
+        $publist = $tableObj->selectCollection('core_indepot = 0', $orderby, $startnum-1, $itemsperpage);
 
         if ($publist !== false) {
-            $pubcount = (int)DBUtil::selectObjectCount($tablename, 'pm_indepot = 0');
+            $pubcount = (int)$tableObj->selectCount('core_indepot = 0');
             // add the workflow information for each publication
             foreach (array_keys($publist) as $key) {
                 Zikula_Workflow_Util::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
@@ -225,10 +229,11 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             return LogUtil::registerPermissionError();
         }
 
+        // get the Doctrine_Table object
+        $publist = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+                       ->selectCollection("pid = '$pid'", 'core_revision DESC');
+
         $tablename = 'pagemaster_pubdata'.$tid;
-
-        $publist = DBUtil::selectObjectArray($tablename, "pm_pid = '$pid'", 'pm_revision desc');
-
         foreach (array_keys($publist) as $key) {
             Zikula_Workflow_Util::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
         }
@@ -236,6 +241,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         $core_title = PageMaster_Util::getTitleField($tid);
 
         // build the output
+        // FIXME rework the available vars
         $this->view->assign('core_tid',   $tid)
                    ->assign('core_title', $core_title)
                    ->assign('publist',    $publist);
@@ -307,13 +313,12 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         }
 
         // check if there are pubtypes already
-        $numpubtypes = DBUtil::selectObjectCount('pagemaster_pubtypes');
+        $numpubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')->selectCount();
 
-        // build the output
-        $this->view->add_core_data()
-                   ->assign('alreadyexists', $numpubtypes > 0 ? true : false);
-
-        return $this->view->fetch('pagemaster_admin_importps.tpl');
+        // build and return the output
+        $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false)
+                   ->add_core_data()
+                   ->fetch('pagemaster_admin_importps.tpl');
     }
 
     /**

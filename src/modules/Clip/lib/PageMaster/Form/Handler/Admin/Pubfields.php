@@ -33,9 +33,13 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
         }
         $this->tid = $tid;
 
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubfields');
+
         if (!empty($id)) {
             $this->id = $id;
-            $pubfield = DBUtil::selectObjectByID('pagemaster_pubfields', $id);
+            $pubfield = $tableObj->find($id)
+                                 ->toArray();
+
             $view->assign($pubfield);
         }
 
@@ -45,7 +49,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $adminurl);
         }
 
-        $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = '$tid'", 'pm_lineno', -1, -1, 'name');
+        $pubfields = $tableObj->selectCollection("tid = '$tid'", 'lineno', -1, -1, 'name');
 
         $view->assign('pubfields', $pubfields)
              ->assign('tid', $tid);

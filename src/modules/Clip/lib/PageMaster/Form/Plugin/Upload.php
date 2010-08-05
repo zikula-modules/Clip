@@ -90,7 +90,8 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
         if ($id != NULL) {
             // if it's not a new pub get the old upload
-            $old_upload = DBUtil::selectFieldByID('pagemaster_pubdata'.$tid, $field['name'], $id, 'id');
+            $old_upload = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+                          ->selectFieldBy($field['name'], $id, 'id');
         }
 
         if (!empty($data['name'])) {

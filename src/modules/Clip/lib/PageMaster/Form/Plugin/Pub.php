@@ -122,7 +122,9 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : '';
         $this->parseConfig($typedata);
 
-        $pubtypes = DBUtil::selectFieldArray('pagemaster_pubtypes', 'title', '', '', false, 'tid');
+        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+                         ->selectFieldArray('title', '', '', false, 'tid');
+
         foreach ($pubtypes as $tid => $title) {
             $pubtypes[$tid] = $this->__($title);
         }

@@ -13,7 +13,7 @@
 class PageMaster_Form_Plugin_String extends Form_Plugin_TextInput
 {
     public $pluginTitle;
-    public $columnDef = 'C(512)';
+    public $columnDef = 'C(255)';
 
     function setup()
     {

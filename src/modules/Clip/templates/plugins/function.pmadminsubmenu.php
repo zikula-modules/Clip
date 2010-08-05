@@ -66,14 +66,16 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     } else {
         $output .= '<a>'.__('Publication list', $dom).'</a>';
     }
-    $output .= '</span> | ';
 
     // show code links
     if ($func == 'showcode') {
+        $output .= '<br />';
+        $output .= '<span class="pm-option">'.__('Generate templates', $dom).'</span><span class="pm-option">&raquo;</span>';
         $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Input template', $dom).'</a></span> | ';
         $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('List template', $dom).'</a></span> | ';
         $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Display template', $dom).'</a></span>';
     } else {
+        $output .= '</span> | ';
         $output .= '<span><a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Generate templates', $dom).'</a></span>';
     }
 

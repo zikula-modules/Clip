@@ -102,20 +102,18 @@ class PageMaster_Controller_User extends Zikula_Controller
             $itemsperpage = ((int)$pubtype['itemsperpage'] > 0 ? (int)$pubtype['itemsperpage'] : -1 );
         }
 
-        $orderby   = PageMaster_Util::createOrderBy($orderby);
+        $orderby = PageMaster_Util::createOrderBy($orderby);
 
-        $pubfields = PageMaster_Util::getPubFields($tid, 'pm_lineno');
+        $pubfields = PageMaster_Util::getPubFields($tid, 'lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype['titlefield'] = PageMaster_Util::findTitleField($pubfields);
+        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
         // Uses the API to get the list of publications
         $result = ModUtil::apiFunc('PageMaster', 'user', 'getall',
                                    array('tid'                => $tid,
-                                         'pubfields'          => $pubfields,
-                                         'pubtype'            => $pubtype,
                                          'startnum'           => $startnum,
                                          'itemsperpage'       => $itemsperpage,
                                          'countmode'          => ($itemsperpage != 0) ? 'both' : 'no',
@@ -265,14 +263,12 @@ class PageMaster_Controller_User extends Zikula_Controller
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype['titlefield'] = PageMaster_Util::findTitleField($pubfields);
+        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
         $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get',
                                     array('tid'                => $tid,
                                           'id'                 => $id,
                                           'pid'                => $pid,
-                                          'pubtype'            => $pubtype,
-                                          'pubfields'          => $pubfields,
                                           'checkPerm'          => false, //check later, together with template
                                           'getApprovalState'   => true,
                                           'handlePluginFields' => true));
@@ -329,7 +325,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         $pubtype = PageMaster_Util::getPubType($tid);
-        if (empty($pubtype)) {
+        if (!$pubtype) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
 
@@ -338,7 +334,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype['titlefield'] = PageMaster_Util::findTitleField($pubfields);
+        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
         // no security check needed - the security check will be done by the handler class.
         // see the init-part of the handler class for details.
@@ -372,14 +368,14 @@ class PageMaster_Controller_User extends Zikula_Controller
             $stepname = $obj['__WORKFLOW__']['state'];
         }
 
-        // adds the stepname to the pubtype array
-        $pubtype['stepname'] = $stepname;
+        // adds the stepname to the pubtype
+        $pubtype->mapValue('stepname', $stepname);
 
         // create the output object
         $render = FormUtil::newForm('PageMaster');
-        $render->add_core_data();
 
-        $render->assign('pubtype', $pubtype);
+        $render->assign('pubtype', $pubtype)
+               ->add_core_data();
 
         // resolve the template to use
         $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
@@ -448,7 +444,10 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         $tablename = 'pagemaster_pubdata'.$tid;
 
-        $pub = DBUtil::selectObjectByID($tablename, $id, 'id');
+        $pub = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+               ->find($id)
+               ->toArray();
+
         if (!$pub) {
             return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', $id));
         }
@@ -473,8 +472,8 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         return System::redirect(ModUtil::url('PageMaster', 'user', 'display',
-                                array('tid' => $tid,
-                                      'id'  => $pub['id'])));
+                                             array('tid' => $tid,
+                                                   'id'  => $pub['id'])));
     }
 
     /**

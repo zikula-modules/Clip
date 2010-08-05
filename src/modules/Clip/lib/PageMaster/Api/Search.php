@@ -32,10 +32,14 @@ class PageMaster_Api_Search extends Zikula_Api
             $render = Zikula_View::getInstance('PageMaster');
 
             // Looking for pubtype with at least one searchable field
-            $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+            $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+                        ->getPubtypes()
+                        ->toArray();
+
             foreach ($pubtypes as $key => $pubtype)
             {
-                $pubfields = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', "pm_issearchable = '1' AND pm_tid = '$pubtype[tid]'");
+                $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+                             ->selectFieldArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
                 if (count($pubfields) == 0 ) {
                     unset($pubtypes[$key]);
@@ -75,12 +79,15 @@ class PageMaster_Api_Search extends Zikula_Api
                           $searchColumn[session])
                       VALUES ";
 
-        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+                    ->getPubtypes()
+                    ->toArray();
 
         foreach ($pubtypes as $pubtype)
         {
             if ($search_tid == '' || $search_tid[$pubtype['tid']] == 1){
-                $pubfieldnames = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', 'pm_issearchable = 1 AND pm_tid = '.$pubtype['tid']);
+                $pubfieldnames = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+                                 ->selectArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
                 $columnname = $tables[$tablename.'_column'];
@@ -90,17 +97,20 @@ class PageMaster_Api_Search extends Zikula_Api
                 }
 
                 if (is_array($where_arr)) {
+                    // FIXME
                     $where  = search_construct_where($args, $where_arr);
-                    $where .= " AND pm_showinlist = '1'
-                                AND pm_online = '1'
-                                AND pm_indepot = '0'
-                                AND (pm_language = '' OR pm_language = '". ZLanguage::getLanguageCode() ."')
-                                AND (pm_publishdate <= NOW() OR pm_publishdate IS NULL)
-                                AND (pm_expiredate >= NOW() OR pm_expiredate IS NULL)";
+                    $where .= " AND core_showinlist = '1'
+                                AND core_online = '1'
+                                AND core_indepot = '0'
+                                AND (core_language = '' OR core_language = '". ZLanguage::getLanguageCode() ."')
+                                AND (core_publishdate <= NOW() OR core_publishdate IS NULL)
+                                AND (core_expiredate >= NOW() OR core_expiredate IS NULL)";
 
                     $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
 
-                    $publist    = DBUtil::selectObjectArray($tablename, $where);
+                    $publist = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$pubtype['tid'])
+                               ->selectCollection($where)
+                               ->toArray();
 
                     $core_title = PageMaster_Util::getTitleField($pubtype['tid']);
 

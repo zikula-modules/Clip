@@ -388,7 +388,8 @@ class PageMaster_Util
 
         $tid = (int)$tid;
         if ($tid != -1 && !isset($pubfields_arr[$tid])) {
-            $pubfields_arr[$tid] = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = '$tid'", $orderBy, -1, -1, 'name');
+            $pubfields_arr[$tid] = Doctrine_Core::getTable('PageMaster_Model_Pubfields')
+                                   ->selectCollection("tid = '$tid'", $orderBy, -1, -1, 'name');
         }
 
         if ($tid == -1) {
@@ -410,7 +411,7 @@ class PageMaster_Util
         static $pubtype_arr;
 
         if (!isset($pubtype_arr)) {
-            $pubtype_arr = DBUtil::selectObjectArray('pagemaster_pubtypes', '', 'tid', -1, -1, 'tid');
+            $pubtype_arr = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')->getPubtypes();
         }
 
         if ($tid == -1) {
@@ -432,7 +433,8 @@ class PageMaster_Util
         static $pubtitles_arr;
 
         if (!isset($pubtitles_arr)) {
-            $pubtitles_arr = DBUtil::selectFieldArray('pagemaster_pubfields', 'name', "pm_istitle = '1'", '', false, 'tid');
+            $pubtitles_arr = Doctrine_Core::getTable('PageMaster_Model_Pubfields')
+                             ->selectFieldArray('name', "istitle = '1'", '', false, 'tid');
         }
 
         if ($tid == -1) {
@@ -452,6 +454,10 @@ class PageMaster_Util
     public static function findTitleField($pubfields)
     {
         $core_title = 'id';
+
+        if ($pubfields instanceof Doctrine_Collection) {
+            $pubfields = $pubfields->toArray();
+        }
 
         foreach (array_keys($pubfields) as $i) {
             if ($pubfields[$i]['istitle'] == 1) {
