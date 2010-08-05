@@ -37,7 +37,7 @@
                 {/if}
             {else}
                 <span class="pm-breadtext">
-                    {$pubdata.title}
+                    {$pubdata[$pubtype.titlefield]}
                 </span>
                 {checkpermissionblock component='pagemaster:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD}
                 <span>
