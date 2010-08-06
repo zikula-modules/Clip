@@ -9,3 +9,5 @@
     category based plugins should validate if their categories are not in the current plugin tree
 
     dedicated screen (or parameter) to review the own publications + revisions
+
+    check if the pagers are generated when no publications present

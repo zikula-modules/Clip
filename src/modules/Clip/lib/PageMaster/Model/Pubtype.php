@@ -12,7 +12,7 @@
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class PageMaster_Model_Pubtypes extends Doctrine_Record
+class PageMaster_Model_Pubtype extends Doctrine_Record
 {
     /**
      * Set table definition.
@@ -84,7 +84,8 @@ class PageMaster_Model_Pubtypes extends Doctrine_Record
         ));
 
         $this->hasColumn('pm_cachelifetime as cachelifetime', 'integer', 8, array(
-            'notnull' => true
+            'notnull' => true,
+            'default' => 0
         ));
     }
 

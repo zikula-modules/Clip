@@ -33,14 +33,13 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
         }
         $this->tid = $tid;
 
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubfields');
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubfield');
 
         if (!empty($id)) {
             $this->id = $id;
-            $pubfield = $tableObj->find($id)
-                                 ->toArray();
+            $pubfield = $tableObj->find($id);
 
-            $view->assign($pubfield);
+            $view->assign('field', $pubfield->toArray());
         }
 
         // stores the return URL and the item URL
@@ -68,14 +67,21 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
 
         $data = $view->getValues();
 
-        $data['id']        = (int)$this->id;
-        $data['tid']       = (int)$this->tid;
+        // creates and fill a Pubfield instance
+        $pubfield = new PageMaster_Model_Pubfield();
+        if (!empty($this->id)) {
+            $pubfield->assignIdentifier($this->id);
+        }
+        $pubfield->fromArray($data['field']);
 
-        $plugin            = PageMaster_Util::getPlugin($data['fieldplugin']);
-        $data['fieldtype'] = $plugin->columnDef;
+        // fill default data
+        $plugin = PageMaster_Util::getPlugin($pubfield->fieldplugin);
+
+        $pubfield->tid = (int)$this->tid;
+        $pubfield->fieldtype = $plugin->columnDef;
 
         $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields',
-                                        array('tid' => $data['tid']));
+                                        array('tid' => $pubfield->tid));
 
         // handle the commands
         switch ($args['commandName'])
@@ -86,44 +92,63 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                     return false;
                 }
 
-                // FIXME validate that name != 'id'
+                $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubfield');
 
-                if ($data['istitle'] == 1) {
-                    $istitle = array('istitle' => '0');
-                    DBUtil::updateObject($istitle, 'pagemaster_pubfields', "pm_tid = '$data[tid]'");
-                }
-
-                $data['name']  = str_replace("'", '', $data['name']);
-                $submittedname = DataUtil::formatForStore($data['name']);
+                // check that the name is unique
+                $pubfield->name = str_replace("'", '', $pubfield->name);
+                $submittedname = DataUtil::formatForStore($pubfield->name);
                 if (empty($this->id)) {
-                    $where = "pm_name = '$submittedname' AND pm_tid = '$data[tid]'";
+                    $where = "name = '$submittedname' AND tid = '{$pubfield->tid}'";
                 } else {
-                    $where = "pm_id <> '{$this->id}' AND pm_name = '$submittedname' AND pm_tid = '$data[tid]'";
+                    $where = "id <> '{$this->id}' AND name = '$submittedname' AND tid = '{$pubfield->tid}'";
                 }
 
-                $nameUnique = DBUtil::selectFieldMax('pagemaster_pubfields', 'id', 'COUNT', $where);
+                $nameUnique = (int)$tableObj->selectFieldFunction('id', 'COUNT', $where);
                 if ($nameUnique > 0) {
-                    return $view->setErrorMsg($this->__('Error! Name has to be unique.'));
+                    $plugin = $view->getPluginById('name');
+                    $plugin->setError($this->__('Another field already has this name.'));
+                    return false;
                 }
 
+                // check that the new name is not another publication property
                 if (empty($this->id)) {
-                    $max_rowID = DBUtil::selectFieldMax('pagemaster_pubfields', 'id', 'MAX', 'pm_tid = '.$data['tid']);
-                    $data['lineno'] = $max_rowID + 1;
-                    if ($max_rowID == 1) {
-                        $data['istitle'] = 1;
+                    $pubClass = 'PageMaster_Model_Pubdata'.$this->tid;
+                    $pubObj   = new $pubClass();
+                    if (isset($pubObj[$pubfield->name])) {
+                        $plugin = $view->getPluginById('name');
+                        $plugin->setError($this->__('The provided name is reserved for the publication standard fields.'));
+                        return false;
                     }
-                    DBUtil::insertObject($data, 'pagemaster_pubfields');
-                    LogUtil::registerStatus($this->__('Done! Field created.'));
+                }
 
+                // reset any other title field if this one is enabled
+                if ($pubfield->istitle == true) {
+                    $tableObj->createQuery()
+                             ->update()
+                             ->set('istitle', '0')
+                             ->where('tid = ?', $pubfield->tid)
+                             ->execute();
+                }
+
+                // force a titlefield
+                $max_line = (int)$tableObj->selectFieldFunction('lineno', 'MAX', 'tid = '.$pubfield->tid);
+                if ($max_line == 0) {
+                    $pubfield->istitle = true;
+                }
+
+                // create/edit status messages
+                if (empty($this->id)) {
+                    $pubfield->lineno = $max_line + 1;
+                    LogUtil::registerStatus($this->__('Done! Field created.'));
                 } else {
-                    DBUtil::updateObject($data, 'pagemaster_pubfields', 'pm_id = '.$this->id);
                     LogUtil::registerStatus($this->__('Done! Field updated.'));
                 }
+                $pubfield->save();
                 break;
 
             // delete the field
             case 'delete':
-                if (DBUtil::deleteObject($data, 'pagemaster_pubfields')) {
+                if ($pubfield->delete()) {
                     LogUtil::registerStatus($this->__('Done! Field deleted.'));
                 } else {
                     return LogUtil::registerError($this->__('Error! Deletion attempt failed.'));

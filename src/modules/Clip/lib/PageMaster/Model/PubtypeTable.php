@@ -12,7 +12,10 @@
 /**
  * Doctrine_Table class used to implement own special entity methods.
  */
-class PageMaster_Model_PubrelationsTable extends Zikula_Doctrine_Table
+class PageMaster_Model_PubtypeTable extends Zikula_Doctrine_Table
 {
-
+    public function getPubtypes()
+    {
+        return $this->selectCollection('', 'title', -1, -1, 'tid');
+    }
 }

@@ -30,7 +30,7 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         foreach ($pubfields as $key => $value)
         {
             $result = Doctrine_Query::create()
-                      ->update('PageMaster_Model_Pubfields pf')
+                      ->update('PageMaster_Model_Pubfield pf')
                       ->set('pf.lineno', '?', $key)
                       ->where('pf.id = ?', $value)
                       ->addWhere('pf.tid = ?', $tid)

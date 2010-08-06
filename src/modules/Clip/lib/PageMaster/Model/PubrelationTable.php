@@ -12,7 +12,7 @@
 /**
  * Doctrine_Table class used to implement own special entity methods.
  */
-class PageMaster_Model_PubfieldsTable extends Zikula_Doctrine_Table
+class PageMaster_Model_PubrelationTable extends Zikula_Doctrine_Table
 {
 
 }

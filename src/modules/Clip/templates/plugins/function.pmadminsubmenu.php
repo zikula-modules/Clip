@@ -47,7 +47,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     $output .= '<span>';
     if ($func != 'pubfields') {
         $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $tid)).'">'.__('Fields', $dom).'</a>';
-    } elseif ($params['id'] != '') {
+    } elseif (isset($params['field']) != '') {
         $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $tid)).'#newpubfield">'.__('Fields', $dom).'</a>';
     } else {
         $output .= '<a href="#newpubfield">'.__('Fields', $dom).'</a>';

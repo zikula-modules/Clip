@@ -99,6 +99,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         $pubfields = PageMaster_Util::getPubFields($tid);
+        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
         $filterPlugins = array();
         foreach ($pubfields as $fieldname => $field)
@@ -147,7 +148,11 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // check if some plugin specific orderby has to be done
-        $orderby   = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
+        $orderby = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
+        // replaces the core_title alias by the original field name
+        if (strpos('core_title', $orderby) !== false) {
+            $orderby = str_replace('core_title', $pubtype->titlefield, $orderby);
+        }
 
         $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid);
         $tablename = $tableObj->getInternalTableName();
@@ -428,7 +433,7 @@ class PageMaster_Api_User extends Zikula_Api
         $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid');
 
         $allTypes = array();
-        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
                     ->getPubtypes()
                     ->toArray();
 
@@ -567,7 +572,7 @@ class PageMaster_Api_User extends Zikula_Api
 
         $nextvar = 3;
 
-        $tid = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+        $tid = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
                ->selectFieldBy('tid', $_[2], 'urltitle');
 
         if (!$tid) {

@@ -459,7 +459,7 @@ class PageMaster_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
         $modinfo = ModUtil::getInfoFromName('PageMaster');
 
         if ($modinfo['state'] != ModUtil::STATE_UNINITIALISED) {
-            $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubfields')
+            $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
                          ->selectCollection('', 'tid ASC, id ASC');
 
             if ($pubfields === false) {

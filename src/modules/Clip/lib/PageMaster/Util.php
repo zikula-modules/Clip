@@ -126,7 +126,7 @@ class PageMaster_Util
      *
      * @return string Formatted orderby.
      */
-    function createOrderBy($orderby)
+    public static function createOrderBy($orderby)
     {
         $orderbylist = explode(',', $orderby);
         $orderby     = '';
@@ -149,7 +149,7 @@ class PageMaster_Util
      *
      * @return string Random id.
      */
-    function getNewFileReference()
+    public static function getNewFileReference()
     {
         $chars   = '0123456789abcdefghijklmnopqrstuvwxyz';
         $charLen = strlen($chars);
@@ -309,7 +309,7 @@ class PageMaster_Util
         $event->setData($classNames);
         $classNames = EventUtil::getManager()->notify($event)->getData();
 
-        // allow final override.  since user event handlers are loaded first,
+        // allow final override. since user event handlers are loaded first,
         // we have to dispatch a separate event - drak
         $event = new Zikula_Event('pagemaster.get_field_plugin_classes.overrides');
         $event->setData($classNames);
@@ -337,7 +337,7 @@ class PageMaster_Util
      *
      * @return integer Comparision result. 
      */
-    public function _sortPluginList($a, $b)
+    public static function _sortPluginList($a, $b)
     {
         return strcmp($a['plugin']->pluginTitle, $b['plugin']->pluginTitle);
     }
@@ -388,7 +388,7 @@ class PageMaster_Util
 
         $tid = (int)$tid;
         if ($tid != -1 && !isset($pubfields_arr[$tid])) {
-            $pubfields_arr[$tid] = Doctrine_Core::getTable('PageMaster_Model_Pubfields')
+            $pubfields_arr[$tid] = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
                                    ->selectCollection("tid = '$tid'", $orderBy, -1, -1, 'name');
         }
 
@@ -411,7 +411,7 @@ class PageMaster_Util
         static $pubtype_arr;
 
         if (!isset($pubtype_arr)) {
-            $pubtype_arr = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')->getPubtypes();
+            $pubtype_arr = Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes();
         }
 
         if ($tid == -1) {
@@ -433,7 +433,7 @@ class PageMaster_Util
         static $pubtitles_arr;
 
         if (!isset($pubtitles_arr)) {
-            $pubtitles_arr = Doctrine_Core::getTable('PageMaster_Model_Pubfields')
+            $pubtitles_arr = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
                              ->selectFieldArray('name', "istitle = '1'", '', false, 'tid');
         }
 

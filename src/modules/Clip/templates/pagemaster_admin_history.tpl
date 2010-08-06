@@ -7,7 +7,7 @@
 
     <h2>{gt text='History'}</h2>
 
-    {pmadminsubmenu tid=$core_tid}
+    {pmadminsubmenu tid=$pubtype.tid}
 
     <table class="z-admintable">
         <thead>
@@ -25,7 +25,7 @@
             {foreach from=$publist item='pubitem'}
             <tr class="{cycle values='z-odd,z-even'}">
                 <td>{$pubitem.core_pid}</td>
-                <td>{$pubitem.$core_title}</td>
+                <td>{$pubitem[$pubtype.titlefield]}</td>
                 <td>{$pubitem.core_revision}</td>
                 <td>{$pubitem.__WORKFLOW__.state} </td>
                 <td>{usergetvar name='uname' uid=$pubitem.core_author} </td>

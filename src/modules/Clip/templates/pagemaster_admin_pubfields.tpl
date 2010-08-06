@@ -9,7 +9,7 @@
 
     <h2>{gt text='Manage Publication fields'}</h2>
 
-    {pmadminsubmenu tid=$tid id=$id|default:''}
+    {pmadminsubmenu tid=$tid field=1}
 
     {modurl modname='PageMaster' type='admin' func='dbupdate' tid=$tid assign='urlupdate'}
     {assign var='urlupdate' value=$urlupdate|safetext}
@@ -83,65 +83,69 @@
     <div>
         {formvalidationsummary}
         <fieldset id="newpubfield">
-            <legend>{gt text='Add a publication field'}</legend>
+            {if isset($field)}
+                <legend>{gt text='Edit publication field'}</legend>
+            {else}
+                <legend>{gt text='Add a publication field'}</legend>
+            {/if}
             <div class="z-formrow">
                 {formlabel for='name' text='Name' mandatorysym=true}
-                {formtextinput id='name' maxLength='255' mandatory=true}
+                {formtextinput id='name' group='field' maxLength='255' mandatory=true}
                 <div class="z-formnote">{gt text='Name of this field (is used e.g. in the template variables).'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='title' text='Display name' mandatorysym=true}
-                {formtextinput id='title' maxLength='255' mandatory=true}
+                {formtextinput id='title' group='field' maxLength='255' mandatory=true}
                 <div class="z-formnote">{gt text="Title (is shown e.g. in the automatically generated templates) and can be a custom gettext string."}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='description' text='Note'}
-                {formtextinput id='description' maxLength='255'}
+                {formtextinput id='description' group='field' maxLength='255'}
                 <div class="z-formnote">{gt text='Optional tooltip of this field used on the input form, and can be a custom gettext string.'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='fieldplugin' text='Fieldtype (Plugin)'}
-                {pmformplugintype id='fieldplugin'}
+                {pmformplugintype id='fieldplugin' group='field'}
                 <span class="z-formnote">{gt text='Which kind of fieldtype is used (can be extended by plugins). Detailed informations about the individual plugins can be found in the documentation.'}</span>
                 <span class="z-formnote" id="typedata_wrapper">
-                    {formtextinput id='typedata' maxLength='4000'} <span class="z-warningmsg">{gt text='Edit this field only if you know what you are doing.'}</span><br />
+                    {formtextinput id='typedata' group='field' maxLength='4000'} <span class="z-warningmsg">{gt text='Edit this field only if you know what you are doing.'}</span><br />
                     {gt text="This is the configuration data of the field, if you edit it manually you can get unexpected results. Please use the configuration icon next to the selector to configure the field with ease."}
                 </span>
             </div>
             <div class="z-formrow">
                 {formlabel for='istitle' text='Title field'}
-                {formcheckbox id='istitle'}
+                {formcheckbox id='istitle' group='field'}
                 <div class="z-formnote">{gt text='The content of this field will be used as the title?'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='ispageable' text='Pageable'}
-                {formcheckbox id='ispageable'}
+                {formcheckbox id='ispageable' group='field'}
                 <div class="z-formnote">{gt text='The content of this field is pageable?'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='ismandatory' text='Mandatory'}
-                {formcheckbox id='ismandatory'}
+                {formcheckbox id='ismandatory' group='field'}
                 <div class="z-formnote">{gt text='Is this field mandatory?'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='issearchable' text='Searchable'}
-                {formcheckbox id='issearchable'}
+                {formcheckbox id='issearchable' group='field'}
                 <div class="z-formnote">{gt text='The content of this field can be searched?'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='fieldmaxlength' text='Max. length'}
-                {formintinput id='fieldmaxlength' maxLength='15'}
+                {formintinput id='fieldmaxlength' group='field' maxLength='15'}
                 <div class="z-formnote">{gt text='The maximum length for the content of this field.'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='lineno' text='Weight order'}
-                {formintinput id='lineno' maxLength='4'}
+                {formintinput id='lineno' group='field' maxLength='4'}
                 <div class="z-formnote">{gt text='Weight number of this field. You can leave it blank and order it later with Drag & Drop in the full list.'}</div>
             </div>
         </fieldset>
 
         <div class="z-buttons z-formbuttons">
-            {if isset($id)}
+            {if isset($field)}
                 {formbutton commandName='create' __text='Save' class='z-bt-save'}
                 {gt text='Are you sure you want to delete this field?' assign='confirmdeletion'}
                 {formbutton commandName='delete' __text='Delete' class='z-bt-delete' confirmMessage=$confirmdeletion}

@@ -32,13 +32,13 @@ class PageMaster_Api_Search extends Zikula_Api
             $render = Zikula_View::getInstance('PageMaster');
 
             // Looking for pubtype with at least one searchable field
-            $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+            $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
                         ->getPubtypes()
                         ->toArray();
 
             foreach ($pubtypes as $key => $pubtype)
             {
-                $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+                $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
                              ->selectFieldArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
                 if (count($pubfields) == 0 ) {
@@ -79,14 +79,14 @@ class PageMaster_Api_Search extends Zikula_Api
                           $searchColumn[session])
                       VALUES ";
 
-        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
                     ->getPubtypes()
                     ->toArray();
 
         foreach ($pubtypes as $pubtype)
         {
             if ($search_tid == '' || $search_tid[$pubtype['tid']] == 1){
-                $pubfieldnames = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')
+                $pubfieldnames = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
                                  ->selectArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];

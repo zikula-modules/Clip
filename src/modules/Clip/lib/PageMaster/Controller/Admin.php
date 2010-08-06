@@ -31,10 +31,10 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             return LogUtil::registerPermissionError();
         }
 
-        // build the output
-        $render = FormUtil::newForm('PageMaster');
-
-        return $render->execute('pagemaster_admin_modifyconfig.tpl', new PageMaster_Form_Handler_Admin_ModifyConfig());
+        // return the form output
+        return FormUtil::newForm('PageMaster')
+               ->execute('pagemaster_admin_modifyconfig.tpl',
+                         new PageMaster_Form_Handler_Admin_ModifyConfig());
     }
 
     /**
@@ -46,7 +46,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             return LogUtil::registerPermissionError();
         }
 
-        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')->getPubtypes();
+        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes();
 
         return $this->view->assign('pubtypes', $pubtypes)
                           ->fetch('pagemaster_admin_pubtypes.tpl');
@@ -61,10 +61,10 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             return LogUtil::registerPermissionError();
         }
 
-        // build the output
-        $render = FormUtil::newForm('PageMaster');
-
-        return $render->execute('pagemaster_admin_pubtype.tpl', new PageMaster_Form_Handler_Admin_Pubtypes());
+        // return the form output
+        return FormUtil::newForm('PageMaster')
+               ->execute('pagemaster_admin_pubtype.tpl',
+                         new PageMaster_Form_Handler_Admin_Pubtypes());
     }
 
     /**
@@ -76,10 +76,10 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             return LogUtil::registerPermissionError();
         }
 
-        // build the output
-        $render = FormUtil::newForm('PageMaster');
-
-        return $render->execute('pagemaster_admin_pubfields.tpl', new PageMaster_Form_Handler_Admin_Pubfields());
+        // return the form output
+        return FormUtil::newForm('PageMaster')
+               ->execute('pagemaster_admin_pubfields.tpl',
+                         new PageMaster_Form_Handler_Admin_Pubfields());
     }
 
 
@@ -134,6 +134,9 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
 
+        // get the Doctrine_Table object
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid);
+
         // db table check
         // FIXME: May remove this?
         $tablename = 'pagemaster_pubdata'.$tid;
@@ -144,9 +147,10 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         }
 
         $pubtype = PageMaster_Util::getPubType($tid);
+        $pubtype->mapValue('titlefield', PageMaster_Util::getTitleField($tid));
+        $pubtype->mapValue('orderby', $orderby);
 
         // set the order
-        $old_orderby = $orderby;
         if (!isset($orderby) || empty($orderby)) {
             if (!empty($pubtype['sortfield1'])) {
                 if ($pubtype['sortdesc1'] == 1) {
@@ -175,14 +179,11 @@ class PageMaster_Controller_Admin extends Zikula_Controller
             }
         }
 
-        $core_title = PageMaster_Util::getTitleField($tid);
-        if (substr($orderby, 0, 10) == 'core_title') {
-            $orderby = str_replace('core_title', $core_title, $orderby);
+        // replace any occurence of the core_title alias with the field name
+        if (strpos('core_title', $orderby) !== false) {
+            $orderby = str_replace('core_title', $pubtype->titlefield, $orderby);
         }
         $orderby = PageMaster_Util::createOrderBy($orderby);
-
-        // get the Doctrine_Table object
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid);
 
         // query the list
         $publist = $tableObj->selectCollection('core_indepot = 0', $orderby, $startnum-1, $itemsperpage);
@@ -190,8 +191,8 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         if ($publist !== false) {
             $pubcount = (int)$tableObj->selectCount('core_indepot = 0');
             // add the workflow information for each publication
-            foreach (array_keys($publist) as $key) {
-                Zikula_Workflow_Util::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
+            for ($i = 0; $i < count($publist); $i++) {
+                Zikula_Workflow_Util::getWorkflowForObject($publist[$i], $tablename, 'id', 'PageMaster');
             }
         } else {
             $publist  = array();
@@ -199,12 +200,10 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         }
 
         // build the output
-        $this->view->assign('core_tid',   $tid)
-                   ->assign('core_title', $core_title)
-                   ->assign('publist',    $publist)
-                   ->assign('orderby',    $old_orderby)
-                   ->assign('pager',      array('numitems'     => $pubcount,
-                                                'itemsperpage' => $itemsperpage));
+        $this->view->assign('pubtype', $pubtype)
+                   ->assign('publist', $publist)
+                   ->assign('pager',   array('numitems'     => $pubcount,
+                                             'itemsperpage' => $itemsperpage));
 
         return $this->view->fetch('pagemaster_admin_publist.tpl');
     }
@@ -231,20 +230,19 @@ class PageMaster_Controller_Admin extends Zikula_Controller
 
         // get the Doctrine_Table object
         $publist = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
-                       ->selectCollection("pid = '$pid'", 'core_revision DESC');
+                       ->selectCollection("core_pid = '$pid'", 'core_revision DESC');
 
         $tablename = 'pagemaster_pubdata'.$tid;
-        foreach (array_keys($publist) as $key) {
-            Zikula_Workflow_Util::getWorkflowForObject($publist[$key], $tablename, 'id', 'PageMaster');
+        for ($i = 0; $i < count($publist); $i++) {
+            Zikula_Workflow_Util::getWorkflowForObject($publist[$i], $tablename, 'id', 'PageMaster');
         }
 
-        $core_title = PageMaster_Util::getTitleField($tid);
+        $pubtype = PageMaster_Util::getPubType($tid);
+        $pubtype->mapValue('titlefield', PageMaster_Util::getTitleField($tid));
 
         // build the output
-        // FIXME rework the available vars
-        $this->view->assign('core_tid',   $tid)
-                   ->assign('core_title', $core_title)
-                   ->assign('publist',    $publist);
+        $this->view->assign('pubtype', $pubtype)
+                   ->assign('publist', $publist);
 
         return $this->view->fetch('pagemaster_admin_history.tpl');
     }
@@ -313,7 +311,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         }
 
         // check if there are pubtypes already
-        $numpubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtypes')->selectCount();
+        $numpubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')->selectCount();
 
         // build and return the output
         $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false)

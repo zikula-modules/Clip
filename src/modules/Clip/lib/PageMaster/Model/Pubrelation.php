@@ -12,7 +12,7 @@
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class PageMaster_Model_Pubrelations extends Doctrine_Record
+class PageMaster_Model_Pubrelation extends Doctrine_Record
 {
     /**
      * Set table definition.

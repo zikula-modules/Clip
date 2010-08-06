@@ -77,10 +77,10 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 )
             );
 
-            foreach (array_keys($pubfields) as $fieldname) {
-                $index = ($pubfields[$fieldname]['istitle'] == 1) ? 'core_title' : $fieldname;
+            foreach ($pubfields as $fieldname => $pubfield) {
+                $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
                 $pubarr[$index] = array(
-                    'text'  => $this->__($pubfields[$fieldname]['title']),
+                    'text'  => $this->__($pubfield['title']),
                     'value' => $fieldname
                 );
             }
@@ -88,7 +88,7 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
             $pubarr = array_values(array_filter(array_merge($arraysort, $pubarr)));
 
             $view->assign('pubfields', $pubarr)
-                 ->assign($pubtype);
+                 ->assign('pubtype', $pubtype->toArray());
         }
 
         // stores the return URL and the item URL
@@ -117,7 +117,13 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
         }
 
         $data = $view->getValues();
-        $data['tid'] = $this->tid;
+
+        // creates and fill a Pubtype instance
+        $pubtype = new PageMaster_Model_Pubtype();
+        if (!empty($this->tid)) {
+            $pubtype->assignIdentifier($this->tid);
+        }
+        $pubtype->fromArray($data{'pubtype'});
 
         // handle the commands
         switch ($args['commandName'])
@@ -128,56 +134,59 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                     return false;
                 }
 
-                if (!isset($data['urltitle']) || empty($data['urltitle'])) {
-                    $data['urltitle'] = DataUtil::formatPermalink($data['title']);
+                // cleanup some fields
+                if (empty($pubtype->urltitle)) {
+                    $pubtype->urltitle = DataUtil::formatPermalink($pubtype->title);
                 }
-                $data['outputset'] = DataUtil::formatPermalink($data['outputset']);
-                $data['inputset']  = DataUtil::formatPermalink($data['inputset']);
+                $pubtype->outputset = DataUtil::formatPermalink($pubtype->outputset);
+                $pubtype->inputset  = DataUtil::formatPermalink($pubtype->inputset);
 
+                // create/edit status messages
                 if (empty($this->tid)) {
-                    DBUtil::insertObject($data, 'pagemaster_pubtypes', 'tid');
                     LogUtil::registerStatus($this->__('Done! Publication type created. Now you can proceed to define its fields.'));
-
-                    $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $data['tid']));
+                    $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $pubtype->tid));
                 } else {
-                    DBUtil::updateObject($data, 'pagemaster_pubtypes', 'pm_tid='.$this->tid);
                     LogUtil::registerStatus($this->__('Done! Publication type updated.'));
                 }
+                $pubtype->save();
                 break;
 
             // clone the current pubtype
             case 'clone':
                 // clone the pubtype info
                 $pubtype = PageMaster_Util::getPubType($this->tid);
-                unset($pubtype['tid']);
-                $pubtype['title'] = $this->__f('%s Clon', $pubtype['title']);
-                $pubtype = DBUtil::insertObject($pubtype, 'pagemaster_pubtypes', 'tid');
+
+                $newpubtype = $pubtype->copy();
+                $newpubtype->title = $this->__f('%s Clon', $pubtype->title);
+                $newpubtype->save();
 
                 // clone the pubtype fields
                 $pubfields = PageMaster_Util::getPubFields($this->tid);
-                if (!empty($pubfields)) {
-                    foreach (array_keys($pubfields) as $k) {
-                        $pubfields[$k]['tid'] = $pubtype['tid'];
-                        unset($pubfields[$k]['id']);
+                if ($pubfields) {
+                    foreach ($pubfields as $pubfield) {
+                        $pubfield = $pubfield->clone();
+                        $pubfield->tid = $newpubtype->tid;
+                        $pubfield->save();
                     }
-                    DBUtil::insertObjectArray($pubfields, 'pagemaster_pubfields');
                 }
 
                 LogUtil::registerStatus($this->__('Done! Publication type cloned.'));
 
-                $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $pubtype['tid']));
+                $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $newpubtype->tid));
                 break;
 
             // delete
             case 'delete':
-                DBUtil::deleteObject(null, 'pagemaster_pubtypes', "pm_tid = '{$this->tid}'");
-                DBUtil::deleteObject(null, 'pagemaster_pubfields', "pm_tid = '{$this->tid}'");
+                // delete the pubtype data and fields
+                PageMaster_Util::getPubType($this->tid)->delete();
+                PageMaster_Util::getPubFields($this->tid)->delete();
 
+                // also delete the data if available
                 $existingtables = DBUtil::metaTables();
                 if (in_array(DBUtil::getLimitedTablename('pagemaster_pubdata'.$this->tid), $existingtables)) {
                     DBUtil::dropTable('pagemaster_pubdata'.$this->tid);
                 }
-                // FIXME no more related stuff is needed? Hooks, Workflows registries?
+                // FIXME Delete related stuff is needed? Hooks, Workflows registries?
 
                 LogUtil::registerStatus($this->__('Done! Publication type deleted.'));
 

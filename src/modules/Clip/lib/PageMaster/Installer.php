@@ -316,7 +316,7 @@ class PageMaster_Installer extends Zikula_Installer
             case '0.4.2':
                 $tables = DBUtil::getTables();
                 // further upgrade handling
-                // * update the field classnames
+                // * map the field classnames to IDs
                 // * rename the filename/formname columns
                 // * fill the output/input sets if empty
                 // * change C(512) to C(255) and X to C(65535)

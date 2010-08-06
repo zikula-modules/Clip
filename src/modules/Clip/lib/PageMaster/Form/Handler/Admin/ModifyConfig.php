@@ -71,6 +71,8 @@ class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
                 // development mode
                 ModUtil::setVar('PageMaster', 'devmode', $data['devmode']);
 
+                // FIXME add itemsperpage for admin lists
+
                 // let any other modules know that the modules configuration has been updated
                 ModUtil::callHooks('module', 'updateconfig', 'PageMaster', array('module' => 'PageMaster'));
 
