@@ -15,30 +15,6 @@
 class PageMaster_Util
 {
     /**
-     * Process some core fields.
-     *
-     * @param array &$pubdata Publication data.
-     *
-     * @return void
-     */
-    public static function pubPostProcess(&$pubdata)
-    {
-        $tid = self::getTidFromTablename($pubdata['__WORKFLOW__']['obj_table']);
-
-        $fields = array(
-            'core_title' => '',
-            'core_uniqueid' => "{$tid}-{$pubdata['core_pid']}",
-            'core_tid' => $tid,
-            'core_pid' => '',
-            'core_author' => '',
-            'core_creator' => ($pubdata['core_author'] == UserUtil::getVar('uid')) ? true : false,
-            'core_approvalstate' => $pubdata['__WORKFLOW__']['state']
-        );
-
-        $pubdata = array_merge($fields, $pubdata);
-    }
-
-    /**
      * Temporary pre-0.9 upgrade script classnames convertor
      */
     public static function processPluginClassname($pluginClass)
@@ -179,8 +155,8 @@ class PageMaster_Util
 
             if (method_exists($plugin, 'postRead')) {
                 if ($islist) {
-                    foreach (array_keys($publist) as $key) {
-                        $publist[$key][$fieldname] = $plugin->postRead($publist[$key][$fieldname], $field);
+                    for ($i = 0; $i < count($publist); $i++) {
+                        $publist[$i][$fieldname] = $plugin->postRead($publist[$i][$fieldname], $field);
                     }
                 } else {
                     $publist[$fieldname] = $plugin->postRead($publist[$fieldname], $field);

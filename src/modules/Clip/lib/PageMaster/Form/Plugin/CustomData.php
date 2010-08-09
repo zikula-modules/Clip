@@ -36,7 +36,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
         parent::create($view, $params);
 
         if (empty($this->text)) {
-            $this->parseConfig($view->eventHandler->pubfields[$this->inputName]['typedata'], 0);
+            $this->parseConfig($view->eventHandler->getPubfieldData($this->inputName, 'typedata'), 0);
             $defaultvalue = isset($this->config['configvars'][1]) ? $this->config['configvars'][1] : '';
             $this->text = ($defaultvalue != '~' ? $defaultvalue : '');
         }
@@ -46,8 +46,8 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
     {
         $this->textMode = 'singleline';
         $view->assign($this->inputName, @unserialize($this->text));
-        if (isset($view->eventHandler->pubfields[$this->inputName])) {
-            $this->parseConfig($view->eventHandler->pubfields[$this->inputName]['typedata'], 0);
+        if ($view->eventHandler->getPubfieldData($this->inputName)) {
+            $this->parseConfig($view->eventHandler->getPubfieldData($this->inputName, 'typedata'), 0);
             $view->assign($this->inputName.'_typedata', $this->config);
         }
 
@@ -97,7 +97,7 @@ class PageMaster_Form_Plugin_CustomData extends Form_Plugin_TextInput
             $this->text = FormUtil::getPassedValue($this->inputName, null, 'POST');
 
             if (is_null($this->text) || empty($this->text)) {
-                $this->parseConfig($view->eventHandler->pubfields[$this->inputName]['typedata'], 0);
+                $this->parseConfig($view->eventHandler->getPubfieldData($this->inputName, 'typedata'), 0);
                 $this->text = isset($this->config['configvars'][1]) ? $this->config['configvars'][1] : '';
                 return;
             }

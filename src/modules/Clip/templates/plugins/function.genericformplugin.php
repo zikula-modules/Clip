@@ -28,7 +28,7 @@ function smarty_function_genericformplugin($params, &$render)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
     }
 
-    $tid = $render->eventHandler->pubtype['tid'];
+    $tid = $render->eventHandler->getTid();
 
     $pubfields   = PageMaster_Util::getPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];

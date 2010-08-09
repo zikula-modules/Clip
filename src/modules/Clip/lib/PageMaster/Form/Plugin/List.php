@@ -78,8 +78,9 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function load($view, &$params)
     {
-        if (!empty($view->eventHandler->pubfields[$this->id]['typedata'])) {
-            $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata'], (int)$params['mandatory']);
+        $typedata = $view->eventHandler->getPubfieldData($this->id, 'typedata');
+        if (!empty($typedata)) {
+            $this->parseConfig($typedata, (int)$params['mandatory']);
 
             $params['category'] = $this->config[0];
 

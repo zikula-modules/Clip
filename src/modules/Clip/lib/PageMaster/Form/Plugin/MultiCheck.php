@@ -81,8 +81,8 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     function load($view, &$params)
     {
-        if (isset($view->eventHandler->pubfields[$this->id])) {
-            $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
+        if ($view->eventHandler->getPubfieldData($this->id)) {
+            $this->parseConfig($view->eventHandler->getPubfieldData($this->id, 'typedata'));
             $params['category'] = $this->config['category'];
         }
 

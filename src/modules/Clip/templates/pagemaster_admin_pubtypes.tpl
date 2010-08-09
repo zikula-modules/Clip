@@ -54,7 +54,7 @@
                         {img modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt=''} {gt text='Admin'}
                     </a>
                     &nbsp;
-                    <a href="{modurl modname='PageMaster' type='user' func='main' tid=$pubtype.tid}" title="{gt text='Go to the public publication list'}">
+                    <a href="{modurl modname='PageMaster' type='user' func='view' tid=$pubtype.tid}" title="{gt text='Go to the public publication list'}">
                         {img modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt=''} {gt text='Public'}
                     </a>
                 </td>

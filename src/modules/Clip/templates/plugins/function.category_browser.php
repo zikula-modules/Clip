@@ -141,10 +141,10 @@ function smarty_function_category_browser($params, &$smarty)
         }
 
         if ($new_filter == '') {
-            $url = ModUtil::url('PageMaster', 'user', 'main',
+            $url = ModUtil::url('PageMaster', 'user', 'view',
                                 array('tid'    => $tid));
         } else {
-            $url = ModUtil::url('PageMaster', 'user', 'main',
+            $url = ModUtil::url('PageMaster', 'user', 'view',
                                 array('tid'    => $tid,
                                       'filter' => $new_filter));
         }

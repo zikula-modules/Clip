@@ -72,7 +72,7 @@ class PageMaster_Block_List extends Zikula_Block
         $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-        $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'main',
+        $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'view',
                                               array('tid'                => $vars['tid'],
                                                     'filter'             => $filterStr,
                                                     'orderby'            => $orderBy,

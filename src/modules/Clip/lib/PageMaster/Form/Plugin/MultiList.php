@@ -92,8 +92,8 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
     function render($view)
     {
         // extract the configuration {category, size}
-        if (isset($view->eventHandler->pubfields[$this->inputName])) {
-            $this->parseConfig($view->eventHandler->pubfields[$this->inputName]['typedata']);;
+        if ($view->eventHandler->getPubfieldData($this->inputName)) {
+            $this->parseConfig($view->eventHandler->getPubfieldData($this->inputName, 'typedata'));
         } else {
             $this->parseConfig();
         }
@@ -115,8 +115,8 @@ class PageMaster_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
 
     function load($view, &$params)
     {
-        if (isset($view->eventHandler->pubfields[$this->id])) {
-            $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
+        if ($view->eventHandler->getPubfieldData($this->id)) {
+            $this->parseConfig($view->eventHandler->getPubfieldData($this->id, 'typedata'));
             $params['category'] = $this->config[0];
         }
 

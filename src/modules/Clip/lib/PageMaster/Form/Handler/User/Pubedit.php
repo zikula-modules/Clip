@@ -14,26 +14,15 @@
  */
 class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 {
-    var $id;
-    var $core_pid;
-    var $core_author;
-    var $core_hitcount;
-    var $core_revision;
-    var $core_language;
-    var $core_online;
-    var $core_indepot;
-    var $core_showinmenu;
-    var $core_showinlist;
-    var $core_publishdate;
-    var $core_expiredate;
+    private $id;
+    private $pub;
 
-    var $tid;
-    var $tablename;
-    var $pubtype;
-    var $pubfields;
-    var $itemurl;
-    var $referer;
-    var $goto;
+    private $tid;
+    private $pubtype;
+    private $pubfields;
+    private $itemurl;
+    private $referer;
+    private $goto;
 
     function initialize($view)
     {
@@ -47,19 +36,19 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         // process a new or existing pub, and it's available actions
         if (!empty($this->id)) {
             $pubdata = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$this->tid)
-                       ->find($this->id)
-                       ->toArray();
+                       ->find($this->id);
+
+            $pubdata->pubPostProcess();
+            $pubdata = $pubdata->toArray();
 
             $this->pubAssign($pubdata);
 
-            $pubdata['core_title'] = $pubdata[$this->pubtype['titlefield']];
-
-            $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->tablename, 'id', 'PageMaster');
+            $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->pubtype->getTableName(), 'id', 'PageMaster');
         } else {
             // initial values
             $this->pubDefault();
 
-            $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype['workflow']), 'PageMaster');
+            $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'PageMaster');
         }
 
         // if there are no actions the user is not allowed to change / submit / delete something.
@@ -67,7 +56,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         if (count($actions) < 1) {
             LogUtil::registerError($this->__('No workflow actions found. This can be a permissions issue.'));
 
-            return $view->redirect(ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid)));
+            return $view->redirect(ModUtil::url('PageMaster', 'user', 'view', array('tid' => $this->tid)));
         }
 
         // translate any gt string on the action parameters
@@ -100,17 +89,17 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         // add the pub information to the render if exists
         if (count($pubdata) > 0) {
-            $view->assign($pubdata);
+            $view->assign('pubdata', $pubdata);
         }
 
         // stores the first referer and the item URL
         if (empty($this->referer)) {
-            $viewurl = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $this->tid), null, null, true);
+            $viewurl = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $this->tid), null, null, true);
             $this->referer = System::serverGetVar('HTTP_REFERER', $viewurl);
         }
 
         if (!empty($this->id)) {
-            $this->itemurl = ModUtil::url('PageMaster', 'user', 'display', array('tid' => $this->tid, 'pid' => $this->core_pid), null, null, true);
+            $this->itemurl = ModUtil::url('PageMaster', 'user', 'display', array('tid' => $this->tid, 'pid' => $this->pub['core_pid']), null, null, true);
         }
 
         $view->assign('actions', $actions);
@@ -143,7 +132,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         // see http://www.smarty.net/manual/en/caching.groups.php
         $tmp = Zikula_View::getInstance('PageMaster');
         // clear the view of the current publication
-        $tmp->clear_cache(null, 'display'.$this->tid.'|'.$this->core_pid);
+        $tmp->clear_cache(null, 'display'.$this->tid.'|'.$this->pub['core_pid']);
         // clear all page of publist
         $tmp->clear_cache(null, 'view'.$this->tid);
         unset($tmp);
@@ -154,7 +143,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
             // if the item moved to the depot or was deleted
-            $urltid = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $data['tid']));
+            $urltid = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $data['tid']));
             // check if the user comes of the display screen or not
             $goto = (strpos($this->referer, $this->itemurl) === 0) ? $urltid : $this->referer;
 
@@ -200,7 +189,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
                 break;
 
             case 'index':
-                $this->goto = ModUtil::url('PageMaster', 'user', 'main', array('tid' => $data['tid']));
+                $this->goto = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $data['tid']));
                 break;
 
             case 'home':
@@ -221,52 +210,92 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
     }
 
     /**
+     * Setters and getters
+     */
+    public function pmSetUp($id, $tid, $pubtype=null, $pubfields=null)
+    {
+        $this->id = $id;
+
+        $this->tid = $tid;
+        // pubtype
+        if ($pubtype) {
+            $this->pubtype = $pubtype;
+        } else {
+            $this->pubtype = PageMaster_Util::getPubType($tid);
+        }
+        // pubfields
+        if ($pubfields) {
+            $this->pubfields = $pubfields;
+        } else {
+            $this->pubfields = PageMaster_Util::getPubFields($tid);
+        }
+    }
+
+    public function getPubfieldData($name, $field=null)
+    {
+        if (empty($name) || !isset($this->pubfields[$name])) {
+            return false;
+        }
+
+        if ($field && isset($this->pubfields[$name][$field])) {
+            return $this->pubfields[$name][$field];
+        }
+
+        return $this->pubfields[$name];
+    }
+
+    public function getTid()
+    {
+        return $this->tid;
+    }
+
+    /**
      * Publication data handlers
      */
-    function pubDefault()
+    private function pubDefault()
     {
-        $this->core_pid         = NULL;
-        $this->core_author      = UserUtil::getVar('uid');
-        $this->core_hitcount    = 0;
-        $this->core_revision    = 0;
-        $this->core_language    = '';
-        $this->core_online      = 0;
-        $this->core_indepot     = 0;
-        $this->core_showinmenu  = 0;
-        $this->core_showinlist  = 1;
-        $this->core_publishdate = NULL;
-        $this->core_expiredate  = NULL;
+        $this->pub['core_pid']         = NULL;
+        $this->pub['core_author']      = UserUtil::getVar('uid');
+        $this->pub['core_hitcount']    = 0;
+        $this->pub['core_revision']    = 0;
+        $this->pub['core_language']    = '';
+        $this->pub['core_online']      = 0;
+        $this->pub['core_indepot']     = 0;
+        $this->pub['core_showinmenu']  = 0;
+        $this->pub['core_showinlist']  = 1;
+        $this->pub['core_publishdate'] = NULL;
+        $this->pub['core_expiredate']  = NULL;
     }
 
-    function pubAssign($pubdata)
+    private function pubAssign($pubdata)
     {
-        $this->core_pid         = $pubdata['core_pid'];
-        $this->core_author      = $pubdata['core_author'];
-        $this->core_hitcount    = $pubdata['core_hitcount'];
-        $this->core_revision    = $pubdata['core_revision'];
-        $this->core_language    = $pubdata['core_language'];
-        $this->core_online      = $pubdata['core_online'];
-        $this->core_indepot     = $pubdata['core_indepot'];
-        $this->core_showinmenu  = $pubdata['core_showinmenu'];
-        $this->core_showinlist  = $pubdata['core_showinlist'];
-        $this->core_publishdate = $pubdata['core_publishdate'];
-        $this->core_expiredate  = $pubdata['core_expiredate'];
+        $this->pub['core_pid']         = $pubdata['core_pid'];
+        $this->pub['core_author']      = $pubdata['core_author'];
+        $this->pub['core_hitcount']    = $pubdata['core_hitcount'];
+        $this->pub['core_revision']    = $pubdata['core_revision'];
+        $this->pub['core_language']    = $pubdata['core_language'];
+        $this->pub['core_online']      = $pubdata['core_online'];
+        $this->pub['core_indepot']     = $pubdata['core_indepot'];
+        $this->pub['core_showinmenu']  = $pubdata['core_showinmenu'];
+        $this->pub['core_showinlist']  = $pubdata['core_showinlist'];
+        $this->pub['core_publishdate'] = $pubdata['core_publishdate'];
+        $this->pub['core_expiredate']  = $pubdata['core_expiredate'];
     }
 
-    function pubExtract(&$data)
+    private function pubExtract(&$data)
     {
-        $data['tid']              = $this->tid;
-        $data['id']               = $this->id;
-        $data['core_pid']         = isset($data['core_pid']) && !empty($data['core_pid']) ? $data['core_pid'] : $this->core_pid;
-        $data['core_author']      = $this->core_author;
-        $data['core_revision']    = $this->core_revision;
-        $data['core_hitcount']    = $this->core_hitcount;
-        $data['core_language']    = isset($data['core_language']) ? $data['core_language'] : $this->core_language;
-        $data['core_online']      = $this->core_online;
-        $data['core_indepot']     = $this->core_indepot;
-        $data['core_showinmenu']  = isset($data['core_showinmenu']) ? $data['core_showinmenu'] : $this->core_showinmenu;
-        $data['core_showinlist']  = isset($data['core_showinlist']) ? $data['core_showinlist'] : $this->core_showinlist;
-        $data['core_publishdate'] = isset($data['core_publishdate']) ? $data['core_publishdate'] : $this->core_publishdate;
-        $data['core_expiredate']  = isset($data['core_expiredate']) ? $data['core_expiredate'] : $this->core_expiredate;
+        $data['tid']              = $this->pub['tid'];
+        $data['id']               = $this->pub['id'];
+        $data['core_pid']         = isset($data['core_pid']) && !empty($data['core_pid']) ? $data['core_pid'] : $this->pub['core_pid'];
+        $data['core_author']      = $this->pub['core_author'];
+        $data['core_revision']    = $this->pub['core_revision'];
+        $data['core_hitcount']    = $this->pub['core_hitcount'];
+        $data['core_language']    = isset($data['core_language']) ? $data['core_language'] : $this->pub['core_language'];
+        $data['core_online']      = $this->pub['core_online'];
+        $data['core_indepot']     = $this->pub['core_indepot'];
+        $data['core_showinmenu']  = isset($data['core_showinmenu']) ? $data['core_showinmenu'] : $this->pub['core_showinmenu'];
+        $data['core_showinlist']  = isset($data['core_showinlist']) ? $data['core_showinlist'] : $this->pub['core_showinlist'];
+        $data['core_publishdate'] = isset($data['core_publishdate']) ? $data['core_publishdate'] : $this->pub['core_publishdate'];
+        $data['core_expiredate']  = isset($data['core_expiredate']) ? $data['core_expiredate'] : $this->pub['core_expiredate'];
     }
 }

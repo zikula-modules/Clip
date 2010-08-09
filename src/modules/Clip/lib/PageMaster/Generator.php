@@ -20,24 +20,12 @@ class PageMaster_Generator
     {
         $dom = ZLanguage::getModuleDomain('PageMaster');
 
-        $tables = DBUtil::getTables();
-        // initial pubdata is the table definition
-        $pubdata = $tables["pagemaster_pubdata{$tid}_column"];
-
-        // add the display fields
-        $displayfields = array(
-            'core_title' => '',
-            'core_uniqueid' => '',
-            'core_tid' => $tid,
-            'core_pid' => '',
-            'core_author' => '',
-            'core_creator' => false,
-            'core_approvalstate' => ''
-        );
-
-        $pubdata = array_merge($displayfields, $pubdata);
-
-        $pubdata['__WORKFLOW__'] = array();
+        // build and process a dummy pubdata object
+        $className = "PageMaster_Model_Pubdata{$tid}";
+        $pubdata   = new $className();
+        $pubdata->pubPostProcess(false);
+        // get the record fields
+        $recfields = $pubdata->pubFields(true);
 
         // build the display code
         $template_code = "\n".
@@ -55,7 +43,7 @@ class PageMaster_Generator
 
         $pubfields = PageMaster_Util::getPubFields($tid);
 
-        foreach ($pubdata as $key => $pubfield)
+        foreach ($recfields as $key)
         {
             $rowcode = array(
                 'full'  => '',
@@ -148,11 +136,11 @@ class PageMaster_Generator
                             break;
 
                         default:
-                            if (is_array($pubfield)) {
+                            if (is_array($pubdata[$key])) {
                                 // generic arrays
                                 $rowcode['body'] = '<pre>{pmarray array=$pubdata.'.$key.'}</pre>';
 
-                            } elseif (is_bool($pubfield)) {
+                            } elseif (is_bool($pubdata[$key])) {
                                 // generic booleans
                                 $rowcode['body'] = '{$pubdata.'.$key.'|yesno}';
 
@@ -249,7 +237,7 @@ class PageMaster_Generator
             $template_code .= "\n".
                     '            <div class="z-formrow">'."\n".
                     '                {formlabel for=\''.$pubfields[$k]['name'].'\' _'.'_text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                    '                {genericformplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.'}'."\n".
+                    '                {genericformplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.' group=\'pubdata\'}'."\n".
         ($toolTip ? '                <span class="z-formnote z-sub">{gt text=\''.$toolTip.'\'}</span>'."\n" : '').
                     '            </div>'."\n";
         }
@@ -369,7 +357,7 @@ class PageMaster_Generator
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class PageMaster_Model_Pubdata{$tid} extends Doctrine_Record
+class PageMaster_Model_Pubdata{$tid} extends PageMaster_Base_Pubdata
 {
     /**
      * Set table definition.

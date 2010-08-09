@@ -276,9 +276,6 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($tid, $pid, $id)));
         }
 
-        // publication processing
-        PageMaster_Util::pubPostProcess($pubdata);
-
         // assign each field of the pubdata to the output
         $this->view->assign('pubdata', $pubdata);
 
@@ -336,10 +333,6 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
-        // no security check needed - the security check will be done by the handler class.
-        // see the init-part of the handler class for details.
-        $formHandler = new PageMaster_Form_Handler_User_Pubedit();
-
         if (empty($id) && !empty($pid)) {
             $id = ModUtil::apiFunc('PageMaster', 'user', 'getId',
                                    array('tid' => $tid,
@@ -353,23 +346,23 @@ class PageMaster_Controller_User extends Zikula_Controller
         $id  = (int)$id;
         $pid = (int)$pid;
 
-        $formHandler->tid       = $tid;
-        $formHandler->id        = $id;
-        $formHandler->pubtype   = $pubtype;
-        $formHandler->pubfields = $pubfields;
-        $formHandler->tablename = 'pagemaster_pubdata'.$tid;
-
         // get actual state for selecting form Template
         $stepname = 'initial';
 
         if (!empty($id)) {
             $obj = array('id' => $id);
-            Zikula_Workflow_Util::getWorkflowForObject($obj, $formHandler->tablename, 'id', 'PageMaster');
+            Zikula_Workflow_Util::getWorkflowForObject($obj, $pubtype->getTableName(), 'id', 'PageMaster');
             $stepname = $obj['__WORKFLOW__']['state'];
         }
 
         // adds the stepname to the pubtype
         $pubtype->mapValue('stepname', $stepname);
+
+        // no security check needed - the security check will be done by the handler class.
+        // see the init-part of the handler class for details.
+        $formHandler = new PageMaster_Form_Handler_User_Pubedit();
+        // setup the form handler
+        $formHandler->pmSetUp($id, $tid, $pubtype, $pubfields);
 
         // create the output object
         $render = FormUtil::newForm('PageMaster');
@@ -429,6 +422,11 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
+        $pubtype = PageMaster_Util::getPubType($tid);
+        if (!$pubtype) {
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+        }
+
         if (!isset($id) || empty($id) || !is_numeric($id)) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'));
         }
@@ -442,17 +440,14 @@ class PageMaster_Controller_User extends Zikula_Controller
             $schema  = str_replace('.xml', '', $pubtype['workflow']);
         }
 
-        $tablename = 'pagemaster_pubdata'.$tid;
-
         $pub = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
-               ->find($id)
-               ->toArray();
+               ->find($id);
 
         if (!$pub) {
             return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', $id));
         }
 
-        Zikula_Workflow_Util::executeAction($schema, $pub, $commandName, $tablename, 'PageMaster');
+        Zikula_Workflow_Util::executeAction($schema, $pub, $commandName, $pubtype->getTableName(), 'PageMaster');
 
         if (!empty($goto)) {
             switch ($goto)

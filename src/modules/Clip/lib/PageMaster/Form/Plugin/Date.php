@@ -70,7 +70,7 @@ class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
 
     function create($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->pubfields[$this->id]['typedata']);
+        $this->parseConfig($view->eventHandler->getPubfieldData($this->id, 'typedata'));
         $params['includeTime'] = $this->config['includeTime'];
 
         parent::create($view, $params);
