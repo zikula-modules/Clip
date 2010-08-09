@@ -391,8 +391,6 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         if (!empty($stepname) && $render->template_exists($template)) {
             return $render->execute($template, $formHandler);
-        } elseif ($alert) {
-            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
         }
 
         // generic edit
@@ -401,6 +399,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         if ($render->template_exists($template)) {
             return $render->execute($template, $formHandler);
         } elseif ($alert) {
+            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['inputset']."/form_{$stepname}.tpl"));
             LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
         }
 
