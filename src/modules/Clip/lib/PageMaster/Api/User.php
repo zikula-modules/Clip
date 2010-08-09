@@ -17,15 +17,17 @@ class PageMaster_Api_User extends Zikula_Api
     /**
      * Returns a Publication List.
      *
-     * @param  integer $args['tid']
-     * @param  integer $args['startnum']
-     * @param  integer $args['itemsperpage']
-     * @param  string  $args['countmode'] no, just, both.
-     * @param  boolean $args['checkperm']
-     * @param  boolean $args['handlePluginFields']
-     * @param  boolean $args['getApprovalState']
+     * @param integer $args['tid']                ID of the publication type.
+     * @param string  $args['filter']             Filter string.
+     * @param string  $args['orderby']            OrderBy string.
+     * @param integer $args['itemsperpage']       Number of items to retrieve.
+     * @param integer $args['startnum']           Offset to start from.
+     * @param string  $args['justcount']          Mode: no (list without count - default), just (count elements only), both.
+     * @param boolean $args['checkperm']          Whether to check the permissions.
+     * @param boolean $args['handlePluginFields'] Whether to parse the plugin fields.
+     * @param boolean $args['getApprovalState']   Whether to add the workflow information.
      *
-     * @return array Collection of publications and/or count.
+     * @return array Collection of publications and/or Count.
      */
     public function getall($args)
     {
@@ -64,7 +66,10 @@ class PageMaster_Api_User extends Zikula_Api
         $isadmin = !SecurityUtil::checkPermission('pagemaster:full:', "$args[tid]::", ACCESS_ADMIN) || (!isset($args['admin']) || !$args['admin']);
         // TODO pubtype.editown + author mode parameter check
 
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid']);
+
         // set the order
+        // handling column names till the end
         if (!isset($args['orderby']) || empty($args['orderby'])) {
             if (!empty($pubtype['sortfield1'])) {
                 if ($pubtype['sortdesc1'] == 1) {
@@ -135,27 +140,25 @@ class PageMaster_Api_User extends Zikula_Api
             */
         }
 
+        $tbl = 'dctrn_find.';
         if (isset($joinInfo)) {
-            $tbl_alias = 'tbl.';
             $filter_args = array('join' => array('join_table' => $joinInfo['join_table']),
                                                  'plugins'    => $filterPlugins);
         } else {
-            $tbl_alias = '';
             $filter_args = array('plugins' => $filterPlugins);
         }
 
         // check if some plugin specific orderby has to be done
-        $orderby = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl_alias);
+        $orderby = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl);
         // replaces the core_title alias by the original field name
         if (strpos('core_title', $orderby) !== false) {
             $orderby = str_replace('core_title', $pubtype->titlefield, $orderby);
         }
-
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid']);
-        $tablename = $tableObj->getInternalTableName();
+        // final orderby processing to convert column to aliases
+        $orderby = $tableObj->processOrderBy($tbl, $orderby, true);
 
         // FIXME check how FilterUtil can work with Doctrine_Query-ies
-        $fu = new FilterUtil('PageMaster', $tablename, $filter_args);
+        $fu = new FilterUtil('PageMaster', $pubtype->getTableName(), $filter_args);
 
         if (isset($args['filter']) && !empty($args['filter'])) {
             $fu->setFilter($args['filter']);
@@ -171,15 +174,15 @@ class PageMaster_Api_User extends Zikula_Api
 
         if ($isadmin) {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-                $where[] = "( {$tbl_alias}core_online = '1' AND ( {$tbl_alias}core_author = '$uid' OR {$tbl_alias}core_showinlist = '1') )";
+                $where[] = "( {$tbl}core_online = '1' AND ( {$tbl}core_author = '$uid' OR {$tbl}core_showinlist = '1') )";
             } else {
-                $where[] = "  {$tbl_alias}core_online = '1' AND {$tbl_alias}core_showinlist = '1'";
+                $where[] = "  {$tbl}core_online = '1' AND {$tbl}core_showinlist = '1'";
             }
 
-            $where[] = "  {$tbl_alias}core_indepot = '0' ";
-            $where[] = "( {$tbl_alias}core_language = '' OR {$tbl_alias}core_language = '".ZLanguage::getLanguageCode()."' )";
-            $where[] = "( {$tbl_alias}core_publishdate <= NOW() OR {$tbl_alias}core_publishdate IS NULL )";
-            $where[] = "( {$tbl_alias}core_expiredate >= NOW() OR {$tbl_alias}core_expiredate IS NULL )";
+            $where[] = "  {$tbl}core_indepot = '0' ";
+            $where[] = "( {$tbl}core_language = '' OR {$tbl}core_language = '".ZLanguage::getLanguageCode()."' )";
+            $where[] = "( {$tbl}core_publishdate <= NOW() OR {$tbl}core_publishdate IS NULL )";
+            $where[] = "( {$tbl}core_expiredate >= NOW() OR {$tbl}core_expiredate IS NULL )";
         }
         // TODO Implement author condition
 
@@ -217,12 +220,12 @@ class PageMaster_Api_User extends Zikula_Api
     /**
      * Returns a Publication.
      *
-     * @param  integer $args['tid']
-     * @param  integer $args['pid']
-     * @param  integer $args['id']
-     * @param  boolean $args['checkPerm']
-     * @param  boolean $args['getApprovalState']
-     * @param  boolean $args['handlePluginFields']
+     * @param integer $args['tid']                ID of the publication type.
+     * @param integer $args['pid']                ID of the publication.
+     * @param integer $args['id']                 ID of the publication revision (optional if pid is used).
+     * @param boolean $args['checkperm']          Whether to check the permissions.
+     * @param boolean $args['handlePluginFields'] Whether to parse the plugin fields.
+     * @param boolean $args['getApprovalState']   Whether to add the workflow information.
      *
      * @return Doctrine_Record One publication.
      */
@@ -259,9 +262,8 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // build the where clause
-        $tablename = 'pagemaster_pubdata'.$tid;
-        $uid       = UserUtil::getVar('uid');
-        $where     = '';
+        $uid   = UserUtil::getVar('uid');
+        $where = '';
 
         if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN))
         {
@@ -312,15 +314,13 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * Edit or creates a new publication.
+     * Saves a new or existing publication.
      *
-     * @author kundi
-     * @param $args['data'] array of pubfields data.
-     * @param $args['commandName'] commandName has to be a valid workflow action for the currenct state.
-     * @param $args['pubfields'] array of pubfields (optional, performance).
-     * @param $args['schema'] schema name (optional, performance).
+     * @param array               $args['data']        Publication data.
+     * @param string              $args['commandName'] Command name has to be a valid workflow action for the currenct state.
+     * @param Doctrine_Collection $args['pubfields']   Collection of pubfields (optional).
      *
-     * @return boolean true or false.
+     * @return boolean True on success, false otherwise.
      */
     public function edit($args)
     {
@@ -331,18 +331,14 @@ class PageMaster_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'commandName').' '.$this->__('commandName has to be a valid workflow action for the current state.'));
         }
 
-        $commandName = $args['commandName'];
-        $data        = $args['data'];
-        $tid         = $data['tid'];
+        // assign for easy handling of the data
+        $data = $args['data'];
 
-        $pubfields = isset($args['pubfields']) ? $args['pubfields'] : PageMaster_Util::getPubFields($tid);
+        // extract the schema name
+        $pubtype = PageMaster_Util::getPubType($data['tid']);
+        $schema  = str_replace('.xml', '', $pubtype->workflow);
 
-        if (!isset($args['schema'])) {
-            $pubtype = PageMaster_Util::getPubType($tid);
-            $schema  = str_replace('.xml', '', $pubtype['workflow']);
-        } else {
-            $schema = $args['schema'];
-        }
+        $pubfields = PageMaster_Util::getPubFields($data['tid']);
 
         foreach ($pubfields as $fieldname => $field)
         {
@@ -352,7 +348,7 @@ class PageMaster_Api_User extends Zikula_Api
             }
         }
 
-        $ret = Zikula_Workflow_Util::executeAction($schema, $data, $commandName, 'pagemaster_pubdata'.$data['tid'], 'PageMaster');
+        $ret = Zikula_Workflow_Util::executeAction($schema, $data, $args['commandName'], $pubtype->getTableName(), 'PageMaster');
 
         if (empty($ret)) {
             return LogUtil::registerError($this->__('Workflow action error.'));
@@ -429,9 +425,10 @@ class PageMaster_Api_User extends Zikula_Api
                     ->getPubtypes()
                     ->toArray();
 
+        $tables = DBUtil::getTables();
+
         foreach ($pubtypes as $pubtype) {
-            $tid    = $pubtype['tid'];
-            $tables = DBUtil::getTables();
+            $tid = $pubtype['tid'];
 
             if (!isset($tables['pagemaster_pubdata'.$tid])) {
                 $allTypes[$tid] = $pubtype['title'];
@@ -443,11 +440,11 @@ class PageMaster_Api_User extends Zikula_Api
                 $orderby = str_replace('core_title', $coreTitle, $orderby);
             }
 
-            $where     = 'core_indepot = 0';
-            $sort      = str_replace(':', ' ', $orderby);
-            $list      = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
-                         ->selectCollection($where, $sort)
-                         ->toArray();
+            $where = 'core_indepot = 0';
+            $sort  = str_replace(':', ' ', $orderby);
+            $list  = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+                     ->selectCollection($where, $sort)
+                     ->toArray();
 
             foreach ($list as $k => $v) {
                 if (!SecurityUtil::checkPermission('pagemaster:input:', "$tid:$v[pid]:", ACCESS_EDIT)) {

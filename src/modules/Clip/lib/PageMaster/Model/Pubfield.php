@@ -93,4 +93,14 @@ class PageMaster_Model_Pubfield extends Doctrine_Record
     {
         $this->actAs('Zikula_Doctrine_Template_StandardFields', array('oldColumnPrefix' => 'pm_'));
     }
+
+    /**
+     * PageMaster utility TableName getter.
+     *
+     * @return string Zikula table name.
+     */
+    public function getTableName()
+    {
+        return 'pagemaster_pubdata'.$this->tid;
+    }
 }

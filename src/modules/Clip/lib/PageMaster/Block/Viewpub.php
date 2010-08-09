@@ -46,10 +46,10 @@ class PageMaster_Block_Viewpub extends Zikula_Block
     {
         $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
 
-        // Get variables from content block
+        // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
-        // Validation of required parameters
+        // validation of required parameters
         if (!isset($vars['tid']) || empty($vars['tid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
         }
@@ -57,7 +57,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'pid') : null;
         }
 
-        // Security check
+        // security check
         if (!SecurityUtil::checkPermission('pagemaster:block:viewpub', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
             return;
         }
@@ -67,15 +67,15 @@ class PageMaster_Block_Viewpub extends Zikula_Block
             return;
         }
 
-        // Default values
+        // default values
         $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['filename'];
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
         $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'display',
                                               array('tid'                => $vars['tid'],
                                                     'pid'                => $vars['pid'],
-                                                    'checkPerm'          => true,
                                                     'template'           => 'block_pub_'.$template,
+                                                    'checkPerm'          => true,
                                                     'cachelifetime'      => $cachelifetime));
 
         if (empty($blockinfo['content'])) {
@@ -90,10 +90,10 @@ class PageMaster_Block_Viewpub extends Zikula_Block
      */
     public function modify($blockinfo)
     {
-        // Get current content
+        // get current content
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
-        // Defaults
+        // defaults
         if (!isset($vars['tid'])) {
             $vars['tid'] = 0;
         }
@@ -107,18 +107,18 @@ class PageMaster_Block_Viewpub extends Zikula_Block
             $vars['template'] = '';
         }
 
-        // Builds the pubtypes selector
+        // builds the pubtypes selector
         $pubtypes = PageMaster_Util::getPubType(-1);
 
         foreach (array_keys($pubtypes) as $tid) {
             $pubtypes[$tid] = $pubtypes[$tid]['title'];
         }
 
-        // Builds the output
+        // builds the output
         $this->view->assign('vars', $vars)
                    ->assign('pubtypes', $pubtypes);
 
-        // Return output
+        // return output
         return $this->view->fetch('pagemaster_block_viewpub_modify.tpl');
     }
 

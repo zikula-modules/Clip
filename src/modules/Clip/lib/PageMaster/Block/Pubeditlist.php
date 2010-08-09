@@ -44,10 +44,10 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
      */
     public function display($blockinfo)
     {
-        // Get variables from content block
+        // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
-        // Security check
+        // security check
         if (!SecurityUtil::checkPermission('pagemaster:block:pubeditlist', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
             return;
         }

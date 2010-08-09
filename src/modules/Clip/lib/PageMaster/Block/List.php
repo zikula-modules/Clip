@@ -46,15 +46,15 @@ class PageMaster_Block_List extends Zikula_Block
     {
         $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
 
-        // Get variables from content block
+        // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
-        // Validation of required parameters
+        // validation of required parameters
         if (!isset($vars['tid']) || empty($vars['tid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
         }
 
-        // Security check
+        // security check
         if (!SecurityUtil::checkPermission('pagemaster:block:list', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
             return;
         }
@@ -64,7 +64,7 @@ class PageMaster_Block_List extends Zikula_Block
             return;
         }
 
-        // Default values
+        // default values
         $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['outputset'];
         $listCount     = (isset($vars['listCount']) && (int)$vars['listCount'] > 0) ? $vars['listCount'] : 5;
         $listOffset    = (isset($vars['listOffset'])) ? $vars['listOffset'] : 0;
@@ -74,12 +74,12 @@ class PageMaster_Block_List extends Zikula_Block
 
         $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'view',
                                               array('tid'                => $vars['tid'],
+                                                    'template'           => 'block_list_'.$template,
                                                     'filter'             => $filterStr,
                                                     'orderby'            => $orderBy,
                                                     'itemsperpage'       => $listCount,
                                                     'startnum'           => $listOffset,
                                                     'checkPerm'          => true,
-                                                    'template'           => 'block_list_'.$template,
                                                     'handlePluginFields' => true,
                                                     'cachelifetime'      => $cachelifetime));
 
@@ -95,10 +95,10 @@ class PageMaster_Block_List extends Zikula_Block
      */
     public function modify($blockinfo)
     {
-        // Get current content
+        // get current content
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
-        // Defaults
+        // defaults
         if (!isset($vars['tid'])) {
             $vars['tid'] = 0;
         }
@@ -121,8 +121,8 @@ class PageMaster_Block_List extends Zikula_Block
             $vars['template'] = '';
         }
 
-        // Builds the pubtypes selector
-        $pubtypes = PageMaster_Util::getPubType(-1);
+        // builds the pubtypes selector
+        $pubtypes = PageMaster_Util::getPubType(-1)->toArray();
 
         foreach (array_keys($pubtypes) as $tid) {
             $pubtypes[$tid] = $pubtypes[$tid]['title'];
@@ -179,22 +179,22 @@ class PageMaster_Block_List extends Zikula_Block
                 )
             );
 
-            foreach (array_keys($fields) as $fieldname) {
-                $index = ($fields[$fieldname]['istitle'] == 1) ? 'core_title' : $fieldname;
+            foreach ($pubfields as $fieldname => $pubfield) {
+                $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
                 $pubarr[$index] = array(
-                    'text'  => $this->__($fields[$fieldname]['title']),
+                    'text'  => $this->__($pubfield['title']),
                     'value' => $fieldname
                 );
             }
 
-            $pubarr = array_values(array_merge($arraysort, $pubarr));
+            $pubarr = array_values(array_filter(array_merge($arraysort, $pubarr)));
 
             foreach (array_keys($pubarr) as $k) {
                 $pubfields[$pubarr[$k]['value']] = $pubarr[$k]['text'];
             }
         }
 
-        // Builds and return the output
+        // builds and return the output
         return $this->view->assign('vars', $vars)
                           ->assign('pubtypes', $pubtypes)
                           ->assign('pubfields', $pubfields)

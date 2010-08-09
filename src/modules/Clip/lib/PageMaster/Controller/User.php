@@ -24,21 +24,27 @@ class PageMaster_Controller_User extends Zikula_Controller
 
     /**
      * Publications list.
+     *
+     * @param integer $args['tid']                ID of the publication type.
+     * @param string  $args['template']           Custom publication type template to use.
+     * @param string  $args['filter']             Filter string.
+     * @param string  $args['orderby']            OrderBy string.
+     * @param integer $args['itemsperpage']       Number of items to retrieve.
+     * @param integer $args['startnum']           Offset to start from.
+     * @param string  $args['justcount']          Mode: no (list without count - default), just (count elements only), both.
+     * @param boolean $args['checkperm']          Whether to check the permissions.
+     * @param boolean $args['handlePluginFields'] Whether to parse the plugin fields.
+     * @param boolean $args['getApprovalState']   Whether to add the workflow information.
+     * @param integer $args['cachelifetime']      Cache lifetime (empty for default config).
+     * @param integer $args['rss']                Whether to use the RSS output.
+     *
+     * @return string Publication list output.
      */
     public function view($args)
     {
-        // get the input parameters
-        $tid                = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
-        $filter             = isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter');
-        $orderby            = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
-        $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
-        $getApprovalState   = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
-        $handlePluginFields = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
-        $rss                = isset($args['rss']) ? (bool)$args['rss'] : (bool)FormUtil::getPassedValue('rss');
-        $cachelifetime      = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
+        // get the tid first
+        $tid = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        // essential validation
         if (empty($tid) || !is_numeric($tid)) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
@@ -47,6 +53,20 @@ class PageMaster_Controller_User extends Zikula_Controller
         if (empty($pubtype)) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
         }
+
+        // get the input parameters
+        $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
+        $filter             = isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter');
+        $orderby            = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
+        $itemsperpage       = isset($args['itemsperpage']) ? (int)$args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage']);
+        $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
+        $handlePluginFields = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
+        $getApprovalState   = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
+        $cachelifetime      = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']);
+        $rss                = isset($args['rss']) ? (bool)$args['rss'] : (bool)FormUtil::getPassedValue('rss');
+
+        // validation
+        $itemsperpage = (int)$itemsperpage > 0 ? (int)$itemsperpage : -1;
 
         if (empty($template)) {
             // template comes from pubtype
@@ -65,15 +85,13 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         // check if this view is cached
-        if (empty($cachelifetime)) {
-            $cachelifetime = $pubtype['cachelifetime'];
-        }
-
         if (!empty($cachelifetime)) {
+            $this->view->setCache_lifetime($cachelifetime);
             $cachetid = true;
-            $cacheid  = 'view'.$tid
+            $cacheid  = 'view'.$tid.'|'.$sec_template
                         .'|'.(!empty($filter) ? $filter : 'nofilter')
                         .'|'.(!empty($orderby) ? $orderby : 'noorderby')
+                        .'|'.(!empty($itemsperpage) ? $itemsperpage : 'nolimit')
                         .'|'.(!empty($startnum) ? $startnum : 'nostartnum');
         } else {
             $cachetid = false;
@@ -85,22 +103,11 @@ class PageMaster_Controller_User extends Zikula_Controller
                    ->setCaching($cachetid)
                    ->add_core_data();
 
-        if ($cachetid) {
-            $this->view->setCache_lifetime($cachelifetime);
-            if ($this->view->is_cached($template, $cacheid)) {
-                return $this->view->fetch($template, $cacheid);
-            }
+        if ($cachetid && $this->view->is_cached($template, $cacheid)) {
+            return $this->view->fetch($template, $cacheid);
         }
 
         $returnurl = System::getCurrentUrl();
-
-        if (isset($args['itemsperpage'])) {
-            $itemsperpage = (int)$args['itemsperpage'];
-        } elseif (FormUtil::getPassedValue('itemsperpage') != null) {
-            $itemsperpage = (int)FormUtil::getPassedValue('itemsperpage');
-        } else {
-            $itemsperpage = ((int)$pubtype['itemsperpage'] > 0 ? (int)$pubtype['itemsperpage'] : -1 );
-        }
 
         $orderby = PageMaster_Util::createOrderBy($orderby);
 
@@ -114,11 +121,11 @@ class PageMaster_Controller_User extends Zikula_Controller
         // Uses the API to get the list of publications
         $result = ModUtil::apiFunc('PageMaster', 'user', 'getall',
                                    array('tid'                => $tid,
-                                         'startnum'           => $startnum,
-                                         'itemsperpage'       => $itemsperpage,
-                                         'countmode'          => ($itemsperpage != 0) ? 'both' : 'no',
-                                         'orderby'            => $orderby,
                                          'filter'             => $filter,
+                                         'orderby'            => $orderby,
+                                         'itemsperpage'       => $itemsperpage,
+                                         'startnum'           => $startnum,
+                                         'countmode'          => ($itemsperpage != 0) ? 'both' : 'no',
                                          'checkPerm'          => false, // already checked
                                          'handlePluginFields' => $handlePluginFields,
                                          'getApprovalState'   => $getApprovalState));
@@ -158,33 +165,37 @@ class PageMaster_Controller_User extends Zikula_Controller
     /**
      * Display a publication.
      *
-     * @param $args['tid']
-     * @param $args['pid']
-     * @param $args['id'] (optional)
-     * @param $args['template'] (optional)
+     * @param integer $args['tid']           ID of the publication type.
+     * @param integer $args['pid']           ID of the publication.
+     * @param integer $args['id']            ID of the publication revision (optional if pid is used).
+     * @param string  $args['template']      Custom publication type template to use.
+     * @param integer $args['cachelifetime'] Cache lifetime (empty for default config).
      *
      * @return Publication output.
      */
     public function display($args)
     {
-        // get the input parameters
-        $tid      = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $pid      = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
-        $id       = isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id');
-        $template = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
-        $cachelt  = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime');
+        // get the tid first
+        $tid = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        // essential validation
         if (empty($tid) || !is_numeric($tid)) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
-        }
-        if ((empty($pid) || !is_numeric($pid)) && (empty($id) || !is_numeric($id))) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
         $pubtype = PageMaster_Util::getPubType($tid);
         if (empty($pubtype)) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+        }
+
+        // get the input parameters
+        $pid      = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
+        $id       = isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id');
+        $template = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
+        $cachelt  = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']);
+
+        // validation
+        if ((empty($pid) || !is_numeric($pid)) && (empty($id) || !is_numeric($id))) {
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
         // get the pid if it was not passed
@@ -218,14 +229,11 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         // check if this view is cached
-        if (empty($cachelt)) {
-            $cachelt = $pubtype['cachelifetime'];
-        }
-
         if (!empty($cachelt) && !SecurityUtil::checkPermission('pagemaster:input:', "$tid:$pid:", ACCESS_ADMIN)) {
+            $this->view->setCache_lifetime($cachelt);
             // second clause allow developer to add an edit button on the "display" template
             $cachetid = true;
-            $cacheid = 'display'.$tid.'|'.$pid;
+            $cacheid = 'display'.$tid.'|'.$pid.'|'.$sec_template;
         } else {
             $cachetid = false;
             $cacheid  = null;
@@ -236,11 +244,8 @@ class PageMaster_Controller_User extends Zikula_Controller
                    ->setCache_Id($cacheid)
                    ->add_core_data();
 
-        if ($cachetid) {
-            $this->view->setCache_lifetime($cachelt);
-            if ($this->view->is_cached($template, $cacheid)) {
-                return $this->view->fetch($template, $cacheid);
-            }
+        if ($cachetid && $this->view->is_cached($template, $cacheid)) {
+            return $this->view->fetch($template, $cacheid);
         }
 
         // fetch plain templates
@@ -306,19 +311,27 @@ class PageMaster_Controller_User extends Zikula_Controller
     /**
      * Edit/Create a publication.
      *
-     * @param $args['tid']
-     * @param $args['id']
+     * @param integer $args['tid']           ID of the publication type.
+     * @param integer $args['pid']           ID of the publication.
+     * @param integer $args['id']            ID of the publication revision (optional if pid is used).
+     * @param string  $args['template']      Custom publication type template to use.
+     * @param integer $args['cachelifetime'] Cache lifetime (empty for default config).
+     *
+     * @return Publication output.
      */
     public function edit()
     {
         // get the input parameters
         $tid = FormUtil::getPassedValue('tid');
-        $id  = FormUtil::getPassedValue('id');
         $pid = FormUtil::getPassedValue('pid');
+        $id  = FormUtil::getPassedValue('id');
 
-        // essential validation
+        // validation
         if (empty($tid) || !is_numeric($tid)) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        }
+        if ((empty($pid) || !is_numeric($pid)) && (empty($id) || !is_numeric($id))) {
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
         $pubtype = PageMaster_Util::getPubType($tid);
@@ -337,7 +350,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             $id = ModUtil::apiFunc('PageMaster', 'user', 'getId',
                                    array('tid' => $tid,
                                          'pid' => $pid));
-            if (empty($id)) {
+            if (!$id) {
                 return LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($tid, $pid)));
             }
         }
@@ -349,7 +362,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         // get actual state for selecting form Template
         $stepname = 'initial';
 
-        if (!empty($id)) {
+        if ($id) {
             $obj = array('id' => $id);
             Zikula_Workflow_Util::getWorkflowForObject($obj, $pubtype->getTableName(), 'id', 'PageMaster');
             $stepname = $obj['__WORKFLOW__']['state'];
@@ -402,11 +415,10 @@ class PageMaster_Controller_User extends Zikula_Controller
     /**
      * Executes a Workflow command over a direct URL Request.
      *
-     * @param $args['tid']
-     * @param $args['id']
-     * @param $args['goto'] redirect to after execution.
-     * @param $args['schema'] optional workflow shema.
-     * @param $args['commandName'] commandName
+     * @param integer $args['tid']         ID of the publication type.
+     * @param integer $args['id']          ID of the publication revision (optional if pid is used).
+     * @param string  $args['commandName'] Command name has to be a valid workflow action for the currenct state.
+     * @param string  $args['goto']        Redirect-to after execution.
      */
     public function executecommand()
     {
@@ -414,19 +426,19 @@ class PageMaster_Controller_User extends Zikula_Controller
         $tid         = FormUtil::getPassedValue('tid');
         $id          = FormUtil::getPassedValue('id');
         $commandName = FormUtil::getPassedValue('commandName');
-        $schema      = FormUtil::getPassedValue('schema');
         $goto        = FormUtil::getPassedValue('goto');
 
-        // essential validation
+        // validation
         if (empty($tid) || !is_numeric($tid)) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
         $pubtype = PageMaster_Util::getPubType($tid);
         if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', DataUtil::formatForDisplay($tid)));
         }
 
+        // validation
         if (!isset($id) || empty($id) || !is_numeric($id)) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'));
         }
@@ -435,40 +447,64 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'commandName'));
         }
 
-        if (empty($schema)) {
-            $pubtype = PageMaster_Util::getPubType($tid);
-            $schema  = str_replace('.xml', '', $pubtype['workflow']);
-        }
+        // get the schema
+        $schema = str_replace('.xml', '', $pubtype->workflow);
 
-        $pub = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
-               ->find($id);
+        // get the publication
+        $pub = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)->find($id);
 
         if (!$pub) {
-            return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', $id));
+            return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', DataUtil::formatForDisplay($id)));
         }
 
         Zikula_Workflow_Util::executeAction($schema, $pub, $commandName, $pubtype->getTableName(), 'PageMaster');
 
-        if (!empty($goto)) {
-            switch ($goto)
-            {
-                case 'edit':
-                    return System::redirect(ModUtil::url('PageMaster', 'user', 'edit',
-                                            array('tid' => $tid,
-                                                  'id'  => $pub['id'])));
-                case 'stepmode':
-                    return System::redirect(ModUtil::url('PageMaster', 'user', 'edit',
-                                            array('tid'  => $tid,
-                                                  'id'   => $pub['id'],
-                                                  'goto' => 'stepmode')));
-                default:
-                    return System::redirect($goto);
-            }
+        // process the redirect
+        $displayUrl = ModUtil::url('PageMaster', 'user', 'display',
+                                   array('tid' => $tid,
+                                         'id'  => $pub['id']));
+
+        switch ($goto)
+        {
+            case 'edit':
+                $goto = ModUtil::url('PageMaster', 'user', 'edit',
+                                     array('tid' => $tid,
+                                           'id'  => $pub['id']));
+                break;
+
+            case 'stepmode':
+                $goto = ModUtil::url('PageMaster', 'user', 'edit',
+                                      array('tid'  => $tid,
+                                            'id'   => $pub['id'],
+                                            'goto' => 'stepmode'));
+                break;
+
+            case 'referer':
+                $goto = System::serverGetVar('HTTP_REFERER', $displayUrl);
+                break;
+
+            case 'editlist':
+                $goto = ModUtil::url('PageMaster', 'admin', 'editlist',
+                                     array('_id' => $tid.'_'.$pub['core_pid']));
+                break;
+
+            case 'admin':
+                $goto = ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $tid));
+                break;
+
+            case 'index':
+                $goto = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $tid));
+                break;
+
+            case 'home':
+                $goto = System::getHomepageUrl();
+                break;
+
+            default:
+                $goto = $displayUrl;
         }
 
-        return System::redirect(ModUtil::url('PageMaster', 'user', 'display',
-                                             array('tid' => $tid,
-                                                   'id'  => $pub['id'])));
+        return System::redirect($goto);
     }
 
     /**

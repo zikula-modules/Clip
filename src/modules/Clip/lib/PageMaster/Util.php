@@ -104,20 +104,26 @@ class PageMaster_Util
      */
     public static function createOrderBy($orderby)
     {
-        $orderbylist = explode(',', $orderby);
-        $orderby     = '';
+        if (!is_array($orderby)) {
+            $orderbylist = explode(',', $orderby);
+        } else {
+            $orderbylist = $orderby;
+        }
 
+        $orderbylist = array_map('trim', $orderbylist);
+
+        $orderby     = '';
         foreach ($orderbylist as $key => $value) {
             if ($key > 0) {
                 $orderby .= ', ';
             }
-            // $value = {col[:ascdesc]}
+            // $value = {col[:asc|desc]}
             $value    = explode(':', $value);
             $orderby .= DataUtil::formatForStore($value[0]);
-            $orderby .= (isset($value[1]) ? ' '.DataUtil::formatForStore($value[1]) : '');
+            $orderby .= (isset($value[1]) && in_array(strtoupper($value[1]), array('ASC', 'DESC')) ? ' '.strtoupper($value[1]) : '');
         }
 
-        return trim($orderby);
+        return $orderby;
     }
 
     /**

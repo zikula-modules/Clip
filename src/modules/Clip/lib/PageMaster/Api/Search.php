@@ -32,9 +32,7 @@ class PageMaster_Api_Search extends Zikula_Api
             $render = Zikula_View::getInstance('PageMaster');
 
             // Looking for pubtype with at least one searchable field
-            $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
-                        ->getPubtypes()
-                        ->toArray();
+            $pubtypes = PageMaster_Util::getPubType(-1)->toArray();
 
             foreach ($pubtypes as $key => $pubtype)
             {
@@ -79,9 +77,7 @@ class PageMaster_Api_Search extends Zikula_Api
                           $searchColumn[session])
                       VALUES ";
 
-        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
-                    ->getPubtypes()
-                    ->toArray();
+        $pubtypes = PageMaster_Util::getPubType(-1)->toArray();
 
         foreach ($pubtypes as $pubtype)
         {
