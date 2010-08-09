@@ -289,6 +289,7 @@ class PageMaster_Util
     public static function getPluginsOptionList()
     {
         $classNames = array();
+        $classNames['Checkbox']   = 'PageMaster_Form_Plugin_Checkbox';
         $classNames['Date']       = 'PageMaster_Form_Plugin_Date';
         $classNames['Email']      = 'PageMaster_Form_Plugin_Email';
         $classNames['Float']      = 'PageMaster_Form_Plugin_Float';
