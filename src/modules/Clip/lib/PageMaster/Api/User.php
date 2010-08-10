@@ -141,13 +141,6 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         $tbl = 'dctrn_find.';
-        if (isset($joinInfo)) {
-            $filter_args = array('join' => array('join_table' => $joinInfo['join_table']),
-                                                 'plugins'    => $filterPlugins);
-        } else {
-            $filter_args = array('plugins' => $filterPlugins);
-        }
-
         // check if some plugin specific orderby has to be done
         $orderby = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl);
         // replaces the core_title alias by the original field name
@@ -157,8 +150,18 @@ class PageMaster_Api_User extends Zikula_Api
         // final orderby processing to convert column to aliases
         $orderby = $tableObj->processOrderBy($tbl, $orderby, true);
 
-        // FIXME check how FilterUtil can work with Doctrine_Query-ies
-        $fu = new FilterUtil('PageMaster', $pubtype->getTableName(), $filter_args);
+        // resolve the FilterUtil arguments
+        $filter_args['alias'] = 'dctrn_find';
+
+        if (isset($joinInfo)) {
+            $filter_args['join'] = $joinInfo;
+        }
+        if (!empty($filterPlugins)) {
+            $filter_args['plugins'] = $filterPlugins;
+        }
+
+        // add any filter
+        $fu = new FilterUtil('PageMaster', 'PageMaster_Model_Pubdata'.$args['tid'], $filter_args);
 
         if (isset($args['filter']) && !empty($args['filter'])) {
             $fu->setFilter($args['filter']);

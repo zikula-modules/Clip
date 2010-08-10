@@ -56,7 +56,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // get the input parameters
         $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
-        $filter             = isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter');
+        $filter             = isset($args['filter']) ? $args['filter'] : null;
         $orderby            = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
         $itemsperpage       = isset($args['itemsperpage']) ? (int)$args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage']);
         $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
@@ -135,11 +135,9 @@ class PageMaster_Controller_User extends Zikula_Controller
                    ->assign('publist',   $result['publist'])
                    ->assign('returnurl', $returnurl);
 
-        // Assign the pager values if needed
-        if ($itemsperpage != 0) {
-            $this->view->assign('pager', array('numitems'     => $result['pubcount'],
-                                               'itemsperpage' => $itemsperpage));
-        }
+        // Assign the pager values
+        $this->view->assign('pager', array('numitems'     => $result['pubcount'],
+                                           'itemsperpage' => $itemsperpage));
 
         // Check if template is available
         if (!$this->view->template_exists($template)) {
