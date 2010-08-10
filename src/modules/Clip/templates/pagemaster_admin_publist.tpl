@@ -1,5 +1,4 @@
-{* $Id$ *}
-{zdebug}
+
 {include file='pagemaster_admin_header.tpl'}
 
 {if $pubtype.orderby eq 'core_pid'}

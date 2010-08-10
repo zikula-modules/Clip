@@ -48,4 +48,3 @@ $this->assign ('referer', 'index.php');
 <script type='text/javascript'>
     ListControl.init(document.getElementById("pubeditlist"));
 </script>
-</div>

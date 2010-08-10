@@ -1,4 +1,4 @@
-{* $Id$ *}
+
 {assign var='depth' value=0}
 
 <ul>

@@ -37,7 +37,7 @@
     </tbody>
 </table>
 
-{if isset($pager)}
+{if $pager.itemsperpage neq 0}
     {pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum'}
 {/if}
 

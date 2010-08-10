@@ -1,3 +1,4 @@
+
 <h1>{gt text=$pubtype.title}</h1>
 
 {include file='pagemaster_generic_navbar.tpl' section='pending'}

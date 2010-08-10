@@ -1,4 +1,3 @@
-{* $Id: $ *}
 
 <div class="z-menu">
     <span class="z-menuitem-title pm-menu">

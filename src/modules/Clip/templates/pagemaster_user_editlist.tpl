@@ -17,7 +17,7 @@ $this->assign ('referer', 'index.php');
 {include file='pagemaster_admin_header.tpl'}
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list'}</div>
-    {/if}
+{/if}
 
     <h2>{gt text='Publications edit list'}</h2>
     <table>
@@ -30,18 +30,18 @@ $this->assign ('referer', 'index.php');
                 {/if}
                 {if ($menu && $edit)}
                 <td style="width: 1px; background-color: #cccccc;"><td>
+                {/if}
+                {if ($edit)}
+                <td>
+                    {if ($tid)}
+                    {modfunc modname='PageMaster' type='user' func='edit' tid=$tid pid=$pid}
                     {/if}
-                    {if ($edit)}
-                    <td>
-                        {if ($tid)}
-                        {modfunc modname='PageMaster' type='user' func='edit' tid=$tid pid=$pid}
-                        {/if}
-                    </td>
-                    {/if}
-                </tr>
-            </tbody>
-        </table>
+                </td>
+                {/if}
+            </tr>
+        </tbody>
+    </table>
 
-        {if $returntype eq 'admin'}
-    </div>
-    {/if}
+{if $returntype eq 'admin'}
+</div>
+{/if}

@@ -1,4 +1,3 @@
-{* $Id$ *}
 
 <input type="hidden" id="active_PageMaster" name="PageMaster" value="1" checked="checked" />
 

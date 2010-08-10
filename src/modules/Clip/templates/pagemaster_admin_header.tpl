@@ -1,4 +1,3 @@
-{* $Id$ *}
 
 {admincategorymenu xhtml=1}
 
