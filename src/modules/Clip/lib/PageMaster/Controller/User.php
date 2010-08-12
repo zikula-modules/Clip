@@ -144,7 +144,7 @@ class PageMaster_Controller_User extends Zikula_Controller
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
             // return an error/void if a block template does not exists
-            if (strpos($sec_template, $pubtype['outputset'].'_list_block_') === 0) {
+            if (strpos($sec_template, $pubtype['outputset'].'_block_') === 0) {
                 return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
             $template = 'pagemaster_generic_list.tpl';
@@ -285,7 +285,7 @@ class PageMaster_Controller_User extends Zikula_Controller
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
             // return an error/void if a block template does not exists
-            if (strpos($sec_template, $pubtype['outputset'].'_display_block_') === 0) {
+            if (strpos($sec_template, $pubtype['outputset'].'_block_') === 0) {
                 return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
             $template = 'var:display_template_code';
