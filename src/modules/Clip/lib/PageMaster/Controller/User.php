@@ -36,7 +36,6 @@ class PageMaster_Controller_User extends Zikula_Controller
      * @param boolean $args['handlePluginFields'] Whether to parse the plugin fields.
      * @param boolean $args['getApprovalState']   Whether to add the workflow information.
      * @param integer $args['cachelifetime']      Cache lifetime (empty for default config).
-     * @param integer $args['rss']                Whether to use the RSS output.
      *
      * @return string Publication list output.
      */
@@ -63,7 +62,6 @@ class PageMaster_Controller_User extends Zikula_Controller
         $handlePluginFields = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
         $getApprovalState   = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
         $cachelifetime      = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']);
-        $rss                = isset($args['rss']) ? (bool)$args['rss'] : (bool)FormUtil::getPassedValue('rss');
 
         // validation
         $itemsperpage = (int)$itemsperpage > 0 ? (int)$itemsperpage : -1;
@@ -150,11 +148,6 @@ class PageMaster_Controller_User extends Zikula_Controller
                 return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
             }
             $template = 'pagemaster_generic_list.tpl';
-        }
-
-        if ($rss) {
-            echo $this->view->display($template, $cacheid);
-            System::shutdown();
         }
 
         return $this->view->fetch($template, $cacheid);
