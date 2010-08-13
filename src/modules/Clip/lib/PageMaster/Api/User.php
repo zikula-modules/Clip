@@ -22,7 +22,7 @@ class PageMaster_Api_User extends Zikula_Api
      * @param string  $args['orderby']            OrderBy string.
      * @param integer $args['itemsperpage']       Number of items to retrieve.
      * @param integer $args['startnum']           Offset to start from.
-     * @param string  $args['justcount']          Mode: no (list without count - default), just (count elements only), both.
+     * @param string  $args['countmode']          Mode: no (list without count - default), just (count elements only), both.
      * @param boolean $args['checkperm']          Whether to check the permissions.
      * @param boolean $args['handlePluginFields'] Whether to parse the plugin fields.
      * @param boolean $args['getApprovalState']   Whether to add the workflow information.
@@ -58,8 +58,8 @@ class PageMaster_Api_User extends Zikula_Api
         if (!isset($args['itemsperpage']) || !is_numeric($args['itemsperpage'])) {
             $args['itemsperpage'] = -1;
         }
-        if (!isset($args['justcount']) || !is_numeric($args['justcount'])) {
-            $args['justcount'] = 'no';
+        if (!isset($args['countmode']) || !in_array($args['countmode'], array('no', 'just', 'both'))) {
+            $args['countmode'] = 'no';
         }
 
         // mode check
