@@ -106,6 +106,6 @@ class PageMaster_Form_Plugin_Url extends Form_Plugin_TextInput
             }
         }
 
-        return false; 
+        return $url;
     }
 }
