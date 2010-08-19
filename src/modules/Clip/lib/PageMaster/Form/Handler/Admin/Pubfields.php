@@ -42,7 +42,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
             $view->assign('field', $pubfield->toArray());
         }
 
-        // stores the return URL and the item URL
+        // stores the return URL
         if (empty($this->returnurl)) {
             $adminurl = ModUtil::url('PageMaster', 'admin');
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $adminurl);
@@ -131,7 +131,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                 }
 
                 // force a titlefield
-                $max_line = (int)$tableObj->selectFieldFunction('lineno', 'MAX', 'tid = '.$pubfield->tid);
+                $max_line = (int)$tableObj->selectFieldFunction('lineno', 'MAX', array('tid = ?', $pubfield->tid));
                 if ($max_line == 0) {
                     $pubfield->istitle = true;
                 }
@@ -155,6 +155,9 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                 }
                 break;
         }
+
+        // update the table
+        Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$this->tid)->changeTable();
 
         return $view->redirect($this->returnurl);
     }

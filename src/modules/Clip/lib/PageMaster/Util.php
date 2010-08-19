@@ -251,8 +251,10 @@ class PageMaster_Util
      * Private folder read method.
      *
      * @param string $path
-     * @param array  $array
+     * @param array  &$array
      * @param string $ext
+     *
+     * @return void
      */
     private static function _addFiles($path, &$array, $ext='php')
     {
@@ -261,6 +263,132 @@ class PageMaster_Util
         }
 
         $array += FileUtil::getFiles($path, false, true, $ext, 'f');
+    }
+
+    /**
+     * Publication types selector generator.
+     *
+     * @param integer $tid
+     *
+     * @return array Array of text, values to be used in a selector.
+     */
+    public static function getPubtypesSelector($includetid = false, $includeempty = true)
+    {
+        $dom = ZLanguage::getModuleDomain('PageMaster');
+
+        $pubtypes = PageMaster_Util::getPubType(-1);
+
+        $array = array();
+
+        if ($includeempty) {
+            $array['core_empty'] = array(
+                'text'  => '',
+                'value' => ''
+            );
+        }
+
+        foreach ($pubtypes as $tid => $pubtype) {
+            $array[$tid] = array(
+                'text'  => __($pubtype['title'], $dom).($includetid ? " (tid $tid)" : ''),
+                'value' => $tid
+            );
+        }
+
+        $array = array_values(array_filter($array));
+
+        uasort($array, 'PageMaster_Util::_sortListByTitle');
+
+        return $array;
+    }
+
+    /**
+     * Field selector generator.
+     *
+     * @param integer $tid
+     *
+     * @return array Array of text, values to be used in a selector.
+     */
+    public static function getFieldsSelector($tid, $includeempty = true)
+    {
+        $dom = ZLanguage::getModuleDomain('PageMaster');
+
+        $pubfields = PageMaster_Util::getPubFields($tid);
+
+        $arraysort = array(
+            'core_empty' => array(),
+            'core_title' => array(),
+            'core_cr_date' => array(),
+            'core_pu_date' => array(),
+            'core_hitcount' => array()
+        );
+
+        $array = array(
+            'core_empty' => array(
+                'text'  => '',
+                'value' => ''
+            ),
+            'core_cr_date' => array(
+                'text'  => __('Creation date', $dom),
+                'value' => 'cr_date'
+            ),
+            'core_lu_date' => array(
+                'text'  => __('Update date', $dom),
+                'value' => 'lu_date'
+            ),
+            'core_cr_uid' => array(
+                'text'  => __('Creator', $dom),
+                'value' => 'core_author'
+            ),
+            'core_lu_uid' => array(
+                'text'  => __('Updater', $dom),
+                'value' => 'lu_uid'
+            ),
+            'core_pu_date' => array(
+                'text'  => __('Publish date', $dom),
+                'value' => 'core_publishdate'
+            ),
+            'core_ex_date' => array(
+                'text'  => __('Expire date', $dom),
+                'value' => 'core_expiredate'
+            ),
+            'core_language' => array(
+                'text'  => __('Language', $dom),
+                'value' => 'core_language'
+            ),
+            'core_hitcount' => array(
+                'text'  => __('Number of reads', $dom),
+                'value' => 'core_hitcount'
+            )
+        );
+
+        foreach ($pubfields as $fieldname => $pubfield) {
+            $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
+            $array[$index] = array(
+                'text'  => __($pubfield['title'], $dom),
+                'value' => $fieldname
+            );
+        }
+
+        if (!$includeempty) {
+            unset($array['core_empty']);
+        }
+
+        $array = array_values(array_filter(array_merge($arraysort, $array)));
+
+        return $array;
+    }
+
+    /**
+     * Internal comparision criteria.
+     *
+     * @param array $a Element a to compare.
+     * @param array $b Element b to compare.
+     *
+     * @return integer Comparision result.
+     */
+    public static function _sortListByTitle($a, $b)
+    {
+        return strcmp($a['text'], $b['text']);
     }
 
     /**
@@ -358,6 +486,53 @@ class PageMaster_Util
     }
 
     /**
+     * PubType getter.
+     *
+     * @param integer $tid Pubtype ID.
+     *
+     * @return array Information of one or all the pubtypes.
+     */
+    public static function getPubType($tid = -1)
+    {
+        static $pubtype_arr;
+
+        if (!isset($pubtype_arr)) {
+            $pubtype_arr = Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes();
+        }
+
+        if ($tid == -1) {
+            return $pubtype_arr;
+        }
+
+        return isset($pubtype_arr[(int)$tid]) ? $pubtype_arr[(int)$tid] : false;
+    }
+
+    /**
+     * Rerlation getter.
+     *
+     * @param integer $tid Pubtype ID.
+     * @param boolean $owningSide Wheter to fetch the owning side relations of the pubtype.
+     *
+     * @return array Relations for the passed pubtype.
+     */
+    public static function getRelations($tid = -1, $owningSide = true)
+    {
+        static $relation_arr;
+
+        if (!isset($relation_arr)) {
+            $relation_arr = Doctrine_Core::getTable('PageMaster_Model_Pubrelation')->getRelations();
+        }
+
+        $own = $owningSide ? 'own' : 'not';
+
+        if ($tid == -1) {
+            return $relation_arr[$own];
+        }
+
+        return isset($relation_arr[$own][$tid]) ? $relation_arr[$own][$tid] : array();
+    }
+
+    /**
      * PubFields getter.
      *
      * @param integer $tid     Pubtype ID.
@@ -380,28 +555,6 @@ class PageMaster_Util
         }
 
         return $pubfields_arr[$tid];
-    }
-
-    /**
-     * PubType getter.
-     *
-     * @param integer $tid Pubtype ID.
-     *
-     * @return array Information of one or all the pubtypes.  
-     */
-    public static function getPubType($tid = -1)
-    {
-        static $pubtype_arr;
-
-        if (!isset($pubtype_arr)) {
-            $pubtype_arr = Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes();
-        }
-
-        if ($tid == -1) {
-            return $pubtype_arr;
-        }
-
-        return isset($pubtype_arr[(int)$tid]) ? $pubtype_arr[(int)$tid] : false;
     }
 
     /**

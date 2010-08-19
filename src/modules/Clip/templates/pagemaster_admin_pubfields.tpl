@@ -10,9 +10,7 @@
 
     {pmadminsubmenu tid=$tid field=1}
 
-    {modurl modname='PageMaster' type='admin' func='dbupdate' tid=$tid assign='urlupdate'}
-    {assign var='urlupdate' value=$urlupdate|safetext}
-    <p class="z-warningmsg">{gt text='When publication fields are added or changed you need to <a href="%s">Update the DB Table</a>.' tag1=$urlupdate}</p>
+    <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data permanently. Be careful!'}</p>
 
     <div class="z-form">
         <fieldset>
@@ -81,7 +79,7 @@
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
     <div>
         {formvalidationsummary}
-        <fieldset id="newpubfield">
+        <fieldset>
             {if isset($field)}
                 <legend>{gt text='Edit publication field'}</legend>
             {else}

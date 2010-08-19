@@ -82,31 +82,19 @@ class PageMaster_Controller_Admin extends Zikula_Controller
                          new PageMaster_Form_Handler_Admin_Pubfields());
     }
 
-
     /**
-     * DB pubtype table update method.
+     * Relations management.
      */
-    public function dbupdate($args=array())
+    public function relations()
     {
         if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
-        // get the input parameter
-        $tid  = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $rurl = System::serverGetVar('HTTP_REFERER', ModUtil::url('PageMaster', 'admin', 'main'));
-
-        if (!PageMaster_Util::getPubType($tid)) {
-            return LogUtil::registerError($this->__('Error! No such publication type found.'), null, $rurl);
-        }
-
-        $result = ModUtil::apiFunc('PageMaster', 'admin', 'updatetabledef', array('tid' => $tid));
-
-        if (!$result) {
-            return LogUtil::registerError($this->__('Error! Update attempt failed.'), null, $rurl);
-        }
-
-        return LogUtil::registerStatus($this->__('Done! Database table updated.'), $rurl);
+        // return the form output
+        return FormUtil::newForm('PageMaster')
+               ->execute('pagemaster_admin_relations.tpl',
+                         new PageMaster_Form_Handler_Admin_Relations());
     }
 
     /**

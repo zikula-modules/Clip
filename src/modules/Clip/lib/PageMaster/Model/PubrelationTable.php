@@ -14,5 +14,21 @@
  */
 class PageMaster_Model_PubrelationTable extends Zikula_Doctrine_Table
 {
+    public function getRelations()
+    {
+        $relations = $this->selectCollection('', 'tid2')
+                          ->toArray();
 
+        $result = array(
+            'own' => array(),
+            'not' => array()
+        );
+
+        foreach ($relations as $relation) {
+            $result['own'][$relation['tid1']][] = $relation;
+            $result['not'][$relation['tid2']][] = $relation;
+        }
+
+        return $result;
+    }
 }

@@ -28,11 +28,23 @@ class PageMaster_Model_Pubrelation extends Doctrine_Record
             'autoincrement' => true
         ));
 
+        $this->hasColumn('pm_type as type', 'integer', 2, array(
+            'notnull' => true
+        ));
+
         $this->hasColumn('pm_tid1 as tid1', 'integer', 4, array(
             'notnull' => true
         ));
 
+        $this->hasColumn('pm_alias1 as alias1', 'string', 100, array(
+            'notnull' => true
+        ));
+
         $this->hasColumn('pm_tid2 as tid2', 'integer', 4, array(
+            'notnull' => true
+        ));
+
+        $this->hasColumn('pm_alias2 as alias2', 'string', 100, array(
             'notnull' => true
         ));
     }

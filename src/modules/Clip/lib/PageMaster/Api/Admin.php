@@ -15,38 +15,6 @@
 class PageMaster_Api_Admin extends Zikula_Api
 {
     /**
-     * Updates the database tables (DDL), based on pubfields.
-     *
-     * @author kundi
-     * @param  $args['tid'] tid of publication.
-     * @return bool         true on success, false otherwise.
-     */
-    public function updatetabledef($args)
-    {
-        if (!isset($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
-        }
-
-        $tablename = 'pagemaster_pubdata'.$args['tid'];
-
-        $tables = DBUtil::getTables();
-
-        if (!isset($tables[$tablename])) {
-            $fieldsurl = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $args['tid']));
-            return LogUtil::registerError($this->__f('Error! Please <a href="%s">define the fields</a> of your publication first.', DataUtil::formatForDisplay($fieldsurl)));
-        }
-
-        $existing = DBUtil::metaTables();
-        if (!in_array(DBUtil::getLimitedTablename($tablename), $existing)) {
-            DBUtil::createTable($tablename);
-        } else {
-            DBUtil::changeTable($tablename);
-        }
-
-        return true;
-    }
-
-    /**
      * Get admin panel links.
      *
      * @return array Array of admin links.
@@ -63,6 +31,10 @@ class PageMaster_Api_Admin extends Zikula_Api
             $links[] = array (
                 'url'  => ModUtil::url('PageMaster', 'admin', 'pubtype'),
                 'text' => $this->__('New publication type')
+            );
+            $links[] = array (
+                'url'  => ModUtil::url('PageMaster', 'admin', 'relations'),
+                'text' => $this->__('Manage relations')
             );
             $links[] = array (
                 'url'  => ModUtil::url('PageMaster', 'admin', 'editlist'),

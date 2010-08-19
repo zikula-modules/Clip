@@ -10,6 +10,7 @@
  */
 
 $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
+sort($pubtypes);
 
 foreach ($pubtypes as $tid) {
     $code = PageMaster_Generator::pubmodel($tid);
@@ -17,3 +18,5 @@ foreach ($pubtypes as $tid) {
     $code = PageMaster_Generator::pubtable($tid);
     eval($code);
 }
+
+PageMaster_Generator::evalrelations();

@@ -40,10 +40,6 @@
                         {img modname='core' src='db_comit.gif' set='icons/extrasmall' alt=''} {gt text='Fields'}
                     </a>
                     &nbsp;
-                    <a href="{modurl modname='PageMaster' type='admin' func='dbupdate' tid=$pubtype.tid}" title="{gt text='Update the database table of this pubtype to any recent change in the fields'}">
-                        {img modname='core' src='db_update.gif' set='icons/extrasmall' alt=''} {gt text='DB update'}
-                    </a>
-                    &nbsp;
                     <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid}" title="{gt text='Add new publications to this pubtype'}">
                         {img modname='core' src='db_add.gif' set='icons/extrasmall' alt=''} {gt text='New pub' comment='Abbreviated text for the admin main screen'}
                     </a>

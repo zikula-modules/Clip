@@ -48,7 +48,7 @@ function pubfieldlistsortinit()
     );
 
     // also add the anchor to the form 
-    $('FormForm').action = $('FormForm').action + '#newpubfield'
+    $('FormForm').action = $('FormForm').action + '#FormForm'
 }
 
 Event.observe(window, 'load', pubfieldlistsortinit, false);

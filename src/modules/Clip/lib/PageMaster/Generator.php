@@ -313,6 +313,101 @@ class PageMaster_Generator
         $columns = $tables["pagemaster_pubdata{$tid}_column"];
         $columns = array_flip($columns);
 
+        // relations
+        $hasRelations = '';
+        // owning side
+        $relations = PageMaster_Util::getRelations($tid);
+        foreach ($relations as $relation) {
+            // set the method to use
+            switch ($relation['type']) {
+                case 0:
+                case 2:
+                    $method = 'hasOne';
+                    break;
+                case 1:
+                case 3:
+                    $method = 'hasMany';
+                    break;
+            }
+            if ($method) {
+                // build the relation code
+                $reldefinition = "PageMaster_Model_Pubdata{$relation['tid2']} as {$relation['alias1']}";
+                // set the relation arguments
+                if ($relation['type'] < 3) {
+                    $relargs = array(
+                        'local'   => 'id',
+                        'foreign' => "rel_{$relation['id']}"
+                    );
+                } else {
+                    // many2many
+                    $relargs = array(
+                        'local'    => "rel_{$relation['id']}_1",
+                        'foreign'  => "rel_{$relation['id']}_2",
+                        'refClass' => "PageMaster_Model_Relation{$relation['id']}"
+                    );
+                }
+                $relargs = var_export($relargs, true);
+                $relargs = str_replace('array (', 'array(', $relargs);
+                $relargs = str_replace(",\n)", "\n)", $relargs);
+                $relargs = str_replace("\n", "\n            ", $relargs);
+                $relargs = str_replace("\n            )", "\n        )", $relargs);
+                // add the code line
+                $hasRelations .= "
+        \$this->$method('$reldefinition', $relargs);
+        ";
+            }
+        }
+        // owned side
+        $relations = PageMaster_Util::getRelations($tid, false);
+        foreach ($relations as $relation) {
+            // set the method to use
+            switch ($relation['type']) {
+                case 0:
+                case 1:
+                    $method = 'hasOne';
+                    break;
+                case 2:
+                case 3:
+                    $method = 'hasMany';
+                    break;
+            }
+            if ($method) {
+                // build the relation code
+                $reldefinition = "PageMaster_Model_Pubdata{$relation['tid1']} as {$relation['alias2']}";
+                // set the relation arguments
+                if ($relation['type'] < 3) {
+                    $relargs = array(
+                        'local'   => 'id',
+                        'foreign' => "rel_{$relation['id']}"
+                    );
+                } else {
+                    // many2many
+                    $relargs = array(
+                        'local'    => "rel_{$relation['id']}_2",
+                        'foreign'  => "rel_{$relation['id']}_1",
+                        'refClass' => "PageMaster_Model_Relation{$relation['id']}"
+                    );
+                }
+                $relargs = var_export($relargs, true);
+                $relargs = str_replace('array (', 'array(', $relargs);
+                $relargs = str_replace(",\n)", "\n)", $relargs);
+                $relargs = str_replace("\n", "\n            ", $relargs);
+                $relargs = str_replace("\n            )", "\n        )", $relargs);
+                // add the code line
+                $hasRelations .= "
+        \$this->$method('$reldefinition', $relargs);
+        ";
+                // add the foreign column definition
+                $columns["pm_rel_{$relation['id']}"] = "rel_{$relation['id']}";
+                $def["pm_rel_{$relation['id']}"] = array(
+                    'type' => 'integer',
+                    'length' => 4,
+                    'unsigned' => false
+                );
+            }
+        }
+
+        // columns
         $hasColumns = '';
         foreach ($def as $columnName => $array) {
             $columnAlias = $columns[$columnName];
@@ -337,6 +432,7 @@ class PageMaster_Generator
             $hasColumns .= "\$this->hasColumn('$columnName as $columnAlias', '$type'{$length}{$array});";
         }
 
+        // options
         $options = '';
         foreach ($opt as $k => $v) {
             if (in_array($k, array('type', 'charset', 'collate'))) {
@@ -381,6 +477,7 @@ class PageMaster_Model_Pubdata{$tid} extends PageMaster_Base_Pubdata
     public function setUp()
     {
         \$this->actAs('Zikula_Doctrine_Template_StandardFields', array('oldColumnPrefix' => 'pm_'));
+        $hasRelations
     }
 }
 ";
@@ -414,6 +511,51 @@ class PageMaster_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
 }
 ";
         return $code;
+    }
+
+    /**
+     * Build the Doctrine m2m Relation classes code dynamically.
+     *
+     * @return string The relation classes code.
+     */
+    public static function evalrelations()
+    {
+        $ownedrelations = PageMaster_Util::getRelations(-1, false);
+
+        $code = '';
+        $hasColumns = '';
+        foreach ($ownedrelations as $tid => $relations) {
+            foreach ($relations as $relation) {
+                if ($relation['type'] != 3) {
+                    continue;
+                }
+                for ($i = 1; $i <= 2; $i++) {
+                    $columnName = "rel_{$relation['id']}_$i";
+                    $array = var_export(array('primary' => true), true);
+                    $array = str_replace('array (', 'array(', $array);
+                    $array = str_replace(",\n)", "\n)", $array);
+                    $array = str_replace("\n", "\n            ", $array);
+                    $array = str_replace("\n            )", "\n        )", $array);
+                    $hasColumns .= !empty($hasColumns) ? "\n\n        " : '';
+                    $hasColumns .= "\$this->hasColumn('$columnName', 'integer', 4, {$array});";
+                }
+
+                // add the refClass
+                $code .= "
+class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
+{
+    public function setTableDefinition()
+    {
+        $hasColumns
+    }
+}
+";
+            }
+        }
+
+        if (!empty($code)) {
+            eval($code);
+        }
     }
 
     // dynamic pubdata tables
