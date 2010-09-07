@@ -33,19 +33,21 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         // initialize the publication array
         $pubdata = array();
 
+        $classname = 'PageMaster_Model_Pubdata'.$this->tid;
         // process a new or existing pub, and it's available actions
         if (!empty($this->id)) {
-            $pubdata = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$this->tid)
+            $pubdata = Doctrine_Core::getTable($classname)
                        ->find($this->id);
 
             $pubdata->pubPostProcess();
-            $pubdata = $pubdata->toArray();
 
             $this->pubAssign($pubdata);
 
             $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->pubtype->getTableName(), 'id', 'PageMaster');
         } else {
             // initial values
+            $pubdata = new $classname();
+
             $this->pubDefault();
 
             $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'PageMaster');
@@ -79,18 +81,37 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
             }
         }
 
+        // handle the Doctrine_Record data as an array from here
+        $data = $pubdata->toArray();
+
+        // detect the relations
+        $relations = array();
+        $relationdefs = $pubdata->getRelations();
+
+        foreach ($relationdefs as $key => $tid) {
+            // set the data object
+            $data[$key] = $pubdata[$key];
+            // set additional relation fields
+            $rel = $this->getRelationType($key);
+            $relations[$this->__($key)] = array(
+                'tid'  => $tid,
+                'type' => $rel['type'],
+                'own'  => $rel['own']
+            );
+        }
+
+        $view->assign('relations', $relations);
+
         // check for set_* default values
         foreach (array_keys($this->pubfields->toArray()) as $fieldname) {
             $val = FormUtil::getPassedValue('set_'.$fieldname, '');
             if (!empty($val)) {
-                $pubdata[$fieldname] = $val;
+                $data[$fieldname] = $val;
             }
         }
 
-        // add the pub information to the render if exists
-        if (count($pubdata) > 0) {
-            $view->assign('pubdata', $pubdata);
-        }
+        // add the pub information to the render
+        $view->assign('pubdata', $data);
 
         // stores the first referer and the item URL
         if (empty($this->referer)) {
@@ -120,11 +141,11 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         $data = $view->getValues();
 
         // restore the core values
-        $this->pubExtract($data);
+        $this->pubExtract($data['pubdata']);
 
         // perform the command
         $data = ModUtil::apiFunc('PageMaster', 'user', 'edit',
-                                 array('data'        => $data,
+                                 array('data'        => $data['pubdata'],
                                        'commandName' => $args['commandName'],
                                        'pubfields'   => $this->pubfields,
                                        'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
@@ -249,6 +270,37 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         return $this->tid;
     }
 
+    protected function getRelationType($alias)
+    {
+        $result = false;
+
+        $relationtypes1 = PageMaster_Util::getRelations($this->tid, true);
+        $relationtypes2 = PageMaster_Util::getRelations($this->tid, false);
+
+        foreach ($relationtypes1 as $relation) {
+            if ($relation['alias1'] == $alias) {
+                $result = array(
+                    'type' => $relation['type'],
+                    'own'  => true
+                );
+                break;
+            }
+        }
+        if ($type === false) {
+            foreach ($relationtypes1 as $relation) {
+                if ($relation['alias2'] == $alias) {
+                    $result = array(
+                        'type' => $relation['type'],
+                        'own'  => false
+                    );
+                    break;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * Publication data handlers
      */
@@ -284,8 +336,10 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
     private function pubExtract(&$data)
     {
-        $data['tid']              = $this->pub['tid'];
-        $data['id']               = $this->pub['id'];
+        if (!empty($this->id)) {
+            $data['id'] = $this->id;
+        }
+        $data['tid']              = $this->tid;
         $data['core_pid']         = isset($data['core_pid']) && !empty($data['core_pid']) ? $data['core_pid'] : $this->pub['core_pid'];
         $data['core_author']      = $this->pub['core_author'];
         $data['core_revision']    = $this->pub['core_revision'];

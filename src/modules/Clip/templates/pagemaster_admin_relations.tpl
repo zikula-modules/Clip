@@ -81,7 +81,7 @@
         </fieldset>
 
         <div class="z-buttons z-formbuttons">
-            {if isset($field)}
+            {if isset($relation)}
                 {formbutton commandName='create' __text='Save' class='z-bt-save'}
                 {gt text='Are you sure you want to delete this relation?.' assign='confirmdeletion'}
                 {formbutton commandName='delete' __text='Delete' class='z-bt-delete' confirmMessage=$confirmdeletion}

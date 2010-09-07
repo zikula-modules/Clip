@@ -22,17 +22,17 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
     public function pubPostProcess($loadworkflow = true)
     {
         $tablename = $this->_table->getInternalTableName();
-        $tid = PageMaster_Util::getTidFromTablename($tablename);
+        $tid = PageMaster_Util::getTidFromStringSuffix($tablename);
 
         if ($loadworkflow) {
             Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'PageMaster');
-	    } else {
-			$this->mapValue('__WORKFLOW__', array());
-		}
+        } else {
+            $this->mapValue('__WORKFLOW__', array());
+        }
 
-	    $core_title = PageMaster_Util::getTitleField($tid);
+        $core_title = PageMaster_Util::getTitleField($tid);
 
-	    $this->mapValue('core_title' , $this[$core_title]);
+        $this->mapValue('core_title' , $this[$core_title]);
         $this->mapValue('core_uniqueid', "{$tid}-{$this['core_pid']}");
         $this->mapValue('core_tid', $tid);
         $this->mapValue('core_creator', ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
@@ -40,25 +40,25 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
     }
 
     /**
-     * Returns the record fields as an array.
+     * Returns the record fields as keys of a result array.
      *
-     * @return array List of available fields.
+     * @return array List of available fields as keys.
      */
     public function pubFields()
     {
         $fields = array();
 
         foreach ($this as $column => $value) {
-            $fields[$column] = '';
-        }
-
-        foreach ($this->_references as $key => $relation) {
-            $fields[$key] = '';
+            $fields[$column] = 'column';
         }
 
         // FIXME Prevent mapped Doctrine_Records from being displayed fully
         foreach ($this->_values as $key => $value) {
-            $fields[$key] = '';
+            $fields[$key] = 'value';
+        }
+
+        foreach ($this->_table->getRelations() as $key => $relation) {
+            $fields[$key] = 'relation';
         }
 
         // reorder the fields conveniently
@@ -73,6 +73,22 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
         );
         $fields = array_merge($reorder, $fields);
         
-        return array_keys($fields);
+        return $fields;
+    }
+
+    /**
+     * Returns the record relations as an indexed array.
+     *
+     * @return array List of available relations => tids.
+     */
+    public function getRelations()
+    {
+        $relations = array();
+
+        foreach ($this->_table->getRelations() as $key => $relation) {
+            $relations[$key] = PageMaster_Util::getTidFromStringSuffix($relation->getClass());
+        }
+
+        return $relations;
     }
 }

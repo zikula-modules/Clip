@@ -81,7 +81,8 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 $pubtype->save();
 
                 // create the table
-                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$pubtype->tid1)->createTable();
+                PageMaster_Generator::loadDataClasses();
+                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$pubtype->tid)->createTable();
 
                 // create/edit status messages
                 if (empty($this->tid)) {
@@ -112,7 +113,8 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 }
 
                 // create the cloned table
-                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$newpubtype->tid1)->createTable();
+                PageMaster_Generator::loadDataClasses();
+                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$newpubtype->tid)->createTable();
 
                 // status message
                 LogUtil::registerStatus($this->__('Done! Publication type cloned.'));
@@ -132,7 +134,7 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 // FIXME m2m relations needs something more?
 
                 // delete the data table
-                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$newpubtype->tid1)->dropTable();
+                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$this->tid)->dropTable();
                 // FIXME Delete related stuff is needed? Hooks, Workflows registries?
 
                 // status message

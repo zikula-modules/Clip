@@ -22,6 +22,14 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
      */
     function initialize($view)
     {
+        $pubtypes = PageMaster_Util::getPubType(-1);
+
+        if (count($pubtypes) == 0) {
+            LogUtil::registerError($this->__('There are no publication types to relate.'));
+
+            return $view->redirect(ModUtil::url('PageMaster', 'admin', 'pubtypes'));
+        }
+
         $id  = FormUtil::getPassedValue('id', 0);
         $tid = FormUtil::getPassedValue('tid', 0);
 
@@ -61,7 +69,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
             )
         );
 
-        $view->assign('pubtypes', PageMaster_Util::getPubType(-1))
+        $view->assign('pubtypes', $pubtypes)
              ->assign('typeselector', PageMaster_Util::getPubtypesSelector(true, false))
              ->assign('relations', $relations)
              ->assign('reltypes', array($reltype1, $reltype2))
@@ -116,6 +124,9 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                     array('tid1 = ?', $relation->tid1),
                     array('tid2 = ?', $relation->tid2)
                 );
+                if (!empty($this->id)) {
+                    $where[] = array('id <> ?', $this->id);
+                }
 
                 $isUnique = (int)$tableObj->selectFieldFunction('id', 'COUNT', $where);
                 if ($isUnique > 0) {
@@ -139,15 +150,22 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
 
             // delete the field
             case 'delete':
+                $relation = Doctrine_Core::getTable('PageMaster_Model_Pubrelation')->find($this->id);
+
                 if ($relation->delete()) {
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));
                 } else {
                     return LogUtil::registerError($this->__('Error! Deletion attempt failed.'));
                 }
+
+                $this->returnurl = ModUtil::url('PageMaster', 'admin', 'relations',
+                                                array('tid' => $tid));
                 break;
         }
 
-        // TODO update both pubtypes tables
+        // update both pubtypes tables
+        Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation['tid1'])->changeTable();
+        Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation['tid2'])->changeTable();
 
         return $view->redirect($this->returnurl);
     }

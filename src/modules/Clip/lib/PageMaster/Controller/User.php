@@ -95,7 +95,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             $cacheid  = null;
         }
 
-        // buils the output
+        // builds the output
         $this->view->setCache_Id($cacheid)
                    ->setCaching($cachetid)
                    ->add_core_data();
@@ -322,9 +322,6 @@ class PageMaster_Controller_User extends Zikula_Controller
         // validation
         if (empty($tid) || !is_numeric($tid)) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
-        }
-        if ((empty($pid) || !is_numeric($pid)) && (empty($id) || !is_numeric($id))) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
         $pubtype = PageMaster_Util::getPubType($tid);

@@ -33,6 +33,10 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
         }
         $this->tid = $tid;
 
+        // update the pubtype table with previous changes
+        Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$this->tid)->changeTable();
+
+        // get the pubfields table
         $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubfield');
 
         if (!empty($id)) {
@@ -42,16 +46,16 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
             $view->assign('field', $pubfield->toArray());
         }
 
+        $pubfields = $tableObj->selectCollection("tid = '$tid'", 'lineno', -1, -1, 'name');
+
+        $view->assign('pubfields', $pubfields)
+             ->assign('tid', $tid);
+
         // stores the return URL
         if (empty($this->returnurl)) {
             $adminurl = ModUtil::url('PageMaster', 'admin');
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $adminurl);
         }
-
-        $pubfields = $tableObj->selectCollection("tid = '$tid'", 'lineno', -1, -1, 'name');
-
-        $view->assign('pubfields', $pubfields)
-             ->assign('tid', $tid);
 
         return true;
     }
@@ -131,7 +135,10 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                 }
 
                 // force a titlefield
-                $max_line = (int)$tableObj->selectFieldFunction('lineno', 'MAX', array('tid = ?', $pubfield->tid));
+                $where = array(
+                    array('tid = ?', $pubfield->tid)
+                );
+                $max_line = (int)$tableObj->selectFieldFunction('lineno', 'MAX', $where);
                 if ($max_line == 0) {
                     $pubfield->istitle = true;
                 }
@@ -155,9 +162,6 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                 }
                 break;
         }
-
-        // update the table
-        Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$this->tid)->changeTable();
 
         return $view->redirect($this->returnurl);
     }

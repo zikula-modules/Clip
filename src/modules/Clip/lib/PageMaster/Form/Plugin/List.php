@@ -120,7 +120,7 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function getTypeHtml($field, $view)
     {
-        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : array(30, true);
+        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : serialize(array(30, true));
         $this->parseConfig($typedata);
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');

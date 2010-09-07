@@ -78,13 +78,13 @@ class PageMaster_Util
     }
 
     /**
-     * Extract the TID from the tablename.
+     * Extract the TID from a string end.
      *
      * @param string $tablename
      *
      * @return integer Publication type ID.
      */
-    public static function getTidFromTablename($tablename)
+    public static function getTidFromStringSuffix($tablename)
     {
         $tid = '';
         while (is_numeric(substr($tablename, -1))) {

@@ -43,7 +43,7 @@ class PageMaster_Generator
 
         $pubfields = PageMaster_Util::getPubFields($tid);
 
-        foreach ($recfields as $key)
+        foreach ($recfields as $key => $recfield)
         {
             $rowcode = array(
                 'full'  => '',
@@ -151,6 +151,12 @@ class PageMaster_Generator
                     }
                 }
 
+                // check for relation fields
+                if ($recfield == 'relation') {
+                    //$rowcode['body'] = '{$pubdata.'.$key.'.id|safetext}';
+                    $rowcode['body'] = '<pre>{pmarray array=$pubdata.'.$key.'->toArray()}</pre>';
+                }
+
                 // build the final row if not filled
                 if (empty($rowcode['full'])) {
                     $rowcode['full'] =
@@ -167,7 +173,7 @@ class PageMaster_Generator
             $template_code .= "\n".$rowcode['full']."\n";
         }
 
-        // Add the Hooks support for display
+        // add the Hooks support for display
         $template_code .= '</div>'."\n".
                 "\n".
                 '{modurl modname=\'PageMaster\' func=\'display\' tid=$pubdata.core_tid pid=$pubdata.core_pid assign=\'returnurl\'}'."\n".
@@ -211,6 +217,7 @@ class PageMaster_Generator
                 '                {/if}'."\n".
                 '            </legend>'."\n";
 
+        // publication fields
         $pubfields = PageMaster_Util::getPubFields($tid)->toArray();
 
         foreach (array_keys($pubfields) as $k) {
@@ -241,36 +248,60 @@ class PageMaster_Generator
         ($toolTip ? '                <span class="z-formnote z-sub">{gt text=\''.$toolTip.'\'}</span>'."\n" : '').
                     '            </div>'."\n";
         }
-        $title_lang   = no__('Language');
-        $title_pdate  = no__('Publish date');
-        $title_edate  = no__('Expire date');
-        $title_inlist = no__('Show in list');
-        $button_cancel = no__('Cancel');
-
         $template_code .=
                 '        </fieldset>'."\n".
+                "\n";
+
+        // publication relations
+        no__('Related publications');
+
+        $template_code .=
+                '        {if $relations}'."\n".
+                '        <fieldset>'."\n".
+                '            <legend>{gt text=\'Related publications\'}</legend>'."\n".
                 "\n".
+                '            {foreach from=$relations key=\'alias\' item=\'item\' name=\'relations\'}'."\n".
+                '            <div class="z-formrow">'."\n".
+                '                {formlabel for="relation_`$alias`" text=$alias}'."\n".
+                '                clip_form_relation id=\'relation_{$alias}\' relation=$item group=\'pubdata\''."\n".
+                '            </div>'."\n".
+                '            {/foreach}'."\n".
+                "\n".
+                '        </fieldset>'."\n".
+                '        {/if}'."\n".
+                "\n".
+        '';
+
+        // publication options
+        no__('Publication options');
+        no__('Language');
+        no__('Publish date');
+        no__('Expire date');
+        no__('Show in list');
+        no__('Cancel');
+
+        $template_code .=
                 '        <fieldset>'."\n".
                 '            <legend>{gt text=\'Publication options\'}</legend>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\'core_language\' _'.'_text=\'' . $title_lang . '\'}'."\n".
-                '                {formlanguageselector id=\'core_language\' mandatory=false}'."\n".
+                '                {formlabel for=\'core_language\' _'.'_text=\'Language\'}'."\n".
+                '                {formlanguageselector id=\'core_language\' group=\'pubdata\' mandatory=false}'."\n".
                 '            </div>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\'core_publishdate\' _'.'_text=\'' . $title_pdate . '\'}'."\n".
-                '                {formdateinput id=\'core_publishdate\' includeTime=true}'."\n".
+                '                {formlabel for=\'core_publishdate\' _'.'_text=\'Publish date\'}'."\n".
+                '                {formdateinput id=\'core_publishdate\' group=\'pubdata\' includeTime=true}'."\n".
                 '            </div>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\'core_expiredate\' _'.'_text=\'' . $title_edate . '\'}'."\n".
-                '                {formdateinput id=\'core_expiredate\' includeTime=true}'."\n".
+                '                {formlabel for=\'core_expiredate\' _'.'_text=\'Expire date\'}'."\n".
+                '                {formdateinput id=\'core_expiredate\' group=\'pubdata\' includeTime=true}'."\n".
                 '            </div>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\'core_showinlist\' _'.'_text=\'' . $title_inlist . '\'}'."\n".
-                '                {formcheckbox id=\'core_showinlist\' checked=\'checked\'}'."\n".
+                '                {formlabel for=\'core_showinlist\' _'.'_text=\'Show in list\'}'."\n".
+                '                {formcheckbox id=\'core_showinlist\' group=\'pubdata\' checked=\'checked\'}'."\n".
                 '            </div>'."\n".
                 '        </fieldset>'."\n".
                 "\n".
@@ -285,7 +316,7 @@ class PageMaster_Generator
                 '                {gt text=$action.title assign=\'actiontitle\'}'."\n".
                 '                {formbutton commandName=$action.id text=$actiontitle zparameters=$action.parameters.button|default:\'\'}'."\n".
                 '            {/foreach}'."\n".
-                '            {formbutton commandName=\'cancel\' __text=\'' . $button_cancel . '\' class=\'z-bt-cancel\'}'."\n".
+                '            {formbutton commandName=\'cancel\' __text=\'Cancel\' class=\'z-bt-cancel\'}'."\n".
                 '        </div>'."\n".
                 '    </div>'."\n".
                 '{/form}'."\n\n";
@@ -377,8 +408,8 @@ class PageMaster_Generator
                 // set the relation arguments
                 if ($relation['type'] < 3) {
                     $relargs = array(
-                        'local'   => 'id',
-                        'foreign' => "rel_{$relation['id']}"
+                        'local'   => "rel_{$relation['id']}",
+                        'foreign' => 'id'
                     );
                 } else {
                     // many2many
@@ -397,13 +428,15 @@ class PageMaster_Generator
                 $hasRelations .= "
         \$this->$method('$reldefinition', $relargs);
         ";
-                // add the foreign column definition
-                $columns["pm_rel_{$relation['id']}"] = "rel_{$relation['id']}";
-                $def["pm_rel_{$relation['id']}"] = array(
-                    'type' => 'integer',
-                    'length' => 4,
-                    'unsigned' => false
-                );
+                // add the foreign column definition for non-m2m
+                if ($relation['type'] < 3) {
+                    $columns["pm_rel_{$relation['id']}"] = "rel_{$relation['id']}";
+                    $def["pm_rel_{$relation['id']}"] = array(
+                        'type' => 'integer',
+                        'length' => 4,
+                        'unsigned' => false
+                    );
+                }
             }
         }
 
@@ -546,6 +579,8 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
 {
     public function setTableDefinition()
     {
+        \$this->setTableName('pagemaster_relation{$relation['id']}');
+
         $hasColumns
     }
 }
@@ -554,8 +589,37 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
         }
 
         if (!empty($code)) {
+//echo "<pre>$code</pre>";
             eval($code);
         }
+    }
+
+    public static function loadDataClasses()
+    {
+        static $loaded = array();
+
+        // refresh the pubtypes definitions
+        self::addtables();
+
+        $pubtypes = array_keys(Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes()->toArray());
+        // FIXME relations sort criteria?
+        sort($pubtypes);
+
+        foreach ($pubtypes as $tid) {
+            if (!isset($loaded[$tid])) {
+                $code = PageMaster_Generator::pubmodel($tid);
+//echo "<pre>$code</pre>";
+                eval($code);
+                $code = PageMaster_Generator::pubtable($tid);
+                eval($code);
+                $loaded[$tid] = true;
+            }
+        }
+
+        if (empty($loaded)) {
+            PageMaster_Generator::evalrelations();
+        }
+//die();
     }
 
     // dynamic pubdata tables

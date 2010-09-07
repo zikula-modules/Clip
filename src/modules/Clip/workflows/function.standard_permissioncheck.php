@@ -24,7 +24,7 @@ function PageMaster_workflow_standard_permissioncheck($obj, $permLevel, $current
         // process $obj and calculate an instance
         $pid = $obj['core_pid'];
 
-        $tid     = PageMaster_Util::getTidFromTablename($obj['__WORKFLOW__']['obj_table']);
+        $tid     = PageMaster_Util::getTidFromStringSuffix($obj['__WORKFLOW__']['obj_table']);
         $pubtype = PageMaster_Util::getPubType($tid);
 
         if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == $currentUser) {
