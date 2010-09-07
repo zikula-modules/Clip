@@ -68,7 +68,7 @@
 {insert name='getstatusmsg'}
 
 {* PageMaster developer notices*}
-{if $zcore.PageMaster.devmode|default:true}
+{if isset($clip_generic_tpl) and $zcore.PageMaster.devmode|default:true}
     {* excludes simple templates *}
     {if $section neq 'pending'}
 
