@@ -19,13 +19,23 @@ class PageMaster_Installer extends Zikula_Installer
      */
     public function install()
     {
-        // create table
-        if (!DBUtil::createTable('pagemaster_pubfields')) {
-            return false;
-        }
+        // create tables
+        $tables = array(
+            'PageMaster_Model_Pubfield',
+            'PageMaster_Model_Pubtype',
+            'PageMaster_Model_Pubrelation'
+        );
 
-        if (!DBUtil::createTable('pagemaster_pubtypes')) {
-            return false;
+        foreach ($tables as $table) {
+            if (!Doctrine_Core::getTable($table)->createTable()) {
+                foreach ($tables as $innertable) {
+                    if ($innertable == $table) {
+                        break;
+                    }
+                    Doctrine_Core::getTable($innertable)->dropTable();
+                }
+                return false;
+            }
         }
 
         // build the default category tree
@@ -350,22 +360,32 @@ class PageMaster_Installer extends Zikula_Installer
      */
     public function uninstall()
     {
-        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+        // drop pubtype tables
+        $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
 
-        foreach ($pubtypes as $pubtype) {
-            DBUtil::dropTable('pagemaster_pubdata'.$pubtype['tid']);
+        foreach ($pubtypes as $tid) {
+            $table = "PageMaster_Model_Pubdata$tid";
+            if (!Doctrine_Core::getTable($table)->dropTable()) {
+                return false;
+            }
         }
 
         // FIXME Hooks, Workflows registries deleted?
 
-        if (!DBUtil::dropTable('pagemaster_pubfields')) {
-            return false;
+        // drop base tables
+        $tables = array(
+            'PageMaster_Model_Pubfield',
+            'PageMaster_Model_Pubtype',
+            'PageMaster_Model_Pubrelation'
+        );
+
+        foreach ($tables as $table) {
+            if (!Doctrine_Core::getTable($table)->dropTable()) {
+                return false;
+            }
         }
 
-        if (!DBUtil::dropTable('pagemaster_pubtypes')) {
-            return false;
-        }
-
+        // delete the category registry and modvars
         CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/pagemaster', 'path');
         $this->delVars();
 
