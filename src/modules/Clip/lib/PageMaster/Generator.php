@@ -263,7 +263,7 @@ class PageMaster_Generator
                 '            {foreach from=$relations key=\'alias\' item=\'item\' name=\'relations\'}'."\n".
                 '            <div class="z-formrow">'."\n".
                 '                {formlabel for="relation_`$alias`" text=$alias}'."\n".
-                '                clip_form_relation id=\'relation_{$alias}\' relation=$item group=\'pubdata\''."\n".
+                '                clip_form_relation id="relation_`$alias`" relation=$item group=\'pubdata\''."\n".
                 '            </div>'."\n".
                 '            {/foreach}'."\n".
                 "\n".
@@ -336,12 +336,15 @@ class PageMaster_Generator
         self::addtables();
 
         $table = "pagemaster_pubdata{$tid}";
-
-        $def = DBUtil::getTableDefinition($table);
-        $opt = DBUtil::getTableOptions($table);
-
         $tables = DBUtil::getTables();
-        $columns = $tables["pagemaster_pubdata{$tid}_column"];
+
+        if (isset($tables["{$table}_column"])) {
+            $columns = $tables["{$table}_column"];
+            $def = DBUtil::getTableDefinition($table);
+            $opt = DBUtil::getTableOptions($table);
+        } else {
+            $columns = $def = $opt = array();
+        }
         $columns = array_flip($columns);
 
         // relations
@@ -594,12 +597,12 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
         }
     }
 
-    public static function loadDataClasses()
+    public static function loadDataClasses($force = false)
     {
         static $loaded = array();
 
         // refresh the pubtypes definitions
-        self::addtables();
+        self::addtables($force);
 
         $pubtypes = array_keys(Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes()->toArray());
         // FIXME relations sort criteria?
@@ -642,97 +645,99 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
         */
     }
 
-    private static function addtables()
+    private static function addtables($force = false)
     {
-        if (self::$tablesloaded) {
+        $modinfo = ModUtil::getInfoFromName('PageMaster');
+
+        if ($modinfo['state'] == ModUtil::STATE_UNINITIALISED) {
+            return;
+        }
+
+        if (self::$tablesloaded && !$force) {
             return;
         }
         self::$tablesloaded = true;
 
         $tables  = array();
-        $modinfo = ModUtil::getInfoFromName('PageMaster');
+        $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
+                     ->selectCollection('', 'tid ASC, id ASC');
 
-        if ($modinfo['state'] != ModUtil::STATE_UNINITIALISED) {
-            $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
-                         ->selectCollection('', 'tid ASC, id ASC');
-
-            if ($pubfields === false) {
-                return LogUtil::registerError('Error! Failed to load the pubfields.');
-            }
-
-            $old_tid = 0;
-
-            $tableorder = array(
-                'core_pid'         => 'pm_pid',
-                'id'               => 'pm_id'
-            );
-            $tablecolumncore = array(
-                'id'               => 'pm_id',
-                'core_pid'         => 'pm_pid',
-                'core_author'      => 'pm_author',
-                'core_hitcount'    => 'pm_hitcount',
-                'core_language'    => 'pm_language',
-                'core_revision'    => 'pm_revision',
-                'core_online'      => 'pm_online',
-                'core_indepot'     => 'pm_indepot',
-                'core_showinmenu'  => 'pm_showinmenu',
-                'core_showinlist'  => 'pm_showinlist',
-                'core_publishdate' => 'pm_publishdate',
-                'core_expiredate'  => 'pm_expiredate'
-            );
-            $tabledefcore = array(
-                'id'               => 'I4 PRIMARY AUTO',
-                'core_pid'         => 'I4 NOTNULL',
-                'core_author'      => 'I4 NOTNULL',
-                'core_hitcount'    => 'I8 DEFAULT 0',
-                'core_language'    => 'C(10) NOTNULL', //FIXME how many chars are needed for a gettext code?
-                'core_revision'    => 'I4 NOTNULL',
-                'core_online'      => 'L',
-                'core_indepot'     => 'L',
-                'core_showinmenu'  => 'L',
-                'core_showinlist'  => 'L DEFAULT 1',
-                'core_publishdate' => 'T',
-                'core_expiredate'  => 'T'
-            );
-
-            // loop the pubfields adding their definitions
-            // to their pubdata tables
-            $tablecolumn = array();
-            $tabledef    = array();
-
-            foreach ($pubfields as $pubfield) {
-                // if we change of publication type
-                if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
-                    // add the table definition to the $tables array
-                    self::_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
-                    // and reset the columns and definitions for the next pubtype
-                    $tablecolumn = array();
-                    $tabledef    = array();
-                }
-
-                // add the column and definition for this field
-                $tablecolumn[$pubfield['name']] = "pm_{$pubfield['id']}";
-                $tabledef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
-
-                // set the actual tid to check a pubtype change in the next cycle
-                $old_tid = $pubfield['tid'];
-            }
-
-            // the final one doesn't trigger a tid change
-            if (!empty($tablecolumn)) {
-                self::_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
-            }
-
-            // validates the existence of all the pubdata tables
-            // to ensure the creation of all the dynamic classes
-            $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
-            foreach ($pubtypes as $tid) {
-                if (!isset($tables["pagemaster_pubdata{$tid}"])) {
-                    self::_addtable($tables, $tid, array(), array());
-                }
-            }
-
-            $GLOBALS['dbtables'] = array_merge((array)$GLOBALS['dbtables'], (array)$tables);
+        if ($pubfields === false) {
+            return LogUtil::registerError('Error! Failed to load the pubfields.');
         }
+
+        $old_tid = 0;
+
+        $tableorder = array(
+            'core_pid'         => 'pm_pid',
+            'id'               => 'pm_id'
+        );
+        $tablecolumncore = array(
+            'id'               => 'pm_id',
+            'core_pid'         => 'pm_pid',
+            'core_author'      => 'pm_author',
+            'core_hitcount'    => 'pm_hitcount',
+            'core_language'    => 'pm_language',
+            'core_revision'    => 'pm_revision',
+            'core_online'      => 'pm_online',
+            'core_indepot'     => 'pm_indepot',
+            'core_showinmenu'  => 'pm_showinmenu',
+            'core_showinlist'  => 'pm_showinlist',
+            'core_publishdate' => 'pm_publishdate',
+            'core_expiredate'  => 'pm_expiredate'
+        );
+        $tabledefcore = array(
+            'id'               => 'I4 PRIMARY AUTO',
+            'core_pid'         => 'I4 NOTNULL',
+            'core_author'      => 'I4 NOTNULL',
+            'core_hitcount'    => 'I8 DEFAULT 0',
+            'core_language'    => 'C(10) NOTNULL', //FIXME how many chars are needed for a gettext code?
+            'core_revision'    => 'I4 NOTNULL',
+            'core_online'      => 'L',
+            'core_indepot'     => 'L',
+            'core_showinmenu'  => 'L',
+            'core_showinlist'  => 'L DEFAULT 1',
+            'core_publishdate' => 'T',
+            'core_expiredate'  => 'T'
+        );
+
+        // loop the pubfields adding their definitions
+        // to their pubdata tables
+        $tablecolumn = array();
+        $tabledef    = array();
+
+        foreach ($pubfields as $pubfield) {
+            // if we change of publication type
+            if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
+                // add the table definition to the $tables array
+                self::_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+                // and reset the columns and definitions for the next pubtype
+                $tablecolumn = array();
+                $tabledef    = array();
+            }
+
+            // add the column and definition for this field
+            $tablecolumn[$pubfield['name']] = "pm_{$pubfield['id']}";
+            $tabledef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
+
+            // set the actual tid to check a pubtype change in the next cycle
+            $old_tid = $pubfield['tid'];
+        }
+
+        // the final one doesn't trigger a tid change
+        if (!empty($tablecolumn)) {
+            self::_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+        }
+
+        // validates the existence of all the pubdata tables
+        // to ensure the creation of all the dynamic classes
+        $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
+        foreach ($pubtypes as $tid) {
+            if (!isset($tables["pagemaster_pubdata{$tid}"])) {
+                self::_addtable($tables, $tid, array(), array());
+            }
+        }
+
+        $GLOBALS['dbtables'] = array_merge((array)$GLOBALS['dbtables'], (array)$tables);
     }
 }

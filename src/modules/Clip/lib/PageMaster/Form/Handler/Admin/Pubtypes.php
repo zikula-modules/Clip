@@ -80,12 +80,12 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
                 $pubtype->inputset  = DataUtil::formatPermalink($pubtype->inputset);
                 $pubtype->save();
 
-                // create the table
-                PageMaster_Generator::loadDataClasses();
-                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$pubtype->tid)->createTable();
-
                 // create/edit status messages
                 if (empty($this->tid)) {
+                    // create the table
+                    PageMaster_Generator::loadDataClasses(true);
+                    Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$pubtype->tid)->createTable();
+
                     LogUtil::registerStatus($this->__('Done! Publication type created. Now you can proceed to define its fields.'));
                     $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $pubtype->tid));
                 } else {
