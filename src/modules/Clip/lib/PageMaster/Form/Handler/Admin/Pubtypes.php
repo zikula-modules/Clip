@@ -22,13 +22,18 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
      */
     function initialize($view)
     {
-        $tid = FormUtil::getPassedValue('tid');
+        $tid = (int)FormUtil::getPassedValue('tid');
 
         if (!empty($tid) && is_numeric($tid)) {
             $this->tid = $tid;
 
             $pubtype   = PageMaster_Util::getPubType($tid);
             $pubfields = PageMaster_Util::getFieldsSelector($tid);
+
+            if (!$pubtype) {
+                LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+                return $view->redirect(ModUtil::url('PageMaster', 'admin'));
+            }
 
             $view->assign('pubfields', $pubfields)
                  ->assign('pubtype', $pubtype->toArray());
@@ -130,7 +135,7 @@ class PageMaster_Form_Handler_Admin_Pubtypes extends Form_Handler
 
                 // delete any relation
                 $where = array("tid1 = '{$this->tid}' OR tid2 = '{$this->tid}'");
-                Doctrine_Core::getTable('PageMaster_Model_Relations')->deleteWhere($where);
+                Doctrine_Core::getTable('PageMaster_Model_Pubrelation')->deleteWhere($where);
                 // FIXME m2m relations needs something more?
 
                 // delete the data table
