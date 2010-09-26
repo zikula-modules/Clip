@@ -139,13 +139,18 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                 Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation->tid1)->changeTable();
                 Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation->tid2)->changeTable();
 
+                $relation->save();
+
                 // create/edit status messages
                 if (empty($this->id)) {
+                    // create the table
+                    PageMaster_Generator::loadDataClasses(true);
+                    Doctrine_Core::getTable('PageMaster_Model_Relation'.$relation->id)->createTable();
+
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
                 } else {
                     LogUtil::registerStatus($this->__('Done! Relation updated.'));
                 }
-                $relation->save();
                 break;
 
             // delete the field

@@ -10,8 +10,6 @@
         {pmadminsubmenu tid=$tid}
     {/if}
 
-    <p class="z-warningmsg">{gt text='When relations are added or removed the DB Tables of the publication types implied will be updated automatically.'}</p>
-
     <div class="z-form">
         <fieldset>
             <legend>{gt text='Relations'}</legend>

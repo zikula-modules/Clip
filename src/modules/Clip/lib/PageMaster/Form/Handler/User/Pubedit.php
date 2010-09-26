@@ -286,7 +286,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
                 break;
             }
         }
-        if ($type === false) {
+        if ($result === false) {
             foreach ($relationtypes1 as $relation) {
                 if ($relation['alias2'] == $alias) {
                     $result = array(

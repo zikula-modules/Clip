@@ -515,11 +515,11 @@ class PageMaster_Util
      *
      * @return array Relations for the passed pubtype.
      */
-    public static function getRelations($tid = -1, $owningSide = true)
+    public static function getRelations($tid = -1, $owningSide = true, $force = false)
     {
         static $relation_arr;
 
-        if (!isset($relation_arr)) {
+        if (!isset($relation_arr) || $force) {
             $relation_arr = Doctrine_Core::getTable('PageMaster_Model_Pubrelation')->getRelations();
         }
 

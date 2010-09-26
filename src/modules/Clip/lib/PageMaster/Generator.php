@@ -263,7 +263,7 @@ class PageMaster_Generator
                 '            {foreach from=$relations key=\'alias\' item=\'item\' name=\'relations\'}'."\n".
                 '            <div class="z-formrow">'."\n".
                 '                {formlabel for="relation_`$alias`" text=$alias}'."\n".
-                '                clip_form_relation id="relation_`$alias`" relation=$item group=\'pubdata\''."\n".
+                '                {clip_form_relation id="relation_`$alias`" relation=$item group=\'pubdata\'}'."\n".
                 '            </div>'."\n".
                 '            {/foreach}'."\n".
                 "\n".
@@ -554,13 +554,14 @@ class PageMaster_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
      */
     public static function evalrelations()
     {
-        $ownedrelations = PageMaster_Util::getRelations(-1, false);
+        $ownedrelations = PageMaster_Util::getRelations(-1, false, true);
 
         $code = '';
         $hasColumns = '';
         foreach ($ownedrelations as $tid => $relations) {
             foreach ($relations as $relation) {
-                if ($relation['type'] != 3) {
+                $classname = 'PageMaster_Model_Relation'.$relation['id'];
+                if ($relation['type'] != 3 || class_exists($classname, false)) {
                     continue;
                 }
                 for ($i = 1; $i <= 2; $i++) {
@@ -585,12 +586,15 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
         $hasColumns
     }
 }
+class PageMaster_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Table
+{
+
+}
 ";
             }
         }
 
         if (!empty($code)) {
-//echo "<pre>$code</pre>";
             eval($code);
         }
     }
@@ -616,9 +620,7 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
             }
         }
 
-        if (empty($loaded)) {
-            PageMaster_Generator::evalrelations();
-        }
+        PageMaster_Generator::evalrelations();
     }
 
     // dynamic pubdata tables
