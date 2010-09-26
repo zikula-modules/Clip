@@ -333,8 +333,6 @@ class PageMaster_Generator
      */
     public static function pubmodel($tid)
     {
-        self::addtables();
-
         $table = "pagemaster_pubdata{$tid}";
         $tables = DBUtil::getTables();
 
@@ -611,7 +609,6 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
         foreach ($pubtypes as $tid) {
             if (!isset($loaded[$tid])) {
                 $code = PageMaster_Generator::pubmodel($tid);
-//echo "<pre>$code</pre>";
                 eval($code);
                 $code = PageMaster_Generator::pubtable($tid);
                 eval($code);
@@ -622,7 +619,6 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
         if (empty($loaded)) {
             PageMaster_Generator::evalrelations();
         }
-//die();
     }
 
     // dynamic pubdata tables
@@ -731,10 +727,10 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
 
         // validates the existence of all the pubdata tables
         // to ensure the creation of all the dynamic classes
-        $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
+        $pubtypes = array_keys(Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes()->toArray());
         foreach ($pubtypes as $tid) {
             if (!isset($tables["pagemaster_pubdata{$tid}"])) {
-                self::_addtable($tables, $tid, array(), array());
+                self::_addtable($tables, $tid, $tablecolumncore, $tabledefcore);
             }
         }
 
