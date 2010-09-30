@@ -223,3 +223,65 @@ pre.pm-showcode {
     background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
     background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
+
+/* TextboxList sample CSS */
+ul.autolist-holder {
+  background: #fff;
+  border: 1px solid #ddd;
+  font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+  height: auto !important; height: 1%;
+  margin: 0;
+  overflow: hidden;
+  padding: 0.3em 0.3em 0;
+  position: relative;
+}
+ul.autolist-holder:hover {
+  border: 1px solid #aaa;
+}
+*:first-child+html ul.autolist-holder { padding-bottom: 2px; }
+* html ul.autolist-holder { padding-bottom: 2px; } /* ie7 and below */
+ul.autolist-holder li { float: left; list-style-type: none; margin: 0 0 0.3em; }
+ul.autolist-holder li.bit-box,
+ul.autolist-holder li.bit-input input { font: 11px "Lucida Grande", "Verdana"; }
+ul.autolist-holder li.bit-input input:hover,
+ul.autolist-holder li.bit-input input:focus { background: inherit; border: none; }
+ul.autolist-holder li.bit-box {
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+  background: #F2F2F2;
+  padding: 1px 15px 2px 5px;
+  position: relative;
+}
+ul.autolist-holder li.bit-hover {
+  background: #ddd;
+  border-color: #aaa;
+}
+ul.autolist-holder li.bit-box-focus {
+  background: #555;
+  border-color: #555;
+  color: #fff;
+}
+ul.autolist-holder li.bit-input input { width: 150px; margin: 0; border: none; outline: 0; padding: 0; } /* no left/right padding here please */
+ul.autolist-holder li.bit-input input.smallinput { width: 20px; }
+
+/* Facebook demo CSS */
+ul.autolist-holder li.bit-box a.closebutton { position: absolute; right: 4px; top: 5px; display: block; width: 7px; height: 7px; font-size: 1px; background: url('../images/close.gif'); }
+ul.autolist-holder li.bit-box a.closebutton:hover { background-position: 7px; }
+ul.autolist-holder li.bit-box-focus a.closebutton,
+ul.autolist-holder li.bit-box-focus a.closebutton:hover { background-position: bottom; }
+
+/* Autocompleter */
+.z-form div.z-formrow > .clip-autocompleter-div {
+  background: #eee;
+  display: none;
+  padding: 0;
+  width: auto;
+}
+.z-form div.z-formrow > .clip-autocompleter-div .autolist-default { padding: 5px 7px; border: 1px solid #ccc; border-width: 0 1px 1px; }
+.z-form div.z-formrow > .clip-autocompleter-div ul { display: none; margin: 0; padding: 0; overflow: auto; }
+.z-form div.z-formrow > .clip-autocompleter-div ul li { padding: 5px 12px; z-index: 1000; cursor: pointer; margin: 0; list-style-type: none; border: 1px solid #ccc; border-width: 0 1px 1px; font: 11px "Lucida Grande", "Verdana"; }
+.z-form div.z-formrow > .clip-autocompleter-div ul li em { font-weight: bold; font-style: normal; background: #ccc; }
+.z-form div.z-formrow > .clip-autocompleter-div ul li.auto-focus { background: #555; color: #fff; }
+.z-form div.z-formrow > .clip-autocompleter-div ul li.auto-focus em { background: none; }

@@ -41,10 +41,19 @@ class ClipFormRelation extends Form_Plugin_TextInput
     {
         $result = parent::render($view);
 
+        PageUtil::addVar('javascript', 'prototype');
+        PageUtil::addVar('javascript', 'modules/PageMaster/javascript/facebooklist.js');
         $script =
         "<script type=\"text/javascript\">\n//<![CDATA[\n".'
             function clip_enable_'.$this->id.'() {
-                var_auto_'.$this->id.' = new FacebookList(\''.$this->id.'\', \''.$this->id.'_div\');
+                var_auto_'.$this->id.' = new FacebookList(\''.$this->id.'\', \''.$this->id.'_div\',
+                                                 {fetchFile: Zikula.Config.baseURL+\'ajax.php\',
+                                                  max: \'1\',
+                                                  parameters:
+                                                      {module: \'PageMaster\',
+                                                       func: \'autocomplete\',
+                                                       tid: \''.$this->relinfo['tid2'].'\'}
+                                                 });
             }
             Event.observe(window, \'load\', clip_enable_'.$this->id.', false);
         '."\n// ]]>\n</script>";
@@ -52,12 +61,11 @@ class ClipFormRelation extends Form_Plugin_TextInput
 
         $count = $this->relinfo['own'] ? ($this->relinfo['type']%2 ? 1 : 2) : ($this->relinfo['type'] <= 1 ? 1 : 2);
         $typeDataHtml  = '
-        <div id="'.$this->id.'_div" class="clip-autocompleter-div">
+        <div id="'.$this->id.'_div" class="clip-autocompleter-div z-formnote">
             <div class="autolist-default">'.$this->_fn('Type the title of the related publication', 'Type the titles of the related publications', $count, array()).'</div>
-                <ul class="autolist-feed">
-                    './* foreach($this->items) <li value="id">Pub title</li> .*/'
-                </ul>
-            </div>
+            <ul class="autolist-feed">
+                './* foreach($this->items) <li value="id">Pub title</li> .*/'
+            </ul>
         </div>';
 
         return $result . $typeDataHtml;

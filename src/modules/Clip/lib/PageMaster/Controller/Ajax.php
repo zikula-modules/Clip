@@ -48,6 +48,7 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
      * Publications list.
      *
      * @param integer $_POST['tid']                ID of the publication type.
+     * @param string  $_POST['keyword']            core_title:likefirst:KEYWORD filter.
      * @param string  $_POST['filter']             Filter string.
      * @param string  $_POST['orderby']            OrderBy string.
      * @param boolean $_POST['handlePluginFields'] Whether to parse the plugin fields.
@@ -64,29 +65,38 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($tid);
-        if (empty($pubtype)) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
-        }
-
-        // get the input parameters
-        $orderby            = FormUtil::getPassedValue('orderby', null, 'POST');
-        $handlePluginFields = FormUtil::getPassedValue('handlePluginFields', true, 'POST');
-        $getApprovalState   = FormUtil::getPassedValue('getApprovalState', false, 'POST');
-
         // security check as early as possible
         if (!SecurityUtil::checkPermission('pagemaster:list:', "$tid::", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
-        $orderby = PageMaster_Util::createOrderBy($orderby);
+        $pubtype = PageMaster_Util::getPubType($tid);
+        if (empty($pubtype)) {
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+        }
 
         $pubfields = PageMaster_Util::getPubFields($tid, 'lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
+        $titlefield = PageMaster_Util::findTitleField($pubfields);
+        $pubtype->mapValue('titlefield', $titlefield);
+
+        // get the input parameters
+        $key                = FormUtil::getPassedValue('keyword', null, 'POST');
+        $filter             = FormUtil::getPassedValue('filter', null, 'POST');
+        $orderby            = FormUtil::getPassedValue('orderby', null, 'POST');
+        $handlePluginFields = FormUtil::getPassedValue('handlePluginFields', true, 'POST');
+        $getApprovalState   = FormUtil::getPassedValue('getApprovalState', false, 'POST');
+        if (!empty($key)) {
+            $filter = (empty($filter) ? '' : $filter.',')."$titlefield:likefirst:$key";
+            if (empty($orderby)) {
+                $orderby = $titlefield;
+            }
+        }
+
+        $orderby = PageMaster_Util::createOrderBy($orderby);
 
         // Uses the API to get the list of publications
         $result = ModUtil::apiFunc('PageMaster', 'user', 'getall',
@@ -98,14 +108,14 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
                                          'handlePluginFields' => $handlePluginFields,
                                          'getApprovalState'   => $getApprovalState));
 
-        return $result['publist'];
+        return $result['publist']->toArray();
     }
 
     /**
      * Autocompletion list.
      * Returns the publications list on the expected autocompleter format.
      *
-     * @see PageMaster_Controller_Ajax::list
+     * @see PageMaster_Controller_Ajax::view
      *
      * @return array Autocompletion list.
      */
@@ -121,6 +131,6 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
             );
         }
 
-        return $result;
+        return array('data' => $result);
     }
 }
