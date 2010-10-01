@@ -40,19 +40,25 @@ class ClipFormRelation extends Form_Plugin_TextInput
     function render($view)
     {
         $result = parent::render($view);
+        $itemsperpage = 30;
 
         PageUtil::addVar('javascript', 'prototype');
         PageUtil::addVar('javascript', 'modules/PageMaster/javascript/facebooklist.js');
         $script =
         "<script type=\"text/javascript\">\n//<![CDATA[\n".'
             function clip_enable_'.$this->id.'() {
-                var_auto_'.$this->id.' = new FacebookList(\''.$this->id.'\', \''.$this->id.'_div\',
-                                                 {fetchFile: Zikula.Config.baseURL+\'ajax.php\',
-                                                  max: \'1\',
-                                                  parameters:
-                                                      {module: \'PageMaster\',
-                                                       func: \'autocomplete\',
-                                                       tid: \''.$this->relinfo['tid2'].'\'}
+                var_auto_'.$this->id.' = new Zikula.Autocompleter(\''.$this->id.'\', \''.$this->id.'_div\',
+                                                 {
+                                                  fetchFile: Zikula.Config.baseURL+\'ajax.php\',
+                                                  parameters: {
+                                                    module: "PageMaster",
+                                                    func: "autocomplete",
+                                                    tid: '.$this->relinfo['tid'].',
+                                                    itemsperpage: '.$itemsperpage.'
+                                                  },
+                                                  minchars: 2,
+                                                  maxresults: '.$itemsperpage.',
+                                                  maxItems: 1
                                                  });
             }
             Event.observe(window, \'load\', clip_enable_'.$this->id.', false);
@@ -62,8 +68,8 @@ class ClipFormRelation extends Form_Plugin_TextInput
         $count = $this->relinfo['own'] ? ($this->relinfo['type']%2 ? 1 : 2) : ($this->relinfo['type'] <= 1 ? 1 : 2);
         $typeDataHtml  = '
         <div id="'.$this->id.'_div" class="clip-autocompleter-div z-formnote">
-            <div class="autolist-default">'.$this->_fn('Type the title of the related publication', 'Type the titles of the related publications', $count, array()).'</div>
-            <ul class="autolist-feed">
+            <div class="autocompleter-default">'.$this->_fn('Type the title of the related publication', 'Type the titles of the related publications', $count, array()).'</div>
+            <ul class="autocompleter-feed">
                 './* foreach($this->items) <li value="id">Pub title</li> .*/'
             </ul>
         </div>';

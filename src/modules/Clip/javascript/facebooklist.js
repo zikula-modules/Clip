@@ -1,36 +1,67 @@
-/*
-  Proto!MultiSelect 0.2
-  - Prototype version required: 6.0
+/**
+ * Proto!MultiSelect 0.2
+ * - Prototype version required: 6.0
+ *
+ * Credits:
+ * - Idea: Facebook + Apple Mail
+ * - Caret position method: Diego Perini <http://javascript.nwbox.com/cursor_position/cursor.js>
+ * - Guillermo Rauch: Original MooTools script
+ * - Ran Grushkowsky/InteRiders Inc. : Porting into Prototype and further development
+ *
+ * Changelog:
+ * - 0.1: translation of MooTools script
+ * - 0.2: renamed from Proto!TextboxList to Proto!MultiSelect, added new features/bug fixes
+ *        added feature: support to fetch list on-the-fly using AJAX - credit: Cheeseroll
+ *        added feature: support for value/caption
+ *        added feature: maximum results to display, when greater displays a scrollbar - credit: Marcel
+ *        added feature: filter by the beginning of word only or everywhere in the word - credit: Kiliman
+ *        added feature: shows hand cursor when going over options
+ *        bug fix: the click event stopped working
+ *        bug fix: the cursor does not 'travel' when going up/down the list - credit: Marcel
+ *
+ * Adaptation to zikula:
+ * - Changed CSS classes to have the 'autocompleter-' prefix
+ * - Added the 'parameters' option for the Ajax call
+ * - Merged FacebookList.loptions.autocomplete into this.options
+ * - Added a limit for selected items - options.maxItems
+ *
+ * Copyright: InteRiders <http://interiders.com/> - Distributed under MIT - Keep this message!
+ */
 
-  Credits:
-  - Idea: Facebook + Apple Mail
-  - Caret position method: Diego Perini <http://javascript.nwbox.com/cursor_position/cursor.js>
-  - Guillermo Rauch: Original MooTools script
-  - Ran Grushkowsky/InteRiders Inc. : Porting into Prototype and further development
+/* Element helper functions */
+Element.addMethods({
+  getCaretPosition: function() {
+    if (this.createTextRange) {
+      var r = document.selection.createRange().duplicate();
+      r.moveEnd('character', this.value.length);
+      if (r.text === '') {
+        return this.value.length;
+      }
+      return this.value.lastIndexOf(r.text);
+    } else {
+      return this.selectionStart;
+    }
+  },
 
-  Changelog:
-  - 0.1: translation of MooTools script
-  - 0.2: renamed from Proto!TextboxList to Proto!MultiSelect, added new features/bug fixes
-        added feature: support to fetch list on-the-fly using AJAX    Credit: Cheeseroll
-        added feature: support for value/caption
-        added feature: maximum results to display, when greater displays a scrollbar   Credit: Marcel
-        added feature: filter by the beginning of word only or everywhere in the word   Credit: Kiliman
-        added feature: shows hand cursor when going over options
-        bug fix: the click event stopped working
-        bug fix: the cursor does not 'travel' when going up/down the list   Credit: Marcel
+  cacheData: function(element, key, value) {
+    if (Object.isUndefined(this[$(element).identify()]) || !Object.isHash(this[$(element).identify()])) {
+      this[$(element).identify()] = $H();
+    }
+    this[$(element).identify()].set(key,value);
+    return element;
+  },
 
-  Adaptation to zikula:
-  - Changed CSS classes to have the 'autolist-' prefix
-  - Added the 'parameters' option for the Ajax call
-*/
+  retrieveData: function(element,key) {
+    return this[$(element).identify()].get(key);
+  }
+});
 
-/* Copyright: InteRiders <http://interiders.com/> - Distributed under MIT - Keep this message! */
-
+/* ResizableTextbox */
 var ResizableTextbox = Class.create(
 {
   options: $H({
     min: 5,
-    max: 500,
+    max: 300,
     step: 7
   }),
 
@@ -55,26 +86,26 @@ var ResizableTextbox = Class.create(
   }
 });
 
+/* TextboxList */
 var TextboxList = Class.create(
 {
   options: $H({/*
-    onFocus: $empty,
-    onBlur: $empty,
-    onInputFocus: $empty,
-    onInputBlur: $empty,
-    onBoxFocus: $empty,
-    onBoxBlur: $empty,
-    onBoxDispose: $empty,*/
+    autoopacity: 0.8,
+    maxresults: 10,
+    minchars: 3, */
     resizable: {},
     className: 'bit',
     separator: ':',
     extrainputs: true,
     startinput: true,
     hideempty: true,
+    spaceReplace: '',
+    wordMatch: true,
     fetchFile: undefined,
+    fetchMethod: 'post',
     parameters: {},
     results: 10,
-    wordMatch: true
+    maxItems: 10
   }),
 
   initialize: function(element, options) {
@@ -83,10 +114,11 @@ var TextboxList = Class.create(
     this.bits = new Hash();
     this.events = new Hash();
     this.count = 0;
+    this.numitems = 0;
     this.current = false;
     this.maininput = this.createInput({'class': 'maininput'});
     this.holder = new Element('ul', {
-      'class': 'autolist-holder'
+      'class': 'autocompleter-holder'
     }).insert(this.maininput);
     this.element.insert({'before': this.holder});
     this.holder.observe('click', function(event) {
@@ -97,16 +129,27 @@ var TextboxList = Class.create(
     this.setEvents();
   },
 
+  makeResizable: function(li) {
+    var el = li.retrieveData('input');
+    el.cacheData('resizable', new ResizableTextbox(el, Object.extend(this.options.get('resizable'), {min: el.offsetWidth, max: (this.element.getWidth() ? this.element.getWidth() : 0)})));
+    return this;
+  },
+
   setEvents: function() {
     document.observe(Prototype.Browser.IE ? 'keydown' : 'keypress', function(e) {
-      if (!this.current) return;
-      if (this.current.retrieveData('type') == 'box' && e.keyCode == Event.KEY_BACKSPACE) e.stop();
+      if (!this.current) {
+        return;
+      }
+      if (this.current.retrieveData('type') == 'box' && e.keyCode == Event.KEY_BACKSPACE) {
+        e.stop();
+      }
     }.bind(this));
 
-    document.observe(
-      'keyup', function(e) {
+    document.observe('keyup', function(e) {
         e.stop();
-        if (!this.current) return;
+        if (!this.current) {
+          return;
+        }
         switch (e.keyCode) {
           case Event.KEY_LEFT: return this.move('left');
           case Event.KEY_RIGHT: return this.move('right');
@@ -123,6 +166,7 @@ var TextboxList = Class.create(
   },
 
   add: function(text, html) {
+    // avoid the adition of repeated values
     if (this.bits.values().indexOf(text.value) == 1) {
       return null;
     }
@@ -137,7 +181,13 @@ var TextboxList = Class.create(
     if (this.options.get('extrainputs') && (this.options.get('startinput') || el.previous())) {
       this.addSmallInput(el, 'before');
     }
+    // dynamic update
     this.update();
+    // hides the maininput if reach the items limit
+    this.numitems++;
+    if (this.numitems == this.options.get('maxItems')) {
+      this.maininput.hide();
+    }
     return el;
   },
 
@@ -146,7 +196,9 @@ var TextboxList = Class.create(
     el.insert({}[where] = input);
     input.cacheData('small', true);
     this.makeResizable(input);
-    if (this.options.get('hideempty')) input.hide();
+    if (this.options.get('hideempty')) {
+      input.hide();
+    }
     return input;
   },
 
@@ -162,14 +214,19 @@ var TextboxList = Class.create(
       el.onBoxDispose(this);
     }
     el.remove();
+    // dynamic update
     this.update();
+    // updates the item counter
+    this.numitems--;
+    this.maininput.show();
+    this.focus(this.maininput);
     return this;
   },
 
   focus: function(el, nofocus) {
     if (!this.current) {
       el.fire('focus');
-    } else if(this.current == el) {
+    } else if (this.current == el) {
       return this;
     }
     this.blur();
@@ -212,14 +269,22 @@ var TextboxList = Class.create(
 
   createBox: function(text, options) {
     return new Element('li', options).addClassName(this.options.get('className') + '-box')
-                                     .update(text.caption).cacheData('type', 'box');
+                                     .update(text.caption)
+                                     .cacheData('type', 'box');
   },
 
   createInput: function(options) {
     var li = new Element('li', {'class': this.options.get('className') + '-input'});
-    var el = new Element('input', Object.extend(options, {'type': 'text'}));
-    el.observe('click', function(e) { e.stop(); }).observe('focus', function(e) { if (!this.isSelfEvent('focus')) this.focus(li, true); }.bind(this)).observe('blur', function() { if(! this.isSelfEvent('blur')) this.blur(true); }.bind(this)).observe('keydown', function(e) { this.cacheData('lastvalue', this.value).cacheData('lastcaret', this.getCaretPosition()); });
-    var tmp = li.cacheData('type', 'input').cacheData('input', el).insert(el);
+    var el = new Element('input', Object.extend(options, {'type': 'text', 'autocomplete': 'off'}));
+
+    el.observe('click', function(e) { e.stop(); })
+      .observe('focus', function(e) { if (!this.isSelfEvent('focus')) this.focus(li, true); }.bind(this))
+      .observe('blur', function() { if(! this.isSelfEvent('blur')) this.blur(true); }.bind(this))
+      .observe('keydown', function(e) { this.cacheData('lastvalue', this.value).cacheData('lastcaret', this.getCaretPosition()); });
+
+    var tmp = li.cacheData('type', 'input')
+                .cacheData('input', el)
+                .insert(el);
     return tmp;
   },
 
@@ -229,13 +294,7 @@ var TextboxList = Class.create(
   },
 
   isSelfEvent: function(type) {
-    return (this.events.get(type)) ? !! this.events.unset(type) : false;
-  },
-
-  makeResizable: function(li) {
-    var el = li.retrieveData('input');
-    el.cacheData('resizable', new ResizableTextbox(el, Object.extend(this.options.get('resizable'), {min: el.offsetWidth, max: (this.element.getWidth()?this.element.getWidth():0)})));
-    return this;
+    return (this.events.get(type)) ? !!this.events.unset(type) : false;
   },
 
   checkInput: function() {
@@ -245,7 +304,7 @@ var TextboxList = Class.create(
 
   move: function(direction) {
     var el = this.current[(direction == 'left' ? 'previous' : 'next')]();
-    if (el && (! this.current.retrieveData('input') || ((this.checkInput() || direction == 'right')))) {
+    if (el && (!this.current.retrieveData('input') || ((this.checkInput() || direction == 'right')))) {
       this.focus(el);
     }
     return this;
@@ -261,62 +320,37 @@ var TextboxList = Class.create(
   }
 });
 
-//helper functions
-Element.addMethods({
-  getCaretPosition: function() {
-    if (this.createTextRange) {
-      var r = document.selection.createRange().duplicate();
-        r.moveEnd('character', this.value.length);
-        if (r.text === '') return this.value.length;
-        return this.value.lastIndexOf(r.text);
-    } else {
-      return this.selectionStart;
-    }
-  },
-
-  cacheData: function(element, key, value) {
-    if (Object.isUndefined(this[$(element).identify()]) || !Object.isHash(this[$(element).identify()])) {
-      this[$(element).identify()] = $H();
-    }
-    this[$(element).identify()].set(key,value);
-    return element;
-  },
-
-  retrieveData: function(element,key) {
-    return this[$(element).identify()].get(key);
-  }
-});
-
 function $pick(){for(var B=0,A=arguments.length;B<A;B++){if(!Object.isUndefined(arguments[B])){return arguments[B];}}return null;}
 
-
-
+/* FacebookList */
 var FacebookList = Class.create(TextboxList,
 {
-  loptions: $H({
-    autocomplete: {
-      'opacity': 0.8,
+  initialize: function($super, element, autoholder, options) {
+    this.options.update($H({
+      'autoopacity': 0.8,
       'maxresults': 10,
       'minchars': 3
-    }
-  }),
-
-  initialize: function($super, element, autoholder, options, func) {
+    }));
     $super(element, options);
+    this.id_base = $(element).identify() + '_' + this.options.get('className');
     this.data = [];
-    this.autoholder = $(autoholder).setOpacity(this.loptions.get('autocomplete').opacity);
-    this.autoholder.observe('mouseover',function() {this.curOn = true;}.bind(this)).observe('mouseout',function() {this.curOn = false;}.bind(this));
+    this.autoholder = $(autoholder).setOpacity(this.options.get('autoopacity'));
+    this.autoholder.observe('mouseover', function() {this.curOn = true;}.bind(this))
+                   .observe('mouseout', function() {this.curOn = false;}.bind(this));
     this.autoresults = this.autoholder.select('ul').first();
     var children = this.autoresults.select('li');
-    children.each(function(el) { this.add({value:el.readAttribute('value'),caption:el.innerHTML}); }, this);
+    children.each(function(el) { this.add({value: el.readAttribute('value'), caption: el.innerHTML}); }, this);
   },
 
   autoShow: function(search) {
+    if (this.numitems == this.options.get('maxItems')) {
+      return;
+    }
     this.autoholder.setStyle({'display': 'block'});
     this.autoholder.descendants().each(function(e) { e.hide() });
-    if (!search || !search.strip() || (!search.length || search.length < this.loptions.get('autocomplete').minchars))
+    if (!search || !search.strip() || (!search.length || search.length < this.options.get('minchars')))
     {
-      this.autoholder.select('.autolist-default').first().setStyle({'display': 'block'});
+      this.autoholder.select('.autocompleter-default').first().setStyle({'display': 'block'});
       this.resultsshown = false;
     } else {
       this.resultsshown = true;
@@ -327,25 +361,26 @@ var FacebookList = Class.create(TextboxList,
         var regexp = new RegExp(search, 'i')
       }
       var count = 0;
-      this.data.filter(function(str) { return str ? regexp.test(str.evalJSON(true).caption) : false;}).each(function(result, ti) {
-        count++;
-        if (ti >= this.loptions.get('autocomplete').maxresults) {
-          return;
-        }
-        var that = this;
-        var el = new Element('li');
-        el.observe('click',function(e) {
-          e.stop();
-          that.autoAdd(this);
-        }).observe('mouseover',function() {
-          that.autoFocus(this);
-        }).update(this.autoHighlight(result.evalJSON(true).caption, search));
-        this.autoresults.insert(el);
-        el.cacheData('result', result.evalJSON(true));
-        if (ti == 0) {
-          this.autoFocus(el);
-        }
-      }, this);
+      this.data.filter(function(str) { return str ? regexp.test(str.evalJSON(true).caption) : false; }).each(
+        function(result, ti) {
+          count++;
+          if (ti >= this.options.get('maxresults')) {
+            return;
+          }
+          var that = this;
+          var el = new Element('li');
+          el.observe('click',function(e) {
+            e.stop();
+            that.autoAdd(this);
+          }).observe('mouseover',function() {
+            that.autoFocus(this);
+          }).update(this.autoHighlight(result.evalJSON(true).caption, search));
+          this.autoresults.insert(el);
+          el.cacheData('result', result.evalJSON(true));
+          if (ti == 0) {
+            this.autoFocus(el);
+          }
+        }, this);
     }
     if (count > this.options.get('results')) {
       this.autoresults.setStyle({'height': (this.options.get('results')*24)+'px'});
@@ -368,20 +403,27 @@ var FacebookList = Class.create(TextboxList,
   },
 
   autoFocus: function(el) {
-    if (!el) return;
-    if (this.autocurrent) this.autocurrent.removeClassName('auto-focus');
+    if (!el) {
+      return;
+    }
+    if (this.autocurrent) {
+      this.autocurrent.removeClassName('auto-focus');
+    }
     this.autocurrent = el.addClassName('auto-focus');
     return this;
   },
 
   autoMove: function(direction) {
-    if (!this.resultsshown) return;
+    if (!this.resultsshown) {
+      return;
+    }
     this.autoFocus(this.autocurrent[(direction == 'up' ? 'previous' : 'next')]());
     this.autoresults.scrollTop = this.autocurrent.positionedOffset()[1] - this.autocurrent.getHeight();
     return this;
   },
 
   autoFeed: function(text) {
+    /* do not feed existing values */
     if (this.bits.values().indexOf(text.value) == -1 && this.data.indexOf(Object.toJSON(text)) == -1) {
       this.data.push(Object.toJSON(text));
     }
@@ -389,13 +431,13 @@ var FacebookList = Class.create(TextboxList,
   },
 
   autoAdd: function(el) {
-    if (!el || !el.retrieveData('result')) {
+    if (!el || ! el.retrieveData('result')) {
       return;
     }
     this.add(el.retrieveData('result'));
     delete this.data[this.data.indexOf(Object.toJSON(el.retrieveData('result')))];
-    this.autoHide();
     var input = this.lastinput || this.current.retrieveData('input');
+    this.autoHide();
     input.clear().focus();
     return this;
   },
@@ -403,14 +445,29 @@ var FacebookList = Class.create(TextboxList,
   createInput: function($super,options) {
     var li = $super(options);
     var input = li.retrieveData('input');
+
     input.observe('keydown', function(e) {
       this.dosearch = false;
+
       switch(e.keyCode) {
         case Event.KEY_UP: e.stop(); return this.autoMove('up');
         case Event.KEY_DOWN: e.stop(); return this.autoMove('down');
+        case 188: // Comma
+          var el = this.current.retrieveData('input');
+          el.value = el.value.strip().gsub(',', '');
+          if (!this.options.get('spaceReplace').blank()) {
+              el.value.gsub(' ', this.options.get('spaceReplace'));
+          }
+          if (!el.value.blank()) {
+            e.stop();
+            this.autoAdd(el);
+          }
+          break;
         case Event.KEY_RETURN:
           e.stop();
-          if (!this.autocurrent) break;
+          if (!this.autocurrent) {
+            break;
+          }
           this.autoAdd(this.autocurrent);
           this.autocurrent = false;
           this.autoenter = true;
@@ -425,33 +482,42 @@ var FacebookList = Class.create(TextboxList,
       }
     }.bind(this));
 
-    input.observe('keyup',function(e) {
+    input.observe('keyup', function(e) {
       switch (e.keyCode) {
         case Event.KEY_UP:
         case Event.KEY_DOWN:
         case Event.KEY_RETURN:
         case Event.KEY_ESC:
-        case 16: //shift
+        case 16: // Shift
           break;
         default:
-          if (!Object.isUndefined(this.options.get('fetchFile')) && input.value.length >= this.loptions.get('autocomplete').minchars) {
-            var params = this.options.get('parameters');
-            params.keyword = input.value;
-            new Ajax.Request(this.options.get('fetchFile'), {
-              parameters: params,
-              onSuccess: function(transport) {
-                var data = transport.responseText.evalJSON(true).data;
-                data.each(function(t){this.autoFeed(t)}.bind(this));
-                this.autoShow(input.value);
-              }.bind(this)
-            });
-          } else if (this.dosearch) {
-            this.autoShow(input.value);
+          if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout);
           }
+          this.searchTimeout = setTimeout(function() {
+            if (!Object.isUndefined(this.options.get('fetchFile')) && input.value.length >= this.options.get('minchars')) {
+              var params = this.options.get('parameters');
+              params.keyword = input.value;
+              new Ajax.Request(this.options.get('fetchFile'), {
+                method: this.options.get('fetchMethod'),
+                parameters: params,
+                onSuccess: function(transport) {
+                  var data = transport.responseText.evalJSON(true).data;
+                  data.each(function(t){this.autoFeed(t)}.bind(this));
+                  this.autoShow(input.value);
+                }.bind(this)
+              });
+            } else if (this.dosearch) {
+              this.autoShow(input.value);
+            }
+            clearTimeout(this.searchTimeout);
+          }.bind(this), 500);
       }
     }.bind(this));
     input.observe(Prototype.Browser.IE ? 'keydown' : 'keypress', function(e) {
-      if (this.autoenter) e.stop();
+      if (this.autoenter) {
+        e.stop();
+      }
       this.autoenter = false;
     }.bind(this));
     return li;
@@ -482,9 +548,9 @@ var FacebookList = Class.create(TextboxList,
 });
 
 Element.addMethods({
-  onBoxDispose: function(item,obj) { obj.autoFeed(item.retrieveData('text').evalJSON(true)); },
-  onInputFocus: function(el,obj) { obj.autoShow(); },
-  onInputBlur: function(el,obj) {
+  onBoxDispose: function(item, obj) { obj.autoFeed(item.retrieveData('text').evalJSON(true)); },
+  onInputFocus: function(el, obj) { obj.autoShow(); },
+  onInputBlur: function(el, obj) {
     obj.lastinput = el;
     if (!obj.curOn) {
       obj.blurhide = obj.autoHide.bind(obj).delay(0.1);
@@ -492,3 +558,10 @@ Element.addMethods({
   },
   filter:function(D,E){var C=[];for(var B=0,A=this.length;B<A;B++){if(D.call(E,this[B],B,this)){C.push(this[B]);}}return C;}
 });
+
+/**
+ * Zikula.Autocompleter rename
+ *
+ * TODO: Implement empty result multilanguage message
+ */
+Zikula.Autocompleter = Class.create(FacebookList);

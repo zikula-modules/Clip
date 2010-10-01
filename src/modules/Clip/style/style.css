@@ -225,7 +225,7 @@ pre.pm-showcode {
 }
 
 /* TextboxList sample CSS */
-ul.autolist-holder {
+ul.autocompleter-holder {
   background: #fff;
   border: 1px solid #ddd;
   font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
@@ -235,17 +235,21 @@ ul.autolist-holder {
   padding: 0.3em 0.3em 0;
   position: relative;
 }
-ul.autolist-holder:hover {
+ul.autocompleter-holder:hover {
   border: 1px solid #aaa;
 }
-*:first-child+html ul.autolist-holder { padding-bottom: 2px; }
-* html ul.autolist-holder { padding-bottom: 2px; } /* ie7 and below */
-ul.autolist-holder li { float: left; list-style-type: none; margin: 0 0 0.3em; }
-ul.autolist-holder li.bit-box,
-ul.autolist-holder li.bit-input input { font: 11px "Lucida Grande", "Verdana"; }
-ul.autolist-holder li.bit-input input:hover,
-ul.autolist-holder li.bit-input input:focus { background: inherit; border: none; }
-ul.autolist-holder li.bit-box {
+*:first-child+html ul.autocompleter-holder { padding-bottom: 2px; }
+* html ul.autocompleter-holder { padding-bottom: 2px; } /* ie7 and below */
+ul.autocompleter-holder li {
+  float: left;
+  list-style-type: none;
+  margin: 0 0 0.3em;
+}
+ul.autocompleter-holder li.bit-box,
+ul.autocompleter-holder li.bit-input input { font: 11px "Lucida Grande", "Verdana"; }
+ul.autocompleter-holder li.bit-input input:hover,
+ul.autocompleter-holder li.bit-input input:focus { background: inherit; border: none; }
+ul.autocompleter-holder li.bit-box {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
@@ -254,23 +258,23 @@ ul.autolist-holder li.bit-box {
   padding: 1px 15px 2px 5px;
   position: relative;
 }
-ul.autolist-holder li.bit-hover {
+ul.autocompleter-holder li.bit-hover {
   background: #ddd;
   border-color: #aaa;
 }
-ul.autolist-holder li.bit-box-focus {
+ul.autocompleter-holder li.bit-box-focus {
   background: #555;
   border-color: #555;
   color: #fff;
 }
-ul.autolist-holder li.bit-input input { width: 150px; margin: 0; border: none; outline: 0; padding: 0; } /* no left/right padding here please */
-ul.autolist-holder li.bit-input input.smallinput { width: 20px; }
+ul.autocompleter-holder li.bit-input input { width: 100%; margin: 0; border: none; outline: 0; padding: 0; } /* no left/right padding here please */
+ul.autocompleter-holder li.bit-input input.smallinput { width: 20px; }
 
 /* Facebook demo CSS */
-ul.autolist-holder li.bit-box a.closebutton { position: absolute; right: 4px; top: 5px; display: block; width: 7px; height: 7px; font-size: 1px; background: url('../images/close.gif'); }
-ul.autolist-holder li.bit-box a.closebutton:hover { background-position: 7px; }
-ul.autolist-holder li.bit-box-focus a.closebutton,
-ul.autolist-holder li.bit-box-focus a.closebutton:hover { background-position: bottom; }
+ul.autocompleter-holder li.bit-box a.closebutton { position: absolute; right: 4px; top: 5px; display: block; width: 7px; height: 7px; font-size: 1px; background: url('../images/close.gif'); }
+ul.autocompleter-holder li.bit-box a.closebutton:hover { background-position: 7px; }
+ul.autocompleter-holder li.bit-box-focus a.closebutton,
+ul.autocompleter-holder li.bit-box-focus a.closebutton:hover { background-position: bottom; }
 
 /* Autocompleter */
 .z-form div.z-formrow > .clip-autocompleter-div {
@@ -279,7 +283,7 @@ ul.autolist-holder li.bit-box-focus a.closebutton:hover { background-position: b
   padding: 0;
   width: auto;
 }
-.z-form div.z-formrow > .clip-autocompleter-div .autolist-default { padding: 5px 7px; border: 1px solid #ccc; border-width: 0 1px 1px; }
+.z-form div.z-formrow > .clip-autocompleter-div .autocompleter-default { padding: 5px 7px; border: 1px solid #ccc; border-width: 0 1px 1px; }
 .z-form div.z-formrow > .clip-autocompleter-div ul { display: none; margin: 0; padding: 0; overflow: auto; }
 .z-form div.z-formrow > .clip-autocompleter-div ul li { padding: 5px 12px; z-index: 1000; cursor: pointer; margin: 0; list-style-type: none; border: 1px solid #ccc; border-width: 0 1px 1px; font: 11px "Lucida Grande", "Verdana"; }
 .z-form div.z-formrow > .clip-autocompleter-div ul li em { font-weight: bold; font-style: normal; background: #ccc; }

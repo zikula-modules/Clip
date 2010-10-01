@@ -63,7 +63,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         $cachelifetime      = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']);
 
         // validation
-        $itemsperpage = (int)$itemsperpage > 0 ? (int)$itemsperpage : -1;
+        $itemsperpage = (int)$itemsperpage > 0 ? (int)$itemsperpage : $pubtype['itemsperpage'];
 
         if (empty($template)) {
             // template comes from pubtype

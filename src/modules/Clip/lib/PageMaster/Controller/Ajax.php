@@ -51,6 +51,8 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
      * @param string  $_POST['keyword']            core_title:likefirst:KEYWORD filter.
      * @param string  $_POST['filter']             Filter string.
      * @param string  $_POST['orderby']            OrderBy string.
+     * @param integer $_POST['itemsperpage']       Number of items to retrieve.
+     * @param integer $_POST['startnum']           Offset to start from.
      * @param boolean $_POST['handlePluginFields'] Whether to parse the plugin fields.
      * @param boolean $_POST['getApprovalState']   Whether to add the workflow information.
      *
@@ -87,8 +89,14 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         $key                = FormUtil::getPassedValue('keyword', null, 'POST');
         $filter             = FormUtil::getPassedValue('filter', null, 'POST');
         $orderby            = FormUtil::getPassedValue('orderby', null, 'POST');
+        $itemsperpage       = FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'], 'POST');
+        $startnum           = FormUtil::getPassedValue('startnum', null, 'POST');
         $handlePluginFields = FormUtil::getPassedValue('handlePluginFields', true, 'POST');
         $getApprovalState   = FormUtil::getPassedValue('getApprovalState', false, 'POST');
+
+        // validation
+        $itemsperpage = (int)$itemsperpage > 0 ? (int)$itemsperpage : $pubtype['itemsperpage'];
+
         if (!empty($key)) {
             $filter = (empty($filter) ? '' : $filter.',')."$titlefield:likefirst:$key";
             if (empty($orderby)) {
@@ -103,6 +111,8 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
                                    array('tid'                => $tid,
                                          'filter'             => $filter,
                                          'orderby'            => $orderby,
+                                         'itemsperpage'       => $itemsperpage,
+                                         'startnum'           => $startnum,
                                          'countmode'          => 'no',
                                          'checkPerm'          => false, // already checked
                                          'handlePluginFields' => $handlePluginFields,
