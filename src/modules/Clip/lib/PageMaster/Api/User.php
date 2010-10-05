@@ -293,11 +293,20 @@ class PageMaster_Api_User extends Zikula_Api
             }
         }
 
-        $pubdata = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
-                   ->createQuery()
-                   ->where($where)
-                   ->fetchOne();
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid);
 
+        $query = $tableObj->createQuery('tid'.$tid)
+                          ->where($where);
+
+        // FIXME control this by config or params
+        // adds the relations data
+        $record = $tableObj->getRecordInstance();
+        foreach ($record->getRelations() as $alias => $rtid) {
+            $query->leftJoin("tid$tid.$alias");
+        }
+
+        // fetch the publication
+        $pubdata = $query->fetchOne();
         if (!$pubdata) {
             return false;
         }
@@ -338,10 +347,10 @@ class PageMaster_Api_User extends Zikula_Api
         $data = $args['data'];
 
         // extract the schema name
-        $pubtype = PageMaster_Util::getPubType($data['tid']);
+        $pubtype = PageMaster_Util::getPubType($data['core_tid']);
         $schema  = str_replace('.xml', '', $pubtype->workflow);
 
-        $pubfields = PageMaster_Util::getPubFields($data['tid']);
+        $pubfields = PageMaster_Util::getPubFields($data['core_tid']);
 
         foreach ($pubfields as $fieldname => $field)
         {
@@ -357,7 +366,7 @@ class PageMaster_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__('Workflow action error.'));
         }
 
-        $data = array_merge($data, array('core_operations' => $ret));
+        $data->mapValue('core_operations', $ret);
 
         return $data;
     }

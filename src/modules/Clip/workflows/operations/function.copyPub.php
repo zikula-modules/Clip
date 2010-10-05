@@ -22,9 +22,14 @@ function PageMaster_operation_copyPub(&$pub, $params)
 {
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
+    // copies the publication record
+    // FIXME consider better the copy of relations
+    $copy = $pub->copy(false);
+    $copy->pubPostProcess();
+
     // process the available parameters
     if (isset($params['copyonline'])) {
-        $pub['core_online'] = $params['copyonline'];
+        $copy['core_online'] = $params['copyonline'];
     }
     $copystate = isset($params['copystate']) ? $params['copystate'] : 'initial';
     $silent    = isset($params['silent']) ? (bool)$params['silent'] : false;
@@ -34,28 +39,28 @@ function PageMaster_operation_copyPub(&$pub, $params)
 
     // finds the higher pid
     $maxpid = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
-    $pub['core_pid'] = $maxpid + 1;
+    $copy['core_pid'] = $maxpid + 1;
 
     // save the publication
-    unset($pub['id']);
-    if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
+    if ($copy->isValid()) {
+        $copy->save();
         $result = true;
 
-        $pub['__WORKFLOW__']['obj_id'] = $pub['id'];
-        unset($pub['__WORKFLOW__']['id']);
+        $copy['__WORKFLOW__']['obj_id'] = $copy['id'];
+        unset($copy['__WORKFLOW__']['id']);
 
         // register the new workflow, return false if failure
-        $workflow = new Zikula_Workflow($pub['__WORKFLOW__']['schemaname'], 'PageMaster');
+        $workflow = new Zikula_Workflow($copy['__WORKFLOW__']['schemaname'], 'PageMaster');
 
-        if ($workflow->registerWorkflow($pub, $copystate)) {
+        if ($workflow->registerWorkflow($copy, $copystate)) {
             // let know that a publication was created
-            ModUtil::callHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+            ModUtil::callHooks('item', 'create', $copy['core_uniqueid'], array('module' => 'PageMaster'));
 
         } else {
             $result = false;
 
             // delete the previously inserted record
-            DBUtil::deleteObjectByID($pub['__WORKFLOW__']['obj_table'], $pub['id'], 'id');
+            $copy->delete();
         }
     }
 
@@ -69,5 +74,5 @@ function PageMaster_operation_copyPub(&$pub, $params)
     }
 
     // returns the cloned publication if success, false otherwise
-    return $result ? $pub : false;
+    return $result ? $copy : false;
 }

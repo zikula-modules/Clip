@@ -47,11 +47,12 @@ function PageMaster_operation_createPub(&$pub, $params)
     }
 
     // save the object
-    if (DBUtil::insertObject($pub, $pub['__WORKFLOW__']['obj_table'], 'id')) {
+    if ($pub->isValid()) {
+        $pub->save();
         $result = true;
 
         // let know that a publication was created
-        ModUtil::callHooks('item', 'create', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'create', $pub['core_uniqueid'], array('module' => 'PageMaster'));
     }
 
     // output message
@@ -62,7 +63,7 @@ function PageMaster_operation_createPub(&$pub, $params)
             } else {
                 // redirect to the simple pending template
                 $result = array('goto' => ModUtil::url('PageMaster', 'user', 'display',
-                                                   array('tid' => $pub['tid'],
+                                                   array('tid' => $pub['core_tid'],
                                                          'pid' => $pub['core_pid'],
                                                          'template' => 'pending')));
             }

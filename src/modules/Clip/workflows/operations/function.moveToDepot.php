@@ -27,11 +27,14 @@ function PageMaster_operation_moveToDepot($pub, $params)
     $pub['core_indepot'] = 1;
     $pub['core_online']  = 0;
 
-    $result = (bool)DBUtil::updateObject($pub, $pub['__WORKFLOW__']['obj_table']);
+    $result = false;
 
-    if ($result) {
+    if ($pub->isValid()) {
+        $pub->save();
+        $result = true;
+
         // let know that the publication was updated
-        ModUtil::callHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'PageMaster'));
     }
 
     // output message

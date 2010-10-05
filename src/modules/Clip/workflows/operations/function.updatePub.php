@@ -32,7 +32,7 @@ function PageMaster_operation_updatePub(&$pub, &$params)
 
     // overrides newrevision in pubtype. gives the dev. the possibility to not genereate a new revision
     // e.g. when the revision is pending (waiting state) and will be updated
-    $pubtype = PageMaster_Util::getPubType($pub['tid']);
+    $pubtype = PageMaster_Util::getPubType($pub['core_tid']);
 
     if ($pubtype['enablerevisions'] && $pub['core_online'] == 1) {
         // set all other to offline
@@ -54,12 +54,12 @@ function PageMaster_operation_updatePub(&$pub, &$params)
 
     if ($pubtype['enablerevisions'] && $newrevision) {
         // create the new revision
-        $rev = $pub;
+        $rev = $pub->copy();
 
         $rev['core_revision'] = $maxrev + 1;
-        unset($rev['id']);
 
-        if (DBUtil::insertObject($rev, $pub['__WORKFLOW__']['obj_table'], 'id')) {
+        if ($rev->isValid()) {
+            $rev->save();
             $result = true;
 
             $rev['__WORKFLOW__']['obj_id'] = $rev['id'];
@@ -72,7 +72,7 @@ function PageMaster_operation_updatePub(&$pub, &$params)
                 $result = false;
 
                 // delete the previously inserted record
-                DBUtil::deleteObjectByID($rev['__WORKFLOW__']['obj_table'], $rev['id'], 'id');
+                $rev->delete();
             }
 
             // revert the next state of the old revision
@@ -82,14 +82,15 @@ function PageMaster_operation_updatePub(&$pub, &$params)
         // update the object with a new revision
         $pub['core_revision'] = $maxrev + 1;
 
-        if (DBUtil::updateObject($pub, $pub['__WORKFLOW__']['obj_table'], null, 'id')) {
+        if ($pub->isValid()) {
+            $pub->save();
             $result = true;
         }
     }
 
     if ($result) {
         // let know that the publication was updated
-        ModUtil::callHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'PageMaster'));
     }
 
     // output message

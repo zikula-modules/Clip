@@ -23,9 +23,9 @@ function PageMaster_operation_mailNotification(&$pub, $params)
 {
     $dom = ZLanguage::getModuleDomain('PageMaster');
 
-    $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
-    $group = isset($params['group']) ? $params['group'] : 'editors';
-    $type = isset($params['type']) ? $params['type'] : 'contentnew';
+    $silent   = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $group    = isset($params['group']) ? $params['group'] : 'editors';
+    $type     = isset($params['type']) ? $params['type'] : 'contentnew';
     $template = isset($params['template']) ? $params['template'] : "{$group}_{$type}";
 
     $ok = false;

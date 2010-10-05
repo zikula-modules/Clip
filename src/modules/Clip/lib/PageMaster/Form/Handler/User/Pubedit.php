@@ -16,6 +16,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 {
     private $id;
     private $pub;
+    private $relations;
 
     private $tid;
     private $pubtype;
@@ -48,7 +49,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
             // initial values
             $pubdata = new $classname();
 
-            $this->pubDefault();
+            $this->pubDefault($pubdata);
 
             $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'PageMaster');
         }
@@ -85,22 +86,22 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         $data = $pubdata->toArray();
 
         // detect the relations
-        $relations = array();
-        $relationdefs = $pubdata->getRelations();
+        $this->relations = array();
 
-        foreach ($relationdefs as $key => $tid) {
+        foreach ($pubdata->getRelations() as $key => $tid) {
             // set the data object
             $data[$key] = $pubdata[$key];
             // set additional relation fields
             $rel = $this->getRelationType($key);
-            $relations[$this->__($key)] = array(
-                'tid'  => $tid,
-                'type' => $rel['type'],
-                'own'  => $rel['own']
+            $this->relations[$key] = array(
+                'tid'   => $tid,
+                'alias' => $this->__($key),
+                'type'  => $rel['type'],
+                'own'   => $rel['own']
             );
         }
 
-        $view->assign('relations', $relations);
+        $view->assign('relations', $this->relations);
 
         // check for set_* default values
         foreach (array_keys($this->pubfields->toArray()) as $fieldname) {
@@ -145,7 +146,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         // perform the command
         $data = ModUtil::apiFunc('PageMaster', 'user', 'edit',
-                                 array('data'        => $data['pubdata'],
+                                 array('data'        => $this->pub,
                                        'commandName' => $args['commandName'],
                                        'pubfields'   => $this->pubfields,
                                        'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
@@ -191,7 +192,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
                 $this->goto = ModUtil::url('PageMaster', 'user', 'edit',
-                                       array('tid'  => $data['tid'],
+                                       array('tid'  => $data['core_tid'],
                                              'id'   => $data['id'],
                                              'goto' => 'stepmode'));
                 break;
@@ -202,15 +203,15 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
             case 'editlist':
                 $this->goto = ModUtil::url('PageMaster', 'admin', 'editlist',
-                                       array('_id' => $data['tid'].'_'.$data['core_pid']));
+                                       array('_id' => $data['core_tid'].'_'.$data['core_pid']));
                 break;
 
             case 'admin':
-                $this->goto = ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $data['tid']));
+                $this->goto = ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $data['core_tid']));
                 break;
 
             case 'index':
-                $this->goto = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $data['tid']));
+                $this->goto = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $data['core_tid']));
                 break;
 
             case 'home':
@@ -304,52 +305,35 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
     /**
      * Publication data handlers
      */
-    private function pubDefault()
+    private function pubDefault($pubdata)
     {
-        $this->pub['core_pid']         = NULL;
-        $this->pub['core_author']      = UserUtil::getVar('uid');
-        $this->pub['core_hitcount']    = 0;
-        $this->pub['core_revision']    = 0;
-        $this->pub['core_language']    = '';
-        $this->pub['core_online']      = 0;
-        $this->pub['core_indepot']     = 0;
-        $this->pub['core_showinmenu']  = 0;
-        $this->pub['core_showinlist']  = 1;
-        $this->pub['core_publishdate'] = NULL;
-        $this->pub['core_expiredate']  = NULL;
+        $pubdata['core_author']   = UserUtil::getVar('uid');
+        $pubdata['core_language'] = '';
+
+        $this->pub = $pubdata;
     }
 
     private function pubAssign($pubdata)
     {
-        $this->pub['core_pid']         = $pubdata['core_pid'];
-        $this->pub['core_author']      = $pubdata['core_author'];
-        $this->pub['core_hitcount']    = $pubdata['core_hitcount'];
-        $this->pub['core_revision']    = $pubdata['core_revision'];
-        $this->pub['core_language']    = $pubdata['core_language'];
-        $this->pub['core_online']      = $pubdata['core_online'];
-        $this->pub['core_indepot']     = $pubdata['core_indepot'];
-        $this->pub['core_showinmenu']  = $pubdata['core_showinmenu'];
-        $this->pub['core_showinlist']  = $pubdata['core_showinlist'];
-        $this->pub['core_publishdate'] = $pubdata['core_publishdate'];
-        $this->pub['core_expiredate']  = $pubdata['core_expiredate'];
+        $this->pub = $pubdata;
     }
 
-    private function pubExtract(&$data)
+    private function pubExtract($data)
     {
         if (!empty($this->id)) {
-            $data['id'] = $this->id;
+            $this->pub->assignIdentifier($this->id);
         }
-        $data['tid']              = $this->tid;
-        $data['core_pid']         = isset($data['core_pid']) && !empty($data['core_pid']) ? $data['core_pid'] : $this->pub['core_pid'];
-        $data['core_author']      = $this->pub['core_author'];
-        $data['core_revision']    = $this->pub['core_revision'];
-        $data['core_hitcount']    = $this->pub['core_hitcount'];
-        $data['core_language']    = isset($data['core_language']) ? $data['core_language'] : $this->pub['core_language'];
-        $data['core_online']      = $this->pub['core_online'];
-        $data['core_indepot']     = $this->pub['core_indepot'];
-        $data['core_showinmenu']  = isset($data['core_showinmenu']) ? $data['core_showinmenu'] : $this->pub['core_showinmenu'];
-        $data['core_showinlist']  = isset($data['core_showinlist']) ? $data['core_showinlist'] : $this->pub['core_showinlist'];
-        $data['core_publishdate'] = isset($data['core_publishdate']) ? $data['core_publishdate'] : $this->pub['core_publishdate'];
-        $data['core_expiredate']  = isset($data['core_expiredate']) ? $data['core_expiredate'] : $this->pub['core_expiredate'];
+        // allow specify fixed PIDs
+        if (isset($data['core_pid'])) {
+            $data['core_pid'] = $data['core_pid'];
+        }
+        // fill any other data
+        $this->pub->fromArray($data);
+        // fill the relations data if present
+        foreach (array_keys($this->relations) as $alias) {
+            if (isset($data[$alias])) {
+                $this->pub->$alias = $data[$alias];
+            }
+        }
     }
 }

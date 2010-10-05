@@ -26,11 +26,14 @@ function PageMaster_operation_updateOnlineState(&$pub, $params)
     $pub['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
     $silent             = isset($params['silent']) ? (bool)$params['silent'] : false;
 
-    $result = (bool)DBUtil::updateObject($pub, $pub['__WORKFLOW__']['obj_table']);
+    $result = false;
 
-    if ($result) {
+    if ($pub->isValid()) {
+        $pub->save();
+        $result = true;
+
         // let know that the publication was updated
-        ModUtil::callHooks('item', 'update', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'PageMaster'));
     }
 
     // output message

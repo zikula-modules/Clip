@@ -262,8 +262,8 @@ class PageMaster_Generator
                 "\n".
                 '            {foreach from=$relations key=\'alias\' item=\'item\' name=\'relations\'}'."\n".
                 '            <div class="z-formrow">'."\n".
-                '                {formlabel for="relation_`$alias`" text=$alias}'."\n".
-                '                {clip_form_relation id="relation_`$alias`" relation=$item group=\'pubdata\'}'."\n".
+                '                {formlabel for=$alias text=$item.alias}'."\n".
+                '                {clip_form_relation id=$alias relation=$item group=\'pubdata\'}'."\n".
                 '            </div>'."\n".
                 '            {/foreach}'."\n".
                 "\n".
@@ -446,11 +446,19 @@ class PageMaster_Generator
         foreach ($def as $columnName => $array) {
             $columnAlias = $columns[$columnName];
             // removes the basic type and lenght
+            // and clean the parameters
             $type   = $array['type'];
             $length = (is_null($array['length']) ? 'null' : $array['length']);
             unset($array['type']);
             unset($array['length']);
+            if (isset($array['default'])) {
+                $default = $array['default'];
+            }
             $array = array_filter($array);
+            if (isset($default)) {
+                $array['default'] = $default;
+                unset($default);
+            }
             // process the modifiers
             $array = !empty($array) ? ', '.var_export($array, true) : null;
             if (!empty($array)) {
@@ -689,11 +697,11 @@ class PageMaster_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Ta
             'core_pid'         => 'I4 NOTNULL',
             'core_author'      => 'I4 NOTNULL',
             'core_hitcount'    => 'I8 DEFAULT 0',
-            'core_language'    => 'C(10) NOTNULL', //FIXME how many chars are needed for a gettext code?
-            'core_revision'    => 'I4 NOTNULL',
-            'core_online'      => 'L',
-            'core_indepot'     => 'L',
-            'core_showinmenu'  => 'L',
+            'core_language'    => "C(10) NOTNULL", //FIXME how many chars are needed for a gettext code?
+            'core_revision'    => 'I4 NOTNULL DEFAULT 0',
+            'core_online'      => 'L DEFAULT 0',
+            'core_indepot'     => 'L DEFAULT 0',
+            'core_showinmenu'  => 'L DEFAULT 0',
             'core_showinlist'  => 'L DEFAULT 1',
             'core_publishdate' => 'T',
             'core_expiredate'  => 'T'

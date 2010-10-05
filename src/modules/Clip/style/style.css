@@ -250,9 +250,9 @@ ul.autocompleter-holder li.bit-input input { font: 11px "Lucida Grande", "Verdan
 ul.autocompleter-holder li.bit-input input:hover,
 ul.autocompleter-holder li.bit-input input:focus { background: inherit; border: none; }
 ul.autocompleter-holder li.bit-box {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-radius: 1px;
   border: 1px solid #ddd;
   background: #F2F2F2;
   padding: 1px 15px 2px 5px;

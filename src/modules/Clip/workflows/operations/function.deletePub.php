@@ -32,8 +32,8 @@ function PageMaster_operation_deletePub(&$pub, $params)
         $count = DBUtil::selectObjectCount($pub['__WORKFLOW__']['obj_table'], "pm_pid = '{$pub['core_pid']}'");
 
         if ($count == 0) {
-            // if not, let know that the publication was deleted
-            ModUtil::callHooks('item', 'delete', $pub['tid'].'-'.$pub['core_pid'], array('module' => 'PageMaster'));
+            // if no other revisions, let know that the publication was deleted
+            ModUtil::callHooks('item', 'delete', $pub['core_uniqueid'], array('module' => 'PageMaster'));
         }
     }
 
