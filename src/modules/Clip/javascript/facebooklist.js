@@ -59,15 +59,15 @@ Element.addMethods({
 /* ResizableTextbox */
 var ResizableTextbox = Class.create(
 {
-  options: $H({
-    min: 5,
-    max: 300,
-    step: 7
-  }),
-
   initialize: function(element, options) {
-    var that = this;
+    this.options = $H({
+      min: 5,
+      max: 300,
+      step: 7
+    });
     this.options.update(options);
+
+    var that = this;
     this.el = $(element);
     this.width = this.el.offsetWidth;
     this.el.observe(
@@ -89,33 +89,34 @@ var ResizableTextbox = Class.create(
 /* TextboxList */
 var TextboxList = Class.create(
 {
-  options: $H({/*
-    autoopacity: 0.8,
-    maxresults: 10,
-    minchars: 3, */
-    resizable: {},
-    className: 'bit',
-    separator: ':',
-    extrainputs: true,
-    startinput: true,
-    hideempty: true,
-    spaceReplace: '',
-    wordMatch: true,
-    fetchFile: undefined,
-    fetchMethod: 'post',
-    parameters: {},
-    results: 10,
-    maxItems: 10
-  }),
-
   initialize: function(element, options) {
+    this.options = $H({/*
+      autoopacity: 0.8,
+      maxresults: 10,
+      minchars: 3,*/
+      resizable: {},
+      className: 'bit',
+      separator: ':',
+      extrainputs: true,
+      startinput: true,
+      hideempty: true,
+      spaceReplace: '',
+      wordMatch: true,
+      fetchFile: undefined,
+      fetchMethod: 'post',
+      parameters: {},
+      results: 10,
+      maxItems: 10
+    });
     this.options.update(options);
+
     this.element = $(element).hide();
     this.bits = new Hash();
     this.events = new Hash();
     this.count = 0;
     this.numitems = 0;
     this.current = false;
+
     this.maininput = this.createInput({'class': 'maininput'});
     this.holder = new Element('ul', {
       'class': 'autocompleter-holder'
@@ -125,6 +126,7 @@ var TextboxList = Class.create(
       event.stop();
       if (this.maininput != this.current) this.focus(this.maininput);
     }.bind(this));
+
     this.makeResizable(this.maininput);
     this.setEvents();
   },
@@ -148,7 +150,7 @@ var TextboxList = Class.create(
     document.observe('keyup', function(e) {
         e.stop();
         if (!this.current) {
-          return;
+          return this;
         }
         switch (e.keyCode) {
           case Event.KEY_LEFT: return this.move('left');
@@ -326,25 +328,29 @@ function $pick(){for(var B=0,A=arguments.length;B<A;B++){if(!Object.isUndefined(
 var FacebookList = Class.create(TextboxList,
 {
   initialize: function($super, element, autoholder, options) {
+    $super(element, options);
     this.options.update($H({
-      'autoopacity': 0.8,
+      'autoopacity': 1.0,
       'maxresults': 10,
       'minchars': 3
     }));
-    $super(element, options);
+    this.options.update(options);
+
     this.id_base = $(element).identify() + '_' + this.options.get('className');
     this.data = [];
+
     this.autoholder = $(autoholder).setOpacity(this.options.get('autoopacity'));
     this.autoholder.observe('mouseover', function() {this.curOn = true;}.bind(this))
                    .observe('mouseout', function() {this.curOn = false;}.bind(this));
     this.autoresults = this.autoholder.select('ul').first();
+
     var children = this.autoresults.select('li');
     children.each(function(el) { this.add({value: el.readAttribute('value'), caption: el.innerHTML}); }, this);
   },
 
   autoShow: function(search) {
     if (this.numitems == this.options.get('maxItems')) {
-      return;
+      return this;
     }
     this.autoholder.setStyle({'display': 'block'});
     this.autoholder.descendants().each(function(e) { e.hide() });
@@ -355,10 +361,11 @@ var FacebookList = Class.create(TextboxList,
     } else {
       this.resultsshown = true;
       this.autoresults.setStyle({'display': 'block'}).update('');
+      var regexp = null;
       if (this.options.get('wordMatch')) {
-        var regexp = new RegExp("(^|\\s)"+search, 'i')
+        regexp = new RegExp("(^|\\s)"+search, 'i')
       } else {
-        var regexp = new RegExp(search, 'i')
+        regexp = new RegExp(search, 'i')
       }
       var count = 0;
       this.data.filter(function(str) { return str ? regexp.test(str.evalJSON(true).caption) : false; }).each(
@@ -404,7 +411,7 @@ var FacebookList = Class.create(TextboxList,
 
   autoFocus: function(el) {
     if (!el) {
-      return;
+      return this;
     }
     if (this.autocurrent) {
       this.autocurrent.removeClassName('auto-focus');
@@ -415,7 +422,7 @@ var FacebookList = Class.create(TextboxList,
 
   autoMove: function(direction) {
     if (!this.resultsshown) {
-      return;
+      return this;
     }
     this.autoFocus(this.autocurrent[(direction == 'up' ? 'previous' : 'next')]());
     this.autoresults.scrollTop = this.autocurrent.positionedOffset()[1] - this.autocurrent.getHeight();
@@ -432,7 +439,7 @@ var FacebookList = Class.create(TextboxList,
 
   autoAdd: function(el) {
     if (!el || ! el.retrieveData('result')) {
-      return;
+      return this;
     }
     this.add(el.retrieveData('result'));
     delete this.data[this.data.indexOf(Object.toJSON(el.retrieveData('result')))];
@@ -442,7 +449,7 @@ var FacebookList = Class.create(TextboxList,
     return this;
   },
 
-  createInput: function($super,options) {
+  createInput: function($super, options) {
     var li = $super(options);
     var input = li.retrieveData('input');
 
