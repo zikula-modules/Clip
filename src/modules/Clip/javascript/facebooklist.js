@@ -20,10 +20,11 @@
  *        bug fix: the cursor does not 'travel' when going up/down the list - credit: Marcel
  *
  * Adaptation to zikula:
- * - Changed CSS classes to have the 'autocompleter-' prefix
+ * - Changed CSS classes to use the 'z-auto' prefix
  * - Added the 'parameters' option for the Ajax call
  * - Merged FacebookList.loptions.autocomplete into this.options
  * - Added a limit for selected items - options.maxItems
+ * - Important note: Ajax response must retrieve a "data" field with {value, caption} (in that order)
  *
  * Copyright: InteRiders <http://interiders.com/> - Distributed under MIT - Keep this message!
  */
@@ -47,11 +48,11 @@ Element.addMethods({
     if (Object.isUndefined(this[$(element).identify()]) || !Object.isHash(this[$(element).identify()])) {
       this[$(element).identify()] = $H();
     }
-    this[$(element).identify()].set(key,value);
+    this[$(element).identify()].set(key, value);
     return element;
   },
 
-  retrieveData: function(element,key) {
+  retrieveData: function(element, key) {
     return this[$(element).identify()].get(key);
   }
 });
@@ -110,6 +111,7 @@ var TextboxList = Class.create(
     });
     this.options.update(options);
 
+    this.id_base = $(element).identify() + '-';
     this.element = $(element).hide();
     this.bits = new Hash();
     this.events = new Hash();
@@ -117,9 +119,9 @@ var TextboxList = Class.create(
     this.numitems = 0;
     this.current = false;
 
-    this.maininput = this.createInput({'class': 'maininput'});
+    this.maininput = this.createInput({'class': 'z-auto-maininput'});
     this.holder = new Element('ul', {
-      'class': 'autocompleter-holder'
+      'class': 'z-auto-holder'
     }).insert(this.maininput);
     this.element.insert({'before': this.holder});
     this.holder.observe('click', function(event) {
@@ -168,11 +170,7 @@ var TextboxList = Class.create(
   },
 
   add: function(text, html) {
-    // avoid the adition of repeated values
-    if (this.bits.values().indexOf(text.value) == 1) {
-      return null;
-    }
-    var id = this.options.get('className') + '-' + this.count++;
+    var id = this.id_base + this.options.get('className') + '-' + this.count++;
     var el = this.createBox($pick(html, text), {'id': id});
     (this.current || this.maininput).insert({'before': el});
     el.observe('click', function(e) {
@@ -194,7 +192,7 @@ var TextboxList = Class.create(
   },
 
   addSmallInput: function(el, where) {
-    var input = this.createInput({'class': 'smallinput'});
+    var input = this.createInput({'class': 'z-auto-smallinput'});
     el.insert({}[where] = input);
     input.cacheData('small', true);
     this.makeResizable(input);
@@ -232,7 +230,7 @@ var TextboxList = Class.create(
       return this;
     }
     this.blur();
-    el.addClassName(this.options.get('className') + '-' + el.retrieveData('type') + '-focus');
+    el.addClassName('z-auto-' + this.options.get('className') + '-' + el.retrieveData('type') + '-focus');
     if (el.retrieveData('small')) {
       el.setStyle({'display': 'block'});
     }
@@ -264,19 +262,19 @@ var TextboxList = Class.create(
     if (this.current.retrieveData('small') && ! input.get('value') && this.options.get('hideempty')) {
       this.current.hide();
     }
-    this.current.removeClassName(this.options.get('className') + '-' + this.current.retrieveData('type') + '-focus');
+    this.current.removeClassName('z-auto-' + this.options.get('className') + '-' + this.current.retrieveData('type') + '-focus');
     this.current = false;
     return this;
   },
 
   createBox: function(text, options) {
-    return new Element('li', options).addClassName(this.options.get('className') + '-box')
+    return new Element('li', options).addClassName('z-auto-' + this.options.get('className') + '-box')
                                      .update(text.caption)
                                      .cacheData('type', 'box');
   },
 
   createInput: function(options) {
-    var li = new Element('li', {'class': this.options.get('className') + '-input'});
+    var li = new Element('li', {'class': 'z-auto-' + this.options.get('className') + '-input'});
     var el = new Element('input', Object.extend(options, {'type': 'text', 'autocomplete': 'off'}));
 
     el.observe('click', function(e) { e.stop(); })
@@ -336,12 +334,11 @@ var FacebookList = Class.create(TextboxList,
     }));
     this.options.update(options);
 
-    this.id_base = $(element).identify() + '_' + this.options.get('className');
     this.data = [];
 
     this.autoholder = $(autoholder).setOpacity(this.options.get('autoopacity'));
-    this.autoholder.observe('mouseover', function() {this.curOn = true;}.bind(this))
-                   .observe('mouseout', function() {this.curOn = false;}.bind(this));
+    this.autoholder.observe('mouseover', function() { this.curOn = true; }.bind(this))
+                   .observe('mouseout', function() { this.curOn = false; }.bind(this));
     this.autoresults = this.autoholder.select('ul').first();
 
     var children = this.autoresults.select('li');
@@ -356,7 +353,7 @@ var FacebookList = Class.create(TextboxList,
     this.autoholder.descendants().each(function(e) { e.hide() });
     if (!search || !search.strip() || (!search.length || search.length < this.options.get('minchars')))
     {
-      this.autoholder.select('.autocompleter-default').first().setStyle({'display': 'block'});
+      this.autoholder.select('.z-auto-default').first().setStyle({'display': 'block'});
       this.resultsshown = false;
     } else {
       this.resultsshown = true;
@@ -368,26 +365,28 @@ var FacebookList = Class.create(TextboxList,
         regexp = new RegExp(search, 'i')
       }
       var count = 0;
-      this.data.filter(function(str) { return str ? regexp.test(str.evalJSON(true).caption) : false; }).each(
-        function(result, ti) {
-          count++;
-          if (ti >= this.options.get('maxresults')) {
-            return;
-          }
-          var that = this;
-          var el = new Element('li');
-          el.observe('click',function(e) {
-            e.stop();
-            that.autoAdd(this);
-          }).observe('mouseover',function() {
-            that.autoFocus(this);
-          }).update(this.autoHighlight(result.evalJSON(true).caption, search));
-          this.autoresults.insert(el);
-          el.cacheData('result', result.evalJSON(true));
-          if (ti == 0) {
-            this.autoFocus(el);
-          }
-        }, this);
+      this.data.filter(function(str) { return str ? regexp.test(str.evalJSON(true).caption) : false; })
+               .each(
+                     function(result, ti)
+                     {
+                       count++;
+                       if (ti >= this.options.get('maxresults')) {
+                         return;
+                       }
+                       var that = this;
+                       var el = new Element('li');
+                       el.observe('click', function(e) {
+                         e.stop();
+                         that.autoAdd(this);
+                       }).observe('mouseover', function() {
+                         that.autoFocus(this);
+                       }).update(this.autoHighlight(result.evalJSON(true).caption, search));
+                       this.autoresults.insert(el);
+                       el.cacheData('result', result.evalJSON(true));
+                       if (ti == 0) {
+                         this.autoFocus(el);
+                       }
+                     }, this);
     }
     if (count > this.options.get('results')) {
       this.autoresults.setStyle({'height': (this.options.get('results')*24)+'px'});
@@ -398,9 +397,11 @@ var FacebookList = Class.create(TextboxList,
   },
 
   autoHighlight: function(html, highlight) {
-    return html.gsub(new RegExp(highlight, 'i'), function(match) {
-      return '<em>' + match[0] + '</em>';
-    });
+    return html.gsub(new RegExp(highlight, 'i'),
+      function(match) {
+        return '<em>' + match[0] + '</em>';
+      }
+    );
   },
 
   autoHide: function() {
@@ -414,9 +415,9 @@ var FacebookList = Class.create(TextboxList,
       return this;
     }
     if (this.autocurrent) {
-      this.autocurrent.removeClassName('auto-focus');
+      this.autocurrent.removeClassName('z-auto-focus');
     }
-    this.autocurrent = el.addClassName('auto-focus');
+    this.autocurrent = el.addClassName('z-auto-focus');
     return this;
   },
 
@@ -443,6 +444,7 @@ var FacebookList = Class.create(TextboxList,
     }
     this.add(el.retrieveData('result'));
     delete this.data[this.data.indexOf(Object.toJSON(el.retrieveData('result')))];
+    this.data = this.data.filter(function(val) { return !Object.isUndefined(val) ? val : false; })
     var input = this.lastinput || this.current.retrieveData('input');
     this.autoHide();
     input.clear().focus();
@@ -532,17 +534,17 @@ var FacebookList = Class.create(TextboxList,
 
   createBox: function($super, text, options) {
     var li = $super(text, options);
-    li.observe('mouseover',function() {
-      this.addClassName('bit-hover');
-    }).observe('mouseout',function() {
-      this.removeClassName('bit-hover')
+    li.observe('mouseover', function() {
+      this.addClassName('z-auto-bit-hover');
+    }).observe('mouseout', function() {
+      this.removeClassName('z-auto-bit-hover')
     });
     var a = new Element('a', {
       'href': '#',
-      'class': 'closebutton'
+      'class': 'z-auto-closebutton'
       }
     );
-    a.observe('click',function(e) {
+    a.observe('click', function(e) {
       e.stop();
       if (!this.current) {
         this.focus(this.maininput);

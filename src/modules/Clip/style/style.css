@@ -224,8 +224,8 @@ pre.pm-showcode {
     background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
-/* TextboxList sample CSS */
-ul.autocompleter-holder {
+/* Zikula.Autocompleter CSS */
+ul.z-auto-holder {
   background: #fff;
   border: 1px solid #ddd;
   font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
@@ -235,57 +235,123 @@ ul.autocompleter-holder {
   padding: 0.3em 0.3em 0;
   position: relative;
 }
-ul.autocompleter-holder:hover {
+ul.z-auto-holder:hover {
   border: 1px solid #aaa;
 }
-*:first-child+html ul.autocompleter-holder { padding-bottom: 2px; }
-* html ul.autocompleter-holder { padding-bottom: 2px; } /* ie7 and below */
-ul.autocompleter-holder li {
+*:first-child+html ul.z-auto-holder {
+  padding-bottom: 2px;
+}
+* html ul.z-auto-holder { /* ie7 and below */
+  padding-bottom: 2px;
+}
+ul.z-auto-holder li {
   float: left;
   list-style-type: none;
-  margin: 0 0 0.3em;
+  margin: 0 0.3em 0.3em 0;
 }
-ul.autocompleter-holder li.bit-box,
-ul.autocompleter-holder li.bit-input input { font: 11px "Lucida Grande", "Verdana"; }
-ul.autocompleter-holder li.bit-input input:hover,
-ul.autocompleter-holder li.bit-input input:focus { background: inherit; border: none; }
-ul.autocompleter-holder li.bit-box {
-  -moz-border-radius: 1px;
-  -webkit-border-radius: 1px;
-  border-radius: 1px;
+ul.z-auto-holder li.z-auto-bit-box,
+ul.z-auto-holder li.z-auto-bit-input input {
+  font: 11px "Lucida Grande", "Verdana";
+}
+ul.z-auto-holder li.z-auto-bit-input input:hover,
+ul.z-auto-holder li.z-auto-bit-input input:focus {
+  background: inherit; border: none;
+}
+ul.z-auto-holder li.z-auto-bit-box {
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
   border: 1px solid #ddd;
   background: #F2F2F2;
   padding: 1px 15px 2px 5px;
   position: relative;
 }
-ul.autocompleter-holder li.bit-hover {
+ul.z-auto-holder li.z-auto-bit-hover {
   background: #ddd;
   border-color: #aaa;
 }
-ul.autocompleter-holder li.bit-box-focus {
+ul.z-auto-holder li.z-auto-bit-box-focus {
   background: #555;
   border-color: #555;
   color: #fff;
 }
-ul.autocompleter-holder li.bit-input input { width: 100%; margin: 0; border: none; outline: 0; padding: 0; } /* no left/right padding here please */
-ul.autocompleter-holder li.bit-input input.smallinput { width: 20px; }
+ul.z-auto-holder li.z-auto-bit-input {
+  padding: 1px 2px 2px 2px;
+}
+ul.z-auto-holder li.z-auto-bit-input input {
+  border: none;
+  margin: 0;
+  outline: 0;
+  padding: 0; /* no left/right padding here please */
+  width: 100%;
+}
+ul.z-auto-holder li.z-auto-bit-input input.z-auto-smallinput {
+  width: 20px;
+}
 
-/* Facebook demo CSS */
-ul.autocompleter-holder li.bit-box a.closebutton { position: absolute; right: 4px; top: 5px; display: block; width: 7px; height: 7px; font-size: 1px; background: url('../images/close.gif'); }
-ul.autocompleter-holder li.bit-box a.closebutton:hover { background-position: 7px; }
-ul.autocompleter-holder li.bit-box-focus a.closebutton,
-ul.autocompleter-holder li.bit-box-focus a.closebutton:hover { background-position: bottom; }
+/* Boxes decoration */
+ul.z-auto-holder li.z-auto-bit-box a.z-auto-closebutton {
+  background: url('../images/close.gif');
+  display: block;
+  font-size: 1px;
+  height: 7px;
+  position: absolute;
+  right: 4px;
+  top: 5px;
+  width: 7px;
+}
+ul.z-auto-holder li.z-auto-bit-box a.z-auto-closebutton:hover {
+  background-position: 7px;
+}
+ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton,
+ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
+  background-position: bottom;
+}
 
-/* Autocompleter */
-.z-form div.z-formrow > .clip-autocompleter-div {
+/* Container and options */
+.z-form div.z-formrow > .z-auto-container {
   background: #eee;
   display: none;
+  margin-left: 27.5% !important;
   padding: 0;
-  width: auto;
+  position: absolute;
+  width: 67.4%;
+  z-index: 9999;
 }
-.z-form div.z-formrow > .clip-autocompleter-div .autocompleter-default { padding: 5px 7px; border: 1px solid #ccc; border-width: 0 1px 1px; }
-.z-form div.z-formrow > .clip-autocompleter-div ul { display: none; margin: 0; padding: 0; overflow: auto; }
-.z-form div.z-formrow > .clip-autocompleter-div ul li { padding: 5px 12px; z-index: 1000; cursor: pointer; margin: 0; list-style-type: none; border: 1px solid #ccc; border-width: 0 1px 1px; font: 11px "Lucida Grande", "Verdana"; }
-.z-form div.z-formrow > .clip-autocompleter-div ul li em { font-weight: bold; font-style: normal; background: #ccc; }
-.z-form div.z-formrow > .clip-autocompleter-div ul li.auto-focus { background: #555; color: #fff; }
-.z-form div.z-formrow > .clip-autocompleter-div ul li.auto-focus em { background: none; }
+.z-linear div.z-formrow > .z-auto-container {
+  margin-left: 0 !important;
+  width: 100%;
+}
+.z-form div.z-formrow > .z-auto-container .z-auto-default {
+  border: 1px solid #ccc;
+  border-width: 0 1px 1px;
+  padding: 5px 7px;
+}
+.z-form div.z-formrow > .z-auto-container ul {
+  display: none;
+  margin: 0;
+  overflow: auto;
+  padding: 0;
+}
+.z-form div.z-formrow > .z-auto-container ul li {
+  border: 1px solid #ccc;
+  border-width: 0 1px 1px;
+  cursor: pointer;
+  font: 11px "Lucida Grande", "Verdana";
+  list-style-type: none;
+  margin: 0;
+  padding: 5px 12px;
+  z-index: 1000;
+}
+.z-form div.z-formrow > .z-auto-container ul li em {
+  background: #ccc;
+  font-style: normal;
+  font-weight: bold;
+}
+.z-form div.z-formrow > .z-auto-container ul li.z-auto-focus {
+  background: #555;
+  color: #fff;
+}
+.z-form div.z-formrow > .z-auto-container ul li.z-auto-focus em {
+  background: none;
+}
