@@ -83,7 +83,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
                 $script .= 'Event.observe( window, \'load\', function() { $(\'typedata_wrapper\').hide(); }, false);';
             }
             $script .= "\n// ]]>\n</script>";
-            PageUtil::setVar('rawtext', $script);
+            PageUtil::addVar('rawtext', $script);
         }
 
         return $result . $typeDataHtml;

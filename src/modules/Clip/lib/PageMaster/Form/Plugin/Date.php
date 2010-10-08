@@ -56,14 +56,16 @@ class PageMaster_Form_Plugin_Date extends Form_Plugin_DateInput
 
     function getTypeHtml($field, $view)
     {
-        $this->parseConfig($view->_tpl_vars['typedata']);
+        $checked = '';
+        if (isset($view->_tpl_vars['typedata'])) {
+            $this->parseConfig($view->_tpl_vars['typedata']);
+            $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
+        }
 
-        $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
-
-        $html .= '<div class="z-formrow z-warningmsg">
-                      <label for="pmplugin_usedatetime">'.$this->__('Include time').':</label>
-                      <input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
-                  </div>';
+        $html = '<div class="z-formrow">
+                     <label for="pmplugin_usedatetime">'.$this->__('Include time').':</label>
+                     <input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
+                 </div>';
 
         return $html;
     }

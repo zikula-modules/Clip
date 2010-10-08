@@ -298,10 +298,15 @@ class PageMaster_Api_User extends Zikula_Api
         $query = $tableObj->createQuery('tid'.$tid)
                           ->where($where);
 
-        // FIXME control this by config or params
+        // FIXME control this by relation config
+        $relconfig = array(
+            'onlyown' => false,
+            'loadstate' => false
+        );
+
         // adds the relations data
         $record = $tableObj->getRecordInstance();
-        foreach ($record->getRelations() as $alias => $rtid) {
+        foreach ($record->getRelations($relconfig['onlyown']) as $alias => $rtid) {
             $query->leftJoin("tid$tid.$alias");
         }
 
@@ -320,7 +325,18 @@ class PageMaster_Api_User extends Zikula_Api
             $pubdata = PageMaster_Util::handlePluginFields($pubdata, $pubfields, false);
         }
 
+        // postprocess the records and related records
         $pubdata->pubPostProcess($getApprovalState);
+
+        foreach (array_keys($record->getRelations($relconfig['onlyown'])) as $alias) {
+            if ($pubdata[$alias] instanceof Doctrine_Record) {
+                $pubdata[$alias]->pubPostProcess($relconfig['loadstate']);
+            } else {
+                foreach ($pubdata[$alias] as $k => $v) {
+                    $pubdata[$alias][$k]->pubPostProcess($relconfig['loadstate']);
+                }
+            }
+        }
 
         return $pubdata;
     }

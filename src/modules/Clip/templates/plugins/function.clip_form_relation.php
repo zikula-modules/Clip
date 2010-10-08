@@ -42,13 +42,33 @@ class ClipFormRelation extends Form_Plugin_TextInput
      */
     function __construct($view, &$params)
     {
+        // input relation data
         if (isset($params['relation'])) {
             $this->relinfo = $params['relation'];
+        }
+
+        if (!is_null($this->relinfo)) {
+            // assign existing data if available
+            if (isset($view->_tpl_vars['pubdata'][$this->relinfo['alias']])) {
+                $this->relinfo['data'] = $view->_tpl_vars['pubdata'][$this->relinfo['alias']];
+            }
+
+            // detects single or multiple relation
+            $this->relinfo['single'] = $this->relinfo['own'] ? ($this->relinfo['type']%2 == 0 ? true : false) : ($this->relinfo['type'] <= 1 ? true : false);
         }
 
         $params['textMode'] = 'hidden';
 
         parent::__construct($view, $params);
+    }
+
+    /**
+     * Post-initialise hook.
+     *
+     * @return void
+     */
+    public function postInitialize()
+    {
     }
 
     /**
@@ -67,13 +87,11 @@ class ClipFormRelation extends Form_Plugin_TextInput
         $maxitems = 20;
         $minchars = 2;
 
-        $count = $this->relinfo['own'] ? ($this->relinfo['type']%2 == 0 ? 1 : 2) : ($this->relinfo['type'] <= 1 ? 1 : 2);
-
         // build the autocompleter setup
         PageUtil::addVar('javascript', 'prototype');
         PageUtil::addVar('javascript', 'modules/PageMaster/javascript/facebooklist.js');
         $script =
-        "<script type=\"text/javascript\">\n//<![CDATA[\n".'
+        "<script type=\"text/javascript\">\n// <![CDATA[\n".'
             function clip_enable_'.$this->id.'() {
                 var_auto_'.$this->id.' = new Zikula.Autocompleter(\''.$this->id.'\', \''.$this->id.'_div\',
                                                  {
@@ -86,19 +104,32 @@ class ClipFormRelation extends Form_Plugin_TextInput
                                                   },
                                                   minchars: '.$minchars.',
                                                   maxresults: '.$numitems.',
-                                                  maxItems: '.($count == 1 ? 1 : $maxitems).'
+                                                  maxItems: '.($this->relinfo['single'] ? 1 : $maxitems).'
                                                  });
             }
             Event.observe(window, \'load\', clip_enable_'.$this->id.', false);
         '."\n// ]]>\n</script>";
-        PageUtil::setVar('rawtext', $script);
+        PageUtil::addVar('rawtext', $script);
 
         // build the autocompleter output
         $typeDataHtml = '
-        <div id="'.$this->id.'_div" class="clip-autocompleter-div z-formnote">
-            <div class="autocompleter-default">'.$this->_fn('Type the title of the related publication', 'Type the titles of the related publications', $count, array()).'</div>
-            <ul class="autocompleter-feed">
-                './* foreach($this->items) <li value="id">Pub title</li> .*/'
+        <div id="'.$this->id.'_div" class="z-auto-container">
+            <div class="z-auto-default">'.$this->_fn('Type the title of the related publication', 'Type the titles of the related publications', $this->relinfo['single'] ? 1 : 2, array()).'</div>
+            <ul class="z-auto-feed">
+                ';
+        if ($this->relinfo['single']) {
+            if (!is_null($this->relinfo['data']['id'])) {
+                $relpub = $this->relinfo['data'];
+                $relpub->pubPostProcess();
+                $typeDataHtml .= '<li value="'.$relpub['id'].'">'.$relpub['core_title'].'</li>';
+            }
+        } elseif ($this->relinfo['data']->count() > 0) {
+            foreach ($this->relinfo['data'] as $relpub) {
+                $relpub->pubPostProcess();
+                $typeDataHtml .= '<li value="'.$relpub['id'].'">'.$relpub['core_title'].'</li>';
+            }
+        }
+        $typeDataHtml .= '
             </ul>
         </div>';
 
@@ -122,16 +153,17 @@ class ClipFormRelation extends Form_Plugin_TextInput
             $value = $this->parseValue($view, $this->text);
 
             $classname = 'PageMaster_Model_Pubdata'.$this->relinfo['tid'];
-            $pub = Doctrine_Core::getTable($classname)
-                   ->find($value);
+            $tableObj  = Doctrine_Core::getTable($classname);
+
+            $ref = $this->relinfo['single'] ? array($value) : explode(':', $value);
 
             if ($this->group == null) {
-                $data[$this->dataField] = $pub;
+                $data[$this->dataField] = $ref;
             } else {
                 if (!array_key_exists($this->group, $data)) {
                     $data[$this->group] = array();
                 }
-                $data[$this->group][$this->dataField] = $pub;
+                $data[$this->group][$this->dataField] = $ref;
             }
         }
     }

@@ -25,7 +25,7 @@ class PageMaster_Generator
         $pubdata   = new $className();
         $pubdata->pubPostProcess(false);
         // get the record fields
-        $recfields = $pubdata->pubFields(true);
+        $recfields = $pubdata->pubFields();
 
         // build the display code
         $template_code = "\n".

@@ -136,8 +136,8 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         $result = array();
         foreach ($list as $v) {
             $result[] = array(
-                'caption' => $v['core_title'],
-                'value'   => $v['id']
+                'value'   => $v['id'],
+                'caption' => $v['core_title']
             );
         }
 

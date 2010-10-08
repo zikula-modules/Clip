@@ -63,13 +63,13 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
 
         // reorder the fields conveniently
         $reorder = array(
-            'core_title' => '',
-            'core_uniqueid' => '',
-            'core_tid' => '',
-            'core_pid' => '',
-            'core_author' => '',
-            'core_creator' => '',
-            'core_approvalstate' => ''
+            'core_title' => 'map',
+            'core_uniqueid' => 'map',
+            'core_tid' => 'map',
+            'core_pid' => 'value',
+            'core_author' => 'value',
+            'core_creator' => 'map',
+            'core_approvalstate' => 'map'
         );
         $fields = array_merge($reorder, $fields);
         
@@ -79,14 +79,18 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
     /**
      * Returns the record relations as an indexed array.
      *
+     * @param boolean $onlyown Retrieves owning relations only (default: false).
+     *
      * @return array List of available relations => tids.
      */
-    public function getRelations()
+    public function getRelations($onlyown = true)
     {
         $relations = array();
 
         foreach ($this->_table->getRelations() as $key => $relation) {
-            $relations[$key] = PageMaster_Util::getTidFromStringSuffix($relation->getClass());
+            if (!$onlyown || $relation['local'] == 'pm_id') {
+                $relations[$key] = PageMaster_Util::getTidFromStringSuffix($relation->getClass());
+            }
         }
 
         return $relations;

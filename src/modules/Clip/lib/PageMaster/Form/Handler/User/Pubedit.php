@@ -34,19 +34,19 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         // initialize the publication array
         $pubdata = array();
 
-        $classname = 'PageMaster_Model_Pubdata'.$this->tid;
         // process a new or existing pub, and it's available actions
         if (!empty($this->id)) {
-            $pubdata = Doctrine_Core::getTable($classname)
-                       ->find($this->id);
-
-            $pubdata->pubPostProcess();
+            $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get', array(
+                'tid' => $this->tid,
+                'id'  => $this->id
+            ));
 
             $this->pubAssign($pubdata);
 
             $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->pubtype->getTableName(), 'id', 'PageMaster');
         } else {
             // initial values
+            $classname = 'PageMaster_Model_Pubdata'.$this->tid;
             $pubdata = new $classname();
 
             $this->pubDefault($pubdata);
@@ -165,14 +165,16 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
             // if the item moved to the depot or was deleted
-            $urltid = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $data['tid']));
+            $urltid = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $data['core_tid']));
             // check if the user comes of the display screen or not
             $goto = (strpos($this->referer, $this->itemurl) === 0) ? $urltid : $this->referer;
 
         } elseif (isset($ops['createPub']) && $ops['createPub']) {
             // the publication was created
             if ($data['core_online'] == 1) {
-                $goto = ModUtil::url('PageMaster', 'user', 'display', array('tid' => $data['tid'], 'pid' => $data['core_pid']));
+                $goto = ModUtil::url('PageMaster', 'user', 'display',
+                                     array('tid' => $data['core_tid'],
+                                           'pid' => $data['core_pid']));
             } else {
                 // back to the pubtype pending template or referer page if it is not approved yet
                 $goto = isset($ops['createPub']['goto']) ? $ops['createPub']['goto'] : $this->referer;
@@ -310,6 +312,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         $pubdata['core_author']   = UserUtil::getVar('uid');
         $pubdata['core_language'] = '';
 
+        $pubdata->pubPostProcess();
         $this->pub = $pubdata;
     }
 
@@ -325,15 +328,16 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         }
         // allow specify fixed PIDs
         if (isset($data['core_pid'])) {
-            $data['core_pid'] = $data['core_pid'];
+            $this->pub['core_pid'] = $data['core_pid'];
         }
-        // fill any other data
-        $this->pub->fromArray($data);
         // fill the relations data if present
         foreach (array_keys($this->relations) as $alias) {
             if (isset($data[$alias])) {
-                $this->pub->$alias = $data[$alias];
+                $this->pub->link($alias, $data[$alias]);
+                unset($data[$alias]);
             }
         }
+        // fill any other data
+        $this->pub->fromArray($data);
     }
 }

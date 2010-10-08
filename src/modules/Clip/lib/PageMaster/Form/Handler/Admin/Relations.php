@@ -42,6 +42,10 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
             $relation->mapValue('type1', $relation->type < 2 ? 0 : 1);
             $relation->mapValue('type2', $relation->type%2 == 0 ? 0 : 1);
 
+            // update the implied pubdata tables
+            Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation['tid1'])->changeTable();
+            Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation['tid2'])->changeTable();
+
             $view->assign('relation', $relation->toArray());
         }
 
@@ -78,8 +82,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
         // stores the return URL
         if (empty($this->returnurl)) {
             $returnurl = ModUtil::url('PageMaster', 'admin', 'relations',
-                                      array('id'  => $id,
-                                            'tid' => $tid));
+                                      array('tid' => $tid));
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $returnurl);
         }
 
@@ -135,10 +138,6 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                     return false;
                 }
 
-                // update the implied pubdata tables
-                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation->tid1)->changeTable();
-                Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation->tid2)->changeTable();
-
                 // detect a type change for m2m before save
                 $previous = $tableObj->find($this->id);
                 if ($previous->type != $relation->type && $previous->type == 3) {
@@ -154,6 +153,11 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                     if ($relation->type == 3) {
                         Doctrine_Core::getTable('PageMaster_Model_Relation'.$relation->id)->createTable();
                     }
+                    // setup the return url as the edit form
+                    // to update the corresponding tables
+                    $this->returnurl = ModUtil::url('PageMaster', 'admin', 'relations',
+                                                    array('tid' => $tid,
+                                                          'id'  => $id));
 
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
                 } else {

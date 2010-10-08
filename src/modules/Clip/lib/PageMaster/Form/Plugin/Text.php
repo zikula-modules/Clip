@@ -50,7 +50,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
                                   array('modulename' => 'PageMaster',
                                         'editor'     => 'xinha',
                                         'areas'      => $scribite_arr));
-            PageUtil::setVar('rawtext', $scribite);
+            PageUtil::addVar('rawtext', $scribite);
         }
 
         return parent::render($view);
