@@ -335,6 +335,7 @@ var FacebookList = Class.create(TextboxList,
     this.options.update(options);
 
     this.data = [];
+    this.searchcache = [];
 
     this.autoholder = $(autoholder).setOpacity(this.options.get('autoopacity'));
     this.autoholder.observe('mouseover', function() { this.curOn = true; }.bind(this))
@@ -388,6 +389,7 @@ var FacebookList = Class.create(TextboxList,
                        }
                      }, this);
     }
+    // check this.autoresults count to see if we need the 'not found' message
     if (count > this.options.get('results')) {
       this.autoresults.setStyle({'height': (this.options.get('results')*24)+'px'});
     } else {
@@ -503,6 +505,12 @@ var FacebookList = Class.create(TextboxList,
           if (this.searchTimeout) {
             clearTimeout(this.searchTimeout);
           }
+          if (this.searchcache.indexOf(input.value) != -1) {
+              if (this.dosearch) {
+                  this.autoShow(input.value);
+              }
+              break;
+          }
           this.searchTimeout = setTimeout(function() {
             if (!Object.isUndefined(this.options.get('fetchFile')) && input.value.length >= this.options.get('minchars')) {
               var params = this.options.get('parameters');
@@ -519,6 +527,7 @@ var FacebookList = Class.create(TextboxList,
             } else if (this.dosearch) {
               this.autoShow(input.value);
             }
+            this.searchcache.push(input.value);
             clearTimeout(this.searchTimeout);
           }.bind(this), 500);
       }
