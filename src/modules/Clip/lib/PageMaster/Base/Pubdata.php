@@ -17,26 +17,63 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
     /**
      * Record post process.
      *
+     * @param boolean $args['checkperm']         Whether to check the permissions.
+     * @param boolean $args['handleplugins']     Whether to parse the plugin fields.
+     * @param boolean $args['loadworkflow']      Whether to add the workflow information.
+     * @param boolean $args['checkrefs']         Whether to process the related records.
+     * @param boolean $args['rel.onlyown']       Whether to check the permissions.
+     * @param boolean $args['rel.checkperm']     Whether to check the permissions.
+     * @param boolean $args['rel.handleplugins'] Whether to parse the plugin fields.
+     * @param boolean $args['rel.loadworkflow']  Whether to add the workflow information.
+     *
      * @return void
      */
-    public function pubPostProcess($loadworkflow = true)
+    public function pubPostProcess($args)
     {
         $tablename = $this->_table->getInternalTableName();
         $tid = PageMaster_Util::getTidFromStringSuffix($tablename);
 
-        if ($loadworkflow) {
-            Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'PageMaster');
-        } else {
-            $this->mapValue('__WORKFLOW__', array());
-        }
-
+        // mapped values
         $core_title = PageMaster_Util::getTitleField($tid);
 
-        $this->mapValue('core_title' , $this[$core_title]);
-        $this->mapValue('core_uniqueid', "{$tid}-{$this['core_pid']}");
         $this->mapValue('core_tid', $tid);
+        $this->mapValue('core_uniqueid', "{$tid}-{$this['core_pid']}");
+        $this->mapValue('core_title' , $this[$core_title]);
         $this->mapValue('core_creator', ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
+        $this->mapValue('__WORKFLOW__', array());
+
+        // handle the plugins data if needed
+        if ($args['handleplugins']) {
+            PageMaster_Util::handlePluginFields($this);
+        }
+
+        // load the workflow data if needed
+        if ($args['loadworkflow']) {
+            Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'PageMaster');
+        }
+
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
+
+        // post process related records
+        if (!isset($args['checkrefs']) || $args['checkrefs']) {
+            $args['checkrefs'] = false;
+            $args['handleplugins'] = $args['rel.handleplugins'];
+            $args['loadworkflow']  = $args['rel.loadworkflow'];
+            // loop the related records
+            foreach (array_keys($this->getRelations($args['rel.onlyown'])) as $alias) {
+                if ($this[$alias] instanceof Doctrine_Record) {
+                    if (!$args['rel.checkperm'] || SecurityUtil::checkPermission('pagemaster:full:', "$this[core_tid]:$this[core_pid]:", ACCESS_READ)) {
+                        $this[$alias]->pubPostProcess($args);
+                    }
+                } elseif ($this[$alias] instanceof Doctrine_Collection) {
+                    foreach ($this[$alias] as $k => $v) {
+                        if (!$args['rel.checkperm'] || SecurityUtil::checkPermission('pagemaster:full:', "$this[core_tid]:$this[core_pid]:", ACCESS_READ)) {
+                            $this[$alias][$k]->pubPostProcess($args);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -72,7 +109,7 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
             'core_approvalstate' => 'map'
         );
         $fields = array_merge($reorder, $fields);
-        
+
         return $fields;
     }
 

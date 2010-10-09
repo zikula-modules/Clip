@@ -2,9 +2,9 @@
 /**
  * PageMaster
  *
- * @copyright   (c) PageMaster Team
- * @link        http://code.zikula.org/pagemaster/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @copyright (c) PageMaster Team
+ * @link      http://code.zikula.org/pagemaster/
+ * @license   GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
 /**
@@ -35,13 +35,13 @@ class PageMaster_Version extends Zikula_Version
         // Module depedencies
         $meta['dependencies'] = array(
                 array('modname'    => 'Scribite',
-                        'minversion' => '4.2.1',
-                        'maxversion' => '',
-                        'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
+                      'minversion' => '4.2.1',
+                      'maxversion' => '',
+                      'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
                 array('modname'    => 'Thumbnail',
-                        'minversion' => '1.1',
-                        'maxversion' => '',
-                        'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
+                      'minversion' => '1.1',
+                      'maxversion' => '',
+                      'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
         );
 
         return $meta;

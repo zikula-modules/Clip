@@ -206,7 +206,7 @@ class PageMaster_Api_User extends Zikula_Api
                 $publist[$i]->pubPostProcess($getApprovalState);
             }
             if ($handlePluginFields) {
-                $publist = PageMaster_Util::handlePluginFields($publist, $pubfields);
+                $publist = PageMaster_Util::handlePluginFields($publist);
             }
         }
 
@@ -223,91 +223,92 @@ class PageMaster_Api_User extends Zikula_Api
     /**
      * Returns a Publication.
      *
-     * @param integer $args['tid']                ID of the publication type.
-     * @param integer $args['pid']                ID of the publication.
-     * @param integer $args['id']                 ID of the publication revision (optional if pid is used).
-     * @param boolean $args['checkperm']          Whether to check the permissions.
-     * @param boolean $args['handlePluginFields'] Whether to parse the plugin fields.
-     * @param boolean $args['getApprovalState']   Whether to add the workflow information.
+     * @param integer $args['tid']           ID of the publication type.
+     * @param integer $args['pid']           ID of the publication.
+     * @param integer $args['id']            ID of the publication revision (optional if pid is used).
+     * @param boolean $args['checkperm']     Whether to check the permissions.
+     * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
+     * @param boolean $args['loadworkflow']  Whether to add the workflow information.
      *
      * @return Doctrine_Record One publication.
      */
     public function get($args)
     {
         // validation of essential parameters
-        if (!isset($args['tid'])) {
+        if (!isset($args['tid']) || !is_numeric($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
         if (!isset($args['id']) && !isset($args['pid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
-        // defaults
-        $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
-        $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
-        $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
+        // define the arguments
+        $args = array(
+            'tid'           => (int)$args['tid'],
+            'pid'           => isset($args['pid']) ? (int)$args['pid'] : null,
+            'id'            => isset($args['id']) ? (int)$args['id'] : null,
+            'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : false,
+            'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : true,
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : false
+        );
 
-        $tid = (int)$args['tid'];
-        $pid = isset($args['pid']) ? (int)$args['pid'] : null;
-        $id  = isset($args['id']) ? (int)$args['id'] : null;
-        unset($args);
-
-        $pubtype = PageMaster_Util::getPubType($tid);
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
         // validate the pubtype
         if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        $pubfields = PageMaster_Util::getPubFields($tid);
+        $pubfields = PageMaster_Util::getPubFields($args['tid']);
         // validate the pubfields
         if (!$pubfields) {
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        // build the where clause
-        $uid   = UserUtil::getVar('uid');
-        $where = '';
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid']);
 
-        if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid::", ACCESS_ADMIN))
+        // build the query
+        $args['queryalias'] = "pub_{$args['tid']}_"
+                              .($args['pid'] ? $args['pid'] : '')
+                              .($args['id'] ? '_'.$args['id'] : '');
+
+        $uid   = UserUtil::getVar('uid');
+        $query = $tableObj->createQuery($args['queryalias']);
+
+        if (!SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}::", ACCESS_ADMIN))
         {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-                $where .= " (core_author = '$uid' OR core_online = '1' )";
+                $query->where('(core_author = ? OR core_online = ?)', array($uid, 1));
             } else {
-                $where .= " core_online = '1' ";
+                $query->where('core_online = ?', 1);
             }
-            $where .= " AND core_indepot = '0'
-                        AND (core_language = '' OR core_language = '".ZLanguage::getLanguageCode()."')
-                        AND (core_publishdate <= NOW() OR core_publishdate IS NULL)
-                        AND (core_expiredate >= NOW() OR core_expiredate IS NULL)";
+            $query->andWhere('core_indepot = ?', 0);
+            $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
+            $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
+            $query->andWhere('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
 
             if (empty($args['id'])) {
-                $where .= " AND core_pid = '$pid'";
+                $query->andWhere('core_pid = ?', $args['pid']);
             } else {
-                $where .= " AND id = '$id'";
+                $query->andWhere('id = ?', $args['id']);
             }
         } else {
             if (empty($id)) {
-                $where .= " core_pid = '$pid' AND core_online = '1'";
+                $query->where('(core_pid = ? OR core_online = ?)', array($args['pid'], 1));
             } else {
-                $where .= " id = '$id'";
+                $query->where('id = ?', $args['id']);
             }
         }
 
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid);
-
-        $query = $tableObj->createQuery('tid'.$tid)
-                          ->where($where);
-
         // FIXME control this by relation config
-        $relconfig = array(
-            'onlyown' => false,
-            'loadstate' => false
-        );
+        $args['rel.onlyown'] = false;
+        $args['rel.checkperm'] = false;
+        $args['rel.handleplugins'] = false;
+        $args['rel.loadworkflow'] = false;
 
         // adds the relations data
         $record = $tableObj->getRecordInstance();
-        foreach ($record->getRelations($relconfig['onlyown']) as $alias => $rtid) {
-            $query->leftJoin("tid$tid.$alias");
+        foreach ($record->getRelations($args['rel.onlyown']) as $ralias => $rtid) {
+            $query->leftJoin("{$args['queryalias']}.$ralias");
         }
 
         // fetch the publication
@@ -316,27 +317,13 @@ class PageMaster_Api_User extends Zikula_Api
             return false;
         }
 
-        if ($checkPerm && !SecurityUtil::checkPermission('pagemaster:full:', "$tid:$pubdata[core_pid]:", ACCESS_READ)) {
+        // check permissions if needed
+        if ($args['checkperm'] && !SecurityUtil::checkPermission('pagemaster:full:', "$args[tid]:$pubdata[core_pid]:", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
-        // handle the plugins data if needed
-        if ($handlePluginFields){
-            $pubdata = PageMaster_Util::handlePluginFields($pubdata, $pubfields, false);
-        }
-
-        // postprocess the records and related records
-        $pubdata->pubPostProcess($getApprovalState);
-
-        foreach (array_keys($record->getRelations($relconfig['onlyown'])) as $alias) {
-            if ($pubdata[$alias] instanceof Doctrine_Record) {
-                $pubdata[$alias]->pubPostProcess($relconfig['loadstate']);
-            } else {
-                foreach ($pubdata[$alias] as $k => $v) {
-                    $pubdata[$alias][$k]->pubPostProcess($relconfig['loadstate']);
-                }
-            }
-        }
+        // postprocess the record and related records
+        $pubdata->pubPostProcess($args);
 
         return $pubdata;
     }

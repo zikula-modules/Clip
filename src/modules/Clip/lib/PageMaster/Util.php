@@ -148,29 +148,50 @@ class PageMaster_Util
     /**
      * Parser of fields with the plugins postRead.
      *
-     * @param array   $publist   List or publication to parse.
-     * @param array   $pubfields Fields of the publication type.
-     * @param boolean $islist    Flag indicating that it is a list or is only one.
+     * @param object|array $obj Collection or publication to parse.
      *
      * @return array Parsed array.
      */
-    public static function handlePluginFields($publist, $pubfields, $islist=true)
+    public static function handlePluginFields(&$obj)
     {
+        $tid    = 0;
+        $islist = false;
+
+        // detects if it is a list or a publication
+        // and extracts the pubtype ID
+        if (is_object($obj)) {
+            if ($obj instanceof Doctrine_Record) {
+                $tid = $obj['core_tid'];
+            } elseif ($obj instanceof Doctrine_Collection) {
+                $islist = true;
+                $pub = $obj->getFirst();
+                $tid = $pub['core_tid'];
+            }
+        } else {
+            if (isset($obj['core_tid'])) {
+                $tid = $obj['core_tid'];
+            } else {
+                $islist = true;
+                $keys = array_keys($obj);
+                $tid = $obj[$keys[0]]['core_tid'];
+            }
+        }
+
+        $pubfields = PageMaster_Util::getPubFields($tid);
+
         foreach ($pubfields as $fieldname => $field) {
             $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
 
             if (method_exists($plugin, 'postRead')) {
                 if ($islist) {
-                    for ($i = 0; $i < count($publist); $i++) {
-                        $publist[$i][$fieldname] = $plugin->postRead($publist[$i][$fieldname], $field);
+                    foreach ($obj as &$pub) {
+                        $pub[$fieldname] = $plugin->postRead($pub[$fieldname], $field);
                     }
                 } else {
-                    $publist[$fieldname] = $plugin->postRead($publist[$fieldname], $field);
+                    $obj[$fieldname] = $plugin->postRead($obj[$fieldname], $field);
                 }
             }
         }
-
-        return $publist;
     }
 
     /**
@@ -540,21 +561,17 @@ class PageMaster_Util
      *
      * @return array Array of fields of one or all the loaded pubtypes.
      */
-    public static function getPubFields($tid = -1, $orderBy = 'lineno')
+    public static function getPubFields($tid, $orderBy = 'lineno')
     {
         static $pubfields_arr;
 
         $tid = (int)$tid;
-        if ($tid != -1 && !isset($pubfields_arr[$tid])) {
+        if ($tid && !isset($pubfields_arr[$tid])) {
             $pubfields_arr[$tid] = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
                                    ->selectCollection("tid = '$tid'", $orderBy, -1, -1, 'name');
         }
 
-        if ($tid == -1) {
-            return $pubfields_arr;
-        }
-
-        return $pubfields_arr[$tid];
+        return isset($pubfields_arr[$tid]) ? $pubfields_arr[$tid] : null;
     }
 
     /**

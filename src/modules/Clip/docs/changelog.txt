@@ -10,7 +10,7 @@
     Rework of the available variables in the list and display templates.
         list:
             $tid => $pubtype.tid
-            $core_titlefield => $pubtype.tittlefield
+            $core_titlefield => $pubtype.titlefield
         display:
             Publication data embeded in the $pubdata array
             $core_titlefield => $pubtype.tittlefield
@@ -20,3 +20,7 @@
             $core_creator => $pubdata.core_creator
             $core_approvalstate => $pubdata.core_approvalstate
     Support of styled buttons through worfkflow action parameters
+    API arguments renamed, a massive rename on your custom templates is needed:
+        checkPerm               checkperm
+        handlePluginFields      handleplugins
+        getApprovalState        loadworkflow
