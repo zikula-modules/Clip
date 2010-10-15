@@ -53,7 +53,7 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         //// Parameters
-        // old parameters (will be removed on 1.0)
+        // old parameters (will be removed on Clip 1.0)
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
         $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
         // define the arguments

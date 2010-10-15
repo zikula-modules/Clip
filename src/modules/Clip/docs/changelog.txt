@@ -20,7 +20,7 @@
             $core_creator => $pubdata.core_creator
             $core_approvalstate => $pubdata.core_approvalstate
     Support of styled buttons through worfkflow action parameters
-    API arguments renamed, a massive rename on your custom templates is needed:
+    API arguments renamed, a massive rename on your custom templates is needed for Clip 1.0:
         checkPerm               checkperm
         handlePluginFields      handleplugins
         getApprovalState        loadworkflow

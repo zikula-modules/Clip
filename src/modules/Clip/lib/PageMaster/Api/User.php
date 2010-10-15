@@ -42,7 +42,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         //// Parameters
-        // old parameters (will be removed on 1.0)
+        // old parameters (will be removed on Clip 1.0)
         $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : false;
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : true;
         $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
@@ -224,7 +224,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         //// Parameters
-        // old parameters (will be removed on 1.0)
+        // old parameters (will be removed on Clip 1.0)
         $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : false;
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : true;
         $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
