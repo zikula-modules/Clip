@@ -17,7 +17,6 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
     /**
      * Record post process.
      *
-     * @param boolean $args['checkperm']         Whether to check the permissions.
      * @param boolean $args['handleplugins']     Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']      Whether to add the workflow information.
      * @param boolean $args['checkrefs']         Whether to process the related records.
@@ -43,22 +42,29 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
         $this->mapValue('__WORKFLOW__', array());
 
         // handle the plugins data if needed
-        if ($args['handleplugins']) {
+        if (!isset($args['handleplugins']) || $args['handleplugins']) {
             PageMaster_Util::handlePluginFields($this);
         }
 
         // load the workflow data if needed
-        if ($args['loadworkflow']) {
+        if (isset($args['loadworkflow']) && $args['loadworkflow']) {
             Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'PageMaster');
         }
 
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
 
         // post process related records
-        if (!isset($args['checkrefs']) || $args['checkrefs']) {
-            $args['checkrefs'] = false;
-            $args['handleplugins'] = $args['rel.handleplugins'];
-            $args['loadworkflow']  = $args['rel.loadworkflow'];
+        if (isset($args['checkrefs']) && $args['checkrefs']) {
+            // new default values
+            $args = array(
+                'checkrefs'         => false,
+                'handleplugins'     => isset($args['rel.handleplugins']) ? $args['rel.handleplugins'] : true,
+                'loadworkflow'      => isset($args['rel.loadworkflow']) ? $args['rel.loadworkflow'] : false,
+                'rel.onlyown'       => isset($args['rel.onlyown']) ? $args['rel.onlyown'] : false,
+                'rel.checkperm'     => isset($args['rel.checkperm']) ? $args['rel.checkperm'] : false,
+                'rel.handleplugins' => isset($args['rel.handleplugins']) ? $args['rel.handleplugins'] : true,
+                'rel.loadworkflow'  => isset($args['rel.loadworkflow']) ? $args['rel.loadworkflow'] : false
+            );
             // loop the related records
             foreach (array_keys($this->getRelations($args['rel.onlyown'])) as $alias) {
                 if ($this[$alias] instanceof Doctrine_Record) {
@@ -111,6 +117,24 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
         $fields = array_merge($reorder, $fields);
 
         return $fields;
+    }
+
+    /**
+     * Returns the publication as an array.
+     *
+     * @param boolean $deep      Whether to include relations.
+     * @param boolean $prefixKey Not used.
+     *
+     * @return array
+     */
+    public function toArray($deep = true, $prefixKey = false)
+    {
+        $fields = $this->pubFields();
+
+        $a = parent::toArray($deep, $prefixKey);
+        $a = array_intersect_key($a, $fields);
+
+        return $a;
     }
 
     /**

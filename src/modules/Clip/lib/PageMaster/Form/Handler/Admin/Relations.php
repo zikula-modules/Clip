@@ -121,6 +121,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
 
                 $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubrelation');
 
+                // TODO verify unique alias too
                 // check it's unique
                 $where = array(
                     array('type = ?', $relation->type),

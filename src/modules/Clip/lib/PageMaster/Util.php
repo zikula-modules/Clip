@@ -167,16 +167,23 @@ class PageMaster_Util
                 $pub = $obj->getFirst();
                 $tid = $pub['core_tid'];
             }
-        } else {
+        } elseif (!empty($obj)) {
             if (isset($obj['core_tid'])) {
                 $tid = $obj['core_tid'];
             } else {
                 $islist = true;
                 $keys = array_keys($obj);
-                $tid = $obj[$keys[0]]['core_tid'];
+                $tid = isset($obj[$keys[0]]['core_tid']) ? $obj[$keys[0]]['core_tid'] : 0;
             }
         }
 
+        // if we haven't a tid
+        // probably we got an empty object
+        if (empty($tid)) {
+            return;
+        }
+
+        // process the fields
         $pubfields = PageMaster_Util::getPubFields($tid);
 
         foreach ($pubfields as $fieldname => $field) {

@@ -17,60 +17,63 @@ class PageMaster_Api_User extends Zikula_Api
     /**
      * Returns a Publication List.
      *
-     * @param integer $args['tid']                ID of the publication type.
-     * @param string  $args['filter']             Filter string.
-     * @param string  $args['orderby']            OrderBy string.
-     * @param integer $args['itemsperpage']       Number of items to retrieve.
-     * @param integer $args['startnum']           Offset to start from.
-     * @param string  $args['countmode']          Mode: no (list without count - default), just (count elements only), both.
-     * @param boolean $args['checkperm']          Whether to check the permissions.
-     * @param boolean $args['handlePluginFields'] Whether to parse the plugin fields.
-     * @param boolean $args['getApprovalState']   Whether to add the workflow information.
+     * @param integer $args['tid']           ID of the publication type.
+     * @param string  $args['filter']        Filter string.
+     * @param string  $args['orderby']       OrderBy string.
+     * @param integer $args['startnum']      Offset to start from.
+     * @param integer $args['itemsperpage']  Number of items to retrieve.
+     * @param string  $args['countmode']     Mode: no (list without count - default), just (count elements only), both.
+     * @param boolean $args['checkperm']     Whether to check the permissions.
+     * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
+     * @param boolean $args['loadworkflow']  Whether to add the workflow information.
      *
      * @return array Collection of publications and/or Count.
      */
     public function getall($args)
     {
+        //// Validation
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        // validate the passed tid
         $pubtype = PageMaster_Util::getPubType($args['tid']);
         if (!$pubtype) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        // parameters defaults
-        $handlePluginFields = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : false;
-        $getApprovalState   = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
-        $checkPerm          = isset($args['checkPerm']) ? $args['checkPerm'] : false;
+        //// Parameters
+        // old parameters (will be removed on 1.0)
+        $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : false;
+        $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : true;
+        $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
+        // define the arguments
+        $args = array(
+            'tid'           => (int)$args['tid'],
+            'filter'        => isset($args['filter']) ? $args['filter'] : null,
+            'orderby'       => isset($args['orderby']) ? $args['orderby'] : null,
+            'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : 1,
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)$args['itemsperpage'] : -1,
+            'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
+            'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
+            'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
+        );
 
-        // permission check
-        if ($checkPerm && !SecurityUtil::checkPermission('pagemaster:list:', "$args[tid]::", ACCESS_READ)) {
+        //// Permission check
+        if ($args['checkperm'] && !SecurityUtil::checkPermission('pagemaster:list:', "{$args['tid']}::", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
-        // optional arguments.
-        if (!isset($args['startnum']) || !is_numeric($args['startnum'])) {
-            $args['startnum'] = 1;
-        }
-        if (!isset($args['itemsperpage']) || !is_numeric($args['itemsperpage'])) {
-            $args['itemsperpage'] = -1;
-        }
-        if (!isset($args['countmode']) || !in_array($args['countmode'], array('no', 'just', 'both'))) {
-            $args['countmode'] = 'no';
-        }
-
         // mode check
-        $isadmin = !SecurityUtil::checkPermission('pagemaster:full:', "$args[tid]::", ACCESS_ADMIN) || (!isset($args['admin']) || !$args['admin']);
+        $args['admin'] = (isset($args['admin']) && $args['admin']) || SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}::", ACCESS_ADMIN);
         // TODO pubtype.editown + author mode parameter check
 
         $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid']);
 
+        //// Misc values
         // set the order
         // handling column names till the end
-        if (!isset($args['orderby']) || empty($args['orderby'])) {
+        if (empty($args['orderby'])) {
             if (!empty($pubtype['sortfield1'])) {
                 if ($pubtype['sortdesc1'] == 1) {
                     $orderby = $pubtype['sortfield1'].' DESC ';
@@ -103,115 +106,93 @@ class PageMaster_Api_User extends Zikula_Api
         $pubfields = PageMaster_Util::getPubFields($args['tid']);
         $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
-        $filterPlugins = array();
+        $args['queryalias'] = "pub_{$args['tid']}";
+
+        //// Filter
+        // resolve the FilterUtil arguments
+        $filter['args'] = array(
+            'alias'   => $args['queryalias'],
+            'plugins' => array()
+        );
         foreach ($pubfields as $fieldname => $field)
         {
-            $pluginclass = $field['fieldplugin'];
-            $plugin = PageMaster_Util::getPlugin($pluginclass);
+            $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
 
             if (isset($plugin->filterClass)) {
-                $filterPlugins[$plugin->filterClass]['fields'][] = $fieldname;
+                $filter['args']['plugins'][$plugin->filterClass]['fields'][] = $fieldname;
             }
-            /* TODO: REWORK
-            // check for tables to join
-            if ($args['countmode'] <> 'just'){
-                // do not join for just
-                if ($field['fieldplugin'] == 'PageMaster_Form_Plugin_Pub'){
-                    $vars        = explode(';', $field['typedata']);
-                    $join_tid    = $vars[0];
-                    $join_filter = $vars[1]; // TODO Use?
-                    $join        = $vars[2];
-                    $join_fields = $vars[3];
-                    $join_arr    = explode(',', $join_fields);
-                    if ($join == 'on') {
-                        foreach ($join_arr as $value) {
-                            list($x, $y) = explode(':', $value);
-                            $join_field_arr[]        = $x;
-                            $object_field_name_arr[] = $y;
-                        }
-                        $joinInfo[] = array('join_table'         =>  'pagemaster_pubdata'.$join_tid,
-                                            'join_field'         =>  $join_field_arr,
-                                            'object_field_name'  =>  $object_field_name_arr,
-                                            'compare_field_table'=>  $fieldname,
-                                            'compare_field_join' =>  'core_pid');
-                    }
-                }
-            }
-            */
         }
 
-        $tbl = 'dctrn_find.';
-        // check if some plugin specific orderby has to be done
-        $orderby = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $tbl);
-        // replaces the core_title alias by the original field name
-        if (strpos('core_title', $orderby) !== false) {
-            $orderby = str_replace('core_title', $pubtype->titlefield, $orderby);
-        }
-        // final orderby processing to convert column to aliases
-        $orderby = $tableObj->processOrderBy($tbl, $orderby, true);
+        // filter instance
+        $filter['obj'] = new FilterUtil('PageMaster', 'PageMaster_Model_Pubdata'.$args['tid'], $filter['args']);
 
-        // resolve the FilterUtil arguments
-        $filter_args['alias'] = 'dctrn_find';
-
-        if (isset($joinInfo)) {
-            $filter_args['join'] = $joinInfo;
-        }
-        if (!empty($filterPlugins)) {
-            $filter_args['plugins'] = $filterPlugins;
-        }
-
-        // add any filter
-        $fu = new FilterUtil('PageMaster', 'PageMaster_Model_Pubdata'.$args['tid'], $filter_args);
-
-        if (isset($args['filter']) && !empty($args['filter'])) {
-            $fu->setFilter($args['filter']);
+        if (!empty($args['filter'])) {
+            $filter['obj']->setFilter($args['filter']);
         } elseif (!empty($pubtype['defaultfilter'])) {
-            $fu->setFilter($pubtype['defaultfilter']);
+            $filter['obj']->setFilter($pubtype['defaultfilter']);
         }
 
-        $filter_where = $fu->GetSQL();
+        $filter['result'] = $filter['obj']->GetSQL();
 
-        // build the where clause
-        $where = array();
-        $uid   = UserUtil::getVar('uid');
+        //// Query setup
+        $query = $tableObj->createQuery($args['queryalias']);
 
-        if ($isadmin) {
+        // add the conditions to the query
+        $uid = UserUtil::getVar('uid');
+
+        if (!$args['admin']) {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-                $where[] = "( {$tbl}core_online = '1' AND ( {$tbl}core_author = '$uid' OR {$tbl}core_showinlist = '1') )";
+                $query->andWhere('(core_online = ? AND (core_author = ? OR core_showinlist = ?))', array(1, $uid, 1));
             } else {
-                $where[] = "  {$tbl}core_online = '1' AND {$tbl}core_showinlist = '1'";
+                $query->andWhere('core_online = ? AND core_showinlist = ?', 1);
+            }
+            $query->andWhere('core_indepot = ?', 0);
+            $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
+            $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
+            $query->andWhere('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
+        }
+        // TODO Implement author view condition
+
+        if (!empty($filter['result'])) {
+            $query->andWhere($filter['result']['where']);
+        }
+
+        //// Count execution
+        if ($args['countmode'] != 'no') {
+            $pubcount = $query->count();
+        }
+
+        //// Collection execution
+        if ($args['countmode'] != 'just') {
+            //// Order by
+            // replaces the core_title alias by the original field name
+            if (strpos('core_title', $orderby) !== false) {
+                $orderby = str_replace('core_title', $pubtype->titlefield, $orderby);
+            }
+            // check if some plugin specific orderby has to be done
+            $orderby = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $args['queryalias'].'.');
+            // final orderby processing to convert column to aliases
+            $orderby = $tableObj->processOrderBy($args['queryalias'], $orderby, true);
+            // add the orderby to the query
+            foreach (explode(', ', $orderby) as $order) {
+                $query->orderBy($order);
             }
 
-            $where[] = "  {$tbl}core_indepot = '0' ";
-            $where[] = "( {$tbl}core_language = '' OR {$tbl}core_language = '".ZLanguage::getLanguageCode()."' )";
-            $where[] = "( {$tbl}core_publishdate <= NOW() OR {$tbl}core_publishdate IS NULL )";
-            $where[] = "( {$tbl}core_expiredate >= NOW() OR {$tbl}core_expiredate IS NULL )";
-        }
-        // TODO Implement author condition
-
-        if (!empty($filter_where['where'])) {
-            $where[] = $filter_where['where'];
-        }
-
-        $where = implode(' AND ', $where);
-
-        if ($args['countmode'] <> 'just') {
-            if (isset($joinInfo)) {
-                // FIXME PORT TO OOP
-                //$publist = DBUtil::selectExpandedObjectArray($tablename, $joinInfo, $where, $orderby, $args['startnum']-1, $args['itemsperpage']);
-            } else {
-                $publist = $tableObj->selectCollection($where, $orderby, $args['startnum']-1, $args['itemsperpage']);
+            //// Offset and limit
+            if ($args['startnum']-1 > 0) {
+                $query->offset($args['startnum']-1);
             }
+
+            if ($args['itemsperpage'] > 0) {
+                $query->limit($args['itemsperpage']);
+            }
+
+            //// execution and postprocess
+            $publist = $query->execute();
+
             for ($i = 0; $i < count($publist); $i++) {
-                $publist[$i]->pubPostProcess($getApprovalState);
+                $publist[$i]->pubPostProcess($args);
             }
-            if ($handlePluginFields) {
-                $publist = PageMaster_Util::handlePluginFields($publist);
-            }
-        }
-
-        if ($args['countmode'] == 'just' || $args['countmode'] == 'both') {
-            $pubcount = $tableObj->selectCount($where);
         }
 
         return array (
@@ -242,14 +223,18 @@ class PageMaster_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
+        // old parameters (will be removed on 1.0)
+        $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : false;
+        $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : true;
+        $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
         // define the arguments
         $args = array(
             'tid'           => (int)$args['tid'],
             'pid'           => isset($args['pid']) ? (int)$args['pid'] : null,
             'id'            => isset($args['id']) ? (int)$args['id'] : null,
-            'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : false,
-            'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : true,
-            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : false
+            'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
+            'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
         );
 
         $pubtype = PageMaster_Util::getPubType($args['tid']);
@@ -277,9 +262,9 @@ class PageMaster_Api_User extends Zikula_Api
         if (!SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}::", ACCESS_ADMIN))
         {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-                $query->where('(core_author = ? OR core_online = ?)', array($uid, 1));
+                $query->andWhere('(core_author = ? OR core_online = ?)', array($uid, 1));
             } else {
-                $query->where('core_online = ?', 1);
+                $query->andWhere('core_online = ?', 1);
             }
             $query->andWhere('core_indepot = ?', 0);
             $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
@@ -300,6 +285,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // FIXME control this by relation config
+        $args['checkrefs'] = true;
         $args['rel.onlyown'] = false;
         $args['rel.checkperm'] = false;
         $args['rel.handleplugins'] = false;
