@@ -13,14 +13,14 @@
             <span class="pm-breadtext">
                 {gt text=$pubtype.title}
             </span>
-            {checkpermissionblock component='pagemaster:input:' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
-            <span>
-                <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid}">
-                    {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
-                </a>
-            </span>
-            {/checkpermissionblock}
         {/if}
+        {checkpermissionblock component='pagemaster:input:' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
+        <span>
+            <a href="{modurl modname='PageMaster' type='user' func='edit' tid=$pubtype.tid}">
+                {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
+            </a>
+        </span>
+        {/checkpermissionblock}
 
         {if $section neq 'list' and $section neq 'pending'}
             <span class="text_separator">&raquo;</span>
