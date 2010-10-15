@@ -27,7 +27,7 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
      *
      * @return void
      */
-    public function pubPostProcess($args)
+    public function pubPostProcess($args = array())
     {
         $tablename = $this->_table->getInternalTableName();
         $tid = PageMaster_Util::getTidFromStringSuffix($tablename);
@@ -39,7 +39,7 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
         $this->mapValue('core_uniqueid', "{$tid}-{$this['core_pid']}");
         $this->mapValue('core_title' , $this[$core_title]);
         $this->mapValue('core_creator', ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
-        $this->mapValue('__WORKFLOW__', array());
+        $this->mapValue('__WORKFLOW__', array('state' => null));
 
         // handle the plugins data if needed
         if (!isset($args['handleplugins']) || $args['handleplugins']) {
@@ -146,11 +146,31 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
      */
     public function getRelations($onlyown = true)
     {
+        $tablename = $this->_table->getInternalTableName();
+        $tid = PageMaster_Util::getTidFromStringSuffix($tablename);
+
         $relations = array();
 
-        foreach ($this->_table->getRelations() as $key => $relation) {
-            if (!$onlyown || $relation['local'] == 'pm_id') {
-                $relations[$key] = PageMaster_Util::getTidFromStringSuffix($relation->getClass());
+        // load own
+        $records = PageMaster_Util::getRelations($tid, true);
+        foreach ($records as $relation) {
+            $relations[$relation['alias1']] = array(
+                'tid'   => $relation['tid2'],
+                'type'  => $relation['type'],
+                'own'   => true
+            );
+        }
+
+        if (!$onlyown) {
+            // load foreign
+            $records = PageMaster_Util::getRelations($tid, false);
+
+            foreach ($records as $relation) {
+                $relations[$relation['alias2']] = array(
+                    'tid'   => $relation['tid1'],
+                    'type'  => $relation['type'],
+                    'own'   => false
+                );
             }
         }
 

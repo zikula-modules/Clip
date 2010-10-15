@@ -548,7 +548,7 @@ class PageMaster_Util
         static $relation_arr;
 
         if (!isset($relation_arr) || $force) {
-            $relation_arr = Doctrine_Core::getTable('PageMaster_Model_Pubrelation')->getRelations();
+            $relation_arr = Doctrine_Core::getTable('PageMaster_Model_Pubrelation')->getClipRelations();
         }
 
         $own = $owningSide ? 'own' : 'not';

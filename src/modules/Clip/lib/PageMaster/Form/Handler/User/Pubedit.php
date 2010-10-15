@@ -31,15 +31,19 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
         $this->goto = FormUtil::getPassedValue('goto', '');
 
-        // initialize the publication array
-        $pubdata = array();
-
         // process a new or existing pub, and it's available actions
         if (!empty($this->id)) {
             $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get', array(
                 'tid' => $this->tid,
                 'id'  => $this->id
             ));
+
+            // validate the pudblication
+            if (!$pubdata) {
+                LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($this->tid, $this->id)));
+
+                return $view->redirect(ModUtil::url('PageMaster', 'user', 'view', array('tid' => $this->tid)));
+            }
 
             $this->pubAssign($pubdata);
 
@@ -87,18 +91,14 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         // detect the relations
         $this->relations = array();
+        // TODO fix this value through config
+        $onlyown = false;
 
-        foreach ($pubdata->getRelations() as $key => $tid) {
+        foreach ($pubdata->getRelations($onlyown) as $key => $rel) {
             // set the data object
             $data[$key] = $pubdata[$key];
             // set additional relation fields
-            $rel = $this->getRelationType($key);
-            $this->relations[$key] = array(
-                'tid'   => $tid,
-                'alias' => $this->__($key),
-                'type'  => $rel['type'],
-                'own'   => $rel['own']
-            );
+            $this->relations[$key] = array_merge($rel, array('alias' => $this->__($key)));
         }
 
         $view->assign('relations', $this->relations);
@@ -273,51 +273,21 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         return $this->tid;
     }
 
-    protected function getRelationType($alias)
-    {
-        $result = false;
-
-        $relationtypes1 = PageMaster_Util::getRelations($this->tid, true);
-        $relationtypes2 = PageMaster_Util::getRelations($this->tid, false);
-
-        foreach ($relationtypes1 as $relation) {
-            if ($relation['alias1'] == $alias) {
-                $result = array(
-                    'type' => $relation['type'],
-                    'own'  => true
-                );
-                break;
-            }
-        }
-        if ($result === false) {
-            foreach ($relationtypes1 as $relation) {
-                if ($relation['alias2'] == $alias) {
-                    $result = array(
-                        'type' => $relation['type'],
-                        'own'  => false
-                    );
-                    break;
-                }
-            }
-        }
-
-        return $result;
-    }
-
     /**
      * Publication data handlers
      */
-    private function pubDefault($pubdata)
+    private function pubDefault(&$pubdata)
     {
         $pubdata['core_author']   = UserUtil::getVar('uid');
         $pubdata['core_language'] = '';
 
-        $pubdata->pubPostProcess();
+        $pubdata->pubPostProcess(array('loadworkflow' => true));
         $this->pub = $pubdata;
     }
 
-    private function pubAssign($pubdata)
+    private function pubAssign(&$pubdata)
     {
+        $pubdata->pubPostProcess(array('loadworkflow' => true));
         $this->pub = $pubdata;
     }
 
@@ -333,10 +303,11 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         // fill the relations data if present
         foreach (array_keys($this->relations) as $alias) {
             if (isset($data[$alias])) {
-                $this->pub->link($alias, $data[$alias]);
+                $this->pub->link($alias, (array)$data[$alias]);
                 unset($data[$alias]);
             }
         }
+
         // fill any other data
         $this->pub->fromArray($data);
     }

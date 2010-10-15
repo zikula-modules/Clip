@@ -51,6 +51,8 @@ class ClipFormRelation extends Form_Plugin_TextInput
             // assign existing data if available
             if (isset($view->_tpl_vars['pubdata'][$this->relinfo['alias']])) {
                 $this->relinfo['data'] = $view->_tpl_vars['pubdata'][$this->relinfo['alias']];
+            } else {
+                $this->relinfo['data'] = null;
             }
 
             // detects single or multiple relation
@@ -118,7 +120,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
             <ul class="z-auto-feed">
                 ';
         if ($this->relinfo['single']) {
-            if (!is_null($this->relinfo['data']['id'])) {
+            if (isset($this->relinfo['data']['id'])) {
                 $relpub = $this->relinfo['data'];
                 $relpub->pubPostProcess();
                 $typeDataHtml .= '<li value="'.$relpub['id'].'">'.$relpub['core_title'].'</li>';

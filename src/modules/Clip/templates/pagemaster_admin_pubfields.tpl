@@ -10,7 +10,7 @@
 
     {pmadminsubmenu tid=$tid field=1}
 
-    <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data permanently. Be careful!'}</p>
+    <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
 
     <div class="z-form">
         <fieldset>

@@ -215,7 +215,7 @@ class PageMaster_Api_User extends Zikula_Api
      */
     public function get($args)
     {
-        // validation of essential parameters
+        //// Validation
         if (!isset($args['tid']) || !is_numeric($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
@@ -223,6 +223,7 @@ class PageMaster_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
+        //// Parameters
         // old parameters (will be removed on 1.0)
         $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : false;
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : true;
@@ -237,6 +238,7 @@ class PageMaster_Api_User extends Zikula_Api
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
         );
 
+        //// Misc values
         $pubtype = PageMaster_Util::getPubType($args['tid']);
         // validate the pubtype
         if (!$pubtype) {
@@ -251,7 +253,7 @@ class PageMaster_Api_User extends Zikula_Api
 
         $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid']);
 
-        // build the query
+        //// Query setup
         $args['queryalias'] = "pub_{$args['tid']}_"
                               .($args['pid'] ? $args['pid'] : '')
                               .($args['id'] ? '_'.$args['id'] : '');
@@ -259,6 +261,7 @@ class PageMaster_Api_User extends Zikula_Api
         $uid   = UserUtil::getVar('uid');
         $query = $tableObj->createQuery($args['queryalias']);
 
+        // add the conditions to the query
         if (!SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}::", ACCESS_ADMIN))
         {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
@@ -277,13 +280,14 @@ class PageMaster_Api_User extends Zikula_Api
                 $query->andWhere('id = ?', $args['id']);
             }
         } else {
-            if (empty($id)) {
-                $query->where('(core_pid = ? OR core_online = ?)', array($args['pid'], 1));
+            if (empty($args['id'])) {
+                $query->where('(core_pid = ? AND core_online = ?)', array($args['pid'], 1));
             } else {
                 $query->where('id = ?', $args['id']);
             }
         }
 
+        //// Relations
         // FIXME control this by relation config
         $args['checkrefs'] = true;
         $args['rel.onlyown'] = false;
@@ -293,8 +297,8 @@ class PageMaster_Api_User extends Zikula_Api
 
         // adds the relations data
         $record = $tableObj->getRecordInstance();
-        foreach ($record->getRelations($args['rel.onlyown']) as $ralias => $rtid) {
-            $query->leftJoin("{$args['queryalias']}.$ralias");
+        foreach ($record->getRelations($args['rel.onlyown']) as $ralias => $rinfo) {
+            $query->leftJoin("{$args['queryalias']}.{$ralias}");
         }
 
         // fetch the publication
@@ -333,31 +337,31 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // assign for easy handling of the data
-        $data = $args['data'];
+        $obj = $args['data'];
 
         // extract the schema name
-        $pubtype = PageMaster_Util::getPubType($data['core_tid']);
+        $pubtype = PageMaster_Util::getPubType($obj['core_tid']);
         $schema  = str_replace('.xml', '', $pubtype->workflow);
 
-        $pubfields = PageMaster_Util::getPubFields($data['core_tid']);
+        $pubfields = PageMaster_Util::getPubFields($obj['core_tid']);
 
         foreach ($pubfields as $fieldname => $field)
         {
             $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
             if (method_exists($plugin, 'preSave')) {
-                $data[$fieldname] = $plugin->preSave($data, $field);
+                $obj[$fieldname] = $plugin->preSave($obj, $field);
             }
         }
 
-        $ret = Zikula_Workflow_Util::executeAction($schema, $data, $args['commandName'], $pubtype->getTableName(), 'PageMaster');
+        $ret = Zikula_Workflow_Util::executeAction($schema, $obj, $args['commandName'], $pubtype->getTableName(), 'PageMaster');
 
         if (empty($ret)) {
             return LogUtil::registerError($this->__('Workflow action error.'));
         }
 
-        $data->mapValue('core_operations', $ret);
+        $obj->mapValue('core_operations', $ret);
 
-        return $data;
+        return $obj;
     }
 
     /**
@@ -401,7 +405,9 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // build the where clause
-        $where = "core_pid = '$args[pid]' AND core_online = '1'";
+        $where = array(
+                     array('core_pid = ? AND core_online = ?', array($args['pid'], 1))
+                 );
 
         return Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid'])
                ->selectField('id', $where);

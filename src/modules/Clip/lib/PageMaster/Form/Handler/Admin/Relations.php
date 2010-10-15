@@ -30,8 +30,8 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
             return $view->redirect(ModUtil::url('PageMaster', 'admin', 'pubtypes'));
         }
 
-        $id  = FormUtil::getPassedValue('id', 0);
-        $tid = FormUtil::getPassedValue('tid', 0);
+        $id  = (int)FormUtil::getPassedValue('id', 0);
+        $tid = (int)FormUtil::getPassedValue('tid', 0);
 
         $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubrelation');
 
@@ -157,8 +157,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                     // setup the return url as the edit form
                     // to update the corresponding tables
                     $this->returnurl = ModUtil::url('PageMaster', 'admin', 'relations',
-                                                    array('tid' => $tid,
-                                                          'id'  => $id));
+                                                    array('id'  => $this->id));
 
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
                 } else {
@@ -176,8 +175,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                     return LogUtil::registerError($this->__('Error! Deletion attempt failed.'));
                 }
 
-                $this->returnurl = ModUtil::url('PageMaster', 'admin', 'relations',
-                                                array('tid' => $tid));
+                $this->returnurl = ModUtil::url('PageMaster', 'admin', 'relations');
                 break;
         }
 

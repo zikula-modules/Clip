@@ -14,7 +14,7 @@
  */
 class PageMaster_Model_PubrelationTable extends Zikula_Doctrine_Table
 {
-    public function getRelations()
+    public function getClipRelations()
     {
         $relations = $this->selectCollection('', 'tid2')
                           ->toArray();

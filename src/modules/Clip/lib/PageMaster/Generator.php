@@ -365,18 +365,33 @@ class PageMaster_Generator
                 // build the relation code
                 $reldefinition = "PageMaster_Model_Pubdata{$relation['tid2']} as {$relation['alias1']}";
                 // set the relation arguments
-                if ($relation['type'] < 3) {
-                    $relargs = array(
-                        'local'   => 'id',
-                        'foreign' => "rel_{$relation['id']}"
-                    );
-                } else {
-                    // many2many
-                    $relargs = array(
-                        'local'    => "rel_{$relation['id']}_1",
-                        'foreign'  => "rel_{$relation['id']}_2",
-                        'refClass' => "PageMaster_Model_Relation{$relation['id']}"
-                    );
+                switch ($relation['type']) {
+                    case 0: // o2o
+                    case 1: // o2m
+                        $relargs = array(
+                            'local'   => 'id',
+                            'foreign' => "rel_{$relation['id']}"
+                        );
+                        break;
+                    case 2: // m2o
+                        $relargs = array(
+                            'local'   => "rel_{$relation['id']}",
+                            'foreign' => 'id'
+                        );
+                        // add the relation column definition
+                        $columns["pm_rel_{$relation['id']}"] = "rel_{$relation['id']}";
+                        $def["pm_rel_{$relation['id']}"] = array(
+                            'type'     => 'integer',
+                            'length'   => 4,
+                            'unsigned' => false
+                        );
+                        break;
+                    case 3: // m2m
+                        $relargs = array(
+                            'local'    => "rel_{$relation['id']}_1",
+                            'foreign'  => "rel_{$relation['id']}_2",
+                            'refClass' => "PageMaster_Model_Relation{$relation['id']}"
+                        );
                 }
                 $relargs = var_export($relargs, true);
                 $relargs = str_replace('array (', 'array(', $relargs);
@@ -407,18 +422,33 @@ class PageMaster_Generator
                 // build the relation code
                 $reldefinition = "PageMaster_Model_Pubdata{$relation['tid1']} as {$relation['alias2']}";
                 // set the relation arguments
-                if ($relation['type'] < 3) {
-                    $relargs = array(
-                        'local'   => "rel_{$relation['id']}",
-                        'foreign' => 'id'
-                    );
-                } else {
-                    // many2many
-                    $relargs = array(
-                        'local'    => "rel_{$relation['id']}_2",
-                        'foreign'  => "rel_{$relation['id']}_1",
-                        'refClass' => "PageMaster_Model_Relation{$relation['id']}"
-                    );
+                switch ($relation['type']) {
+                    case 0: //o2o
+                    case 1: //o2m
+                        $relargs = array(
+                            'local'   => "rel_{$relation['id']}",
+                            'foreign' => 'id'
+                        );
+                        // add the relation column definition
+                        $columns["pm_rel_{$relation['id']}"] = "rel_{$relation['id']}";
+                        $def["pm_rel_{$relation['id']}"] = array(
+                            'type' => 'integer',
+                            'length' => 4,
+                            'unsigned' => false
+                        );
+                        break;
+                    case 2: //m2o
+                        $relargs = array(
+                            'local'   => 'id',
+                            'foreign' => "rel_{$relation['id']}"
+                        );
+                        break;
+                    case 3: // m2m
+                        $relargs = array(
+                            'local'    => "rel_{$relation['id']}_2",
+                            'foreign'  => "rel_{$relation['id']}_1",
+                            'refClass' => "PageMaster_Model_Relation{$relation['id']}"
+                        );
                 }
                 $relargs = var_export($relargs, true);
                 $relargs = str_replace('array (', 'array(', $relargs);
@@ -429,15 +459,6 @@ class PageMaster_Generator
                 $hasRelations .= "
         \$this->$method('$reldefinition', $relargs);
         ";
-                // add the foreign column definition for non-m2m
-                if ($relation['type'] < 3) {
-                    $columns["pm_rel_{$relation['id']}"] = "rel_{$relation['id']}";
-                    $def["pm_rel_{$relation['id']}"] = array(
-                        'type' => 'integer',
-                        'length' => 4,
-                        'unsigned' => false
-                    );
-                }
             }
         }
 
