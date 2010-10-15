@@ -545,21 +545,22 @@ class PageMaster_Controller_User extends Zikula_Controller
      */
     public function editlist($args=array())
     {
-        $args['tid']     = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $args['pid']     = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
-        $edit            = isset($args['edit']) ? $args['edit'] : FormUtil::getPassedValue('edit', 1);
-        $menu            = isset($args['menu']) ? $args['menu'] : FormUtil::getPassedValue('menu', 1);
+        $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+        $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
+        $edit       = isset($args['edit']) ? $args['edit'] : FormUtil::getPassedValue('edit', 1);
+        $menu       = isset($args['menu']) ? $args['menu'] : FormUtil::getPassedValue('menu', 1);
+        $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
+        $source     = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
+
         $args['orderby'] = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
-        $returntype      = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
-        $source          = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
 
         $pubData = ModUtil::apiFunc('PageMaster', 'user', 'editlist', $args);
 
         // create the output object
         $this->view->assign('allTypes',   $pubData['allTypes'])
                    ->assign('publist',    $pubData['pubList'])
-                   ->assign('tid',        $args['tid'])
-                   ->assign('pid',        $args['pid'])
+                   ->assign('tid',        $tid)
+                   ->assign('pid',        $pid)
                    ->assign('edit',       $edit)
                    ->assign('menu',       $menu)
                    ->assign('returntype', $returntype)

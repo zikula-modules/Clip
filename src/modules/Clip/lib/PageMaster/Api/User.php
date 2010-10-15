@@ -425,7 +425,7 @@ class PageMaster_Api_User extends Zikula_Api
      */
     public function editlist($args=array())
     {
-        $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid');
+        $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
 
         $allTypes = array();
         $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
