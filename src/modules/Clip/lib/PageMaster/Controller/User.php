@@ -25,135 +25,134 @@ class PageMaster_Controller_User extends Zikula_Controller
     /**
      * Publications list.
      *
-     * @param integer $args['tid']                ID of the publication type.
-     * @param string  $args['template']           Custom publication type template to use.
-     * @param string  $args['filter']             Filter string.
-     * @param string  $args['orderby']            OrderBy string.
-     * @param integer $args['itemsperpage']       Number of items to retrieve.
-     * @param integer $args['startnum']           Offset to start from.
-     * @param boolean $args['checkperm']          Whether to check the permissions.
-     * @param boolean $args['handlePluginFields'] Whether to parse the plugin fields.
-     * @param boolean $args['getApprovalState']   Whether to add the workflow information.
-     * @param integer $args['cachelifetime']      Cache lifetime (empty for default config).
+     * @param integer $args['tid']           ID of the publication type.
+     * @param string  $args['template']      Custom publication type template to use.
+     * @param string  $args['filter']        Filter string.
+     * @param string  $args['orderby']       OrderBy string.
+     * @param integer $args['startnum']      Offset to start from.
+     * @param integer $args['itemsperpage']  Number of items to retrieve.
+     * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
+     * @param boolean $args['loadworkflow']  Whether to add the workflow information.
+     * @param integer $args['cachelifetime'] Cache lifetime (empty for default config).
      *
      * @return string Publication list output.
      */
     public function view($args)
     {
+        //// Validation
         // get the tid first
-        $tid = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        if (empty($tid) || !is_numeric($tid)) {
+        if (empty($args['tid']) || !is_numeric($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($tid);
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
         if (empty($pubtype)) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        // get the input parameters
-        $template           = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
-        $filter             = isset($args['filter']) ? $args['filter'] : null;
-        $orderby            = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
-        $itemsperpage       = isset($args['itemsperpage']) ? (int)$args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage']);
-        $startnum           = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
-        $handlePluginFields = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
-        $getApprovalState   = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
-        $cachelifetime      = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']);
+        //// Parameters
+        // old parameters (will be removed on 1.0)
+        $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
+        $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
+        // define the arguments
+        $args = array(
+            'tid'           => $args['tid'],
+            'template'      => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
+            'filter'        => isset($args['filter']) ? $args['filter'] : null,
+            'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
+            'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : FormUtil::getPassedValue('startnum'),
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] > 0) ? (int)$args['itemsperpage'] : $pubtype['itemsperpage'],
+            'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
+            'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
+            'checkperm'     => false, // API default
+            'countmode'     => 'both' // API default
+        );
 
-        // validation
-        $itemsperpage = (int)$itemsperpage > 0 ? (int)$itemsperpage : $pubtype['itemsperpage'];
+        $args['orderby'] = PageMaster_Util::createOrderBy($args['orderby']);
 
-        if (empty($template)) {
+        if (empty($args['template'])) {
             // template comes from pubtype
-            $sec_template = $pubtype['outputset'];
-            $template     = $pubtype['outputset'].'/list.tpl';
+            $args['templateid'] = $pubtype['outputset'];
+            $args['template']   = $pubtype['outputset'].'/list.tpl';
         } else {
             // template comes from parameter
-            $template     = DataUtil::formatForOS($template);
-            $sec_template = $pubtype['outputset']."_{$template}";
-            $template     = $pubtype['outputset']."/list_{$template}.tpl";
+            $args['template']   = DataUtil::formatForOS($args['template']);
+            $args['templateid'] = $pubtype['outputset']."_{$args['template']}";
+            $args['template']   = $pubtype['outputset']."/list_{$args['template']}.tpl";
         }
 
-        // security check as early as possible
-        if (!SecurityUtil::checkPermission('pagemaster:list:', "$tid::$sec_template", ACCESS_READ)) {
+        //// Security check
+        if (!SecurityUtil::checkPermission('pagemaster:list:', "{$args['tid']}::{$args['templateid']}", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
+        //// Output setup
         // check if this view is cached
-        if (!empty($cachelifetime)) {
-            $this->view->setCache_lifetime($cachelifetime);
+        if (!empty($args['cachelifetime'])) {
+            $this->view->setCache_lifetime($args['cachelifetime']);
             $cachetid = true;
-            $cacheid  = 'view'.$tid.'|'.$sec_template
-                        .'|'.(!empty($filter) ? $filter : 'nofilter')
-                        .'|'.(!empty($orderby) ? $orderby : 'noorderby')
-                        .'|'.(!empty($itemsperpage) ? $itemsperpage : 'nolimit')
-                        .'|'.(!empty($startnum) ? $startnum : 'nostartnum');
+            $cacheid  = 'view'.$args['tid'].'|'.$args['templateid']
+                        .'|'.(!empty($args['filter']) ? $args['filter'] : 'nofilter')
+                        .'|'.(!empty($args['orderby']) ? $args['orderby'] : 'noorderby')
+                        .'|'.(!empty($args['itemsperpage']) ? $args['itemsperpage'] : 'nolimit')
+                        .'|'.(!empty($args['startnum']) ? $args['startnum'] : 'nostartnum');
         } else {
             $cachetid = false;
             $cacheid  = null;
         }
 
-        // builds the output
+        // set the output info
         $this->view->setCache_Id($cacheid)
                    ->setCaching($cachetid)
                    ->add_core_data();
 
-        if ($cachetid && $this->view->is_cached($template, $cacheid)) {
-            return $this->view->fetch($template, $cacheid);
+        if ($cachetid && $this->view->is_cached($args['template'], $cacheid)) {
+            return $this->view->fetch($args['template'], $cacheid);
         }
 
-        $returnurl = System::getCurrentUrl();
-
-        $orderby = PageMaster_Util::createOrderBy($orderby);
-
-        $pubfields = PageMaster_Util::getPubFields($tid, 'lineno');
+        //// Misc values
+        $pubfields = PageMaster_Util::getPubFields($args['tid'], 'lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
         $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
-        // Uses the API to get the list of publications
-        $result = ModUtil::apiFunc('PageMaster', 'user', 'getall',
-                                   array('tid'                => $tid,
-                                         'filter'             => $filter,
-                                         'orderby'            => $orderby,
-                                         'itemsperpage'       => $itemsperpage,
-                                         'startnum'           => $startnum,
-                                         'countmode'          => ($itemsperpage != 0) ? 'both' : 'no',
-                                         'checkPerm'          => false, // already checked
-                                         'handlePluginFields' => $handlePluginFields,
-                                         'getApprovalState'   => $getApprovalState));
+        //// API call
+        // uses the API to get the list of publications
+        $result = ModUtil::apiFunc('PageMaster', 'user', 'getall', $args);
 
-        // Assign the data to the output
+        //// Build the output
+        // assign the data to the output
         $this->view->assign('pubtype',   $pubtype)
                    ->assign('publist',   $result['publist'])
-                   ->assign('returnurl', $returnurl);
+                   ->assign('returnurl', System::getCurrentUrl());
 
-        // Assign the pager values
+        // assign the pager values
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
-                                           'itemsperpage' => $itemsperpage));
+                                           'itemsperpage' => $args['itemsperpage']));
 
-        // Check if template is available
-        if (!$this->view->template_exists($template)) {
+        // check if template is available
+        if (!$this->view->template_exists($args['template'])) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
-                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
 
             // return an error/void if a block template does not exists
-            if (strpos($sec_template, $pubtype['outputset'].'_block_') === 0) {
-                return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
+            if (strpos($args['templateid'], $pubtype['outputset'].'_block_') === 0) {
+                return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $args['template'])) : '';
             }
 
             $this->view->assign('clip_generic_tpl', true);
 
-            $template = 'pagemaster_generic_list.tpl';
+            $args['template'] = 'pagemaster_generic_list.tpl';
         }
 
-        return $this->view->fetch($template, $cacheid);
+        return $this->view->fetch($args['template'], $cacheid);
     }
 
     /**
@@ -169,65 +168,72 @@ class PageMaster_Controller_User extends Zikula_Controller
      */
     public function display($args)
     {
+        //// Validation
         // get the tid first
-        $tid = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        if (empty($tid) || !is_numeric($tid)) {
+        if (empty($args['tid']) || !is_numeric($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($tid);
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
         if (empty($pubtype)) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        // get the input parameters
-        $pid      = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
-        $id       = isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id');
-        $template = isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template');
-        $cachelt  = isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']);
+        //// Parameters
+        // define the arguments
+        $args = array(
+            'tid'           => $args['tid'],
+            'pid'           => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
+            'id'            => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
+            'template'      => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
+            'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
+            'checkPerm'     => false, // API default
+            'handleplugins' => true,  // API default
+            'loadworkflow'  => true   // API default
+        );
 
-        // validation
-        if ((empty($pid) || !is_numeric($pid)) && (empty($id) || !is_numeric($id))) {
+        // post validation
+        if ((empty($args['pid']) || !is_numeric($args['pid'])) && (empty($args['id']) || !is_numeric($args['id']))) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
         // get the pid if it was not passed
-        if (empty($pid)) {
-            $pid = ModUtil::apiFunc('PageMaster', 'user', 'getPid',
-                                    array('tid' => $tid,
-                                          'id'  => $id));
+        if (empty($args['pid'])) {
+            $args['pid'] = ModUtil::apiFunc('PageMaster', 'user', 'getPid', $args);
         }
 
         // determine the template to use
-        if (empty($template)) {
+        if (empty($args['template'])) {
             // template for the security check
-            $sec_template = $pubtype['outputset'];
+            $args['templateid'] = $pubtype['outputset'];
             // template comes from pubtype
-            $template     = $pubtype['outputset'].'/display.tpl';
+            $args['template']   = $pubtype['outputset'].'/display.tpl';
         } else {
             // template comes from parameter
-            $template     = DataUtil::formatForOS($template);
-            $sec_template = $pubtype['outputset']."_{$template}";
+            $args['template']   = DataUtil::formatForOS($args['template']);
+            $args['templateid'] = $pubtype['outputset']."_{$args['template']}";
             // check for related plain templates
-            if (in_array($template, array('pending'))) {
-                $simpletemplate = $pubtype['outputset']."/display_{$template}.tpl";
+            if (in_array($args['template'], array('pending'))) {
+                $args['templatesimple'] = $pubtype['outputset']."/display_{$args['template']}.tpl";
             } else {
-                $template = $pubtype['outputset']."/display_{$template}.tpl";
+                $args['template'] = $pubtype['outputset']."/display_{$args['template']}.tpl";
             }
         }
 
-        // security check as early as possible
-        if (!SecurityUtil::checkPermission('pagemaster:full:', "$tid:$pid:$sec_template", ACCESS_READ)) {
+        //// Security check
+        if (!SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}:{$args['pid']}:{$args['templateid']}", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
+        //// Output setup
         // check if this view is cached
-        if (!empty($cachelt) && !SecurityUtil::checkPermission('pagemaster:input:', "$tid:$pid:", ACCESS_ADMIN)) {
+        if (!empty($cachelt) && !SecurityUtil::checkPermission('pagemaster:input:', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
             $this->view->setCache_lifetime($cachelt);
             // second clause allow developer to add an edit button on the "display" template
             $cachetid = true;
-            $cacheid = 'display'.$tid.'|'.$pid.'|'.$sec_template;
+            $cacheid = 'display'.$args['tid'].'|'.$args['pid'].'|'.$args['templateid'];
         } else {
             $cachetid = false;
             $cacheid  = null;
@@ -238,70 +244,65 @@ class PageMaster_Controller_User extends Zikula_Controller
                    ->setCache_Id($cacheid)
                    ->add_core_data();
 
-        if ($cachetid && $this->view->is_cached($template, $cacheid)) {
-            return $this->view->fetch($template, $cacheid);
+        if ($cachetid && $this->view->is_cached($args['template'], $cacheid)) {
+            return $this->view->fetch($args['template'], $cacheid);
         }
 
-        // fetch plain templates
-        if (isset($simpletemplate)) {
-            if (!$this->view->template_exists($simpletemplate)) {
-                $simpletemplate = "pagemaster_general_{$template}.tpl";
-                if (!$this->view->template_exists($simpletemplate)) {
-                    $simpletemplate = '';
+        // fetch simple templates
+        if (isset($args['templatesimple'])) {
+            if (!$this->view->template_exists($args['templatesimple'])) {
+                $args['templatesimple'] = "pagemaster_general_{$args['template']}.tpl";
+                if (!$this->view->template_exists($args['templatesimple'])) {
+                    $args['templatesimple'] = '';
                 }
             }
-            if ($simpletemplate != '') {
+            if ($args['templatesimple'] != '') {
                 $this->view->assign('pubtype', $pubtype);
-                return $this->view->fetch($simpletemplate, $cacheid);
+                return $this->view->fetch($args['templatesimple'], $cacheid);
             }
         }
 
+        //// Misc values
         // not cached or cache disabled, then get the Pub from the DB
-        $pubfields = PageMaster_Util::getPubFields($tid);
+        $pubfields = PageMaster_Util::getPubFields($args['tid']);
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
         $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
-        $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get',
-                                    array('tid'                => $tid,
-                                          'id'                 => $id,
-                                          'pid'                => $pid,
-                                          'checkPerm'          => false, //check later, together with template
-                                          'getApprovalState'   => true,
-                                          'handlePluginFields' => true));
+        //// API call
+        $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get', $args);
         if (!$pubdata) {
-            return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($tid, $pid, $id)));
+            return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($args['tid'], $args['pid'], $id)));
         }
 
-        // assign each field of the pubdata to the output
-        $this->view->assign('pubdata', $pubdata);
+        //// Build the output
+        // assign the pubdata and pubtype to the output
+        $this->view->assign('pubdata', $pubdata)
+                   ->assign('pubtype', $pubtype);
 
-        // process the output
-        $this->view->assign('pubtype', $pubtype);
-
-        // Check if template is available
-        if (!$this->view->template_exists($template)) {
+        // check if template is available
+        if (!$this->view->template_exists($args['template'])) {
             $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
             if ($alert) {
-                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
 
             // return an error/void if a block template does not exists
-            if (strpos($sec_template, $pubtype['outputset'].'_block_') === 0) {
-                return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $template)) : '';
+            if (strpos($args['templateid'], $pubtype['outputset'].'_block_') === 0) {
+                return $alert ? LogUtil::registerError($this->__f('Notice: Template [%s] not found.', $args['template'])) : '';
             }
 
-            $template = 'var:template_generic_code';
+            $args['template'] = 'var:template_generic_code';
 
             // settings for the autogenerated display template
             $this->view->setCompile_check(true)
                        ->assign('clip_generic_tpl', true)
-                       ->assign('template_generic_code', PageMaster_Generator::pubdisplay($tid, $pubdata));
+                       ->assign('template_generic_code', PageMaster_Generator::pubdisplay($args['tid'], $pubdata));
         }
 
-        return $this->view->fetch($template, $cacheid);
+        return $this->view->fetch($args['template'], $cacheid);
     }
 
     /**
@@ -311,52 +312,59 @@ class PageMaster_Controller_User extends Zikula_Controller
      * @param integer $args['pid']           ID of the publication.
      * @param integer $args['id']            ID of the publication revision (optional if pid is used).
      * @param string  $args['template']      Custom publication type template to use.
-     * @param integer $args['cachelifetime'] Cache lifetime (empty for default config).
      *
      * @return Publication output.
      */
-    public function edit()
+    public function edit($args)
     {
-        // get the input parameters
-        $tid = FormUtil::getPassedValue('tid');
-        $pid = FormUtil::getPassedValue('pid');
-        $id  = FormUtil::getPassedValue('id');
+        //// Validation
+        // get the tid first
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        // validation
-        if (empty($tid) || !is_numeric($tid)) {
+        if (empty($args['tid']) || !is_numeric($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($tid);
-        if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        if (empty($pubtype)) {
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        $pubfields = PageMaster_Util::getPubFields($tid, 'pm_lineno');
+        //// Parameters
+        // define the arguments
+        $args = array(
+            'tid'           => $args['tid'],
+            'pid'           => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
+            'id'            => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
+            'template'      => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
+            'checkPerm'     => false, // API default
+            'handleplugins' => true,  // API default
+            'loadworkflow'  => true   // API default
+        );
+
+        //// Misc values
+        $pubfields = PageMaster_Util::getPubFields($args['tid'], 'pm_lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
         $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
 
-        if (empty($id) && !empty($pid)) {
-            $id = ModUtil::apiFunc('PageMaster', 'user', 'getId',
-                                   array('tid' => $tid,
-                                         'pid' => $pid));
-            if (!$id) {
-                return LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($tid, $pid)));
+        if (empty($args['id']) && !empty($args['pid'])) {
+            $args['id'] = (int)ModUtil::apiFunc('PageMaster', 'user', 'getId', $args);
+
+            if (!$args['id']) {
+                return LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($args['tid'], $args['pid'])));
             }
         }
 
-        // cast values to ensure the type
-        $id  = (int)$id;
-        $pid = (int)$pid;
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
 
         // get actual state for selecting form Template
         $stepname = 'initial';
 
-        if ($id) {
-            $obj = array('id' => $id);
+        if ($args['id']) {
+            $obj = array('id' => $args['id']);
             Zikula_Workflow_Util::getWorkflowForObject($obj, $pubtype->getTableName(), 'id', 'PageMaster');
             $stepname = $obj['__WORKFLOW__']['state'];
         }
@@ -364,12 +372,13 @@ class PageMaster_Controller_User extends Zikula_Controller
         // adds the stepname to the pubtype
         $pubtype->mapValue('stepname', $stepname);
 
-        // no security check needed - the security check will be done by the handler class.
-        // see the init-part of the handler class for details.
-        $formHandler = new PageMaster_Form_Handler_User_Pubedit();
+        // no security check needed
+        // the security check will be done for workflow actions and userapi.get
+        $handler = new PageMaster_Form_Handler_User_Pubedit();
         // setup the form handler
-        $formHandler->pmSetUp($id, $tid, $pubtype, $pubfields);
+        $handler->pmSetUp($args['id'], $args['tid'], $pubtype, $pubfields);
 
+        //// Build the output
         // create the output object
         $render = FormUtil::newForm('PageMaster');
 
@@ -377,21 +386,30 @@ class PageMaster_Controller_User extends Zikula_Controller
                ->add_core_data();
 
         // resolve the template to use
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
-
-        // individual step
+        // 1. individual step
         $template = $pubtype['inputset']."/form_{$stepname}.tpl";
 
         if (!empty($stepname) && $render->template_exists($template)) {
-            return $render->execute($template, $formHandler);
+            return $render->execute($template, $handler);
         }
 
-        // generic edit
+        // 2. custom template
+        $args['template'] = DataUtil::formatForOS($args['template']);
+        $template = $pubtype['inputset']."/form_{$args['template']}.tpl";
+
+        if (!empty($args['template']) && $render->template_exists($template)) {
+            return $render->execute($template, $handler);
+        }
+
+        // 3. generic edit
         $template = $pubtype['inputset'].'/form_all.tpl';
 
         if (!$render->template_exists($template)) {
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['inputset']."/form_{$stepname}.tpl"));
+                if (!empty($args['template'])) {
+                    LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['inputset']."/form_{$args['template']}.tpl"));
+                }
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
 
@@ -400,76 +418,86 @@ class PageMaster_Controller_User extends Zikula_Controller
             // settings for the autogenerated edit template
             $render->setCompile_check(true)
                    ->assign('clip_generic_tpl', true)
-                   ->assign('template_generic_code', PageMaster_Generator::pubedit($tid));
+                   ->assign('template_generic_code', PageMaster_Generator::pubedit($args['tid']));
         }
 
-        return $render->execute($template, $formHandler);
+        return $render->execute($template, $handler);
     }
 
     /**
-     * Executes a Workflow command over a direct URL Request.
+     * Executes a Workflow command directly.
      *
      * @param integer $args['tid']         ID of the publication type.
-     * @param integer $args['id']          ID of the publication revision (optional if pid is used).
+     * @param integer $args['id']          ID of the publication revision.
      * @param string  $args['commandName'] Command name has to be a valid workflow action for the currenct state.
      * @param string  $args['goto']        Redirect-to after execution.
      */
-    public function executecommand()
+    public function executecommand($args)
     {
-        // get the input parameters
-        $tid         = FormUtil::getPassedValue('tid');
-        $id          = FormUtil::getPassedValue('id');
-        $commandName = FormUtil::getPassedValue('commandName');
-        $goto        = FormUtil::getPassedValue('goto');
+        //// Validation
+        // get the tid first
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        // validation
-        if (empty($tid) || !is_numeric($tid)) {
+        if (empty($args['tid']) || !is_numeric($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($tid);
-        if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', DataUtil::formatForDisplay($tid)));
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        if (empty($pubtype)) {
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        // validation
-        if (!isset($id) || empty($id) || !is_numeric($id)) {
+        //// Parameters
+        // define the arguments
+        $args = array(
+            'tid'           => $args['tid'],
+            'id'            => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'),
+            'commandName'   => isset($args['commandName']) ? $args['commandName'] : FormUtil::getPassedValue('commandName'),
+            'goto'          => isset($args['goto']) ? $args['goto'] : FormUtil::getPassedValue('goto'),
+            'checkPerm'     => false, // API default
+            'handleplugins' => true,  // API default
+            'loadworkflow'  => true   // API default
+        );
+
+        // post validation
+        if (empty($args['id']) || !is_numeric($args['id'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'));
         }
 
-        if (empty($commandName)) {
+        if (empty($args['commandName'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'commandName'));
         }
 
+        //// Misc values
         // get the schema
-        $schema = str_replace('.xml', '', $pubtype->workflow);
+        $args['schema'] = str_replace('.xml', '', $pubtype->workflow);
 
         // get the publication
-        $pub = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)->find($id);
+        $pub = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid'])->find($args['id']);
 
         if (!$pub) {
-            return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', DataUtil::formatForDisplay($id)));
+            return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', DataUtil::formatForDisplay($args['id'])));
         }
 
-        Zikula_Workflow_Util::executeAction($schema, $pub, $commandName, $pubtype->getTableName(), 'PageMaster');
+        Zikula_Workflow_Util::executeAction($args['schema'], $pub, $commandName, $pubtype->getTableName(), 'PageMaster');
 
         // process the redirect
         $displayUrl = ModUtil::url('PageMaster', 'user', 'display',
-                                   array('tid' => $tid,
-                                         'id'  => $pub['id']));
+                                   array('tid' => $args['tid'],
+                                         'id'  => $args['id']));
 
         switch ($goto)
         {
             case 'edit':
                 $goto = ModUtil::url('PageMaster', 'user', 'edit',
-                                     array('tid' => $tid,
-                                           'id'  => $pub['id']));
+                                     array('tid' => $args['tid'],
+                                           'id'  => $args['id']));
                 break;
 
             case 'stepmode':
                 $goto = ModUtil::url('PageMaster', 'user', 'edit',
-                                      array('tid'  => $tid,
-                                            'id'   => $pub['id'],
+                                      array('tid'  => $args['tid'],
+                                            'id'   => $args['id'],
                                             'goto' => 'stepmode'));
                 break;
 
@@ -479,15 +507,15 @@ class PageMaster_Controller_User extends Zikula_Controller
 
             case 'editlist':
                 $goto = ModUtil::url('PageMaster', 'admin', 'editlist',
-                                     array('_id' => $tid.'_'.$pub['core_pid']));
+                                     array('_id' => $args['tid'].'_'.$pub['core_pid']));
                 break;
 
             case 'admin':
-                $goto = ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $tid));
+                $goto = ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $args['tid']));
                 break;
 
             case 'index':
-                $goto = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $tid));
+                $goto = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $args['tid']));
                 break;
 
             case 'home':
@@ -517,21 +545,21 @@ class PageMaster_Controller_User extends Zikula_Controller
      */
     public function editlist($args=array())
     {
-        $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
-        $edit       = isset($args['edit']) ? $args['edit'] : FormUtil::getPassedValue('edit', 1);
-        $menu       = isset($args['menu']) ? $args['menu'] : FormUtil::getPassedValue('menu', 1);
-        $orderby    = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
-        $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
-        $source     = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
+        $args['tid']     = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+        $args['pid']     = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
+        $edit            = isset($args['edit']) ? $args['edit'] : FormUtil::getPassedValue('edit', 1);
+        $menu            = isset($args['menu']) ? $args['menu'] : FormUtil::getPassedValue('menu', 1);
+        $args['orderby'] = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
+        $returntype      = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
+        $source          = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
 
         $pubData = ModUtil::apiFunc('PageMaster', 'user', 'editlist', $args);
 
         // create the output object
         $this->view->assign('allTypes',   $pubData['allTypes'])
                    ->assign('publist',    $pubData['pubList'])
-                   ->assign('tid',        $tid)
-                   ->assign('pid',        $pid)
+                   ->assign('tid',        $args['tid'])
+                   ->assign('pid',        $args['pid'])
                    ->assign('edit',       $edit)
                    ->assign('menu',       $menu)
                    ->assign('returntype', $returntype)

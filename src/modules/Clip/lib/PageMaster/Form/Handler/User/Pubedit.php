@@ -35,7 +35,8 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         if (!empty($this->id)) {
             $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get', array(
                 'tid' => $this->tid,
-                'id'  => $this->id
+                'id'  => $this->id,
+                'checkperm' => true
             ));
 
             // validate the pudblication
