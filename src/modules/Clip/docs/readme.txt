@@ -1,7 +1,7 @@
 
   WARNING
     The upgrade to 0.2.1 removes the dependency of the image/upload plugins data
-    to the PageMaster's upload path.
+    to the Clip's upload path.
     Be sure to have it correct to update the data massively and without problems.
     This will let you to change the uploaddir and move the folder in the filesystem
     without worry about the plugins data integrity.

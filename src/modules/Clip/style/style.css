@@ -291,7 +291,7 @@ ul.z-auto-holder li.z-auto-bit-input input.z-auto-smallinput {
 
 /* Boxes decoration */
 ul.z-auto-holder li.z-auto-bit-box a.z-auto-closebutton {
-  background: url('../images/close.gif');
+  background: url('../images/auto_close.gif');
   display: block;
   font-size: 1px;
   height: 7px;

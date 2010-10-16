@@ -106,7 +106,7 @@
       <state>approved</state>
       <operation online="1">updateOnlineState</operation>
 
-      <parameter class="z-bt-icon pm-bt-activate">button</parameter>
+      <parameter class="z-bt-icon clip-bt-activate">button</parameter>
     </action>
 
     <action id="offline">
@@ -116,7 +116,7 @@
       <state>approved</state>
       <operation online="0">updateOnlineState</operation>
 
-      <parameter class="z-bt-icon pm-bt-deactivate">button</parameter>
+      <parameter class="z-bt-icon clip-bt-deactivate">button</parameter>
     </action>
 
     <action id="MoveToDepot">

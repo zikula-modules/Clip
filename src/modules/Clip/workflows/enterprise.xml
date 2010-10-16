@@ -45,7 +45,7 @@
       <nextState>preview</nextState>
       <operation>createPub</operation>
 
-      <parameter class="z-bt-icon pm-bt-accept">button</parameter>
+      <parameter class="z-bt-icon clip-bt-accept">button</parameter>
     </action>
 
     <action id="submit">
@@ -81,7 +81,7 @@
       <operation>updatePub</operation>
       <operation type="contentnew" group="moderators">mailNotification</operation>
 
-      <parameter class="z-bt-icon pm-bt-accept">button</parameter>
+      <parameter class="z-bt-icon clip-bt-accept">button</parameter>
     </action>
 
     <action id="update">
@@ -101,7 +101,7 @@
       <state>waiting</state>
       <operation>deletePub</operation>
 
-      <parameter class="z-bt-icon pm-bt-reject" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
+      <parameter class="z-bt-icon clip-bt-reject" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
     </action>
 
     <!-- State: preview -->
@@ -167,7 +167,7 @@
       <state>approved</state>
       <operation online="1">updateOnlineState</operation>
 
-      <parameter class="z-bt-icon pm-bt-activate">button</parameter>
+      <parameter class="z-bt-icon clip-bt-activate">button</parameter>
     </action>
 
     <action id="offline">
@@ -177,7 +177,7 @@
       <state>approved</state>
       <operation online="0">updateOnlineState</operation>
 
-      <parameter class="z-bt-icon pm-bt-deactivate">button</parameter>
+      <parameter class="z-bt-icon clip-bt-deactivate">button</parameter>
     </action>
 
     <action id="MoveToDepot">

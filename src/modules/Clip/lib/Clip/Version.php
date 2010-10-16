@@ -16,8 +16,8 @@ class Clip_Version extends Zikula_Version
     {
         $meta = array();
         $meta['displayname']    = $this->__('Clip');
-        $meta['description']    = $this->__('Content Module like pagesetter');
-        $meta['oldnames']       = array('clip');
+        $meta['description']    = $this->__('Dynamic content publishing platform for Zikula.');
+        $meta['oldnames']       = array('PageMaster');
         //! module name that appears in URL
         $meta['url']            = $this->__('clip');
         $meta['version']        = '0.4.3';
