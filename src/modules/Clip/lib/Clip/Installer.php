@@ -121,6 +121,10 @@ class Clip_Installer extends Zikula_Installer
             case '0.4.0':
             case '0.4.1':
             case '0.4.2':
+            case '0.4.3':
+                self::renameClipTables();
+                break;
+            case '0.4.4':
                 $tables = DBUtil::getTables();
                 // further upgrade handling
                 // * map the field classnames to IDs
@@ -190,5 +194,56 @@ class Clip_Installer extends Zikula_Installer
         $this->delVars();
 
         return true;
+    }
+
+    /**
+     * Transition method to rename PageMaster to Clip
+     */
+    private static function renameClipTables()
+    {
+        $tables = DBUtil::getTables();
+
+        $tables['pagemaster_relations'] = DBUtil::getLimitedTablename('pagemaster_relations');
+        $tables['pagemaster_pubfields'] = DBUtil::getLimitedTablename('pagemaster_pubfields');
+        $tables['pagemaster_pubtypes']  = DBUtil::getLimitedTablename('pagemaster_pubtypes');
+
+        $tables['clip_relations'] = DBUtil::getLimitedTablename('clip_relations');
+        $tables['clip_pubfields'] = DBUtil::getLimitedTablename('clip_pubfields');
+        $tables['clip_pubtypes']  = DBUtil::getLimitedTablename('clip_pubtypes');
+
+        $GLOBALS['dbtables'] = array_merge((array)$GLOBALS['dbtables'], (array)$tables);
+
+        $existingtables = DBUtil::metaTables();
+
+        // detects and update the relations table
+        if (in_array(DBUtil::getLimitedTablename('pagemaster_relations'), $existingtables)) {
+            DBUtil::renameTable('pagemaster_relations', 'clip_relations');
+        }
+        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
+        if (in_array(DBUtil::getLimitedTablename('pagemaster_relations'), $existingtables)) {
+            //DBUtil::truncateTable('clip_relations');
+            $tableObj->changeTable();
+        } else {
+            $tableObj->createTable();
+        }
+        // rename the others
+        DBUtil::renameTable('pagemaster_pubfields', 'clip_pubfields');
+        DBUtil::renameTable('pagemaster_pubtypes',  'clip_pubtypes');
+
+        $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
+        foreach ($pubtypes as $tid) {
+            if (in_array(DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid), $existingtables)) {
+                $tables['pagemaster_pubdata'.$tid] = DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid);
+                $tables['clip_pubdata'.$tid] = DBUtil::getLimitedTablename('clip_pubdata'.$tid);
+                $GLOBALS['dbtables'] = array_merge((array)$GLOBALS['dbtables'], (array)$tables);
+                DBUtil::renameTable('pagemaster_pubdata'.$tid, 'clip_pubdata'.$tid);
+            }
+        }
+
+        $sql = "UPDATE {$tables['clip_pubfields']} SET pm_fieldplugin = REPLACE(pm_fieldplugin, 'PageMaster_', 'Clip_')";
+        DBUtil::executeSQL($sql);
+
+        $sql = "UPDATE {$tables['workflows']} SET module = 'Clip', obj_table = REPLACE(obj_table, 'pagemaster_', 'clip_') WHERE module = 'PageMaster' OR module = 'pagemaster'";
+        DBUtil::executeSQL($sql);
     }
 }

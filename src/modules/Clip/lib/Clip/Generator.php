@@ -29,7 +29,7 @@ class Clip_Generator
 
         // build the display code
         $template_code = "\n".
-                '{hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
+                '{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
                 '<h2>{gt text=$pubtype.title}</h2>'."\n".
                 "\n".
@@ -244,7 +244,7 @@ class Clip_Generator
             $template_code .= "\n".
                     '            <div class="z-formrow">'."\n".
                     '                {formlabel for=\''.$pubfields[$k]['name'].'\' _'.'_text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                    '                {genericformplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.' group=\'pubdata\'}'."\n".
+                    '                {clip_form_genericplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.' group=\'pubdata\'}'."\n".
         ($toolTip ? '                <span class="z-formnote z-sub">{gt text=\''.$toolTip.'\'}</span>'."\n" : '').
                     '            </div>'."\n";
         }
@@ -672,7 +672,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Table
         */
     }
 
-    private static function addtables($force = false)
+    public static function addtables($force = false)
     {
         $modinfo = ModUtil::getInfoFromName('Clip');
 

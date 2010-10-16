@@ -27,20 +27,20 @@
 
             {if $section neq 'display'}
                 {* edit check *}
-                {if isset($id)}
+                {if isset($pubdata.id)}
                 <span>
-                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$core_pid}">
-                        {$core_title}
+                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid}">
+                        {$pubdata.core_title}
                     </a>
                 </span>
                 {/if}
             {else}
                 <span class="clip-breadtext">
-                    {$pubdata[$pubtype.titlefield]}
+                    {$pubdata.core_title}
                 </span>
                 {checkpermissionblock component='clip:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD}
                 <span>
-                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubdata.core_tid pid=$pubdata.core_pid}">
+                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubdata.core_tid id=$pubdata.id}">
                         {img width='12' height='12' modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                     </a>
                 </span>
@@ -48,12 +48,12 @@
             {/if}
 
             {if $section neq 'display'}
-                {if isset($id)}
+                {if isset($pubdata.id)}
                 <span class="text_separator">&raquo;</span>
                 {/if}
 
                 <span class="clip-breadtext">
-                    {if isset($id)}
+                    {if isset($pubdata.id)}
                         {gt text='Edit form'}
                     {else}
                         {gt text='Create form'}

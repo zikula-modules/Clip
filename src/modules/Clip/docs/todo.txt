@@ -11,3 +11,5 @@
     dedicated screen (or parameter) to review the own publications + revisions
 
     check if the pagers are generated when no publications present
+
+    check if it's needed to exclude already linked pubs on many to one
