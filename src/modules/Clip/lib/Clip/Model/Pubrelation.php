@@ -47,6 +47,8 @@ class Clip_Model_Pubrelation extends Doctrine_Record
         $this->hasColumn('pm_alias2 as alias2', 'string', 100, array(
             'notnull' => true
         ));
+
+        $this->hasColumn('pm_config as config', 'clob');
     }
 
     /**
