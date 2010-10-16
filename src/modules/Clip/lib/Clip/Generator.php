@@ -636,8 +636,6 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         self::addtables($force);
 
         $pubtypes = array_keys(Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes()->toArray());
-        // FIXME relations sort criteria?
-        sort($pubtypes);
 
         foreach ($pubtypes as $tid) {
             if (!isset($loaded[$tid])) {

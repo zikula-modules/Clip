@@ -10,218 +10,225 @@
 */
 
 /* GUI */
+.z-module-clip .z-menu {
+  margin-bottom: 0.5em;
+}
 .clip-option,
 .clip-menu span {
-    color: #444;
-    padding: 0 3px;
+  color: #444;
+  padding: 0 3px;
 }
 .clip-option a,
 .clip-menu span a {
-    padding: 3px 0;
+  padding: 3px 0;
 }
 
 .clip-pubtype-desc {
-    margin: 0 5px 15px;
+  padding: 0 5px 0.5em;
+  margin: 0;
+}
+.z-module-clip .z-pagerabc {
+  border-top: 1px solid #CCCCCC;
 }
 
 /* general */
 img {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 pre.clip-showcode {
-    background: #222;
-    border: 1px solid #ccc;
-    color: #fff;
-    margin: 2em 1em 1em;
-    padding: 1em;
+  background: #222;
+  border: 1px solid #ccc;
+  color: #fff;
+  margin: 2em 1em 1em;
+  padding: 1em;
 }
 
 #pubfieldlist {
-    background: #fff;
+  background: #fff;
 }
 
 /* pubfield type selector and modalbox */
 .z-form div.z-formrow select.clip-plugintypeselector {
-    display: inline;
-    width: 66.2%;
+  display: inline;
+  width: 66.2%;
 }
 
 #typeDataDiv {
-    width: 550px;
-    height: auto !important;
-    height: 75px;
-    min-height: 75px;
-    z-index: 9999;
-    left: 50%;
-    margin-left: -275px;
-    background-color: #FFFFFF;
-    padding:10px;
+  width: 550px;
+  height: auto !important;
+  height: 75px;
+  min-height: 75px;
+  z-index: 9999;
+  left: 50%;
+  margin-left: -275px;
+  background-color: #FFFFFF;
+  padding:10px;
 }
 
 /* relations selectors */
 .z-form-relations div.z-formrow select {
-    display: inline;
-    width: auto;
+  display: inline;
+  width: auto;
 }
 
 /* input buttons classes */
 .z-buttons input.clip-bt-display {
-    background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-display:hover {
-    background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-display:active {
-    background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/demo.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-copy {
-    background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-copy:hover {
-    background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-copy:active {
-    background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editcopy.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-accept {
-    background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-accept:hover {
-    background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-accept:active {
-    background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mydocuments.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-reject {
-    background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-reject:hover {
-    background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-reject:active {
-    background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/editdelete.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-add {
-    background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-add:hover {
-    background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-add:active {
-    background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_add.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-remove {
-    background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-remove:hover {
-    background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-remove:active {
-    background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/edit_remove.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-exec {
-    background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-exec:hover {
-    background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-exec:active {
-    background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/exec.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-configure {
-    background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-configure:hover {
-    background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-configure:active {
-    background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/configure.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-activate {
-    background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
-    padding-left: 27px;
+  background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  padding-left: 27px;
 }
 .z-buttons input.clip-bt-activate:hover {
-    background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-activate:active {
-    background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/greenled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-deactivate {
-    background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
-    padding-left: 27px;
+  background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  padding-left: 27px;
 }
 .z-buttons input.clip-bt-deactivate:hover {
-    background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-deactivate:active {
-    background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/redled.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-archive {
-    background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-archive:hover {
-    background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-archive:active {
-    background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/folder_grey.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 .z-buttons input.clip-bt-mail {
-    background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -moz-linear-gradient(center top , #F5F5F5, #DEDEDE) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#dedede)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-mail:hover {
-    background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #dedede, #F5F5F5) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#dedede), to(#F5F5F5)) repeat scroll 0 0 transparent;
 }
 .z-buttons input.clip-bt-mail:active {
-    background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
-    background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -moz-linear-gradient(top,  #d0d0d0, #f0f0f0) repeat scroll 0 0 transparent;
+  background: url("../../../images/icons/extrasmall/mail_generic.gif") 10px 50% no-repeat, -webkit-gradient(linear, left top, left bottom, from(#d0d0d0), to(#f0f0f0)) repeat scroll 0 0 transparent;
 }
 
 /* Zikula.Autocompleter CSS */
