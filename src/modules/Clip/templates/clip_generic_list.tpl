@@ -7,6 +7,8 @@
     <p class="clip-pubtype-desc">{gt text=$pubtype.description}</p>
 {/if}
 
+{clip_pagerabc}
+
 <table class="z-datatable clip-pub-list">
     <tbody>
         {foreach from=$publist item='item'}
