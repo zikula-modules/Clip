@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -444,13 +444,13 @@ class Clip_Util
         $classNames['Url']        = 'Clip_Form_Plugin_Url';
 
         // collect classes from other providers also allows for override
-        $event = new Zikula_Event('pagemaster.get_field_plugin_classes');
+        $event = new Zikula_Event('clip.get_field_plugin_classes');
         $event->setData($classNames);
         $classNames = EventUtil::getManager()->notify($event)->getData();
 
         // allow final override. since user event handlers are loaded first,
         // we have to dispatch a separate event - drak
-        $event = new Zikula_Event('pagemaster.get_field_plugin_classes.overrides');
+        $event = new Zikula_Event('clip.get_field_plugin_classes.overrides');
         $event->setData($classNames);
         $classNames = EventUtil::getManager()->notify($event)->getData();
 
@@ -497,7 +497,7 @@ class Clip_Util
 
         $sm = ServiceUtil::getManager();
 
-        if (!$sm->hasService("pagemaster.plugin.$pluginName")) {
+        if (!$sm->hasService("clip.plugin.$pluginName")) {
             $view = Zikula_View::getInstance('Clip');
 
             $params = array();
@@ -507,10 +507,10 @@ class Clip_Util
             }
             $plugin->setup();
 
-            $sm->attachService("pagemaster.plugin.$pluginName", $plugin);
+            $sm->attachService("clip.plugin.$pluginName", $plugin);
         }
 
-        return $sm->getService("pagemaster.plugin.$pluginName");
+        return $sm->getService("clip.plugin.$pluginName");
     }
 
     /**

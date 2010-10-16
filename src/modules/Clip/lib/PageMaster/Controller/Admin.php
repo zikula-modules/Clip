@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -27,13 +27,13 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function modifyconfig()
     {
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
         // return the form output
         return FormUtil::newForm('Clip')
-               ->execute('pagemaster_admin_modifyconfig.tpl',
+               ->execute('clip_admin_modifyconfig.tpl',
                          new Clip_Form_Handler_Admin_ModifyConfig());
     }
 
@@ -42,14 +42,14 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function pubtypes()
     {
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
 
         return $this->view->assign('pubtypes', $pubtypes)
-                          ->fetch('pagemaster_admin_pubtypes.tpl');
+                          ->fetch('clip_admin_pubtypes.tpl');
     }
 
     /**
@@ -57,13 +57,13 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function pubtype()
     {
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
         // return the form output
         return FormUtil::newForm('Clip')
-               ->execute('pagemaster_admin_pubtype.tpl',
+               ->execute('clip_admin_pubtype.tpl',
                          new Clip_Form_Handler_Admin_Pubtypes());
     }
 
@@ -72,13 +72,13 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function pubfields()
     {
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
         // return the form output
         return FormUtil::newForm('Clip')
-               ->execute('pagemaster_admin_pubfields.tpl',
+               ->execute('clip_admin_pubfields.tpl',
                          new Clip_Form_Handler_Admin_Pubfields());
     }
 
@@ -87,13 +87,13 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function relations()
     {
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
         // return the form output
         return FormUtil::newForm('Clip')
-               ->execute('pagemaster_admin_relations.tpl',
+               ->execute('clip_admin_relations.tpl',
                          new Clip_Form_Handler_Admin_Relations());
     }
 
@@ -116,7 +116,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('pagemaster::', "{$args['tid']}::", ACCESS_EDIT)) {
+        if (!SecurityUtil::checkPermission('clip::', "{$args['tid']}::", ACCESS_EDIT)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -188,7 +188,7 @@ class Clip_Controller_Admin extends Zikula_Controller
                    ->assign('pager',   array('numitems'     => $pubcount,
                                              'itemsperpage' => $args['itemsperpage']));
 
-        return $this->view->fetch('pagemaster_admin_publist.tpl');
+        return $this->view->fetch('clip_admin_publist.tpl');
     }
 
     /**
@@ -210,7 +210,7 @@ class Clip_Controller_Admin extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'pid'));
         }
 
-        if (!SecurityUtil::checkPermission('pagemaster::', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -234,7 +234,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         $this->view->assign('pubtype', $pubtype)
                    ->assign('publist', $publist);
 
-        return $this->view->fetch('pagemaster_admin_history.tpl');
+        return $this->view->fetch('clip_admin_history.tpl');
     }
 
     /**
@@ -243,7 +243,7 @@ class Clip_Controller_Admin extends Zikula_Controller
     public function showcode($args=array())
     {
         //// Security check
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -274,8 +274,8 @@ class Clip_Controller_Admin extends Zikula_Controller
                 break;
 
             case 'outputlist':
-                $path = $this->view->get_template_path('pagemaster_generic_list.tpl');
-                $code = file_get_contents($path.'/pagemaster_generic_list.tpl');
+                $path = $this->view->get_template_path('clip_generic_list.tpl');
+                $code = file_get_contents($path.'/clip_generic_list.tpl');
                 break;
         }
 
@@ -288,7 +288,7 @@ class Clip_Controller_Admin extends Zikula_Controller
                    ->assign('mode',    $mode)
                    ->assign('pubtype', Clip_Util::getPubType($args['tid']));
 
-        return $this->view->fetch('pagemaster_admin_showcode.tpl');
+        return $this->view->fetch('clip_admin_showcode.tpl');
     }
 
     /**
@@ -296,7 +296,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function importps()
     {
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -311,7 +311,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         // build and return the output
         $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false)
                    ->add_core_data()
-                   ->fetch('pagemaster_admin_importps.tpl');
+                   ->fetch('clip_admin_importps.tpl');
     }
 
     /**
@@ -319,7 +319,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function editlist()
     {
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 

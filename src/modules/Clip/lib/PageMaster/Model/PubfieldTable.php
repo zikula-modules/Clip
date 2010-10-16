@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**

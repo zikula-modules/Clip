@@ -3,11 +3,11 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -34,5 +34,5 @@ function smarty_function_hitcount($params, &$smarty)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'pid', $dom));
     }
 
-    DBUtil::incrementObjectFieldByID('pagemaster_pubdata'.$tid, 'core_hitcount', $pid, 'core_pid');
+    DBUtil::incrementObjectFieldByID('clip_pubdata'.$tid, 'core_hitcount', $pid, 'core_pid');
 }

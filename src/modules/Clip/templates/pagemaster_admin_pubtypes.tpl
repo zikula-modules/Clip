@@ -1,5 +1,5 @@
 
-{include file='pagemaster_admin_header.tpl'}
+{include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='editcopy.gif' set='icons/large' __alt='Publication types'}</div>

@@ -3,11 +3,11 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -20,7 +20,7 @@ class Clip_Block_Pubeditlist extends Zikula_Block
      */
     public function init()
     {
-        SecurityUtil::registerPermissionSchema('pagemaster:block:pubeditlist', 'Block Id:Pubtype Id:');
+        SecurityUtil::registerPermissionSchema('clip:block:pubeditlist', 'Block Id:Pubtype Id:');
     }
 
     /**
@@ -48,7 +48,7 @@ class Clip_Block_Pubeditlist extends Zikula_Block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
         // security check
-        if (!SecurityUtil::checkPermission('pagemaster:block:pubeditlist', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('clip:block:pubeditlist', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
             return;
         }
 
@@ -70,7 +70,7 @@ class Clip_Block_Pubeditlist extends Zikula_Block
                    ->assign('returntype', $returntype)
                    ->assign('source',     $source);
 
-        $blockinfo['content'] = $this->view->fetch('pagemaster_block_pubeditlist.tpl');
+        $blockinfo['content'] = $this->view->fetch('clip_block_pubeditlist.tpl');
 
         if (empty($blockinfo['content'])) {
             return;
@@ -101,7 +101,7 @@ class Clip_Block_Pubeditlist extends Zikula_Block
 
         $blockinfo['content'] = BlockUtil::varsToContent($vars);
 
-        $this->view->clear_cache('pagemaster_generic_pubeditlist.tpl');
+        $this->view->clear_cache('clip_generic_pubeditlist.tpl');
 
         return $blockinfo;
     }

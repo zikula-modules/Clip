@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -60,12 +60,12 @@ class Clip_Api_User extends Zikula_Api
         );
 
         //// Permission check
-        if ($args['checkperm'] && !SecurityUtil::checkPermission('pagemaster:list:', "{$args['tid']}::", ACCESS_READ)) {
+        if ($args['checkperm'] && !SecurityUtil::checkPermission('clip:list:', "{$args['tid']}::", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
         // mode check
-        $args['admin'] = (isset($args['admin']) && $args['admin']) || SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}::", ACCESS_ADMIN);
+        $args['admin'] = (isset($args['admin']) && $args['admin']) || SecurityUtil::checkPermission('clip:full:', "{$args['tid']}::", ACCESS_ADMIN);
         // TODO pubtype.editown + author mode parameter check
 
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
@@ -262,7 +262,7 @@ class Clip_Api_User extends Zikula_Api
         $query = $tableObj->createQuery($args['queryalias']);
 
         // add the conditions to the query
-        if (!SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}::", ACCESS_ADMIN))
+        if (!SecurityUtil::checkPermission('clip:full:', "{$args['tid']}::", ACCESS_ADMIN))
         {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
                 $query->andWhere('(core_author = ? OR core_online = ?)', array($uid, 1));
@@ -308,7 +308,7 @@ class Clip_Api_User extends Zikula_Api
         }
 
         // check permissions if needed
-        if ($args['checkperm'] && !SecurityUtil::checkPermission('pagemaster:full:', "$args[tid]:$pubdata[core_pid]:", ACCESS_READ)) {
+        if ($args['checkperm'] && !SecurityUtil::checkPermission('clip:full:', "$args[tid]:$pubdata[core_pid]:", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -437,7 +437,7 @@ class Clip_Api_User extends Zikula_Api
         foreach ($pubtypes as $pubtype) {
             $tid = $pubtype['tid'];
 
-            if (!isset($tables['pagemaster_pubdata'.$tid])) {
+            if (!isset($tables['clip_pubdata'.$tid])) {
                 $allTypes[$tid] = $pubtype['title'];
                 continue;
             }
@@ -454,7 +454,7 @@ class Clip_Api_User extends Zikula_Api
                      ->toArray();
 
             foreach ($list as $k => $v) {
-                if (!SecurityUtil::checkPermission('pagemaster:input:', "$tid:$v[pid]:", ACCESS_EDIT)) {
+                if (!SecurityUtil::checkPermission('clip:input:', "$tid:$v[pid]:", ACCESS_EDIT)) {
                     unset($list[$k]);
                 } else {
                     $list[$k]['_title'] = $v[$coreTitle];

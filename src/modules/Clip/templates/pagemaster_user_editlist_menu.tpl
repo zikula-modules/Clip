@@ -17,8 +17,8 @@ $this->assign ('referer', 'index.php');
     <ul id="pubeditlist" style="margin-left:14px;">
         {foreach from=$allTypes item=type key=tid}
         {assign_concat name='thisIDLabel' 1='item_' 2=$tid 3='_0'}
-        {securityutil_checkpermission assign="addAuth" component="pagemaster:input:" instance="$tid::" level="ACCESS_ADD"}
-        {securityutil_checkpermission assign="adminAuth" component="pagemaster:input:" instance="$tid::" level="ACCESS_ADMIN"}
+        {securityutil_checkpermission assign="addAuth" component="clip:input:" instance="$tid::" level="ACCESS_ADD"}
+        {securityutil_checkpermission assign="adminAuth" component="clip:input:" instance="$tid::" level="ACCESS_ADMIN"}
         <li id="{$thisIDLabel}">
             <a href="#">{$type}</a>
             {if ($addAuth)}&nbsp;<a href="{modurl modname='Clip' type='user' func='editlist' tid=$tid}" title="{gt text="Add new publication"}"><img src="images/icons/extrasmall/edit_add.gif" width="10" height="10" alt="{gt text="Add new publication"}" /></a>{/if}

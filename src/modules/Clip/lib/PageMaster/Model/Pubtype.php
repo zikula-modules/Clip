@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -21,7 +21,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
      */
     public function setTableDefinition()
     {
-        $this->setTableName('pagemaster_pubtypes');
+        $this->setTableName('clip_pubtypes');
 
         $this->hasColumn('pm_tid as tid', 'integer', 4, array(
             'primary' => true,
@@ -104,6 +104,6 @@ class Clip_Model_Pubtype extends Doctrine_Record
      */
     public function getTableName()
     {
-        return 'pagemaster_pubdata'.$this->tid;
+        return 'clip_pubdata'.$this->tid;
     }
 }

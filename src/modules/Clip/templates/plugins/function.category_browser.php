@@ -3,11 +3,11 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -45,7 +45,7 @@ function smarty_function_category_browser($params, &$smarty)
     $count             = isset($params['count']) ? $params['count'] : false;
     $togglediv         = isset($params['togglediv']) ? $params['togglediv'] : false;
 
-    $template          = isset($params['template']) ? $params['template'] : 'pagemaster_category_browser.tpl';
+    $template          = isset($params['template']) ? $params['template'] : 'clip_category_browser.tpl';
     $assign            = isset($params['assign']) ? $params['assign'] : null;
     $operator          = isset($params['operator']) ? $params['operator'] : 'sub';
     $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;

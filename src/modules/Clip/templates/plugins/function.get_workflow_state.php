@@ -3,11 +3,11 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -35,7 +35,7 @@ function smarty_function_get_workflow_state($params, &$smarty)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
     }
 
-    $tablename = 'pagemaster_pubdata'.$tid;
+    $tablename = 'clip_pubdata'.$tid;
     $pub       = array('id' => $id);
 
     Zikula_Workflow_Util::getWorkflowForObject($pub, $tablename, 'id', 'Clip');

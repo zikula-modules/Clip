@@ -1,7 +1,7 @@
 
 <h2>{gt text=$pubtype.title}</h2>
 
-{include file='pagemaster_generic_navbar.tpl' section='list'}
+{include file='clip_generic_navbar.tpl' section='list'}
 
 {if $pubtype.description neq ''}
     <p class="pm-pubtype-desc">{gt text=$pubtype.description}</p>
@@ -20,7 +20,7 @@
                 <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">
                     {img modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View'}
                 </a>
-                {checkpermissionblock component='pagemaster:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
+                {checkpermissionblock component='clip:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
                 &nbsp;
                 <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$item.core_pid}">
                     {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}

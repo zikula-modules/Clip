@@ -1,5 +1,5 @@
 
-{include file='pagemaster_admin_header.tpl'}
+{include file='clip_admin_header.tpl'}
 
 {ajaxheader module='Clip' filename='pmadmin_pubfields.js' dragdrop=true}
 

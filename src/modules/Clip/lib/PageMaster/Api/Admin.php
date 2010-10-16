@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -23,7 +23,7 @@ class Clip_Api_Admin extends Zikula_Api
     {
         $links = array ();
 
-        if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'pubtypes'),
                 'text' => $this->__('List publication types')

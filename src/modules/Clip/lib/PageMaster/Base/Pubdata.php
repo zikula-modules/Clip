@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -68,12 +68,12 @@ class Clip_Base_Pubdata extends Doctrine_Record
             // loop the related records
             foreach (array_keys($this->getRelations($args['rel.onlyown'])) as $alias) {
                 if ($this[$alias] instanceof Doctrine_Record) {
-                    if (!$args['rel.checkperm'] || SecurityUtil::checkPermission('pagemaster:full:', "$this[core_tid]:$this[core_pid]:", ACCESS_READ)) {
+                    if (!$args['rel.checkperm'] || SecurityUtil::checkPermission('clip:full:', "$this[core_tid]:$this[core_pid]:", ACCESS_READ)) {
                         $this[$alias]->pubPostProcess($args);
                     }
                 } elseif ($this[$alias] instanceof Doctrine_Collection) {
                     foreach ($this[$alias] as $k => $v) {
-                        if (!$args['rel.checkperm'] || SecurityUtil::checkPermission('pagemaster:full:', "$this[core_tid]:$this[core_pid]:", ACCESS_READ)) {
+                        if (!$args['rel.checkperm'] || SecurityUtil::checkPermission('clip:full:', "$this[core_tid]:$this[core_pid]:", ACCESS_READ)) {
                             $this[$alias][$k]->pubPostProcess($args);
                         }
                     }

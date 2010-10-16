@@ -1,5 +1,5 @@
 
-{include file='pagemaster_admin_header.tpl'}
+{include file='clip_admin_header.tpl'}
 
 {if $pubtype.orderby eq 'core_pid'}
     {assign var='orderby_core_pid' value='core_pid:desc'}

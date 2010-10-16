@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 function Clip_tables()
@@ -14,8 +14,8 @@ function Clip_tables()
     $tables = array ();
 /*
     // relations table
-    $tables['pagemaster_relations'] = DBUtil::getLimitedTablename('pagemaster_relations');
-    $tables['pagemaster_relations_column'] = array (
+    $tables['clip_relations'] = DBUtil::getLimitedTablename('clip_relations');
+    $tables['clip_relations_column'] = array (
         'tid1' => 'pm_tid',
         'pid1' => 'pm_pid',
         'id1'  => 'pm_id',
@@ -23,7 +23,7 @@ function Clip_tables()
         'pid2' => 'pm_pid',
         'id2'  => 'pm_id'
     );
-    $tables['pagemaster_relations_column_def'] = array (
+    $tables['clip_relations_column_def'] = array (
         'tid1' => 'I4 NOTNULL',
         'pid1' => 'I4 NOTNULL',
         'id1'  => 'I4 NOTNULL',
@@ -31,13 +31,13 @@ function Clip_tables()
         'pid2' => 'I4 NOTNULL',
         'id2'  => 'I4 NOTNULL',
     );
-    ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_relations_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_relations_column_def']);
+    ObjectUtil::addStandardFieldsToTableDefinition($tables['clip_relations_column'], 'pm_');
+    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['clip_relations_column_def']);
 */
 
     // pubfields table
-    $tables['pagemaster_pubfields'] = DBUtil::getLimitedTablename('pagemaster_pubfields');
-    $tables['pagemaster_pubfields_column'] = array (
+    $tables['clip_pubfields'] = DBUtil::getLimitedTablename('clip_pubfields');
+    $tables['clip_pubfields_column'] = array (
         'id'             => 'pm_id',
         'tid'            => 'pm_tid',
         'name'           => 'pm_name',
@@ -53,7 +53,7 @@ function Clip_tables()
         'ismandatory'    => 'pm_ismandatory',
         'lineno'         => 'pm_lineno'
     );
-    $tables['pagemaster_pubfields_column_def'] = array (
+    $tables['clip_pubfields_column_def'] = array (
         'id'             => 'I4 PRIMARY AUTO',
         'tid'            => 'I4 NOTNULL',
         'name'           => "C(255) NOTNULL DEFAULT ''",
@@ -69,13 +69,13 @@ function Clip_tables()
         'ismandatory'    => 'L NOTNULL',
         'lineno'         => 'I4 NOTNULL'
     );
-    ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_pubfields_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_pubfields_column_def']);
+    ObjectUtil::addStandardFieldsToTableDefinition($tables['clip_pubfields_column'], 'pm_');
+    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['clip_pubfields_column_def']);
 
 
     // pubtypes table
-    $tables['pagemaster_pubtypes'] = DBUtil::getLimitedTablename('pagemaster_pubtypes');
-    $tables['pagemaster_pubtypes_column'] = array (
+    $tables['clip_pubtypes'] = DBUtil::getLimitedTablename('clip_pubtypes');
+    $tables['clip_pubtypes_column'] = array (
         'tid'             => 'pm_tid',
         'title'           => 'pm_title',
         'urltitle'        => 'pm_urltitle',
@@ -95,7 +95,7 @@ function Clip_tables()
         'enableeditown'   => 'pm_enableeditown',
         'cachelifetime'   => 'pm_cachelifetime'
     );
-    $tables['pagemaster_pubtypes_column_def'] = array (
+    $tables['clip_pubtypes_column_def'] = array (
         'tid'             => 'I4 PRIMARY AUTO',
         'title'           => "C(255) NOTNULL DEFAULT ''",
         'urltitle'        => "C(255) NOTNULL DEFAULT ''",
@@ -115,37 +115,37 @@ function Clip_tables()
         'enableeditown'   => 'L NOTNULL',
         'cachelifetime'   => 'I8 NULL'
     );
-    ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_pubtypes_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_pubtypes_column_def']);
+    ObjectUtil::addStandardFieldsToTableDefinition($tables['clip_pubtypes_column'], 'pm_');
+    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['clip_pubtypes_column_def']);
     // indexes
-    $tables['pagemaster_pubtypes_column_idx'] = array (
+    $tables['clip_pubtypes_column_idx'] = array (
         'urltitle' => 'urltitle'
     );
 
 /*
     // revisions table
-    $tables['pagemaster_revisions'] = DBUtil::getLimitedTablename('pagemaster_revisions');
-    $tables['pagemaster_revisions_column'] = array (
+    $tables['clip_revisions'] = DBUtil::getLimitedTablename('clip_revisions');
+    $tables['clip_revisions_column'] = array (
         'tid'         => 'pm_tid',
         'id'          => 'pm_id',
         'pid'         => 'pm_pid',
         'prevversion' => 'pm_prevversion'
     );
-    $tables['pagemaster_revisions_column_def'] = array (
+    $tables['clip_revisions_column_def'] = array (
         'tid'         => 'I4 PRIMARY NOTNULL',
         'id'          => 'I4 PRIMARY NOTNULL',
         'pid'         => 'I4 NOTNULL',
         'prevversion' => 'I4 NOTNULL'
     );
-    ObjectUtil::addStandardFieldsToTableDefinition($tables['pagemaster_revisions_column'], 'pm_');
-    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['pagemaster_revisions_column_def']);
+    ObjectUtil::addStandardFieldsToTableDefinition($tables['clip_revisions_column'], 'pm_');
+    ObjectUtil::addStandardFieldsToTableDataDefinition($tables['clip_revisions_column_def']);
 */
 
     // dynamic pubdata tables
     if (!function_exists('Clip_addtable')) {
         function Clip_addtable(&$tables, $tid, $tablecolumn, $tabledef)
         {
-            $tablename = "pagemaster_pubdata{$tid}";
+            $tablename = "clip_pubdata{$tid}";
 
             $tables[$tablename] = DBUtil::getLimitedTablename($tablename);
             $tables[$tablename.'_column']     = $tablecolumn;
@@ -165,14 +165,14 @@ function Clip_tables()
 
     $existingtables = DBUtil::metaTables();
 
-    if (in_array(DBUtil::getLimitedTablename('pagemaster_pubfields'), $existingtables)) {
-        $sql = 'SELECT ' . $tables['pagemaster_pubfields_column']['tid']
-                  . ', ' . $tables['pagemaster_pubfields_column']['id']
-                  . ', ' . $tables['pagemaster_pubfields_column']['name']
-                  . ', ' . $tables['pagemaster_pubfields_column']['fieldtype']
-                  . ' FROM ' . $tables['pagemaster_pubfields']
-                  . ' ORDER BY ' . $tables['pagemaster_pubfields_column']['tid'] . ' ASC, '
-                                 . $tables['pagemaster_pubfields_column']['id']  . ' ASC ';
+    if (in_array(DBUtil::getLimitedTablename('clip_pubfields'), $existingtables)) {
+        $sql = 'SELECT ' . $tables['clip_pubfields_column']['tid']
+                  . ', ' . $tables['clip_pubfields_column']['id']
+                  . ', ' . $tables['clip_pubfields_column']['name']
+                  . ', ' . $tables['clip_pubfields_column']['fieldtype']
+                  . ' FROM ' . $tables['clip_pubfields']
+                  . ' ORDER BY ' . $tables['clip_pubfields_column']['tid'] . ' ASC, '
+                                 . $tables['clip_pubfields_column']['id']  . ' ASC ';
 
         $result = DBUtil::executeSQL($sql);
 

@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -33,7 +33,7 @@ class Clip_Generator
                 "\n".
                 '<h2>{gt text=$pubtype.title}</h2>'."\n".
                 "\n".
-                '{include file=\'pagemaster_generic_navbar.tpl\' section=\'display\'}'."\n".
+                '{include file=\'clip_generic_navbar.tpl\' section=\'display\'}'."\n".
                 "\n".
                 '{if $pubtype.description neq \'\'}'."\n".
                 '    <div class="pm-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
@@ -197,7 +197,7 @@ class Clip_Generator
         $template_code = "\n".
                 '<h2>{gt text=$pubtype.title}</h2>'."\n".
                 "\n".
-                '{include file=\'pagemaster_generic_navbar.tpl\' section=\'form\'}'."\n".
+                '{include file=\'clip_generic_navbar.tpl\' section=\'form\'}'."\n".
                 "\n".
                 '{if $pubtype.description neq \'\'}'."\n".
                 '    <div class="pm-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
@@ -333,7 +333,7 @@ class Clip_Generator
      */
     public static function pubmodel($tid)
     {
-        $table = "pagemaster_pubdata{$tid}";
+        $table = "clip_pubdata{$tid}";
         $tables = DBUtil::getTables();
 
         if (isset($tables["{$table}_column"])) {
@@ -510,7 +510,7 @@ class Clip_Generator
  * Clip
  * Generated Model Class
  *
- * @link http://code.zikula.org/pagemaster/
+ * @link http://code.zikula.org/clip/
  */
 
 /**
@@ -562,7 +562,7 @@ class Clip_Model_Pubdata{$tid} extends Clip_Base_Pubdata
  * Clip
  * Generated Model Class
  *
- * @link http://code.zikula.org/pagemaster/
+ * @link http://code.zikula.org/clip/
  */
 
 /**
@@ -610,7 +610,7 @@ class Clip_Model_Relation{$relation['id']} extends Doctrine_Record
 {
     public function setTableDefinition()
     {
-        \$this->setTableName('pagemaster_relation{$relation['id']}');
+        \$this->setTableName('clip_relation{$relation['id']}');
 
         $hasColumns
     }
@@ -655,7 +655,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Table
     // dynamic pubdata tables
     private static function _addtable(&$tables, $tid, $tablecolumn, $tabledef)
     {
-        $tablename = "pagemaster_pubdata{$tid}";
+        $tablename = "clip_pubdata{$tid}";
 
         $tables[$tablename] = DBUtil::getLimitedTablename($tablename);
         $tables[$tablename.'_column']     = $tablecolumn;
@@ -760,7 +760,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Table
         // to ensure the creation of all the dynamic classes
         $pubtypes = array_keys(Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes()->toArray());
         foreach ($pubtypes as $tid) {
-            if (!isset($tables["pagemaster_pubdata{$tid}"])) {
+            if (!isset($tables["clip_pubdata{$tid}"])) {
                 self::_addtable($tables, $tid, $tablecolumncore, $tabledefcore);
             }
         }

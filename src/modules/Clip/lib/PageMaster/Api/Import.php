@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -36,9 +36,9 @@ class Clip_Api_Import extends Zikula_Api
             return $str;
         }
 
-        $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/pagemaster/lists');
+        $rootcat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/clip/lists');
         if (empty($rootcat)) {
-            return LogUtil::registerError('Category /__SYSTEM__/Modules/pagemaster/lists not found');
+            return LogUtil::registerError('Category /__SYSTEM__/Modules/clip/lists not found');
         }
 
         //$temp_arr = unserialize(ModUtil::getVar('pagesetter','temp_arr'));
@@ -128,7 +128,7 @@ class Clip_Api_Import extends Zikula_Api
             $datatype['workflow']        = $pubtype['workflow'] . '.xml';
             $datatype['enablerevisions'] = $pubtype['enableRevisions'];
             $datatype['enableeditown']   = $pubtype['enableEditOwn'];
-            DBUtil::insertObject($datatype, 'pagemaster_pubtypes');
+            DBUtil::insertObject($datatype, 'clip_pubtypes');
             //$pubfields = DBUtil::selectObjectArray('pagesetter_pubfields', 'pg_tid = '.$pubtype['id'], '', -1, -1, 'name');
 
             $pstable = DBUtil::getLimitedTablename('pagesetter_pubfields');
@@ -184,7 +184,7 @@ class Clip_Api_Import extends Zikula_Api
 
                         $list = DBUtil :: selectObjectArray("pagesetter_lists", "pg_id = '$pubfield[typeData]'");
 
-                        $where = "cat_path = '/__SYSTEM__/Modules/pagemaster/lists/".DataUtil::formatForStore($list[0]['title'])."' AND cat_name = '".DataUtil::formatForStore($list[0]['title'])."'";
+                        $where = "cat_path = '/__SYSTEM__/Modules/clip/lists/".DataUtil::formatForStore($list[0]['title'])."' AND cat_name = '".DataUtil::formatForStore($list[0]['title'])."'";
                         $cat   = DBUtil :: selectObjectArray("categories_category", $where);
 
                         $datafield['typedata'] = $cat[0]['id'];
@@ -256,7 +256,7 @@ class Clip_Api_Import extends Zikula_Api
 
                             $list  = DBUtil::selectObjectArray('pagesetter_lists', "pg_id = '$pubfield[type]'");
 
-                            $where = "cat_path = '/__SYSTEM__/Modules/pagemaster/lists/".DataUtil::formatForStore($list[0]['title'])."' AND cat_name = '".DataUtil::formatForStore($list[0]['title'])."'";
+                            $where = "cat_path = '/__SYSTEM__/Modules/clip/lists/".DataUtil::formatForStore($list[0]['title'])."' AND cat_name = '".DataUtil::formatForStore($list[0]['title'])."'";
                             $cat   = DBUtil::selectObjectArray('categories_category', $where);
 
                             $datafield['typedata'] = $cat[0]['id'];
@@ -275,7 +275,7 @@ class Clip_Api_Import extends Zikula_Api
                 $datafield['ismandatory']  = $pubfield['isMandatory'];
                 $datafield['lineno']       = $pubfield['lineno'];
 
-                DBUtil::insertObject($datafield, 'pagemaster_pubfields', 'dummy');
+                DBUtil::insertObject($datafield, 'clip_pubfields', 'dummy');
             }
         }
 
@@ -291,7 +291,7 @@ class Clip_Api_Import extends Zikula_Api
     public function importps3()
     {
         // create tables
-        $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
+        $pubtypes = DBUtil::selectObjectArray('clip_pubtypes');
 
         foreach ($pubtypes as $pubtype) {
             $ret = ModUtil::apiFunc('Clip', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
@@ -325,7 +325,7 @@ class Clip_Api_Import extends Zikula_Api
 
         foreach ($pubtypes as $pubtype)
         {
-            $pubfields = DBUtil::selectObjectArray('pagemaster_pubfields', "pm_tid = '$pubtype[id]'");
+            $pubfields = DBUtil::selectObjectArray('clip_pubfields', "pm_tid = '$pubtype[id]'");
 
             foreach ($pubfields as $pubfield)
             {
@@ -340,7 +340,7 @@ class Clip_Api_Import extends Zikula_Api
                 }
             }
             $tablename   = $tables['pagesetter_pubdata'].$pubtype['id'];
-            $tablenamePM = $tables['pagemaster_pubdata'.$pubtype['id']];
+            $tablenamePM = $tables['clip_pubdata'.$pubtype['id']];
 
             $sql = 'SELECT pp.pg_hitcount , dyn.*
                       FROM '.$pubheader_table.' pp,
@@ -448,7 +448,7 @@ class Clip_Api_Import extends Zikula_Api
                 $wfData['schemaname']   = $pubtype['workflow'];
                 $wfData['state']        = $item['pg_approvalState'];
                 $wfData['type']         = 1;
-                $wfData['obj_table']    = 'pagemaster_pubdata' . $pubtype['id'];
+                $wfData['obj_table']    = 'clip_pubdata' . $pubtype['id'];
                 $wfData['obj_idcolumn'] = 'id';
                 $wfData['obj_id']       = $item['pg_id'];
                 $wfData['busy']         = 0;

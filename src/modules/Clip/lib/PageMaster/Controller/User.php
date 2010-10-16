@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -85,7 +85,7 @@ class Clip_Controller_User extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('pagemaster:list:', "{$args['tid']}::{$args['templateid']}", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('clip:list:', "{$args['tid']}::{$args['templateid']}", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -137,7 +137,7 @@ class Clip_Controller_User extends Zikula_Controller
 
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
-            $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+            $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
@@ -149,7 +149,7 @@ class Clip_Controller_User extends Zikula_Controller
 
             $this->view->assign('clip_generic_tpl', true);
 
-            $args['template'] = 'pagemaster_generic_list.tpl';
+            $args['template'] = 'clip_generic_list.tpl';
         }
 
         return $this->view->fetch($args['template'], $cacheid);
@@ -223,13 +223,13 @@ class Clip_Controller_User extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}:{$args['pid']}:{$args['templateid']}", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('clip:full:', "{$args['tid']}:{$args['pid']}:{$args['templateid']}", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
         //// Output setup
         // check if this view is cached
-        if (!empty($cachelt) && !SecurityUtil::checkPermission('pagemaster:input:', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
+        if (!empty($cachelt) && !SecurityUtil::checkPermission('clip:input:', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
             $this->view->setCache_lifetime($cachelt);
             // second clause allow developer to add an edit button on the "display" template
             $cachetid = true;
@@ -251,7 +251,7 @@ class Clip_Controller_User extends Zikula_Controller
         // fetch simple templates
         if (isset($args['templatesimple'])) {
             if (!$this->view->template_exists($args['templatesimple'])) {
-                $args['templatesimple'] = "pagemaster_general_{$args['template']}.tpl";
+                $args['templatesimple'] = "clip_general_{$args['template']}.tpl";
                 if (!$this->view->template_exists($args['templatesimple'])) {
                     $args['templatesimple'] = '';
                 }
@@ -284,7 +284,7 @@ class Clip_Controller_User extends Zikula_Controller
 
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
-            $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+            $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
@@ -358,7 +358,7 @@ class Clip_Controller_User extends Zikula_Controller
             }
         }
 
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
         // get actual state for selecting form Template
         $stepname = 'initial';
@@ -566,7 +566,7 @@ class Clip_Controller_User extends Zikula_Controller
                    ->assign('returntype', $returntype)
                    ->assign('source',     $source);
 
-        return $this->view->fetch('pagemaster_user_editlist.tpl');
+        return $this->view->fetch('clip_user_editlist.tpl');
     }
 
     /**

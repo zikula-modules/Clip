@@ -3,7 +3,7 @@
  * Clip
  *
  * @copyright (c) Clip Team
- * @link      http://code.zikula.org/pagemaster/
+ * @link      http://code.zikula.org/clip/
  * @license   GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
@@ -17,19 +17,19 @@ class Clip_Version extends Zikula_Version
         $meta = array();
         $meta['displayname']    = $this->__('Clip');
         $meta['description']    = $this->__('Content Module like pagesetter');
-        $meta['oldnames']       = array('pagemaster');
+        $meta['oldnames']       = array('clip');
         //! module name that appears in URL
-        $meta['url']            = $this->__('pagemaster');
+        $meta['url']            = $this->__('clip');
         $meta['version']        = '0.4.3';
         $meta['core_min']       = '1.3.0';
 
         // Permissions schema
         $meta['securityschema'] = array(
-                'pagemaster::'      => '::',
-                'pagemaster:input:' => 'tid::',
-                'pagemaster:input:' => 'tid:pid:workflowstate',
-                'pagemaster:full:'  => 'tid:pid:template',
-                'pagemaster:list:'  => 'tid::template'
+                'clip::'      => '::',
+                'clip:input:' => 'tid::',
+                'clip:input:' => 'tid:pid:workflowstate',
+                'clip:full:'  => 'tid:pid:template',
+                'clip:list:'  => 'tid::template'
         );
 
         // Module depedencies

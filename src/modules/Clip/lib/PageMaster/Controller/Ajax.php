@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -16,7 +16,7 @@ class Clip_Controller_Ajax extends Zikula_Controller
 {
     public function changedlistorder()
     {
-        if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             AjaxUtil::error($this->__('Sorry! No authorization to access this module.'));
         }
 
@@ -68,7 +68,7 @@ class Clip_Controller_Ajax extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('pagemaster:list:', "{$args['tid']}::", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('clip:list:', "{$args['tid']}::", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 

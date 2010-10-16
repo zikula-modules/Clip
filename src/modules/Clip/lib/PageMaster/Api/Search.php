@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -28,7 +28,7 @@ class Clip_Api_Search extends Zikula_Api
      */
     public function options($args)
     {
-        if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
+        if (SecurityUtil::checkPermission('clip::', '::', ACCESS_READ)) {
             $render = Zikula_View::getInstance('Clip');
 
             // Looking for pubtype with at least one searchable field
@@ -46,7 +46,7 @@ class Clip_Api_Search extends Zikula_Api
 
             $render->assign('pubtypes', $pubtypes);
 
-            return $render->fetch('pagemaster_search_options.tpl');
+            return $render->fetch('clip_search_options.tpl');
         }
 
         return '';
@@ -85,7 +85,7 @@ class Clip_Api_Search extends Zikula_Api
                 $pubfieldnames = Doctrine_Core::getTable('Clip_Model_Pubtype')
                                  ->selectArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
-                $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
+                $tablename  = 'clip_pubdata'.$pubtype['tid'];
                 $columnname = $tables[$tablename.'_column'];
 
                 foreach ($pubfieldnames as $pubfieldname) {
@@ -102,7 +102,7 @@ class Clip_Api_Search extends Zikula_Api
                                 AND (core_publishdate <= NOW() OR core_publishdate IS NULL)
                                 AND (core_expiredate >= NOW() OR core_expiredate IS NULL)";
 
-                    $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
+                    $tablename  = 'clip_pubdata'.$pubtype['tid'];
 
                     $publist = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubtype['tid'])
                                ->selectCollection($where)

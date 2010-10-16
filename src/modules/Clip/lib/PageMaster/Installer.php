@@ -3,10 +3,10 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -43,7 +43,7 @@ class Clip_Installer extends Zikula_Installer
 
         $lang = ZLanguage::getLanguageCode();
 
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster');
+        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip');
         if (!$rootcat) {
             $rootcat = CategoryUtil::getCategoryByPath($regpath);
 
@@ -59,9 +59,9 @@ class Clip_Installer extends Zikula_Installer
             $cat->update();
         }
 
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster/lists');
+        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip/lists');
         if (!$rootcat) {
-            $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster');
+            $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip');
 
             $cat = new Categories_DBObject_Category();
             $cat->setDataField('parent_id', $rootcat['id']);
@@ -77,12 +77,12 @@ class Clip_Installer extends Zikula_Installer
         }
 
         // create the PM category registry
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/pagemaster/lists');
+        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip/lists');
         if ($rootcat) {
             // create an entry in the categories registry to the Lists property
             $registry = new Categories_DBObject_Registry();
             $registry->setDataField('modname', 'Clip');
-            $registry->setDataField('table', 'pagemaster_pubtypes');
+            $registry->setDataField('table', 'clip_pubtypes');
             $registry->setDataField('property', 'Lists');
             $registry->setDataField('category_id', $rootcat['id']);
             $registry->insert();
@@ -130,7 +130,7 @@ class Clip_Installer extends Zikula_Installer
                 // * change C(512) to C(255) and X to C(65535)
                 // * replace any pm_* in the pubtype sortfields
                 // * create any non-existing pubtype table
-                // * rename the pagemaster:% permissions to clip:
+                // * rename the clip:% permissions to clip:
 
                 // fills the empty publish dates
                 $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
@@ -139,8 +139,8 @@ class Clip_Installer extends Zikula_Installer
                     // and update the new field value with the good old pm_cr_uid
                     $existingtables = DBUtil::metaTables();
                     foreach ($pubtypes as $tid) {
-                        if (in_array(DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid), $existingtables)) {
-                            $sql = "UPDATE {$tables['pagemaster_pubdata'.$tid]} SET pm_publishdate = pm_cr_date WHERE pm_publishdate IS NULL";
+                        if (in_array(DBUtil::getLimitedTablename('clip_pubdata'.$tid), $existingtables)) {
+                            $sql = "UPDATE {$tables['clip_pubdata'.$tid]} SET pm_publishdate = pm_cr_date WHERE pm_publishdate IS NULL";
 
                             if (!DBUtil::executeSQL($sql)) {
                                 LogUtil::registerError($this->__('Error! Update attempt failed.'));
@@ -185,7 +185,7 @@ class Clip_Installer extends Zikula_Installer
         }
 
         // delete the category registry and modvars
-        CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/pagemaster', 'path');
+        CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/clip', 'path');
         $this->delVars();
 
         return true;

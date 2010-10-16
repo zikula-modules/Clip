@@ -3,11 +3,11 @@
  * Clip
  *
  * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/pagemaster/
+ * @link        http://code.zikula.org/clip/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
  * @package     Zikula_3rdParty_Modules
- * @subpackage  pagemaster
+ * @subpackage  clip
  */
 
 /**
@@ -20,7 +20,7 @@ class Clip_Block_List extends Zikula_Block
      */
     public function init()
     {
-        SecurityUtil::registerPermissionSchema('pagemaster:block:list', 'Block Id:Pubtype Id:');
+        SecurityUtil::registerPermissionSchema('clip:block:list', 'Block Id:Pubtype Id:');
     }
 
     /**
@@ -44,7 +44,7 @@ class Clip_Block_List extends Zikula_Block
      */
     public function display($blockinfo)
     {
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
@@ -55,7 +55,7 @@ class Clip_Block_List extends Zikula_Block
         }
 
         // security check
-        if (!SecurityUtil::checkPermission('pagemaster:block:list', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('clip:block:list', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
             return;
         }
 
@@ -198,7 +198,7 @@ class Clip_Block_List extends Zikula_Block
         return $this->view->assign('vars', $vars)
                           ->assign('pubtypes', $pubtypes)
                           ->assign('pubfields', $pubfields)
-                          ->fetch('pagemaster_block_list_modify.tpl');
+                          ->fetch('clip_block_list_modify.tpl');
     }
 
     /**

@@ -14,7 +14,7 @@ $this->assign ('referer', 'index.php');
 {/php}
 
 {if $returntype eq 'admin'}
-{include file='pagemaster_admin_header.tpl'}
+{include file='clip_admin_header.tpl'}
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list'}</div>
 {/if}
@@ -25,7 +25,7 @@ $this->assign ('referer', 'index.php');
             <tr>
                 {if $menu AND $source neq 'block'}
                 <td width="10%" valign="top" class="z-nowrap">
-                    {include file='pagemaster_user_editlist_menu.tpl'}
+                    {include file='clip_user_editlist_menu.tpl'}
                 </td>
                 {/if}
                 {if ($menu && $edit)}

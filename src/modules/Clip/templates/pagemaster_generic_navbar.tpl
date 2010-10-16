@@ -14,7 +14,7 @@
                 {gt text=$pubtype.title}
             </span>
         {/if}
-        {checkpermissionblock component='pagemaster:input:' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
+        {checkpermissionblock component='clip:input:' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
         <span>
             <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
@@ -38,7 +38,7 @@
                 <span class="pm-breadtext">
                     {$pubdata[$pubtype.titlefield]}
                 </span>
-                {checkpermissionblock component='pagemaster:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD}
+                {checkpermissionblock component='clip:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD}
                 <span>
                     <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubdata.core_tid pid=$pubdata.core_pid}">
                         {img width='12' height='12' modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
@@ -74,7 +74,7 @@
 
     {if $section eq 'display'}{zdebug}{/if}
 
-    {checkpermissionblock component='pagemaster::' instance='::' level=ACCESS_ADMIN}
+    {checkpermissionblock component='clip::' instance='::' level=ACCESS_ADMIN}
     <div class="z-warningmsg">
         {switch expr=$section}
             {case expr='list'}
