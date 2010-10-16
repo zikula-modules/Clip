@@ -27,15 +27,18 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
     function initialize($view)
     {
+        //// Parameters
         // process the input parameters
         $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
         $this->goto = FormUtil::getPassedValue('goto', '');
 
+        //// Initialize
         // process a new or existing pub, and it's available actions
         if (!empty($this->id)) {
             $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get', array(
                 'tid' => $this->tid,
                 'id'  => $this->id,
+                'loadrefs'  => true,
                 'checkperm' => true
             ));
 
@@ -59,6 +62,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
             $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'PageMaster');
         }
 
+        //// Validation
         // if there are no actions the user is not allowed to change / submit / delete something.
         // We will redirect the user to the overview page
         if (count($actions) < 1) {
@@ -87,6 +91,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
             }
         }
 
+        //// Processing
         // handle the Doctrine_Record data as an array from here
         $data = $pubdata->toArray();
 
@@ -97,7 +102,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         foreach ($pubdata->getRelations($onlyown) as $key => $rel) {
             // set the data object
-            $data[$key] = $pubdata[$key];
+            $data[$key] = ($pubdata->hasReference($key)) ? $pubdata[$key] : null;
             // set additional relation fields
             $this->relations[$key] = array_merge($rel, array('alias' => $this->__($key)));
         }

@@ -49,7 +49,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
 
         if (!is_null($this->relinfo)) {
             // assign existing data if available
-            if (isset($view->_tpl_vars['pubdata'][$this->relinfo['alias']])) {
+            if (!($view->_tpl_vars['pubdata'][$this->relinfo['alias']] instanceof Doctrine_Null)) {
                 $this->relinfo['data'] = $view->_tpl_vars['pubdata'][$this->relinfo['alias']];
             } else {
                 $this->relinfo['data'] = null;
@@ -125,7 +125,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
                 $relpub->pubPostProcess();
                 $typeDataHtml .= '<li value="'.$relpub['id'].'">'.$relpub['core_title'].'</li>';
             }
-        } elseif ($this->relinfo['data']->count() > 0) {
+        } elseif (isset($this->relinfo['data']) && $this->relinfo['data']->count() > 0) {
             foreach ($this->relinfo['data'] as $relpub) {
                 $relpub->pubPostProcess();
                 $typeDataHtml .= '<li value="'.$relpub['id'].'">'.$relpub['core_title'].'</li>';

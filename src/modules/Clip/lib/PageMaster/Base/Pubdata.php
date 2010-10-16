@@ -39,7 +39,7 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
         $this->mapValue('core_uniqueid', "{$tid}-{$this['core_pid']}");
         $this->mapValue('core_title' , $this[$core_title]);
         $this->mapValue('core_creator', ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
-        $this->mapValue('__WORKFLOW__', array('state' => null));
+        $this->mapValue('__WORKFLOW__', array('state' => 'initial'));
 
         // handle the plugins data if needed
         if (!isset($args['handleplugins']) || $args['handleplugins']) {
@@ -95,13 +95,15 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
             $fields[$column] = 'column';
         }
 
-        // FIXME Prevent mapped Doctrine_Records from being displayed fully
+        // FIXME From Doctrine: prevent mapped Doctrine_Records from being displayed fully
         foreach ($this->_values as $key => $value) {
             $fields[$key] = 'value';
         }
 
         foreach ($this->_table->getRelations() as $key => $relation) {
-            $fields[$key] = 'relation';
+            if (strpos($key, 'PageMaster_Model_Relation') !== 0) {
+                $fields[$key] = 'relation';
+            }
         }
 
         // reorder the fields conveniently
