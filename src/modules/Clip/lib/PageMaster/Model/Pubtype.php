@@ -105,5 +105,5 @@ class PageMaster_Model_Pubtype extends Doctrine_Record
     public function getTableName()
     {
         return 'pagemaster_pubdata'.$this->tid;
-	}
+    }
 }

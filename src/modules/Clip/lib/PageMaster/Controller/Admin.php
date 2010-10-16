@@ -102,96 +102,91 @@ class PageMaster_Controller_Admin extends Zikula_Controller
      */
     public function publist($args=array())
     {
-        // get the input parameters
-        $tid          = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $startnum     = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum');
-        $itemsperpage = isset($args['itemsperpage']) ? $args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', 50);
-        $orderby      = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
+        //// Parameters
+        $args = array(
+            'tid'          => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
+            'startnum'     => isset($args['startnum']) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum'),
+            'itemsperpage' => isset($args['itemsperpage']) ? (int)$args['itemsperpage'] : (int)FormUtil::getPassedValue('itemsperpage'),
+            'orderby'      => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby')
+        );
 
-        // validate the essential parameters
-        if (empty($tid) || !is_numeric($tid)) {
+        //// Validation
+        if ($args['tid'] <= 0) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        if (!SecurityUtil::checkPermission('pagemaster::', $tid.'::', ACCESS_EDIT)) {
+        //// Security check
+        if (!SecurityUtil::checkPermission('pagemaster::', "{$args['tid']}::", ACCESS_EDIT)) {
             return LogUtil::registerPermissionError();
         }
 
-        $pubtype = PageMaster_Util::getPubType($tid);
+        //// Misc values
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
         if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        // get the Doctrine_Table object
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid);
+        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid']);
 
-        // db table check
-        // FIXME: May remove this?
-        $tablename = 'pagemaster_pubdata'.$tid;
-        if (!in_array(DBUtil::getLimitedTablename($tablename), DBUtil::metaTables())) {
-            return LogUtil::registerError($this->__f("Error! The table of this publication type [%s] seems not to exist. Please, click the respective 'DB update' link to create it.", $pubtype['title']),
-                                          null,
-                                          ModUtil::url('PageMaster', 'admin', 'pubtypes'));
-        }
-
-        $pubtype = PageMaster_Util::getPubType($tid);
-        $pubtype->mapValue('titlefield', PageMaster_Util::getTitleField($tid));
-        $pubtype->mapValue('orderby', $orderby);
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
 
         // set the order
-        if (!isset($orderby) || empty($orderby)) {
+        if (empty($args['orderby'])) {
             if (!empty($pubtype['sortfield1'])) {
                 if ($pubtype['sortdesc1'] == 1) {
-                    $orderby = $pubtype['sortfield1'].':DESC ';
+                    $args['orderby'] = $pubtype['sortfield1'].':DESC ';
                 } else {
-                    $orderby = $pubtype['sortfield1'].':ASC ';
+                    $args['orderby'] = $pubtype['sortfield1'].':ASC ';
                 }
 
                 if (!empty($pubtype['sortfield2'])) {
                     if ($pubtype['sortdesc2'] == 1) {
-                        $orderby .= ', '.$pubtype['sortfield2'].':DESC ';
+                        $args['orderby'] .= ', '.$pubtype['sortfield2'].':DESC ';
                     } else {
-                        $orderby .= ', '.$pubtype['sortfield2'].':ASC ';
+                        $args['orderby'] .= ', '.$pubtype['sortfield2'].':ASC ';
                     }
                 }
 
                 if (!empty($pubtype['sortfield3'])) {
                     if ($pubtype['sortdesc3'] == 1) {
-                        $orderby .= ', '.$pubtype['sortfield3'].':DESC ';
+                        $args['orderby'] .= ', '.$pubtype['sortfield3'].':DESC ';
                     } else {
-                        $orderby .= ', '.$pubtype['sortfield3'].':ASC ';
+                        $args['orderby'] .= ', '.$pubtype['sortfield3'].':ASC ';
                     }
                 }
             } else {
-                $orderby = 'pm_pid';
+                $args['orderby'] = 'core_pid';
             }
         }
 
-        // replace any occurence of the core_title alias with the field name
-        if (strpos('core_title', $orderby) !== false) {
-            $orderby = str_replace('core_title', $pubtype->titlefield, $orderby);
-        }
-        $orderby = PageMaster_Util::createOrderBy($orderby);
+        $pubtype->mapValue('titlefield', PageMaster_Util::getTitleField($args['tid']));
+        $pubtype->mapValue('orderby', $args['orderby']);
 
-        // query the list
-        $publist = $tableObj->selectCollection('core_indepot = 0', $orderby, $startnum-1, $itemsperpage);
+        // replace any occurence of the core_title alias with the field name
+        if (strpos('core_title', $args['orderby']) !== false) {
+            $args['orderby'] = str_replace('core_title', $pubtype->titlefield, $args['orderby']);
+        }
+        $args['orderby'] = PageMaster_Util::createOrderBy($args['orderby']);
+
+        //// Execution
+        $publist = $tableObj->selectCollection('core_indepot = 0', $args['orderby'], $args['startnum']-1, $args['itemsperpage']);
 
         if ($publist !== false) {
             $pubcount = (int)$tableObj->selectCount('core_indepot = 0');
             // add the workflow information for each publication
             for ($i = 0; $i < count($publist); $i++) {
-                Zikula_Workflow_Util::getWorkflowForObject($publist[$i], $tablename, 'id', 'PageMaster');
+                $publist[$i]->pubPostProcess(array('loadworkflow' => true));
             }
         } else {
             $publist  = array();
             $pubcount = 0;
         }
 
-        // build the output
+        //// Output
         $this->view->assign('pubtype', $pubtype)
                    ->assign('publist', $publist)
                    ->assign('pager',   array('numitems'     => $pubcount,
-                                             'itemsperpage' => $itemsperpage));
+                                             'itemsperpage' => $args['itemsperpage']));
 
         return $this->view->fetch('pagemaster_admin_publist.tpl');
     }
@@ -199,36 +194,43 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     /**
      * History screen.
      */
-    public function history()
+    public function history($args=array())
     {
-        // get the input parameters
-        $pid = FormUtil::getPassedValue('pid');
-        $tid = FormUtil::getPassedValue('tid');
+        //// Parameters
+        $args = array(
+            'tid' => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
+            'pid' => isset($args['pid']) ? (int)$args['pid'] : (int)FormUtil::getPassedValue('pid')
+        );
 
-        if (empty($tid) || !is_numeric($tid)) {
+        //// Validation
+        if ($args['tid'] <= 0) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
-        if (empty($pid) || !is_numeric($pid)) {
+        if ($args['pid'] <= 0) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'pid'));
         }
 
-        if (!SecurityUtil::checkPermission('pagemaster::', "$tid:$pid:", ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('pagemaster::', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
-        // get the Doctrine_Table object
-        $publist = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
-                       ->selectCollection("core_pid = '$pid'", 'core_revision DESC');
-
-        $tablename = 'pagemaster_pubdata'.$tid;
-        for ($i = 0; $i < count($publist); $i++) {
-            Zikula_Workflow_Util::getWorkflowForObject($publist[$i], $tablename, 'id', 'PageMaster');
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        if (!$pubtype) {
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        $pubtype = PageMaster_Util::getPubType($tid);
-        $pubtype->mapValue('titlefield', PageMaster_Util::getTitleField($tid));
+        $pubtype->mapValue('titlefield', PageMaster_Util::getTitleField($args['tid']));
 
-        // build the output
+        //// Execution
+        // get the Doctrine_Table object
+        $publist = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid'])
+                       ->selectCollection("core_pid = '{$args['pid']}'", 'core_revision DESC');
+
+        for ($i = 0; $i < count($publist); $i++) {
+            $publist[$i]->pubPostProcess(array('loadworkflow' => true));
+        }
+
+        //// Output
         $this->view->assign('pubtype', $pubtype)
                    ->assign('publist', $publist);
 
@@ -238,33 +240,37 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     /**
      * Code generation.
      */
-    public function showcode()
+    public function showcode($args=array())
     {
+        //// Security check
         if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
-        // get the input parameters
-        $tid  = (int)FormUtil::getPassedValue('tid');
-        $mode = FormUtil::getPassedValue('mode');
+        //// Parameters
+        $args = array(
+            'tid'  => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
+            'mode' => isset($args['mode']) ? $args['mode'] : FormUtil::getPassedValue('mode')
+        );
 
-        // validate the essential parameters
-        if (empty($tid) || !is_numeric($tid)) {
+        //// Validation
+        if ($args['tid'] <= 0) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
-        if (empty($mode)) {
+        if (empty($args['mode'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'mode'));
         }
 
+        //// Execution
         // get the code depending of the mode
-        switch ($mode)
+        switch ($args['mode'])
         {
             case 'input':
-                $code = PageMaster_Generator::pubedit($tid);
+                $code = PageMaster_Generator::pubedit($args['tid']);
                 break;
 
             case 'outputfull':
-                $code = PageMaster_Generator::pubdisplay($tid, false);
+                $code = PageMaster_Generator::pubdisplay($args['tid'], false);
                 break;
 
             case 'outputlist':
@@ -277,9 +283,10 @@ class PageMaster_Controller_Admin extends Zikula_Controller
         $code = DataUtil::formatForDisplay($code);
         $code = str_replace("\n", '<br />', $code);
 
+        //// Output
         $this->view->assign('code',    $code)
                    ->assign('mode',    $mode)
-                   ->assign('pubtype', PageMaster_Util::getPubType($tid));
+                   ->assign('pubtype', PageMaster_Util::getPubType($args['tid']));
 
         return $this->view->fetch('pagemaster_admin_showcode.tpl');
     }
@@ -310,7 +317,7 @@ class PageMaster_Controller_Admin extends Zikula_Controller
     /**
      * Javascript hierarchical menu of edit links.
      */
-    public function editlist($args=array())
+    public function editlist()
     {
         if (!SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();

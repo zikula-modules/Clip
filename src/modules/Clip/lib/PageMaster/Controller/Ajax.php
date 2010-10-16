@@ -47,37 +47,54 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
     /**
      * Publications list.
      *
-     * @param integer $_POST['tid']                ID of the publication type.
-     * @param string  $_POST['keyword']            core_title:likefirst:KEYWORD filter.
-     * @param string  $_POST['filter']             Filter string.
-     * @param string  $_POST['orderby']            OrderBy string.
-     * @param integer $_POST['itemsperpage']       Number of items to retrieve.
-     * @param integer $_POST['startnum']           Offset to start from.
-     * @param boolean $_POST['handlePluginFields'] Whether to parse the plugin fields.
-     * @param boolean $_POST['getApprovalState']   Whether to add the workflow information.
+     * @param integer $_POST['tid']           ID of the publication type.
+     * @param string  $_POST['keyword']       core_title:likefirst:KEYWORD filter.
+     * @param string  $_POST['filter']        Filter string.
+     * @param string  $_POST['orderby']       OrderBy string.
+     * @param integer $_POST['startnum']      Offset to start from.
+     * @param integer $_POST['itemsperpage']  Number of items to retrieve.
+     * @param boolean $_POST['handleplugins'] Whether to parse the plugin fields.
+     * @param boolean $_POST['loadworkflow']  Whether to add the workflow information.
      *
      * @return array Publication list.
      */
     public function view()
     {
-        // get the tid first
-        $tid = FormUtil::getPassedValue('tid', null, 'POST');
+        //// Validation
+        $args['tid'] = (int)FormUtil::getPassedValue('tid', null, 'POST');
 
-        if (empty($tid) || !is_numeric($tid)) {
+        if ($args['tid'] <= 0) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        // security check as early as possible
-        if (!SecurityUtil::checkPermission('pagemaster:list:', "$tid::", ACCESS_READ)) {
+        //// Security check
+        if (!SecurityUtil::checkPermission('pagemaster:list:', "{$args['tid']}::", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
-        $pubtype = PageMaster_Util::getPubType($tid);
-        if (empty($pubtype)) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+        //// Parameters
+        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        if (!$pubtype) {
+            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        $pubfields = PageMaster_Util::getPubFields($tid, 'lineno');
+        $args = array(
+            'tid'           => (int)$args['tid'],
+            'keyword'       => FormUtil::getPassedValue('keyword', null, 'POST'),
+            'filter'        => FormUtil::getPassedValue('filter', null, 'POST'),
+            'orderby'       => FormUtil::getPassedValue('orderby', null, 'POST'),
+            'startnum'      => FormUtil::getPassedValue('startnum', null, 'POST'),
+            'itemsperpage'  => (int)FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'], 'POST'),
+            'handleplugins' => FormUtil::getPassedValue('handleplugins', true, 'POST'),
+            'loadworkflow'  => FormUtil::getPassedValue('loadworkflow', false, 'POST'),
+            'countmode'     => 'no', // API default
+            'checkperm'     => false // API default (already checked)
+        );
+
+        $args['itemsperpage'] = $args['itemsperpage'] > 0 ? $args['itemsperpage'] : $pubtype['itemsperpage'];
+
+        //// Misc values
+        $pubfields = PageMaster_Util::getPubFields($args['tid'], 'lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
@@ -85,40 +102,21 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         $titlefield = PageMaster_Util::findTitleField($pubfields);
         $pubtype->mapValue('titlefield', $titlefield);
 
-        // get the input parameters
-        $key                = FormUtil::getPassedValue('keyword', null, 'POST');
-        $filter             = FormUtil::getPassedValue('filter', null, 'POST');
-        $orderby            = FormUtil::getPassedValue('orderby', null, 'POST');
-        $itemsperpage       = FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'], 'POST');
-        $startnum           = FormUtil::getPassedValue('startnum', null, 'POST');
-        $handlePluginFields = FormUtil::getPassedValue('handlePluginFields', true, 'POST');
-        $getApprovalState   = FormUtil::getPassedValue('getApprovalState', false, 'POST');
-
-        // validation
-        $itemsperpage = (int)$itemsperpage > 0 ? (int)$itemsperpage : $pubtype['itemsperpage'];
-
-        if (!empty($key)) {
-            $filter = (empty($filter) ? '' : $filter.',')."$titlefield:likefirst:$key";
-            if (empty($orderby)) {
-                $orderby = $titlefield;
-            }
+        // piece needed by the autocompleter
+        if (!empty($args['keyword'])) {
+            $args['filter'] = (empty($args['filter']) ? '' : $args['filter'].',')."$titlefield:likefirst:{$args['keyword']}";
         }
+        // orderby processing
+        if (empty($args['orderby'])) {
+            $args['orderby'] = $titlefield;
+        }
+        $args['orderby'] = PageMaster_Util::createOrderBy($args['orderby']);
 
-        $orderby = PageMaster_Util::createOrderBy($orderby);
-
+        //// Execution
         // Uses the API to get the list of publications
-        $result = ModUtil::apiFunc('PageMaster', 'user', 'getall',
-                                   array('tid'                => $tid,
-                                         'filter'             => $filter,
-                                         'orderby'            => $orderby,
-                                         'itemsperpage'       => $itemsperpage,
-                                         'startnum'           => $startnum,
-                                         'countmode'          => 'no',
-                                         'checkPerm'          => false, // already checked
-                                         'handlePluginFields' => $handlePluginFields,
-                                         'getApprovalState'   => $getApprovalState));
+        $result = ModUtil::apiFunc('PageMaster', 'user', 'getall', $args);
 
-        return $result['publist']->toArray();
+        return array('data' => $result['publist']->toArray());
     }
 
     /**
@@ -134,7 +132,7 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         $list = $this->view();
 
         $result = array();
-        foreach ($list as $v) {
+        foreach ($list['data'] as $v) {
             $result[] = array(
                 'value'   => $v['id'],
                 'caption' => $v['core_title']

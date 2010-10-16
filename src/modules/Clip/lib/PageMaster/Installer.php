@@ -123,12 +123,14 @@ class PageMaster_Installer extends Zikula_Installer
             case '0.4.2':
                 $tables = DBUtil::getTables();
                 // further upgrade handling
+                // * verify the existance of the pubtype tables
                 // * map the field classnames to IDs
                 // * rename the filename/formname columns
                 // * fill the output/input sets if empty
                 // * change C(512) to C(255) and X to C(65535)
                 // * replace any pm_* in the pubtype sortfields
                 // * create any non-existing pubtype table
+                // * rename the pagemaster:% permissions to clip:
 
                 // fills the empty publish dates
                 $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
