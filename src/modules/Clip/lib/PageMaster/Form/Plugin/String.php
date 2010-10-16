@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_String extends Form_Plugin_TextInput
+class Clip_Form_Plugin_String extends Form_Plugin_TextInput
 {
     public $pluginTitle;
     public $columnDef = 'C(255)';
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name
@@ -31,7 +31,7 @@ class PageMaster_Form_Plugin_String extends Form_Plugin_TextInput
 
     static function getPluginOutput($field)
     {
-        $body = '{$pubdata.'.$field['name'].'|safehtml|modcallhooks:\'PageMaster\'}';
+        $body = '{$pubdata.'.$field['name'].'|safehtml|modcallhooks:\'Clip\'}';
 
         return array('body' => $body);
     }

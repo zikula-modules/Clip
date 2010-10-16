@@ -8,7 +8,7 @@
 <p>
     {gt text='Thanks for your submission!'}
     <br />
-    <a href="{modurl modname='PageMaster' tid=$pubtype.tid}">
+    <a href="{modurl modname='Clip' tid=$pubtype.tid}">
         {gt text='Go back to the list'}
     </a>
 </p>

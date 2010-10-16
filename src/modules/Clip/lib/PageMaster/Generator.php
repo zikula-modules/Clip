@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -10,18 +10,18 @@
  */
 
 /**
- * PageMaster Template Generator.
+ * Clip Template Generator.
  */
-class PageMaster_Generator
+class Clip_Generator
 {
     protected static $tablesloaded = false;
 
     public static function pubdisplay($tid, $public=true)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
 
         // build and process a dummy pubdata object
-        $className = "PageMaster_Model_Pubdata{$tid}";
+        $className = "Clip_Model_Pubdata{$tid}";
         $pubdata   = new $className();
         $pubdata->pubPostProcess(false);
         // get the record fields
@@ -41,7 +41,7 @@ class PageMaster_Generator
                 "\n".
                 '<div class="z-form pm-pub-details">';
 
-        $pubfields = PageMaster_Util::getPubFields($tid);
+        $pubfields = Clip_Util::getPubFields($tid);
 
         foreach ($recfields as $key => $recfield)
         {
@@ -59,7 +59,7 @@ class PageMaster_Generator
                 $rowcode['label'] = '{gt text=\''.$field['title'].'\'}:';
 
                 // process the postRead and getPluginOutput
-                $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
+                $plugin = Clip_Util::getPlugin($field['fieldplugin']);
 
                 if (method_exists($plugin, 'postRead')) {
                     $pubdata[$key] = $plugin->postRead('', $key);
@@ -176,8 +176,8 @@ class PageMaster_Generator
         // add the Hooks support for display
         $template_code .= '</div>'."\n".
                 "\n".
-                '{modurl modname=\'PageMaster\' func=\'display\' tid=$pubdata.core_tid pid=$pubdata.core_pid assign=\'returnurl\'}'."\n".
-                '{modcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$pubdata.core_uniqueid module=\'PageMaster\' returnurl=$returnurl}'.
+                '{modurl modname=\'Clip\' func=\'display\' tid=$pubdata.core_tid pid=$pubdata.core_pid assign=\'returnurl\'}'."\n".
+                '{modcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$pubdata.core_uniqueid module=\'Clip\' returnurl=$returnurl}'.
                 "\n";
 
         // if the template is a public output
@@ -218,16 +218,16 @@ class PageMaster_Generator
                 '            </legend>'."\n";
 
         // publication fields
-        $pubfields = PageMaster_Util::getPubFields($tid)->toArray();
+        $pubfields = Clip_Util::getPubFields($tid)->toArray();
 
         foreach (array_keys($pubfields) as $k) {
             // get the formplugin name
-            $formplugin = PageMaster_Util::processPluginClassname($pubfields[$k]['fieldplugin']);
+            $formplugin = Clip_Util::processPluginClassname($pubfields[$k]['fieldplugin']);
 
             // FIXME lenghts
             if (!empty($pubfields[$k]['fieldmaxlength'])) {
                 $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
-            } elseif($formplugin == 'PageMaster_Form_Plugin_Text') {
+            } elseif($formplugin == 'Clip_Form_Plugin_Text') {
                 $maxlength = " maxLength='65535'";
             } else {
                 $maxlength = ''; //" maxLength='255'"; //TODO Not a clean solution. MaxLength is not needed for ever plugin
@@ -236,7 +236,7 @@ class PageMaster_Generator
             $toolTip = !empty($pubfields[$k]['description']) ? str_replace("'", "\'", $pubfields[$k]['description']) : '';
 
             // specific plugins
-            $linecol = ($formplugin == 'PageMaster_Form_Plugin_Text') ? " rows='15' cols='70'" : '';
+            $linecol = ($formplugin == 'Clip_Form_Plugin_Text') ? " rows='15' cols='70'" : '';
 
             // scape simple quotes where needed
             $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']);
@@ -306,9 +306,9 @@ class PageMaster_Generator
                 '        </fieldset>'."\n".
                 "\n".
                 '        {if isset($id)}'."\n".
-                '            {modcallhooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'PageMaster\'}'."\n".
+                '            {modcallhooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'Clip\'}'."\n".
                 '        {else}'."\n".
-                '            {modcallhooks hookobject=\'item\' hookaction=\'new\' module=\'PageMaster\'}'."\n".
+                '            {modcallhooks hookobject=\'item\' hookaction=\'new\' module=\'Clip\'}'."\n".
                 '        {/if}'."\n".
                 "\n".
                 '        <div class="z-buttons z-formbuttons">'."\n".
@@ -348,7 +348,7 @@ class PageMaster_Generator
         // relations
         $hasRelations = '';
         // owning side
-        $relations = PageMaster_Util::getRelations($tid);
+        $relations = Clip_Util::getRelations($tid);
         foreach ($relations as $relation) {
             // set the method to use
             switch ($relation['type']) {
@@ -363,7 +363,7 @@ class PageMaster_Generator
             }
             if ($method) {
                 // build the relation code
-                $reldefinition = "PageMaster_Model_Pubdata{$relation['tid2']} as {$relation['alias1']}";
+                $reldefinition = "Clip_Model_Pubdata{$relation['tid2']} as {$relation['alias1']}";
                 // set the relation arguments
                 switch ($relation['type']) {
                     case 0: // o2o
@@ -390,7 +390,7 @@ class PageMaster_Generator
                         $relargs = array(
                             'local'    => "rel_{$relation['id']}_1",
                             'foreign'  => "rel_{$relation['id']}_2",
-                            'refClass' => "PageMaster_Model_Relation{$relation['id']}"
+                            'refClass' => "Clip_Model_Relation{$relation['id']}"
                         );
                 }
                 $relargs = var_export($relargs, true);
@@ -405,7 +405,7 @@ class PageMaster_Generator
             }
         }
         // owned side
-        $relations = PageMaster_Util::getRelations($tid, false);
+        $relations = Clip_Util::getRelations($tid, false);
         foreach ($relations as $relation) {
             // set the method to use
             switch ($relation['type']) {
@@ -420,7 +420,7 @@ class PageMaster_Generator
             }
             if ($method) {
                 // build the relation code
-                $reldefinition = "PageMaster_Model_Pubdata{$relation['tid1']} as {$relation['alias2']}";
+                $reldefinition = "Clip_Model_Pubdata{$relation['tid1']} as {$relation['alias2']}";
                 // set the relation arguments
                 switch ($relation['type']) {
                     case 0: //o2o
@@ -447,7 +447,7 @@ class PageMaster_Generator
                         $relargs = array(
                             'local'    => "rel_{$relation['id']}_2",
                             'foreign'  => "rel_{$relation['id']}_1",
-                            'refClass' => "PageMaster_Model_Relation{$relation['id']}"
+                            'refClass' => "Clip_Model_Relation{$relation['id']}"
                         );
                 }
                 $relargs = var_export($relargs, true);
@@ -507,7 +507,7 @@ class PageMaster_Generator
         // generate the model code
         $code = "
 /**
- * PageMaster
+ * Clip
  * Generated Model Class
  *
  * @link http://code.zikula.org/pagemaster/
@@ -516,7 +516,7 @@ class PageMaster_Generator
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class PageMaster_Model_Pubdata{$tid} extends PageMaster_Base_Pubdata
+class Clip_Model_Pubdata{$tid} extends Clip_Base_Pubdata
 {
     /**
      * Set table definition.
@@ -559,7 +559,7 @@ class PageMaster_Model_Pubdata{$tid} extends PageMaster_Base_Pubdata
         // generate the model code
         $code = "
 /**
- * PageMaster
+ * Clip
  * Generated Model Class
  *
  * @link http://code.zikula.org/pagemaster/
@@ -568,7 +568,7 @@ class PageMaster_Model_Pubdata{$tid} extends PageMaster_Base_Pubdata
 /**
  * Doctrine_Table class used to implement own special entity methods.
  */
-class PageMaster_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
+class Clip_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
 {
 
 }
@@ -583,13 +583,13 @@ class PageMaster_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
      */
     public static function evalrelations()
     {
-        $ownedrelations = PageMaster_Util::getRelations(-1, false, true);
+        $ownedrelations = Clip_Util::getRelations(-1, false, true);
 
         $code = '';
         $hasColumns = '';
         foreach ($ownedrelations as $tid => $relations) {
             foreach ($relations as $relation) {
-                $classname = 'PageMaster_Model_Relation'.$relation['id'];
+                $classname = 'Clip_Model_Relation'.$relation['id'];
                 if ($relation['type'] != 3 || class_exists($classname, false)) {
                     continue;
                 }
@@ -606,7 +606,7 @@ class PageMaster_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
 
                 // add the refClass
                 $code .= "
-class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
+class Clip_Model_Relation{$relation['id']} extends Doctrine_Record
 {
     public function setTableDefinition()
     {
@@ -615,7 +615,7 @@ class PageMaster_Model_Relation{$relation['id']} extends Doctrine_Record
         $hasColumns
     }
 }
-class PageMaster_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Table
+class Clip_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Table
 {
 
 }
@@ -635,21 +635,21 @@ class PageMaster_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Ta
         // refresh the pubtypes definitions
         self::addtables($force);
 
-        $pubtypes = array_keys(Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes()->toArray());
+        $pubtypes = array_keys(Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes()->toArray());
         // FIXME relations sort criteria?
         sort($pubtypes);
 
         foreach ($pubtypes as $tid) {
             if (!isset($loaded[$tid])) {
-                $code = PageMaster_Generator::pubmodel($tid);
+                $code = Clip_Generator::pubmodel($tid);
                 eval($code);
-                $code = PageMaster_Generator::pubtable($tid);
+                $code = Clip_Generator::pubtable($tid);
                 eval($code);
                 $loaded[$tid] = true;
             }
         }
 
-        PageMaster_Generator::evalrelations();
+        Clip_Generator::evalrelations();
     }
 
     // dynamic pubdata tables
@@ -674,7 +674,7 @@ class PageMaster_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Ta
 
     private static function addtables($force = false)
     {
-        $modinfo = ModUtil::getInfoFromName('PageMaster');
+        $modinfo = ModUtil::getInfoFromName('Clip');
 
         if ($modinfo['state'] == ModUtil::STATE_UNINITIALISED) {
             return;
@@ -686,7 +686,7 @@ class PageMaster_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Ta
         self::$tablesloaded = true;
 
         $tables  = array();
-        $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
+        $pubfields = Doctrine_Core::getTable('Clip_Model_Pubfield')
                      ->selectCollection('', 'tid ASC, id ASC');
 
         if ($pubfields === false) {
@@ -758,7 +758,7 @@ class PageMaster_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Ta
 
         // validates the existence of all the pubdata tables
         // to ensure the creation of all the dynamic classes
-        $pubtypes = array_keys(Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes()->toArray());
+        $pubtypes = array_keys(Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes()->toArray());
         foreach ($pubtypes as $tid) {
             if (!isset($tables["pagemaster_pubdata{$tid}"])) {
                 self::_addtable($tables, $tid, $tablecolumncore, $tabledefcore);

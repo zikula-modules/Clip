@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -10,20 +10,20 @@
  */
 
 /**
- * PageMaster Installer.
+ * Clip Installer.
  */
-class PageMaster_Installer extends Zikula_Installer
+class Clip_Installer extends Zikula_Installer
 {
     /**
-     * PageMaster installation
+     * Clip installation
      */
     public function install()
     {
         // create tables
         $tables = array(
-            'PageMaster_Model_Pubfield',
-            'PageMaster_Model_Pubtype',
-            'PageMaster_Model_Pubrelation'
+            'Clip_Model_Pubfield',
+            'Clip_Model_Pubtype',
+            'Clip_Model_Pubrelation'
         );
 
         foreach ($tables as $table) {
@@ -49,11 +49,11 @@ class PageMaster_Installer extends Zikula_Installer
 
             $cat = new Categories_DBObject_Category();
             $cat->setDataField('parent_id', $rootcat['id']);
-            $cat->setDataField('name', 'PageMaster');
-            $cat->setDataField('display_name', array($lang => $this->__('PageMaster')));
-            $cat->setDataField('display_desc', array($lang => $this->__('PageMaster root category')));
+            $cat->setDataField('name', 'Clip');
+            $cat->setDataField('display_name', array($lang => $this->__('Clip')));
+            $cat->setDataField('display_desc', array($lang => $this->__('Clip root category')));
             if (!$cat->validate('admin')) {
-                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'PageMaster'));
+                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'Clip'));
             }
             $cat->insert();
             $cat->update();
@@ -68,7 +68,7 @@ class PageMaster_Installer extends Zikula_Installer
             $cat->setDataField('name', 'lists');
             //! this is the 'lists' root category name
             $cat->setDataField('display_name', array($lang => $this->__('lists')));
-            $cat->setDataField('display_desc', array($lang => $this->__('PageMaster lists for its publications')));
+            $cat->setDataField('display_desc', array($lang => $this->__('Clip lists for its publications')));
             if (!$cat->validate('admin')) {
                 return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'lists'));
             }
@@ -81,25 +81,25 @@ class PageMaster_Installer extends Zikula_Installer
         if ($rootcat) {
             // create an entry in the categories registry to the Lists property
             $registry = new Categories_DBObject_Registry();
-            $registry->setDataField('modname', 'PageMaster');
+            $registry->setDataField('modname', 'Clip');
             $registry->setDataField('table', 'pagemaster_pubtypes');
             $registry->setDataField('property', 'Lists');
             $registry->setDataField('category_id', $rootcat['id']);
             $registry->insert();
         } else {
-            LogUtil::registerError($this->__f('Error! Could not create the [%s] Category Registry for PageMaster.', 'Lists'));
+            LogUtil::registerError($this->__f('Error! Could not create the [%s] Category Registry for Clip.', 'Lists'));
         }
 
         // modvars
         // upload dir creation if the temp dir is not outside the root (relative path)
         $tempdir = CacheUtil::getLocalDir();
-        $pmdir   = $tempdir.'/PageMaster';
+        $pmdir   = $tempdir.'/Clip';
         if (StringUtil::left($tempdir, 1) <> '/') {
-            if (CacheUtil::createLocalDir('PageMaster')) {
-                LogUtil::registerStatus($this->__f('PageMaster created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $pmdir));
+            if (CacheUtil::createLocalDir('Clip')) {
+                LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $pmdir));
             }
         } else {
-            LogUtil::registerStatus($this->__f('PageMaster could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $pmdir));
+            LogUtil::registerStatus($this->__f('Clip could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $pmdir));
         }
 
         $modvars = array(
@@ -112,7 +112,7 @@ class PageMaster_Installer extends Zikula_Installer
     }
 
     /**
-     * PageMaster upgrade
+     * Clip upgrade
      */
     public function upgrade($oldversion)
     {
@@ -133,7 +133,7 @@ class PageMaster_Installer extends Zikula_Installer
                 // * rename the pagemaster:% permissions to clip:
 
                 // fills the empty publish dates
-                $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
+                $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
                 if (!empty($pubtypes)) {
                     // update each pubdata table
                     // and update the new field value with the good old pm_cr_uid
@@ -155,15 +155,15 @@ class PageMaster_Installer extends Zikula_Installer
     }
 
     /**
-     * PageMaster deinstallation
+     * Clip deinstallation
      */
     public function uninstall()
     {
         // drop pubtype tables
-        $pubtypes = array_keys(PageMaster_Util::getPubType(-1)->toArray());
+        $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
 
         foreach ($pubtypes as $tid) {
-            $table = "PageMaster_Model_Pubdata$tid";
+            $table = "Clip_Model_Pubdata$tid";
             if (!Doctrine_Core::getTable($table)->dropTable()) {
                 return false;
             }
@@ -173,9 +173,9 @@ class PageMaster_Installer extends Zikula_Installer
 
         // drop base tables
         $tables = array(
-            'PageMaster_Model_Pubfield',
-            'PageMaster_Model_Pubtype',
-            'PageMaster_Model_Pubrelation'
+            'Clip_Model_Pubfield',
+            'Clip_Model_Pubtype',
+            'Clip_Model_Pubrelation'
         );
 
         foreach ($tables as $table) {

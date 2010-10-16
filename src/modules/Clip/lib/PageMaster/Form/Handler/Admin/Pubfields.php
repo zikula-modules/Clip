@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * Form handler to update publication fields.
  */
-class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
+class Clip_Form_Handler_Admin_Pubfields extends Form_Handler
 {
     var $tid;
     var $id;
@@ -29,15 +29,15 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
         // validation check
         if (empty($tid) || !is_numeric($tid)) {
             $view->setErrorMsg($this->__f('Error! %s not set.', 'tid'));
-            return $view->redirect(ModUtil::url('PageMaster', 'admin'));
+            return $view->redirect(ModUtil::url('Clip', 'admin'));
         }
         $this->tid = $tid;
 
         // update the pubtype table with previous changes
-        Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$this->tid)->changeTable();
+        Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->changeTable();
 
         // get the pubfields table
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubfield');
+        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
 
         if (!empty($id)) {
             $this->id = $id;
@@ -53,7 +53,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
 
         // stores the return URL
         if (empty($this->returnurl)) {
-            $adminurl = ModUtil::url('PageMaster', 'admin');
+            $adminurl = ModUtil::url('Clip', 'admin');
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $adminurl);
         }
 
@@ -72,19 +72,19 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
         $data = $view->getValues();
 
         // creates and fill a Pubfield instance
-        $pubfield = new PageMaster_Model_Pubfield();
+        $pubfield = new Clip_Model_Pubfield();
         if (!empty($this->id)) {
             $pubfield->assignIdentifier($this->id);
         }
         $pubfield->fromArray($data['field']);
 
         // fill default data
-        $plugin = PageMaster_Util::getPlugin($pubfield->fieldplugin);
+        $plugin = Clip_Util::getPlugin($pubfield->fieldplugin);
 
         $pubfield->tid = (int)$this->tid;
         $pubfield->fieldtype = $plugin->columnDef;
 
-        $this->returnurl = ModUtil::url('PageMaster', 'admin', 'pubfields',
+        $this->returnurl = ModUtil::url('Clip', 'admin', 'pubfields',
                                         array('tid' => $pubfield->tid));
 
         // handle the commands
@@ -96,7 +96,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
                     return false;
                 }
 
-                $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubfield');
+                $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
 
                 // check that the name is unique
                 $pubfield->name = str_replace("'", '', $pubfield->name);
@@ -116,7 +116,7 @@ class PageMaster_Form_Handler_Admin_Pubfields extends Form_Handler
 
                 // check that the new name is not another publication property
                 if (empty($this->id)) {
-                    $pubClass = 'PageMaster_Model_Pubdata'.$this->tid;
+                    $pubClass = 'Clip_Model_Pubdata'.$this->tid;
                     $pubObj   = new $pubClass();
                     if (isset($pubObj[$pubfield->name])) {
                         $plugin = $view->getPluginById('name');

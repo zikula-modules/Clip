@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -18,9 +18,9 @@
  * @param  bool   $params['silent']      (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: clone publication if success, false otherwise
  */
-function PageMaster_operation_copyPub(&$pub, $params)
+function Clip_operation_copyPub(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     // copies the publication record
     // FIXME consider better the copy of relations
@@ -50,11 +50,11 @@ function PageMaster_operation_copyPub(&$pub, $params)
         unset($copy['__WORKFLOW__']['id']);
 
         // register the new workflow, return false if failure
-        $workflow = new Zikula_Workflow($copy['__WORKFLOW__']['schemaname'], 'PageMaster');
+        $workflow = new Zikula_Workflow($copy['__WORKFLOW__']['schemaname'], 'Clip');
 
         if ($workflow->registerWorkflow($copy, $copystate)) {
             // let know that a publication was created
-            ModUtil::callHooks('item', 'create', $copy['core_uniqueid'], array('module' => 'PageMaster'));
+            ModUtil::callHooks('item', 'create', $copy['core_uniqueid'], array('module' => 'Clip'));
 
         } else {
             $result = false;

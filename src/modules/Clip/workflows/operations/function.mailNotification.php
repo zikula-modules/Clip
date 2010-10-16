@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -19,9 +19,9 @@
  * @param  bool   $params['silent']       (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function PageMaster_operation_mailNotification(&$pub, $params)
+function Clip_operation_mailNotification(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     $silent   = isset($params['silent']) ? (bool)$params['silent'] : false;
     $group    = isset($params['group']) ? $params['group'] : 'editors';
@@ -30,7 +30,7 @@ function PageMaster_operation_mailNotification(&$pub, $params)
 
     $ok = false;
 
-    $render = Zikula_View::getInstance('PageMaster');
+    $render = Zikula_View::getInstance('Clip');
 
     if ($render->template_exists("emails/$template.tpl")) {
         $render->assign('pub', $pub);
@@ -41,7 +41,7 @@ function PageMaster_operation_mailNotification(&$pub, $params)
         //$subject = 
 
         // TODO Configuration of recipient groups
-        //$recipients = PageMasterUtil::getPubTypeRecipients($group);
+        //$recipients = ClipUtil::getPubTypeRecipients($group);
 
         if (ModUtil::available('Mailer')) {
             $ok = ModUtil::apiFunc('Mailer', 'user', 'sendmessage',

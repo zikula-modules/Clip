@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -17,9 +17,9 @@
  * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function PageMaster_operation_createPub(&$pub, $params)
+function Clip_operation_createPub(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     // process the available parameters
     $pub['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
@@ -52,7 +52,7 @@ function PageMaster_operation_createPub(&$pub, $params)
         $result = true;
 
         // let know that a publication was created
-        ModUtil::callHooks('item', 'create', $pub['core_uniqueid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'create', $pub['core_uniqueid'], array('module' => 'Clip'));
     }
 
     // output message
@@ -62,7 +62,7 @@ function PageMaster_operation_createPub(&$pub, $params)
                 LogUtil::registerStatus(__('Done! Publication created.', $dom));
             } else {
                 // redirect to the simple pending template
-                $result = array('goto' => ModUtil::url('PageMaster', 'user', 'display',
+                $result = array('goto' => ModUtil::url('Clip', 'user', 'display',
                                                    array('tid' => $pub['core_tid'],
                                                          'pid' => $pub['core_pid'],
                                                          'template' => 'pending')));

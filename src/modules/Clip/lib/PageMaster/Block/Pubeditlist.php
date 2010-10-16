@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -13,7 +13,7 @@
 /**
  * Pubeditlist Block.
  */
-class PageMaster_Block_Pubeditlist extends Zikula_Block
+class Clip_Block_Pubeditlist extends Zikula_Block
 {
     /**
      * Initialise block.
@@ -29,9 +29,9 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
     public function info()
     {
         return array (
-            'module'         => 'PageMaster',
-            'text_type'      => $this->__('PageMaster edit list'),
-            'text_type_long' => $this->__('PageMaster dynamic edit tree/list'),
+            'module'         => 'Clip',
+            'text_type'      => $this->__('Clip edit list'),
+            'text_type_long' => $this->__('Clip dynamic edit tree/list'),
             'allow_multiple' => true,
             'form_content'   => false,
             'form_refresh'   => false,
@@ -61,7 +61,7 @@ class PageMaster_Block_Pubeditlist extends Zikula_Block
         $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
         $source     = 'block';
 
-        $pubData = ModUtil::apiFunc('PageMaster', 'user', 'editlist', $args);
+        $pubData = ModUtil::apiFunc('Clip', 'user', 'editlist', $args);
 
         $this->view->assign('allTypes',   $pubData['allTypes'])
                    ->assign('publist',    $pubData['pubList'])

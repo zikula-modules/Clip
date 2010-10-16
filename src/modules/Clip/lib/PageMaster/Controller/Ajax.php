@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * Ajax Controller.
  */
-class PageMaster_Controller_Ajax extends Zikula_Controller
+class Clip_Controller_Ajax extends Zikula_Controller
 {
     public function changedlistorder()
     {
@@ -30,7 +30,7 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         foreach ($pubfields as $key => $value)
         {
             $result = Doctrine_Query::create()
-                      ->update('PageMaster_Model_Pubfield pf')
+                      ->update('Clip_Model_Pubfield pf')
                       ->set('pf.lineno', '?', $key)
                       ->where('pf.id = ?', $value)
                       ->addWhere('pf.tid = ?', $tid)
@@ -73,7 +73,7 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         }
 
         //// Parameters
-        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($args['tid']);
         if (!$pubtype) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
@@ -94,12 +94,12 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         $args['itemsperpage'] = $args['itemsperpage'] > 0 ? $args['itemsperpage'] : $pubtype['itemsperpage'];
 
         //// Misc values
-        $pubfields = PageMaster_Util::getPubFields($args['tid'], 'lineno');
+        $pubfields = Clip_Util::getPubFields($args['tid'], 'lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $titlefield = PageMaster_Util::findTitleField($pubfields);
+        $titlefield = Clip_Util::findTitleField($pubfields);
         $pubtype->mapValue('titlefield', $titlefield);
 
         // piece needed by the autocompleter
@@ -110,11 +110,11 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
         if (empty($args['orderby'])) {
             $args['orderby'] = $titlefield;
         }
-        $args['orderby'] = PageMaster_Util::createOrderBy($args['orderby']);
+        $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);
 
         //// Execution
         // Uses the API to get the list of publications
-        $result = ModUtil::apiFunc('PageMaster', 'user', 'getall', $args);
+        $result = ModUtil::apiFunc('Clip', 'user', 'getall', $args);
 
         return array('data' => $result['publist']->toArray());
     }
@@ -123,7 +123,7 @@ class PageMaster_Controller_Ajax extends Zikula_Controller
      * Autocompletion list.
      * Returns the publications list on the expected autocompleter format.
      *
-     * @see PageMaster_Controller_Ajax::view
+     * @see Clip_Controller_Ajax::view
      *
      * @return array Autocompletion list.
      */

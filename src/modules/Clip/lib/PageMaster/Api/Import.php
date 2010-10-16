@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * Import Model.
  */
-class PageMaster_Api_Import extends Zikula_Api
+class Clip_Api_Import extends Zikula_Api
 {
     /**
      * Convert Lists to Categories.
@@ -266,7 +266,7 @@ class PageMaster_Api_Import extends Zikula_Api
                         }
                 }
 
-                $plugin = PageMaster_Util::getPlugin($datafield['fieldplugin']);
+                $plugin = Clip_Util::getPlugin($datafield['fieldplugin']);
 
                 $datafield['fieldtype']    = $plugin->columnDef;
                 $datafield['istitle']      = $pubfield['isTitle'];
@@ -294,7 +294,7 @@ class PageMaster_Api_Import extends Zikula_Api
         $pubtypes = DBUtil::selectObjectArray('pagemaster_pubtypes');
 
         foreach ($pubtypes as $pubtype) {
-            $ret = ModUtil::apiFunc('PageMaster', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
+            $ret = ModUtil::apiFunc('Clip', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
             if (!$ret) {
                 LogUtil::registerError($this->__('Cannot create the database for tid [%1$s (%2$s)].', array($pubtype['title'], $pubtype['tid'])));
             }
@@ -318,7 +318,7 @@ class PageMaster_Api_Import extends Zikula_Api
         $tables = DBUtil::getTables();
         $pubheader_table = $tables['pagesetter_pubheader'];
 
-        $DirPM = ModUtil::getVar('PageMaster', 'uploadpath');
+        $DirPM = ModUtil::getVar('Clip', 'uploadpath');
         $DirPS = ModUtil::getVar('pagesetter', 'uploadDirDocs');
 
         $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes'); //, 'pg_id=11'
@@ -444,7 +444,7 @@ class PageMaster_Api_Import extends Zikula_Api
                 DBUtil::executeSQL($sql);
 
                 $wfData['metaid']       = 0;
-                $wfData['module']       = 'PageMaster';
+                $wfData['module']       = 'Clip';
                 $wfData['schemaname']   = $pubtype['workflow'];
                 $wfData['state']        = $item['pg_approvalState'];
                 $wfData['type']         = 1;

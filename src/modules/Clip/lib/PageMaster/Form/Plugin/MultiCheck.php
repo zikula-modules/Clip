@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
+class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 {
     public $pluginTitle;
     public $columnDef   = 'C(512)';
@@ -20,7 +20,7 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name
@@ -109,7 +109,7 @@ class PageMaster_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : 30;
         $this->parseConfig($typedata);
 
-        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'pagemaster_pubtypes');
 
         $html = ' <div class="z-formrow">
                       <label for="pmplugin_checklist">'.$this->__('Category').':</label>

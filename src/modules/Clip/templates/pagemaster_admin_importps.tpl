@@ -10,24 +10,24 @@
     <p class="z-warningmsg">{gt text='Be sure to know what you are doing on this process.'}</p>
     {/if}
 
-    <p>{gt text='On this page you can import publications from Pagesetter.<br />You can only import publications when no PageMaster publication exist.<br />Please configure the Upload Path before you import something.<br />No Pagesetter data will be changed due the import.'}</p>
+    <p>{gt text='On this page you can import publications from Pagesetter.<br />You can only import publications when no Clip publication exist.<br />Please configure the Upload Path before you import something.<br />No Pagesetter data will be changed due the import.'}</p>
 
     <ul>
         <li>
-            <a href="{modurl modname='PageMaster' type='admin' func='importps' step='1'}">{gt text='Import lists,'}</a>
+            <a href="{modurl modname='Clip' type='admin' func='importps' step='1'}">{gt text='Import lists,'}</a>
         </li>
         <li>
             {if $alreadyexists eq 0}
-            <a href="{modurl modname='PageMaster' type='admin' func='importps' step='2'}">{gt text="Import publication types,"}</a>
+            <a href="{modurl modname='Clip' type='admin' func='importps' step='2'}">{gt text="Import publication types,"}</a>
             {else}
             {gt text='PageMaste already has publication types. It must be empty before perform an import.'}
             {/if}
         </li>
         <li>
-            <a href="{modurl modname='PageMaster' type='admin' func='importps' step='3'}">{gt text="Create the database tables,"}</a>
+            <a href="{modurl modname='Clip' type='admin' func='importps' step='3'}">{gt text="Create the database tables,"}</a>
         </li>
         <li>
-            <a href="{modurl modname='PageMaster' type='admin' func='importps' step='4'}">{gt text="Import data."}</a>
+            <a href="{modurl modname='Clip' type='admin' func='importps' step='4'}">{gt text="Import data."}</a>
         </li>
     </ul>
 </div>

@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -20,7 +20,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
     function __construct($view, &$params)
     {
         $this->autoPostBack = true;
-        $plugins = PageMaster_Util::getPluginsOptionList();
+        $plugins = Clip_Util::getPluginsOptionList();
 
         foreach ($plugins as $plugin) {
             $items[] = array (
@@ -42,7 +42,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
         if (!empty($this->selectedValue) && !empty($this->items)) {
             PageUtil::addVar('javascript', 'livepipe');
             $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
-            $plugin = PageMaster_Util::getPlugin($this->selectedValue);
+            $plugin = Clip_Util::getPlugin($this->selectedValue);
             if (method_exists($plugin, 'getTypeHtml'))
             {
                 if (method_exists($plugin, 'getSaveTypeDataFunc')) {

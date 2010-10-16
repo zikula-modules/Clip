@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,15 +12,15 @@
 /**
  * Search Model.
  */
-class PageMaster_Api_Search extends Zikula_Api
+class Clip_Api_Search extends Zikula_Api
 {
     /**
      * Search plugin info.
      */
     public function info()
     {
-        return array('title'     => 'PageMaster',
-                     'functions' => array('PageMaster' => 'search'));
+        return array('title'     => 'Clip',
+                     'functions' => array('Clip' => 'search'));
     }
 
     /**
@@ -29,14 +29,14 @@ class PageMaster_Api_Search extends Zikula_Api
     public function options($args)
     {
         if (SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_READ)) {
-            $render = Zikula_View::getInstance('PageMaster');
+            $render = Zikula_View::getInstance('Clip');
 
             // Looking for pubtype with at least one searchable field
-            $pubtypes = PageMaster_Util::getPubType(-1)->toArray();
+            $pubtypes = Clip_Util::getPubType(-1)->toArray();
 
             foreach ($pubtypes as $key => $pubtype)
             {
-                $pubfields = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
+                $pubfields = Doctrine_Core::getTable('Clip_Model_Pubtype')
                              ->selectFieldArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
                 if (count($pubfields) == 0 ) {
@@ -60,7 +60,7 @@ class PageMaster_Api_Search extends Zikula_Api
         $search_tid = FormUtil::getPassedValue('search_tid', '', 'REQUEST');
 
         ModUtil::dbInfoLoad('Search');
-        ModUtil::dbInfoLoad('PageMaster');
+        ModUtil::dbInfoLoad('Clip');
 
         $tables = DBUtil::getTables();
         $searchTable  = $tables['search_result'];
@@ -77,12 +77,12 @@ class PageMaster_Api_Search extends Zikula_Api
                           $searchColumn[session])
                       VALUES ";
 
-        $pubtypes = PageMaster_Util::getPubType(-1)->toArray();
+        $pubtypes = Clip_Util::getPubType(-1)->toArray();
 
         foreach ($pubtypes as $pubtype)
         {
             if ($search_tid == '' || $search_tid[$pubtype['tid']] == 1){
-                $pubfieldnames = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
+                $pubfieldnames = Doctrine_Core::getTable('Clip_Model_Pubtype')
                                  ->selectArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
                 $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
@@ -104,11 +104,11 @@ class PageMaster_Api_Search extends Zikula_Api
 
                     $tablename  = 'pagemaster_pubdata'.$pubtype['tid'];
 
-                    $publist = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$pubtype['tid'])
+                    $publist = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubtype['tid'])
                                ->selectCollection($where)
                                ->toArray();
 
-                    $core_title = PageMaster_Util::getTitleField($pubtype['tid']);
+                    $core_title = Clip_Util::getTitleField($pubtype['tid']);
 
                     foreach ($publist as $pub)
                     {
@@ -118,7 +118,7 @@ class PageMaster_Api_Search extends Zikula_Api
                         . '\'' . DataUtil::formatForStore('') . '\', '
                         . '\'' . DataUtil::formatForStore($extra) . '\', '
                         . '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '
-                        . '\'' . 'PageMaster' . '\', '
+                        . '\'' . 'Clip' . '\', '
                         . '\'' . DataUtil::formatForStore($sessionId) . '\')';
 
                         $insertResult = DBUtil::executeSQL($sql);
@@ -144,7 +144,7 @@ class PageMaster_Api_Search extends Zikula_Api
     {
         $datarow = &$args['datarow'];
         $extra   = unserialize($datarow['extra']);
-        $datarow['url'] = ModUtil::url('PageMaster', 'user', 'display',
+        $datarow['url'] = ModUtil::url('Clip', 'user', 'display',
                                        array('tid' => $extra['tid'],
                                              'pid' => $extra['pid']));
         return true;

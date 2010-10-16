@@ -1,21 +1,21 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright (c) PageMaster Team
+ * @copyright (c) Clip Team
  * @link      http://code.zikula.org/pagemaster/
  * @license   GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
 /**
- * PageMaster Version Info.
+ * Clip Version Info.
  */
-class PageMaster_Version extends Zikula_Version
+class Clip_Version extends Zikula_Version
 {
     public function getMetaData()
     {
         $meta = array();
-        $meta['displayname']    = $this->__('PageMaster');
+        $meta['displayname']    = $this->__('Clip');
         $meta['description']    = $this->__('Content Module like pagesetter');
         $meta['oldnames']       = array('pagemaster');
         //! module name that appears in URL

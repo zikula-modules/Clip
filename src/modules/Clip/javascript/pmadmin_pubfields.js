@@ -1,7 +1,7 @@
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id: pubfieldlist.css 220 2007-08-11 15:23:48Z mateo $
@@ -11,7 +11,7 @@
 
 function pubfieldlistorderchanged()
 {
-    var params = 'module=PageMaster&func=changedlistorder&authid=' + $F('FormAuthid')
+    var params = 'module=Clip&func=changedlistorder&authid=' + $F('FormAuthid')
                    + '&tid=' + $('pm_tid').innerHTML
                    + '&' + Sortable.serialize('pubfieldlist');
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * Form handler to manage the relations.
  */
-class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
+class Clip_Form_Handler_Admin_Relations extends Form_Handler
 {
     var $id;
     var $returnurl;
@@ -22,18 +22,18 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
      */
     function initialize($view)
     {
-        $pubtypes = PageMaster_Util::getPubType(-1);
+        $pubtypes = Clip_Util::getPubType(-1);
 
         if (count($pubtypes) == 0) {
             LogUtil::registerError($this->__('There are no publication types to relate.'));
 
-            return $view->redirect(ModUtil::url('PageMaster', 'admin', 'pubtypes'));
+            return $view->redirect(ModUtil::url('Clip', 'admin', 'pubtypes'));
         }
 
         $id  = (int)FormUtil::getPassedValue('id', 0);
         $tid = (int)FormUtil::getPassedValue('tid', 0);
 
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubrelation');
+        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
 
         if (!empty($id)) {
             $this->id = $id;
@@ -43,8 +43,8 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
             $relation->mapValue('type2', $relation->type%2 == 0 ? 0 : 1);
 
             // update the implied pubdata tables
-            Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation['tid1'])->changeTable();
-            Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation['tid2'])->changeTable();
+            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation['tid1'])->changeTable();
+            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation['tid2'])->changeTable();
 
             $view->assign('relation', $relation->toArray());
         }
@@ -74,14 +74,14 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
         );
 
         $view->assign('pubtypes', $pubtypes)
-             ->assign('typeselector', PageMaster_Util::getPubtypesSelector(true, false))
+             ->assign('typeselector', Clip_Util::getPubtypesSelector(true, false))
              ->assign('relations', $relations)
              ->assign('reltypes', array($reltype1, $reltype2))
              ->assign('tid', $tid);
 
         // stores the return URL
         if (empty($this->returnurl)) {
-            $returnurl = ModUtil::url('PageMaster', 'admin', 'relations',
+            $returnurl = ModUtil::url('Clip', 'admin', 'relations',
                                       array('tid' => $tid));
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $returnurl);
         }
@@ -101,7 +101,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
         $data = $view->getValues();
 
         // creates and fill a Pubfield instance
-        $relation = new PageMaster_Model_Pubrelation();
+        $relation = new Clip_Model_Pubrelation();
         if (!empty($this->id)) {
             $relation->assignIdentifier($this->id);
         }
@@ -119,7 +119,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                     return false;
                 }
 
-                $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubrelation');
+                $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
 
                 // TODO verify unique alias too
                 // check it's unique
@@ -142,7 +142,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                 // detect a type change for m2m before save
                 $previous = $tableObj->find($this->id);
                 if ($previous->type != $relation->type && $previous->type == 3) {
-                    Doctrine_Core::getTable('PageMaster_Model_Relation'.$this->id)->dropTable();
+                    Doctrine_Core::getTable('Clip_Model_Relation'.$this->id)->dropTable();
                 }
 
                 $relation->save();
@@ -150,13 +150,13 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                 // create/edit status messages
                 if (empty($this->id)) {
                     // create the table
-                    PageMaster_Generator::loadDataClasses(true);
+                    Clip_Generator::loadDataClasses(true);
                     if ($relation->type == 3) {
-                        Doctrine_Core::getTable('PageMaster_Model_Relation'.$relation->id)->createTable();
+                        Doctrine_Core::getTable('Clip_Model_Relation'.$relation->id)->createTable();
                     }
                     // setup the return url as the edit form
                     // to update the corresponding tables
-                    $this->returnurl = ModUtil::url('PageMaster', 'admin', 'relations',
+                    $this->returnurl = ModUtil::url('Clip', 'admin', 'relations',
                                                     array('id'  => $this->id));
 
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
@@ -167,7 +167,7 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
 
             // delete the field
             case 'delete':
-                $relation = Doctrine_Core::getTable('PageMaster_Model_Pubrelation')->find($this->id);
+                $relation = Doctrine_Core::getTable('Clip_Model_Pubrelation')->find($this->id);
 
                 if ($relation->delete()) {
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));
@@ -175,13 +175,13 @@ class PageMaster_Form_Handler_Admin_Relations extends Form_Handler
                     return LogUtil::registerError($this->__('Error! Deletion attempt failed.'));
                 }
 
-                $this->returnurl = ModUtil::url('PageMaster', 'admin', 'relations');
+                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations');
                 break;
         }
 
         // update both pubtypes tables
-        Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation['tid1'])->changeTable();
-        Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$relation['tid2'])->changeTable();
+        Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation['tid1'])->changeTable();
+        Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation['tid2'])->changeTable();
 
         return $view->redirect($this->returnurl);
     }

@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -16,9 +16,9 @@
  * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function PageMaster_operation_moveToDepot($pub, $params)
+function Clip_operation_moveToDepot($pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     // process the available parameters
     $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
@@ -34,7 +34,7 @@ function PageMaster_operation_moveToDepot($pub, $params)
         $result = true;
 
         // let know that the publication was updated
-        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'Clip'));
     }
 
     // output message

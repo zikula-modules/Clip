@@ -7,7 +7,7 @@
     <h2>{gt text='Settings'}</h2>
 
     <div class="z-menu pm-menu">
-        <span class="z-menuitem-title"><a href="{modurl modname='PageMaster' type='admin' func='importps'}">{gt text='Import pagesetter publications'}</a></span>
+        <span class="z-menuitem-title"><a href="{modurl modname='Clip' type='admin' func='importps'}">{gt text='Import pagesetter publications'}</a></span>
     </div>
 
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
@@ -40,12 +40,12 @@
                 {formlabel for='devmode' __text='Development mode'}
                 {formcheckbox id='devmode'}
                 <span class="z-formnote z-informationmsg">
-                    {gt text='Enable the development mode to see detailed notices about PageMaster requirements.'}
+                    {gt text='Enable the development mode to see detailed notices about Clip requirements.'}
                 </span>
             </div>
         </fieldset>
 
-        {modcallhooks hookobject='module' hookaction='modifyconfig' hookid='PageMaster' module='PageMaster'}
+        {modcallhooks hookobject='module' hookaction='modifyconfig' hookid='Clip' module='Clip'}
 
         <div class="z-buttons z-formbuttons">
             {formbutton id='update' commandName='update' __text='Save' class='z-bt-ok'}

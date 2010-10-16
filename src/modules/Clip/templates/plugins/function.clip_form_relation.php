@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -91,7 +91,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
 
         // build the autocompleter setup
         PageUtil::addVar('javascript', 'prototype');
-        PageUtil::addVar('javascript', 'modules/PageMaster/javascript/facebooklist.js');
+        PageUtil::addVar('javascript', 'modules/Clip/javascript/facebooklist.js');
         $script =
         "<script type=\"text/javascript\">\n// <![CDATA[\n".'
             function clip_enable_'.$this->id.'() {
@@ -99,7 +99,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
                                                  {
                                                   fetchFile: Zikula.Config.baseURL+\'ajax.php\',
                                                   parameters: {
-                                                    module: "PageMaster",
+                                                    module: "Clip",
                                                     func: "autocomplete",
                                                     tid: '.$this->relinfo['tid'].',
                                                     itemsperpage: '.$numitems.'
@@ -154,7 +154,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
         if ($this->dataBased) {
             $value = $this->parseValue($view, $this->text);
 
-            $classname = 'PageMaster_Model_Pubdata'.$this->relinfo['tid'];
+            $classname = 'Clip_Model_Pubdata'.$this->relinfo['tid'];
             $tableObj  = Doctrine_Core::getTable($classname);
 
             $ref = $this->relinfo['single'] ? array($value) : explode(':', $value);

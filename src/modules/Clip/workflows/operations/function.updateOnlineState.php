@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -17,9 +17,9 @@
  * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function PageMaster_operation_updateOnlineState(&$pub, $params)
+function Clip_operation_updateOnlineState(&$pub, $params)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     // process the available parameters
     // set the online parameter, or defaults to offline if it's not set
@@ -33,7 +33,7 @@ function PageMaster_operation_updateOnlineState(&$pub, $params)
         $result = true;
 
         // let know that the publication was updated
-        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'Clip'));
     }
 
     // output message

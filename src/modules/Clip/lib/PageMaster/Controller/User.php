@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * User Controller.
  */
-class PageMaster_Controller_User extends Zikula_Controller
+class Clip_Controller_User extends Zikula_Controller
 {
     /**
      * Main user function.
@@ -47,7 +47,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($args['tid']);
         if (empty($pubtype)) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
@@ -71,7 +71,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             'countmode'     => 'both' // API default
         );
 
-        $args['orderby'] = PageMaster_Util::createOrderBy($args['orderby']);
+        $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);
 
         if (empty($args['template'])) {
             // template comes from pubtype
@@ -114,16 +114,16 @@ class PageMaster_Controller_User extends Zikula_Controller
         }
 
         //// Misc values
-        $pubfields = PageMaster_Util::getPubFields($args['tid'], 'lineno');
+        $pubfields = Clip_Util::getPubFields($args['tid'], 'lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
+        $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
 
         //// API call
         // uses the API to get the list of publications
-        $result = ModUtil::apiFunc('PageMaster', 'user', 'getall', $args);
+        $result = ModUtil::apiFunc('Clip', 'user', 'getall', $args);
 
         //// Build the output
         // assign the data to the output
@@ -137,7 +137,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
-            $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
+            $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
@@ -176,7 +176,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($args['tid']);
         if (empty($pubtype)) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
@@ -201,7 +201,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // get the pid if it was not passed
         if (empty($args['pid'])) {
-            $args['pid'] = ModUtil::apiFunc('PageMaster', 'user', 'getPid', $args);
+            $args['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $args);
         }
 
         // determine the template to use
@@ -264,15 +264,15 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         //// Misc values
         // not cached or cache disabled, then get the Pub from the DB
-        $pubfields = PageMaster_Util::getPubFields($args['tid']);
+        $pubfields = Clip_Util::getPubFields($args['tid']);
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
+        $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
 
         //// API call
-        $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get', $args);
+        $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $args);
         if (!$pubdata) {
             return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($args['tid'], $args['pid'], $id)));
         }
@@ -284,7 +284,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
-            $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
+            $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
@@ -299,7 +299,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             // settings for the autogenerated display template
             $this->view->setCompile_check(true)
                        ->assign('clip_generic_tpl', true)
-                       ->assign('template_generic_code', PageMaster_Generator::pubdisplay($args['tid'], $pubdata));
+                       ->assign('template_generic_code', Clip_Generator::pubdisplay($args['tid'], $pubdata));
         }
 
         return $this->view->fetch($args['template'], $cacheid);
@@ -325,7 +325,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($args['tid']);
         if (empty($pubtype)) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
@@ -343,29 +343,29 @@ class PageMaster_Controller_User extends Zikula_Controller
         );
 
         //// Misc values
-        $pubfields = PageMaster_Util::getPubFields($args['tid'], 'pm_lineno');
+        $pubfields = Clip_Util::getPubFields($args['tid'], 'pm_lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
+        $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
 
         if (empty($args['id']) && !empty($args['pid'])) {
-            $args['id'] = (int)ModUtil::apiFunc('PageMaster', 'user', 'getId', $args);
+            $args['id'] = (int)ModUtil::apiFunc('Clip', 'user', 'getId', $args);
 
             if (!$args['id']) {
                 return LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($args['tid'], $args['pid'])));
             }
         }
 
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
         // get actual state for selecting form Template
         $stepname = 'initial';
 
         if ($args['id']) {
             $obj = array('id' => $args['id']);
-            Zikula_Workflow_Util::getWorkflowForObject($obj, $pubtype->getTableName(), 'id', 'PageMaster');
+            Zikula_Workflow_Util::getWorkflowForObject($obj, $pubtype->getTableName(), 'id', 'Clip');
             $stepname = $obj['__WORKFLOW__']['state'];
         }
 
@@ -374,13 +374,13 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         // no security check needed
         // the security check will be done for workflow actions and userapi.get
-        $handler = new PageMaster_Form_Handler_User_Pubedit();
+        $handler = new Clip_Form_Handler_User_Pubedit();
         // setup the form handler
         $handler->pmSetUp($args['id'], $args['tid'], $pubtype, $pubfields);
 
         //// Build the output
         // create the output object
-        $render = FormUtil::newForm('PageMaster');
+        $render = FormUtil::newForm('Clip');
 
         $render->assign('pubtype', $pubtype)
                ->add_core_data();
@@ -418,7 +418,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             // settings for the autogenerated edit template
             $render->setCompile_check(true)
                    ->assign('clip_generic_tpl', true)
-                   ->assign('template_generic_code', PageMaster_Generator::pubedit($args['tid']));
+                   ->assign('template_generic_code', Clip_Generator::pubedit($args['tid']));
         }
 
         return $render->execute($template, $handler);
@@ -442,7 +442,7 @@ class PageMaster_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($args['tid']);
         if (empty($pubtype)) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
@@ -473,29 +473,29 @@ class PageMaster_Controller_User extends Zikula_Controller
         $args['schema'] = str_replace('.xml', '', $pubtype->workflow);
 
         // get the publication
-        $pub = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid'])->find($args['id']);
+        $pub = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])->find($args['id']);
 
         if (!$pub) {
             return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', DataUtil::formatForDisplay($args['id'])));
         }
 
-        Zikula_Workflow_Util::executeAction($args['schema'], $pub, $commandName, $pubtype->getTableName(), 'PageMaster');
+        Zikula_Workflow_Util::executeAction($args['schema'], $pub, $commandName, $pubtype->getTableName(), 'Clip');
 
         // process the redirect
-        $displayUrl = ModUtil::url('PageMaster', 'user', 'display',
+        $displayUrl = ModUtil::url('Clip', 'user', 'display',
                                    array('tid' => $args['tid'],
                                          'id'  => $args['id']));
 
         switch ($goto)
         {
             case 'edit':
-                $goto = ModUtil::url('PageMaster', 'user', 'edit',
+                $goto = ModUtil::url('Clip', 'user', 'edit',
                                      array('tid' => $args['tid'],
                                            'id'  => $args['id']));
                 break;
 
             case 'stepmode':
-                $goto = ModUtil::url('PageMaster', 'user', 'edit',
+                $goto = ModUtil::url('Clip', 'user', 'edit',
                                       array('tid'  => $args['tid'],
                                             'id'   => $args['id'],
                                             'goto' => 'stepmode'));
@@ -506,16 +506,16 @@ class PageMaster_Controller_User extends Zikula_Controller
                 break;
 
             case 'editlist':
-                $goto = ModUtil::url('PageMaster', 'admin', 'editlist',
+                $goto = ModUtil::url('Clip', 'admin', 'editlist',
                                      array('_id' => $args['tid'].'_'.$pub['core_pid']));
                 break;
 
             case 'admin':
-                $goto = ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $args['tid']));
+                $goto = ModUtil::url('Clip', 'admin', 'publist', array('tid' => $args['tid']));
                 break;
 
             case 'index':
-                $goto = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $args['tid']));
+                $goto = ModUtil::url('Clip', 'user', 'view', array('tid' => $args['tid']));
                 break;
 
             case 'home':
@@ -554,7 +554,7 @@ class PageMaster_Controller_User extends Zikula_Controller
 
         $args['orderby'] = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
 
-        $pubData = ModUtil::apiFunc('PageMaster', 'user', 'editlist', $args);
+        $pubData = ModUtil::apiFunc('Clip', 'user', 'editlist', $args);
 
         // create the output object
         $this->view->assign('allTypes',   $pubData['allTypes'])
@@ -570,7 +570,7 @@ class PageMaster_Controller_User extends Zikula_Controller
     }
 
     /**
-     * @see PageMaster_Controller_User::display
+     * @see Clip_Controller_User::display
      * @deprecated
      */
     public function viewpub($args)
@@ -579,7 +579,7 @@ class PageMaster_Controller_User extends Zikula_Controller
     }
 
     /**
-     * @see PageMaster_Controller_User::edit
+     * @see Clip_Controller_User::edit
      * @deprecated
      */
     public function pubedit($args)
@@ -588,7 +588,7 @@ class PageMaster_Controller_User extends Zikula_Controller
     }
 
     /**
-     * @see PageMaster_Controller_User::editlist
+     * @see Clip_Controller_User::editlist
      * @deprecated
      */
     public function pubeditlist($args)

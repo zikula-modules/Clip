@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * Form handler to update publications.
  */
-class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
+class Clip_Form_Handler_User_Pubedit extends Form_Handler
 {
     private $id;
     private $pub;
@@ -35,7 +35,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         //// Initialize
         // process a new or existing pub, and it's available actions
         if (!empty($this->id)) {
-            $pubdata = ModUtil::apiFunc('PageMaster', 'user', 'get', array(
+            $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', array(
                 'tid' => $this->tid,
                 'id'  => $this->id,
                 'loadrefs'  => true,
@@ -46,20 +46,20 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
             if (!$pubdata) {
                 LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($this->tid, $this->id)));
 
-                return $view->redirect(ModUtil::url('PageMaster', 'user', 'view', array('tid' => $this->tid)));
+                return $view->redirect(ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid)));
             }
 
             $this->pubAssign($pubdata);
 
-            $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->pubtype->getTableName(), 'id', 'PageMaster');
+            $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->pubtype->getTableName(), 'id', 'Clip');
         } else {
             // initial values
-            $classname = 'PageMaster_Model_Pubdata'.$this->tid;
+            $classname = 'Clip_Model_Pubdata'.$this->tid;
             $pubdata = new $classname();
 
             $this->pubDefault($pubdata);
 
-            $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'PageMaster');
+            $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'Clip');
         }
 
         //// Validation
@@ -68,7 +68,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         if (count($actions) < 1) {
             LogUtil::registerError($this->__('No workflow actions found. This can be a permissions issue.'));
 
-            return $view->redirect(ModUtil::url('PageMaster', 'user', 'view', array('tid' => $this->tid)));
+            return $view->redirect(ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid)));
         }
 
         // translate any gt string on the action parameters
@@ -122,12 +122,12 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         // stores the first referer and the item URL
         if (empty($this->referer)) {
-            $viewurl = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $this->tid), null, null, true);
+            $viewurl = ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid), null, null, true);
             $this->referer = System::serverGetVar('HTTP_REFERER', $viewurl);
         }
 
         if (!empty($this->id)) {
-            $this->itemurl = ModUtil::url('PageMaster', 'user', 'display', array('tid' => $this->tid, 'pid' => $this->pub['core_pid']), null, null, true);
+            $this->itemurl = ModUtil::url('Clip', 'user', 'display', array('tid' => $this->tid, 'pid' => $this->pub['core_pid']), null, null, true);
         }
 
         $view->assign('actions', $actions);
@@ -151,14 +151,14 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         $this->pubExtract($data['pubdata']);
 
         // perform the command
-        $data = ModUtil::apiFunc('PageMaster', 'user', 'edit',
+        $data = ModUtil::apiFunc('Clip', 'user', 'edit',
                                  array('data'        => $this->pub,
                                        'commandName' => $args['commandName'],
                                        'pubfields'   => $this->pubfields,
                                        'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // see http://www.smarty.net/manual/en/caching.groups.php
-        $tmp = Zikula_View::getInstance('PageMaster');
+        $tmp = Zikula_View::getInstance('Clip');
         // clear the view of the current publication
         $tmp->clear_cache(null, 'display'.$this->tid.'|'.$this->pub['core_pid']);
         // clear all page of publist
@@ -171,14 +171,14 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
 
         if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
             // if the item moved to the depot or was deleted
-            $urltid = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $data['core_tid']));
+            $urltid = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
             // check if the user comes of the display screen or not
             $goto = (strpos($this->referer, $this->itemurl) === 0) ? $urltid : $this->referer;
 
         } elseif (isset($ops['createPub']) && $ops['createPub']) {
             // the publication was created
             if ($data['core_online'] == 1) {
-                $goto = ModUtil::url('PageMaster', 'user', 'display',
+                $goto = ModUtil::url('Clip', 'user', 'display',
                                      array('tid' => $data['core_tid'],
                                            'pid' => $data['core_pid']));
             } else {
@@ -199,7 +199,7 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         switch ($this->goto) {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
-                $this->goto = ModUtil::url('PageMaster', 'user', 'edit',
+                $this->goto = ModUtil::url('Clip', 'user', 'edit',
                                        array('tid'  => $data['core_tid'],
                                              'id'   => $data['id'],
                                              'goto' => 'stepmode'));
@@ -210,16 +210,16 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
                 break;
 
             case 'editlist':
-                $this->goto = ModUtil::url('PageMaster', 'admin', 'editlist',
+                $this->goto = ModUtil::url('Clip', 'admin', 'editlist',
                                        array('_id' => $data['core_tid'].'_'.$data['core_pid']));
                 break;
 
             case 'admin':
-                $this->goto = ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $data['core_tid']));
+                $this->goto = ModUtil::url('Clip', 'admin', 'publist', array('tid' => $data['core_tid']));
                 break;
 
             case 'index':
-                $this->goto = ModUtil::url('PageMaster', 'user', 'view', array('tid' => $data['core_tid']));
+                $this->goto = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
                 break;
 
             case 'home':
@@ -251,13 +251,13 @@ class PageMaster_Form_Handler_User_Pubedit extends Form_Handler
         if ($pubtype) {
             $this->pubtype = $pubtype;
         } else {
-            $this->pubtype = PageMaster_Util::getPubType($tid);
+            $this->pubtype = Clip_Util::getPubType($tid);
         }
         // pubfields
         if ($pubfields) {
             $this->pubfields = $pubfields;
         } else {
-            $this->pubfields = PageMaster_Util::getPubFields($tid);
+            $this->pubfields = Clip_Util::getPubFields($tid);
         }
     }
 

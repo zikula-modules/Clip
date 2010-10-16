@@ -1,16 +1,16 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
-$modinfo = ModUtil::getInfoFromName('PageMaster');
+$modinfo = ModUtil::getInfoFromName('Clip');
 
 if ($modinfo['state'] == ModUtil::STATE_ACTIVE) {
-    PageMaster_Generator::loadDataClasses();
+    Clip_Generator::loadDataClasses();
 }

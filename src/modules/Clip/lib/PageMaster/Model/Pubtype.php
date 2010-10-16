@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class PageMaster_Model_Pubtype extends Doctrine_Record
+class Clip_Model_Pubtype extends Doctrine_Record
 {
     /**
      * Set table definition.
@@ -100,7 +100,7 @@ class PageMaster_Model_Pubtype extends Doctrine_Record
     }
 
     /**
-     * PageMaster utility methods
+     * Clip utility methods
      */
     public function getTableName()
     {

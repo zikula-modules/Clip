@@ -6,7 +6,7 @@
  * @link http://www.zikula.org
  * @version $Id: modifier.array.php 27067 2009-10-21 17:20:35Z drak $
  * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package PageMaster_Template_Plugins
+ * @package Clip_Template_Plugins
  * @subpackage Plugins
  */
 

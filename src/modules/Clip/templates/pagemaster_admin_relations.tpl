@@ -38,7 +38,7 @@
                         {/if}
                     </span>
                     <span class="z-itemcell z-w10">
-                        <a href="{modurl modname='PageMaster' type='admin' func='relations' id=$item.id tid=$tid fragment='form'}">
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid fragment='form'}">
                             {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     </span>

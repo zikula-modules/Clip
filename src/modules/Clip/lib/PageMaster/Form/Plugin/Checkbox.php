@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
+class Clip_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
 {
     public $pluginTitle;
     public $columnDef = 'L';
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name

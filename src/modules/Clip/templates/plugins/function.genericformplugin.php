@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -20,7 +20,7 @@
  */
 function smarty_function_genericformplugin($params, &$render)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     $id  = $params['id'];
 
@@ -30,10 +30,10 @@ function smarty_function_genericformplugin($params, &$render)
 
     $tid = $render->eventHandler->getTid();
 
-    $pubfields   = PageMaster_Util::getPubFields($tid);
+    $pubfields   = Clip_Util::getPubFields($tid);
     $pluginclass = $pubfields[$id]['fieldplugin'];
 
-    $pluginclass = PageMaster_Util::processPluginClassname($pluginclass);
+    $pluginclass = Clip_Util::processPluginClassname($pluginclass);
 
     // read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])){

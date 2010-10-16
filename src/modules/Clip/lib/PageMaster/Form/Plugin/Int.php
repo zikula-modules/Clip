@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,14 +10,14 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_Int extends Form_Plugin_IntInput
+class Clip_Form_Plugin_Int extends Form_Plugin_IntInput
 {
     public $pluginTitle;
     public $columnDef = 'I4';
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name

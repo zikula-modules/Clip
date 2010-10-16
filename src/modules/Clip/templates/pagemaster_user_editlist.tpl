@@ -34,7 +34,7 @@ $this->assign ('referer', 'index.php');
                 {if ($edit)}
                 <td>
                     {if ($tid)}
-                    {modfunc modname='PageMaster' type='user' func='edit' tid=$tid pid=$pid}
+                    {modfunc modname='Clip' type='user' func='edit' tid=$tid pid=$pid}
                     {/if}
                 </td>
                 {/if}

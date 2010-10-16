@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
+class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
 {
     public $pluginTitle;
     public $columnDef = 'X';
@@ -19,7 +19,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name
@@ -33,7 +33,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
 
     static function getPluginOutput($field)
     {
-        $body = '{$pubdata.'.$field['name'].'|safehtml|modcallhooks:\'PageMaster\'}';
+        $body = '{$pubdata.'.$field['name'].'|safehtml|modcallhooks:\'Clip\'}';
 
         return array('body' => $body);
     }
@@ -47,7 +47,7 @@ class PageMaster_Form_Plugin_Text extends Form_Plugin_TextInput
             static $scribite_arr;
             $scribite_arr[] = $this->id;
             $scribite = ModUtil::func('scribite', 'user', 'loader',
-                                  array('modulename' => 'PageMaster',
+                                  array('modulename' => 'Clip',
                                         'editor'     => 'xinha',
                                         'areas'      => $scribite_arr));
             PageUtil::addVar('rawtext', $scribite);

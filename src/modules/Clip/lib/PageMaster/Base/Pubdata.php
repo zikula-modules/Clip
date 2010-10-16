@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class PageMaster_Base_Pubdata extends Doctrine_Record
+class Clip_Base_Pubdata extends Doctrine_Record
 {
     /**
      * Record post process.
@@ -30,10 +30,10 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
     public function pubPostProcess($args = array())
     {
         $tablename = $this->_table->getInternalTableName();
-        $tid = PageMaster_Util::getTidFromStringSuffix($tablename);
+        $tid = Clip_Util::getTidFromStringSuffix($tablename);
 
         // mapped values
-        $core_title = PageMaster_Util::getTitleField($tid);
+        $core_title = Clip_Util::getTitleField($tid);
 
         $this->mapValue('core_tid', $tid);
         $this->mapValue('core_uniqueid', "{$tid}-{$this['core_pid']}");
@@ -43,12 +43,12 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
 
         // handle the plugins data if needed
         if (!isset($args['handleplugins']) || $args['handleplugins']) {
-            PageMaster_Util::handlePluginFields($this);
+            Clip_Util::handlePluginFields($this);
         }
 
         // load the workflow data if needed
         if (isset($args['loadworkflow']) && $args['loadworkflow']) {
-            Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'PageMaster');
+            Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'Clip');
         }
 
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
@@ -101,7 +101,7 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
         }
 
         foreach ($this->_table->getRelations() as $key => $relation) {
-            if (strpos($key, 'PageMaster_Model_Relation') !== 0) {
+            if (strpos($key, 'Clip_Model_Relation') !== 0) {
                 $fields[$key] = 'relation';
             }
         }
@@ -149,12 +149,12 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
     public function getRelations($onlyown = true)
     {
         $tablename = $this->_table->getInternalTableName();
-        $tid = PageMaster_Util::getTidFromStringSuffix($tablename);
+        $tid = Clip_Util::getTidFromStringSuffix($tablename);
 
         $relations = array();
 
         // load own
-        $records = PageMaster_Util::getRelations($tid, true);
+        $records = Clip_Util::getRelations($tid, true);
         foreach ($records as $relation) {
             $relations[$relation['alias1']] = array(
                 'tid'   => $relation['tid2'],
@@ -165,7 +165,7 @@ class PageMaster_Base_Pubdata extends Doctrine_Record
 
         if (!$onlyown) {
             // load foreign
-            $records = PageMaster_Util::getRelations($tid, false);
+            $records = Clip_Util::getRelations($tid, false);
 
             foreach ($records as $relation) {
                 $relations[$relation['alias2']] = array(

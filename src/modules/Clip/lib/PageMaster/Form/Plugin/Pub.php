@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
+class Clip_Form_Plugin_Pub extends Form_Plugin_DropdownList
 {
     public $pluginTitle;
     public $columnDef = 'I4';
@@ -19,7 +19,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name
@@ -40,7 +40,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
                 '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
                 '            <span class="z-formnote">'."\n".
                 '                <pre>{pmarray array=$pubdata.'.$field['name'].'}</pre>'."\n".
-                '                {*modapifunc modname=\'PageMaster\' func=\'get\' tid=\''.$this->config['tid'].'\' pid=$pubdata.'.$field['name'].' assign=\''.$field['name'].'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
+                '                {*modapifunc modname=\'Clip\' func=\'get\' tid=\''.$this->config['tid'].'\' pid=$pubdata.'.$field['name'].' assign=\''.$field['name'].'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
                 '            <span>'."\n".
                 '        </div>'."\n".
                 '    {/if}';
@@ -55,7 +55,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         $pub = array();
 
         if (!empty($this->config['tid']) && !empty($data)) {
-            $pub = ModUtil::apiFunc('PageMaster', 'user', 'get',
+            $pub = ModUtil::apiFunc('Clip', 'user', 'get',
                                 array('tid'                => $this->config['tid'],
                                       'pid'                => (int)$data,
                                       'checkPerm'          => true,
@@ -75,7 +75,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         $this->parseConfig($view->eventHandler->getPubfieldData($this->id, 'typedata'));
 
         if (!empty($this->config['tid'])) {
-            $pubarr = ModUtil::apiFunc('PageMaster', 'user', 'getall',
+            $pubarr = ModUtil::apiFunc('Clip', 'user', 'getall',
                                    array('tid'                => $this->config['tid'],
                                          'countmode'          => 'no',
                                          'filter'             => $this->config['filter'],
@@ -83,7 +83,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
                                          'checkPerm'          => true,
                                          'handlePluginFields' => false));
 
-            $titleField = PageMaster_Util::getTitleField($this->config['tid']);
+            $titleField = Clip_Util::getTitleField($this->config['tid']);
 
             $items = array();
             $items[] = array('text'  => '- - -',
@@ -122,7 +122,7 @@ class PageMaster_Form_Plugin_Pub extends Form_Plugin_DropdownList
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : '';
         $this->parseConfig($typedata);
 
-        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')
                     ->selectFieldArray('title', '', '', false, 'tid');
 
         foreach ($pubtypes as $tid => $title) {

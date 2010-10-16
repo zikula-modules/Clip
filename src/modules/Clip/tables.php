@@ -1,15 +1,15 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
  * @subpackage  pagemaster
  */
 
-function PageMaster_tables()
+function Clip_tables()
 {
     $tables = array ();
 /*
@@ -142,8 +142,8 @@ function PageMaster_tables()
 */
 
     // dynamic pubdata tables
-    if (!function_exists('PageMaster_addtable')) {
-        function PageMaster_addtable(&$tables, $tid, $tablecolumn, $tabledef)
+    if (!function_exists('Clip_addtable')) {
+        function Clip_addtable(&$tables, $tid, $tablecolumn, $tabledef)
         {
             $tablename = "pagemaster_pubdata{$tid}";
 
@@ -226,7 +226,7 @@ function PageMaster_tables()
             // if we change of publication type
             if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
                 // add the table definition to the $tables array
-                PageMaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+                Clip_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
                 // and reset the columns and definitions for the next pubtype
                 $tablecolumn = array();
                 $tabledef    = array();
@@ -242,7 +242,7 @@ function PageMaster_tables()
 
         // the final one doesn't trigger a tid change
         if (!empty($tablecolumn)) {
-            PageMaster_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+            Clip_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
         }
     }
 

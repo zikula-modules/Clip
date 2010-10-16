@@ -1,7 +1,7 @@
 
 {include file='pagemaster_admin_header.tpl'}
 
-{ajaxheader module='PageMaster' filename='pmadmin_pubfields.js' dragdrop=true}
+{ajaxheader module='Clip' filename='pmadmin_pubfields.js' dragdrop=true}
 
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='db_update.gif' set='icons/large' __alt='Manage Publication fields' }</div>
@@ -64,7 +64,7 @@
                         &nbsp;
                     </span>
                     <span class="z-itemcell z-w10">
-                        <a href="{modurl modname='PageMaster' type='admin' func='pubfields' tid=$pubfield.tid id=$pubfield.id fragment='newpubfield'}">
+                        <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubfield.tid id=$pubfield.id fragment='newpubfield'}">
                             {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     </span>

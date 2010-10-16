@@ -27,7 +27,7 @@
     {/switch}
 
     <p class="z-warningmsg">
-        {gt text='Create a template file named <strong>%1$s</strong> with this code, and store it in the the directory: <strong>/config/templates/PageMaster/%2$s/%1$s</strong>, or within your theme in the <strong>/themes/YourTheme/templates/modules/PageMaster/%2$s/%1$s</strong>.' tag1=$pmtplname tag2=$pmfolder}
+        {gt text='Create a template file named <strong>%1$s</strong> with this code, and store it in the the directory: <strong>/config/templates/Clip/%2$s/%1$s</strong>, or within your theme in the <strong>/themes/YourTheme/templates/modules/Clip/%2$s/%1$s</strong>.' tag1=$pmtplname tag2=$pmfolder}
     </p>
 
     <pre class="pm-showcode">{$code}</pre>

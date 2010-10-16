@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,14 +12,14 @@
 /**
  * Form handler to update module vars.
  */
-class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
+class Clip_Form_Handler_Admin_ModifyConfig extends Form_Handler
 {
     /**
      * Initialize function
      */
     function initialize($view)
     {
-        $modvars = ModUtil::getVar('PageMaster');
+        $modvars = ModUtil::getVar('Clip');
 
         // upload dir check
         $siteroot = System::serverGetVar('DOCUMENT_ROOT');
@@ -66,24 +66,24 @@ class PageMaster_Form_Handler_Admin_ModifyConfig extends Form_Handler
                 if (StringUtil::right($data['uploadpath'], 1) == '/') {
                     $data['uploadpath'] = StringUtil::left($data['uploadpath'], strlen($data['uploadpath']) - 1);
                 }
-                ModUtil::setVar('PageMaster', 'uploadpath', $data['uploadpath']);
+                ModUtil::setVar('Clip', 'uploadpath', $data['uploadpath']);
 
                 // development mode
-                ModUtil::setVar('PageMaster', 'devmode', $data['devmode']);
+                ModUtil::setVar('Clip', 'devmode', $data['devmode']);
 
                 // FIXME add itemsperpage for admin lists
 
                 // let any other modules know that the modules configuration has been updated
-                ModUtil::callHooks('module', 'updateconfig', 'PageMaster', array('module' => 'PageMaster'));
+                ModUtil::callHooks('module', 'updateconfig', 'Clip', array('module' => 'Clip'));
 
                 LogUtil::registerStatus($this->__('Done! Module configuration updated.'));
 
-                $view->redirect(ModUtil::url('PageMaster', 'admin', 'modifyconfig'));
+                $view->redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
                 break;
 
             // cancel
             case 'cancel':
-                $view->redirect(ModUtil::url('PageMaster', 'admin'));
+                $view->redirect(ModUtil::url('Clip', 'admin'));
         }
 
         return true;

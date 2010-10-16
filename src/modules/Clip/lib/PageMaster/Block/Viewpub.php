@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -13,7 +13,7 @@
 /**
  * Viewpub Block.
  */
-class PageMaster_Block_Viewpub extends Zikula_Block
+class Clip_Block_Viewpub extends Zikula_Block
 {
     /**
      * Initialise block.
@@ -29,9 +29,9 @@ class PageMaster_Block_Viewpub extends Zikula_Block
     public function info()
     {
         return array(
-            'module'         => 'PageMaster',
-            'text_type'      => $this->__('PageMaster viewpub'),
-            'text_type_long' => $this->__('PageMaster View Publication'),
+            'module'         => 'Clip',
+            'text_type'      => $this->__('Clip viewpub'),
+            'text_type_long' => $this->__('Clip View Publication'),
             'allow_multiple' => true,
             'form_content'   => false,
             'form_refresh'   => false,
@@ -44,7 +44,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
      */
     public function display($blockinfo)
     {
-        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('PageMaster', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('pagemaster::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
@@ -62,7 +62,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
             return;
         }
 
-        $pubtype = PageMaster_Util::getPubType((int)$vars['tid']);
+        $pubtype = Clip_Util::getPubType((int)$vars['tid']);
         if (!$pubtype) {
             return;
         }
@@ -71,7 +71,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
         $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['filename'];
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-        $blockinfo['content'] = ModUtil::func('PageMaster', 'user', 'display',
+        $blockinfo['content'] = ModUtil::func('Clip', 'user', 'display',
                                               array('tid'                => $vars['tid'],
                                                     'pid'                => $vars['pid'],
                                                     'template'           => 'block_pub_'.$template,
@@ -108,7 +108,7 @@ class PageMaster_Block_Viewpub extends Zikula_Block
         }
 
         // builds the pubtypes selector
-        $pubtypes = PageMaster_Util::getPubType(-1);
+        $pubtypes = Clip_Util::getPubType(-1);
 
         foreach (array_keys($pubtypes) as $tid) {
             $pubtypes[$tid] = $pubtypes[$tid]['title'];

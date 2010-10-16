@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -18,7 +18,7 @@
  */
 function smarty_function_pmadminsubmenu($params, &$smarty)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     $tid = (int)$params['tid'];
 
@@ -26,7 +26,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
     }
 
-    $pubtype = PageMaster_Util::getPubType($tid);
+    $pubtype = Clip_Util::getPubType($tid);
 
     // build the output
     $output  = '<div class="z-menu"><span class="z-menuitem-title">';
@@ -37,7 +37,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     // pubtype form link
     $output .= '<span>';
     if ($func != 'pubtype') {
-        $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'pubtype', array('tid' => $tid)).'">'.__('Options', $dom).'</a>';
+        $output .= '<a href="'.ModUtil::url('Clip', 'admin', 'pubtype', array('tid' => $tid)).'">'.__('Options', $dom).'</a>';
     } else {
         $output .= '<a>'.__('Options', $dom).'</a>';
     }
@@ -46,9 +46,9 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     // edit fields link
     $output .= '<span>';
     if ($func != 'pubfields') {
-        $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $tid)).'">'.__('Fields', $dom).'</a>';
+        $output .= '<a href="'.ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $tid)).'">'.__('Fields', $dom).'</a>';
     } elseif (isset($params['field']) != '') {
-        $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'pubfields', array('tid' => $tid)).'#newpubfield">'.__('Fields', $dom).'</a>';
+        $output .= '<a href="'.ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $tid)).'#newpubfield">'.__('Fields', $dom).'</a>';
     } else {
         $output .= '<a href="#newpubfield">'.__('Fields', $dom).'</a>';
     }
@@ -56,13 +56,13 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // new article link
     $output .= '<span>';
-    $output .= '<a href="'.ModUtil::url('PageMaster', 'user', 'edit', array('tid' => $tid, 'goto' => 'referer')).'">'.__('New publication', $dom).'</a>';
+    $output .= '<a href="'.ModUtil::url('Clip', 'user', 'edit', array('tid' => $tid, 'goto' => 'referer')).'">'.__('New publication', $dom).'</a>';
     $output .= '</span> | ';
 
     // pub list link
     $output .= '<span>';
     if ($func != 'publist') {
-        $output .= '<a href="'.ModUtil::url('PageMaster', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publication list', $dom).'</a>';
+        $output .= '<a href="'.ModUtil::url('Clip', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publication list', $dom).'</a>';
     } else {
         $output .= '<a>'.__('Publication list', $dom).'</a>';
     }
@@ -71,12 +71,12 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     if ($func == 'showcode') {
         $output .= '<br />';
         $output .= '<span class="pm-option">'.__('Generate templates', $dom).'</span><span class="pm-option">&raquo;</span>';
-        $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Input template', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('List template', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Display template', $dom).'</a></span>';
+        $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Input template', $dom).'</a></span> | ';
+        $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('List template', $dom).'</a></span> | ';
+        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Display template', $dom).'</a></span>';
     } else {
         $output .= '</span> | ';
-        $output .= '<span><a href="'.ModUtil::url('PageMaster', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Generate templates', $dom).'</a></span>';
+        $output .= '<span><a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Generate templates', $dom).'</a></span>';
     }
 
     $output .= '</span></div>';

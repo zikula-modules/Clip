@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
+class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
 {
     public $pluginTitle;
     public $columnDef   = 'I4';
@@ -20,7 +20,7 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name
@@ -123,7 +123,7 @@ class PageMaster_Form_Plugin_List extends Form_Plugin_CategorySelector
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : serialize(array(30, true));
         $this->parseConfig($typedata);
 
-        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('PageMaster', 'pagemaster_pubtypes');
+        $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'pagemaster_pubtypes');
 
         $html = ' <div class="z-formrow">
                       <label for="pmplugin_categorylist">'.$this->__('Category').':</label>

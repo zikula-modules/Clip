@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -29,7 +29,7 @@
  */
 function smarty_function_category_browser($params, &$smarty)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     $tid   = $params['tid'];
     $field = $params['field'];
@@ -58,7 +58,7 @@ function smarty_function_category_browser($params, &$smarty)
     $lang       = ZLanguage::getLanguageCode();
 
     $cacheid = $tid.'-'.$field;
-    $render  = Zikula_View::getInstance('PageMaster', $cache, $cacheid);
+    $render  = Zikula_View::getInstance('Clip', $cache, $cacheid);
 
     if ($cache) {
         if ($render->is_cached($template,$cacheid)) {
@@ -66,7 +66,7 @@ function smarty_function_category_browser($params, &$smarty)
         }
     }
 
-    $pubfields = PageMaster_Util::getPubFields($tid);
+    $pubfields = Clip_Util::getPubFields($tid);
     $id = $pubfields[$field]['typedata'];
 
     $cats = CategoryUtil::getSubCategories($id);
@@ -141,10 +141,10 @@ function smarty_function_category_browser($params, &$smarty)
         }
 
         if ($new_filter == '') {
-            $url = ModUtil::url('PageMaster', 'user', 'view',
+            $url = ModUtil::url('Clip', 'user', 'view',
                                 array('tid'    => $tid));
         } else {
-            $url = ModUtil::url('PageMaster', 'user', 'view',
+            $url = ModUtil::url('Clip', 'user', 'view',
                                 array('tid'    => $tid,
                                       'filter' => $new_filter));
         }
@@ -153,7 +153,7 @@ function smarty_function_category_browser($params, &$smarty)
             if (isset($count_arr[$filter_act])) {
                 $cats[$k]['count'] = $count_arr[$filter_act];
             } else {
-                $pubarr = ModUtil::apiFunc('PageMaster', 'user', 'getall',
+                $pubarr = ModUtil::apiFunc('Clip', 'user', 'getall',
                                        array('tid'                => $tid,
                                              'countmode'          => 'just',
                                              'filter'             => $filter_act,

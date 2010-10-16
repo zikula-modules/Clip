@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -10,16 +10,16 @@
  */
 
 /**
- * PageMaster Util.
+ * Clip Util.
  */
-class PageMaster_Util
+class Clip_Util
 {
     /**
      * Temporary pre-0.9 upgrade script classnames convertor
      */
     public static function processPluginClassname($pluginClass)
     {
-        if (strpos($pluginClass, 'PageMaster_') !== 0) {
+        if (strpos($pluginClass, 'Clip_') !== 0) {
             switch ($pluginClass) {
                 case 'pmformcheckboxinput':
                     $pluginClass = 'Checkbox';
@@ -71,7 +71,7 @@ class PageMaster_Util
                     break;
             }
 
-            $pluginClass = "PageMaster_Form_Plugin_$pluginClass";
+            $pluginClass = "Clip_Form_Plugin_$pluginClass";
         }
 
         return $pluginClass;
@@ -184,10 +184,10 @@ class PageMaster_Util
         }
 
         // process the fields
-        $pubfields = PageMaster_Util::getPubFields($tid);
+        $pubfields = Clip_Util::getPubFields($tid);
 
         foreach ($pubfields as $fieldname => $field) {
-            $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
+            $plugin = Clip_Util::getPlugin($field['fieldplugin']);
 
             if (method_exists($plugin, 'postRead')) {
                 if ($islist) {
@@ -233,7 +233,7 @@ class PageMaster_Util
                     }
                 }
                 if (!empty($plugin_name)) {
-                    $plugin = PageMaster_Util::getPlugin($plugin_name);
+                    $plugin = Clip_Util::getPlugin($plugin_name);
                     if (method_exists($plugin, 'orderBy')) {
                         $orderby_col = $plugin->orderBy($field_name, $tbl_alias);
                     } else {
@@ -259,10 +259,10 @@ class PageMaster_Util
     {
         $workflows = array();
 
-        $path = 'modules/PageMaster/workflows';
+        $path = 'modules/Clip/workflows';
         self::_addFiles($path, $workflows, 'xml');
 
-        $path = 'config/workflows/PageMaster';
+        $path = 'config/workflows/Clip';
         self::_addFiles($path, $workflows, 'xml');
 
         foreach ($workflows as $k => $v) {
@@ -302,9 +302,9 @@ class PageMaster_Util
      */
     public static function getPubtypesSelector($includetid = false, $includeempty = true)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
 
-        $pubtypes = PageMaster_Util::getPubType(-1);
+        $pubtypes = Clip_Util::getPubType(-1);
 
         $array = array();
 
@@ -324,7 +324,7 @@ class PageMaster_Util
 
         $array = array_values(array_filter($array));
 
-        uasort($array, 'PageMaster_Util::_sortListByTitle');
+        uasort($array, 'Clip_Util::_sortListByTitle');
 
         return $array;
     }
@@ -338,9 +338,9 @@ class PageMaster_Util
      */
     public static function getFieldsSelector($tid, $includeempty = true)
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
 
-        $pubfields = PageMaster_Util::getPubFields($tid);
+        $pubfields = Clip_Util::getPubFields($tid);
 
         $arraysort = array(
             'core_empty' => array(),
@@ -427,21 +427,21 @@ class PageMaster_Util
     public static function getPluginsOptionList()
     {
         $classNames = array();
-        $classNames['Checkbox']   = 'PageMaster_Form_Plugin_Checkbox';
-        $classNames['Date']       = 'PageMaster_Form_Plugin_Date';
-        $classNames['Email']      = 'PageMaster_Form_Plugin_Email';
-        $classNames['Float']      = 'PageMaster_Form_Plugin_Float';
-        $classNames['Image']      = 'PageMaster_Form_Plugin_Image';
-        $classNames['Int']        = 'PageMaster_Form_Plugin_Int';
-        $classNames['List']       = 'PageMaster_Form_Plugin_List';
-        $classNames['Ms']         = 'PageMaster_Form_Plugin_Ms';
-        $classNames['MultiCheck'] = 'PageMaster_Form_Plugin_MultiCheck';
-        $classNames['MultiList']  = 'PageMaster_Form_Plugin_MultiList';
-        $classNames['Pub']        = 'PageMaster_Form_Plugin_Pub';
-        $classNames['String']     = 'PageMaster_Form_Plugin_String';
-        $classNames['Text']       = 'PageMaster_Form_Plugin_Text';
-        $classNames['Upload']     = 'PageMaster_Form_Plugin_Upload';
-        $classNames['Url']        = 'PageMaster_Form_Plugin_Url';
+        $classNames['Checkbox']   = 'Clip_Form_Plugin_Checkbox';
+        $classNames['Date']       = 'Clip_Form_Plugin_Date';
+        $classNames['Email']      = 'Clip_Form_Plugin_Email';
+        $classNames['Float']      = 'Clip_Form_Plugin_Float';
+        $classNames['Image']      = 'Clip_Form_Plugin_Image';
+        $classNames['Int']        = 'Clip_Form_Plugin_Int';
+        $classNames['List']       = 'Clip_Form_Plugin_List';
+        $classNames['Ms']         = 'Clip_Form_Plugin_Ms';
+        $classNames['MultiCheck'] = 'Clip_Form_Plugin_MultiCheck';
+        $classNames['MultiList']  = 'Clip_Form_Plugin_MultiList';
+        $classNames['Pub']        = 'Clip_Form_Plugin_Pub';
+        $classNames['String']     = 'Clip_Form_Plugin_String';
+        $classNames['Text']       = 'Clip_Form_Plugin_Text';
+        $classNames['Upload']     = 'Clip_Form_Plugin_Upload';
+        $classNames['Url']        = 'Clip_Form_Plugin_Url';
 
         // collect classes from other providers also allows for override
         $event = new Zikula_Event('pagemaster.get_field_plugin_classes');
@@ -456,14 +456,14 @@ class PageMaster_Util
 
         $plugins = array();
         foreach ($classNames as $name => $className) {
-            $plugin = PageMaster_Util::getPlugin($className);
+            $plugin = Clip_Util::getPlugin($className);
             $plugins[$name] = array(
                 'plugin' => $plugin,
                 'class'  => $className,
             );
         }
 
-        uasort($plugins, 'PageMaster_Util::_sortPluginList');
+        uasort($plugins, 'Clip_Util::_sortPluginList');
 
         return $plugins;
     }
@@ -498,7 +498,7 @@ class PageMaster_Util
         $sm = ServiceUtil::getManager();
 
         if (!$sm->hasService("pagemaster.plugin.$pluginName")) {
-            $view = Zikula_View::getInstance('PageMaster');
+            $view = Zikula_View::getInstance('Clip');
 
             $params = array();
             $plugin = new $pluginClass($view, $params);
@@ -525,7 +525,7 @@ class PageMaster_Util
         static $pubtype_arr;
 
         if (!isset($pubtype_arr)) {
-            $pubtype_arr = Doctrine_Core::getTable('PageMaster_Model_Pubtype')->getPubtypes();
+            $pubtype_arr = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
         }
 
         if ($tid == -1) {
@@ -548,7 +548,7 @@ class PageMaster_Util
         static $relation_arr;
 
         if (!isset($relation_arr) || $force) {
-            $relation_arr = Doctrine_Core::getTable('PageMaster_Model_Pubrelation')->getClipRelations();
+            $relation_arr = Doctrine_Core::getTable('Clip_Model_Pubrelation')->getClipRelations();
         }
 
         $own = $owningSide ? 'own' : 'not';
@@ -574,7 +574,7 @@ class PageMaster_Util
 
         $tid = (int)$tid;
         if ($tid && !isset($pubfields_arr[$tid])) {
-            $pubfields_arr[$tid] = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
+            $pubfields_arr[$tid] = Doctrine_Core::getTable('Clip_Model_Pubfield')
                                    ->selectCollection("tid = '$tid'", $orderBy, -1, -1, 'name');
         }
 
@@ -593,7 +593,7 @@ class PageMaster_Util
         static $pubtitles_arr;
 
         if (!isset($pubtitles_arr)) {
-            $pubtitles_arr = Doctrine_Core::getTable('PageMaster_Model_Pubfield')
+            $pubtitles_arr = Doctrine_Core::getTable('Clip_Model_Pubfield')
                              ->selectFieldArray('name', "istitle = '1'", '', false, 'tid');
         }
 

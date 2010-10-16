@@ -32,7 +32,7 @@
     {assign var='tpl' value="output/viewpub_block_list_$tpl.tpl"}
     <em class="z-formnote">
         {gt text="The block will use the template '%s'.<br />Leave it blank to default to the output template name of the chosen publication type." tag1=$tpl}
-        <br />{gt text='If the template is not found, PageMaster will show an error if the development mode is enabled.'}
+        <br />{gt text='If the template is not found, Clip will show an error if the development mode is enabled.'}
     </em>
 </div>
 

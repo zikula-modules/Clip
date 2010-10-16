@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -19,9 +19,9 @@
  * @param  bool   $params['silent']       (optional) hide or display a status/error message, default: false
  * @return array  publication id as index with boolean value: true if success, false otherwise
  */
-function PageMaster_operation_updatePub(&$pub, &$params)
+function Clip_operation_updatePub(&$pub, &$params)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     // process the available parameters
     if (isset($params['online'])) {
@@ -32,7 +32,7 @@ function PageMaster_operation_updatePub(&$pub, &$params)
 
     // overrides newrevision in pubtype. gives the dev. the possibility to not genereate a new revision
     // e.g. when the revision is pending (waiting state) and will be updated
-    $pubtype = PageMaster_Util::getPubType($pub['core_tid']);
+    $pubtype = Clip_Util::getPubType($pub['core_tid']);
 
     if ($pubtype['enablerevisions'] && $pub['core_online'] == 1) {
         // set all other to offline
@@ -66,7 +66,7 @@ function PageMaster_operation_updatePub(&$pub, &$params)
             unset($rev['__WORKFLOW__']['id']);
 
             // register the new workflow, return false if failure
-            $workflow = new Zikula_Workflow($rev['__WORKFLOW__']['schemaname'], 'PageMaster');
+            $workflow = new Zikula_Workflow($rev['__WORKFLOW__']['schemaname'], 'Clip');
 
             if (!$workflow->registerWorkflow($rev, $params['nextstate'])) {
                 $result = false;
@@ -90,7 +90,7 @@ function PageMaster_operation_updatePub(&$pub, &$params)
 
     if ($result) {
         // let know that the publication was updated
-        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'PageMaster'));
+        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'Clip'));
     }
 
     // output message

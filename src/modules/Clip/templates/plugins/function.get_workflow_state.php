@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -22,7 +22,7 @@
  */
 function smarty_function_get_workflow_state($params, &$smarty)
 {
-    $dom = ZLanguage::getModuleDomain('PageMaster');
+    $dom = ZLanguage::getModuleDomain('Clip');
 
     $tid = (int)$params['tid'];
     $id  = (int)$params['id'];
@@ -38,7 +38,7 @@ function smarty_function_get_workflow_state($params, &$smarty)
     $tablename = 'pagemaster_pubdata'.$tid;
     $pub       = array('id' => $id);
 
-    Zikula_Workflow_Util::getWorkflowForObject($pub, $tablename, 'id', 'PageMaster');
+    Zikula_Workflow_Util::getWorkflowForObject($pub, $tablename, 'id', 'Clip');
 
     if ($params['assign']) {
         $smarty->assign($params['assign'], $pub['__WORKFLOW__']);

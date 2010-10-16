@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -18,14 +18,14 @@
  * @param string $actionId
  * @return bool
  */
-function PageMaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
+function Clip_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
     if (!empty($obj)) {
         // process $obj and calculate an instance
         $pid = $obj['core_pid'];
 
-        $tid     = PageMaster_Util::getTidFromStringSuffix($obj['__WORKFLOW__']['obj_table']);
-        $pubtype = PageMaster_Util::getPubType($tid);
+        $tid     = Clip_Util::getTidFromStringSuffix($obj['__WORKFLOW__']['obj_table']);
+        $pubtype = Clip_Util::getPubType($tid);
 
         if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == $currentUser) {
             return true;
@@ -40,7 +40,7 @@ function PageMaster_workflow_none_permissioncheck($obj, $permLevel, $currentUser
     }
 }
 
-function PageMaster_workflow_none_gettextstrings()
+function Clip_workflow_none_gettextstrings()
 {
     return array(
         'title' => no__('None'),

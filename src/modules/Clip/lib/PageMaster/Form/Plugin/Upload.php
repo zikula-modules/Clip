@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
+class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
 {
     public $pluginTitle;
     public $columnDef = 'C(512)';
@@ -19,7 +19,7 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name
@@ -62,7 +62,7 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
                 return LogUtil::registerError('pmformuploadinput: '.$this->__('Stored data is invalid'));
             }
 
-            $path = ModUtil::getVar('PageMaster', 'uploadpath');
+            $path = ModUtil::getVar('Clip', 'uploadpath');
             $url  = System::getBaseUrl().$path;
             if (!empty($arrTypeData['file_name'])) {
                 $this->upl_arr =  array(
@@ -90,12 +90,12 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
         if ($id != NULL) {
             // if it's not a new pub get the old upload
-            $old_upload = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+            $old_upload = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
                           ->selectFieldBy($field['name'], $id, 'id');
         }
 
         if (!empty($data['name'])) {
-            $uploadpath = ModUtil::getVar('PageMaster', 'uploadpath');
+            $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {
@@ -105,7 +105,7 @@ class PageMaster_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
             $srcTempFilename = $data['tmp_name'];
             $ext             = strtolower(FileUtil::getExtension($data['name']));
-            $randName        = PageMaster_Util::getNewFileReference();
+            $randName        = Clip_Util::getNewFileReference();
             $new_filename    = "{$randName}.{$ext}";
             $dstFilename     = "{$uploadpath}/{$new_filename}";
 

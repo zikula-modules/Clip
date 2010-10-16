@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * Listeners EventHandler.
  */
-class PageMaster_EventHandler_Listeners
+class Clip_EventHandler_Listeners
 {
     /**
      * Example provider handler.
@@ -25,8 +25,8 @@ class PageMaster_EventHandler_Listeners
     {
         /*
         $classNames = array();
-        $classNames['Date']       = 'PageMaster_Form_Plugin_Date';
-        $classNames['Email']      = 'PageMaster_Form_Plugin_Email';
+        $classNames['Date']       = 'Clip_Form_Plugin_Date';
+        $classNames['Email']      = 'Clip_Form_Plugin_Email';
         
         $event->setData(array_merge((array)$event->getData(), $classNames));
         */

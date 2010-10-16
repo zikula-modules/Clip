@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @version     $ Id $
@@ -10,7 +10,7 @@
  * @subpackage  pagemaster
  */
 
-class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
+class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
 {
     public $pluginTitle;
     public $columnDef = 'C(512)';
@@ -20,7 +20,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('PageMaster');
+        $dom = ZLanguage::getModuleDomain('Clip');
         $this->setDomain($dom);
 
         //! field type name
@@ -82,7 +82,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
                 return LogUtil::registerError('pmformimageinput: '.$this->__('Stored data is invalid.'));
             }
 
-            $url = System::getBaseUrl().ModUtil::getVar('PageMaster', 'uploadpath');
+            $url = System::getBaseUrl().ModUtil::getVar('Clip', 'uploadpath');
             if (!empty($arrTypeData['orig_name'])) {
                 $upl_arr =  array(
                                 'orig_name'    => $arrTypeData['orig_name'],
@@ -113,12 +113,12 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
         // ugly to get old image from DB
         if ($id != NULL) {
-            $old_image = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+            $old_image = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
                          ->selectFieldBy($field['name'], $id, 'id');
         }
 
         if (!empty($PostData['name'])) {
-            $uploadpath = ModUtil::getVar('PageMaster', 'uploadpath');
+            $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
 
             // delete the old file
             if ($id != NULL) {
@@ -131,7 +131,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
             $srcFilename     = $PostData['tmp_name'];
             $ext             = strtolower(FileUtil::getExtension($PostData['name']));
-            $randName        = PageMaster_Util::getNewFileReference();
+            $randName        = Clip_Util::getNewFileReference();
             $newFileNameOrig = $randName.'.'.$ext;
             $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
             copy($srcFilename, $newDestOrig);
@@ -164,7 +164,7 @@ class PageMaster_Form_Plugin_Image extends Form_Plugin_UploadInput
 
             $srcFilename =   $PostData['tmp_name'];
             $ext             = strtolower(FileUtil::getExtension($PostData['name']));
-            $randName        = PageMaster_Util::getNewFileReference();
+            $randName        = Clip_Util::getNewFileReference();
             $newFileNameOrig = $randName.'.'.$ext;
             $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
             copy($srcFilename, $newDestOrig);

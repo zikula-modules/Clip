@@ -1,8 +1,8 @@
 <?php
 /**
- * PageMaster
+ * Clip
  *
- * @copyright   (c) PageMaster Team
+ * @copyright   (c) Clip Team
  * @link        http://code.zikula.org/pagemaster/
  * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package     Zikula_3rdParty_Modules
@@ -12,7 +12,7 @@
 /**
  * User Model.
  */
-class PageMaster_Api_User extends Zikula_Api
+class Clip_Api_User extends Zikula_Api
 {
     /**
      * Returns a Publication List.
@@ -36,7 +36,7 @@ class PageMaster_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($args['tid']);
         if (!$pubtype) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
@@ -68,7 +68,7 @@ class PageMaster_Api_User extends Zikula_Api
         $args['admin'] = (isset($args['admin']) && $args['admin']) || SecurityUtil::checkPermission('pagemaster:full:', "{$args['tid']}::", ACCESS_ADMIN);
         // TODO pubtype.editown + author mode parameter check
 
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid']);
+        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
         //// Misc values
         // set the order
@@ -103,8 +103,8 @@ class PageMaster_Api_User extends Zikula_Api
             $orderby = $args['orderby'];
         }
 
-        $pubfields = PageMaster_Util::getPubFields($args['tid']);
-        $pubtype->mapValue('titlefield', PageMaster_Util::findTitleField($pubfields));
+        $pubfields = Clip_Util::getPubFields($args['tid']);
+        $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
 
         $args['queryalias'] = "pub_{$args['tid']}";
 
@@ -116,7 +116,7 @@ class PageMaster_Api_User extends Zikula_Api
         );
         foreach ($pubfields as $fieldname => $field)
         {
-            $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
+            $plugin = Clip_Util::getPlugin($field['fieldplugin']);
 
             if (isset($plugin->filterClass)) {
                 $filter['args']['plugins'][$plugin->filterClass]['fields'][] = $fieldname;
@@ -124,7 +124,7 @@ class PageMaster_Api_User extends Zikula_Api
         }
 
         // filter instance
-        $filter['obj'] = new FilterUtil('PageMaster', 'PageMaster_Model_Pubdata'.$args['tid'], $filter['args']);
+        $filter['obj'] = new FilterUtil('Clip', 'Clip_Model_Pubdata'.$args['tid'], $filter['args']);
 
         if (!empty($args['filter'])) {
             $filter['obj']->setFilter($args['filter']);
@@ -170,7 +170,7 @@ class PageMaster_Api_User extends Zikula_Api
                 $orderby = str_replace('core_title', $pubtype->titlefield, $orderby);
             }
             // check if some plugin specific orderby has to be done
-            $orderby = PageMaster_Util::handlePluginOrderBy($orderby, $pubfields, $args['queryalias'].'.');
+            $orderby = Clip_Util::handlePluginOrderBy($orderby, $pubfields, $args['queryalias'].'.');
             // final orderby processing to convert column to aliases
             $orderby = $tableObj->processOrderBy($args['queryalias'], $orderby, true);
             // add the orderby to the query
@@ -239,19 +239,19 @@ class PageMaster_Api_User extends Zikula_Api
         );
 
         //// Misc values
-        $pubtype = PageMaster_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($args['tid']);
         // validate the pubtype
         if (!$pubtype) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
-        $pubfields = PageMaster_Util::getPubFields($args['tid']);
+        $pubfields = Clip_Util::getPubFields($args['tid']);
         // validate the pubfields
         if (!$pubfields) {
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $tableObj = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid']);
+        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
         //// Query setup
         $args['queryalias'] = "pub_{$args['tid']}_"
@@ -340,20 +340,20 @@ class PageMaster_Api_User extends Zikula_Api
         $obj = $args['data'];
 
         // extract the schema name
-        $pubtype = PageMaster_Util::getPubType($obj['core_tid']);
+        $pubtype = Clip_Util::getPubType($obj['core_tid']);
         $schema  = str_replace('.xml', '', $pubtype->workflow);
 
-        $pubfields = PageMaster_Util::getPubFields($obj['core_tid']);
+        $pubfields = Clip_Util::getPubFields($obj['core_tid']);
 
         foreach ($pubfields as $fieldname => $field)
         {
-            $plugin = PageMaster_Util::getPlugin($field['fieldplugin']);
+            $plugin = Clip_Util::getPlugin($field['fieldplugin']);
             if (method_exists($plugin, 'preSave')) {
                 $obj[$fieldname] = $plugin->preSave($obj, $field);
             }
         }
 
-        $ret = Zikula_Workflow_Util::executeAction($schema, $obj, $args['commandName'], $pubtype->getTableName(), 'PageMaster');
+        $ret = Zikula_Workflow_Util::executeAction($schema, $obj, $args['commandName'], $pubtype->getTableName(), 'Clip');
 
         if (empty($ret)) {
             return LogUtil::registerError($this->__('Workflow action error.'));
@@ -382,7 +382,7 @@ class PageMaster_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'));
         }
 
-        return Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid'])
+        return Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])
                ->selectFieldBy('pid', $args['id'], 'id');
     }
 
@@ -409,7 +409,7 @@ class PageMaster_Api_User extends Zikula_Api
                      array('core_pid = ? AND core_online = ?', array($args['pid'], 1))
                  );
 
-        return Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$args['tid'])
+        return Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])
                ->selectField('id', $where);
     }
 
@@ -428,7 +428,7 @@ class PageMaster_Api_User extends Zikula_Api
         $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
 
         $allTypes = array();
-        $pubtypes = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')
                     ->getPubtypes()
                     ->toArray();
 
@@ -442,14 +442,14 @@ class PageMaster_Api_User extends Zikula_Api
                 continue;
             }
 
-            $coreTitle = PageMaster_Util::getTitleField($tid);
+            $coreTitle = Clip_Util::getTitleField($tid);
             if (substr($orderby, 0, 10) == 'core_title') {
                 $orderby = str_replace('core_title', $coreTitle, $orderby);
             }
 
             $where = 'core_indepot = 0';
             $sort  = str_replace(':', ' ', $orderby);
-            $list  = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+            $list  = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
                      ->selectCollection($where, $sort)
                      ->toArray();
 
@@ -499,7 +499,7 @@ class PageMaster_Api_User extends Zikula_Api
             return false;
         } else {
             $tid          = (int)$args['args']['tid'];
-            $pubtype      = PageMaster_Util::getPubType($tid);
+            $pubtype      = Clip_Util::getPubType($tid);
             $pubtypeTitle = DataUtil::formatPermalink($pubtype['urltitle']);
 
             unset($args['args']['tid']);
@@ -515,7 +515,7 @@ class PageMaster_Api_User extends Zikula_Api
                 $id = (int)$args['args']['id'];
                 unset($args['args']['id']);
                 if (!isset($cache['id'][$id])) {
-                    $pid = $cache['id'][$id] = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+                    $pid = $cache['id'][$id] = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
                                                ->selectFieldBy('core_pid', $id, 'id');
                 } else {
                     $pid = $cache['id'][$id];
@@ -524,9 +524,9 @@ class PageMaster_Api_User extends Zikula_Api
                 return false;
             }
 
-            $titlefield = PageMaster_Util::getTitleField($tid);
+            $titlefield = Clip_Util::getTitleField($tid);
 
-            $pubTitle = Doctrine_Core::getTable('PageMaster_Model_Pubdata'.$tid)
+            $pubTitle = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
                         ->selectFieldBy($titlefield, $pid, 'core_pid');
 
             $pubTitle = '/'.DataUtil::formatPermalink($pubTitle).'.'.$pid;
@@ -568,7 +568,7 @@ class PageMaster_Api_User extends Zikula_Api
 
         $nextvar = 3;
 
-        $tid = Doctrine_Core::getTable('PageMaster_Model_Pubtype')
+        $tid = Doctrine_Core::getTable('Clip_Model_Pubtype')
                ->selectFieldBy('tid', $_[2], 'urltitle');
 
         if (!$tid) {
@@ -600,7 +600,7 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * @see PageMaster_Api_User::getall
+     * @see Clip_Api_User::getall
      * @deprecated
      */
     public function pubList($args)
@@ -609,7 +609,7 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * @see PageMaster_Api_User::get
+     * @see Clip_Api_User::get
      * @deprecated
      */
     public function getPub($args)
@@ -618,7 +618,7 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * @see PageMaster_Api_User::edit
+     * @see Clip_Api_User::edit
      * @deprecated
      */
     public function editPub($args)
@@ -627,7 +627,7 @@ class PageMaster_Api_User extends Zikula_Api
     }
 
     /**
-     * @see PageMaster_Api_User::editlist
+     * @see Clip_Api_User::editlist
      * @deprecated
      */
     public function pubeditlist($args)
