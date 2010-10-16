@@ -59,7 +59,7 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
             $arrTypeData = @unserialize($data);
 
             if (!is_array($arrTypeData)) {
-                return LogUtil::registerError('pmformuploadinput: '.$this->__('Stored data is invalid'));
+                return LogUtil::registerError('Plugin_Upload: '.$this->__('Stored data is invalid'));
             }
 
             $path = ModUtil::getVar('Clip', 'uploadpath');

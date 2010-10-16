@@ -42,7 +42,7 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
                 '                <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
               //'                <br />'."\n".
               //'                <img src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
-                '                <pre>{pmarray array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '                <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
                 '            <span>'."\n".
                 '        </div>'."\n".
                 '    {/if}';
@@ -79,7 +79,7 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
             $arrTypeData = @unserialize($data);
 
             if (!is_array($arrTypeData)) {
-                return LogUtil::registerError('pmformimageinput: '.$this->__('Stored data is invalid.'));
+                return LogUtil::registerError('Plugin_Image: '.$this->__('Stored data is invalid.'));
             }
 
             $url = System::getBaseUrl().ModUtil::getVar('Clip', 'uploadpath');
@@ -252,7 +252,7 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pmplugin_tmpx_px\')+\':\'+$F(\'pmplugin_tmpy_px\')+\':\'+$F(\'pmplugin_previewx_px\')+\':\'+$F(\'pmplugin_previewy_px\')+\':\'+$F(\'pmplugin_fullx_px\')+\':\'+$F(\'pmplugin_fully_px\');
+                                 $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\');
                                  closeTypeData();
                              }';
 
@@ -267,30 +267,30 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
 
             // TODO Fieldsets and help text explaining how they work
             $html = '<div class="z-formrow">
-                         <label for="pmplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
-                         <input type="text" value="'.$this->config[0].'" id="pmplugin_tmpx_px" name="pmplugin_tmpx_px" />
+                         <label for="clipplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
+                         <input type="text" value="'.$this->config[0].'" id="clipplugin_tmpx_px" name="clipplugin_tmpx_px" />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_tmpy_px">'.$this->__('Thumbnail height').':</label>
-                         <input type="text" value="'.$this->config[1].'" id="pmplugin_tmpy_px" name="pmplugin_tmpy_px" />
+                         <label for="clipplugin_tmpy_px">'.$this->__('Thumbnail height').':</label>
+                         <input type="text" value="'.$this->config[1].'" id="clipplugin_tmpy_px" name="clipplugin_tmpy_px" />
                          <br />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_pre_px">'.$this->__('Preview width').':</label>
-                         <input type="text" value="'.$this->config[2].'" id="pmplugin_previewx_px" name="pmplugin_previewx_px" />
+                         <label for="clipplugin_pre_px">'.$this->__('Preview width').':</label>
+                         <input type="text" value="'.$this->config[2].'" id="clipplugin_previewx_px" name="clipplugin_previewx_px" />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_pre_px">'.$this->__('Preview height').':</label>
-                         <input type="text" value="'.$this->config[3].'" id="pmplugin_previewy_px" name="pmplugin_previewy_px" />
+                         <label for="clipplugin_pre_px">'.$this->__('Preview height').':</label>
+                         <input type="text" value="'.$this->config[3].'" id="clipplugin_previewy_px" name="clipplugin_previewy_px" />
                          <br />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_full_px">'.$this->__('Full width').':</label>
-                         <input type="text" value="'.$this->config[4].'" id="pmplugin_fullx_px" name="pmplugin_fullx_px" />
+                         <label for="clipplugin_full_px">'.$this->__('Full width').':</label>
+                         <input type="text" value="'.$this->config[4].'" id="clipplugin_fullx_px" name="clipplugin_fullx_px" />
                      </div>
                      <div class="z-formrow">
-                         <label for="pmplugin_full_px">'.$this->__('Full height').':</label>
-                         <input type="text" value="'.$this->config[5].'" id="pmplugin_fully_px" name="pmplugin_fully_px" />
+                         <label for="clipplugin_full_px">'.$this->__('Full height').':</label>
+                         <input type="text" value="'.$this->config[5].'" id="clipplugin_fully_px" name="clipplugin_fully_px" />
                      </div>';
         } else {
             $html = '<div class="z-warningmsg">

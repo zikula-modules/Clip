@@ -19,7 +19,7 @@
  * @param $args['tid'] tid
  * @param $args['pid'] pid
  */
-function smarty_function_hitcount($params, &$smarty)
+function smarty_function_clip_hitcount($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 

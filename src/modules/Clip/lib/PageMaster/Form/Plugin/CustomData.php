@@ -154,7 +154,7 @@ class Clip_Form_Plugin_CustomData extends Form_Plugin_TextInput
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 var elements = $$("#pmcustomdata input")
+                                 var elements = $$("#clipcustomdata input")
                                  var result = Form.serializeElements(elements, true)
                                  debug = result
                                  var compressed = new Array()
@@ -182,8 +182,8 @@ class Clip_Form_Plugin_CustomData extends Form_Plugin_TextInput
                                  }
 
                                  var configvars = new Array(\'configvars\')
-                                 if ($F(\'pmplugin_defaultdata\') != \'\') {
-                                     configvars.push($F(\'pmplugin_defaultdata\'))
+                                 if ($F(\'clipplugin_defaultdata\') != \'\') {
+                                     configvars.push($F(\'clipplugin_defaultdata\'))
                                  } else {
                                      configvars.push(\'~\')
                                  }
@@ -226,13 +226,13 @@ class Clip_Form_Plugin_CustomData extends Form_Plugin_TextInput
         }
 
         $html = '<div class="z-formrow">
-                     <label for="pmplugin_defaultdata">'.$this->__('Default:').'</label> <input type="text" id="pmplugin_defaultdata" name="pmplugin_defaultdata" value="'.str_replace('"', '&quot;', $configvars[1]).'" />
+                     <label for="clipplugin_defaultdata">'.$this->__('Default:').'</label> <input type="text" id="clipplugin_defaultdata" name="clipplugin_defaultdata" value="'.str_replace('"', '&quot;', $configvars[1]).'" />
                  </div>
                  <div class="z-formrow">
                      <p>
-                         <a onclick="javascript:list_pmcustomdata.appenditem();" href="javascript:void(0);">'.$this->__('Add a new item type').'</a>
+                         <a onclick="javascript:list_clipcustomdata.appenditem();" href="javascript:void(0);">'.$this->__('Add a new item type').'</a>
                      </p>
-                     <ul id="pmcustomdata" class="z-itemlist">
+                     <ul id="clipcustomdata" class="z-itemlist">
                          <li class="z-itemheader z-clearfix">
                              <span class="z-itemcell z-w22">'.$this->__('Type name').'</span>
                              <span class="z-itemcell z-w22">'.$this->__('Display name').'</span>
@@ -242,7 +242,7 @@ class Clip_Form_Plugin_CustomData extends Form_Plugin_TextInput
                          </li>';
 
         foreach ($vars as $key => $var) {
-            $html .= '   <li id="listitem_pmcustomdata_'.$key.'" class="listitem_pmcustomdata z-clearfix">
+            $html .= '   <li id="listitem_clipcustomdata_'.$key.'" class="listitem_clipcustomdata z-clearfix">
                              <span class="z-itemcell z-w22">
                                  <input id="itemname_'.$key.'" name="itemname[]" value="'.($var[0] != '~'? $var[0] : '').'" />
                              </span>
@@ -256,7 +256,7 @@ class Clip_Form_Plugin_CustomData extends Form_Plugin_TextInput
                                  <input class="iteminput" id="itemajax_'.$key.'" name="itemajax[]" value="'.($var[3] != '~'? $var[3] : '').'" />
                              </span>
                              <span class="z-itemcell z-w10">
-                                 <button id="buttondelete_pmcustomdata_'.$key.'" class="buttondelete">
+                                 <button id="buttondelete_clipcustomdata_'.$key.'" class="buttondelete">
                                      <img height="16" width="16" title="'.$this->__('Delete').'" alt="'.$this->__('Delete').'" src="images/icons/extrasmall/14_layer_deletelayer.gif"/>
                                  </button>
                              </span>
@@ -265,7 +265,7 @@ class Clip_Form_Plugin_CustomData extends Form_Plugin_TextInput
 
         $html .= '   </ul>
                      <ul style="display:none">
-                         <li id="pmcustomdata_emptyitem" class="z-clearfix">
+                         <li id="clipcustomdata_emptyitem" class="z-clearfix">
                              <span class="z-itemcell z-w22">
                                  <input class="iteminput" id="itemname_" name="dummy[]" />
                              </span>
@@ -279,7 +279,7 @@ class Clip_Form_Plugin_CustomData extends Form_Plugin_TextInput
                                  <input class="iteminput" id="itemajax_" name="dummy[]" />
                              </span>
                              <span class="z-itemcell z-w10">
-                                 <button id="buttondelete_pmcustomdata_X" class="buttondelete">
+                                 <button id="buttondelete_clipcustomdata_X" class="buttondelete">
                                      <img height="16" width="16" title="'.$this->__('Delete').'" alt="'.$this->__('Delete').'" src="images/icons/extrasmall/14_layer_deletelayer.gif"/>
                                  </button>
                              </span>
@@ -288,10 +288,10 @@ class Clip_Form_Plugin_CustomData extends Form_Plugin_TextInput
 
         $html .= '<script>
                   //<![CDATA[
-                      var list_pmcustomdata = null;
+                      var list_clipcustomdata = null;
                       debug = null;
                       Event.observe(window, \'load\', function() {
-                          list_pmcustomdata = new Zikula.itemlist(\'pmcustomdata\', {headerpresent: true});
+                          list_clipcustomdata = new Zikula.itemlist(\'clipcustomdata\', {headerpresent: true});
                       }, false);
                   //]]>
                   </script>

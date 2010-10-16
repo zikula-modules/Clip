@@ -39,7 +39,7 @@ class Clip_Form_Plugin_Pub extends Form_Plugin_DropdownList
                 '        <div class="z-formrow">'."\n".
                 '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
                 '            <span class="z-formnote">'."\n".
-                '                <pre>{pmarray array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '                <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
                 '                {*modapifunc modname=\'Clip\' func=\'get\' tid=\''.$this->config['tid'].'\' pid=$pubdata.'.$field['name'].' assign=\''.$field['name'].'_pub\' checkPerm=true handlePluginFields=true getApprovalState=true*}'."\n".
                 '            <span>'."\n".
                 '        </div>'."\n".
@@ -110,7 +110,7 @@ class Clip_Form_Plugin_Pub extends Form_Plugin_DropdownList
         // TODO Implement postBack to check if the fields are correct?
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pmplugin_pubtid\')+\';\'+$F(\'pmplugin_pubfilter\')+\';\'+$F(\'pmplugin_pubjoin\')+\';\'+$F(\'pmplugin_pubjoinfields\')+\';\'+$F(\'pmplugin_puborderbyfield\');
+                                 $(\'typedata\').value = $F(\'clipplugin_pubtid\')+\';\'+$F(\'clipplugin_pubfilter\')+\';\'+$F(\'clipplugin_pubjoin\')+\';\'+$F(\'clipplugin_pubjoinfields\')+\';\'+$F(\'clipplugin_puborderbyfield\');
                                  closeTypeData();
                              }';
 
@@ -131,8 +131,8 @@ class Clip_Form_Plugin_Pub extends Form_Plugin_DropdownList
         asort($pubtypes);
 
         $html = ' <div class="z-formrow">
-                      <label for="pmplugin_pubtid">'.$this->__('Publication').':</label>
-                      <select id="pmplugin_pubtid" name="pmplugin_pubtid">';
+                      <label for="clipplugin_pubtid">'.$this->__('Publication').':</label>
+                      <select id="clipplugin_pubtid" name="clipplugin_pubtid">';
 
         foreach ($pubtypes as $tid => $title) {
             $selectedText = ($tid == $this->config['tid']) ? 'selected="selected"' : '';
@@ -143,21 +143,21 @@ class Clip_Form_Plugin_Pub extends Form_Plugin_DropdownList
         $html .= '    </select>
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_pubfilter">'.$this->__('Filter').':</label>
-                      <input type="text" id="pmplugin_pubfilter" name="pmplugin_pubfilter" value="'.$this->config['filter'].'" />
+                      <label for="clipplugin_pubfilter">'.$this->__('Filter').':</label>
+                      <input type="text" id="clipplugin_pubfilter" name="clipplugin_pubfilter" value="'.$this->config['filter'].'" />
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_pubjoin">'.$this->__('Join').':</label>
-                      <input type="checkbox" id="pmplugin_pubjoin" name="pmplugin_pubjoin" '.($this->config['join'] == 'on' ? 'checked="checked"' : '').' />
+                      <label for="clipplugin_pubjoin">'.$this->__('Join').':</label>
+                      <input type="checkbox" id="clipplugin_pubjoin" name="clipplugin_pubjoin" '.($this->config['join'] == 'on' ? 'checked="checked"' : '').' />
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_pubjoinfields">'.$this->__('Join fields').':</label>
-                      <input type="text" id="pmplugin_pubjoinfields" name="pmplugin_pubjoinfields" value="'.$this->config['alias'].'" >
+                      <label for="clipplugin_pubjoinfields">'.$this->__('Join fields').':</label>
+                      <input type="text" id="clipplugin_pubjoinfields" name="clipplugin_pubjoinfields" value="'.$this->config['alias'].'" >
                       <span class="z-formnote z-sub">'.$this->__('format: fieldname:alias,fieldname:alias').'</span>
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_puborderbyfield">'.$this->__('Orderby field').':</label>
-                      <input type="text" id="pmplugin_puborderbyfield" name="pmplugin_puborderbyfield" value="'.$this->config['orderby'].'" >
+                      <label for="clipplugin_puborderbyfield">'.$this->__('Orderby field').':</label>
+                      <input type="text" id="clipplugin_puborderbyfield" name="clipplugin_puborderbyfield" value="'.$this->config['orderby'].'" >
                   </div>';
 
         return $html;

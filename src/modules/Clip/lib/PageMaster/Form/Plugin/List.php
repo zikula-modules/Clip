@@ -14,7 +14,7 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
 {
     public $pluginTitle;
     public $columnDef   = 'I4';
-    public $filterClass = 'pmList';
+    public $filterClass = 'ClipList';
 
     public $config;
 
@@ -38,7 +38,7 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
                 '        <div class="z-formrow">'."\n".
                 '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
                 '            <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
-                '            <pre>{pmarray array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '            <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
                 '        </div>'."\n".
                 '    {/if}';
 
@@ -101,13 +101,13 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 if ($F(\'pmplugin_categorylist\') != null) {
-                                     $(\'typedata\').value = $F(\'pmplugin_categorylist\');
+                                 if ($F(\'clipplugin_categorylist\') != null) {
+                                     $(\'typedata\').value = $F(\'clipplugin_categorylist\');
                                  } else {
                                      $(\'typedata\').value = 30;
                                  }
                                  $(\'typedata\').value += \',\';
-                                 if ($F(\'pmplugin_categoryempty\') == \'on\') {
+                                 if ($F(\'clipplugin_categoryempty\') == \'on\') {
                                      $(\'typedata\').value += 1;
                                  } else {
                                      $(\'typedata\').value += 0;
@@ -126,8 +126,8 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 
         $html = ' <div class="z-formrow">
-                      <label for="pmplugin_categorylist">'.$this->__('Category').':</label>
-                      <select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+                      <label for="clipplugin_categorylist">'.$this->__('Category').':</label>
+                      <select id="clipplugin_categorylist" name="clipplugin_categorylist">';
 
         $lang = ZLanguage::getLanguageCode();
 
@@ -144,8 +144,8 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
 
         $checked = $this->config[1] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
-                      <label for="pmplugin_categoryempty">'.$this->__('Include an empty item?').'</label>
-                      <input type="checkbox" id="pmplugin_categoryempty" name="pmplugin_categoryempty" '.$checked.' />
+                      <label for="clipplugin_categoryempty">'.$this->__('Include an empty item?').'</label>
+                      <input type="checkbox" id="clipplugin_categoryempty" name="clipplugin_categoryempty" '.$checked.' />
                   </div>';
 
         return $html;

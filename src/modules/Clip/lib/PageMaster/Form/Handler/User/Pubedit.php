@@ -242,7 +242,7 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
     /**
      * Setters and getters
      */
-    public function pmSetUp($id, $tid, $pubtype=null, $pubfields=null)
+    public function ClipSetUp($id, $tid, $pubtype=null, $pubfields=null)
     {
         $this->id = $id;
 

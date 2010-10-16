@@ -14,14 +14,14 @@
  * Smarty plugin to display an array
  *
  * Example
- *   <!--[pmarray array=$myarray]--> prints the array in a friendly way
+ *   <!--[clip_array array=$myarray]--> prints the array in a friendly way
  *
  * @author       Mateo Tibaquira
  * @since        30 January 2010
  * @param        array     $array     the array to display
  * @return       string    the friendly output
  */
-function smarty_function_pmarray($array)
+function smarty_function_clip_array($array)
 {
     $array = array_values($array);
 

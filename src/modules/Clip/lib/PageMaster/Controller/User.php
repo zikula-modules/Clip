@@ -376,7 +376,7 @@ class Clip_Controller_User extends Zikula_Controller
         // the security check will be done for workflow actions and userapi.get
         $handler = new Clip_Form_Handler_User_Pubedit();
         // setup the form handler
-        $handler->pmSetUp($args['id'], $args['tid'], $pubtype, $pubfields);
+        $handler->ClipSetUp($args['id'], $args['tid'], $pubtype, $pubfields);
 
         //// Build the output
         // create the output object

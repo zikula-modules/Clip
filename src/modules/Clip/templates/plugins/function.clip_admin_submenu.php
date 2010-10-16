@@ -16,7 +16,7 @@
  * @author mateo
  * @param $args['tid'] tid
  */
-function smarty_function_pmadminsubmenu($params, &$smarty)
+function smarty_function_clip_admin_submenu($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -30,7 +30,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
 
     // build the output
     $output  = '<div class="z-menu"><span class="z-menuitem-title">';
-    $output .= '<span class="pm-option">'.$pubtype['title'].'</span><span class="pm-option">&raquo;</span>';
+    $output .= '<span class="clip-option">'.$pubtype['title'].'</span><span class="clip-option">&raquo;</span>';
 
     $func = FormUtil::getPassedValue('func', 'main');
 
@@ -70,7 +70,7 @@ function smarty_function_pmadminsubmenu($params, &$smarty)
     // show code links
     if ($func == 'showcode') {
         $output .= '<br />';
-        $output .= '<span class="pm-option">'.__('Generate templates', $dom).'</span><span class="pm-option">&raquo;</span>';
+        $output .= '<span class="clip-option">'.__('Generate templates', $dom).'</span><span class="clip-option">&raquo;</span>';
         $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">') . __('Input template', $dom).'</a></span> | ';
         $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist')).'">') . __('List template', $dom).'</a></span> | ';
         $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull')).'">') . __('Display template', $dom).'</a></span>';

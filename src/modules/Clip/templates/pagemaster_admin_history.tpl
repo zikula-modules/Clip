@@ -6,7 +6,7 @@
 
     <h2>{gt text='History'}</h2>
 
-    {pmadminsubmenu tid=$pubtype.tid}
+    {clip_admin_submenu tid=$pubtype.tid}
 
     <table class="z-admintable">
         <thead>

@@ -14,11 +14,10 @@
  * Generic form Plugin
  * Loads the disired plugin from fieldtype definition
  *
- * @author kundi
  * @param $args['fieldname']
  * @param generic
  */
-function smarty_function_genericformplugin($params, &$render)
+function smarty_function_clip_form_genericplugin($params, &$render)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 

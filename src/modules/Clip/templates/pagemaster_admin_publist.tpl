@@ -32,7 +32,7 @@
 
     <h2>{gt text='Publications list'}</h2>
 
-    {pmadminsubmenu tid=$pubtype.tid}
+    {clip_admin_submenu tid=$pubtype.tid}
 
     {pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum'}
 

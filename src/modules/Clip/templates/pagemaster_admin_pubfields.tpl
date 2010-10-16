@@ -1,14 +1,14 @@
 
 {include file='clip_admin_header.tpl'}
 
-{ajaxheader module='Clip' filename='pmadmin_pubfields.js' dragdrop=true}
+{ajaxheader module='Clip' filename='clip_admin_pubfields.js' dragdrop=true}
 
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='db_update.gif' set='icons/large' __alt='Manage Publication fields' }</div>
 
     <h2>{gt text='Manage Publication fields'}</h2>
 
-    {pmadminsubmenu tid=$tid field=1}
+    {clip_admin_submenu tid=$tid field=1}
 
     <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
 
@@ -16,7 +16,7 @@
         <fieldset>
             <legend>{gt text='Existing publication fields'}</legend>
 
-            <span id='pm_tid' style="display: none">{$tid}</span>
+            <span id='clip_tid' style="display: none">{$tid}</span>
             <ul id="pubfieldlist" class="z-itemlist">
                 <li id="pubfieldlistheader" class="pubfieldlistheader z-itemheader z-itemsortheader z-clearfix">
                     <span class="z-itemcell z-w15">{gt text='Name'}</span>
@@ -102,7 +102,7 @@
             </div>
             <div class="z-formrow">
                 {formlabel for='fieldplugin' text='Fieldtype (Plugin)'}
-                {pmformplugintype id='fieldplugin' group='field'}
+                {clip_form_plugintype id='fieldplugin' group='field'}
                 <span class="z-formnote">{gt text='Which kind of fieldtype is used (can be extended by plugins). Detailed informations about the individual plugins can be found in the documentation.'}</span>
                 <span class="z-formnote" id="typedata_wrapper">
                     {formtextinput id='typedata' group='field' maxLength='4000'} <span class="z-warningmsg">{gt text='Edit this field only if you know what you are doing.'}</span><br />

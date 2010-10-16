@@ -10,7 +10,7 @@
  * @subpackage  clip
  */
 
-class pmFormPluginType extends Form_Plugin_DropdownList
+class ClipFormPluginType extends Form_Plugin_DropdownList
 {
     function getFilename()
     {
@@ -35,7 +35,7 @@ class pmFormPluginType extends Form_Plugin_DropdownList
 
     function render($render)
     {
-        $this->cssClass = strpos($this->cssClass, 'pm-plugintypeselector') === false ? $this->cssClass.' pm-plugintypeselector' : $this->cssClass;
+        $this->cssClass = strpos($this->cssClass, 'clip-plugintypeselector') === false ? $this->cssClass.' clip-plugintypeselector' : $this->cssClass;
         $result = parent::render($render);
 
         $typeDataHtml = '';
@@ -53,26 +53,26 @@ class pmFormPluginType extends Form_Plugin_DropdownList
                 // init functions for modalbox and unobtrusive buttons
                 $script .= '
                 function closeTypeData() {
-                    pm_modalbox.close();
+                    clip_modalbox.close();
                 }
-                function pm_enablePluginConfig(){
+                function clip_enablePluginConfig(){
                     $(\'saveTypeButton\').observe(\'click\', saveTypeData);
                     $(\'cancelTypeButton\').observe(\'click\', closeTypeData);
-                    pm_modalbox = new Control.Modal($(\'showTypeButton\'), {
+                    clip_modalbox = new Control.Modal($(\'showTypeButton\'), {
                         overlayOpacity: 0.6,
-                        className: \'pm-modalpopup\',
+                        className: \'clip-modalpopup\',
                         fade: true,
                         iframeshim: false,
                         closeOnClick: false
                     });
                     $(document.body).insert($(\'typeDataDiv\'));
                 }
-                Event.observe( window, \'load\', pm_enablePluginConfig, false);
+                Event.observe( window, \'load\', clip_enablePluginConfig, false);
                 ';
 
                 $typeDataHtml  = '
                 <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/utilities.gif" alt="'.$this->__('Modify config').'" /></a>
-                <div id="typeDataDiv" class="pm-modalpopup z-form">
+                <div id="typeDataDiv" class="clip-modalpopup z-form">
                     '.$plugin->getTypeHtml($this, $render).'
                     <div class="z-formbuttons">
                         <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/small/filesave.gif" alt="'.$this->__('Save').'" /></button>&nbsp;
@@ -90,6 +90,6 @@ class pmFormPluginType extends Form_Plugin_DropdownList
     }
 }
 
-function smarty_function_pmformplugintype($params, &$render) {
-    return $render->registerPlugin('pmFormPluginType', $params);
+function smarty_function_clip_form_plugintype($params, &$render) {
+    return $render->registerPlugin('ClipFormPluginType', $params);
 }

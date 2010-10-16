@@ -94,12 +94,7 @@ class Clip_Controller_Ajax extends Zikula_Controller
         $args['itemsperpage'] = $args['itemsperpage'] > 0 ? $args['itemsperpage'] : $pubtype['itemsperpage'];
 
         //// Misc values
-        $pubfields = Clip_Util::getPubFields($args['tid'], 'lineno');
-        if (empty($pubfields)) {
-            LogUtil::registerError($this->__('Error! No publication fields found.'));
-        }
-
-        $titlefield = Clip_Util::findTitleField($pubfields);
+        $titlefield = Clip_Util::getTitleField($args['tid']);
         $pubtype->mapValue('titlefield', $titlefield);
 
         // piece needed by the autocompleter

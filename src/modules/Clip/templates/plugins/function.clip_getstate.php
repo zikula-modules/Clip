@@ -20,7 +20,7 @@
  *
  * @return string
  */
-function smarty_function_get_workflow_state($params, &$smarty)
+function smarty_function_clip_getstate($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 

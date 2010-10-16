@@ -36,10 +36,10 @@ class Clip_Generator
                 '{include file=\'clip_generic_navbar.tpl\' section=\'display\'}'."\n".
                 "\n".
                 '{if $pubtype.description neq \'\'}'."\n".
-                '    <div class="pm-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
+                '    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".
-                '<div class="z-form pm-pub-details">';
+                '<div class="z-form clip-pub-details">';
 
         $pubfields = Clip_Util::getPubFields($tid);
 
@@ -138,7 +138,7 @@ class Clip_Generator
                         default:
                             if (is_array($pubdata[$key])) {
                                 // generic arrays
-                                $rowcode['body'] = '<pre>{pmarray array=$pubdata.'.$key.'}</pre>';
+                                $rowcode['body'] = '<pre>{clip_array array=$pubdata.'.$key.'}</pre>';
 
                             } elseif (is_bool($pubdata[$key])) {
                                 // generic booleans
@@ -154,7 +154,7 @@ class Clip_Generator
                 // check for relation fields
                 if ($recfield == 'relation') {
                     //$rowcode['body'] = '{$pubdata.'.$key.'.id|safetext}';
-                    $rowcode['body'] = '<pre>{pmarray array=$pubdata.'.$key.'->toArray()}</pre>';
+                    $rowcode['body'] = '<pre>{clip_array array=$pubdata.'.$key.'->toArray()}</pre>';
                 }
 
                 // build the final row if not filled
@@ -200,10 +200,10 @@ class Clip_Generator
                 '{include file=\'clip_generic_navbar.tpl\' section=\'form\'}'."\n".
                 "\n".
                 '{if $pubtype.description neq \'\'}'."\n".
-                '    <div class="pm-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
+                '    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".
-                '{assign var=\'zformclass\' value="z-form pm-editform pm-editform-`$pubtype.tid` pm-editform-`$pubtype.tid`-`$pubtype.stepname`"}'."\n".
+                '{assign var=\'zformclass\' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$pubtype.stepname`"}'."\n".
                 "\n".
                 '{form cssClass=$zformclass enctype=\'multipart/form-data\'}'."\n".
                 '    <div>'."\n".

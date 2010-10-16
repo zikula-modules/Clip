@@ -93,17 +93,17 @@ class Clip_Installer extends Zikula_Installer
         // modvars
         // upload dir creation if the temp dir is not outside the root (relative path)
         $tempdir = CacheUtil::getLocalDir();
-        $pmdir   = $tempdir.'/Clip';
+        $tmpdir   = $tempdir.'/Clip';
         if (StringUtil::left($tempdir, 1) <> '/') {
             if (CacheUtil::createLocalDir('Clip')) {
-                LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $pmdir));
+                LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $tmpdir));
             }
         } else {
-            LogUtil::registerStatus($this->__f('Clip could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $pmdir));
+            LogUtil::registerStatus($this->__f('Clip could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $tmpdir));
         }
 
         $modvars = array(
-            'uploadpath' => $pmdir,
+            'uploadpath' => $tmpdir,
             'devmode'    => true
         );
         $this->setVars($modvars);
@@ -123,14 +123,15 @@ class Clip_Installer extends Zikula_Installer
             case '0.4.2':
                 $tables = DBUtil::getTables();
                 // further upgrade handling
-                // * verify the existance of the pubtype tables
                 // * map the field classnames to IDs
                 // * rename the filename/formname columns
                 // * fill the output/input sets if empty
                 // * change C(512) to C(255) and X to C(65535)
+                // * rename the columns to drop the pm_ prefix
                 // * replace any pm_* in the pubtype sortfields
-                // * create any non-existing pubtype table
+                // * verify create any non-existing pubtype table
                 // * rename the clip:% permissions to clip:
+                // * replace any occurence of pm* filters 
 
                 // fills the empty publish dates
                 $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());

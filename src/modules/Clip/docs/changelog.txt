@@ -24,3 +24,12 @@
         checkPerm               checkperm
         handlePluginFields      handleplugins
         getApprovalState        loadworkflow
+    Plugins were renamed to have the clip_ prefix:
+        pmadminsubmenu          clip_admin_submenu
+        pmarray                 clip_array
+        pmformplugintype        clip_form_plugintype
+        category_browser        clip_category_browser
+        genericformplugin       clip_form_genericplugin
+        get_workflow_state      clip_getstate
+        hitcount                clip_hitcount
+        multilistdecode         clip_multilistdecode

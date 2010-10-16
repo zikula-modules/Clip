@@ -12,7 +12,7 @@
 function pubfieldlistorderchanged()
 {
     var params = 'module=Clip&func=changedlistorder&authid=' + $F('FormAuthid')
-                   + '&tid=' + $('pm_tid').innerHTML
+                   + '&tid=' + $('clip_tid').innerHTML
                    + '&' + Sortable.serialize('pubfieldlist');
 
     var myAjax = new Ajax.Request(

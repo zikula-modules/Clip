@@ -14,7 +14,7 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 {
     public $pluginTitle;
     public $columnDef   = 'C(512)';
-    public $filterClass = 'pmMultiList';
+    public $filterClass = 'ClipMultiList';
 
     public $config;
 
@@ -97,7 +97,7 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'pmplugin_checklist\') ;
+                                 $(\'typedata\').value = $F(\'clipplugin_checklist\') ;
                                  closeTypeData();
                              }';
 
@@ -112,8 +112,8 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 
         $html = ' <div class="z-formrow">
-                      <label for="pmplugin_checklist">'.$this->__('Category').':</label>
-                      <select id="pmplugin_checklist" name="pmplugin_checklist">';
+                      <label for="clipplugin_checklist">'.$this->__('Category').':</label>
+                      <select id="clipplugin_checklist" name="clipplugin_checklist">';
 
         $lang = ZLanguage::getLanguageCode();
 

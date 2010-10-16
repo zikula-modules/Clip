@@ -7,7 +7,7 @@
     <h2>{gt text='Manage Relations'}</h2>
 
     {if $tid}
-        {pmadminsubmenu tid=$tid}
+        {clip_admin_submenu tid=$tid}
     {/if}
 
     <div class="z-form">

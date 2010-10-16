@@ -43,7 +43,7 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 if ($F(\'pmplugin_usedatetime\') == \'on\') {
+                                 if ($F(\'clipplugin_usedatetime\') == \'on\') {
                                      $(\'typedata\').value = 1;
                                  } else {
                                      $(\'typedata\').value = 0;
@@ -63,8 +63,8 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
         }
 
         $html = '<div class="z-formrow">
-                     <label for="pmplugin_usedatetime">'.$this->__('Include time').':</label>
-                     <input type="checkbox" id="pmplugin_usedatetime" name="pmplugin_usedatetime" '.$checked.' />
+                     <label for="clipplugin_usedatetime">'.$this->__('Include time').':</label>
+                     <input type="checkbox" id="clipplugin_usedatetime" name="clipplugin_usedatetime" '.$checked.' />
                  </div>';
 
         return $html;

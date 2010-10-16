@@ -27,7 +27,7 @@
 
  * @return html of category tree
  */
-function smarty_function_category_browser($params, &$smarty)
+function smarty_function_clip_category_browser($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -77,7 +77,7 @@ function smarty_function_category_browser($params, &$smarty)
 
     if ($count) {
         if (function_exists('apc_fetch') && $cache_count) {
-            $count_arr_old = $count_arr = apc_fetch('cat_browser_count_'.$tid);
+            $count_arr_old = $count_arr = apc_fetch('clip_cat_browser_count_'.$tid);
         }
     }
 
@@ -171,7 +171,7 @@ function smarty_function_category_browser($params, &$smarty)
 
     // TODO Remove this in 1.3 to use DBUtil cache
     if (function_exists('apc_store') && $count && $cache_count && $count_arr_old <> $count_arr) {
-        apc_store('cat_browser_count_'.$tid, $count_arr, 3600);
+        apc_store('clip_cat_browser_count_'.$tid, $count_arr, 3600);
     }
 
     $render->assign('cats', $cats);

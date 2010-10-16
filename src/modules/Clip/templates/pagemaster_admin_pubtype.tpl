@@ -6,7 +6,7 @@
 
     {if isset($pubtype)}
         <h2>{gt text='Edit publication type'}</h2>
-        {pmadminsubmenu tid=$pubtype.tid}
+        {clip_admin_submenu tid=$pubtype.tid}
     {else}
         <h2>{gt text='Create publication type'}</h2>
     {/if}
@@ -48,7 +48,7 @@
             </div>
             <div class="z-formrow">
                 {formlabel for='workflow' text='Workflow'}
-                {formdropdownlist id='workflow' group='pubtype' items=$pmworkflows}
+                {formdropdownlist id='workflow' group='pubtype' items=$clipworkflows}
                 <div class="z-formnote">{gt text='You can choose a special workflow for the publications.'}</div>
             </div>
         </fieldset>
@@ -108,7 +108,7 @@
         <div class="z-buttons z-formbuttons">
             {if isset($pubtype)}
                 {formbutton commandName='create' __text='Save' class='z-bt-save'}
-                {formbutton commandName='clone' __text='Clone' class='z-bt-icon pm-bt-copy'}
+                {formbutton commandName='clone' __text='Clone' class='z-bt-icon clip-bt-copy'}
                 {gt text='Are you sure you want to delete this publication type and all its fields and publications?' assign='confirmdeletion'}
                 {formbutton commandName='delete' __text='Delete' class='z-bt-delete' confirmMessage=$confirmdeletion}
             {else}

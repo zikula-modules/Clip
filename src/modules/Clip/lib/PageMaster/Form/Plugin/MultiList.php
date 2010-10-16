@@ -14,7 +14,7 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
 {
     public $pluginTitle;
     public $columnDef   = 'C(512)';
-    public $filterClass = 'pmMultiList';
+    public $filterClass = 'ClipMultiList';
 
     public $config;
 
@@ -133,10 +133,10 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         $saveTypeDataFunc = 'function saveTypeData()
                              {
                                  var config = new Array()
-                                 config.push($F(\'pmplugin_categorylist\'))
+                                 config.push($F(\'clipplugin_categorylist\'))
 
-                                 if (parseInt($F(\'pmplugin_multisize\')) != NaN && parseInt($F(\'pmplugin_multisize\')) > 0) {
-                                     config.push($F(\'pmplugin_multisize\'));
+                                 if (parseInt($F(\'clipplugin_multisize\')) != NaN && parseInt($F(\'clipplugin_multisize\')) > 0) {
+                                     config.push($F(\'clipplugin_multisize\'));
                                  } else {
                                      config.push(\'~\');
                                  }
@@ -162,8 +162,8 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 
         $html = '<div class="z-formrow">
-                     <label for="pmplugin_categorylist">'.$this->__('Category').':</label>
-                     <select id="pmplugin_categorylist" name="pmplugin_categorylist">';
+                     <label for="clipplugin_categorylist">'.$this->__('Category').':</label>
+                     <select id="clipplugin_categorylist" name="clipplugin_categorylist">';
 
         $lang = ZLanguage::getLanguageCode();
 
@@ -178,8 +178,8 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         $html .= '    </select>
                   </div>
                   <div class="z-formrow">
-                      <label for="pmplugin_multisize">'.$this->__('Size').':</label>
-                      <input type="text" id="pmplugin_multisize" name="pmplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
+                      <label for="clipplugin_multisize">'.$this->__('Size').':</label>
+                      <input type="text" id="clipplugin_multisize" name="clipplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
                   </div>';
 
         return $html;

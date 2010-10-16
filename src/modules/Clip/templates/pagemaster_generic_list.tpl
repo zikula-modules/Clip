@@ -4,10 +4,10 @@
 {include file='clip_generic_navbar.tpl' section='list'}
 
 {if $pubtype.description neq ''}
-    <p class="pm-pubtype-desc">{gt text=$pubtype.description}</p>
+    <p class="clip-pubtype-desc">{gt text=$pubtype.description}</p>
 {/if}
 
-<table class="z-datatable pm-pub-list">
+<table class="z-datatable clip-pub-list">
     <tbody>
         {foreach from=$publist item='item'}
         <tr class="{cycle values='z-even,z-odd'}">

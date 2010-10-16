@@ -10,7 +10,7 @@
  * @subpackage FilterUtil
 */
 
-class FilterUtil_Filter_pmList extends FilterUtil_Filter_category
+class FilterUtil_Filter_ClipList extends FilterUtil_Filter_category
 {
     /**
      * return SQL code

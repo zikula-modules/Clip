@@ -2,8 +2,8 @@
 {assign var='depth' value=0}
 
 <ul>
-    {foreach from=$cats item='cat' name='pmcb'}
-    {if $smarty.foreach.pmcb.first neq true}
+    {foreach from=$cats item='cat' name='clipcb'}
+    {if $smarty.foreach.clipcb.first neq true}
         {if $depth gt $cat.depth}
             {section name='k' loop=$depth-$cat.depth}
                 </li></ul>

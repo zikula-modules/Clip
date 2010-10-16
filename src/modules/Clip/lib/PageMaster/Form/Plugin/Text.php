@@ -60,7 +60,7 @@ class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 if ($(\'pmplugin_usescribite\') && $F(\'pmplugin_usescribite\') == \'on\') {
+                                 if ($(\'clipplugin_usescribite\') && $F(\'clipplugin_usescribite\') == \'on\') {
                                      $(\'typedata\').value = 1;
                                  } else {
                                      $(\'typedata\').value = 0;
@@ -81,8 +81,8 @@ class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
         // TODO Formatting config
         if (ModUtil::available('scribite')) {
             $html = '<div class="z-formrow">
-                         <label for="pmplugin_usescribite">'.$this->__('Use Scribite!').':</label>
-                         <input type="checkbox" id="pmplugin_usescribite" name="pmplugin_usescribite" '.$checked.' />
+                         <label for="clipplugin_usescribite">'.$this->__('Use Scribite!').':</label>
+                         <input type="checkbox" id="clipplugin_usescribite" name="clipplugin_usescribite" '.$checked.' />
                      </div>';
         } else {
             $html = '<div class="z-formrow">

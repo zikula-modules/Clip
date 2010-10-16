@@ -45,7 +45,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Form_Handler
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $adminurl);
         }
 
-        $view->assign('pmworkflows', Clip_Util::getWorkflowsOptionList());
+        $view->assign('clipworkflows', Clip_Util::getWorkflowsOptionList());
 
         return true;
     }

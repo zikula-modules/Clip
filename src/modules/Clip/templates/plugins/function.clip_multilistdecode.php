@@ -10,7 +10,7 @@
  * @subpackage  clip
  */
 
-function smarty_function_multilistdecode($params, &$smarty)
+function smarty_function_clip_multilistdecode($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 

@@ -1,6 +1,6 @@
 
 <div class="z-menu">
-    <span class="z-menuitem-title pm-menu">
+    <span class="z-menuitem-title clip-menu">
         {strip}
         <span>&raquo;</span>
         {if $section neq 'list'}
@@ -10,7 +10,7 @@
                 </a>
             </span>
         {else}
-            <span class="pm-breadtext">
+            <span class="clip-breadtext">
                 {gt text=$pubtype.title}
             </span>
         {/if}
@@ -35,7 +35,7 @@
                 </span>
                 {/if}
             {else}
-                <span class="pm-breadtext">
+                <span class="clip-breadtext">
                     {$pubdata[$pubtype.titlefield]}
                 </span>
                 {checkpermissionblock component='clip:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD}
@@ -52,7 +52,7 @@
                 <span class="text_separator">&raquo;</span>
                 {/if}
 
-                <span class="pm-breadtext">
+                <span class="clip-breadtext">
                     {if isset($id)}
                         {gt text='Edit form'}
                     {else}
