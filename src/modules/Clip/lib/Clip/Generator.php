@@ -568,7 +568,7 @@ class Clip_Model_Pubdata{$tid} extends Clip_Base_Pubdata
 /**
  * Doctrine_Table class used to implement own special entity methods.
  */
-class Clip_Model_Pubdata{$tid}Table extends Zikula_Doctrine_Table
+class Clip_Model_Pubdata{$tid}Table extends Clip_Doctrine_Table
 {
 
 }
@@ -615,7 +615,7 @@ class Clip_Model_Relation{$relation['id']} extends Doctrine_Record
         $hasColumns
     }
 }
-class Clip_Model_Relation{$relation['id']}Table extends Zikula_Doctrine_Table
+class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 {
 
 }

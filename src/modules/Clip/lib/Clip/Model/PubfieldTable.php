@@ -12,7 +12,7 @@
 /**
  * Doctrine_Table class used to implement own special entity methods.
  */
-class Clip_Model_PubfieldTable extends Zikula_Doctrine_Table
+class Clip_Model_PubfieldTable extends Clip_Doctrine_Table
 {
 
 }
