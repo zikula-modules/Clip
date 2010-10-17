@@ -30,18 +30,20 @@ function smarty_function_clip_form_genericplugin($params, &$render)
     $tid = $render->eventHandler->getTid();
 
     $pubfields   = Clip_Util::getPubFields($tid);
-    $pluginclass = $pubfields[$id]['fieldplugin'];
-
-    $pluginclass = Clip_Util::processPluginClassname($pluginclass);
 
     // read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])){
         $params['mandatory'] = $pubfields[$id]['ismandatory'];
     }
-
     if (!isset($params['maxLength'])){
         $params['maxLength'] = $pubfields[$id]['fieldmaxlength'];
     }
 
-    return $render->registerPlugin($pluginclass, $params);
+    $plugin = Clip_Util::getPlugin($pubfields[$id]['fieldplugin']);
+
+    if (method_exists($plugin, 'pluginRegister')) {
+        return $plugin->pluginRegister($params, $render);
+    } else {
+        return $render->registerPlugin(get_class($plugin), $params);
+    }
 }

@@ -13,3 +13,5 @@
     check if the pagers are generated when no publications present
 
     check if it's needed to exclude already linked pubs on many to one
+
+    check if the Plugin's domain set is still needed

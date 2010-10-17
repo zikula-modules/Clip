@@ -438,6 +438,7 @@ class Clip_Util
         $classNames['MultiCheck'] = 'Clip_Form_Plugin_MultiCheck';
         $classNames['MultiList']  = 'Clip_Form_Plugin_MultiList';
         $classNames['Pub']        = 'Clip_Form_Plugin_Pub';
+        $classNames['Radio']      = 'Clip_Form_Plugin_RadioList';
         $classNames['String']     = 'Clip_Form_Plugin_String';
         $classNames['Text']       = 'Clip_Form_Plugin_Text';
         $classNames['Upload']     = 'Clip_Form_Plugin_Upload';
