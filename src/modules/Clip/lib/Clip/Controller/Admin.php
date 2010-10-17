@@ -285,7 +285,7 @@ class Clip_Controller_Admin extends Zikula_Controller
 
         //// Output
         $this->view->assign('code',    $code)
-                   ->assign('mode',    $mode)
+                   ->assign('mode',    $args['mode'])
                    ->assign('pubtype', Clip_Util::getPubType($args['tid']));
 
         return $this->view->fetch('clip_admin_showcode.tpl');
