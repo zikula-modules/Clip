@@ -2,12 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Form_Plugin
  */
 
 class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
@@ -104,7 +103,7 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field)
+    function getTypeHtml($field, $view)
     {
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : 30;
         $this->parseConfig($typedata);

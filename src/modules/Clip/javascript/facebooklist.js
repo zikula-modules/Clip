@@ -1,4 +1,12 @@
 /**
+ * Clip
+ *
+ * @link       http://code.zikula.org/clip/
+ * @package    Clip
+ * @subpackage Javascript
+ */
+
+/**
  * Proto!MultiSelect 0.2
  * - Prototype version required: 6.0
  *

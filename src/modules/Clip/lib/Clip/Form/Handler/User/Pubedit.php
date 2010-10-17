@@ -2,11 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Form_Handler_User
  */
 
 /**
@@ -136,7 +136,7 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
         return true;
     }
 
-    function handleCommand($view, &$args)
+    function handleCommand($view, $args)
     {
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->referer);

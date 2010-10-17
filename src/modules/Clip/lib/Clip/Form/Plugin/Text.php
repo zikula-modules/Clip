@@ -2,12 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Form_Plugin
  */
 
 class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
@@ -96,7 +95,7 @@ class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='', $args=array())
+    function parseConfig($typedata='')
     {
         $this->config = array();
 

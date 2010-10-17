@@ -2,11 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Lib
  */
 
 /**
@@ -18,8 +18,6 @@ class Clip_Generator
 
     public static function pubdisplay($tid, $public=true)
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-
         // build and process a dummy pubdata object
         $className = "Clip_Model_Pubdata{$tid}";
         $pubdata   = new $className();

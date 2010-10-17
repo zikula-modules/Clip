@@ -2,11 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Doctrine
  */
 
 /**
@@ -143,7 +143,7 @@ class Clip_Doctrine_Table extends Doctrine_Table
         }
 
         // adds the distinct clause id needed
-        $fieldQuery = ($distinct ? "DISTINCT $field" : "$field");
+        $field = ($distinct ? "DISTINCT $field" : "$field");
 
         // creates the query instance
         $q = $this->createQuery($queryAlias)

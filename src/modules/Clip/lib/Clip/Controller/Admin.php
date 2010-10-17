@@ -2,11 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Controller
  */
 
 /**
@@ -310,8 +310,9 @@ class Clip_Controller_Admin extends Zikula_Controller
 
         // build and return the output
         $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false)
-                   ->add_core_data()
-                   ->fetch('clip_admin_importps.tpl');
+                   ->add_core_data();
+
+        return $this->view->fetch('clip_admin_importps.tpl');
     }
 
     /**

@@ -2,18 +2,15 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage View_Plugins
  */
 
 /**
- * Relation selector form plugin.
- *
- * @param $params['fieldname']
- * @param generic
+ * Relation form plugin.
  */
 function smarty_function_clip_form_relation($params, &$view) {
     return $view->registerPlugin('ClipFormRelation', $params);
@@ -85,6 +82,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
         $result = parent::render($view);
 
         // config values
+        // TODO move this to the relation config
         $numitems = 30;
         $maxitems = 20;
         $minchars = 2;
@@ -155,7 +153,6 @@ class ClipFormRelation extends Form_Plugin_TextInput
             $value = $this->parseValue($view, $this->text);
 
             $classname = 'Clip_Model_Pubdata'.$this->relinfo['tid'];
-            $tableObj  = Doctrine_Core::getTable($classname);
 
             $ref = $this->relinfo['single'] ? array($value) : explode(':', $value);
 

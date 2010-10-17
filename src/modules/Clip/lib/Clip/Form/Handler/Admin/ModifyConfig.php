@@ -2,11 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Form_Handler_Admin
  */
 
 /**
@@ -50,7 +50,7 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Form_Handler
     /**
      * Command handler
      */
-    function handleCommand($view, &$args)
+    function handleCommand($view, $args)
     {
         $data = $view->getValues();
 

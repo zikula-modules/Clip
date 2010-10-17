@@ -1,13 +1,12 @@
 <?php
 /**
- * Zikula Application Framework
+ * Clip
  *
- * @copyright (c), Zikula Development Team
- * @link http://www.zikula.org
- * @version $Id: modifier.array.php 27067 2009-10-21 17:20:35Z drak $
- * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package Clip_Template_Plugins
- * @subpackage Plugins
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage View_Plugins
  */
 
 /**

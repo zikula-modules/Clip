@@ -2,12 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Block
  */
 
 /**
@@ -130,7 +129,7 @@ class Clip_Block_List extends Zikula_Block
 
         $pubfields = array();
         if (!empty($vars['tid'])) {
-            $fields = Clip_Util::getPubFields($vars['tid']);
+            $pubfields = Clip_Util::getPubFields($vars['tid']);
 
             $arraysort = array(
                 'core_empty' => array(),

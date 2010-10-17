@@ -2,11 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Controller
  */
 
 /**
@@ -229,8 +229,8 @@ class Clip_Controller_User extends Zikula_Controller
 
         //// Output setup
         // check if this view is cached
-        if (!empty($cachelt) && !SecurityUtil::checkPermission('clip:input:', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
-            $this->view->setCache_lifetime($cachelt);
+        if (!empty($args['cachelifetime']) && !SecurityUtil::checkPermission('clip:input:', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
+            $this->view->setCache_lifetime($args['cachelifetime']);
             // second clause allow developer to add an edit button on the "display" template
             $cachetid = true;
             $cacheid = 'display'.$args['tid'].'|'.$args['pid'].'|'.$args['templateid'];
@@ -274,7 +274,7 @@ class Clip_Controller_User extends Zikula_Controller
         //// API call
         $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $args);
         if (!$pubdata) {
-            return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($args['tid'], $args['pid'], $id)));
+            return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($args['tid'], $args['pid'], $args['id'])));
         }
 
         //// Build the output
@@ -479,14 +479,14 @@ class Clip_Controller_User extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', DataUtil::formatForDisplay($args['id'])));
         }
 
-        Zikula_Workflow_Util::executeAction($args['schema'], $pub, $commandName, $pubtype->getTableName(), 'Clip');
+        Zikula_Workflow_Util::executeAction($args['schema'], $pub, $args['commandName'], $pubtype->getTableName(), 'Clip');
 
         // process the redirect
         $displayUrl = ModUtil::url('Clip', 'user', 'display',
                                    array('tid' => $args['tid'],
                                          'id'  => $args['id']));
 
-        switch ($goto)
+        switch ($args['goto'])
         {
             case 'edit':
                 $goto = ModUtil::url('Clip', 'user', 'edit',

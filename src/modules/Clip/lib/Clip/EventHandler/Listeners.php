@@ -2,11 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage EventHandler
  */
 
 /**
@@ -27,7 +27,7 @@ class Clip_EventHandler_Listeners
         $classNames = array();
         $classNames['Date']       = 'Clip_Form_Plugin_Date';
         $classNames['Email']      = 'Clip_Form_Plugin_Email';
-        
+
         $event->setData(array_merge((array)$event->getData(), $classNames));
         */
     }

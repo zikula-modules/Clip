@@ -2,12 +2,12 @@
 /**
  * Clip
  *
- * @copyright   Copyright Zikula Foundation 2009 - Zikula Application Framework
- * @link        http://code.zikula.org/clip/
+ * @copyright   Zikula Foundation 2009 - Zikula Application Framework
+ * @link        http://www.zikula.org
  * @license     GNU/LGPLv3 (or at your option, any later version).
  * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @package     Clip
+ * @subpackage  View_Plugins
  */
 
 /**

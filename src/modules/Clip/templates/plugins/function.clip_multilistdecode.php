@@ -2,12 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage View_Plugins
  */
 
 function smarty_function_clip_multilistdecode($params, &$smarty)
@@ -30,7 +29,7 @@ function smarty_function_clip_multilistdecode($params, &$smarty)
         $html .=  $cat['fullTitle'].'<br />';
     }
 
-    if ($assign) {
+    if (isset($params['assign'])) {
         $smarty->assign($params['assign'], $html);
     } else {
         return $html;

@@ -2,11 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Installer
  */
 
 /**
@@ -164,6 +164,8 @@ class Clip_Installer extends Zikula_Installer
      */
     public function uninstall()
     {
+        Clip_Generator::loadDataClasses();
+
         // drop pubtype tables
         $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
 

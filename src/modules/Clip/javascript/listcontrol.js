@@ -1,3 +1,10 @@
+/**
+ * Clip
+ *
+ * @link       http://code.zikula.org/clip/
+ * @package    Clip
+ * @subpackage Javascript
+ */
 
 /**
   * Listcontrol is a very basic class for folding and unfolding an existing tree structure taking into account the passed category ID

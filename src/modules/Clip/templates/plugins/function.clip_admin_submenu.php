@@ -2,21 +2,20 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage View_Plugins
  */
 
 /**
  * Displays the admin sub menu
  *
  * @author mateo
- * @param $args['tid'] tid
+ * @param  $params['tid'] tid
  */
-function smarty_function_clip_admin_submenu($params, &$smarty)
+function smarty_function_clip_admin_submenu($params, $view)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 

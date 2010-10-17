@@ -2,12 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Block
  */
 
 /**
@@ -52,13 +51,12 @@ class Clip_Block_Pubeditlist extends Zikula_Block
             return;
         }
 
-        $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
-        $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
+        $args['orderby'] = (isset($vars['orderBy'])) ? $vars['orderBy'] : FormUtil::getPassedValue('orderby');
+        //$cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-        $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
-        $orderby    = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby');
-        $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
+        $tid        = FormUtil::getPassedValue('tid');
+        $pid        = FormUtil::getPassedValue('pid');
+        $returntype = FormUtil::getPassedValue('returntype', 'user');
         $source     = 'block';
 
         $pubData = ModUtil::apiFunc('Clip', 'user', 'editlist', $args);
@@ -92,8 +90,6 @@ class Clip_Block_Pubeditlist extends Zikula_Block
      */
     public function update($blockinfo)
     {
-        $filters = FormUtil::getPassedValue('filters');
-
         $vars = array (
             'cachelifetime' => FormUtil::getPassedValue('cachelifetime'),
             'orderBy'       => FormUtil::getPassedValue('orderBy')

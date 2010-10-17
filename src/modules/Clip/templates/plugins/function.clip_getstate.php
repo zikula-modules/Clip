@@ -2,12 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage View_Plugins
  */
 
 /**
@@ -40,7 +39,7 @@ function smarty_function_clip_getstate($params, &$smarty)
 
     Zikula_Workflow_Util::getWorkflowForObject($pub, $tablename, 'id', 'Clip');
 
-    if ($params['assign']) {
+    if (isset($params['assign'])) {
         $smarty->assign($params['assign'], $pub['__WORKFLOW__']);
     } else {
         return $pub['__WORKFLOW__'];

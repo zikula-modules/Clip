@@ -2,12 +2,11 @@
 /**
  * Clip
  *
- * @copyright   (c) Clip Team
- * @link        http://code.zikula.org/clip/
- * @license     GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @version     $ Id $
- * @package     Zikula_3rdParty_Modules
- * @subpackage  clip
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage View_Plugins
  */
 
 /**
@@ -189,7 +188,7 @@ function smarty_function_clip_category_browser($params, &$smarty)
     $html = $render->fetch($template, $cacheid);
 
     if ($assign) {
-        $smarty->assign($params['assign'], $html);
+        $smarty->assign($assign, $html);
     } else {
         return $html;
     }
