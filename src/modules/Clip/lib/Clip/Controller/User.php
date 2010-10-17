@@ -343,7 +343,7 @@ class Clip_Controller_User extends Zikula_Controller
         );
 
         //// Misc values
-        $pubfields = Clip_Util::getPubFields($args['tid'], 'pm_lineno');
+        $pubfields = Clip_Util::getPubFields($args['tid'], 'lineno');
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }

@@ -38,8 +38,9 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
             $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', array(
                 'tid' => $this->tid,
                 'id'  => $this->id,
-                'loadrefs'  => true,
-                'checkperm' => true
+                'checkperm' => true,
+                'handleplugins' => false, // do not interfer with selected values on edit form
+                'loadworkflow' => true
             ));
 
             // validate the pudblication
@@ -293,7 +294,6 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
 
     private function pubAssign(&$pubdata)
     {
-        $pubdata->pubPostProcess(array('loadworkflow' => true));
         $this->pub = $pubdata;
     }
 
