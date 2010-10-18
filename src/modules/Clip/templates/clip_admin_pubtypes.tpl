@@ -8,7 +8,7 @@
 
     {modurl modname='Clip' type='admin' func='pubtype' assign='urlcreate'}
     {assign var='urlcreate' value=$urlcreate|safetext}
-    <p>{gt text='Here the list of the existing Publication types (pubtypes). If you don\'t have one yet, go to the <a href="%s">New publication type form</a> and create one; after that, you\'ll be able to add the <strong>Fields</strong> for the publications within that type, and once you have the fields you want, click the corresponding <strong>DB Update</strong> link. Now you will be able to add <strong>New publications</strong> and customize the templates for your pubtype, starting of the code that Clip generate for you. Enjoy!' tag1=$urlcreate}</p>
+    <p>{gt text='Here the list of the existing Publication types (pubtypes). If you don\'t have one yet, go to the <a href="%s">New publication type form</a> and create one; after that, you\'ll be able to add the <strong>Fields</strong> for the publications within that type. After that you will be able to add <strong>New publications</strong> and customize the templates for them, starting with the code that Clip generates for you. Enjoy!' tag1=$urlcreate}</p>
 
     <table class="z-admintable">
         <thead>
