@@ -36,7 +36,7 @@ class Clip_Form_Handler_Admin_Relations extends Form_Handler
 
         foreach (explode(',', $update) as $tid) {
             if (in_array($tid, $tids)) {
-                Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->changeTable();
+                Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->changeTable(true);
             }
         }
 
@@ -61,8 +61,8 @@ class Clip_Form_Handler_Admin_Relations extends Form_Handler
             $relation->mapValue('type2', $relation->type%2 == 0 ? 0 : 1);
 
             // update the implied pubdata tables
-            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation->tid1)->changeTable();
-            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation->tid2)->changeTable();
+            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation->tid1)->changeTable(true);
+            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation->tid2)->changeTable(true);
 
             $view->assign('relation', $relation->toArray());
         }
