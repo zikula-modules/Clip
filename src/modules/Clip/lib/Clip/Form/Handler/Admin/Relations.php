@@ -30,8 +30,20 @@ class Clip_Form_Handler_Admin_Relations extends Form_Handler
             return $view->redirect(ModUtil::url('Clip', 'admin', 'pubtypes'));
         }
 
+        // check if there are tables to update
+        $tids = array_keys($pubtypes->toArray());
+        $update = FormUtil::getPassedValue('update');
+
+        foreach (explode(',', $update) as $tid) {
+            if (in_array($tid, $tids)) {
+                Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->changeTable();
+            }
+        }
+
+        // process the handler values
         $id  = (int)FormUtil::getPassedValue('id', 0);
-        $tid = (int)FormUtil::getPassedValue('tid', 0);
+        $tid = FormUtil::getPassedValue('tid');
+        $tid = in_array($tid, $tids) ? $tid : null;
 
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
 
@@ -39,12 +51,18 @@ class Clip_Form_Handler_Admin_Relations extends Form_Handler
             $this->id = $id;
             $relation = $tableObj->find($id);
 
+            if (!$relation) {
+                LogUtil::registerError($this->__f('No such relation found [%s].', $id));
+
+                return $view->redirect(ModUtil::url('Clip', 'admin', 'relations'));
+            }
+
             $relation->mapValue('type1', $relation->type < 2 ? 0 : 1);
             $relation->mapValue('type2', $relation->type%2 == 0 ? 0 : 1);
 
             // update the implied pubdata tables
-            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation['tid1'])->changeTable();
-            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation['tid2'])->changeTable();
+            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation->tid1)->changeTable();
+            Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation->tid2)->changeTable();
 
             $view->assign('relation', $relation->toArray());
         }
@@ -157,7 +175,7 @@ class Clip_Form_Handler_Admin_Relations extends Form_Handler
                     // setup the return url as the edit form
                     // to update the corresponding tables
                     $this->returnurl = ModUtil::url('Clip', 'admin', 'relations',
-                                                    array('id'  => $this->id));
+                                                    array('update' => $relation->tid1.','.$relation->tid2));
 
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
                 } else {
@@ -170,18 +188,15 @@ class Clip_Form_Handler_Admin_Relations extends Form_Handler
                 $relation = Doctrine_Core::getTable('Clip_Model_Pubrelation')->find($this->id);
 
                 if ($relation->delete()) {
+                    $this->returnurl = ModUtil::url('Clip', 'admin', 'relations',
+                                                    array('update' => $relation->tid1.','.$relation->tid2));
+
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));
                 } else {
                     return LogUtil::registerError($this->__('Error! Deletion attempt failed.'));
                 }
-
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations');
                 break;
         }
-
-        // update both pubtypes tables
-        Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation['tid1'])->changeTable();
-        Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation['tid2'])->changeTable();
 
         return $view->redirect($this->returnurl);
     }
