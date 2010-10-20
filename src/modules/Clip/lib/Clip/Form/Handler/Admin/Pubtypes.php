@@ -111,14 +111,14 @@ class Clip_Form_Handler_Admin_Pubtypes extends Form_Handler
                 $pubfields = Clip_Util::getPubFields($this->tid);
                 if ($pubfields) {
                     foreach ($pubfields as $pubfield) {
-                        $pubfield = $pubfield->clone();
+                        $pubfield = $pubfield->copy();
                         $pubfield->tid = $newpubtype->tid;
                         $pubfield->save();
                     }
                 }
 
                 // create the cloned table
-                Clip_Generator::loadDataClasses();
+                Clip_Generator::loadDataClasses(true);
                 Doctrine_Core::getTable('Clip_Model_Pubdata'.$newpubtype->tid)->createTable();
 
                 // status message
