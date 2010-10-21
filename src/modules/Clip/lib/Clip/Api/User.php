@@ -425,7 +425,9 @@ class Clip_Api_User extends Zikula_Api
      */
     public function editlist($args=array())
     {
-        $orderby  = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
+        $orderby      = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
+        $startnum     = isset($args['startnum']) ? $args['startnum'] : FormUtil::getPassedValue('startnum', -1);
+        $itemsperpage = isset($args['itemsperpage']) ? $args['itemsperpage'] : FormUtil::getPassedValue('itemsperpage', 10);
 
         $allTypes = array();
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')
@@ -434,6 +436,7 @@ class Clip_Api_User extends Zikula_Api
 
         $tables = DBUtil::getTables();
 
+        $publist = array();
         foreach ($pubtypes as $pubtype) {
             $tid = $pubtype['tid'];
 
@@ -443,18 +446,17 @@ class Clip_Api_User extends Zikula_Api
             }
 
             $coreTitle = Clip_Util::getTitleField($tid);
-            if (substr($orderby, 0, 10) == 'core_title') {
-                $orderby = str_replace('core_title', $coreTitle, $orderby);
-            }
+
+            $sort = (substr($orderby, 0, 10) == 'core_title') ? str_replace('core_title', $coreTitle, $orderby) : $orderby;
+            $sort = Clip_Util::createOrderBy($sort);
 
             $where = 'core_indepot = 0';
-            $sort  = str_replace(':', ' ', $orderby);
             $list  = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
-                     ->selectCollection($where, $sort)
+                     ->selectCollection($where, $sort, $startnum, $itemsperpage)
                      ->toArray();
 
             foreach ($list as $k => $v) {
-                if (!SecurityUtil::checkPermission('clip:input:', "$tid:$v[pid]:", ACCESS_EDIT)) {
+                if (!SecurityUtil::checkPermission('clip:input:', "$tid:{$v['core_pid']}:", ACCESS_EDIT)) {
                     unset($list[$k]);
                 } else {
                     $list[$k]['_title'] = $v[$coreTitle];

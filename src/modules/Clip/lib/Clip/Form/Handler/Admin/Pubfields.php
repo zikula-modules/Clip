@@ -43,6 +43,11 @@ class Clip_Form_Handler_Admin_Pubfields extends Form_Handler
             $this->id = $id;
             $pubfield = $tableObj->find($id);
 
+            if (!$pubfield) {
+                LogUtil::registerError($this->__f('Error! No such publication field [%s] found.', $id));
+                return $view->redirect(ModUtil::url('Clip', 'admin'));
+            }
+
             $view->assign('field', $pubfield->toArray());
         }
 
