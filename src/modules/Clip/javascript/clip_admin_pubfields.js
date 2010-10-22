@@ -48,6 +48,9 @@ function pubfieldlistsortinit()
 
     // also add the anchor to the form 
     $('FormForm').action = $('FormForm').action + '#FormForm'
+
+    // enable the tooltips
+    Zikula.UI.Tooltips($$('.tooltips'));
 }
 
 Event.observe(window, 'load', pubfieldlistsortinit, false);

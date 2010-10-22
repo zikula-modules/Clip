@@ -43,6 +43,28 @@ table.z-admintable thead tr th {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
+/*.z-clip-mini .*/
+.z-clip-mini .z-itemlist {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  margin: 0.5em 0 !important;
+}
+.z-clip-mini .z-itemlist li.z-itemheader {
+  border: none;
+  font-size: 11px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+.z-clip-mini .z-itemlist li {
+  border-width: 1px 0 0;
+  margin: 0 !important;
+}
+.z-clip-mini .z-itemlist li:last-child {
+  -webkit-border-radius: 0 0 4px 4px;
+  -moz-border-radius: 0 0 4px 4px;
+  border-radius: 0 0 4px 4px;
+}
+
 /* general */
 img {
   vertical-align: middle;

@@ -1,7 +1,7 @@
 
 {include file='clip_admin_header.tpl'}
 
-{ajaxheader module='Clip' filename='clip_admin_pubfields.js' dragdrop=true}
+{ajaxheader module='Clip' filename='clip_admin_pubfields.js' ui=true dragdrop=true}
 
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='db_update.gif' set='icons/large' __alt='Manage Publication fields' }</div>
@@ -13,31 +13,49 @@
     <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
 
     <div class="z-form">
-        <fieldset>
+        <fieldset class="z-clip-mini">
             <legend>{gt text='Existing publication fields'}</legend>
 
             <span id='clip_tid' style="display: none">{$tid}</span>
             <ul id="pubfieldlist" class="z-itemlist">
                 <li id="pubfieldlistheader" class="pubfieldlistheader z-itemheader z-itemsortheader z-clearfix">
-                    <span class="z-itemcell z-w15">{gt text='Name'}</span>
-                    <span class="z-itemcell z-w15">{gt text='Title'}</span>
-                    <span class="z-itemcell z-w20">{gt text='Description'}</span>
+                    <span class="z-itemcell z-w20">{gt text='Name'}</span>
+                    <span class="z-itemcell z-w25">{gt text='Title'}</span>
+                    <span class="z-itemcell z-w15">{gt text='Type'}</span>
                     <span class="z-itemcell z-w10">{gt text='Title field'}</span>
                     <span class="z-itemcell z-w10">{gt text='Mandatory'}</span>
                     <span class="z-itemcell z-w10">{gt text='Searchable'}</span>
-                    <span class="z-itemcell z-w10">{gt text='Max. length'}</span>
                     <span class="z-itemcell z-w10">{gt text='Actions'}</span>
                 </li>
                 {foreach from=$pubfields item=pubfield name=pubfields}
                 <li id="pubfield_{$pubfield.id}" class="{cycle name='pubfieldlist' values='z-odd,z-even'} z-sortable z-clearfix z-itemsort">
-                    <span class="z-itemcell z-w15" id="pubfielddrag_{$pubfield.id}">
-                        {$pubfield.name}
+                    <span class="z-itemcell z-w20" id="pubfielddrag_{$pubfield.id}">
+                        <strong>{$pubfield.name}</strong>
+                    </span>
+                    <span class="z-itemcell z-w25">
+                        {img modname='core' src='documentinfo.gif' set='icons/extrasmall' alt='(i)' class='tooltips' title="#field_tooltip`$pubfield.id`"}
+                        {$pubfield.title}
+                    </span>
+                    <span id="field_tooltip{$pubfield.id}" style="display: none">
+                        <dl>
+                            {if $pubfield.description}
+                            <dt>{gt text='Description'}</dt>
+                            <dd>{$pubfield.description}</dd>
+                            {/if}
+                            {if $pubfield.fieldmaxlength}
+                            <dt>{gt text='Max. length'}</dt>
+                            <dd>{$pubfield.fieldmaxlength}</dd>
+                            {/if}
+                            <dt>{gt text='Pageable'}</dt>
+                            <dd>{$pubfield.ispageable|yesno}</dd>
+                            <dt>{gt text='Creation date'}</dt>
+                            <dd>{$pubfield.cr_date|dateformat:'datetimebrief'}</dd>
+                            <dt>{gt text='Update date'}</dt>
+                            <dd>{$pubfield.lu_date|dateformat:'datetimebrief'}</dd>
+                        </dl>
                     </span>
                     <span class="z-itemcell z-w15">
-                        {$pubfield.title}&nbsp;
-                    </span>
-                    <span class="z-itemcell z-w20">
-                        {$pubfield.description|truncate:45}&nbsp;
+                        {$pubfield.fieldplugin|clip_pluginname}&nbsp;
                     </span>
                     <span class="z-itemcell z-w10">
                         {if $pubfield.istitle}
@@ -54,12 +72,6 @@
                     <span class="z-itemcell z-w10">
                         {if $pubfield.issearchable}
                         {img modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall'}
-                        {/if}
-                        &nbsp;
-                    </span>
-                    <span class="z-itemcell z-w10">
-                        {if $pubfield.fieldmaxlength}
-                        {$pubfield.fieldmaxlength}
                         {/if}
                         &nbsp;
                     </span>

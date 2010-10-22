@@ -20,7 +20,7 @@
  *   {'core_title'|clip_orderby:'core_title'} returns 'z-order-desc'
  *   {'core_pid'|clip_orderby:'core_title'} returns 'z-order-asc'
  *
- * @param string $orderby The orderbt to process.
+ * @param string $orderby The orderby to process.
  * @param string $field   Field to compare.
  * @param string $return  Value to return (param or class)
  *
