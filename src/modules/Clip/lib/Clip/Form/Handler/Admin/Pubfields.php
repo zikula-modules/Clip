@@ -103,9 +103,19 @@ class Clip_Form_Handler_Admin_Pubfields extends Form_Handler
 
                 $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
 
-                // check that the name is unique
+                // name restrictions
                 $pubfield->name = str_replace("'", '', $pubfield->name);
-                $submittedname = DataUtil::formatForStore($pubfield->name);
+                $pubfield->name = $submittedname = DataUtil::formatForStore($pubfield->name);
+
+                // reserved names
+                $reserved = array('module', 'func', 'type', 'tid', 'pid');
+                if (in_array($submittedname, $reserved)) {
+                    $plugin = $view->getPluginById('name');
+                    $plugin->setError($this->__('The submitted name is reserved. Please choose a different one.'));
+                    return false;
+                }
+
+                // check that the name is unique
                 if (empty($this->id)) {
                     $where = "name = '$submittedname' AND tid = '{$pubfield->tid}'";
                 } else {
