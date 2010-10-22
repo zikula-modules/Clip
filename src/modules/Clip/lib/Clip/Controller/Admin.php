@@ -129,6 +129,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
         $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype->mapValue('titlefield', Clip_Util::getTitleField($args['tid']));
 
         // set the order
         if (empty($args['orderby'])) {
@@ -158,12 +159,10 @@ class Clip_Controller_Admin extends Zikula_Controller
                 $args['orderby'] = 'core_pid';
             }
         }
-
-        $pubtype->mapValue('titlefield', Clip_Util::getTitleField($args['tid']));
         $pubtype->mapValue('orderby', $args['orderby']);
 
         // replace any occurence of the core_title alias with the field name
-        if (strpos('core_title', $args['orderby']) !== false) {
+        if (strpos($args['orderby'], 'core_title') !== false) {
             $args['orderby'] = str_replace('core_title', $pubtype->titlefield, $args['orderby']);
         }
         $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);

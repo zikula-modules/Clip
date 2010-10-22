@@ -10,7 +10,7 @@
 
 /* GUI */
 .z-module-clip .z-menu {
-  margin-bottom: 0.5em;
+  margin-bottom: 1em;
 }
 .clip-option,
 .clip-menu span {
@@ -28,6 +28,19 @@
 }
 .z-module-clip .z-pagerabc {
   border-top: 1px solid #CCCCCC;
+}
+
+table.z-admintable {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border-spacing: 0;
+  padding: 0 !important;
+}
+table.z-admintable thead tr th {
+  background-color: #CFCFCF;
+  font-size: 11px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 /* general */

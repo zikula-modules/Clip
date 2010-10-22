@@ -1,32 +1,6 @@
 
 {include file='clip_admin_header.tpl'}
 
-{if $pubtype.orderby eq 'core_pid'}
-    {assign var='orderby_core_pid' value='core_pid:desc'}
-{else}
-    {assign var='orderby_core_pid' value='core_pid'}
-{/if}
-{if $pubtype.orderby eq 'core_title'}
-    {assign var='orderby_core_title' value='core_title:desc'}
-{else}
-    {assign var='orderby_core_title' value='core_title'}
-{/if}
-{if $pubtype.orderby eq 'core_author'}
-    {assign var='orderby_core_author' value='core_author:desc'}
-{else}
-    {assign var='orderby_core_author' value='core_author'}
-{/if}
-{if $pubtype.orderby eq 'cr_date'}
-    {assign var='orderby_cr_date' value='cr_date:desc'}
-{else}
-    {assign var='orderby_cr_date' value='cr_date'}
-{/if}
-{if $pubtype.orderby eq 'lu_date'}
-    {assign var='orderby_lu_date' value='lu_date:desc'}
-{else}
-    {assign var='orderby_lu_date' value='lu_date'}
-{/if}
-
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list'}</div>
 
@@ -40,12 +14,12 @@
         <thead>
             <tr>
                 <th>
-                    <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$orderby_core_pid}">
+                    <a class="{$pubtype.orderby|clip_orderby:'core_pid':'class'}" href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_pid'}">
                         {gt text='PID'}
                     </a>
                 </th>
                 <th>
-                    <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$orderby_core_title}">
+                    <a class="{$pubtype.orderby|clip_orderby:'core_title':'class'}" href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_title'}">
                         {gt text='Title'}
                     </a>
                 </th>
@@ -56,7 +30,7 @@
                     {gt text='State'}
                 </th>
                 <th>
-                    <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$orderby_core_author}">
+                    <a class="{$pubtype.orderby|clip_orderby:'core_author':'class'}" href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_author'}">
                         {gt text='Author'}
                     </a>
                 </th>
@@ -64,12 +38,12 @@
                     {gt text='Online'}
                 </th>
                 <th>
-                    <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$orderby_cr_date}">
+                    <a class="{$pubtype.orderby|clip_orderby:'cr_date':'class'}" href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'cr_date'}">
                         {gt text='Creation date'}
                     </a>
                 </th>
                 <th>
-                    <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$orderby_lu_date}">
+                    <a class="{$pubtype.orderby|clip_orderby:'lu_date':'class'}" href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'lu_date'}">
                         {gt text='Update date'}
                     </a>
                 </th>
@@ -81,18 +55,32 @@
         <tbody>
             {foreach from=$publist item='pubitem'}
             <tr class="{cycle values='z-odd,z-even'}">
-                <td>{$pubitem.core_pid|safetext}</td>
-                <td>{$pubitem[$pubtype.titlefield]|safetext}</td>
-                <td>{$pubitem.core_revision|safetext}</td>
-                <td>{$pubitem.__WORKFLOW__.state}</td>
                 <td>
+                    {$pubitem.core_pid|safetext}
+                </td>
+                <td>
+                    <strong>{$pubitem[$pubtype.titlefield]|safetext}</strong>
+                </td>
+                <td>
+                    {$pubitem.core_revision|safetext}
+                </td>
+                <td class="z-sub">
+                    {$pubitem.__WORKFLOW__.state}
+                </td>
+                <td class="z-sub">
                     <a href="{modurl modname='Users' type='admin' func='modify' userid=$pubitem.core_author}">
                         {usergetvar name="uname" uid=$pubitem.core_author}
                     </a>
                 </td>
-                <td>{$pubitem.core_online|yesno}</td>
-                <td>{$pubitem.cr_date|dateformat:'datetimebrief'}</td>
-                <td>{$pubitem.lu_date|dateformat:'datetimebrief'}</td>
+                <td>
+                    {$pubitem.core_online|yesno}
+                </td>
+                <td class="z-sub">
+                    {$pubitem.cr_date|dateformat:'datetimebrief'}
+                </td>
+                <td class="z-sub">
+                    {$pubitem.lu_date|dateformat:'datetimebrief'}
+                </td>
                 <td>
                     <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.gif' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
                     <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid id=$pubitem.id}" title="{gt text='View'}">{img modname='core' src='demo.gif' set='icons/extrasmall' __title='View'}</a>&nbsp;
@@ -100,7 +88,9 @@
                 </td>
             </tr>
             {foreachelse}
-            <tr class="z-admintableempty"><td colspan="9">{gt text='No publications found.'}</td></tr>
+            <tr class="z-admintableempty">
+                <td colspan="9">{gt text='No publications found.'}</td>
+            </tr>
             {/foreach}
         </tbody>
     </table>
