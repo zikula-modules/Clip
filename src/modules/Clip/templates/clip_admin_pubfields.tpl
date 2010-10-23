@@ -10,7 +10,7 @@
 
     {clip_admin_submenu tid=$tid field=1}
 
-    <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
+    <p class="z-informationmsg">{gt text='You can order the fields using Drag and Drop on the following list.'}</p>
 
     <div class="z-form">
         <fieldset class="z-clip-mini">
@@ -33,7 +33,7 @@
                         <strong>{$pubfield.name}</strong>
                     </span>
                     <span class="z-itemcell z-w25">
-                        {img modname='core' src='documentinfo.gif' set='icons/extrasmall' alt='(i)' class='tooltips' title="#field_tooltip`$pubfield.id`"}
+                        {img modname='core' src='info.gif' set='icons/extrasmall' alt='(i)' class='tooltips' title="#field_tooltip`$pubfield.id`"}
                         {$pubfield.title}
                     </span>
                     <span id="field_tooltip{$pubfield.id}" style="display: none">
@@ -87,6 +87,10 @@
             </ul>
         </fieldset>
     </div>
+
+    {if isset($field)}
+    <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
+    {/if}
 
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
     <div>
@@ -145,11 +149,6 @@
                 {formlabel for='fieldmaxlength' text='Max. length'}
                 {formintinput id='fieldmaxlength' group='field' maxLength='15'}
                 <div class="z-formnote">{gt text='The maximum length for the content of this field.'}</div>
-            </div>
-            <div class="z-formrow">
-                {formlabel for='lineno' text='Weight order'}
-                {formintinput id='lineno' group='field' maxLength='4'}
-                <div class="z-formnote">{gt text='Weight number of this field. You can leave it blank and order it later with Drag & Drop in the full list.'}</div>
             </div>
         </fieldset>
 
