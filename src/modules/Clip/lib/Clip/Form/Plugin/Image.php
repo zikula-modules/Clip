@@ -13,7 +13,7 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
 {
     public $pluginTitle;
     public $columnDef = 'C(512)';
-    public $upl_arr;
+    public $upl_arr = array();
 
     public $config;
 
@@ -38,7 +38,7 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
                 '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
                 '            <span class="z-formnote">'."\n".
                 '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
-                '                <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
+                '                <img width="250" src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
               //'                <br />'."\n".
               //'                <img src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
                 '                <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
@@ -52,8 +52,9 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
     function render($view)
     {
         $input_html = parent::render($view);
+        $note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
 
-        return $input_html.' '.$this->upl_arr['orig_name'];
+        return $input_html.$note_html;
     }
 
     function load($view, &$params)
@@ -61,10 +62,16 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
         $this->loadValue($view, $view->get_template_vars());
     }
 
-    function loadValue($view, &$values)
+    function loadValue($view, $values)
     {
-        if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
-            $this->upl_arr = unserialize($values[$this->dataField]);
+        if ($this->group == null) {
+            if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
+                $this->upl_arr = unserialize($values[$this->dataField]);
+            }
+        } else {
+            if (isset($values[$this->group][$this->dataField]) && !empty($values[$this->group][$this->dataField])) {
+                $this->upl_arr = unserialize($values[$this->group][$this->dataField]);
+            }
         }
     }
 
@@ -107,7 +114,7 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
     function preSave($data, $field)
     {
         $id   = $data['id'];
-        $tid  = $data['tid'];
+        $tid  = $data['core_tid'];
         $PostData = $data[$field['name']];
 
         // ugly to get old image from DB
