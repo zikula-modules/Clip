@@ -41,6 +41,12 @@ class Clip_Api_User extends Zikula_Api
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
+        $pubfields = Clip_Util::getPubFields($args['tid']);
+        if (!$pubfields) {
+            return LogUtil::registerError($this->__('Error! No publication fields found.'));
+        }
+        $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
+
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
         $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : false;
@@ -52,12 +58,16 @@ class Clip_Api_User extends Zikula_Api
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : null,
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : 1,
-            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)$args['itemsperpage'] : -1,
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)$args['itemsperpage'] : 0,
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
         );
+
+        if (!$args['itemsperpage']) {
+            $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
+        }
 
         //// Permission check
         if ($args['checkperm'] && !SecurityUtil::checkPermission('clip:list:', "{$args['tid']}::", ACCESS_READ)) {
@@ -100,11 +110,8 @@ class Clip_Api_User extends Zikula_Api
                 $orderby = 'cr_date';
             }
         } else {
-            $orderby = $args['orderby'];
+            $orderby = Clip_Util::createOrderBy($args['orderby']);
         }
-
-        $pubfields = Clip_Util::getPubFields($args['tid']);
-        $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
 
         $args['queryalias'] = "pub_{$args['tid']}";
 
@@ -171,8 +178,8 @@ class Clip_Api_User extends Zikula_Api
             }
             // check if some plugin specific orderby has to be done
             $orderby = Clip_Util::handlePluginOrderBy($orderby, $pubfields, $args['queryalias'].'.');
-            // final orderby processing to convert column to aliases
-            $orderby = $tableObj->processOrderBy($args['queryalias'], $orderby, true);
+            // map the orderby to the pubtype
+            $pubtype->mapValue('orderby', $orderby);
             // add the orderby to the query
             foreach (explode(', ', $orderby) as $order) {
                 $query->orderBy($order);

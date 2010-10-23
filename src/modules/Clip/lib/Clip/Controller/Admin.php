@@ -104,10 +104,14 @@ class Clip_Controller_Admin extends Zikula_Controller
     {
         //// Parameters
         $args = array(
-            'tid'          => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
-            'startnum'     => isset($args['startnum']) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum'),
-            'itemsperpage' => isset($args['itemsperpage']) ? (int)$args['itemsperpage'] : (int)FormUtil::getPassedValue('itemsperpage'),
-            'orderby'      => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby')
+            'tid'           => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
+            'startnum'      => isset($args['startnum']) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum'),
+            'itemsperpage'  => isset($args['itemsperpage']) ? (int)$args['itemsperpage'] : (int)FormUtil::getPassedValue('itemsperpage'),
+            'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
+            'handleplugins' => true,  // API default
+            'loadworkflow'  => true,  // API default
+            'checkperm'     => false, // API default
+            'countmode'     => 'both' // API default
         );
 
         //// Validation
@@ -130,65 +134,16 @@ class Clip_Controller_Admin extends Zikula_Controller
             $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
         }
 
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
-
-        $pubtype = Clip_Util::getPubType($args['tid']);
-        $pubtype->mapValue('titlefield', Clip_Util::getTitleField($args['tid']));
-
-        // set the order
-        if (empty($args['orderby'])) {
-            if (!empty($pubtype['sortfield1'])) {
-                if ($pubtype['sortdesc1'] == 1) {
-                    $args['orderby'] = $pubtype['sortfield1'].':DESC ';
-                } else {
-                    $args['orderby'] = $pubtype['sortfield1'].':ASC ';
-                }
-
-                if (!empty($pubtype['sortfield2'])) {
-                    if ($pubtype['sortdesc2'] == 1) {
-                        $args['orderby'] .= ', '.$pubtype['sortfield2'].':DESC ';
-                    } else {
-                        $args['orderby'] .= ', '.$pubtype['sortfield2'].':ASC ';
-                    }
-                }
-
-                if (!empty($pubtype['sortfield3'])) {
-                    if ($pubtype['sortdesc3'] == 1) {
-                        $args['orderby'] .= ', '.$pubtype['sortfield3'].':DESC ';
-                    } else {
-                        $args['orderby'] .= ', '.$pubtype['sortfield3'].':ASC ';
-                    }
-                }
-            } else {
-                $args['orderby'] = 'core_pid';
-            }
-        }
-        $pubtype->mapValue('orderby', $args['orderby']);
-
-        // replace any occurence of the core_title alias with the field name
-        if (strpos($args['orderby'], 'core_title') !== false) {
-            $args['orderby'] = str_replace('core_title', $pubtype->titlefield, $args['orderby']);
-        }
-        $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);
+        System::queryStringSetVar('filter', 'core_online:eq:1');
 
         //// Execution
-        $publist = $tableObj->selectCollection('core_indepot = 0', $args['orderby'], $args['startnum']-1, $args['itemsperpage']);
-
-        if ($publist !== false) {
-            $pubcount = (int)$tableObj->selectCount('core_indepot = 0');
-            // add the workflow information for each publication
-            for ($i = 0; $i < count($publist); $i++) {
-                $publist[$i]->pubPostProcess(array('loadworkflow' => true));
-            }
-        } else {
-            $publist  = array();
-            $pubcount = 0;
-        }
+        // uses the API to get the list of publications
+        $result = ModUtil::apiFunc('Clip', 'user', 'getall', $args);
 
         //// Output
         $this->view->assign('pubtype', $pubtype)
-                   ->assign('publist', $publist)
-                   ->assign('pager',   array('numitems'     => $pubcount,
+                   ->assign('publist', $result['publist'])
+                   ->assign('pager',   array('numitems'     => $result['pubcount'],
                                              'itemsperpage' => $args['itemsperpage']));
 
         return $this->view->fetch('clip_admin_publist.tpl');

@@ -75,8 +75,6 @@ class Clip_Controller_User extends Zikula_Controller
             $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
         }
 
-        $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);
-
         if (empty($args['template'])) {
             // template comes from pubtype
             $args['templateid'] = $pubtype['outputset'];
@@ -116,14 +114,6 @@ class Clip_Controller_User extends Zikula_Controller
         if ($cachetid && $this->view->is_cached($args['template'], $cacheid)) {
             return $this->view->fetch($args['template'], $cacheid);
         }
-
-        //// Misc values
-        $pubfields = Clip_Util::getPubFields($args['tid'], 'lineno');
-        if (empty($pubfields)) {
-            LogUtil::registerError($this->__('Error! No publication fields found.'));
-        }
-
-        $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
 
         //// API call
         // uses the API to get the list of publications

@@ -523,17 +523,36 @@ class Clip_Util
      */
     public static function getPubType($tid = -1)
     {
-        static $pubtype_arr;
+        static $pubtypes;
 
-        if (!isset($pubtype_arr)) {
-            $pubtype_arr = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
+        if (!isset($pubtypes)) {
+            $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
         }
 
         if ($tid == -1) {
-            return $pubtype_arr;
+            return $pubtypes;
         }
 
-        return isset($pubtype_arr[(int)$tid]) ? $pubtype_arr[(int)$tid] : false;
+        $keys = array_keys($pubtypes->toArray());
+        foreach ($keys as $key) {
+            $pubtype = self::getPubTypeSub($pubtypes[$key], $tid);
+            if ($pubtype != null) {
+                return $pubtype;
+            }
+        }
+
+        $null = null;
+        return $null;
+    }
+
+    private static function getPubTypeSub(&$pubtype, $tid)
+    {
+        if ($pubtype['tid'] == $tid) {
+            return $pubtype;
+        }
+
+        $null = null;
+        return $null;
     }
 
     /**

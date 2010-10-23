@@ -29,7 +29,7 @@
 function smarty_modifier_clip_orderby($orderby, $field, $return='param')
 {
     if (stripos($orderby, $field) !== false) {
-        $order = (stripos($orderby, "$field:desc") === false) ? 'desc' : 'asc';
+        $order = (stripos($orderby, "$field desc") === false) ? 'desc' : 'asc';
     } else {
         $order = 'asc';
     }
