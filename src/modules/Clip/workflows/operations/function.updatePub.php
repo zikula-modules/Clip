@@ -60,15 +60,13 @@ function Clip_operation_updatePub(&$pub, &$params)
 
         if ($rev->isValid()) {
             $rev->save();
+            $rev->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
             $result = true;
 
-            $rev['__WORKFLOW__']['obj_id'] = $rev['id'];
-            unset($rev['__WORKFLOW__']['id']);
-
             // register the new workflow, return false if failure
-            $workflow = new Zikula_Workflow($rev['__WORKFLOW__']['schemaname'], 'Clip');
+            $obj = new Zikula_Workflow($rev['__WORKFLOW__']['schemaname'], 'Clip');
 
-            if (!$workflow->registerWorkflow($rev, $params['nextstate'])) {
+            if (!$obj->registerWorkflow($rev, $params['nextstate'])) {
                 $result = false;
 
                 // delete the previously inserted record

@@ -288,12 +288,13 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
         $pubdata['core_author']   = UserUtil::getVar('uid');
         $pubdata['core_language'] = '';
 
-        $pubdata->pubPostProcess(array('loadworkflow' => true));
+        $pubdata->pubPostProcess(array('handleplugins' => false, 'loadworkflow' => true));
         $this->pub = $pubdata;
     }
 
     private function pubAssign(&$pubdata)
     {
+        $pubdata->pubPostProcess(array('handleplugins' => false, 'loadworkflow' => true));
         $this->pub = $pubdata;
     }
 
