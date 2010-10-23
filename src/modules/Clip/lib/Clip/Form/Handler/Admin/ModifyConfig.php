@@ -14,6 +14,8 @@
  */
 class Clip_Form_Handler_Admin_ModifyConfig extends Form_Handler
 {
+    private $siteroot;
+
     /**
      * Initialize function
      */
@@ -22,11 +24,11 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Form_Handler
         $modvars = ModUtil::getVar('Clip');
 
         // upload dir check
-        $siteroot = System::serverGetVar('DOCUMENT_ROOT');
-        if (substr($siteroot, -1) == DIRECTORY_SEPARATOR) {
-            $siteroot = substr($siteroot, 0, -1);
+        $this->siteroot = System::serverGetVar('DOCUMENT_ROOT');
+        if (substr($this->siteroot, -1) == DIRECTORY_SEPARATOR) {
+            $this->siteroot = substr($this->siteroot, 0, -1);
         }
-        $siteroot .= System::getBaseUri().DIRECTORY_SEPARATOR;
+        $this->siteroot .= System::getBaseUri().DIRECTORY_SEPARATOR;
 
         // fills the directory state
         $updirstatus = 0;// doesn't exists
@@ -40,7 +42,7 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Form_Handler
             }
         }
 
-        $view->assign('siteroot', DataUtil::formatForDisplay($siteroot))
+        $view->assign('siteroot', DataUtil::formatForDisplay($this->siteroot))
              ->assign('updirstatus', $updirstatus)
              ->assign($modvars);
 
@@ -61,9 +63,8 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Form_Handler
             case 'update':
                 // upload path
                 // remove the siteroot if was included
-                $siteroot = substr(System::serverGetVar('DOCUMENT_ROOT'), 0, -1).System::getBaseUri().'/';
-                $data['uploadpath'] = str_replace($siteroot, '', $data['uploadpath']);
-                if (StringUtil::right($data['uploadpath'], 1) == '/') {
+                $data['uploadpath'] = str_replace($this->siteroot, '', $data['uploadpath']);
+                if (StringUtil::right($data['uploadpath'], 1) == DIRECTORY_SEPARATOR) {
                     $data['uploadpath'] = StringUtil::left($data['uploadpath'], strlen($data['uploadpath']) - 1);
                 }
                 ModUtil::setVar('Clip', 'uploadpath', $data['uploadpath']);
@@ -71,7 +72,8 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Form_Handler
                 // development mode
                 ModUtil::setVar('Clip', 'devmode', $data['devmode']);
 
-                // FIXME add itemsperpage for admin lists
+                // max items per page
+                ModUtil::setVar('Clip', 'maxperpage', $data['maxperpage']);
 
                 // let any other modules know that the modules configuration has been updated
                 ModUtil::callHooks('module', 'updateconfig', 'Clip', array('module' => 'Clip'));

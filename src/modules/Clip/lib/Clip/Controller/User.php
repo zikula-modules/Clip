@@ -63,13 +63,17 @@ class Clip_Controller_User extends Zikula_Controller
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : FormUtil::getPassedValue('startnum'),
-            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] > 0) ? (int)$args['itemsperpage'] : $pubtype['itemsperpage'],
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : $pubtype['itemsperpage'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
             'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
             'checkperm'     => false, // API default
             'countmode'     => 'both' // API default
         );
+
+        if (!$args['itemsperpage']) {
+            $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
+        }
 
         $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);
 

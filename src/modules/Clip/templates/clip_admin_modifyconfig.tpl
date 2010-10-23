@@ -37,6 +37,13 @@
                 </span>
             </div>
             <div class="z-formrow">
+                {formlabel for='maxperpage' __text='Max. items per page'}
+                {formintinput id='maxperpage' maxLength=4 minValue=0 maxValue=9999}
+                <span class="z-formnote">
+                    {gt text='Maximum number of items to display when a pubtype does not have a limit.'}
+                </span>
+            </div>
+            <div class="z-formrow">
                 {formlabel for='devmode' __text='Development mode'}
                 {formcheckbox id='devmode'}
                 <span class="z-formnote z-informationmsg">

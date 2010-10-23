@@ -126,6 +126,10 @@ class Clip_Controller_Admin extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
         }
 
+        if (!$args['itemsperpage']) {
+            $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
+        }
+
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
         $pubtype = Clip_Util::getPubType($args['tid']);
