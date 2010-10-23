@@ -174,7 +174,7 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
             // if the item moved to the depot or was deleted
             $urltid = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
             // check if the user comes of the display screen or not
-            $goto = (strpos($this->referer, $this->itemurl) === 0) ? $urltid : $this->referer;
+            $goto = (strpos($this->referer, $this->itemurl) === 0) ? $this->referer : $urltid;
 
         } elseif (isset($ops['createPub']) && $ops['createPub']) {
             // the publication was created
