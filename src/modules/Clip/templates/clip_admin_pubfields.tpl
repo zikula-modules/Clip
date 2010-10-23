@@ -88,10 +88,6 @@
         </fieldset>
     </div>
 
-    {if isset($field)}
-    <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
-    {/if}
-
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
     <div>
         {formvalidationsummary}
@@ -100,6 +96,9 @@
                 <legend>{gt text='Edit publication field'}</legend>
             {else}
                 <legend>{gt text='Add a publication field'}</legend>
+            {/if}
+            {if isset($field)}
+            <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
             {/if}
             <div class="z-formrow">
                 {formlabel for='name' text='Name' mandatorysym=true}
