@@ -39,7 +39,9 @@ table.z-admintable {
 }
 table.z-admintable thead tr th {
   background-color: #CFCFCF;
+  border-width: 0px;
   font-size: 11px;
+  padding: 7px 7px 8px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
