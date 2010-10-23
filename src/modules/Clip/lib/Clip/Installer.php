@@ -104,6 +104,7 @@ class Clip_Installer extends Zikula_Installer
 
         $modvars = array(
             'uploadpath' => $tmpdir,
+            'maxperpage' => 100,
             'devmode'    => true
         );
         $this->setVars($modvars);
@@ -125,6 +126,9 @@ class Clip_Installer extends Zikula_Installer
                 self::renameClipTables();
                 break;
             case '0.4.4':
+                // set the new limit for items per page
+                $this->setVar('maxperpage', 100);
+                // table changes
                 $tables = DBUtil::getTables();
                 // further upgrade handling
                 // * map the field classnames to IDs
