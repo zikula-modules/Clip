@@ -130,6 +130,9 @@ class Clip_Installer extends Zikula_Installer
                 $this->setVar('maxperpage', 100);
                 // table changes
                 $tables = DBUtil::getTables();
+                // rename the category registries
+                $sql = "UPDATE {$tables['categories_registry']} SET crg_modname = 'Clip', crg_table  = REPLACE(crg_table , 'pagemaster_', 'clip_') WHERE crg_modname = 'PageMaster' OR crg_modname = 'pagemaster'";
+                DBUtil::executeSQL($sql);
                 // further upgrade handling
                 // * map the field classnames to IDs
                 // * rename the filename/formname columns
