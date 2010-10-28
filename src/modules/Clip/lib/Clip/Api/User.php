@@ -131,15 +131,13 @@ class Clip_Api_User extends Zikula_Api
         }
 
         // filter instance
-        $filter['obj'] = new FilterUtil('Clip', 'Clip_Model_Pubdata'.$args['tid'], $filter['args']);
+        $filter['obj'] = new FilterUtil('Clip', $tableObj, $filter['args']);
 
         if (!empty($args['filter'])) {
             $filter['obj']->setFilter($args['filter']);
         } elseif (!empty($pubtype['defaultfilter'])) {
             $filter['obj']->setFilter($pubtype['defaultfilter']);
         }
-
-        $filter['result'] = $filter['obj']->GetSQL();
 
         //// Query setup
         $query = $tableObj->createQuery($args['queryalias']);
@@ -160,9 +158,8 @@ class Clip_Api_User extends Zikula_Api
         }
         // TODO Implement author view condition
 
-        if (!empty($filter['result'])) {
-            $query->andWhere($filter['result']['where']);
-        }
+        // enrich the query with the Filterutil stuff
+        $filter['obj']->enrichQuery($query);
 
         //// Count execution
         if ($args['countmode'] != 'no') {
@@ -180,6 +177,7 @@ class Clip_Api_User extends Zikula_Api
             $orderby = Clip_Util::handlePluginOrderBy($orderby, $pubfields, $args['queryalias'].'.');
             // map the orderby to the pubtype
             $pubtype->mapValue('orderby', $orderby);
+
             // add the orderby to the query
             foreach (explode(', ', $orderby) as $order) {
                 $query->orderBy($order);
