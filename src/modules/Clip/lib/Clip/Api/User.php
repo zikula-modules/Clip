@@ -142,6 +142,21 @@ class Clip_Api_User extends Zikula_Api
         //// Query setup
         $query = $tableObj->createQuery($args['queryalias']);
 
+        //// Relations
+        // FIXME control this by relation config
+        // filters will be limited to the loaded relations
+        $args['checkrefs'] = true;
+        $args['rel.onlyown'] = true;
+        $args['rel.checkperm'] = false;
+        $args['rel.handleplugins'] = false;
+        $args['rel.loadworkflow'] = false;
+
+        // adds the relations data
+        $record = $tableObj->getRecordInstance();
+        foreach ($record->getRelations($args['rel.onlyown']) as $ralias => $rinfo) {
+            $query->leftJoin("{$args['queryalias']}.{$ralias}");
+        }
+
         // add the conditions to the query
         $uid = UserUtil::getVar('uid');
 
