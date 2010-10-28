@@ -27,4 +27,11 @@ class Clip_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
     {
         return __FILE__;
     }
+
+    static function getPluginOutput($field)
+    {
+        $body = '{$pubdata.'.$field['name'].'|yesno}';
+
+        return array('body' => $body);
+    }
 }
