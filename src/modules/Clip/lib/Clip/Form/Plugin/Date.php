@@ -31,9 +31,12 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
         return __FILE__;
     }
 
-    static function getPluginOutput($field)
+    function getPluginOutput($field)
     {
-        $body = '{$pubdata.'.$field['name'].'|dateformat:\'datetimelong\'}';
+        $this->parseConfig($field['typedata']);
+        $format = $this->config['includeTime'] ? 'datetimelong' : 'datelong';
+
+        $body = '{$pubdata.'.$field['name']."|dateformat:'$format'}";
 
         return array('body' => $body);
     }
