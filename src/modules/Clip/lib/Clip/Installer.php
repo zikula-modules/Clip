@@ -128,6 +128,11 @@ class Clip_Installer extends Zikula_Installer
             case '0.4.4':
                 // set the new limit for items per page
                 $this->setVar('maxperpage', 100);
+                // updates system default shortURL module if it was PM
+                $defmod = System::getVar('shorturlsdefaultmodule');
+                if ($defmod == 'PageMaster' || $defmod == 'pagemaster') {
+                    System::setVar('shorturlsdefaultmodule', 'Clip');
+                }
                 // table changes
                 $tables = DBUtil::getTables();
                 // rename the category registries
