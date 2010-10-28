@@ -523,11 +523,11 @@ var FacebookList = Class.create(TextboxList,
             if (!Object.isUndefined(this.options.get('fetchFile')) && input.value.length >= this.options.get('minchars')) {
               var params = this.options.get('parameters');
               params.keyword = input.value;
-              new Ajax.Request(this.options.get('fetchFile'), {
+              new Zikula.Ajax.Request(this.options.get('fetchFile'), {
                 method: this.options.get('fetchMethod'),
                 parameters: params,
-                onSuccess: function(transport) {
-                  var data = transport.responseText.evalJSON(true).data;
+                onComplete: function(response) {
+                  var data = response.getData().data;
                   data.each(function(t){this.autoFeed(t)}.bind(this));
                   this.autoShow(input.value);
                 }.bind(this)
