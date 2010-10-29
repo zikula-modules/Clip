@@ -13,15 +13,12 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
 {
     public $pluginTitle;
     public $columnDef = 'T';
-    public $filterClass = 'date';
+    public $filterClass = 'Date';
 
-    public $config;
+    public $config = array();
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('Date');
     }
@@ -31,6 +28,21 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
         return __FILE__;
     }
 
+    /**
+     * Form Framework methods.
+     */
+    function readParameters($view, &$params)
+    {
+        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
+
+        $params['includeTime'] = isset($params['includeTime']) ? $params['includeTime'] : $this->config['includeTime'];
+
+        parent::readParameters($view, $params);
+    }
+
+    /**
+     * Clip processing methods.
+     */
     function getPluginOutput($field)
     {
         $this->parseConfig($field['typedata']);
@@ -41,6 +53,9 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
         return array('body' => $body);
     }
 
+    /**
+     * Clip admin methods.
+     */
     static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
@@ -58,11 +73,8 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
 
     function getTypeHtml($field, $view)
     {
-        $checked = '';
-        if (isset($view->_tpl_vars['typedata'])) {
-            $this->parseConfig($view->_tpl_vars['typedata']);
-            $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
-        }
+        $this->parseConfig($view->_tpl_vars['field']['typedata']);
+        $this->config['includeTime'] ? 'checked="checked"' : '';
 
         $html = '<div class="z-formrow">
                      <label for="clipplugin_usedatetime">'.$this->__('Include time').':</label>
@@ -72,21 +84,12 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
         return $html;
     }
 
-    function create($view, &$params)
-    {
-        $this->parseConfig($view->eventHandler->getPubfieldData($this->id, 'typedata'));
-        $params['includeTime'] = $this->config['includeTime'];
-
-        parent::create($view, $params);
-    }
-
     /**
      * Parse configuration
      */
     function parseConfig($typedata='', $args=array())
     {
-        $this->config = array();
-
+        // config string: "(bool)includeTime"
         $this->config['includeTime'] = (bool)$typedata;
     }
 }
