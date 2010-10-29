@@ -16,9 +16,6 @@ class Clip_Form_Plugin_Url extends Form_Plugin_TextInput
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('URL');
     }
@@ -28,23 +25,15 @@ class Clip_Form_Plugin_Url extends Form_Plugin_TextInput
         return __FILE__;
     }
 
-    function create($view, &$params)
+    /**
+     * Form Framework methods.
+     */
+    function readParameters($view, &$params)
     {
+        parent::readParameters($view, $params);
+
         $this->maxLength = 2000;
-
-        parent::create($view, $params);
-
         $this->cssClass .= ' url';
-    }
-
-    function postRead($data, $field)
-    {
-        // if there's an URL, process it
-        if (!empty($data)) {
-            $data = $this->parseURL($data);
-        }
-
-        return $data;
     }
 
     /**
@@ -61,11 +50,24 @@ class Clip_Form_Plugin_Url extends Form_Plugin_TextInput
 
         if (!empty($this->text)) {
             if (!System::varValidate($this->text, 'url')) {
-                if (!$this->parseURL($this->text)) {
+                if ($this->text == $this->parseURL($this->text)) {
                     $this->setError(__('Error! Invalid URL.'));
                 }
             }
         }
+    }
+
+    /**
+     * Clip processing methods.
+     */
+    function postRead($data, $field)
+    {
+        // if there's an URL, process it
+        if (!empty($data)) {
+            $data = $this->parseURL($data);
+        }
+
+        return $data;
     }
 
     /**
