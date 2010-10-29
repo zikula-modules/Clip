@@ -15,13 +15,10 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
     public $columnDef   = 'C(512)';
     public $filterClass = 'ClipMultiList';
 
-    public $config;
+    public $config = array();
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('MultiCheckbox List');
     }
@@ -31,6 +28,35 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         return __FILE__;
     }
 
+    /**
+     * Form Framework methods.
+     */
+    function readParameters($view, &$params)
+    {
+        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
+
+        $params['category'] = isset($params['category']) ? $params['category'] : $this->config['cat'];
+        $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config['edit'];
+        $params['includeEmptyElement'] = false;
+
+        parent::readParameters($view, $params);
+
+        $this->saveAsString = 1;
+    }
+
+    function load($view, &$params)
+    {
+        parent::load($view, $params);
+
+        if ($this->mandatory) {
+            // CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+            array_shift($this->items);
+        }
+    }
+
+    /**
+     * Clip processing methods.
+     */
     static function postRead($data, $field)
     {
         // this plugin return an array by default
@@ -66,38 +92,21 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         return $cat_arr;
     }
 
-    function render($view)
-    {
-        return parent::render($view);
-    }
-
-    function create($view, &$params)
-    {
-        $this->saveAsString = 1;
-
-        parent::create($view, $params);
-    }
-
-    function load($view, &$params)
-    {
-        if ($view->eventHandler->getPubfieldData($this->id)) {
-            $this->parseConfig($view->eventHandler->getPubfieldData($this->id, 'typedata'));
-            $params['category'] = $this->config['category'];
-        }
-
-        parent::load($view, $params);
-
-        if ($this->mandatory) {
-            array_shift($this->items); //CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
-        }
-    }
-
+    /**
+     * Clip admin methods.
+     */
     static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
                                  $(\'typedata\').value = $F(\'clipplugin_checklist\') ;
                                  closeTypeData();
+                                 $(\'typedata\').value += \'|\';
+                                 if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
+                                     $(\'typedata\').value += 1;
+                                 } else {
+                                     $(\'typedata\').value += 0;
+                                 }
                              }';
 
         return $saveTypeDataFunc;
@@ -110,6 +119,7 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 
+        // category selector
         $html = ' <div class="z-formrow">
                       <label for="clipplugin_checklist">'.$this->__('Category').':</label>
                       <select id="clipplugin_checklist" name="clipplugin_checklist">';
@@ -127,6 +137,13 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         $html .= '   </select>
                   </div>';
 
+        // edit link checkbox
+        $checked = $this->config['edit'] ? 'checked="checked"' : '';
+        $html .= '<div class="z-formrow">
+                      <label for="clipplugin_editlink">'.$this->__('Edit link').':</label>
+                      <input type="checkbox" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
+                  </div>';
+
         return $html;
     }
 
@@ -135,8 +152,12 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
      */
     function parseConfig($typedata='', $args=array())
     {
-        $this->config = array();
+        // config string: "(int)categoryID|(int)editLink"
+        $typedata = explode('|', $typedata);
 
-        $this->config['category'] = (int)$typedata;
+        $this->config = array(
+            'cat'  => $typedata[0] ? (int)$typedata[0] : 32,
+            'edit' => isset($typedata[1]) ? (bool)$typedata[1] : false
+        );
     }
 }
