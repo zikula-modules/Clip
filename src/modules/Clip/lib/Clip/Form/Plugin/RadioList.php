@@ -15,13 +15,10 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
     public $columnDef   = 'I4';
     public $filterClass = 'ClipList';
 
-    public $config;
+    public $config = array();
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('Radio list');
     }
@@ -31,12 +28,15 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
         return __FILE__;
     }
 
+    /**
+     * Form Framework methods.
+     */
     public function pluginRegister(&$params, &$view)
     {
         $this->setDomain($view->getDomain());
         $this->setup();
 
-        // Copy parameters to member variables and attribute set
+        // copy parameters to member variables and attribute set
         $this->readParameters($view, $params);
         $this->create($view, $params);
         $this->load($view, $params);
@@ -46,41 +46,25 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
         return $this->render($view, $params);
     }
 
-    static function getPluginOutput($field)
+    function readParameters($view, &$params)
     {
-        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
-                '        <div class="z-formrow">'."\n".
-                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
-                '            <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
-                '            <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
-                '        </div>'."\n".
-                '    {/if}';
+        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
-        return array('full' => $full);
+        $params['category'] = isset($params['category']) ? $params['category'] : $this->config['cat'];
+        $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config['edit'];
+        $params['includeEmptyElement'] = false;
+
+        parent::readParameters($view, $params);
     }
 
-    static function postRead($data, $field)
+    function load($view, &$params)
     {
-        // this plugin return an array
-        $cat = array();
+        parent::load($view, $params);
 
-        // if there's a value extract the category
-        if (!empty($data) && is_numeric($data)) {
-            $cat = CategoryUtil::getCategoryByID($data);
-
-            if (empty($cat)) {
-                return $cat;
-            }
-
-            $lang = ZLanguage::getLanguageCode();
-
-            // compatible mode to pagesetter
-            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
-            $cat['value']     = $cat['name'];
-            $cat['title']     = $cat['name'];
+        if ($this->mandatory) {
+            // CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+            array_shift($this->items);
         }
-
-        return $cat;
     }
 
     function render(&$view, $params)
@@ -118,24 +102,49 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
         return $output;
     }
 
-    function load($view, &$params)
+    /**
+     * Clip processing methods.
+     */
+    static function postRead($data, $field)
     {
-        $typedata = $view->eventHandler->getPubfieldData($this->id, 'typedata');
+        // this plugin return an array
+        $cat = array();
 
-        if (!empty($typedata)) {
-            $this->parseConfig($typedata);
+        // if there's a value extract the category
+        if (!empty($data) && is_numeric($data)) {
+            $cat = CategoryUtil::getCategoryByID($data);
 
-            $params['category'] = $this->config[0];
-        } else {
-            // TODO Extract the List property category root?
-            $params['category'] = $this->config[0] = 30; // Global category
+            if (empty($cat)) {
+                return $cat;
+            }
+
+            $lang = ZLanguage::getLanguageCode();
+
+            // compatible mode to pagesetter
+            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+            $cat['value']     = $cat['name'];
+            $cat['title']     = $cat['name'];
         }
 
-        parent::load($view, $params);
-
-        $this->includeEmptyElement = false;
+        return $cat;
     }
 
+    static function getPluginOutput($field)
+    {
+        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
+                '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '            <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
+                '            <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '        </div>'."\n".
+                '    {/if}';
+
+        return array('full' => $full);
+    }
+
+    /**
+     * Clip admin methods.
+     */
     static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
@@ -145,6 +154,12 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
                                  } else {
                                      $(\'typedata\').value = 30;
                                  }
+                                 $(\'typedata\').value += \'|\';
+                                 if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
+                                     $(\'typedata\').value += 1;
+                                 } else {
+                                     $(\'typedata\').value += 0;
+                                 }
                                  closeTypeData();
                              }';
 
@@ -153,11 +168,11 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
 
     function getTypeHtml($field, $view)
     {
-        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : 30;
-        $this->parseConfig($typedata);
+        $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 
+        // category selector
         $html = ' <div class="z-formrow">
                       <label for="clipplugin_categorylist">'.$this->__('Category').':</label>
                       <select id="clipplugin_categorylist" name="clipplugin_categorylist">';
@@ -167,12 +182,19 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
         foreach ($registered as $property => $catID) {
             $cat = CategoryUtil::getCategoryByID($catID);
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
-            $selectedText     = ($this->config[0] == $catID) ? ' selected="selected"' : '';
+            $selectedText     = ($this->config['cat'] == $catID) ? ' selected="selected"' : '';
 
             $html .= "    <option{$selectedText} value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
 
         $html .= '    </select>
+                  </div>';
+
+        // edit link checkbox
+        $checked = $this->config['edit'] ? 'checked="checked"' : '';
+        $html .= '<div class="z-formrow">
+                      <label for="clipplugin_editlink">'.$this->__('Edit link').':</label>
+                      <input type="checkbox" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
                   </div>';
 
         return $html;
@@ -183,11 +205,12 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
      */
     function parseConfig($typedata='')
     {
-        // config string: "(int)categoryID"
-        $this->config = array();
+        // config string: "(int)categoryID|(int)editLink"
+        $typedata = explode('|', $typedata);
 
         $this->config = array(
-            0 => $typedata
+            'cat'  => $typedata[0] ? (int)$typedata[0] : 32,
+            'edit' => isset($typedata[1]) ? (bool)$typedata[1] : false
         );
     }
 }
