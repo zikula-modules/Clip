@@ -18,9 +18,6 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('File Upload');
     }
@@ -30,13 +27,9 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
         return __FILE__;
     }
 
-    function render($view)
-    {
-        $input_html = parent::render($view);
-
-        return $input_html.' '.$this->upl_arr['orig_name'];
-    }
-
+    /**
+     * Form Framework methods.
+     */
     function load($view, &$params)
     {
         $this->loadValue($view, $view->get_template_vars());
@@ -49,6 +42,16 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
         }
     }
 
+    function render($view)
+    {
+        $input_html = parent::render($view);
+
+        return $input_html.' '.$this->upl_arr['orig_name'];
+    }
+
+    /**
+     * Clip processing methods.
+     */
     function postRead($data, $field)
     {
         $this->upl_arr = array();

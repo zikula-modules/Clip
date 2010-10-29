@@ -16,9 +16,6 @@ class Clip_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('Checkbox');
     }
@@ -28,6 +25,9 @@ class Clip_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
         return __FILE__;
     }
 
+    /**
+     * Form Framework methods.
+     */
     static function getPluginOutput($field)
     {
         $body = '{$pubdata.'.$field['name'].'|yesno}';

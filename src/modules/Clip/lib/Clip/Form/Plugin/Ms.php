@@ -16,9 +16,6 @@ class Clip_Form_Plugin_Ms extends Form_Plugin_TextInput
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('Mediashare');
     }
@@ -28,6 +25,9 @@ class Clip_Form_Plugin_Ms extends Form_Plugin_TextInput
         return __FILE__;
     }
 
+    /**
+     * Clip processing methods.
+     */
     static function postRead($data, $field)
     {
         // this plugin return an array

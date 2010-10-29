@@ -16,9 +16,6 @@ class Clip_Form_Plugin_Email extends Form_Plugin_EmailInput
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('Email');
     }

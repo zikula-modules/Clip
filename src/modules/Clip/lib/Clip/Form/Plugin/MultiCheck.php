@@ -114,8 +114,7 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     function getTypeHtml($field, $view)
     {
-        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : 30;
-        $this->parseConfig($typedata);
+        $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 

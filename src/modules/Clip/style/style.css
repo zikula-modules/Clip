@@ -106,8 +106,10 @@ pre.clip-showcode {
   z-index: 9999;
   left: 50%;
   margin-left: -275px;
+
   background-color: #FFFFFF;
-  padding:10px;
+  padding: 10px;
+  text-align: left;
 }
 
 /* relations selectors */

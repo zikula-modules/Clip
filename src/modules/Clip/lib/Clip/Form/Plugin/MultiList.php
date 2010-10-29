@@ -146,8 +146,7 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
     function getTypeHtml($field, $view)
     {
         // parse the configuration
-        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : '';
-        $this->parseConfig($typedata);
+        $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 

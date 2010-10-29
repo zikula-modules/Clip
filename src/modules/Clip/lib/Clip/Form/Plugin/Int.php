@@ -61,8 +61,7 @@ class Clip_Form_Plugin_Int extends Form_Plugin_IntInput
 
     function getTypeHtml($field, $view)
     {
-        $typedata = isset($view->_tpl_vars['field']['typedata']) ? $view->_tpl_vars['field']['typedata'] : '|';
-        $this->parseConfig($typedata);
+        $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
         $html = ' <div class="z-formrow">
                       <label for="clipplugin_minvalue">'.$this->__('Min value').':</label>
