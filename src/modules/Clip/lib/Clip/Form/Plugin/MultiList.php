@@ -15,13 +15,10 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
     public $columnDef   = 'C(512)';
     public $filterClass = 'ClipMultiList';
 
-    public $config;
+    public $config = array();
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('Multiple Selector');
     }
@@ -31,24 +28,36 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         return __FILE__;
     }
 
-    static function getPluginOutput($field)
+    /**
+     * Form Framework methods.
+     */
+    function readParameters($view, &$params)
     {
-        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
-                '        <div class="z-formrow">'."\n".
-                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
-                '            <span class="z-formnote">'."\n".
-                '                <ul>'."\n".
-                '                    {foreach from=$pubdata.'.$field['name'].' item=\'item\'}'."\n".
-                '                        <li>{$item.fullTitle}</li>'."\n".
-                '                    {/foreach}'."\n".
-                '                </ul>'."\n".
-                '            <span>'."\n".
-                '        </div>'."\n".
-                '    {/if}';
+        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
-        return array('full' => $full);
+        $params['category'] = isset($params['category']) ? $params['category'] : $this->config[0];
+        $params['size']     = isset($params['size']) ? $params['size'] : $this->config[1];
+        $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config[2];
+
+        parent::readParameters($view, $params);
+
+        $this->saveAsString  = 1;
+        $this->selectionMode = 'multiple';
     }
 
+    function load($view, &$params)
+    {
+        parent::load($view, $params);
+
+        if ($this->mandatory) {
+            // CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+            array_shift($this->items);
+        }
+    }
+
+    /**
+     * Clip processing methods.
+     */
     static function postRead($data, $field)
     {
         // this plugin return an array by default
@@ -88,45 +97,27 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         return $cat_arr;
     }
 
-    function render($view)
+    static function getPluginOutput($field)
     {
-        // extract the configuration {category, size}
-        if ($view->eventHandler->getPubfieldData($this->inputName)) {
-            $this->parseConfig($view->eventHandler->getPubfieldData($this->inputName, 'typedata'));
-        } else {
-            $this->parseConfig();
-        }
+        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
+                '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '            <span class="z-formnote">'."\n".
+                '                <ul>'."\n".
+                '                    {foreach from=$pubdata.'.$field['name'].' item=\'item\'}'."\n".
+                '                        <li>{$item.fullTitle}</li>'."\n".
+                '                    {/foreach}'."\n".
+                '                </ul>'."\n".
+                '            <span>'."\n".
+                '        </div>'."\n".
+                '    {/if}';
 
-        if (!empty($this->config[1])) {
-            $this->size = $this->config[1];
-        }
-
-        return parent::render($view);
+        return array('full' => $full);
     }
 
-    function create($view, &$params)
-    {
-        $this->saveAsString  = 1;
-        $this->selectionMode = 'multiple';
-
-        parent::create($view, $params);
-    }
-
-    function load($view, &$params)
-    {
-        if ($view->eventHandler->getPubfieldData($this->id)) {
-            $this->parseConfig($view->eventHandler->getPubfieldData($this->id, 'typedata'));
-            $params['category'] = $this->config[0];
-        }
-
-        parent::load($view, $params);
-
-        if ($this->mandatory) {
-            // CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
-            array_shift($this->items);
-        }
-    }
-
+    /**
+     * Clip admin methods.
+     */
     static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
@@ -138,6 +129,11 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
                                      config.push($F(\'clipplugin_multisize\'));
                                  } else {
                                      config.push(\'~\');
+                                 }
+                                 if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
+                                     config.push(\'1\');
+                                 } else {
+                                     config.push(\'0\');
                                  }
 
                                  $(\'typedata\').value = config.join(\'|\')
@@ -153,13 +149,9 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : '';
         $this->parseConfig($typedata);
 
-        $size = '';
-        if ($this->config[1] > 0) {
-            $size = $this->config[1];
-        }
-
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 
+        // category selector
         $html = '<div class="z-formrow">
                      <label for="clipplugin_categorylist">'.$this->__('Category').':</label>
                      <select id="clipplugin_categorylist" name="clipplugin_categorylist">';
@@ -175,10 +167,19 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         }
 
         $html .= '    </select>
-                  </div>
-                  <div class="z-formrow">
+                  </div>';
+
+        // size input
+        $html .= '<div class="z-formrow">
                       <label for="clipplugin_multisize">'.$this->__('Size').':</label>
-                      <input type="text" id="clipplugin_multisize" name="clipplugin_multisize" size="2" maxlength="2" value="'.$size.'" />
+                      <input type="text" id="clipplugin_multisize" name="clipplugin_multisize" size="2" maxlength="2" value="'.$this->config[1].'" />
+                  </div>';
+
+        // edit link checkbox
+        $checked = $this->config[2] ? 'checked="checked"' : '';
+        $html .= '<div class="z-formrow">
+                      <label for="clipplugin_editlink">'.$this->__('Edit link').':</label>
+                      <input type="checkbox" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
                   </div>';
 
         return $html;
@@ -189,17 +190,19 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
      */
     function parseConfig($typedata='', $args=array())
     {
-        $this->config = explode('|', $typedata);
+        // config string: "(int)categoryID|(int)size"
+        $typedata = explode('|', $typedata);
 
         $this->config = array(
-            0 => !empty($this->config[0]) ? (int)$this->config[0] : 30, // TODO Category Registry?
-            1 => (isset($this->config[1]) && !empty($this->config[1]) && $this->config[1] != '~') ? (int)$this->config[1] : 0
+            0 => !empty($typedata[0]) ? (int)$typedata[0] : 32, // TODO Category Registry?
+            1 => (isset($typedata[1]) && !empty($typedata[1]) && $typedata[1] != '~') ? (int)$typedata[1] : null,
+            2 => isset($typedata[2]) ? (bool)$typedata[2] : false
         );
     }
 
     /**
      * These two methods are others in CategoryCheckboxList
-     * then CategorySelector(original Form classes).
+     * then CategorySelector (original Form classes).
      * To be able to switch form multilsit to checkbox
      * it is important that both act the same way.
      */
@@ -211,7 +214,7 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
     function setSelectedValue($value)
     {
         if (is_string($value)) {
-            $value = split(':', $value);
+            $value = explode(':', $value);
         }
 
         $this->selectedValue = $value;
