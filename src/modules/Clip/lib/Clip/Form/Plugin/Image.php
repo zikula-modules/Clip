@@ -15,13 +15,10 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
     public $columnDef = 'C(512)';
     public $upl_arr = array();
 
-    public $config;
+    public $config = array();
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('Image Upload');
     }
@@ -31,30 +28,14 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
         return __FILE__;
     }
 
-    static function getPluginOutput($field)
+    /**
+     * Form Framework methods.
+     */
+    function readParameters($view, &$params)
     {
-        $full = '    {if $pubdata.'.$field['name'].'.url neq \'\'}'."\n".
-                '        <div class="z-formrow">'."\n".
-                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
-                '            <span class="z-formnote">'."\n".
-                '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
-                '                <img width="250" src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
-              //'                <br />'."\n".
-              //'                <img src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
-                '                <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
-                '            <span>'."\n".
-                '        </div>'."\n".
-                '    {/if}';
+        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
-        return array('full' => $full);
-    }
-
-    function render($view)
-    {
-        $input_html = parent::render($view);
-        $note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
-
-        return $input_html.$note_html;
+        parent::readParameters($view, $params);
     }
 
     function load($view, &$params)
@@ -75,6 +56,17 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
         }
     }
 
+    function render($view)
+    {
+        $input_html = parent::render($view);
+        $note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
+
+        return $input_html.$note_html;
+    }
+
+    /**
+     * Clip processing methods.
+     */
     static function postRead($data, $field)
     {
         // this plugin return an array by default
@@ -166,7 +158,7 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
                 if ($fully > 0) {
                     $fullargs['h'] = $fully;
                 }
-            } 
+            }
 
             $srcFilename =   $PostData['tmp_name'];
             $ext             = strtolower(FileUtil::getExtension($PostData['name']));
@@ -254,6 +246,27 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
         return NULL;
     }
 
+    static function getPluginOutput($field)
+    {
+        $full = '    {if $pubdata.'.$field['name'].'.url neq \'\'}'."\n".
+                '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '            <span class="z-formnote">'."\n".
+                '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
+              //'                <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
+              //'                <br />'."\n".
+                '                <img width="250" src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
+                '                <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '            <span>'."\n".
+                '        </div>'."\n".
+                '    {/if}';
+
+        return array('full' => $full);
+    }
+
+    /**
+     * Clip admin methods.
+     */
     static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
@@ -267,10 +280,9 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
 
     function getTypeHtml($field, $view)
     {
-        if (ModUtil::available('Thumbnail')) {
-            $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : false;
-            $this->parseConfig($typedata);
+        $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
+        if (ModUtil::available('Thumbnail')) {
             // TODO Fieldsets and help text explaining how they work
             $html = '<div class="z-formrow">
                          <label for="clipplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
@@ -312,10 +324,9 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
      */
     function parseConfig($typedata='', $args=array())
     {
-        $this->config = array();
-
-        // $tmpx, $tmpy ,$prex, $prey, $fullx, $fully 
+        // config string: "$tmpx:$tmpy:$prex:$prey:$fullx:$fully"
         $this->config = explode(':', $typedata);
+
         // validate all the values
         $this->config = array(
             0 => (int)$this->config[0],
