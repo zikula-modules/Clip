@@ -15,13 +15,10 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
     public $columnDef   = 'I4';
     public $filterClass = 'ClipList';
 
-    public $config;
+    public $config = array();
 
     function setup()
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-        $this->setDomain($dom);
-
         //! field type name
         $this->pluginTitle = $this->__('List');
     }
@@ -31,19 +28,23 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
         return __FILE__;
     }
 
-    static function getPluginOutput($field)
+    /**
+     * Form Framework methods.
+     */
+    function readParameters($view, &$params)
     {
-        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
-                '        <div class="z-formrow">'."\n".
-                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
-                '            <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
-                '            <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
-                '        </div>'."\n".
-                '    {/if}';
+        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
-        return array('full' => $full);
+        $params['category'] = isset($params['category']) ? $params['category'] : $this->config[0];
+        $params['includeEmptyElement'] = isset($params['includeEmptyElement']) ? $params['includeEmptyElement'] : $this->config[1];
+        $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config[2];
+
+        parent::readParameters($view, $params);
     }
 
+    /**
+     * Clip processing methods.
+     */
     static function postRead($data, $field)
     {
         // this plugin return an array
@@ -68,34 +69,22 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
         return $cat;
     }
 
-    function render($view)
+    static function getPluginOutput($field)
     {
-        $mand = ($this->mandatory == '1') ? ' <span class="z-mandatorysym">*</span>' : '';
+        $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
+                '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '            <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
+                '            <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '        </div>'."\n".
+                '    {/if}';
 
-        return parent::render($view).$mand;
+        return array('full' => $full);
     }
 
-    function load($view, &$params)
-    {
-        $typedata = $view->eventHandler->getPubfieldData($this->id, 'typedata');
-        if (!empty($typedata)) {
-            $this->parseConfig($typedata, (int)$params['mandatory']);
-
-            $params['category'] = $this->config[0];
-
-            if (!isset($params['includeEmptyElement'])) {
-                $this->includeEmptyElement = $this->config[1];
-            } else {
-                $this->includeEmptyElement = $params['includeEmptyElement'];
-            }
-        } else {
-            // TODO Extract the List property category root?
-            $params['category'] = 30; // Global category
-        }
-
-        parent::load($view, $params);
-    }
-
+    /**
+     * Clip admin methods.
+     */
     static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
@@ -111,6 +100,12 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
                                  } else {
                                      $(\'typedata\').value += 0;
                                  }
+                                 $(\'typedata\').value += \',\';
+                                 if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
+                                     $(\'typedata\').value += 1;
+                                 } else {
+                                     $(\'typedata\').value += 0;
+                                 }
                                  closeTypeData();
                              }';
 
@@ -119,9 +114,9 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function getTypeHtml($field, $view)
     {
-        $typedata = isset($view->_tpl_vars['typedata']) ? $view->_tpl_vars['typedata'] : serialize(array(30, true));
-        $this->parseConfig($typedata);
+        $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
+        // category selector
         $registered = CategoryRegistryUtil::getRegisteredModuleCategories('Clip', 'clip_pubtypes');
 
         $html = ' <div class="z-formrow">
@@ -141,10 +136,18 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
         $html .= '    </select>
                   </div>';
 
+        // empty item checkbox
         $checked = $this->config[1] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
                       <label for="clipplugin_categoryempty">'.$this->__('Include an empty item?').'</label>
                       <input type="checkbox" id="clipplugin_categoryempty" name="clipplugin_categoryempty" '.$checked.' />
+                  </div>';
+
+        // edit link checkbox
+        $checked = $this->config[2] ? 'checked="checked"' : '';
+        $html .= '<div class="z-formrow">
+                      <label for="clipplugin_editlink">'.$this->__('Edit link').':</label>
+                      <input type="checkbox" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
                   </div>';
 
         return $html;
@@ -153,15 +156,15 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='', $args=array())
+    function parseConfig($typedata='')
     {
-        // config string: "(int)categoryID, (bool)includeEmpty"
-        $this->config = array();
+        // config string: "(int)categoryID,(bool)includeEmpty,(bool)editLink"
+        $typedata = explode(',', $typedata);
 
-        $this->config = explode(',', $typedata);
         $this->config = array(
-            0 => (int)$this->config[0],
-            1 => isset($this->config[1]) ? (bool)$this->config[1] : (bool)$args
+            0 => !empty($typedata[0]) ? (int)$typedata[0] : 32,
+            1 => isset($typedata[1]) ? (bool)$typedata[1] : false,
+            2 => isset($typedata[2]) ? (bool)$typedata[2] : false
         );
     }
 }
