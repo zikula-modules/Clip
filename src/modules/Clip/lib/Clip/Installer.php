@@ -28,80 +28,24 @@ class Clip_Installer extends Zikula_Installer
 
         foreach ($tables as $table) {
             if (!Doctrine_Core::getTable($table)->createTable()) {
-                foreach ($tables as $innertable) {
-                    if ($innertable == $table) {
+                // delete previously created tables
+                foreach ($tables as $lasttable) {
+                    if ($lasttable == $table) {
                         break;
                     }
-                    Doctrine_Core::getTable($innertable)->dropTable();
+                    Doctrine_Core::getTable($lasttable)->dropTable();
                 }
                 return false;
             }
         }
 
         // build the default category tree
-        $regpath = '/__SYSTEM__/Modules';
+        self::createCategoryTree();
 
-        $lang = ZLanguage::getLanguageCode();
-
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip');
-        if (!$rootcat) {
-            $rootcat = CategoryUtil::getCategoryByPath($regpath);
-
-            $cat = new Categories_DBObject_Category();
-            $cat->setDataField('parent_id', $rootcat['id']);
-            $cat->setDataField('name', 'Clip');
-            $cat->setDataField('display_name', array($lang => $this->__('Clip')));
-            $cat->setDataField('display_desc', array($lang => $this->__('Clip root category')));
-            if (!$cat->validate('admin')) {
-                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'Clip'));
-            }
-            $cat->insert();
-            $cat->update();
-        }
-
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip/lists');
-        if (!$rootcat) {
-            $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip');
-
-            $cat = new Categories_DBObject_Category();
-            $cat->setDataField('parent_id', $rootcat['id']);
-            $cat->setDataField('name', 'lists');
-            //! this is the 'lists' root category name
-            $cat->setDataField('display_name', array($lang => $this->__('lists')));
-            $cat->setDataField('display_desc', array($lang => $this->__('Clip lists for its publications')));
-            if (!$cat->validate('admin')) {
-                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'lists'));
-            }
-            $cat->insert();
-            $cat->update();
-        }
-
-        // create the PM category registry
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip/lists');
-        if ($rootcat) {
-            // create an entry in the categories registry to the Lists property
-            $registry = new Categories_DBObject_Registry();
-            $registry->setDataField('modname', 'Clip');
-            $registry->setDataField('table', 'clip_pubtypes');
-            $registry->setDataField('property', 'Lists');
-            $registry->setDataField('category_id', $rootcat['id']);
-            $registry->insert();
-        } else {
-            LogUtil::registerError($this->__f('Error! Could not create the [%s] Category Registry for Clip.', 'Lists'));
-        }
+        // try to create the upload directory
+        $tmpdir = self::createTempDir();
 
         // modvars
-        // upload dir creation if the temp dir is not outside the root (relative path)
-        $tempdir = CacheUtil::getLocalDir();
-        $tmpdir   = $tempdir.'/Clip';
-        if (StringUtil::left($tempdir, 1) <> '/') {
-            if (CacheUtil::createLocalDir('Clip')) {
-                LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $tmpdir));
-            }
-        } else {
-            LogUtil::registerStatus($this->__f('Clip could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $tmpdir));
-        }
-
         $modvars = array(
             'uploadpath' => $tmpdir,
             'maxperpage' => 100,
@@ -128,43 +72,9 @@ class Clip_Installer extends Zikula_Installer
             case '0.4.4':
                 // set the new limit for items per page
                 $this->setVar('maxperpage', 100);
-                // updates system default shortURL module if it was PM
-                $defmod = System::getVar('shorturlsdefaultmodule');
-                if ($defmod == 'PageMaster' || $defmod == 'pagemaster') {
-                    System::setVar('shorturlsdefaultmodule', 'Clip');
-                }
-                // table changes
-                $tables = DBUtil::getTables();
-                // rename the category registries
-                $sql = "UPDATE {$tables['categories_registry']} SET crg_modname = 'Clip', crg_table  = REPLACE(crg_table , 'pagemaster_', 'clip_') WHERE crg_modname = 'PageMaster' OR crg_modname = 'pagemaster'";
-                DBUtil::executeSQL($sql);
-                // further upgrade handling
-                // * map the field classnames to IDs
-                // * rename the filename/formname columns
-                // * fill the output/input sets if empty
-                // * change C(512) to C(255) and X to C(65535)
-                // * rename the columns to drop the pm_ prefix
-                // * replace any pm_* in the pubtype sortfields
-                // * verify create any non-existing pubtype table
-                // * rename the clip:% permissions to clip:
-                // * replace any occurence of pm* filters 
 
-                // fills the empty publish dates
-                $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
-                if (!empty($pubtypes)) {
-                    // update each pubdata table
-                    // and update the new field value with the good old pm_cr_uid
-                    $existingtables = DBUtil::metaTables();
-                    foreach ($pubtypes as $tid) {
-                        if (in_array(DBUtil::getLimitedTablename('clip_pubdata'.$tid), $existingtables)) {
-                            $sql = "UPDATE {$tables['clip_pubdata'.$tid]} SET pm_publishdate = pm_cr_date WHERE pm_publishdate IS NULL";
-
-                            if (!DBUtil::executeSQL($sql)) {
-                                LogUtil::registerError($this->__('Error! Update attempt failed.'));
-                                return '0.4.2';
-                            }
-                        }
-                    }
+                if (!self::renameRoutine()) {
+                    return '0.4.4';
                 }
         }
 
@@ -210,6 +120,87 @@ class Clip_Installer extends Zikula_Installer
         return true;
     }
 
+
+
+    /**
+     * Default category tree creation.
+     */
+    private static function createCategoryTree()
+    {
+        $regpath = '/__SYSTEM__/Modules';
+
+        $lang = ZLanguage::getLanguageCode();
+
+        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip');
+        if (!$rootcat) {
+            $rootcat = CategoryUtil::getCategoryByPath($regpath);
+
+            $cat = new Categories_DBObject_Category();
+            $cat->setDataField('parent_id', $rootcat['id']);
+            $cat->setDataField('name', 'Clip');
+            $cat->setDataField('display_name', array($lang => $this->__('Clip')));
+            $cat->setDataField('display_desc', array($lang => $this->__('Clip root category')));
+            if (!$cat->validate()) {
+                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'Clip'));
+            }
+            $cat->insert();
+            $cat->update();
+        }
+
+        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip/lists');
+        if (!$rootcat) {
+            $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip');
+
+            $cat = new Categories_DBObject_Category();
+            $cat->setDataField('parent_id', $rootcat['id']);
+            $cat->setDataField('name', 'lists');
+            //! this is the 'lists' root category name
+            $cat->setDataField('display_name', array($lang => $this->__('lists')));
+            $cat->setDataField('display_desc', array($lang => $this->__('Clip lists for its publications')));
+            if (!$cat->validate()) {
+                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'lists'));
+            }
+            $cat->insert();
+            $cat->update();
+        }
+
+        // create the PM category registry
+        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip/lists');
+        if ($rootcat) {
+            // create an entry in the categories registry to the Lists property
+            $registry = new Categories_DBObject_Registry();
+            $registry->setDataField('modname', 'Clip');
+            $registry->setDataField('table', 'clip_pubtypes');
+            $registry->setDataField('property', 'Lists');
+            $registry->setDataField('category_id', $rootcat['id']);
+            if ($registry->validatePostProcess()) {
+                $registry->insert();
+            }
+        } else {
+            LogUtil::registerError($this->__f('Error! Could not create the [%s] Category Registry for Clip.', 'Lists'));
+        }
+    }
+
+    /**
+     * Upload directory creation
+     */
+    private static function createTempDir()
+    {
+        // upload dir creation if the temp dir is not outside the root (relative path)
+        $tempdir = CacheUtil::getLocalDir();
+        $tmpdir   = $tempdir.'/Clip';
+
+        if (StringUtil::left($tempdir, 1) <> '/') {
+            if (CacheUtil::createLocalDir('Clip')) {
+                LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $tmpdir));
+            }
+        } else {
+            LogUtil::registerStatus($this->__f('Clip could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $tmpdir));
+        }
+
+        return $tmpdir;
+    }
+
     /**
      * Transition method to rename PageMaster to Clip
      */
@@ -235,11 +226,10 @@ class Clip_Installer extends Zikula_Installer
         }
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
         if (in_array(DBUtil::getLimitedTablename('pagemaster_relations'), $existingtables)) {
-            //DBUtil::truncateTable('clip_relations');
-            $tableObj->changeTable();
-        } else {
-            $tableObj->createTable();
+            $tableObj->dropTable();
         }
+        $tableObj->createTable();
+
         // rename the others
         DBUtil::renameTable('pagemaster_pubfields', 'clip_pubfields');
         DBUtil::renameTable('pagemaster_pubtypes',  'clip_pubtypes');
@@ -253,11 +243,71 @@ class Clip_Installer extends Zikula_Installer
                 DBUtil::renameTable('pagemaster_pubdata'.$tid, 'clip_pubdata'.$tid);
             }
         }
+    }
 
-        $sql = "UPDATE {$tables['clip_pubfields']} SET pm_fieldplugin = REPLACE(pm_fieldplugin, 'PageMaster_', 'Clip_')";
-        DBUtil::executeSQL($sql);
+    /**
+     * Transition method to rename PageMaster to Clip
+     */
+    private static function renameRoutine()
+    {
+        // update db tables values
+        $tables = DBUtil::getTables();
+        $sql = array();
 
-        $sql = "UPDATE {$tables['workflows']} SET module = 'Clip', obj_table = REPLACE(obj_table, 'pagemaster_', 'clip_') WHERE module = 'PageMaster' OR module = 'pagemaster'";
-        DBUtil::executeSQL($sql);
+        // fieldplugin class names
+        $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldplugin = REPLACE(pm_fieldplugin, 'PageMaster_', 'Clip_')";
+
+        // fieldplugin type changes C(512) to C(255) and X to C(65535)
+        $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldtype = REPLACE(pm_fieldtype, 'C(512)', 'C(255)')";
+        $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldtype = REPLACE(pm_fieldtype, 'X', 'C(65535)')";
+
+        // workflow registries
+        $sql[] = "UPDATE {$tables['workflows']} SET module = 'Clip', obj_table = REPLACE(obj_table, 'pagemaster_', 'clip_') WHERE module = 'PageMaster' OR module = 'pagemaster'";
+
+        // rename the category registries
+        $sql[] = "UPDATE {$tables['categories_registry']} SET crg_modname = 'Clip', crg_table  = REPLACE(crg_table , 'pagemaster_', 'clip_') WHERE crg_modname = 'PageMaster' OR crg_modname = 'pagemaster'";
+
+        // rename the permissions component
+        $sql[] = "UPDATE {$tables['group_perms']} SET z_component  = REPLACE(z_component , 'pagemaster', 'clip')";
+
+        // * replace any pm_* in the pubtype sortfields
+        $sql[] = "UPDATE {$tables['clip_pubtypes']} SET pm_sortfield1 = REPLACE(pm_sortfield1, 'pm_', 'core_'), SET pm_sortfield2 = REPLACE(pm_sortfield2, 'pm_', 'core_'), SET pm_sortfield3 = REPLACE(pm_sortfield3, 'pm_', 'core_')";
+
+        foreach ($sql as $q) {
+            if (!DBUtil::executeSQL($sql)) {
+                return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $sql");
+            }
+        }
+
+        // updates system default shortURL module if it was PM
+        $defmod = System::getVar('shorturlsdefaultmodule');
+        if ($defmod == 'PageMaster' || $defmod == 'pagemaster') {
+            System::setVar('shorturlsdefaultmodule', 'Clip');
+        }
+
+        // further upgrade handling
+        // * map the field classnames to IDs
+        // * rename the filename/formname columns
+        // * fill the output/input sets if empty
+        // * rename the columns to drop the pm_ prefix
+
+        // fills the empty publish dates
+        $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
+        if (!empty($pubtypes)) {
+            // update each pubdata table
+            // and update the new field value with the good old pm_cr_uid
+            $existingtables = DBUtil::metaTables();
+            foreach ($pubtypes as $tid) {
+                if (in_array(DBUtil::getLimitedTablename('clip_pubdata'.$tid), $existingtables)) {
+                    $sql = "UPDATE {$tables['clip_pubdata'.$tid]} SET pm_publishdate = pm_cr_date WHERE pm_publishdate IS NULL";
+
+                    if (!DBUtil::executeSQL($sql)) {
+                        return LogUtil::registerError($this->__('Error! Update attempt failed.'));
+                    }
+                } else {
+                    Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
+                }
+            }
+        }
     }
 }
