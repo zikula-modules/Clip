@@ -38,12 +38,12 @@ class Clip_Model_Pubtype extends Doctrine_Record
             'default' => ''
         ));
 
-        $this->hasColumn('pm_filename as outputset', 'string', 255, array(
+        $this->hasColumn('pm_outputset as outputset', 'string', 255, array(
             'notnull' => true,
             'default' => ''
         ));
 
-        $this->hasColumn('pm_formname as inputset', 'string', 255, array(
+        $this->hasColumn('pm_inputset as inputset', 'string', 255, array(
             'notnull' => true,
             'default' => ''
         ));

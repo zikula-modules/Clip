@@ -15,66 +15,58 @@
 class Clip_Util
 {
     /**
-     * Temporary pre-0.9 upgrade script classnames convertor
+     * Retrieves the available plugins.
+     *
+     * @param string $id Retrieve the classname for this id.
+     *
+     * @return array|string Plugins class names list indexed by ID.
      */
-    public static function processPluginClassname($pluginClass)
+    public static function getPluginClasses($id = null)
     {
-        if (strpos($pluginClass, 'Clip_') !== 0) {
-            switch ($pluginClass) {
-                case 'pmformcheckboxinput':
-                    $pluginClass = 'Checkbox';
-                    break;
-                case 'pmformcustomdata':
-                    $pluginClass = 'CustomData';
-                    break;
-                case 'pmformdateinput':
-                    $pluginClass = 'Date';
-                    break;
-                case 'pmformemailinput':
-                    $pluginClass = 'Email';
-                    break;
-                case 'pmformfloatinput':
-                    $pluginClass = 'Float';
-                    break;
-                case 'pmformimageinput':
-                    $pluginClass = 'Image';
-                    break;
-                case 'pmformintinput':
-                    $pluginClass = 'Int';
-                    break;
-                case 'pmformlistinput':
-                    $pluginClass = 'List';
-                    break;
-                case 'pmformmsinput':
-                    $pluginClass = 'Ms';
-                    break;
-                case 'pmformmulticheckinput':
-                    $pluginClass = 'MultiCheck';
-                    break;
-                case 'pmformmultilistinput':
-                    $pluginClass = 'MultiList';
-                    break;
-                case 'pmformpubinput':
-                    $pluginClass = 'Pub';
-                    break;
-                case 'pmformstringinput':
-                    $pluginClass = 'String';
-                    break;
-                case 'pmformtextinput':
-                    $pluginClass = 'Text';
-                    break;
-                case 'pmformuploadinput':
-                    $pluginClass = 'Upload';
-                    break;
-                case 'pmformurlinput':
-                    $pluginClass = 'Url';
-                    break;
-            }
+        static $classNames;
 
-            $pluginClass = "Clip_Form_Plugin_$pluginClass";
+        if (isset($classNames)) {
+            if (!is_null($id)) {
+                return isset($classNames[$id]) ? $classNames[$id] : '';
+            }
+            return $classNames;
         }
 
-        return $pluginClass;
+        $classNames = array(
+            'Checkbox'   => 'Clip_Form_Plugin_Checkbox',
+            'Date'       => 'Clip_Form_Plugin_Date',
+            'Email'      => 'Clip_Form_Plugin_Email',
+            'Float'      => 'Clip_Form_Plugin_Float',
+            'Image'      => 'Clip_Form_Plugin_Image',
+            'Int'        => 'Clip_Form_Plugin_Int',
+            'List'       => 'Clip_Form_Plugin_List',
+            'Ms'         => 'Clip_Form_Plugin_Ms',
+            'MultiCheck' => 'Clip_Form_Plugin_MultiCheck',
+            'MultiList'  => 'Clip_Form_Plugin_MultiList',
+            'Pub'        => 'Clip_Form_Plugin_Pub',
+            'RadioList'  => 'Clip_Form_Plugin_RadioList',
+            'String'     => 'Clip_Form_Plugin_String',
+            'Text'       => 'Clip_Form_Plugin_Text',
+            'Upload'     => 'Clip_Form_Plugin_Upload',
+            'Url'        => 'Clip_Form_Plugin_Url'
+        );
+
+        // collect classes from other providers also allows for override
+        $event = new Zikula_Event('clip.get_field_plugin_classes');
+        $event->setData($classNames);
+        $classNames = EventUtil::getManager()->notify($event)->getData();
+
+        // allow final override. since user event handlers are loaded first,
+        // we have to dispatch a separate event - drak
+        $event = new Zikula_Event('clip.get_field_plugin_classes.overrides');
+        $event->setData($classNames);
+        $classNames = EventUtil::getManager()->notify($event)->getData();
+
+        if (!is_null($id)) {
+            return isset($classNames[$id]) ? $classNames[$id] : '';
+        }
+
+        return $classNames;
     }
 
     /**
@@ -426,39 +418,12 @@ class Clip_Util
      */
     public static function getPluginsOptionList()
     {
-        $classNames = array();
-        $classNames['Checkbox']   = 'Clip_Form_Plugin_Checkbox';
-        $classNames['Date']       = 'Clip_Form_Plugin_Date';
-        $classNames['Email']      = 'Clip_Form_Plugin_Email';
-        $classNames['Float']      = 'Clip_Form_Plugin_Float';
-        $classNames['Image']      = 'Clip_Form_Plugin_Image';
-        $classNames['Int']        = 'Clip_Form_Plugin_Int';
-        $classNames['List']       = 'Clip_Form_Plugin_List';
-        $classNames['Ms']         = 'Clip_Form_Plugin_Ms';
-        $classNames['MultiCheck'] = 'Clip_Form_Plugin_MultiCheck';
-        $classNames['MultiList']  = 'Clip_Form_Plugin_MultiList';
-        $classNames['Pub']        = 'Clip_Form_Plugin_Pub';
-        $classNames['Radio']      = 'Clip_Form_Plugin_RadioList';
-        $classNames['String']     = 'Clip_Form_Plugin_String';
-        $classNames['Text']       = 'Clip_Form_Plugin_Text';
-        $classNames['Upload']     = 'Clip_Form_Plugin_Upload';
-        $classNames['Url']        = 'Clip_Form_Plugin_Url';
-
-        // collect classes from other providers also allows for override
-        $event = new Zikula_Event('clip.get_field_plugin_classes');
-        $event->setData($classNames);
-        $classNames = EventUtil::getManager()->notify($event)->getData();
-
-        // allow final override. since user event handlers are loaded first,
-        // we have to dispatch a separate event - drak
-        $event = new Zikula_Event('clip.get_field_plugin_classes.overrides');
-        $event->setData($classNames);
-        $classNames = EventUtil::getManager()->notify($event)->getData();
+        $availablePlugins = self::getPluginClasses();
 
         $plugins = array();
-        foreach ($classNames as $name => $className) {
-            $plugin = Clip_Util::getPlugin($className);
-            $plugins[$name] = array(
+        foreach ($availablePlugins as $id => $className) {
+            $plugin = Clip_Util::getPlugin($id);
+            $plugins[$id] = array(
                 'plugin' => $plugin,
                 'class'  => $className,
             );
@@ -489,29 +454,29 @@ class Clip_Util
      *
      * @return mixed Class instance.
      */
-    public static function getPlugin($pluginClass)
+    public static function getPlugin($pluginID)
     {
-        // temporary 0.4.x conversion table
-        $pluginClass = self::processPluginClassname($pluginClass);
-
-        $pluginName = strtolower(substr($pluginClass, strrpos($pluginClass, '_') + 1));
-
         $sm = ServiceUtil::getManager();
 
-        if (!$sm->hasService("clip.plugin.$pluginName")) {
+        if (!$sm->hasService("clip.plugin.$pluginID")) {
             $view = Zikula_View::getInstance('Clip');
+
+            $pluginClass = self::getPluginClasses($pluginID);
+            if (!$pluginClass) {
+                throw new InvalidArgumentException(__f('Plugin ID %s not found in the available plugins.', $pluginID));
+            }
 
             $params = array();
             $plugin = new $pluginClass($view, $params);
             if (!$plugin instanceof Form_Plugin) {
-                throw new InvalidArgumentException(__f('Plugin %s must be an instance of Form_Plugin', $pluginName));
+                throw new InvalidArgumentException(__f('Plugin %s must be an instance of Form_Plugin.', $pluginName));
             }
             $plugin->setup();
 
-            $sm->attachService("clip.plugin.$pluginName", $plugin);
+            $sm->attachService("clip.plugin.$pluginID", $plugin);
         }
 
-        return $sm->getService("clip.plugin.$pluginName");
+        return $sm->getService("clip.plugin.$pluginID");
     }
 
     /**

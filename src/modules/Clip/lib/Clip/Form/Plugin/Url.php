@@ -73,7 +73,7 @@ class Clip_Form_Plugin_Url extends Form_Plugin_TextInput
     /**
      * Method to parse an internal URL 
      */
-    function parseURL($url)
+    static function parseURL($url)
     {
         // parse the URL
         // {modname:function&param=value:type}

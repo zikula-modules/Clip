@@ -221,21 +221,21 @@ class Clip_Generator
 
         foreach (array_keys($pubfields) as $k) {
             // get the formplugin name
-            $formplugin = Clip_Util::processPluginClassname($pubfields[$k]['fieldplugin']);
+            $formplugin = $pubfields[$k]['fieldplugin'];
 
             // FIXME lenghts
             if (!empty($pubfields[$k]['fieldmaxlength'])) {
                 $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
-            } elseif($formplugin == 'Clip_Form_Plugin_Text') {
+            } elseif($formplugin == 'Text') {
                 $maxlength = " maxLength='65535'";
             } else {
-                $maxlength = ''; //" maxLength='255'"; //TODO Not a clean solution. MaxLength is not needed for ever plugin
+                $maxlength = '';
             }
 
             $toolTip = !empty($pubfields[$k]['description']) ? str_replace("'", "\'", $pubfields[$k]['description']) : '';
 
             // specific plugins
-            $linecol = ($formplugin == 'Clip_Form_Plugin_Text') ? " rows='15' cols='70'" : '';
+            $linecol = ($formplugin == 'Text') ? " rows='15' cols='70'" : '';
 
             // scape simple quotes where needed
             $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']);
@@ -634,7 +634,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         // refresh the pubtypes definitions
         self::addtables($force);
 
-        $pubtypes = array_keys(Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes()->toArray());
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
 
         foreach ($pubtypes as $tid) {
             if (!isset($loaded[$tid])) {

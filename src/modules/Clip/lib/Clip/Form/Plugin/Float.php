@@ -19,7 +19,7 @@ class Clip_Form_Plugin_Float extends Form_Plugin_FloatInput
     function setup()
     {
         //! field type name
-        $this->pluginTitle = $this->__('Float Value');
+        $this->pluginTitle = $this->__('Float');
     }
 
     function getFilename()

@@ -12,7 +12,7 @@
 class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
 {
     public $pluginTitle;
-    public $columnDef = 'X';
+    public $columnDef = 'C(65535)';
 
     public $config = array();
 
@@ -35,12 +35,12 @@ class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
         $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
         parent::readParameters($view, $params);
-
-        $this->textMode = 'multiline';
     }
 
     function render($view)
     {
+        $this->textMode = 'multiline';
+
         if ($this->config['usescribite'] && ModUtil::available('scribite')) {
             static $scribite_arr;
             $scribite_arr[] = $this->id;

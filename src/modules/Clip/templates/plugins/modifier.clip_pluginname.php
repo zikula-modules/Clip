@@ -12,16 +12,13 @@
 /**
  * Clip modifier to translate the plugin name.
  *
- * @param string $pluginname The name to process.
+ * @param string $pluginID The name to process.
  *
  * @return string Translation of the plugin name.
  */
-function smarty_modifier_clip_pluginname($pluginname)
+function smarty_modifier_clip_pluginname($pluginID)
 {
-    $dom = ZLanguage::getModuleDomain('Clip');
+    $plugin = Clip_Util::getPlugin($pluginID);
 
-    // TODO event asking the translation
-    $pluginname = str_replace('Clip_Form_Plugin_', '', $pluginname);
-
-    return __($pluginname, $dom);
+    return $plugin->pluginTitle;
 }

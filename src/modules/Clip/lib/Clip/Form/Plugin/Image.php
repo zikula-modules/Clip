@@ -67,7 +67,7 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
     /**
      * Clip processing methods.
      */
-    static function postRead($data, $field)
+    function postRead($data, $field)
     {
         // this plugin return an array by default
         $upl_arr = array();

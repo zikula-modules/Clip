@@ -84,7 +84,7 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
         return $this->upl_arr;
     }
 
-    function preSave($data, $field)
+    static function preSave($data, $field)
     {
         $id   = $data['id'];
         $tid  = $data['tid'];

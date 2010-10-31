@@ -68,7 +68,6 @@ class Clip_Installer extends Zikula_Installer
             case '0.4.2':
             case '0.4.3':
                 self::renameClipTables();
-                break;
             case '0.4.4':
                 // set the new limit for items per page
                 $this->setVar('maxperpage', 100);
@@ -77,6 +76,8 @@ class Clip_Installer extends Zikula_Installer
                     return '0.4.4';
                 }
             case '0.4.5':
+                self::migratePubField();
+            case '0.4.6':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
         }
@@ -263,8 +264,7 @@ class Clip_Installer extends Zikula_Installer
         // fieldplugin class names
         $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldplugin = REPLACE(pm_fieldplugin, 'PageMaster_', 'Clip_')";
 
-        // fieldplugin type changes C(512) to C(255) and X to C(65535)
-        $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldtype = REPLACE(pm_fieldtype, 'C(512)', 'C(255)')";
+        // fieldplugin type change: X to C(65535)
         $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldtype = REPLACE(pm_fieldtype, 'X', 'C(65535)')";
 
         // workflow registries
@@ -361,10 +361,13 @@ class Clip_Installer extends Zikula_Installer
             }
         }
 
-        // updates system default shortURL module if it was PM
-        $defmod = System::getVar('shorturlsdefaultmodule');
-        if ($defmod == 'PageMaster' || $defmod == 'pagemaster') {
-            System::setVar('shorturlsdefaultmodule', 'Clip');
+        // updates system startpage and default shortURL module if it was PM
+        $sysvars = array('startpage', 'shorturlsdefaultmodule');
+        foreach ($sysvars as $sysname) {
+            $sysvar = System::getVar($sysname);
+            if ($sysvar == 'PageMaster' || $sysvar == 'pagemaster') {
+                System::setVar($sysname, 'Clip');
+            }
         }
 
         // rename the filename/formname columns
@@ -374,6 +377,7 @@ class Clip_Installer extends Zikula_Installer
         // fills the empty publish dates
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         if (!empty($pubtypes)) {
+            Clip_Generator::loadDataClasses();
             // update each pubdata table
             // and update the new field value with the good old pm_cr_uid
             $existingtables = DBUtil::metaTables();
@@ -392,5 +396,46 @@ class Clip_Installer extends Zikula_Installer
         }
 
         return true;
+    }
+
+    /**
+     * Deprecation of the Publication field.
+     */
+    private static function migratePubField()
+    {
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('inputset', null, '', false, 'tid');
+
+        $fields = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection("fieldplugin = 'Pub'", 'tid');
+
+        $tid = 0;
+        foreach ($fields as $field) {
+            // assigns the related tids
+            $tid1 = $field['tid'];
+
+            $tid2 = explode(';', $field['typedata']);
+            $tid2 = $tid2[0];
+
+            // discard non-existing pubtypes
+            if (!isset($pubtypes[$tid1]) || !isset($pubtypes[$tid2])) {
+                continue;
+            }
+
+            // setup the n:1 relation
+            $reldata = array(
+                'tid1'   => $tid1,
+                'alias1' => $pubtypes[$tid2],
+                'tid2'   => $tid2,
+                'alias2' => $pubtypes[$tid1],
+                'type'   => 2
+            );
+            $relation = new Clip_Model_Pubrelation();
+            $relation->fromArray($reldata);
+            $relation->save();
+
+            // rename the fields
+            DoctrineUtil::renameColumn('clip_pubdata'.$tid1, 'pm_'.$field['id'], 'pm_rel_'.$relation['id']);
+        }
+
+        $fields->delete();
     }
 }

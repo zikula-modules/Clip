@@ -19,7 +19,7 @@ class Clip_Form_Plugin_Int extends Form_Plugin_IntInput
     function setup()
     {
         //! field type name
-        $this->pluginTitle = $this->__('Integer Value');
+        $this->pluginTitle = $this->__('Integer');
     }
 
     function getFilename()

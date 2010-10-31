@@ -33,7 +33,7 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
      */
     public function pluginRegister(&$params, &$view)
     {
-        $this->setDomain($view->getDomain());
+        $this->setDomain($view->getDomain()); // TODO remove, Form_Plugin responsability
         $this->setup();
 
         // copy parameters to member variables and attribute set
