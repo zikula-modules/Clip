@@ -76,6 +76,9 @@ class Clip_Installer extends Zikula_Installer
                 if (!self::renameRoutine()) {
                     return '0.4.4';
                 }
+            case '0.4.5':
+                // further upgrade handling
+                // * rename the columns to drop the pm_ prefix
         }
 
         return true;
@@ -234,7 +237,7 @@ class Clip_Installer extends Zikula_Installer
         DBUtil::renameTable('pagemaster_pubfields', 'clip_pubfields');
         DBUtil::renameTable('pagemaster_pubtypes',  'clip_pubtypes');
 
-        $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             if (in_array(DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid), $existingtables)) {
                 $tables['pagemaster_pubdata'.$tid] = DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid);
@@ -252,6 +255,9 @@ class Clip_Installer extends Zikula_Installer
     {
         // update db tables values
         $tables = DBUtil::getTables();
+        $tables['clip_pubfields'] = DBUtil::getLimitedTablename('clip_pubfields');
+        $tables['clip_pubtypes']  = DBUtil::getLimitedTablename('clip_pubtypes');
+
         $sql = array();
 
         // fieldplugin class names
@@ -270,11 +276,87 @@ class Clip_Installer extends Zikula_Installer
         // rename the permissions component
         $sql[] = "UPDATE {$tables['group_perms']} SET z_component  = REPLACE(z_component , 'pagemaster', 'clip')";
 
-        // * replace any pm_* in the pubtype sortfields
-        $sql[] = "UPDATE {$tables['clip_pubtypes']} SET pm_sortfield1 = REPLACE(pm_sortfield1, 'pm_', 'core_'), SET pm_sortfield2 = REPLACE(pm_sortfield2, 'pm_', 'core_'), SET pm_sortfield3 = REPLACE(pm_sortfield3, 'pm_', 'core_')";
+        // replace any pm_* in the pubtype sortfields
+        $sql[] = "UPDATE {$tables['clip_pubtypes']} SET pm_sortfield1 = REPLACE(pm_sortfield1, 'pm_', 'core_'), pm_sortfield2 = REPLACE(pm_sortfield2, 'pm_', 'core_'), pm_sortfield3 = REPLACE(pm_sortfield3, 'pm_', 'core_')";
+
+        // fill the output/input sets if empty
+        $sql[] = "UPDATE {$tables['clip_pubtypes']} SET pm_filename = pm_title WHERE pm_filename = ''";
+        $sql[] = "UPDATE {$tables['clip_pubtypes']} SET pm_formname = pm_title WHERE pm_formname = ''";
+
+        // map the field classnames to IDs
+        $plugins = array(
+            'Checkbox' => array(
+                'Clip_Form_Plugin_Checkbox',
+                'pmformcheckboxinput'
+            ),
+            'Date' => array(
+                'Clip_Form_Plugin_Date',
+                'pmformdateinput'
+            ),
+            'Email' => array(
+                'Clip_Form_Plugin_Email',
+                'pmformemailinput'
+            ),
+            'Float' => array(
+                'Clip_Form_Plugin_Float',
+                'pmformfloatinput'
+            ),
+            'Image' => array(
+                'Clip_Form_Plugin_Image',
+                'pmformimageinput'
+            ),
+            'Int' => array(
+                'Clip_Form_Plugin_Int',
+                'pmformintinput'
+            ),
+            'List' => array(
+                'Clip_Form_Plugin_List',
+                'pmformlistinput'
+            ),
+            'Ms' => array(
+                'Clip_Form_Plugin_Ms',
+                'pmformmsinput'
+            ),
+            'MultiCheck' => array(
+                'Clip_Form_Plugin_MultiCheck',
+                'pmformmulticheckinput'
+            ),
+            'MultiList' => array(
+                'Clip_Form_Plugin_MultiList',
+                'pmformmultilistinput'
+            ),
+            'Pub' => array(
+                'Clip_Form_Plugin_Pub',
+                'pmformpubinput'
+            ),
+            'String' => array(
+                'Clip_Form_Plugin_String',
+                'pmformstringinput'
+            ),
+            'Text' => array(
+                'Clip_Form_Plugin_Text',
+                'pmformtextinput'
+            ),
+            'Upload' => array(
+                'Clip_Form_Plugin_Upload',
+                'pmformuploadinput'
+            ),
+            'Url' => array(
+                'Clip_Form_Plugin_Url',
+                'pmformurlinput'
+            ),
+            'RadioList' => array(
+                'Clip_Form_Plugin_RadioList'
+            )
+        );
+        foreach ($plugins as $newid => $oldnames) {
+            foreach ($oldnames as $oldname) {
+                $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldplugin = REPLACE(pm_fieldplugin, '{$oldname}', '{$newid}')";
+            }
+        }
 
         foreach ($sql as $q) {
-            if (!DBUtil::executeSQL($sql)) {
+            if (!DBUtil::executeSQL($q)) {
                 return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $sql");
             }
         }
@@ -285,20 +367,19 @@ class Clip_Installer extends Zikula_Installer
             System::setVar('shorturlsdefaultmodule', 'Clip');
         }
 
-        // further upgrade handling
-        // * map the field classnames to IDs
-        // * rename the filename/formname columns
-        // * fill the output/input sets if empty
-        // * rename the columns to drop the pm_ prefix
+        // rename the filename/formname columns
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_filename', 'pm_outputset');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_formname', 'pm_inputset');
 
         // fills the empty publish dates
-        $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         if (!empty($pubtypes)) {
             // update each pubdata table
             // and update the new field value with the good old pm_cr_uid
             $existingtables = DBUtil::metaTables();
             foreach ($pubtypes as $tid) {
-                if (in_array(DBUtil::getLimitedTablename('clip_pubdata'.$tid), $existingtables)) {
+                $tables['clip_pubdata'.$tid] = DBUtil::getLimitedTablename('clip_pubdata'.$tid);
+                if (in_array($tables['clip_pubdata'.$tid], $existingtables)) {
                     $sql = "UPDATE {$tables['clip_pubdata'.$tid]} SET pm_publishdate = pm_cr_date WHERE pm_publishdate IS NULL";
 
                     if (!DBUtil::executeSQL($sql)) {
@@ -309,5 +390,7 @@ class Clip_Installer extends Zikula_Installer
                 }
             }
         }
+
+        return true;
     }
 }
