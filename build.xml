@@ -58,7 +58,7 @@
         <!-- ATTN export urls require manual edit -->
 
         <!-- compress JS -->
-        <foreach list="${ownjslist}" param="filename" target="compressownjs" />
+        <!-- foreach list="${ownjslist}" param="filename" target="compressownjs" / -->
 
         <!-- echo msg="Prepare permissions..." / -->
         <!-- chmod file="${packagepath}/ztemp/Theme_Config" mode="0777" / -->
