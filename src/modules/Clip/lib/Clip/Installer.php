@@ -129,7 +129,7 @@ class Clip_Installer extends Zikula_Installer
     /**
      * Default category tree creation.
      */
-    private static function createCategoryTree()
+    private function createCategoryTree()
     {
         $regpath = '/__SYSTEM__/Modules';
 
@@ -188,7 +188,7 @@ class Clip_Installer extends Zikula_Installer
     /**
      * Upload directory creation
      */
-    private static function createTempDir()
+    private function createTempDir()
     {
         // upload dir creation if the temp dir is not outside the root (relative path)
         $tempdir = CacheUtil::getLocalDir();
@@ -252,7 +252,7 @@ class Clip_Installer extends Zikula_Installer
     /**
      * Transition method to rename PageMaster to Clip
      */
-    private static function renameRoutine()
+    private function renameRoutine()
     {
         // update db tables values
         $tables = DBUtil::getTables();
