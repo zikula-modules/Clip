@@ -74,7 +74,7 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
     function getTypeHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
-        $this->config['includeTime'] ? 'checked="checked"' : '';
+        $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
 
         $html = '<div class="z-formrow">
                      <label for="clipplugin_usedatetime">'.$this->__('Include time').':</label>

@@ -92,12 +92,12 @@
     <div>
         {formvalidationsummary}
         <fieldset>
-            {if isset($field)}
+            {if $field.name}
                 <legend>{gt text='Edit publication field'}</legend>
             {else}
                 <legend>{gt text='Add a publication field'}</legend>
             {/if}
-            {if isset($field)}
+            {if $field.name}
             <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
             {/if}
             <div class="z-formrow">
@@ -152,7 +152,7 @@
         </fieldset>
 
         <div class="z-buttons z-formbuttons">
-            {if isset($field)}
+            {if $field.name}
                 {formbutton commandName='create' __text='Save' class='z-bt-save'}
                 {gt text='Are you sure you want to delete this field?' assign='confirmdeletion'}
                 {formbutton commandName='delete' __text='Delete' class='z-bt-delete' confirmMessage=$confirmdeletion}

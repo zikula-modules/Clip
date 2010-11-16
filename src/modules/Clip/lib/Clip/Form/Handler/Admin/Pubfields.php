@@ -49,6 +49,8 @@ class Clip_Form_Handler_Admin_Pubfields extends Form_Handler
             }
 
             $view->assign('field', $pubfield->toArray());
+        } else {
+            $view->assign('field', $tableObj->getRecord());
         }
 
         $pubfields = $tableObj->selectCollection("tid = '$tid'", 'lineno', -1, -1, 'name');

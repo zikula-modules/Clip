@@ -128,7 +128,7 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         foreach ($registered as $property => $catID) {
             $cat = CategoryUtil::getCategoryByID($catID);
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
-            $selectedText     = ($this->config['category'] == $catID) ? ' selected="selected"' : '';
+            $selectedText     = ($this->config['cat'] == $catID) ? ' selected="selected"' : '';
 
             $html .= "    <option{$selectedText} value=\"{$cat['id']}\">{$cat['fullTitle']} [{$property}]</option>";
         }
