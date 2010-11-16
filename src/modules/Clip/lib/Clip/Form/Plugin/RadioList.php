@@ -43,7 +43,7 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
 
         $this->dataBound($view, $params);
 
-        return $this->render($view, $params);
+        return $this->renderRadioList($view, $params);
     }
 
     function readParameters($view, &$params)
@@ -67,7 +67,7 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
         }
     }
 
-    function render(&$view, $params)
+    function renderRadioList(&$view, $params)
     {
         $id = $params['id'];
         unset($params['maxLength']);
