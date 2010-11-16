@@ -21,10 +21,10 @@ class ClipFormPluginType extends Form_Plugin_DropdownList
         $this->autoPostBack = true;
         $plugins = Clip_Util::getPluginsOptionList();
 
-        foreach ($plugins as $plugin) {
+        foreach ($plugins as $id => $plugin) {
             $items[] = array (
                 'text'  => $plugin['plugin']->pluginTitle,
-                'value' => $plugin['class']
+                'value' => $id
             );
         }
         $this->items = $items;
