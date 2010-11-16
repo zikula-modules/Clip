@@ -84,6 +84,8 @@ class Clip_Installer extends Zikula_Installer
                 // register persistent event listeners (handlers)
                 EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
             case '0.4.7':
+                self::tempUpdate047();
+            case '0.4.8':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
         }
@@ -361,6 +363,9 @@ class Clip_Installer extends Zikula_Installer
             }
         }
 
+        // Image and Upload fieldplugin type change: C(255) to C(1024)
+        $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
+
         foreach ($sql as $q) {
             if (!DBUtil::executeSQL($q)) {
                 return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $sql");
@@ -443,5 +448,20 @@ class Clip_Installer extends Zikula_Installer
         }
 
         $fields->delete();
+    }
+
+    /**
+     * Deprecation of the Publication field.
+     */
+    private static function tempUpdate047()
+    {
+        // TEMP UPDATE: Image fieldplugin type change: C(255) to C(1024)
+        $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
+
+        // update the pubtypes table
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+        foreach ($pubtypes as $tid) {
+            Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->changeTable();
+        }
     }
 }
