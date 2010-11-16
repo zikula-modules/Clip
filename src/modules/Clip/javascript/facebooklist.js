@@ -527,7 +527,7 @@ var FacebookList = Class.create(TextboxList,
                 method: this.options.get('fetchMethod'),
                 parameters: params,
                 onComplete: function(response) {
-                  var data = response.getData().data;
+                  var data = response.getData();
                   data.each(function(t){this.autoFeed(t)}.bind(this));
                   this.autoShow(input.value);
                 }.bind(this)

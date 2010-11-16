@@ -456,7 +456,8 @@ class Clip_Installer extends Zikula_Installer
     private static function tempUpdate047()
     {
         // TEMP UPDATE: Image fieldplugin type change: C(255) to C(1024)
-        $sql[] = "UPDATE {$tables['clip_pubfields']} SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
+        $table = DBUtil::getLimitedTablename('clip_pubfields');
+        $sql[] = "UPDATE $table SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
 
         // update the pubtypes table
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
