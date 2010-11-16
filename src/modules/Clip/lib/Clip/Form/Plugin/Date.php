@@ -13,7 +13,7 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
 {
     public $pluginTitle;
     public $columnDef = 'T';
-    public $filterClass = 'Date';
+    public $filterClass = 'date';
 
     public $config = array();
 

@@ -31,4 +31,20 @@ class Clip_EventHandler_Listeners
         $event->setData(array_merge((array)$event->getData(), $classNames));
         */
     }
+
+    /**
+     * Filters provider handler.
+     *
+     * Attach the Clip filters to the available ones
+     *
+     * @param Zikula_Event $event
+     */
+    public static function getFilterClasses(Zikula_Event $event)
+    {
+        $classNames = array();
+        $classNames['cliplist']  = 'Clip_Filter_List';
+        $classNames['clipmlist'] = 'Clip_Filter_MultiList';
+
+        $event->setData(array_merge((array)$event->getData(), $classNames));
+    }
 }

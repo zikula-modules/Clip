@@ -13,7 +13,7 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
 {
     public $pluginTitle;
     public $columnDef   = 'C(512)';
-    public $filterClass = 'ClipMultiList';
+    public $filterClass = 'clipmlist';
 
     public $config = array();
 

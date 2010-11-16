@@ -45,6 +45,9 @@ class Clip_Installer extends Zikula_Installer
         // try to create the upload directory
         $tmpdir = self::createTempDir();
 
+        // register persistent event listeners (handlers)
+        EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
+
         // modvars
         $modvars = array(
             'uploadpath' => $tmpdir,
@@ -78,6 +81,9 @@ class Clip_Installer extends Zikula_Installer
             case '0.4.5':
                 self::migratePubField();
             case '0.4.6':
+                // register persistent event listeners (handlers)
+                EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
+            case '0.4.7':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
         }

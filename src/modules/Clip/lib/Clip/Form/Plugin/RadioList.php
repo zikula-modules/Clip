@@ -13,7 +13,7 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
 {
     public $pluginTitle;
     public $columnDef   = 'I4';
-    public $filterClass = 'ClipList';
+    public $filterClass = 'cliplist';
 
     public $config = array();
 

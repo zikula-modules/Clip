@@ -8,9 +8,9 @@
  * @license    GNU/LGPLv3 - http://www.gnu.org/copyleft/gpl.html
  * @package    Zikula
  * @subpackage FilterUtil
-*/
+ */
 
-class FilterUtil_Filter_ClipList extends FilterUtil_Filter_category
+class Clip_Filter_MultiList extends FilterUtil_Filter_Category
 {
     /**
      * return SQL code
@@ -21,15 +21,15 @@ class FilterUtil_Filter_ClipList extends FilterUtil_Filter_category
      * @param string $value Test value
      * @return string SQL code
      */
-    function getSQL($field, $op, $value)
+    function getDql($field, $op, $value)
     {
         if (array_search($op, $this->availableOperators()) === false || array_search($field, $this->getFields()) === false) {
             return '';
         }
 
-        $column = $this->column[$field];
+        $column = $this->getColumn($field);
 
-        switch ($op)
+        switch($op)
         {
             case 'eq':
                 $where =  "$column = '$value'";
@@ -40,15 +40,10 @@ class FilterUtil_Filter_ClipList extends FilterUtil_Filter_category
                 break;
 
             case 'sub':
+                $where = "$column LIKE '%:$value:%'";
                 $cats = CategoryUtil::getSubCategories($value);
-                $items = array($value);
                 foreach ($cats as $item) {
-                    $items[] = $item['id'];
-                }
-                if (count($items) == 1) {
-                    $where = "$column = '$value'";
-                } else {
-                    $where = "$column IN (".implode(',', $items).")";
+                    $where .= " OR $column LIKE '%:$item[id]:%'";
                 }
                 break;
         }
