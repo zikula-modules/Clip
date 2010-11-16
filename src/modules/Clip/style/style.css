@@ -278,6 +278,9 @@ pre.clip-showcode {
 }
 
 /* Zikula.Autocompleter CSS */
+div.z-formrow {
+  position: relative;
+}
 ul.z-auto-holder {
   background: #fff;
   border: 1px solid #ddd;
@@ -365,10 +368,12 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 .z-form div.z-formrow > .z-auto-container {
   background: #eee;
   display: none;
-  margin-left: 27.5% !important;
+  /*margin-left: 27.5% !important;*/
+  margin-left: 29% !important;
   padding: 0;
   position: absolute;
-  width: 67.4%;
+  /*width: 67.4%;*/
+  width: 71%;
   z-index: 9999;
 }
 .z-linear div.z-formrow > .z-auto-container {
