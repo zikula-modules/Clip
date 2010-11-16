@@ -460,6 +460,7 @@ class Clip_Installer extends Zikula_Installer
         $sql[] = "UPDATE $table SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
 
         // update the pubtypes table
+        Clip_Generator::loadDataClasses();
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->changeTable();
