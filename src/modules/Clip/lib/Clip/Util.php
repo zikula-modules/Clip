@@ -43,7 +43,6 @@ class Clip_Util
             'Ms'         => 'Clip_Form_Plugin_Ms',
             'MultiCheck' => 'Clip_Form_Plugin_MultiCheck',
             'MultiList'  => 'Clip_Form_Plugin_MultiList',
-            'Pub'        => 'Clip_Form_Plugin_Pub',
             'RadioList'  => 'Clip_Form_Plugin_RadioList',
             'String'     => 'Clip_Form_Plugin_String',
             'Text'       => 'Clip_Form_Plugin_Text',
