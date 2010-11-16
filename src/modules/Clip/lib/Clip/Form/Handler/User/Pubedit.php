@@ -136,7 +136,7 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
         return true;
     }
 
-    function handleCommand($view, $args)
+    function handleCommand($view, &$args)
     {
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->referer);

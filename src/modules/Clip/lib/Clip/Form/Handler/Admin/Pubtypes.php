@@ -53,7 +53,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Form_Handler
     /**
      * Command handler
      */
-    function handleCommand($view, $args)
+    function handleCommand($view, &$args)
     {
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);
