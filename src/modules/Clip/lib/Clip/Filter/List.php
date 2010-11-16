@@ -1,25 +1,42 @@
 <?php
 /**
- * Zikula Application Framework
+ * Clip
  *
- * @copyright  Zikula Foundation 2009 - Zikula Application Framework
- * @link       http://www.zikula.org
- * @version    $Id: $
- * @license    GNU/LGPLv3 - http://www.gnu.org/copyleft/gpl.html
- * @package    Zikula
- * @subpackage FilterUtil
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Filter
  */
 
 class Clip_Filter_List extends FilterUtil_Filter_Category
 {
     /**
-     * return SQL code
+     * Adds fields to list in the clip way.
      *
-     * @access public
-     * @param string $field Field name
-     * @param string $op Operator
-     * @param string $value Test value
-     * @return string SQL code
+     * @param mixed $fields Fields to add.
+     *
+     * @return void
+     */
+    public function addFields($fields)
+    {
+        if (is_array($fields)) {
+            foreach ($fields as $fld) {
+                $this->addFields($fld);
+            }
+        } elseif (!empty($fields) && $this->fieldExists($fields) && array_search($fields, (array)$this->fields) === false) {
+            $this->fields[] = $fields;
+        }
+    }
+
+    /**
+     * Returns DQL code.
+     *
+     * @param string $field Field name.
+     * @param string $op    Operator.
+     * @param string $value Test value.
+     *
+     * @return array Doctrine Query where clause and parameters.
      */
     function getDql($field, $op, $value)
     {
@@ -27,16 +44,20 @@ class Clip_Filter_List extends FilterUtil_Filter_Category
             return '';
         }
 
+        $where  = '';
+        $params = array();
         $column = $this->getColumn($field);
 
         switch ($op)
         {
             case 'eq':
-                $where =  "$column = '$value'";
+                $where = "$column = ?";
+                $params[] = $value;
                 break;
 
             case 'ne':
-                $where =  "$column != '$value'";
+                $where = "$column <> ?";
+                $params[] = $value;
                 break;
 
             case 'sub':
@@ -46,13 +67,14 @@ class Clip_Filter_List extends FilterUtil_Filter_Category
                     $items[] = $item['id'];
                 }
                 if (count($items) == 1) {
-                    $where = "$column = '$value'";
+                    $where = "$column = ?";
+                    $params[] = $value;
                 } else {
                     $where = "$column IN (".implode(',', $items).")";
                 }
                 break;
         }
 
-        return array('where' => $where);
+        return array('where' => $where, 'params' => $params);
     }
 }
