@@ -403,7 +403,7 @@ class Clip_Api_User extends Zikula_Api
         }
 
         return Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])
-               ->selectFieldBy('pid', $args['id'], 'id');
+               ->selectFieldBy('core_pid', $args['id'], 'id');
     }
 
     /**
