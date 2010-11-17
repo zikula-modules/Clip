@@ -2,6 +2,14 @@
 <div class="z-menu">
     <span class="z-menuitem-title clip-menu">
         {strip}
+        {checkpermissionblock component='clip::' instance="::" level=ACCESS_ADMIN}
+        <span>
+            <a href="{modurl modname='Clip' type='admin' func='pubtypes'}">
+                {img width='12' height='12' modname='core' src='mydocuments.gif' set='icons/extrasmall' alt='' __title='Admin panel'}
+            </a>
+        </span>
+        {/checkpermissionblock}
+
         <span>&raquo;</span>
         {if $section neq 'list'}
             <span>
@@ -18,6 +26,13 @@
         <span>
             <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
+            </a>
+        </span>
+        {/checkpermissionblock}
+        {checkpermissionblock component='clip::' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
+        <span>
+            <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid}">
+                {img width='12' height='12' modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt='' __title='Admin list'}
             </a>
         </span>
         {/checkpermissionblock}
