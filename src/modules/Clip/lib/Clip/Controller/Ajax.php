@@ -134,6 +134,6 @@ class Clip_Controller_Ajax extends Zikula_Controller
             );
         }
 
-        return $result;
+        return array('data' => $result);
     }
 }
