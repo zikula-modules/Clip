@@ -1,3 +1,4 @@
+{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}
 
 <h2>{gt text=$pubtype.title}</h2>
 

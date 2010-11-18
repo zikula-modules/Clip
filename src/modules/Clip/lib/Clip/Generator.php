@@ -27,7 +27,7 @@ class Clip_Generator
 
         // build the display code
         $template_code = "\n".
-                '{pagesetvar name="title" value="`$pubdata.core_title` - `$modvars.ZConfig.sitename`"}'."\n".
+                '{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}'."\n".
                 '{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
                 '<h2>{gt text=$pubtype.title}</h2>'."\n".
