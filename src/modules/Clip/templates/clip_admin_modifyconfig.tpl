@@ -17,14 +17,14 @@
             <legend>{gt text='General settings'}</legend>
             <div class="z-formrow">
                 {formlabel for='uploadpath' __text='Upload path'}
-                {formtextinput maxLength='200' id='uploadpath'}
-                {if $updirstatus < 3}
+                {formtextinput id='uploadpath' maxLength='200'}
+                {if $updirstatus lt 3}
                     {assign var='updir_msgcolor' value='#ff0000'}
-                    {if $updirstatus == 0}
+                    {if $updirstatus eq 0}
                         {assign var='updir_message' __value='The given path doesn\'t exists'}
-                    {elseif $updirstatus == 1}
+                    {elseif $updirstatus eq 1}
                         {assign var='updir_message' __value='The given path is not a directory'}
-                    {elseif $updirstatus == 2}
+                    {elseif $updirstatus eq 2}
                         {assign var='updir_message' __value='The given path is not writeable'}
                     {/if}
                 {else}
@@ -52,7 +52,7 @@
             </div>
         </fieldset>
 
-        {modcallhooks hookobject='module' hookaction='modifyconfig' hookid='Clip' module='Clip'}
+        {notifydisplayhooks eventname='clip.config.ui.edit' type='ui.edit' module='Clip' subject=$modvars.Clip}
 
         <div class="z-buttons z-formbuttons">
             {formbutton id='update' commandName='update' __text='Save' class='z-bt-ok'}

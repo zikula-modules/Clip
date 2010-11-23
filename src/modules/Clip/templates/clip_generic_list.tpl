@@ -43,5 +43,3 @@
 {if $pager.itemsperpage neq 0}
     {pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum'}
 {/if}
-
-{modcallhooks hookobject='category' hookaction='display' module='Clip' returnurl=$returnurl}

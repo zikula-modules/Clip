@@ -30,7 +30,7 @@ class Clip_Form_Plugin_String extends Form_Plugin_TextInput
      */
     static function getPluginOutput($field)
     {
-        $body = '{$pubdata.'.$field['name'].'|safehtml|modcallhooks:\'Clip\'}';
+        $body = '{$pubdata.'.$field['name'].'|safehtml|notifyfilterhooks:\'Clip\'}';
 
         return array('body' => $body);
     }

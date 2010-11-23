@@ -175,8 +175,7 @@ class Clip_Generator
         // add the Hooks support for display
         $template_code .= '</div>'."\n".
                 "\n".
-                '{modurl modname=\'Clip\' func=\'display\' tid=$pubdata.core_tid pid=$pubdata.core_pid assign=\'returnurl\'}'."\n".
-                '{modcallhooks hookobject=\'item\' hookaction=\'display\' hookid=$pubdata.core_uniqueid module=\'Clip\' returnurl=$returnurl}'.
+                '{notifydisplayhooks eventname=\'clip.item.ui.view\' type=\'ui.view\' subject=$pubdata module=\'Clip\'}'.
                 "\n";
 
         // if the template is a public output
@@ -209,7 +208,7 @@ class Clip_Generator
                 '        {formvalidationsummary}'."\n".
                 '        <fieldset>'."\n".
                 '            <legend>'."\n".
-                '                {if isset($id)}'."\n".
+                '                {if $pubdata.id}'."\n".
                 '                    {gt text=\''.$title_editpub.'\'}'."\n".
                 '                {else}'."\n".
                 '                    {gt text=\''.$title_newpub.'\'}'."\n".
@@ -304,10 +303,10 @@ class Clip_Generator
                 '            </div>'."\n".
                 '        </fieldset>'."\n".
                 "\n".
-                '        {if isset($id)}'."\n".
-                '            {modcallhooks hookobject=\'item\' hookaction=\'modify\' hookid="`$pubtype.tid`-`$core_pid`" module=\'Clip\'}'."\n".
+                '        {if $pubdata.id}'."\n".
+                '            {notifydisplayhooks eventname=\'clip.item.ui.edit\' type=\'ui.edit\' module=\'Clip\' subject=$pubdata}'."\n".
                 '        {else}'."\n".
-                '            {modcallhooks hookobject=\'item\' hookaction=\'new\' module=\'Clip\'}'."\n".
+                '            {notifydisplayhooks eventname=\'clip.item.ui.create\' type=\'ui.create\' module=\'Clip\'}'."\n".
                 '        {/if}'."\n".
                 "\n".
                 '        <div class="z-buttons z-formbuttons">'."\n".
