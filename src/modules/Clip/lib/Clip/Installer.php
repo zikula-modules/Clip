@@ -45,6 +45,9 @@ class Clip_Installer extends Zikula_Installer
         // try to create the upload directory
         $tmpdir = self::createTempDir();
 
+        // register the hooks
+        //HookUtil::registerHookProviderBundles($this->version);
+
         // register persistent event listeners (handlers)
         EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
 
@@ -86,6 +89,8 @@ class Clip_Installer extends Zikula_Installer
             case '0.4.7':
                 self::tempUpdate047();
             case '0.4.8':
+                // register the hooks
+                //HookUtil::registerHookProviderBundles($this->version);
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
         }

@@ -14,6 +14,28 @@
  */
 class Clip_Version extends Zikula_Version
 {
+    protected function setupHookBundles()
+    {
+        $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.item', $this->__('Clip Item Hooks'));
+        $bundle->addType('ui.view', 'clip.item.ui.view');
+        $bundle->addType('ui.create', 'clip.item.ui.create');
+        $bundle->addType('ui.edit', 'clip.item.ui.edit');
+        $bundle->addType('validate.create', 'clip.item.validate.create');
+        $bundle->addType('validate.update', 'clip.item.validate.update');
+        $bundle->addType('validate.delete', 'clip.item.validate.delete');
+        $bundle->addType('process.create', 'clip.item.process.create');
+        $bundle->addType('process.update', 'clip.item.process.update');
+        $bundle->addType('process.delete', 'clip.item.process.delete');
+
+        $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.config', $this->__('Clip Config'));
+        $bundle->addType('ui.edit', 'clip.config.ui.edit');
+        $bundle->addType('validate.update', 'clip.config.validate.update');
+        $bundle->addType('process.update', 'clip.config.process.update');
+        $this->addHookSubscriberBundle($bundle);
+
+        // TODO register filter hooks
+    }
+
     public function getMetaData()
     {
         $meta = array();
