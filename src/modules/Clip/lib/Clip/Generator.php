@@ -175,7 +175,7 @@ class Clip_Generator
         // add the Hooks support for display
         $template_code .= '</div>'."\n".
                 "\n".
-                '{notifydisplayhooks eventname=\'clip.item.ui.view\' type=\'ui.view\' subject=$pubdata module=\'Clip\'}'.
+                '{notifydisplayhooks eventname=\'clip.item.ui.view\' subject=$pubdata module=\'Clip\'}'.
                 "\n";
 
         // if the template is a public output
@@ -304,9 +304,9 @@ class Clip_Generator
                 '        </fieldset>'."\n".
                 "\n".
                 '        {if $pubdata.id}'."\n".
-                '            {notifydisplayhooks eventname=\'clip.item.ui.edit\' type=\'ui.edit\' module=\'Clip\' subject=$pubdata}'."\n".
+                '            {notifydisplayhooks eventname=\'clip.item.ui.edit\' module=\'Clip\' subject=$pubdata}'."\n".
                 '        {else}'."\n".
-                '            {notifydisplayhooks eventname=\'clip.item.ui.create\' type=\'ui.create\' module=\'Clip\'}'."\n".
+                '            {notifydisplayhooks eventname=\'clip.item.ui.create\' module=\'Clip\'}'."\n".
                 '        {/if}'."\n".
                 "\n".
                 '        <div class="z-buttons z-formbuttons">'."\n".

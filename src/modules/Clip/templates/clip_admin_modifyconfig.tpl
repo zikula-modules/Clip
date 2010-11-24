@@ -52,7 +52,7 @@
             </div>
         </fieldset>
 
-        {notifydisplayhooks eventname='clip.config.ui.edit' type='ui.edit' module='Clip' subject=$modvars.Clip}
+        {notifydisplayhooks eventname='clip.config.ui.edit' module='Clip' subject=$modvars.Clip}
 
         <div class="z-buttons z-formbuttons">
             {formbutton id='update' commandName='update' __text='Save' class='z-bt-ok'}
