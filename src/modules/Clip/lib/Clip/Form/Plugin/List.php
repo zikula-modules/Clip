@@ -19,6 +19,8 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
 
     function setup()
     {
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+        
         //! field type name
         $this->pluginTitle = $this->__('List');
     }

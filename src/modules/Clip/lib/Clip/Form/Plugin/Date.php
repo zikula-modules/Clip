@@ -19,6 +19,8 @@ class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
 
     function setup()
     {
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+        
         //! field type name
         $this->pluginTitle = $this->__('Date');
     }

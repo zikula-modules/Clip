@@ -19,6 +19,8 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
 
     function setup()
     {
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+        
         //! field type name
         $this->pluginTitle = $this->__('MultiCheckbox List');
     }
