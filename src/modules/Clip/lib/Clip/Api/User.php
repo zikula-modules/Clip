@@ -164,7 +164,7 @@ class Clip_Api_User extends Zikula_Api
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
                 $query->andWhere('(core_online = ? AND (core_author = ? OR core_showinlist = ?))', array(1, $uid, 1));
             } else {
-                $query->andWhere('core_online = ? AND core_showinlist = ?', 1);
+                $query->andWhere('core_online = ? AND core_showinlist = ?', array(1, 1));
             }
             $query->andWhere('core_indepot = ?', 0);
             $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
