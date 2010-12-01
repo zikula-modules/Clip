@@ -194,8 +194,10 @@ class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
         // config string: "(int)categoryID|(int)size"
         $typedata = explode('|', $typedata);
 
+        $default = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
+
         $this->config = array(
-            0 => !empty($typedata[0]) ? (int)$typedata[0] : 32, // TODO Category Registry?
+            0 => !empty($typedata[0]) ? (int)$typedata[0] : $default['id'],
             1 => (isset($typedata[1]) && !empty($typedata[1]) && $typedata[1] != '~') ? (int)$typedata[1] : null,
             2 => isset($typedata[2]) ? (bool)$typedata[2] : false
         );

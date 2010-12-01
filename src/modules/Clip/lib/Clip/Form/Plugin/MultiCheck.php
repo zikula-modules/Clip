@@ -156,8 +156,10 @@ class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
         // config string: "(int)categoryID|(int)editLink"
         $typedata = explode('|', $typedata);
 
+        $default = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
+
         $this->config = array(
-            'cat'  => $typedata[0] ? (int)$typedata[0] : 32,
+            'cat'  => $typedata[0] ? (int)$typedata[0] : $default['id'],
             'edit' => isset($typedata[1]) ? (bool)$typedata[1] : false
         );
     }
