@@ -18,6 +18,8 @@ class Clip_Form_Plugin_Float extends Form_Plugin_FloatInput
 
     function setup()
     {
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+        
         //! field type name
         $this->pluginTitle = $this->__('Float');
     }

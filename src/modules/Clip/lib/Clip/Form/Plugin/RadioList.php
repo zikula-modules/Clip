@@ -19,6 +19,8 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
 
     function setup()
     {
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+
         //! field type name
         $this->pluginTitle = $this->__('Radio list');
     }

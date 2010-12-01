@@ -16,6 +16,8 @@ class Clip_Form_Plugin_String extends Form_Plugin_TextInput
 
     function setup()
     {
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+        
         //! field type name
         $this->pluginTitle = $this->__('String');
     }

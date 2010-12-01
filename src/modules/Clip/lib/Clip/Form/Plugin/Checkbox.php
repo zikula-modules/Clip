@@ -16,6 +16,8 @@ class Clip_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
 
     function setup()
     {
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+        
         //! field type name
         $this->pluginTitle = $this->__('Checkbox');
     }

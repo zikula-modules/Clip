@@ -18,6 +18,8 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
 
     function setup()
     {
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+        
         //! field type name
         $this->pluginTitle = $this->__('File Upload');
     }
