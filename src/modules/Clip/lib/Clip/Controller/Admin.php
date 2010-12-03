@@ -98,6 +98,36 @@ class Clip_Controller_Admin extends Zikula_Controller
     }
 
     /**
+     * Export process.
+     */
+    public function clipexport()
+    {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
+            return LogUtil::registerPermissionError();
+        }
+
+        // return the form output
+        return FormUtil::newForm('Clip')
+               ->execute('clip_admin_export.tpl',
+                         new Clip_Form_Handler_Admin_Export());
+    }
+
+    /**
+     * Import process.
+     */
+    public function clipimport()
+    {
+        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
+            return LogUtil::registerPermissionError();
+        }
+
+        // return the form output
+        return FormUtil::newForm('Clip')
+               ->execute('clip_admin_import.tpl',
+                         new Clip_Form_Handler_Admin_Import());
+    }
+
+    /**
      * Admin publist screen.
      */
     public function publist($args=array())

@@ -285,9 +285,44 @@ class Clip_Util
     }
 
     /**
+     * Export/import formats selector generator.
+     *
+     * @param boolean $includeempty Include en ampty entry at the beggining (default: true).
+     *
+     * @return array Array of text, values to be used in a selector.
+     */
+    public static function getFormatsSelector($includeempty = true)
+    {
+        $array = array();
+
+        if ($includeempty) {
+            $array['empty'] = array(
+                'text'  => '',
+                'value' => ''
+            );
+        }
+
+        $formats = array('xml'/*, 'cvs', 'xls'*/);
+
+        foreach ($formats as $format) {
+            $array[$format] = array(
+                'text'  => strtoupper($format),
+                'value' => $format
+            );
+        }
+
+        $array = array_values(array_filter($array));
+
+        uasort($array, 'Clip_Util::_sortListByTitle');
+
+        return $array;
+    }
+
+    /**
      * Publication types selector generator.
      *
-     * @param integer $tid
+     * @param boolean $includetid Include the TID in the texts (default: false).
+     * @param boolean $includeempty Include en ampty entry at the beggining (default: true).
      *
      * @return array Array of text, values to be used in a selector.
      */
@@ -308,7 +343,7 @@ class Clip_Util
 
         foreach ($pubtypes as $tid => $pubtype) {
             $array[$tid] = array(
-                'text'  => __($pubtype['title'], $dom).($includetid ? " (tid $tid)" : ''),
+                'text'  => __($pubtype['title'], $dom).($includetid ? " ($tid)" : ''),
                 'value' => $tid
             );
         }

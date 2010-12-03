@@ -41,6 +41,14 @@ class Clip_Api_Admin extends Zikula_Api
                 'text' => $this->__('Edit publications')
             );
             $links[] = array (
+                'url'  => ModUtil::url('Clip', 'admin', 'clipexport'),
+                'text' => $this->__('Export')
+            );
+            $links[] = array (
+                'url'  => ModUtil::url('Clip', 'admin', 'clipimport'),
+                'text' => $this->__('Import')
+            );
+            $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'modifyconfig'),
                 'text' => $this->__('Settings')
             );
