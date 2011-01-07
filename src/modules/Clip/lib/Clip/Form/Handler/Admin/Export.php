@@ -78,34 +78,57 @@ class Clip_Form_Handler_Admin_Export extends Form_Handler
                 $batch = new Clip_Export_Batch($data);
 
                 // select and add the sections to export
+
                 // * pubtype
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
                 $query = $tbl->createQuery();
                 $query->where('tid = ?', $data['tid']);
                 $params = array(
+                    'idfield' => 'pid',
                     'name'    => 'pubtypes',
                     'rowname' => 'pubtype',
                     'query'   => $query
                 );
                 $section = new Clip_Export_Section($params);
                 $batch->addSection($section);
+
                 // * pubfields
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubfield');
                 $query = $tbl->createQuery();
                 $query->where('tid = ?', $data['tid']);
                 $params = array(
+                    'idfield' => 'id',
                     'name'    => 'pubfields',
                     'rowname' => 'pubfield',
                     'query'   => $query
                 );
                 $section = new Clip_Export_Section($params);
                 $batch->addSection($section);
+
                 // * pubdata
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$data['tid']);
                 $query = $tbl->createQuery();
                 $params = array(
+                    'idfield'  => 'id',
                     'name'     => 'pubdata'.$data['tid'],
                     'rowname'  => 'pub',
+                    'pagesize' => 30,
+                    'query'    => $query
+                );
+                $section = new Clip_Export_Section($params);
+                $batch->addSection($section);
+
+                // * workflows
+                DBUtil::loadDBUtilDoctrineModel('workflows', 'Clip_Model_Workflow');
+                $tbl = Doctrine_Core::getTable('Clip_Model_Workflow');
+                $query = $tbl->createQuery();
+                $query->where('module = ?', 'Clip')
+                      ->where('obj_table = ?', 'clip_pubdata'.$data['tid']);
+                $params = array(
+                    'idfield'  => 'id',
+                    'name'     => 'workflows'.$data['tid'],
+                    'rowname'  => 'workflow',
+                    'addfrom'  => array('pubdata'.$data['tid'] => 'obj_id'),
                     'pagesize' => 30,
                     'query'    => $query
                 );

@@ -14,12 +14,15 @@
  */
 class Clip_Export_Section
 {
+    protected $idfield = 'id';
     protected $name;
     protected $rowname;
     protected $pagesize = 0;
     protected $query;
+    protected $addfrom = array();
 
     protected $page = 0;
+    protected $ids = array();
 
     /**
      * Constructor.
@@ -37,10 +40,20 @@ class Clip_Export_Section
 
         // Iterate through all params: place known params in member variables
         foreach ($args as $name => $value) {
-            if (array_key_exists($name, $objInfo) && !in_array($name, array('page'))) {
+            if (array_key_exists($name, $objInfo) && !in_array($name, array('page', 'ids'))) {
                 $this->$name = $value;
             }
         }
+    }
+
+    /**
+     * IDs getter.
+     *
+     * @return array Array of exported IDs.
+     */
+    public function getIds()
+    {
+        return $this->ids;
     }
 
     /**
@@ -61,6 +74,38 @@ class Clip_Export_Section
     public function getRowname()
     {
         return $this->rowname;
+    }
+
+    /**
+     * Query getter.
+     *
+     * @return Doctrine_Query Query of this section.
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * Query setter.
+     *
+     * @return this
+     */
+    public function setQuery(Doctrine_Query $query)
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    /**
+     * Addition checker
+     *
+     * @return mixed The array of dependencies, or false otherwise.
+     */
+    public function needsIds()
+    {
+        // dependencies of the form {sectionName => fieldName}
+        return empty($this->addfrom) ? false : $this->addfrom;
     }
 
     /**
@@ -89,6 +134,15 @@ class Clip_Export_Section
             $this->query->limit($this->pagesize);
         }
 
-        return $this->query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+        $result = $this->query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+        // collect the ids
+        foreach ($result as $rec) {
+            if (isset($rec[$this->idfield])) {
+                $this->ids[] = $rec[$this->idfield];
+            }
+        }
+
+        return $result;
     }
 }

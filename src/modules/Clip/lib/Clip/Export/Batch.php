@@ -55,7 +55,7 @@ class Clip_Export_Batch
      */
     public function addSection(Clip_Export_Section $section)
     {
-        $this->sections[] = $section;
+        $this->sections[$section->getName()] = $section;
     }
 
     /**
@@ -71,7 +71,18 @@ class Clip_Export_Batch
         $this->output .= $formatter->insertHeader();
 
         $t = count($this->sections);
-        foreach ($this->sections as $section) {
+        foreach ($this->sections as &$section) {
+            // checks if there's a section dependency
+            if ($section->needsIds()) {
+                $query = $section->getQuery();
+                foreach ($section->needsIds() as $sname => $field) {
+                    if (isset($this->sections[$sname])) {
+                        $query->whereIn($field, array_unique($this->sections[$sname]->getIds()));
+                    }
+                }
+                $section->setQuery($query);
+            }
+            // perform the execution
             $this->output .= $formatter->formatSection($section);
             $t--;
             if ($t) {
