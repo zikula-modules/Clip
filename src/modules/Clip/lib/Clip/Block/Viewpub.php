@@ -73,7 +73,7 @@ class Clip_Block_Viewpub extends Zikula_Block
         $blockinfo['content'] = ModUtil::func('Clip', 'user', 'display',
                                               array('tid'                => $vars['tid'],
                                                     'pid'                => $vars['pid'],
-                                                    'template'           => 'block_pub_'.$template,
+                                                    'template'           => 'block_'.$template,
                                                     'checkPerm'          => true,
                                                     'cachelifetime'      => $cachelifetime));
 

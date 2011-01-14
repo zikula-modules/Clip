@@ -73,7 +73,7 @@ class Clip_Block_List extends Zikula_Block
 
         $blockinfo['content'] = ModUtil::func('Clip', 'user', 'view',
                                               array('tid'                => $vars['tid'],
-                                                    'template'           => 'block_list_'.$template,
+                                                    'template'           => 'block_'.$template,
                                                     'filter'             => $filterStr,
                                                     'orderby'            => $orderBy,
                                                     'itemsperpage'       => $listCount,
