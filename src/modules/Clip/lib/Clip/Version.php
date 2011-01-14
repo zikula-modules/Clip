@@ -23,13 +23,12 @@ class Clip_Version extends Zikula_Version
         $bundle->addType('process.delete', 'clip.item.process.delete');
         $this->registerHookSubscriberBundle($bundle);
 
-        $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.config', $this->__('Clip Config'));
-        $bundle->addType('ui.edit', 'clip.config.ui.edit');
-        $bundle->addType('validate.update', 'clip.config.validate.update');
-        $bundle->addType('process.update', 'clip.config.process.update');
-        $this->registerHookSubscriberBundle($bundle);*/
+        // filter hooks
+        $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.articlesfilter', $this->__('Filter articles'));
+        $bundle->addType('ui.filter', 'clip.hook.articlesfilter.filter');
+        $this->registerHookSubscriberBundle($bundle);
 
-        // TODO register filter hooks
+        */
     }
 
     public function getMetaData()
