@@ -59,7 +59,7 @@ class Clip_Controller_User extends Zikula_Controller
         // define the arguments
         $args = array(
             'tid'           => $args['tid'],
-            'template'      => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
+            'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : FormUtil::getPassedValue('startnum'),
@@ -181,7 +181,7 @@ class Clip_Controller_User extends Zikula_Controller
             'tid'           => $args['tid'],
             'pid'           => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
             'id'            => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
-            'template'      => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
+            'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
             'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
             'checkPerm'     => false, // API default
             'handleplugins' => true,  // API default
