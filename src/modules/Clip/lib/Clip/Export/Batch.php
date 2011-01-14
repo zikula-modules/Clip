@@ -43,7 +43,7 @@ class Clip_Export_Batch
             }
         }
 
-        $this->format = strtolower($this->format);
+        $this->format = strtoupper($this->format);
     }
 
     /**
@@ -65,7 +65,8 @@ class Clip_Export_Batch
      */
     public function execute()
     {
-        $classname = 'Clip_Export_Formatter_'.strtoupper($this->format);
+        // TODO validate existance of the formatter class
+        $classname = 'Clip_Export_Formatter_'.$this->format;
         $formatter = new $classname();
 
         $this->output .= $formatter->insertHeader();
@@ -110,7 +111,7 @@ class Clip_Export_Batch
                 header("Content-disposition: attachment; filename=$filename");
 
                 switch ($this->format) {
-                    case 'xml':
+                    case 'XML':
                         header('Content-type: text/xml');
                         print $this->output;
                         break;

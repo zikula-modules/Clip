@@ -32,7 +32,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         }
 
         // return the form output
-        return FormUtil::newForm('Clip')
+        return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_modifyconfig.tpl',
                          new Clip_Form_Handler_Admin_ModifyConfig());
     }
@@ -62,7 +62,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         }
 
         // return the form output
-        return FormUtil::newForm('Clip')
+        return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_pubtype.tpl',
                          new Clip_Form_Handler_Admin_Pubtypes());
     }
@@ -77,7 +77,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         }
 
         // return the form output
-        return FormUtil::newForm('Clip')
+        return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_pubfields.tpl',
                          new Clip_Form_Handler_Admin_Pubfields());
     }
@@ -92,7 +92,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         }
 
         // return the form output
-        return FormUtil::newForm('Clip')
+        return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_relations.tpl',
                          new Clip_Form_Handler_Admin_Relations());
     }
@@ -107,7 +107,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         }
 
         // return the form output
-        return FormUtil::newForm('Clip')
+        return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_export.tpl',
                          new Clip_Form_Handler_Admin_Export());
     }
@@ -122,7 +122,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         }
 
         // return the form output
-        return FormUtil::newForm('Clip')
+        return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_import.tpl',
                          new Clip_Form_Handler_Admin_Import());
     }

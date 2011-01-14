@@ -54,9 +54,9 @@ class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
 
         // if there's a value extract the category
         if (!empty($data) && is_numeric($data)) {
-            $cat  = CategoryUtil::getCategoryByID($data);
+            $cat = CategoryUtil::getCategoryByID($data);
 
-            if (empty($cat)) {
+            if (!$cat) {
                 return array();
             }
 
