@@ -87,6 +87,20 @@ class Clip_Util
     }
 
     /**
+     * Extract the TID from a string end.
+     *
+     * @param string $tablename
+     *
+     * @return integer Publication type ID.
+     */
+    public static function getStringPrefix($string)
+    {
+        $suffixnumber = self::getTidFromStringSuffix($string);
+
+        return str_replace($suffixnumber, '', $string);
+    }
+
+    /**
      * Format the orderby parameter.
      *
      * @param string $orderby
