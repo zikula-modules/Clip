@@ -542,6 +542,7 @@ class Clip_Model_Pubdata{$tid} extends Clip_Base_Pubdata
     }
 }
 ";
+
         return $code;
     }
 

@@ -53,13 +53,15 @@ class Clip_Form_Handler_Admin_Import extends Form_Handler
                 if (isset($data['file']['error']) && $data['file']['error'] !== 0) {
                     return $view->setErrorMsg(FileUtil::uploadErrorMsg($data['file']['error']));
                 }
+
                 // build the import instance
                 $batch = new Clip_Import_Batch($data);
 
                 if (!$batch->execute()) {
                     $view->errorMsgSet = true;
-                } die();
-
+                } else {
+                    LogUtil::registerStatus($this->__('Import done successfully.'));
+                }
                 break;
         }
 

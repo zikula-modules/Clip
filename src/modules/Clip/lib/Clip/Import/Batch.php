@@ -79,6 +79,10 @@ class Clip_Import_Batch
         $classname = 'Clip_Import_Parser_'.$this->format;
         $parser = new $classname($this->file);
 
+        // disable the Doctrine_Manager validation for the import
+        $manager = Doctrine_Manager::getInstance();
+        $manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
+
         return $parser->parseSections(array('Clip_Import_Batch', 'parseSection'));
     }
 
@@ -89,6 +93,72 @@ class Clip_Import_Batch
      */
     static public function parseSection($args)
     {
-        var_dump($args);
+        static $created = false;
+
+        switch (Clip_Util::getStringPrefix($args['section']))
+        {
+            case 'pubtypes':
+                $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
+                $obj = $tbl->getRecord();
+                $oid = $args['pubtype']['tid'];
+                unset($args['pubtype']['tid']);
+                // validate the non-duplication of the urlname
+                while ($tbl->findBy('urltitle', $args['pubtype']['urltitle'])->count())
+                {
+                    $args['pubtype']['urltitle']++;
+                }
+                // process the record
+                $obj->fromArray($args['pubtype']);
+                $obj->save();
+                self::$idmap['tids'][$oid] = $obj['tid'];
+                break;
+
+            case 'pubfields':
+                $tbl = Doctrine_Core::getTable('Clip_Model_Pubfield');
+                $obj = $tbl->getRecord();
+                $oid = $args['pubfield']['id'];
+                $tid = $args['pubfield']['tid'];
+                unset($args['pubfield']['id']);
+                // update the id refs
+                $args['pubfield']['tid'] = self::$idmap['tids'][$tid];
+                // process the record
+                $obj->fromArray($args['pubfield']);
+                $obj->save();
+                self::$idmap['fids'][$oid] = $obj['id'];
+                break;
+
+            case 'pubdata':
+                if (!$created) {
+                    // recreate models once the field has been added
+                    Clip_Generator::loadDataClasses(true);
+                    // create the new tables
+                    foreach (self::$idmap['tids'] as $tid) {
+                        Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
+                    }
+                    $created = true;
+                }
+                $tid = Clip_Util::getTidFromStringSuffix($args['section']);
+                $oid = $args['pub']['id'];
+                unset($args['pub']['id']);
+                // get a record instance of the new pub
+                $newtid = self::$idmap['tids'][$tid];
+                $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$newtid);
+                $obj = $tbl->getRecord();
+                // process the record
+                $obj->fromArray($args['pub']);
+                $obj->save();
+                self::$idmap['pids'][$oid] = $obj['id'];
+                break;
+
+            case 'workflows':
+                $tid = Clip_Util::getTidFromStringSuffix($args['section']);
+                $newtid = self::$idmap['tids'][$tid];
+                // update the new id refs
+                $args['workflow']['obj_id'] = self::$idmap['pids'][$args['workflow']['obj_id']];;
+                $args['workflow']['obj_table'] = 'clip_pubdata'.$newtid;
+                // handled with DBUtil
+                DBUtil::insertObject($args['workflow'], 'workflows');
+                break;
+        }
     }
 }
