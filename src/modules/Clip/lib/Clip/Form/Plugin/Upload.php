@@ -56,7 +56,11 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
      */
     function postRead($data, $field)
     {
-        $this->upl_arr = array();
+        $this->upl_arr = array(
+                 'orig_name' => '',
+                 'file_name' => '',
+                 'file_size' => 0
+        );
 
         // if there's some data, process it
         if (!empty($data)) {
@@ -73,12 +77,6 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
                          'orig_name' => $arrTypeData['orig_name'],
                          'file_name' => $url.'/'.$arrTypeData['file_name'],
                          'file_size' => isset($arrTypeData['file_size']) && $arrTypeData['file_size'] ? $arrTypeData['file_size'] : filesize("$path/$arrTypeData[file_name]")
-                );
-            } else {
-                $this->upl_arr = array(
-                         'orig_name' => '',
-                         'file_name' => '',
-                         'file_size' => 0
                 );
             }
         }

@@ -72,7 +72,13 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
     function postRead($data, $field)
     {
         // this plugin return an array by default
-        $upl_arr = array();
+        $upl_arr = array(
+                       'orig_name'    => '',
+                       'preUrl'       => '',
+                       'fullUrl'      => '',
+                       'thumbnailUrl' => '',
+                       'url'          => ''
+                   );
 
         // if the data is not empty, process it
         if (!empty($data)) {
@@ -91,14 +97,6 @@ class Clip_Form_Plugin_Image extends Form_Plugin_UploadInput
                                 'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
                                 'url'          => $url.'/'.$arrTypeData['file_name']
                 );
-            } else {
-                $upl_arr = array(
-                               'orig_name'    => '',
-                               'preUrl'       => '',
-                               'fullUrl'      => '',
-                               'thumbnailUrl' => '',
-                               'url'          => ''
-                           );
             }
         }
 
