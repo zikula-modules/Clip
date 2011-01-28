@@ -16,19 +16,16 @@ class Clip_Version extends Zikula_Version
 {
     protected function setupHookBundles()
     {
-        /*$bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.item', $this->__('Clip Item Hooks'));
-        $bundle->addType('ui.edit', 'clip.item.ui.edit');
-        $bundle->addType('validate.update', 'clip.item.validate.update');
-        $bundle->addType('process.update', 'clip.item.process.update');
-        $bundle->addType('process.delete', 'clip.item.process.delete');
+        $this->registerHookSubscriberBundle($bundle);
+        $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.item', $this->__('Clip Item Hooks'));
+        $bundle->addType('ui.view', 'clip.hook.item.ui.view');
+        $bundle->addType('ui.edit', 'clip.hook.item.ui.edit');
         $this->registerHookSubscriberBundle($bundle);
 
         // filter hooks
         $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.articlesfilter', $this->__('Filter articles'));
         $bundle->addType('ui.filter', 'clip.hook.articlesfilter.filter');
         $this->registerHookSubscriberBundle($bundle);
-
-        */
     }
 
     public function getMetaData()
@@ -39,8 +36,13 @@ class Clip_Version extends Zikula_Version
         $meta['oldnames']       = array('PageMaster');
         //! module name that appears in URL
         $meta['url']            = $this->__('clip');
-        $meta['version']        = '0.4.8';
+        $meta['version']        = '0.4.9';
         $meta['core_min']       = '1.3.0';
+
+        // Capabilities
+        $meta['capabilities'] = array(
+                HookUtil::SUBSCRIBER_CAPABLE => array('enabled' => true)
+        );
 
         // Permissions schema
         $meta['securityschema'] = array(
