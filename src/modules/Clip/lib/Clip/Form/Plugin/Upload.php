@@ -87,7 +87,7 @@ class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
     static function preSave($data, $field)
     {
         $id   = $data['id'];
-        $tid  = $data['tid'];
+        $tid  = $data['core_tid'];
         $data = $data[$field['name']];
 
         if ($id != NULL) {
