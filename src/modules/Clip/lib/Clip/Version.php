@@ -16,7 +16,6 @@ class Clip_Version extends Zikula_Version
 {
     protected function setupHookBundles()
     {
-        $this->registerHookSubscriberBundle($bundle);
         $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.item', $this->__('Clip Item Hooks'));
         $bundle->addType('ui.view', 'clip.hook.item.ui.view');
         $bundle->addType('ui.edit', 'clip.hook.item.ui.edit');
