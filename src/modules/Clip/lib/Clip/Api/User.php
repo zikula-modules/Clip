@@ -318,11 +318,14 @@ class Clip_Api_User extends Zikula_Api
         // adds the relations data
         $record = $tableObj->getRecordInstance();
         foreach ($record->getRelations($args['rel.onlyown']) as $ralias => $rinfo) {
-            $query->leftJoin("{$args['queryalias']}.{$ralias}");
+            if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
+                $query->leftJoin("{$args['queryalias']}.{$ralias}");
+            }
         }
 
         // fetch the publication
         $pubdata = $query->fetchOne();
+
         if (!$pubdata) {
             return false;
         }
