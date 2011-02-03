@@ -425,6 +425,7 @@ class Clip_Installer extends Zikula_Installer
         $fields = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection("fieldplugin = 'Pub'", 'tid');
 
         $tid = 0;
+        $relations = array();
         foreach ($fields as $field) {
             // assigns the related tids
             $tid1 = $field['tid'];
@@ -437,20 +438,132 @@ class Clip_Installer extends Zikula_Installer
                 continue;
             }
 
-            // setup the n:1 relation
-            $reldata = array(
-                'tid1'   => $tid1,
-                'alias1' => $pubtypes[$tid2],
-                'tid2'   => $tid2,
-                'alias2' => $pubtypes[$tid1],
-                'type'   => 2
+            $key = Clip_Util::getStringPrefix($field['name']);
+            $relations[$tid1][$tid2][$key]['ids'][$field['id']] = $field['name'];
+            $relations[$tid1][$tid2][$key]['info']  = array(
+                'title'       => $field['title'],
+                'description' => $field['description']
             );
-            $relation = new Clip_Model_Pubrelation();
-            $relation->fromArray($reldata);
-            $relation->save();
+        }
 
-            // rename the fields
-            DoctrineUtil::renameColumn('clip_pubdata'.$tid1, 'pm_'.$field['id'], 'pm_rel_'.$relation['id']);
+        Clip_Generator::loadDataClasses();
+        foreach ($relations as $tid1 => $y) {
+            foreach ($y as $tid2 => $x) {
+                foreach ($x as $fieldname => $v) {
+                    $reldata = array(
+                        'tid1'   => $tid1,
+                        'alias1' => $fieldname,
+                        'tid2'   => $tid2,
+                        'alias2' => $fieldname,
+                        'config' => array(
+                                          'title1' => $v['info']['title'],
+                                          'description1' => $v['info']['description']
+                                         )
+                    );
+                    $reldata['config'] = serialize($reldata['config']);
+                    $relation = new Clip_Model_Pubrelation();
+
+                    $tbl1 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid1);
+                    $tbl2 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid2);
+
+                    // check if we need a n:n relation
+                    if (count($v['ids']) > 1) {
+                        // setup the n:n relation
+                        $reldata['type'] = 3;
+                        $relation->fromArray($reldata);
+                        //$relation->save();
+
+                        // regenerate the models and create the n:n table
+                        Clip_Generator::evalrelations();
+                        $relclass = 'Clip_Model_Relation'.$relation['id'];
+                        //Doctrine_Core::getTable($relclass)->createTable();
+
+                        foreach ($v['ids'] as $fid => $name) {
+                            // map all the values to the new n:n table
+                            $where = array(
+                                $name.' IS NOT NULL',
+                                array($name.' != ?', 0),
+                                array('core_online = ?', 1)
+                            );
+                            $ids  = $tbl1->selectFieldArray($name, $where, '', false, 'id');
+
+                            // migrate the existing values if exists
+                            if ($ids) {
+                                $where = array(
+                                    array('core_pid IN ?', array_unique(array_values($ids))),
+                                    array('core_online = ?', 1)
+                                );
+                                $pids = $tbl2->selectFieldArray('id', $where, '', false, 'core_pid');
+
+                                // fill the relations map
+                                foreach ($ids as $id => $pid) {
+                                    if (!isset($pids[$pid])) {
+                                        $pids[$pid] = $tbl2->selectFieldBy('id', $pid, 'core_pid');
+                                    }
+
+                                    $rec = new $relclass;
+                                    $rec['rel_'.$relation['id'].'_1'] = $id;
+                                    $rec['rel_'.$relation['id'].'_2'] = $pids[$pid];
+                                    $rec->save();
+                                }
+                            }
+
+                            // drop the field
+                            DoctrineUtil::dropColumn('clip_pubdata'.$tid1, 'pm_'.$fid);
+                        }
+                    } else {
+                        // setup the n:1 or 1:1 relation
+                        foreach ($v['ids'] as $id => $name) {
+                            // update all the zero values to NULL
+                            $q = $tbl1->createQuery();
+                            $q->update()
+                              ->set($name, 'NULL')
+                              ->where($name.' = 0')
+                              ->execute();
+
+                            $where = array(
+                                $name.' IS NOT NULL',
+                                array('core_online = ?', 1)
+                            );
+                            $ids  = $tbl1->selectFieldArray($name, $where, '', false, 'id');
+
+                            // check if 1:1 is possible and enough
+                            if (count($ids) == count(array_unique($ids))) {
+                                $reldata['type'] = 0;
+                            } else {
+                                $reldata['type'] = 2;
+                            }
+
+                            if ($ids) {
+                                $where = array(
+                                    'whereIn' => array('core_pid', array_unique(array_values($ids))),
+                                    array('core_online = ?', 1)
+                                );
+                                $pids = $tbl2->selectFieldArray('id', $where, '', false, 'core_pid');
+
+                                // updates the PIDs to IDs
+                                foreach ($ids as $id => $pid) {
+                                    if (!isset($pids[$pid])) {
+                                        $pids[$pid] = $tbl2->selectFieldBy('id', $pid, 'core_pid');
+                                    }
+
+                                    $q = $tbl1->createQuery();
+                                    $q->update()
+                                      ->set($name, $pids[$pid])
+                                      ->where('id = ?', $id)
+                                      ->execute();
+                                }
+                            }
+
+                            // rename the field
+                            DoctrineUtil::renameColumn('clip_pubdata'.$tid1, 'pm_'.$id, 'pm_rel_'.$relation['id']);
+                        }
+
+                        $relation->fromArray($reldata);
+                        $relation->save();
+                    }
+                }
+            }
         }
 
         $fields->delete();

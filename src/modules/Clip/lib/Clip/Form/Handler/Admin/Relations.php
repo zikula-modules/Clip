@@ -168,7 +168,7 @@ class Clip_Form_Handler_Admin_Relations extends Form_Handler
                 // create/edit status messages
                 if (empty($this->id)) {
                     // create the table
-                    Clip_Generator::loadDataClasses(true);
+                    Clip_Generator::evalrelations();
                     if ($relation->type == 3) {
                         Doctrine_Core::getTable('Clip_Model_Relation'.$relation->id)->createTable();
                     }
