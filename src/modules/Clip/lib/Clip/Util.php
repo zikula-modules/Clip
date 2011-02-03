@@ -504,6 +504,8 @@ class Clip_Util
      */
     public static function getPlugin($pluginID)
     {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
         $sm = ServiceUtil::getManager();
 
         if (!$sm->hasService("clip.plugin.$pluginID")) {
@@ -511,13 +513,13 @@ class Clip_Util
 
             $pluginClass = self::getPluginClasses($pluginID);
             if (!$pluginClass) {
-                throw new InvalidArgumentException(__f('Plugin ID %s not found in the available plugins.', $pluginID));
+                throw new InvalidArgumentException(__f('Plugin ID [%s] not found in the available plugins.', $pluginID, $dom));
             }
 
             $params = array();
             $plugin = new $pluginClass($view, $params);
             if (!$plugin instanceof Form_Plugin) {
-                throw new InvalidArgumentException(__f('Plugin %s must be an instance of Form_Plugin.', $pluginName));
+                throw new InvalidArgumentException(__f('Plugin [%s] must be an instance of Form_Plugin.', $pluginName, $dom));
             }
             $plugin->setup();
 
