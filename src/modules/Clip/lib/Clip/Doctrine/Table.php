@@ -156,14 +156,17 @@ class Clip_Doctrine_Table extends Doctrine_Table
 
         // adds the where clause if present
         if (!empty($where)) {
-            $method = '';
-            foreach ((array)$where as $condition) {
-                $method = empty($method) ? 'where' : 'andWhere';
+            $i = 0;
+            foreach ((array)$where as $method => $condition) {
+                if (is_numeric($method)) {
+                    $method = ($i == 0) ? 'where' : 'andWhere';
+                }
                 if (is_array($condition)) {
                     $q->$method($condition[0], $condition[1]);
                 } else {
                     $q->$method($condition);
                 }
+                $i++;
             }
         }
 
@@ -270,14 +273,17 @@ class Clip_Doctrine_Table extends Doctrine_Table
 
         // adds the where clause if present
         if (!empty($where)) {
-            $method = '';
-            foreach ((array)$where as $condition) {
-                $method = empty($method) ? 'where' : 'andWhere';
+            $i = 0;
+            foreach ((array)$where as $method => $condition) {
+                if (is_numeric($method)) {
+                    $method = ($i == 0) ? 'where' : 'andWhere';
+                }
                 if (is_array($condition)) {
                     $q->$method($condition[0], $condition[1]);
                 } else {
                     $q->$method($condition);
                 }
+                $i++;
             }
         }
 
@@ -375,14 +381,17 @@ class Clip_Doctrine_Table extends Doctrine_Table
 
         // adds the where clause if present
         if (!empty($where)) {
-            $method = '';
-            foreach ((array)$where as $condition) {
-                $method = empty($method) ? 'where' : 'andWhere';
+            $i = 0;
+            foreach ((array)$where as $method => $condition) {
+                if (is_numeric($method)) {
+                    $method = ($i == 0) ? 'where' : 'andWhere';
+                }
                 if (is_array($condition)) {
                     $q->$method($condition[0], $condition[1]);
                 } else {
                     $q->$method($condition);
                 }
+                $i++;
             }
         }
 
