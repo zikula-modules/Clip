@@ -471,12 +471,12 @@ class Clip_Installer extends Zikula_Installer
                         // setup the n:n relation
                         $reldata['type'] = 3;
                         $relation->fromArray($reldata);
-                        //$relation->save();
+                        $relation->save();
 
                         // regenerate the models and create the n:n table
                         Clip_Generator::evalrelations();
                         $relclass = 'Clip_Model_Relation'.$relation['id'];
-                        //Doctrine_Core::getTable($relclass)->createTable();
+                        Doctrine_Core::getTable($relclass)->createTable();
 
                         foreach ($v['ids'] as $fid => $name) {
                             // map all the values to the new n:n table
@@ -513,7 +513,7 @@ class Clip_Installer extends Zikula_Installer
                         }
                     } else {
                         // setup the n:1 or 1:1 relation
-                        foreach ($v['ids'] as $id => $name) {
+                        foreach ($v['ids'] as $fid => $name) {
                             // update all the zero values to NULL
                             $q = $tbl1->createQuery();
                             $q->update()
@@ -534,6 +534,9 @@ class Clip_Installer extends Zikula_Installer
                                 $reldata['type'] = 2;
                             }
 
+                            $relation->fromArray($reldata);
+                            $relation->save();
+
                             if ($ids) {
                                 $where = array(
                                     'whereIn' => array('core_pid', array_unique(array_values($ids))),
@@ -547,6 +550,10 @@ class Clip_Installer extends Zikula_Installer
                                         $pids[$pid] = $tbl2->selectFieldBy('id', $pid, 'core_pid');
                                     }
 
+                                    if (!$pids[$pid]) {
+                                        continue;
+                                    }
+
                                     $q = $tbl1->createQuery();
                                     $q->update()
                                       ->set($name, $pids[$pid])
@@ -556,11 +563,8 @@ class Clip_Installer extends Zikula_Installer
                             }
 
                             // rename the field
-                            DoctrineUtil::renameColumn('clip_pubdata'.$tid1, 'pm_'.$id, 'pm_rel_'.$relation['id']);
+                            DoctrineUtil::renameColumn('clip_pubdata'.$tid1, 'pm_'.$fid, 'pm_rel_'.$relation['id']);
                         }
-
-                        $relation->fromArray($reldata);
-                        $relation->save();
                     }
                 }
             }
