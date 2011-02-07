@@ -10,19 +10,53 @@
         {clip_admin_submenu tid=$tid}
     {/if}
 
-    <div class="z-form">
+    {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
+    <div class="z-list-relations">
         <fieldset>
             <legend>{gt text='Relations'}</legend>
 
+            <span class="z-nowrap">
+                {formlabel for='tid1' text='Filter by owner'}
+                {formdropdownlist items=$typeselector id='tid1' group='filter'}
+            </span>
+            <span class="z-nowrap">
+                {formdropdownlist items=$ops id='op' group='filter'}
+            </span>
+            <span class="z-nowrap">
+                {formlabel for='tid2' text='related'}
+                {formdropdownlist items=$typeselector id='tid2' group='filter'}
+            </span>
+            <span class="z-nowrap z-buttons">
+                {formbutton commandName='filter' __text='Filter' class='z-bt-small'}
+                {formbutton commandName='clear' __text='Clear' class='z-bt-small'}
+            </span>
+
+            {if $filter.tid1 OR $filter.tid2}
+                <div class="z-warningmsg">
+                {if $filter.tid1 AND $filter.tid2}
+                    {gt text=$filter.op assign='op'}
+                    {gt text='List filtered by [%1$s] as Owner %2$s [%3$s] as Related' tag1=$pubtypes[$filter.tid1].title tag2=$op tag3=$pubtypes[$filter.tid2].title}
+                {elseif $filter.tid1}
+                    {gt text='List filtered by [%s] as Owner' tag1=$pubtypes[$filter.tid1].title}
+                {elseif $filter.tid2}
+                    {gt text='List filtered by [%s] as Related' tag1=$pubtypes[$filter.tid2].title}
+                {/if}
+                </div>
+            {/if}
+
             <ul id="relationslist" class="z-itemlist">
                 <li id="relationslistheader" class="relationslistheader z-itemheader z-clearfix">
-                    <span class="z-itemcell z-w45 z-right">{gt text='Owning side'}&nbsp;&nbsp;</span>
-                    <span class="z-itemcell z-w45">{gt text='Related side'}</span>
+                    <span class="z-itemcell z-w10">{gt text='ID'}</span>
+                    <span class="z-itemcell z-w40 z-right">{gt text='Owning side'}&nbsp;&nbsp;</span>
+                    <span class="z-itemcell z-w40">{gt text='Related side'}</span>
                     <span class="z-itemcell z-w10">{gt text='Actions'}</span>
                 </li>
                 {foreach from=$relations item='item' name='relation'}
                 <li id="relations_{$item.id}" class="{cycle name='relationslist' values='z-odd,z-even'} z-clearfix">
-                    <span class="z-itemcell z-w45 z-right">
+                    <span class="z-itemcell z-w10">
+                       {$item.id}
+                    </span>
+                    <span class="z-itemcell z-w40 z-right">
                         {if $item.type lt 2}
                             {gt text='One <strong>%s</strong>' tag1=$pubtypes[$item.tid1]->title|safetext}
                         {else}
@@ -30,7 +64,7 @@
                         {/if}
                         &nbsp;
                     </span>
-                    <span class="z-itemcell z-w45">
+                    <span class="z-itemcell z-w40">
                         {if $item.type%2 eq 0}
                             {gt text='has One <strong>%s</strong>' tag1=$pubtypes[$item.tid2]->title|safetext}
                         {else}
@@ -50,8 +84,7 @@
         </fieldset>
     </div>
 
-    {form cssClass='z-form z-form-relations' enctype='application/x-www-form-urlencoded'}
-    <div>
+    <div class="z-form-relations">
         {formvalidationsummary}
         <fieldset>
             {if isset($relation)}
