@@ -72,7 +72,7 @@
                         {/if}
                     </span>
                     <span class="z-itemcell z-w10">
-                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid fragment='form'}">
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.tid1 op=$filter.op tid2=$filter.tid2 fragment='form'}">
                             {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     </span>
@@ -98,16 +98,53 @@
                 {formdropdownlist items=$typeselector id='tid1' group='relation'}
                 {formdropdownlist items=$reltypes.1 id='type2' group='relation'}
                 {formdropdownlist items=$typeselector id='tid2' group='relation'}
+                {if isset($relation)}
+                <div class="z-warningmsg">
+                    {gt text='Changing the definition may lead to lose existing data.'}
+                </div>
+                {/if}
             </div>
-            <div class="z-formrow">
-                {formlabel for='alias1' text='Alias1' mandatorysym=true}
-                {formtextinput id='alias1' group='relation' maxLength='100' mandatory=true}
-                <div class="z-formnote">{gt text='Alias to use for the owning pubtype.'}</div>
+            <div class="z-informationmsg">
+                {gettext}
+                Explanation of the side details:
+                <ul>
+                    <li><strong>Alias</strong>: Used as a field name on the publication code. i.e. $pubdata.Alias1</li>
+                    <li><strong>Title</strong>: Used in the user side forms as the public name of the relation.</li>
+                    <li><strong>Description</strong>: Also used in the forms as the tooltip.</li>
+                </ul>
+                {/gettext}
             </div>
-            <div class="z-formrow">
-                {formlabel for='alias2' text='Alias2' mandatorysym=true}
-                {formtextinput id='alias2' group='relation' maxLength='100' mandatory=true}
-                <div class="z-formnote">{gt text='Alias to use for the foreign pubtype.'}</div>
+            <div class="z-linear" style="padding-top: 1em">
+                <fieldset class="z-floatleft z-w45">
+                    <legend>{gt text='Owning side'}</legend>
+                    <div class="z-formrow">
+                        {formlabel for='alias1' __text='Alias' mandatorysym=true}
+                        {formtextinput id='alias1' group='relation' maxLength='100' mandatory=true}
+                    </div>
+                    <div class="z-formrow">
+                        {formlabel for='title1' __text='Title' mandatorysym=true}
+                        {formtextinput id='title1' group='relation' maxLength='100' mandatory=true}
+                    </div>
+                    <div class="z-formrow">
+                        {formlabel for='description1' __text='Description'}
+                        {formtextinput id='description1' maxLength='4000' group='relation'}
+                    </div>
+                </fieldset>
+                <fieldset class="z-floatright z-w45">
+                    <legend>{gt text='Related side'}</legend>
+                    <div class="z-formrow">
+                        {formlabel for='alias2' __text='Alias' mandatorysym=true}
+                        {formtextinput id='alias2' group='relation' maxLength='100' mandatory=true}
+                    </div>
+                    <div class="z-formrow">
+                        {formlabel for='title2' __text='Title' mandatorysym=true}
+                        {formtextinput id='title2' group='relation' maxLength='100' mandatory=true}
+                    </div>
+                    <div class="z-formrow">
+                        {formlabel for='description2' __text='Description'}
+                        {formtextinput id='description2' maxLength='4000' group='relation'}
+                    </div>
+                </fieldset>
             </div>
         </fieldset>
 

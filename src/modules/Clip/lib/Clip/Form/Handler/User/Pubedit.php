@@ -98,12 +98,11 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
 
         // detect the relations
         $this->relations = array();
-        // TODO fix this value through config
-        $onlyown = false;
+        $onlyown = $this->pubtype['config']['edit']['onlyown'];
 
         foreach ($pubdata->getRelations($onlyown) as $key => $rel) {
             // set the data object
-            $data[$key] = ($pubdata->hasReference($key)) ? $pubdata[$key] : null;
+            $data[$key] = ($pubdata->reference($key)) ? $pubdata[$key] : null;
             // set additional relation fields
             $this->relations[$key] = array_merge($rel, array('alias' => $this->__($key)));
         }

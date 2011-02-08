@@ -16,7 +16,7 @@ class Clip_Model_PubrelationTable extends Clip_Doctrine_Table
 {
     public function getClipRelations()
     {
-        $relations = $this->selectCollection('', 'tid2')
+        $relations = $this->selectCollection(array(), 'tid2')
                           ->toArray();
 
         $result = array(

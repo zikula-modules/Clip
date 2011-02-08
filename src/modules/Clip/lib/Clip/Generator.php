@@ -762,6 +762,8 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             }
         }
 
-        $GLOBALS['dbtables'] = array_merge((array)$GLOBALS['dbtables'], (array)$tables);
+        $serviceManager = ServiceUtil::getManager();
+        $dbtables = $serviceManager['dbtables'];
+        $serviceManager['dbtables'] = array_merge($dbtables, (array)$tables);
     }
 }

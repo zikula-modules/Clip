@@ -36,7 +36,8 @@ class Clip_Form_Handler_Admin_Pubtypes extends Form_Handler
             }
 
             $view->assign('pubfields', $pubfields)
-                 ->assign('pubtype', $pubtype->toArray());
+                 ->assign('pubtype', $pubtype->toArray())
+                 ->assign('config', $this->configPreProcess($pubtype['config']));
         }
 
         // stores the return URL
@@ -67,6 +68,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Form_Handler
             $pubtype->assignIdentifier($this->tid);
         }
         $pubtype->fromArray($data['pubtype']);
+        $pubtype->config = $this->configPostProcess($data['config']);
 
         // handle the commands
         switch ($args['commandName'])
@@ -150,5 +152,37 @@ class Clip_Form_Handler_Admin_Pubtypes extends Form_Handler
         }
 
         return $view->redirect($this->returnurl);
+    }
+
+    /**
+     * Utility methods.
+     */
+    private function configPreProcess($config)
+    {
+        $result = array();
+
+        foreach ($config as $j => $c) {
+            foreach ($c as $k => $v) {
+                $result["$j.$k"] = (int)$v;
+            }
+        }
+
+        return $result;
+    }
+
+    private function configPostProcess($config)
+    {
+        $result = array();
+
+        foreach ($config as $k => $v) {
+            if (strpos($k, '.') !== false) {
+                list($k0, $k1) = explode('.', $k);
+                $result[$k0][$k1] = (bool)$v;
+            } else {
+                $result[$k] = (bool)$v;
+            }
+        }
+
+        return $result;
     }
 }

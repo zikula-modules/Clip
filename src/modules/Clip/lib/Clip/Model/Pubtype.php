@@ -87,6 +87,8 @@ class Clip_Model_Pubtype extends Doctrine_Record
             'notnull' => true,
             'default' => 0
         ));
+
+        $this->hasColumn('pm_config as config', 'clob');
     }
 
     /**
@@ -105,5 +107,56 @@ class Clip_Model_Pubtype extends Doctrine_Record
     public function getTableName()
     {
         return 'clip_pubdata'.$this->tid;
+    }
+
+    /**
+     * Saving hook.
+     *
+     * @return void
+     */
+    public function preSave($event)
+    {
+        if (is_array($this->config)) {
+            $this->config = serialize($this->config);
+        }
+    }
+
+    /**
+     * Hydrate hook.
+     *
+     * @return void
+     */
+    public function postHydrate(Doctrine_Event $event)
+    {
+        if (is_object($event->data) && isset($event->data->config)) {
+            if (!empty($event->data->config)) {
+                $event->data->config = unserialize($event->data->config);
+            } else {
+                $event->data->config = array(
+                    'view' => array(
+                        'load' => false,
+                        'onlyown' => true,
+                        'processrefs' => false,
+                        'checkperm' => false,
+                        'handleplugins' => false,
+                        'loadworkflow' => false
+                    ),
+                    'display' => array(
+                        'load' => true,
+                        'onlyown' => true,
+                        'processrefs' => true,
+                        'checkperm' => true,
+                        'handleplugins' => false,
+                        'loadworkflow' => false
+                    ),
+                    'edit' => array(
+                        'onlyown' => true
+                    )
+                );
+
+            }
+        } elseif (is_array($event->data) && isset($event->data['config']) && !empty($event->data['config'])) {
+            $event->data['config'] = unserialize($event->data['config']);
+        }
     }
 }

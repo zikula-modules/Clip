@@ -17,13 +17,13 @@ class Clip_Base_Pubdata extends Doctrine_Record
     /**
      * Record post process.
      *
-     * @param boolean $args['handleplugins']     Whether to parse the plugin fields.
-     * @param boolean $args['loadworkflow']      Whether to add the workflow information.
-     * @param boolean $args['checkrefs']         Whether to process the related records.
-     * @param boolean $args['rel.onlyown']       Whether to check the permissions.
-     * @param boolean $args['rel.checkperm']     Whether to check the permissions.
-     * @param boolean $args['rel.handleplugins'] Whether to parse the plugin fields.
-     * @param boolean $args['rel.loadworkflow']  Whether to add the workflow information.
+     * @param boolean $args['handleplugins']        Whether to parse the plugin fields.
+     * @param boolean $args['loadworkflow']         Whether to add the workflow information.
+     * @param boolean $args['rel']['processrefs']   Whether to process the related records.
+     * @param boolean $args['rel']['onlyown']       Whether to check the permissions.
+     * @param boolean $args['rel']['checkperm']     Whether to check the permissions.
+     * @param boolean $args['rel']['handleplugins'] Whether to parse the plugin fields.
+     * @param boolean $args['rel']['loadworkflow']  Whether to add the workflow information.
      *
      * @return void
      */
@@ -54,27 +54,35 @@ class Clip_Base_Pubdata extends Doctrine_Record
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
 
         // post process related records
-        if (isset($args['checkrefs']) && $args['checkrefs']) {
+        if (isset($args['rel']['processrefs']) && $args['rel']['processrefs']) {
             // new default values
             $args = array(
-                'checkrefs'         => false,
-                'handleplugins'     => isset($args['rel.handleplugins']) ? $args['rel.handleplugins'] : true,
-                'loadworkflow'      => isset($args['rel.loadworkflow']) ? $args['rel.loadworkflow'] : false,
-                'rel.onlyown'       => isset($args['rel.onlyown']) ? $args['rel.onlyown'] : false,
-                'rel.checkperm'     => isset($args['rel.checkperm']) ? $args['rel.checkperm'] : false,
-                'rel.handleplugins' => isset($args['rel.handleplugins']) ? $args['rel.handleplugins'] : true,
-                'rel.loadworkflow'  => isset($args['rel.loadworkflow']) ? $args['rel.loadworkflow'] : false
+                'handleplugins' => isset($args['rel']['handleplugins']) ? $args['rel']['handleplugins'] : false,
+                'loadworkflow'  => isset($args['rel']['loadworkflow']) ? $args['rel']['loadworkflow'] : false,
+                'rel' => array(
+                    'processrefs'   => false,
+                    'onlyown'       => isset($args['rel']['onlyown']) ? $args['rel']['onlyown'] : true,
+                    'checkperm'     => isset($args['rel']['checkperm']) ? $args['rel']['checkperm'] : false,
+                    'handleplugins' => isset($args['rel']['handleplugins']) ? $args['rel']['handleplugins'] : false,
+                    'loadworkflow'  => isset($args['rel']['loadworkflow']) ? $args['rel']['loadworkflow'] : false
+                )
             );
-            // loop the related records
-            foreach (array_keys($this->getRelations($args['rel.onlyown'])) as $alias) {
-                if ($this[$alias] instanceof Doctrine_Record) {
-                    if (!$args['rel.checkperm'] || SecurityUtil::checkPermission('clip:full:', "$this[core_tid]:$this[core_pid]:", ACCESS_READ)) {
-                        $this[$alias]->pubPostProcess($args);
-                    }
-                } elseif ($this[$alias] instanceof Doctrine_Collection) {
-                    foreach ($this[$alias] as $k => $v) {
-                        if (!$args['rel.checkperm'] || SecurityUtil::checkPermission('clip:full:', "$this[core_tid]:$this[core_pid]:", ACCESS_READ)) {
-                            $this[$alias][$k]->pubPostProcess($args);
+            // process the loaded related records
+            foreach ($this->getRelations($args['rel']['onlyown']) as $alias => $relation) {
+                if ($this->hasReference($alias)) {
+                    if ($this[$alias] instanceof Doctrine_Record) {
+                        if ($args['rel']['checkperm'] && !SecurityUtil::checkPermission('clip:full:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
+                            $this[$alias] = false;
+                        } else {
+                            $this[$alias]->pubPostProcess($args);
+                        }
+                    } elseif ($this[$alias] instanceof Doctrine_Collection) {
+                        foreach ($this[$alias] as $k => $v) {
+                            if ($args['rel']['checkperm'] && !SecurityUtil::checkPermission('clip:full:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
+                                unset($this[$alias][$k]);
+                            } else {
+                                $this[$alias][$k]->pubPostProcess($args);
+                            }
                         }
                     }
                 }
@@ -168,11 +176,13 @@ class Clip_Base_Pubdata extends Doctrine_Record
             $records = Clip_Util::getRelations($tid, false);
 
             foreach ($records as $relation) {
-                $relations[$relation['alias2']] = array(
-                    'tid'   => $relation['tid1'],
-                    'type'  => $relation['type'],
-                    'own'   => false
-                );
+                if (!isset($relations[$relation['alias2']])) {
+                    $relations[$relation['alias2']] = array(
+                        'tid'   => $relation['tid1'],
+                        'type'  => $relation['type'],
+                        'own'   => false
+                    );
+                }
             }
         }
 

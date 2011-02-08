@@ -92,6 +92,13 @@ class Clip_Installer extends Zikula_Installer
                 // register the hooks
                 HookUtil::registerHookSubscriberBundles($this->version);
             case '0.4.9':
+                if (!Doctrine_Core::getTable('Clip_Model_Pubtype')->changeTable(true)) {
+                    return '0.4.9';
+                }
+                if (!Doctrine_Core::getTable('Clip_Model_Pubrelation')->changeTable(true)) {
+                    return '0.4.9';
+                }
+            case '0.4.10':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
         }
@@ -453,14 +460,12 @@ class Clip_Installer extends Zikula_Installer
                     $reldata = array(
                         'tid1'   => $tid1,
                         'alias1' => $fieldname,
+                        'title1' => $v['info']['title'],
+                        'description1' => $v['info']['description'],
                         'tid2'   => $tid2,
-                        'alias2' => $fieldname,
-                        'config' => array(
-                                          'title1' => $v['info']['title'],
-                                          'description1' => $v['info']['description']
-                                         )
+                        'title2' => $v['info']['title'],
+                        'alias2' => $fieldname
                     );
-                    $reldata['config'] = serialize($reldata['config']);
                     $relation = new Clip_Model_Pubrelation();
 
                     $tbl1 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid1);
