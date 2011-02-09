@@ -12,7 +12,7 @@
 /**
  * Pubeditlist Block.
  */
-class Clip_Block_Pubeditlist extends Zikula_Block
+class Clip_Block_Pubeditlist extends Zikula_Controller_Block
 {
     /**
      * Initialise block.
