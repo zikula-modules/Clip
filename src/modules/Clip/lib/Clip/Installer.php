@@ -138,6 +138,8 @@ class Clip_Installer extends Zikula_Installer
             }
         }
 
+        // FIXME delete m2m relation tables
+
         // delete the category registry and modvars
         CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/clip', 'path');
         $this->delVars();
@@ -241,7 +243,9 @@ class Clip_Installer extends Zikula_Installer
         $tables['clip_pubfields'] = DBUtil::getLimitedTablename('clip_pubfields');
         $tables['clip_pubtypes']  = DBUtil::getLimitedTablename('clip_pubtypes');
 
-        $GLOBALS['dbtables'] = array_merge((array)$GLOBALS['dbtables'], (array)$tables);
+        $serviceManager = ServiceUtil::getManager();
+        $dbtables = $serviceManager['dbtables'];
+        $serviceManager['dbtables'] = array_merge($dbtables, (array)$tables);
 
         $existingtables = DBUtil::metaTables();
 
@@ -264,7 +268,7 @@ class Clip_Installer extends Zikula_Installer
             if (in_array(DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid), $existingtables)) {
                 $tables['pagemaster_pubdata'.$tid] = DBUtil::getLimitedTablename('pagemaster_pubdata'.$tid);
                 $tables['clip_pubdata'.$tid] = DBUtil::getLimitedTablename('clip_pubdata'.$tid);
-                $GLOBALS['dbtables'] = array_merge((array)$GLOBALS['dbtables'], (array)$tables);
+                $serviceManager['dbtables'] = array_merge($dbtables, (array)$tables);
                 DBUtil::renameTable('pagemaster_pubdata'.$tid, 'clip_pubdata'.$tid);
             }
         }
@@ -395,13 +399,25 @@ class Clip_Installer extends Zikula_Installer
         }
 
         // rename the filename/formname columns
-        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_filename', 'pm_outputset');
-        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_formname', 'pm_inputset');
+        $ptcols = array_keys(DBUtil::metaColumnNames('clip_pubtypes'));
+        if (in_array('pm_filename', $ptcols)) {
+            DoctrineUtil::renameColumn('clip_pubtypes', 'pm_filename', 'pm_outputset');
+        }
+        if (in_array('pm_formname', $ptcols)) {
+            DoctrineUtil::renameColumn('clip_pubtypes', 'pm_formname', 'pm_inputset');
+        }
+        // old installs presents this case sensitive error
+        if (in_array('pm_defaultFilter', $ptcols)) {
+            DoctrineUtil::renameColumn('clip_pubtypes', 'pm_defaultFilter', 'pm_defaultfilter');
+        }
+
+        if (!Doctrine_Core::getTable('Clip_Model_Pubtype')->changeTable()) {
+            return false;
+        }
 
         // fills the empty publish dates
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         if (!empty($pubtypes)) {
-            Clip_Generator::loadDataClasses();
             // update each pubdata table
             // and update the new field value with the good old pm_cr_uid
             $existingtables = DBUtil::metaTables();
@@ -413,8 +429,6 @@ class Clip_Installer extends Zikula_Installer
                     if (!DBUtil::executeSQL($sql)) {
                         return LogUtil::registerError($this->__('Error! Update attempt failed.'));
                     }
-                } else {
-                    Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
                 }
             }
         }
@@ -431,6 +445,7 @@ class Clip_Installer extends Zikula_Installer
 
         $fields = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection("fieldplugin = 'Pub'", 'tid');
 
+        // 1. map all the existing 'Publication' fields
         $tid = 0;
         $relations = array();
         foreach ($fields as $field) {
@@ -453,7 +468,7 @@ class Clip_Installer extends Zikula_Installer
             );
         }
 
-        Clip_Generator::loadDataClasses();
+        // 2. Create the new relations
         foreach ($relations as $tid1 => $y) {
             foreach ($y as $tid2 => $x) {
                 foreach ($x as $fieldname => $v) {
@@ -461,36 +476,69 @@ class Clip_Installer extends Zikula_Installer
                         'tid1'   => $tid1,
                         'alias1' => $fieldname,
                         'title1' => $v['info']['title'],
-                        'description1' => $v['info']['description'],
+                        'descr1' => $v['info']['description'],
                         'tid2'   => $tid2,
-                        'title2' => $v['info']['title'],
-                        'alias2' => $fieldname
+                        'alias2' => $pubtypes[$tid1].'_'.$fieldname,
+                        'title2' => $v['info']['title']
                     );
                     $relation = new Clip_Model_Pubrelation();
-
-                    $tbl1 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid1);
-                    $tbl2 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid2);
 
                     // check if we need a n:n relation
                     if (count($v['ids']) > 1) {
                         // setup the n:n relation
                         $reldata['type'] = 3;
-                        $relation->fromArray($reldata);
-                        $relation->save();
+                    } else {
+                        // setup the n:1 relation
+                        $reldata['type'] = 2;
+                    }
 
-                        // regenerate the models and create the n:n table
-                        Clip_Generator::evalrelations();
-                        $relclass = 'Clip_Model_Relation'.$relation['id'];
+                    $relation->fromArray($reldata);
+                    $relation->save();
+
+                    $relations[$tid1][$tid2][$fieldname]['relid'] = $relation['id'];
+                }
+            }
+        }
+        // 3. migrate the data to the relations
+        Clip_Generator::loadDataClasses();
+        // update the pubdata tables
+        $existingtables = DBUtil::metaTables();
+        foreach (array_keys($pubtypes) as $tid) {
+            $table = DBUtil::getLimitedTablename('clip_pubdata'.$tid);
+            if (!in_array($table, $existingtables)) {
+                Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
+            }
+        }
+        unset($existingtables);
+        // move the data and rename/drop the columns
+        $dbfields = array();
+        foreach ($relations as $tid1 => $y) {
+            foreach ($y as $tid2 => $x) {
+                foreach ($x as $fieldname => $v) {
+                    if (!isset($dbfields[$tid1])) {
+                        $dbfields[$tid1] = array_keys(DBUtil::metaColumnNames('clip_pubdata'.$tid1));
+                    }
+                    $tbl1 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid1);
+                    $tbl2 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid2);
+
+                    // process n:n relations
+                    if (count($v['ids']) > 1) {
+                        // create the n:n table
+                        $relclass = 'Clip_Model_Relation'.$v['relid'];
                         Doctrine_Core::getTable($relclass)->createTable();
 
                         foreach ($v['ids'] as $fid => $name) {
+                            // verify that the field exists
+                            if (!in_array('pm_'.$fid, $dbfields[$tid1])) {
+                                continue;
+                            }
                             // map all the values to the new n:n table
                             $where = array(
                                 $name.' IS NOT NULL',
                                 array($name.' != ?', 0),
                                 array('core_online = ?', 1)
                             );
-                            $ids  = $tbl1->selectFieldArray($name, $where, '', false, 'id');
+                            $ids = $tbl1->selectFieldArray($name, $where, '', false, 'id');
 
                             // migrate the existing values if exists
                             if ($ids) {
@@ -517,8 +565,12 @@ class Clip_Installer extends Zikula_Installer
                             DoctrineUtil::dropColumn('clip_pubdata'.$tid1, 'pm_'.$fid);
                         }
                     } else {
-                        // setup the n:1 or 1:1 relation
+                        // process the n:1 relation
                         foreach ($v['ids'] as $fid => $name) {
+                            // verify that the field exists
+                            if (!in_array('pm_'.$fid, $dbfields[$tid1])) {
+                                continue;
+                            }
                             // update all the zero values to NULL
                             $q = $tbl1->createQuery();
                             $q->update()
@@ -530,17 +582,7 @@ class Clip_Installer extends Zikula_Installer
                                 $name.' IS NOT NULL',
                                 array('core_online = ?', 1)
                             );
-                            $ids  = $tbl1->selectFieldArray($name, $where, '', false, 'id');
-
-                            // check if 1:1 is possible and enough
-                            if (count($ids) == count(array_unique($ids))) {
-                                $reldata['type'] = 0;
-                            } else {
-                                $reldata['type'] = 2;
-                            }
-
-                            $relation->fromArray($reldata);
-                            $relation->save();
+                            $ids = $tbl1->selectFieldArray($name, $where, '', false, 'id');
 
                             if ($ids) {
                                 $where = array(
@@ -568,12 +610,13 @@ class Clip_Installer extends Zikula_Installer
                             }
 
                             // rename the field
-                            DoctrineUtil::renameColumn('clip_pubdata'.$tid1, 'pm_'.$fid, 'pm_rel_'.$relation['id']);
+                            DoctrineUtil::renameColumn('clip_pubdata'.$tid1, 'pm_'.$fid, 'pm_rel_'.$v['relid']);
                         }
                     }
                 }
             }
         }
+        unset($dbfields);
 
         $fields->delete();
     }

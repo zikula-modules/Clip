@@ -104,7 +104,7 @@ class Clip_Form_Handler_User_Pubedit extends Form_Handler
             // set the data object
             $data[$key] = ($pubdata->reference($key)) ? $pubdata[$key] : null;
             // set additional relation fields
-            $this->relations[$key] = array_merge($rel, array('alias' => $this->__($key)));
+            $this->relations[$key] = $rel;
         }
 
         $view->assign('relations', $this->relations);

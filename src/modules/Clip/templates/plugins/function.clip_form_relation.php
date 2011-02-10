@@ -23,6 +23,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
     public $numitems;
     public $maxitems;
     public $minchars;
+    public $op;
 
     /**
      * Get filename for this plugin.
@@ -49,6 +50,9 @@ class ClipFormRelation extends Form_Plugin_TextInput
         }
 
         if (!is_null($this->relinfo)) {
+            // assign existing data
+            $this->relinfo['data'] = $view->_tpl_vars['pubdata'][$params['id']];
+
             // detects single or multiple relation
             $this->relinfo['single'] = $this->relinfo['own'] ? ($this->relinfo['type']%2 == 0 ? true : false) : ($this->relinfo['type'] <= 1 ? true : false);
         }
@@ -74,6 +78,8 @@ class ClipFormRelation extends Form_Plugin_TextInput
         $this->numitems = (isset($params['numitems']) && is_int($params['numitems'])) ? abs($params['numitems']) : 30;
         $this->maxitems = (isset($params['maxitems']) && is_int($params['maxitems'])) ? abs($params['maxitems']) : 20;
         $this->minchars = (isset($params['minchars']) && is_int($params['minchars'])) ? abs($params['minchars']) : 2;
+
+        $this->op = (isset($params['op']) && in_array($params['op'], array('search', 'likefirst', 'like'))) ? $params['op'] : 'likefirst';
     }
 
     /**
@@ -109,7 +115,8 @@ class ClipFormRelation extends Form_Plugin_TextInput
                                                     module: "Clip",
                                                     func: "autocomplete",
                                                     tid: '.$this->relinfo['tid'].',
-                                                    itemsperpage: '.$this->numitems.'
+                                                    itemsperpage: '.$this->numitems.',
+                                                    op: "'.$this->op.'"
                                                   },
                                                   minchars: '.$this->minchars.',
                                                   maxresults: '.$this->numitems.',
@@ -123,7 +130,9 @@ class ClipFormRelation extends Form_Plugin_TextInput
         // build the autocompleter output
         $typeDataHtml = '
         <div id="'.$this->id.'_div" class="z-auto-container">
-            <div class="z-auto-default">'.$this->_fn('Type the title of the related publication', 'Type the titles of the related publications', $this->relinfo['single'] ? 1 : 2, array()).'</div>
+            <div class="z-auto-default">'.
+                (!empty($this->relinfo['descr']) ? $this->relinfo['descr'] : $this->_fn('Type the title of the related publication', 'Type the titles of the related publications', $this->relinfo['single'] ? 1 : 2, array())).
+            '</div>
             <ul class="z-auto-feed">
                 ';
         if ($this->relinfo['single']) {

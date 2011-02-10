@@ -81,6 +81,7 @@ class Clip_Controller_Ajax extends Zikula_Controller
         $args = array(
             'tid'           => (int)$args['tid'],
             'keyword'       => FormUtil::getPassedValue('keyword', null, 'POST'),
+            'op'            => FormUtil::getPassedValue('op', 'likefirst', 'POST'),
             'filter'        => FormUtil::getPassedValue('filter', null, 'POST'),
             'orderby'       => FormUtil::getPassedValue('orderby', null, 'POST'),
             'startnum'      => FormUtil::getPassedValue('startnum', null, 'POST'),
@@ -99,7 +100,8 @@ class Clip_Controller_Ajax extends Zikula_Controller
 
         // piece needed by the autocompleter
         if (!empty($args['keyword'])) {
-            $args['filter'] = (empty($args['filter']) ? '' : $args['filter'].',')."$titlefield:likefirst:{$args['keyword']}";
+            $args['op'] = in_array($args['op'], array('search', 'likefirst', 'like')) ? $args['op'] : 'likefirst';
+            $args['filter'] = (empty($args['filter']) ? '' : $args['filter'].',')."$titlefield:{$args['op']}:{$args['keyword']}";
         }
         // orderby processing
         if (empty($args['orderby'])) {

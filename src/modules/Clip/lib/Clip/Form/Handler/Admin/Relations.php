@@ -188,9 +188,12 @@ class Clip_Form_Handler_Admin_Relations extends Form_Handler
                 }
 
                 // detect a type change for m2m before save
-                $previous = $tableObj->find($this->id);
-                if ($previous->type != $relation->type && $previous->type == 3) {
-                    Doctrine_Core::getTable('Clip_Model_Relation'.$this->id)->dropTable();
+                if (!empty($this->id)) {
+                    // TODO support relation definition transitions
+                    $previous = $tableObj->find($this->id);
+                    if ($previous->type != $relation->type && $previous->type == 3) {
+                        Doctrine_Core::getTable('Clip_Model_Relation'.$this->id)->dropTable();
+                    }
                 }
 
                 $relation->save();

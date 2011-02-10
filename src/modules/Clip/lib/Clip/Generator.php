@@ -260,8 +260,8 @@ class Clip_Generator
                 "\n".
                 '            {foreach from=$relations key=\'alias\' item=\'item\' name=\'relations\'}'."\n".
                 '            <div class="z-formrow">'."\n".
-                '                {formlabel for=$alias text=$item.alias}'."\n".
-                '                {clip_form_relation id=$alias relation=$item group=\'pubdata\'}'."\n".
+                '                {formlabel for=$alias text=$item.title}'."\n".
+                '                {clip_form_relation id=$alias relation=$item minchars=2 op=\'likefirst\' group=\'pubdata\'}'."\n".
                 '            </div>'."\n".
                 '            {/foreach}'."\n".
                 "\n".

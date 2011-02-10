@@ -42,7 +42,7 @@ class Clip_Model_Pubrelation extends Doctrine_Record
 
         $this->hasColumn('pm_title1 as title1', 'string', 100);
 
-        $this->hasColumn('pm_desc1 as description1', 'string', 4000);
+        $this->hasColumn('pm_desc1 as descr1', 'string', 4000);
 
         $this->hasColumn('pm_tid2 as tid2', 'integer', 4, array(
             'notnull' => true
@@ -54,7 +54,7 @@ class Clip_Model_Pubrelation extends Doctrine_Record
 
         $this->hasColumn('pm_title2 as title2', 'string', 100);
 
-        $this->hasColumn('pm_desc2 as description2', 'string', 4000);
+        $this->hasColumn('pm_desc2 as descr2', 'string', 4000);
     }
 
     /**

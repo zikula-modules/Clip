@@ -156,6 +156,8 @@ class Clip_Base_Pubdata extends Doctrine_Record
      */
     public function getRelations($onlyown = true)
     {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
         $tablename = $this->_table->getInternalTableName();
         $tid = Clip_Util::getTidFromStringSuffix($tablename);
 
@@ -167,6 +169,8 @@ class Clip_Base_Pubdata extends Doctrine_Record
             $relations[$relation['alias1']] = array(
                 'tid'   => $relation['tid2'],
                 'type'  => $relation['type'],
+                'title' => __($relation['title1'], $dom),
+                'descr' => __($relation['descr1'], $dom),
                 'own'   => true
             );
         }
@@ -180,6 +184,8 @@ class Clip_Base_Pubdata extends Doctrine_Record
                     $relations[$relation['alias2']] = array(
                         'tid'   => $relation['tid1'],
                         'type'  => $relation['type'],
+                        'title' => __($relation['title2'], $dom),
+                        'descr' => __($relation['descr2'], $dom),
                         'own'   => false
                     );
                 }

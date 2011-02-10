@@ -368,6 +368,7 @@ var FacebookList = Class.create(TextboxList,
       this.resultsshown = true;
       this.autoresults.setStyle({'display': 'block'}).update('');
       var regexp = null;
+      // TODO take in account the OP filter here
       if (this.options.get('wordMatch')) {
         regexp = new RegExp("(^|\\s)"+search, 'i')
       } else {

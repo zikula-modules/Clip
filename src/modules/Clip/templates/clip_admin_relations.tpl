@@ -72,7 +72,7 @@
                         {/if}
                     </span>
                     <span class="z-itemcell z-w10">
-                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.tid1 op=$filter.op tid2=$filter.tid2 fragment='form'}">
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.tid1 op=$filter.op tid2=$filter.tid2 fragment='relform'}">
                             {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     </span>
@@ -86,7 +86,7 @@
 
     <div class="z-form-relations">
         {formvalidationsummary}
-        <fieldset>
+        <fieldset id="relform">
             {if isset($relation)}
                 <legend>{gt text='Edit relation'}</legend>
             {else}
@@ -110,7 +110,7 @@
                 <ul>
                     <li><strong>Alias</strong>: Used as a field name on the publication code. i.e. $pubdata.Alias1</li>
                     <li><strong>Title</strong>: Used in the user side forms as the public name of the relation.</li>
-                    <li><strong>Description</strong>: Also used in the forms as the tooltip.</li>
+                    <li><strong>Description</strong>: Also used in the forms as the autocompleter tooltip.</li>
                 </ul>
                 {/gettext}
             </div>

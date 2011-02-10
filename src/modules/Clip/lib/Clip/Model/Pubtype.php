@@ -129,7 +129,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
     public function postHydrate(Doctrine_Event $event)
     {
         if (is_object($event->data) && isset($event->data->config)) {
-            if (!empty($event->data->config)) {
+            if (!empty($event->data->config) && is_string($event->data->config)) {
                 $event->data->config = unserialize($event->data->config);
             } else {
                 $event->data->config = array(
@@ -155,7 +155,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
                 );
 
             }
-        } elseif (is_array($event->data) && isset($event->data['config']) && !empty($event->data['config'])) {
+        } elseif (is_array($event->data) && isset($event->data['config']) && !empty($event->data['config']) && is_string($event->data['config'])) {
             $event->data['config'] = unserialize($event->data['config']);
         }
     }
