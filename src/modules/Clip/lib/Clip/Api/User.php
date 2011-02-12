@@ -49,7 +49,7 @@ class Clip_Api_User extends Zikula_Api
 
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
-        $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : false;
+        $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : true;
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : true;
         $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
         // define the arguments
@@ -57,8 +57,8 @@ class Clip_Api_User extends Zikula_Api
             'tid'           => (int)$args['tid'],
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : null,
-            'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : 1,
-            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)$args['itemsperpage'] : 0,
+            'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)abs($args['startnum']) : 1,
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)abs($args['itemsperpage']) : 0,
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],

@@ -40,6 +40,7 @@
     </tbody>
 </table>
 
-{if $pager.itemsperpage neq 0}
-    {pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum'}
+{if $pager.itemsperpage neq $modvars.Clip.maxperpage}
+    {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage}
+    {*pager display='startnum' posvar='startnum' rowcount=$pager.numitems limit=$pager.itemsperpage*}
 {/if}

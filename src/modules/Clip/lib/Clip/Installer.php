@@ -499,6 +499,7 @@ class Clip_Installer extends Zikula_Installer
                 }
             }
         }
+
         // 3. migrate the data to the relations
         Clip_Generator::loadDataClasses();
         // update the pubdata tables
@@ -510,6 +511,7 @@ class Clip_Installer extends Zikula_Installer
             }
         }
         unset($existingtables);
+
         // move the data and rename/drop the columns
         $dbfields = array();
         foreach ($relations as $tid1 => $y) {
