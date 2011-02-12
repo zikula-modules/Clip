@@ -4,8 +4,8 @@
         {strip}
         {checkpermissionblock component='clip::' instance="::" level=ACCESS_ADMIN}
         <span>
-            <a href="{modurl modname='Clip' type='admin' func='pubtypes'}">
-                {img width='12' height='12' modname='core' src='mydocuments.gif' set='icons/extrasmall' alt='' __title='Admin panel'}
+            <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}">
+                {img width='12' height='12' modname='core' src='mydocuments.gif' set='icons/extrasmall' alt='' __title='Publication admin panel'}
             </a>
         </span>
         {/checkpermissionblock}

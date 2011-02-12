@@ -2,7 +2,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='run.gif' set='icons/large' __alt='Manage Relations'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='agt_softwareD.gif' set='icons/large' __alt='Manage Relations'}</div>
 
     <h2>{gt text='Manage Relations'}</h2>
 

@@ -18,7 +18,7 @@
                 <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">{$item[$pubtype.titlefield]}</a>
                 <span class="z-sub z-floatright">({gt text='%s read' plural='%s reads' count=$item.core_hitcount tag1=$item.core_hitcount})</span>
             </td>
-            <td class="z-right">
+            <td class="z-right z-nowrap">
                 {strip}
                 <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">
                     {img modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View'}

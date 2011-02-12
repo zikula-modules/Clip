@@ -188,9 +188,9 @@ class Clip_Controller_User extends Zikula_Controller
             'id'            => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
             'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
             'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
-            'checkPerm'     => false, // API default
-            'handleplugins' => true,  // API default
-            'loadworkflow'  => true   // API default
+            'checkperm'     => false, // API
+            'handleplugins' => true,  // API
+            'loadworkflow'  => true   // API
         );
 
         // post validation
@@ -307,10 +307,10 @@ class Clip_Controller_User extends Zikula_Controller
     /**
      * Edit/Create a publication.
      *
-     * @param integer $args['tid']           ID of the publication type.
-     * @param integer $args['pid']           ID of the publication.
-     * @param integer $args['id']            ID of the publication revision (optional if pid is used).
-     * @param string  $args['template']      Custom publication type template to use.
+     * @param integer $args['tid']      ID of the publication type.
+     * @param integer $args['pid']      ID of the publication.
+     * @param integer $args['id']       ID of the publication revision (optional if pid is used).
+     * @param string  $args['template'] Custom publication type template to use.
      *
      * @return Publication output.
      */
@@ -332,13 +332,10 @@ class Clip_Controller_User extends Zikula_Controller
         //// Parameters
         // define the arguments
         $args = array(
-            'tid'           => $args['tid'],
-            'pid'           => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
-            'id'            => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
-            'template'      => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
-            'checkPerm'     => false, // API default
-            'handleplugins' => true,  // API default
-            'loadworkflow'  => true   // API default
+            'tid'      => $args['tid'],
+            'pid'      => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
+            'id'       => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
+            'template' => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
         );
 
         //// Misc values
@@ -453,9 +450,9 @@ class Clip_Controller_User extends Zikula_Controller
             'id'            => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'),
             'commandName'   => isset($args['commandName']) ? $args['commandName'] : FormUtil::getPassedValue('commandName'),
             'goto'          => isset($args['goto']) ? $args['goto'] : FormUtil::getPassedValue('goto'),
-            'checkPerm'     => false, // API default
-            'handleplugins' => true,  // API default
-            'loadworkflow'  => true   // API default
+            'checkPerm'     => false, // API
+            'handleplugins' => true,  // API
+            'loadworkflow'  => true   // API
         );
 
         // post validation
