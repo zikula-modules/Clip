@@ -43,17 +43,6 @@ class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
     {
         $this->textMode = 'multiline';
 
-        if ($this->config['usescribite'] && ModUtil::available('scribite')) {
-            static $scribite_arr;
-            $scribite_arr[] = $this->id;
-            $scribite = ModUtil::func('scribite', 'user', 'loader',
-                                  array('modulename' => 'Clip',
-                                        'editor'     => 'xinha',
-                                        'areas'      => $scribite_arr));
-
-            PageUtil::addVar('rawtext', $scribite);
-        }
-
         return parent::render($view);
     }
 
@@ -111,7 +100,12 @@ class Clip_Form_Plugin_Text extends Form_Plugin_TextInput
      */
     function parseConfig($typedata='')
     {
-        // config string: "(bool)usescribite"
-        $this->config['usescribite'] = (bool)$typedata;
+        // config: "{(bool)usescribite, (string)editor}"
+        $typedata = explode('|', $typedata);
+
+        $this->config = array(
+            'usescribite' => $typedata[0] !== '' ? (bool)$typedata[0] : false,
+            'editor' => isset($typedata[1]) ? $typedata[1] : '-'
+        );
     }
 }

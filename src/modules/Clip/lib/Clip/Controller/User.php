@@ -376,9 +376,9 @@ class Clip_Controller_User extends Zikula_Controller
 
         //// Build the output
         // create the output object
-        $render = FormUtil::newForm('Clip', $this);
-
-        $render->assign('pubtype', $pubtype)
+        $render = new Clip_Form_View('Clip');
+        $render->assign('controller', $this)
+               ->assign('pubtype', $pubtype)
                ->add_core_data();
 
         // resolve the template to use
