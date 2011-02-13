@@ -12,7 +12,7 @@
 /**
  * Form handler to manage data export.
  */
-class Clip_Form_Handler_Admin_Export extends Form_Handler
+class Clip_Form_Handler_Admin_Export extends Zikula_Form_Handler
 {
     private $returnurl;
 

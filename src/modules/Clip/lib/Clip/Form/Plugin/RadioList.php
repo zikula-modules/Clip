@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
+class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
 {
     public $pluginTitle;
     public $columnDef   = 'I4';
@@ -35,7 +35,7 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
      */
     public function pluginRegister(&$params, &$view)
     {
-        $this->setDomain($view->getDomain()); // TODO remove, Form_Plugin responsability
+        $this->setDomain($view->getDomain());
         $this->setup();
 
         // copy parameters to member variables and attribute set
@@ -84,14 +84,14 @@ class Clip_Form_Plugin_RadioList extends Form_Plugin_CategorySelector
             $params['groupName'] = $this->inputName;
             $params['value']     = $item['value'];
 
-            $output .= $view->registerPlugin('Form_Plugin_RadioButton', $params);
+            $output .= $view->registerPlugin('Zikula_Form_Plugin_RadioButton', $params);
 
             $args = array(
                 'for'  => $params['id'],
                 'text' => $item['text']
             );
 
-            $output .= $view->registerPlugin('Form_Plugin_Label', $args);
+            $output .= $view->registerPlugin('Zikula_Form_Plugin_Label', $args);
 
             $output .= '</div>'."\n";
         }

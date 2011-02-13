@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_Int extends Form_Plugin_IntInput
+class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
 {
     public $pluginTitle;
     public $columnDef = 'I4';

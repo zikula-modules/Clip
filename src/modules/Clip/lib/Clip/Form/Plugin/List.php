@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_List extends Form_Plugin_CategorySelector
+class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
 {
     public $pluginTitle;
     public $columnDef   = 'I4';

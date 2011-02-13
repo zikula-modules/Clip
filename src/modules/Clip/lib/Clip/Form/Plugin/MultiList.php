@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_MultiList extends Form_Plugin_CategorySelector
+class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
 {
     public $pluginTitle;
     public $columnDef   = 'C(512)';
