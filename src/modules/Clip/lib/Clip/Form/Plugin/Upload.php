@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_Upload extends Form_Plugin_UploadInput
+class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 {
     public $pluginTitle;
     public $columnDef = 'C(1024)';

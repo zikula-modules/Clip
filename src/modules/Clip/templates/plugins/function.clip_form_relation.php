@@ -16,7 +16,7 @@ function smarty_function_clip_form_relation($params, &$view) {
     return $view->registerPlugin('ClipFormRelation', $params);
 }
 
-class ClipFormRelation extends Form_Plugin_TextInput
+class ClipFormRelation extends Zikula_Form_Plugin_TextInput
 {
     public $relinfo;
 
@@ -39,7 +39,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
     /**
      * Constructor.
      *
-     * @param Form_View $view    Reference to Form_View object.
+     * @param Zikula_Form_View $view    Reference to Zikula_Form_View object.
      * @param array     &$params Parameters passed from the Smarty plugin function.
      */
     function __construct($view, &$params)
@@ -65,10 +65,10 @@ class ClipFormRelation extends Form_Plugin_TextInput
     /**
      * Create event handler.
      *
-     * @param Form_View $view    Reference to Form_View object.
+     * @param Zikula_Form_View $view    Reference to Zikula_Form_View object.
      * @param array     &$params Parameters passed from the Smarty plugin function.
      *
-     * @see    Form_Plugin
+     * @see    Zikula_Form_Plugin
      * @return void
      */
     function create($view, &$params)
@@ -94,7 +94,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
     /**
      * Render event handler.
      *
-     * @param Form_View $view Reference to Form_View object.
+     * @param Zikula_Form_View $view Reference to Zikula_Form_View object.
      *
      * @return string The rendered output
      */
@@ -160,7 +160,7 @@ class ClipFormRelation extends Form_Plugin_TextInput
      * Called by the render when doing $view->getValues()
      * Uses the group parameter to decide where to store data.
      *
-     * @param Form_View $view  Reference to Form_View object.
+     * @param Zikula_Form_View $view  Reference to Zikula_Form_View object.
      * @param array     &$data Data object.
      *
      * @return void

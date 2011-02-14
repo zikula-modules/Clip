@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_Checkbox extends Form_Plugin_Checkbox
+class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
 {
     public $pluginTitle;
     public $columnDef = 'L';

@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_Date extends Form_Plugin_DateInput
+class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
 {
     public $pluginTitle;
     public $columnDef = 'T';

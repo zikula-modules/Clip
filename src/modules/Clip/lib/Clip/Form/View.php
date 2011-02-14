@@ -12,7 +12,7 @@
 /**
  * Clip Fork to handle the postRender event.
  */
-class Clip_Form_View extends Form_View
+class Clip_Form_View extends Zikula_Form_View
 {
     /**
      * Post render event.

@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_Float extends Form_Plugin_FloatInput
+class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
 {
     public $pluginTitle;
     public $columnDef = 'F';

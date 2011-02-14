@@ -9,7 +9,7 @@
  * @subpackage View_Plugins
  */
 
-class ClipFormPluginType extends Form_Plugin_DropdownList
+class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
 {
     function getFilename()
     {

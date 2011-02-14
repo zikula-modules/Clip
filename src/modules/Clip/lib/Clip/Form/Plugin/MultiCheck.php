@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_MultiCheck extends Form_Plugin_CategoryCheckboxList
+class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxList
 {
     public $pluginTitle;
     public $columnDef   = 'C(512)';

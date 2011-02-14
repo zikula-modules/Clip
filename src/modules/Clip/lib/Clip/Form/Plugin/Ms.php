@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_Ms extends Form_Plugin_TextInput
+class Clip_Form_Plugin_Ms extends Zikula_Form_Plugin_TextInput
 {
     public $pluginTitle;
     public $columnDef = 'C(255)';

@@ -12,7 +12,7 @@
 /**
  * Form handler to manage data import.
  */
-class Clip_Form_Handler_Admin_Import extends Form_Handler
+class Clip_Form_Handler_Admin_Import extends Zikula_Form_Handler
 {
     private $returnurl;
 

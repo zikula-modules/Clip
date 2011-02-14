@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_Email extends Form_Plugin_EmailInput
+class Clip_Form_Plugin_Email extends Zikula_Form_Plugin_EmailInput
 {
     public $pluginTitle;
     public $columnDef = 'C(100)';

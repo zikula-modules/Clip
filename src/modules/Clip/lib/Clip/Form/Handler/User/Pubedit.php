@@ -12,7 +12,7 @@
 /**
  * Form handler to update publications.
  */
-class Clip_Form_Handler_User_Pubedit extends Form_Handler
+class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
 {
     private $id;
     private $pub;
