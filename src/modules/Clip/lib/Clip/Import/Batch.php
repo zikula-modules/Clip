@@ -119,6 +119,10 @@ class Clip_Import_Batch
                 $oid = $args['pubfield']['id'];
                 $tid = $args['pubfield']['tid'];
                 unset($args['pubfield']['id']);
+                // null fields check
+                if (empty($args['pubfield']['fieldmaxlength'])) {
+                    $args['pubfield']['fieldmaxlength'] = null;
+                }
                 // update the id refs
                 $args['pubfield']['tid'] = self::$idmap['tids'][$tid];
                 // process the record
@@ -140,6 +144,13 @@ class Clip_Import_Batch
                 $tid = Clip_Util::getTidFromStringSuffix($args['section']);
                 $oid = $args['pub']['id'];
                 unset($args['pub']['id']);
+                // null fields check
+                if (empty($args['pub']['core_publishdate'])) {
+                    $args['pub']['core_publishdate'] = null;
+                }
+                if (empty($args['pub']['core_expiredate'])) {
+                    $args['pub']['core_expiredate'] = null;
+                }
                 // get a record instance of the new pub
                 $newtid = self::$idmap['tids'][$tid];
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$newtid);

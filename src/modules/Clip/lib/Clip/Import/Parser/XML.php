@@ -83,6 +83,8 @@ class Clip_Import_Parser_XML
             call_user_func($callback, $result);
             $this->reader->next();
         }
+
+        return true;
     }
 
     /**
