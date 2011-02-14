@@ -49,9 +49,9 @@ class Clip_Api_User extends Zikula_Api
 
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
-        $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : true;
-        $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : true;
-        $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
+        $args['checkPerm']     = isset($args['checkPerm']) ? (bool)$args['checkPerm'] : true;
+        $args['handlePluginF'] = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : true;
+        $args['getApprovalS']  = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : false;
         // define the arguments
         $args = array(
             'tid'           => (int)$args['tid'],
@@ -244,9 +244,9 @@ class Clip_Api_User extends Zikula_Api
 
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
-        $args['checkPerm']     = isset($args['checkPerm']) ? $args['checkPerm'] : false;
-        $args['handlePluginF'] = isset($args['handlePluginFields']) ? $args['handlePluginFields'] : true;
-        $args['getApprovalS']  = isset($args['getApprovalState']) ? $args['getApprovalState'] : false;
+        $args['checkPerm']     = isset($args['checkPerm']) ? (bool)$args['checkPerm'] : false;
+        $args['handlePluginF'] = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : true;
+        $args['getApprovalS']  = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : false;
         // define the arguments
         $args = array(
             'tid'           => (int)$args['tid'],
