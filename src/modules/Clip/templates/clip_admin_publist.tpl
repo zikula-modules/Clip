@@ -2,7 +2,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='folder_documents.gif' set='icons/large' __alt='Publications list'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='folder_documents.png' set='icons/large' __alt='Publications list'}</div>
 
     <h2>{gt text='Publications list'}</h2>
 
@@ -82,9 +82,9 @@
                     {$pubitem.lu_date|dateformat:'datetimebrief'}
                 </td>
                 <td>
-                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.gif' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
-                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid id=$pubitem.id}" title="{gt text='View'}">{img modname='core' src='demo.gif' set='icons/extrasmall' __title='View'}</a>&nbsp;
-                    <a href="{modurl modname='Clip' type='admin' func='history' tid=$pubtype.tid pid=$pubitem.core_pid}" title="{gt text='History'}">{img modname='core' src='clock.gif' set='icons/extrasmall' __title='History'}</a>
+                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.png' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
+                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid id=$pubitem.id}" title="{gt text='View'}">{img modname='core' src='demo.png' set='icons/extrasmall' __title='View'}</a>&nbsp;
+                    <a href="{modurl modname='Clip' type='admin' func='history' tid=$pubtype.tid pid=$pubitem.core_pid}" title="{gt text='History'}">{img modname='core' src='clock.png' set='icons/extrasmall' __title='History'}</a>
                 </td>
             </tr>
             {foreachelse}

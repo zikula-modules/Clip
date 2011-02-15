@@ -2,7 +2,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='agt_softwareD.gif' set='icons/large' __alt='Manage Relations'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='agt_softwareD.png' set='icons/large' __alt='Manage Relations'}</div>
 
     <h2>{gt text='Manage Relations'}</h2>
 
@@ -73,7 +73,7 @@
                     </span>
                     <span class="z-itemcell z-w10">
                         <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.tid1 op=$filter.op tid2=$filter.tid2 fragment='relform'}">
-                            {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                            {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     </span>
                 </li>

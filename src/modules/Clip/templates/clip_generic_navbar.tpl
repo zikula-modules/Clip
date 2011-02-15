@@ -5,7 +5,7 @@
         {checkpermissionblock component='clip::' instance="::" level=ACCESS_ADMIN}
         <span>
             <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}">
-                {img width='12' height='12' modname='core' src='mydocuments.gif' set='icons/extrasmall' alt='' __title='Publication admin panel'}
+                {img width='12' height='12' modname='core' src='mydocuments.png' set='icons/extrasmall' alt='' __title='Publication admin panel'}
             </a>
         </span>
         {/checkpermissionblock}
@@ -25,14 +25,14 @@
         {checkpermissionblock component='clip:input:' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
         <span>
             <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
-                {img width='12' height='12' modname='core' src='filenew.gif' set='icons/extrasmall' alt='' __title='Add a publication'}
+                {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Add a publication'}
             </a>
         </span>
         {/checkpermissionblock}
         {checkpermissionblock component='clip::' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
         <span>
             <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid}">
-                {img width='12' height='12' modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt='' __title='Admin list'}
+                {img width='12' height='12' modname='core' src='14_layer_visible.png' set='icons/extrasmall' alt='' __title='Admin list'}
             </a>
         </span>
         {/checkpermissionblock}
@@ -56,7 +56,7 @@
                 {checkpermissionblock component='clip:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD}
                 <span>
                     <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubdata.core_tid id=$pubdata.id}">
-                        {img width='12' height='12' modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                        {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                     </a>
                 </span>
                 {/checkpermissionblock}

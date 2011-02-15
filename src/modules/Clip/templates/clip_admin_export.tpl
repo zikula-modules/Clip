@@ -3,7 +3,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='db_comit.gif' set='icons/large' __alt='Export' }</div>
+    <div class="z-adminpageicon">{img modname='core' src='db_comit.png' set='icons/large' __alt='Export' }</div>
 
     <h2>{gt text='Export'}</h2>
 

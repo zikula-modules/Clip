@@ -3,7 +3,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='database.gif' set='icons/large' __alt='Create / Edit publication type' }</div>
+    <div class="z-adminpageicon">{img modname='core' src='database.png' set='icons/large' __alt='Create / Edit publication type' }</div>
 
     {if isset($pubtype)}
         <h2>{gt text='Edit publication type'}</h2>

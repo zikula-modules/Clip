@@ -4,7 +4,7 @@
 {ajaxheader module='Clip' filename='clip_admin_pubfields.js' ui=true dragdrop=true}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='db_update.gif' set='icons/large' __alt='Manage Publication fields' }</div>
+    <div class="z-adminpageicon">{img modname='core' src='db_update.png' set='icons/large' __alt='Manage Publication fields' }</div>
 
     <h2>{gt text='Manage Publication fields'}</h2>
 
@@ -33,7 +33,7 @@
                         <strong>{$pubfield.name}</strong>
                     </span>
                     <span class="z-itemcell z-w25">
-                        {img modname='core' src='info.gif' set='icons/extrasmall' alt='(i)' class='tooltips' title="#field_tooltip`$pubfield.id`"}
+                        {img modname='core' src='info.png' set='icons/extrasmall' alt='(i)' class='tooltips' title="#field_tooltip`$pubfield.id`"}
                         {$pubfield.title}
                     </span>
                     <span id="field_tooltip{$pubfield.id}" style="display: none">
@@ -59,25 +59,25 @@
                     </span>
                     <span class="z-itemcell z-w10">
                         {if $pubfield.istitle}
-                        {img modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall'}
+                        {img modname='core' src='greenled.png' width='10' height='10' set='icons/extrasmall'}
                         {/if}
                         &nbsp;
                     </span>
                     <span class="z-itemcell z-w10">
                         {if $pubfield.ismandatory}
-                        {img modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall'}
+                        {img modname='core' src='greenled.png' width='10' height='10' set='icons/extrasmall'}
                         {/if}
                         &nbsp;
                     </span>
                     <span class="z-itemcell z-w10">
                         {if $pubfield.issearchable}
-                        {img modname='core' src='greenled.gif' width='10' height='10' set='icons/extrasmall'}
+                        {img modname='core' src='greenled.png' width='10' height='10' set='icons/extrasmall'}
                         {/if}
                         &nbsp;
                     </span>
                     <span class="z-itemcell z-w10">
                         <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubfield.tid id=$pubfield.id fragment='newpubfield'}">
-                            {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                            {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     </span>
                 </li>

@@ -2,7 +2,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='editcopy.gif' set='icons/large' __alt='Publication types'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='editcopy.png' set='icons/large' __alt='Publication types'}</div>
 
     <h2>{gt text='Publication types'}</h2>
 
@@ -33,37 +33,37 @@
                 </td>
                 <td>
                     <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
-                        {img modname='core' src='db_status.gif' set='icons/extrasmall' alt=''} {gt text='Edit'}
+                        {img modname='core' src='db_status.png' set='icons/extrasmall' alt=''} {gt text='Edit'}
                     </a>
                     &nbsp;
                     <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubtype.tid}" title="{gt text='Add, edit or modify the fields of this pubtype'}">
-                        {img modname='core' src='db_comit.gif' set='icons/extrasmall' alt=''} {gt text='Fields'}
+                        {img modname='core' src='db_comit.png' set='icons/extrasmall' alt=''} {gt text='Fields'}
                     </a>
                     &nbsp;
                     <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}" title="{gt text='Add new publications to this pubtype'}">
-                        {img modname='core' src='db_add.gif' set='icons/extrasmall' alt=''} {gt text='New pub' comment='Abbreviated text for the admin main screen'}
+                        {img modname='core' src='db_add.png' set='icons/extrasmall' alt=''} {gt text='New pub' comment='Abbreviated text for the admin main screen'}
                     </a>
                 </td>
                 <td>
                     <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid}" title="{gt text='Go to the Admin publication list'}">
-                        {img modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt=''} {gt text='Admin'}
+                        {img modname='core' src='14_layer_visible.png' set='icons/extrasmall' alt=''} {gt text='Admin'}
                     </a>
                     &nbsp;
                     <a href="{modurl modname='Clip' type='user' func='view' tid=$pubtype.tid}" title="{gt text='Go to the public publication list'}">
-                        {img modname='core' src='14_layer_visible.gif' set='icons/extrasmall' alt=''} {gt text='Public'}
+                        {img modname='core' src='14_layer_visible.png' set='icons/extrasmall' alt=''} {gt text='Public'}
                     </a>
                 </td>
                 <td>
                     <a href="{modurl modname='Clip' type='admin' func='showcode' mode='input' tid=$pubtype.tid}" title="{gt text='Get the input form code of this pubtype'}">
-                        {img modname='core' src='runprog.gif' set='icons/extrasmall' alt=''} {gt text='Form'}
+                        {img modname='core' src='run.png' set='icons/extrasmall' alt=''} {gt text='Form'}
                     </a>
                     &nbsp;
                     <a href="{modurl modname='Clip' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid}" title="{gt text='Get the publist code of this pubtype'}">
-                        {img modname='core' src='runprog.gif' set='icons/extrasmall' alt=''} {gt text='List'}
+                        {img modname='core' src='run.png' set='icons/extrasmall' alt=''} {gt text='List'}
                     </a>
                     &nbsp;
                     <a href="{modurl modname='Clip' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid}" title="{gt text='Get the pubview code of this pubtype'}">
-                        {img modname='core' src='runprog.gif' set='icons/extrasmall' alt=''} {gt text='Display'}
+                        {img modname='core' src='run.png' set='icons/extrasmall' alt=''} {gt text='Display'}
                     </a>
                 </td>
             </tr>

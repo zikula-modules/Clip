@@ -21,9 +21,9 @@ $this->assign ('referer', 'index.php');
         {checkpermission assign="adminAuth" component="clip:input:" instance="$tid::" level="ACCESS_ADMIN"}
         <li id="{$thisIDLabel}">
             <a href="#">{$type}</a>
-            {if ($addAuth)}&nbsp;<a href="{modurl modname='Clip' type='user' func='editlist' tid=$tid}" title="{gt text="Add new publication"}"><img src="images/icons/extrasmall/edit_add.gif" width="10" height="10" alt="{gt text="Add new publication"}" /></a>{/if}
-            {if ($adminAuth)}&nbsp;<a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$tid}" title="{gt text="Edit this publication type"}"><img src="images/icons/extrasmall/db_status.gif" width="10" height="10" alt="{gt text="Edit this publication type"}" /></a>{/if}
-            {if ($adminAuth)}&nbsp;<a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$tid}" title="{gt text="Add, edit or modify the fields of this publication type"}"><img src="images/icons/extrasmall/db_comit.gif" width="10" height="10" alt="{gt text="Add, edit or modify the fields of this publication type"}" /></a>{/if}
+            {if ($addAuth)}&nbsp;<a href="{modurl modname='Clip' type='user' func='editlist' tid=$tid}" title="{gt text="Add new publication"}"><img src="images/icons/extrasmall/edit_add.png" width="10" height="10" alt="{gt text="Add new publication"}" /></a>{/if}
+            {if ($adminAuth)}&nbsp;<a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$tid}" title="{gt text="Edit this publication type"}"><img src="images/icons/extrasmall/db_status.png" width="10" height="10" alt="{gt text="Edit this publication type"}" /></a>{/if}
+            {if ($adminAuth)}&nbsp;<a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$tid}" title="{gt text="Add, edit or modify the fields of this publication type"}"><img src="images/icons/extrasmall/db_comit.png" width="10" height="10" alt="{gt text="Add, edit or modify the fields of this publication type"}" /></a>{/if}
             <ul id="pubeditlist" style="margin-left:28px;">
                 {foreach from=$publist.$tid item=pub}
                 {assign_concat name='thisIDLabel' 1='item_' 2=$tid 3='_' 4=$pub.core_pid}
@@ -34,7 +34,7 @@ $this->assign ('referer', 'index.php');
                     {else}
                     <a href="{modurl modname='Clip' type=$returntype func='editlist' tid=$tid pid=$pub.core_pid _id=$thisID goto='editlist'}">{$pub._title}</a>
                     {/if}
-                    &nbsp;<a href="{modurl modname='Clip' type='user' func='display' tid=$tid pid=$pub.core_pid }"><img src="images/icons/extrasmall/demo.gif" width="10" height="10" alt="{gt text="View this publication"}"></a>
+                    &nbsp;<a href="{modurl modname='Clip' type='user' func='display' tid=$tid pid=$pub.core_pid }"><img src="images/icons/extrasmall/demo.png" width="10" height="10" alt="{gt text="View this publication"}"></a>
                 </li>
                 {/foreach}
             </ul>

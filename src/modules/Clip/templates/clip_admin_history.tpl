@@ -2,7 +2,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='clock.gif' set='icons/large' __alt='History'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='clock.png' set='icons/large' __alt='History'}</div>
 
     <h2>{gt text='History'}</h2>
 
@@ -50,7 +50,7 @@
                     {$pubitem.lu_date|dateformat:'datetimebrief'}
                 </td>
                 <td>
-                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.gif' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
+                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.png' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
                 </td>
             </tr>
             {foreachelse}

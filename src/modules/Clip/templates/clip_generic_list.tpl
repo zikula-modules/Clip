@@ -21,12 +21,12 @@
             <td class="z-right z-nowrap">
                 {strip}
                 <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">
-                    {img modname='core' src='demo.gif' set='icons/extrasmall' __title='View' __alt='View'}
+                    {img modname='core' src='demo.png' set='icons/extrasmall' __title='View' __alt='View'}
                 </a>
                 {checkpermissionblock component='clip:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
                 &nbsp;
                 <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$item.core_pid}">
-                    {img modname='core' src='edit.gif' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                    {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                 </a>
                 {/checkpermissionblock}
                 {/strip}

@@ -70,12 +70,12 @@ class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
                 ';
 
                 $typeDataHtml  = '
-                <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/utilities.gif" alt="'.$this->__('Modify config').'" /></a>
+                <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/configure.png" alt="'.$this->__('Modify config').'" /></a>
                 <div id="typeDataDiv" class="clip-modalpopup z-form">
                     '.$plugin->getTypeHtml($this, $render).'
                     <div class="z-formbuttons">
-                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/small/filesave.gif" alt="'.$this->__('Save').'" /></button>&nbsp;
-                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/small/button_cancel.gif" alt="'.$this->__('Cancel').'" /></button>
+                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/small/filesave.png" alt="'.$this->__('Save').'" /></button>&nbsp;
+                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/small/button_cancel.png" alt="'.$this->__('Cancel').'" /></button>
                     </div>
                 </div>';
             } else {

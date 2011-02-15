@@ -98,7 +98,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
 
         if ($this->editLink && !empty($this->category) && SecurityUtil::checkPermission('Categories::', "$this->category[id]::", ACCESS_EDIT)) {
             $url = DataUtil::formatForDisplay(ModUtil::url('Categories', 'user', 'edit', array('dr' => $this->category['id'])));
-            $output .= "<a href=\"{$url}\"><img src=\"images/icons/extrasmall/xedit.gif\" title=\"" . __('Edit') . '" alt="' . __('Edit') . '" /></a>';
+            $output .= "<a href=\"{$url}\"><img src=\"images/icons/extrasmall/xedit.png\" title=\"" . __('Edit') . '" alt="' . __('Edit') . '" /></a>';
         }
 
         return $output;

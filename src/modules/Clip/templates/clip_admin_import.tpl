@@ -2,7 +2,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='db_update.gif' set='icons/large' __alt='Import' }</div>
+    <div class="z-adminpageicon">{img modname='core' src='db_update.png' set='icons/large' __alt='Import' }</div>
 
     <h2>{gt text='Import'}</h2>
 
