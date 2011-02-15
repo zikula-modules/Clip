@@ -378,7 +378,7 @@ class Clip_Controller_User extends Zikula_Controller
         // create the output object
         $serviceManager = ServiceUtil::getManager();
         $render = new Clip_Form_View($serviceManager, 'Clip');
-        $render->setController($controller);
+        $render->setController($this);
         $render->assign('controller', $this)
                ->assign('pubtype', $pubtype)
                ->add_core_data();
