@@ -19,7 +19,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
-        
+
         //! field type name
         $this->pluginTitle = $this->__('Text');
     }
@@ -55,6 +55,11 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
         $body = '{$pubdata.'.$field['name'].'|safehtml}';
 
         return array('body' => $body);
+    }
+
+    static function getPluginEdit($field)
+    {
+        return " rows='15' cols='70'";
     }
 
     /**

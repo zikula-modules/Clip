@@ -225,7 +225,7 @@ class Clip_Generator
             // FIXME lenghts
             if (!empty($pubfields[$k]['fieldmaxlength'])) {
                 $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
-            } elseif($formplugin == 'Text') {
+            } elseif ($formplugin == 'Text') {
                 $maxlength = " maxLength='65535'";
             } else {
                 $maxlength = '';
@@ -233,8 +233,15 @@ class Clip_Generator
 
             $toolTip = !empty($pubfields[$k]['description']) ? str_replace("'", "\'", $pubfields[$k]['description']) : '';
 
-            // specific plugins
-            $linecol = ($formplugin == 'Text') ? " rows='15' cols='70'" : '';
+            // specific edit parameters
+            // process the getPluginEdit of the plugin
+            $plugin = Clip_Util::getPlugin($formplugin);
+
+            if (method_exists($plugin, 'getPluginEdit')) {
+                $plugadd = $plugin->getPluginEdit($pubfields[$k]);
+            } else {
+                $plugadd = '';
+            }
 
             // scape simple quotes where needed
             $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']);
@@ -242,7 +249,7 @@ class Clip_Generator
             $template_code .= "\n".
                     '            <div class="z-formrow">'."\n".
                     '                {formlabel for=\''.$pubfields[$k]['name'].'\' _'.'_text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                    '                {clip_form_genericplugin id=\''.$pubfields[$k]['name'].'\''.$linecol.$maxlength.' group=\'pubdata\'}'."\n".
+                    '                {clip_form_genericplugin id=\''.$pubfields[$k]['name'].'\''.$maxlength.$plugadd.' group=\'pubdata\'}'."\n".
         ($toolTip ? '                <span class="z-formnote z-sub">{gt text=\''.$toolTip.'\'}</span>'."\n" : '').
                     '            </div>'."\n";
         }
