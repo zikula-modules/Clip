@@ -42,7 +42,7 @@ class Clip_Form_View extends Zikula_Form_View
                     'editor'     => $editor,
                     'areas'      => $ids
                 );
-                $scribite = Scribite_Listeners::loader($args);
+                $scribite = ModUtil::apiFunc('Scribite', 'user', 'loader', $args);
 
                 // add the scripts to page header
                 if ($scribite) {
