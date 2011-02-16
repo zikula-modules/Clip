@@ -118,7 +118,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
         }
 
         // add the pub information to the render
-        $view->assign('pubdata', $data);
+        $view->assign('pubdata', $data)
+             ->assign('pubobj', $this->pub);
 
         // stores the first referer and the item URL
         if (empty($this->referer)) {
@@ -149,6 +150,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
 
         // restore the core values
         $this->pubExtract($data['pubdata']);
+
+        // adds any extra data to the item
+        if (isset($data['core_extra'])) {
+            $this->pub->mapValue('core_extra', $data['core_extra']);
+        }
 
         // perform the command
         $data = ModUtil::apiFunc('Clip', 'user', 'edit',
