@@ -47,7 +47,8 @@ class Clip_Util
             'String'     => 'Clip_Form_Plugin_String',
             'Text'       => 'Clip_Form_Plugin_Text',
             'Upload'     => 'Clip_Form_Plugin_Upload',
-            'Url'        => 'Clip_Form_Plugin_Url'
+            'Url'        => 'Clip_Form_Plugin_Url',
+            'User'       => 'Clip_Form_Plugin_User'
         );
 
         // collect classes from other providers also allows for override
@@ -295,7 +296,8 @@ class Clip_Util
             return;
         }
 
-        $array += FileUtil::getFiles($path, false, true, $ext, 'f');
+        $files = FileUtil::getFiles($path, false, true, $ext, 'f');
+        $array = array_merge($array, $files);
     }
 
     /**

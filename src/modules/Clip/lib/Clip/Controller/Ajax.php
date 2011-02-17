@@ -113,7 +113,7 @@ class Clip_Controller_Ajax extends Zikula_Controller
         // Uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $args);
 
-        return array('data' => $result['publist']->toArray());
+        return $result['publist']->toArray();
     }
 
     /**
@@ -129,13 +129,58 @@ class Clip_Controller_Ajax extends Zikula_Controller
         $list = $this->view();
 
         $result = array();
-        foreach ($list['data'] as $v) {
+        foreach ($list as $v) {
             $result[] = array(
                 'value'   => $v['id'],
-                'caption' => $v['core_title']
+                'caption' => DataUtil::formatForDisplay($v['core_title'])
             );
         }
 
-        return array('data' => $result);
+        return new Zikula_Response_Ajax_Json(array('data' => $result));
+    }
+
+    /**
+     * Autocompletion Users list.
+     * Returns the users list on the expected autocompleter format.
+     *
+     * @return array Autocompletion list.
+     */
+    public function getusers()
+    {
+        $result = array();
+
+        if (SecurityUtil::checkPermission('Users::', '::', ACCESS_COMMENT)) {
+            $args = array(
+                'keyword' => FormUtil::getPassedValue('keyword', null, 'POST'),
+                'op'      => FormUtil::getPassedValue('op', 'likefirst', 'POST')
+            );
+            $args['op'] = in_array($args['op'], array('search', 'likefirst')) ? $args['op'] : 'likefirst';
+
+            ModUtil::dbInfoLoad('Users');
+            $tables = DBUtil::getTables();
+
+            $usersColumn = $tables['users_column'];
+
+            $value = DataUtil::formatForStore($args['keyword']);
+            switch ($args['op']) {
+                case 'search':
+                    $value = '%'.$value;
+                case 'likefirst':
+                    $value .= '%';
+                    $value = "'$value'";
+                    break;
+            }
+            $where = 'WHERE ' . $usersColumn['uname'] . ' LIKE ' . $value;
+            $results = DBUtil::selectFieldArray('users', 'uname', $where, $usersColumn['uname'], false, 'uid');
+
+            foreach ($results as $uid => $uname) {
+                $result[] = array(
+                    'value'   => $uid,
+                    'caption' => DataUtil::formatForDisplay($uname)
+                );
+            }
+        }
+
+        return new Zikula_Response_Ajax_Json(array('data' => $result));
     }
 }

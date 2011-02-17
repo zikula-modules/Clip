@@ -64,19 +64,28 @@ class Clip_Model_Pubfield extends Doctrine_Record
         $this->hasColumn('pm_typedata as typedata', 'string', 4000);
 
         $this->hasColumn('pm_istitle as istitle', 'boolean', null, array(
-            'notnull' => true
+            'notnull' => true,
+            'default' => 0
         ));
 
         $this->hasColumn('pm_ispageable as ispageable', 'boolean', null, array(
-            'notnull' => true
+            'notnull' => true,
+            'default' => 0
         ));
 
         $this->hasColumn('pm_issearchable as issearchable', 'boolean', null, array(
-            'notnull' => true
+            'notnull' => true,
+            'default' => 0
         ));
 
         $this->hasColumn('pm_ismandatory as ismandatory', 'boolean', null, array(
-            'notnull' => true
+            'notnull' => true,
+            'default' => 0
+        ));
+
+        $this->hasColumn('pm_isuid as isuid', 'boolean', null, array(
+            'notnull' => true,
+            'default' => 0
         ));
 
         $this->hasColumn('pm_lineno as lineno', 'integer', 4, array(

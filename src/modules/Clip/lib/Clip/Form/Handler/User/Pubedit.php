@@ -102,7 +102,19 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
 
         foreach ($pubdata->getRelations($onlyown) as $key => $rel) {
             // set the data object
-            $data[$key] = ($pubdata->reference($key)) ? $pubdata[$key] : null;
+            if ($pubdata->reference($key)) {
+                if ($pubdata[$key] instanceof Doctrine_Collection) {
+                    foreach ($pubdata[$key] as $k => $v) {
+                        $pubdata[$key][$k]->pubPostProcess();
+                    }
+                    $data[$key] = $pubdata[$key]->toArray();
+                } elseif ($pubdata[$key] instanceof Doctrine_Record) {
+                    $pubdata[$key]->pubPostProcess();
+                    $data[$key] = $pubdata[$key]->toArray();
+                } else {
+                    $data[$key] = null;
+                }
+            }
             // set additional relation fields
             $this->relations[$key] = $rel;
         }

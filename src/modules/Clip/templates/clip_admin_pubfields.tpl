@@ -129,11 +129,13 @@
                 {formcheckbox id='istitle' group='field'}
                 <div class="z-formnote">{gt text='The content of this field will be used as the title?'}</div>
             </div>
+            {*if !isset($field) OR $field.fieldplugin eq 'Text'}
             <div class="z-formrow">
                 {formlabel for='ispageable' text='Pageable'}
                 {formcheckbox id='ispageable' group='field'}
                 <div class="z-formnote">{gt text='The content of this field is pageable?'}</div>
             </div>
+            {/if*}
             <div class="z-formrow">
                 {formlabel for='ismandatory' text='Mandatory'}
                 {formcheckbox id='ismandatory' group='field'}
@@ -144,11 +146,20 @@
                 {formcheckbox id='issearchable' group='field'}
                 <div class="z-formnote">{gt text='The content of this field can be searched?'}</div>
             </div>
+            {if !isset($field) OR !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Email', 'Float', 'Image', 'Ms', 'MultiCheck', 'MultiList', 'Text', 'Upload', 'Url'))}
+            <div class="z-formrow">
+                {formlabel for='isuid' text='Is a User ID'}
+                {formcheckbox id='isuid' group='field'}
+                <div class="z-formnote">{gt text='This field contains a User ID? If enabled it will be filtered only with the user operator.'}</div>
+            </div>
+            {/if}
+            {if !isset($field) OR !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Float', 'Image', 'Int', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Upload', 'User'))}
             <div class="z-formrow">
                 {formlabel for='fieldmaxlength' text='Max. length'}
                 {formintinput id='fieldmaxlength' group='field' maxLength='15'}
                 <div class="z-formnote">{gt text='The maximum length for the content of this field.'}</div>
             </div>
+            {/if}
         </fieldset>
 
         <div class="z-buttons z-formbuttons">

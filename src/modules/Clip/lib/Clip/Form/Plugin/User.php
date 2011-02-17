@@ -103,6 +103,23 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         return $result . $typeDataHtml;
     }
 
+
+    function saveValue($view, &$data)
+    {
+        if ($this->dataBased) {
+            $value = $this->parseValue($view, $this->text);
+
+            if ($this->group == null) {
+                $data[$this->dataField] = $value;
+            } else {
+                if (!array_key_exists($this->group, $data)) {
+                    $data[$this->group] = array();
+                }
+                $data[$this->group][$this->dataField] = $value;
+            }
+        }
+    }
+
     /**
      * Clip processing methods.
      */
@@ -121,7 +138,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
             $usersColumn = $tables['users_column'];
 
             $where = 'WHERE ' . $usersColumn['uid'] . ' IN (\'' . implode('\', \'', $data) . '\')';
-            $results = DBUtil::selectFieldArray('users', 'uname', $where, 'uname', false, 'uid');
+            $results = DBUtil::selectFieldArray('users', 'uname', $where, $usersColumn['uname'], false, 'uid');
 
             if (!$results) {
                 return $uids;
@@ -135,23 +152,16 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         return $uids;
     }
 
-    static function getPluginOutput($field)
+    function getPluginOutput($field)
     {
         $this->parseConfig($field['typedata']);
 
-        if ($this->config['multiple']) {
-            $body = "\n".
-            '                {foreach from=$pubdata.'.$field['name']-' item=\'pubitem\'}'."\n".
-            '                    {$pubitem|userprofilelink}'."\n".
-            '                    <span class="z-sub">[{$pubitem|safehtml}]</span><br />'."\n".
+        $body = "\n".
+            '                {foreach from=$pubdata.'.$field['name'].' key=\'pubuid\' item=\'pubuname\'}'."\n".
+            '                    {$pubuname|userprofilelink}'."\n".
+            '                    <span class="z-sub">[{$pubuid|safehtml}]</span><br />'."\n".
             '                {/foreach}'."\n".
             '            ';
-        } else {
-            $body = "\n".
-            '                {$pubdata.'.$field['name'].'|userprofilelink}'."\n".
-            '                <span class="z-sub">[{$pubdata.'.$field['name'].'|safehtml}]</span>'."\n".
-            '            ';
-        }
 
         return array('body' => $body);
     }

@@ -99,6 +99,10 @@ class Clip_Installer extends Zikula_Installer
                     return '0.4.9';
                 }
             case '0.4.10':
+                if (!Doctrine_Core::getTable('Clip_Model_Pubfield')->changeTable(true)) {
+                    return '0.4.10';
+                }
+            case '0.4.11':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
         }

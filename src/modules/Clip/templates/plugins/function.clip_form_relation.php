@@ -50,11 +50,21 @@ class ClipFormRelation extends Zikula_Form_Plugin_TextInput
         }
 
         if (!is_null($this->relinfo)) {
-            // assign existing data
-            $this->relinfo['data'] = $view->_tpl_vars['pubdata'][$params['id']];
-
             // detects single or multiple relation
             $this->relinfo['single'] = $this->relinfo['own'] ? ($this->relinfo['type']%2 == 0 ? true : false) : ($this->relinfo['type'] <= 1 ? true : false);
+
+            // assign existing data
+            $this->relinfo['data'] = array();
+            $data = $view->_tpl_vars['pubdata'][$params['id']];
+            if ($data) {
+                if ($this->relinfo['single']) {
+                    $this->relinfo['data'][$data['id']] = $data['core_title'];
+                } else {
+                    foreach ($data as $r) {
+                        $this->relinfo['data'][$r['id']] = $r['core_title'];
+                    }
+                }
+            }
         }
 
         $params['textMode'] = 'hidden';
@@ -104,7 +114,7 @@ class ClipFormRelation extends Zikula_Form_Plugin_TextInput
 
         // build the autocompleter setup
         PageUtil::addVar('javascript', 'prototype');
-        PageUtil::addVar('javascript', 'modules/Clip/javascript/facebooklist.js');
+        PageUtil::addVar('javascript', 'modules/Clip/javascript/Zikula.Autocompleter.js');
         $script =
         "<script type=\"text/javascript\">\n// <![CDATA[\n".'
             function clip_enable_'.$this->id.'() {
@@ -135,17 +145,8 @@ class ClipFormRelation extends Zikula_Form_Plugin_TextInput
             '</div>
             <ul class="z-auto-feed">
                 ';
-        if ($this->relinfo['single']) {
-            if (isset($this->relinfo['data']['id'])) {
-                $relpub = $this->relinfo['data'];
-                $relpub->pubPostProcess();
-                $typeDataHtml .= '<li value="'.$relpub['id'].'">'.$relpub['core_title'].'</li>';
-            }
-        } elseif (isset($this->relinfo['data']) && $this->relinfo['data']->count() > 0) {
-            foreach ($this->relinfo['data'] as $relpub) {
-                $relpub->pubPostProcess();
-                $typeDataHtml .= '<li value="'.$relpub['id'].'">'.$relpub['core_title'].'</li>';
-            }
+        foreach ($this->relinfo['data'] as $value => $title) {
+            $typeDataHtml .= '<li value="'.$value.'">'.$title.'</li>';
         }
         $typeDataHtml .= '
             </ul>
@@ -169,8 +170,6 @@ class ClipFormRelation extends Zikula_Form_Plugin_TextInput
     {
         if ($this->dataBased) {
             $value = $this->parseValue($view, $this->text);
-
-            $classname = 'Clip_Model_Pubdata'.$this->relinfo['tid'];
 
             $ref = $this->relinfo['single'] ? array($value) : explode(':', $value);
 
