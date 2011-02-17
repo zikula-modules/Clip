@@ -85,8 +85,8 @@ class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
         $typedata = explode('|', $typedata);
 
         $this->config = array(
-            'min' => $typedata[0] !== '' ? (float)$typedata[0] : null,
-            'max' => isset($typedata[1]) ? (float)$typedata[1] : null
+            'min' => is_numeric($typedata[0]) ? (float)$typedata[0] : null,
+            'max' => isset($typedata[1]) && is_numeric($typedata[1]) ? (float)$typedata[1] : null
         );
     }
 }
