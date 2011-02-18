@@ -1,7 +1,7 @@
 
 {include file='clip_admin_header.tpl'}
 
-{ajaxheader module='Clip' filename='clip_admin_pubfields.js' ui=true dragdrop=true}
+{ajaxheader module='Clip' filename='clip_admin_pubfields.js' ui=true}
 
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='db_update.png' set='icons/large' __alt='Manage Publication fields' }</div>

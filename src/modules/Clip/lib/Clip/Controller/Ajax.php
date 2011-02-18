@@ -14,15 +14,11 @@
  */
 class Clip_Controller_Ajax extends Zikula_Controller
 {
-    public function changedlistorder()
+    public function changelistorder()
     {
         if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             AjaxUtil::error($this->__('Sorry! No authorization to access this module.'));
         }
-
-        //if (!SecurityUtil::confirmAuthKey()) {
-        //    AjaxUtil::error($this->___("Invalid authorisation key ('authkey'). This is probably either because you pressed the 'Back' button to return to a page which does not allow that, or else because the page's authorisation key expired due to prolonged inactivity. Please refresh the page and try again."));
-        //}
 
         $pubfields = FormUtil::getPassedValue('pubfieldlist');
         $tid       = FormUtil::getPassedValue('tid');
@@ -113,7 +109,7 @@ class Clip_Controller_Ajax extends Zikula_Controller
         // Uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $args);
 
-        return $result['publist']->toArray();
+        return array('data' => $result['publist']->toArray());
     }
 
     /**
@@ -129,7 +125,7 @@ class Clip_Controller_Ajax extends Zikula_Controller
         $list = $this->view();
 
         $result = array();
-        foreach ($list as $v) {
+        foreach ($list['data'] as $v) {
             $result[] = array(
                 'value'   => $v['id'],
                 'caption' => DataUtil::formatForDisplay($v['core_title'])

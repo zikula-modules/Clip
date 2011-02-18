@@ -10,15 +10,14 @@
 
 function pubfieldlistorderchanged()
 {
-    var params = 'module=Clip&func=changedlistorder&authid=' + $F('FormAuthid')
-                   + '&tid=' + $('clip_tid').innerHTML
+    var params = 'module=Clip&func=changelistorder&tid=' + $('clip_tid').innerHTML
                    + '&' + Sortable.serialize('pubfieldlist');
 
-    var myAjax = new Ajax.Request(
-        'ajax.php', 
+    new Zikula.Ajax.Request(
+        'ajax.php',
         {
             method: 'get', 
-            parameters: params, 
+            parameters: params,
             onComplete: pubfieldlistorderchanged_response
         });
 }
@@ -42,12 +41,14 @@ function pubfieldlistsortinit()
         {
             dropOnEmpty: true,
             only: 'z-sortable',
+            containment:["pubfieldlist"],
             onUpdate: pubfieldlistorderchanged
         }
     );
 
-    // also add the anchor to the form 
-    $('FormForm').action = $('FormForm').action + '#FormForm'
+    // also add the anchor to the form
+    var form = $$('form.z-form')[0];
+    form.action = form.action + '#FormForm'
 
     // enable the tooltips
     Zikula.UI.Tooltips($$('.tooltips'));
