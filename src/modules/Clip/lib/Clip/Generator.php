@@ -206,7 +206,7 @@ class Clip_Generator
                 '{form cssClass=$zformclass enctype=\'multipart/form-data\'}'."\n".
                 '    <div>'."\n".
                 '        {formvalidationsummary}'."\n".
-                '        <fieldset>'."\n".
+                '        <fieldset class="z-linear">'."\n".
                 '            <legend>'."\n".
                 '                {if $pubdata.id}'."\n".
                 '                    {gt text=\''.$title_editpub.'\'}'."\n".
