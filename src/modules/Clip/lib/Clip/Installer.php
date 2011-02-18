@@ -171,6 +171,7 @@ class Clip_Installer extends Zikula_Installer
             $cat->setDataField('name', 'Clip');
             $cat->setDataField('display_name', array($lang => $this->__('Clip')));
             $cat->setDataField('display_desc', array($lang => $this->__('Clip root category')));
+            $cat->setDataField('value', '');
             if (!$cat->validate()) {
                 return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'Clip'));
             }
@@ -188,6 +189,7 @@ class Clip_Installer extends Zikula_Installer
             //! this is the 'lists' root category name
             $cat->setDataField('display_name', array($lang => $this->__('lists')));
             $cat->setDataField('display_desc', array($lang => $this->__('Clip lists for its publications')));
+            $cat->setDataField('value', '');
             if (!$cat->validate()) {
                 return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'lists'));
             }
