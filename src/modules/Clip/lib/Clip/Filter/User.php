@@ -9,8 +9,22 @@
  * @subpackage Filter
  */
 
-class Clip_Filter_User extends FilterUtil_Filter_Default
+class Clip_Filter_User extends FilterUtil_PluginCommon implements FilterUtil_Build
 {
+    /**
+     * Enabled operators.
+     *
+     * @var array
+     */
+    protected $ops = array();
+
+    /**
+     * Fields to use the plugin for.
+     *
+     * @var array
+     */
+    protected $fields = array();
+
     /**
      * Constructor.
      *
@@ -46,7 +60,25 @@ class Clip_Filter_User extends FilterUtil_Filter_Default
     }
 
     /**
-     * Adds fields to list in the clip way.
+     * Adds operators.
+     *
+     * @param mixed $op Operators to activate.
+     *
+     * @return void
+     */
+    public function activateOperators($op)
+    {
+        if (is_array($op)) {
+            foreach ($op as $v) {
+                $this->activateOperators($v);
+            }
+        } elseif (!empty($op) && array_search($op, $this->ops) === false && array_search($op, $this->availableOperators()) !== false) {
+            $this->ops[] = $op;
+        }
+    }
+
+    /**
+     * Adds fields to list in common way.
      *
      * @param mixed $fields Fields to add.
      *
@@ -58,9 +90,36 @@ class Clip_Filter_User extends FilterUtil_Filter_Default
             foreach ($fields as $fld) {
                 $this->addFields($fld);
             }
-        } elseif (!empty($fields) && $this->fieldExists($fields) && array_search($fields, (array)$this->fields) === false) {
-            $this->fields[] = $fields;
+        } elseif (!empty($fields) && $this->fieldExists($fields) && array_search($fields, $this->fields) === false) {
+            $this->_fields[] = $fields;
         }
+    }
+
+    /**
+     * Returns the fields.
+     *
+     * @return array List of fields.
+     */
+    public function getFields()
+    {
+        return $this->_fields;
+    }
+
+    /**
+     * Get activated operators.
+     *
+     * @return array Set of Operators and Arrays.
+     */
+    public function getOperators()
+    {
+        $fields = $this->getFields();
+
+        $ops = array();
+        foreach ($this->ops as $op) {
+            $ops[$op] = $fields;
+        }
+
+        return $ops;
     }
 
     /**

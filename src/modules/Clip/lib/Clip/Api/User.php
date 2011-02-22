@@ -132,7 +132,7 @@ class Clip_Api_User extends Zikula_Api
             if ($field['isuid']) {
                 // TODO implement filter restrictions
                 $filter['args']['restriction'][$fieldname][] = 'user';
-                $filter['args']['plugins']['clipuser']['fields'][] = $fieldname;
+                //$filter['args']['plugins']['clipuser']['fields'][] = $fieldname;
             }
 
             // FIXME User field may restrict the list always
