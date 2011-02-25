@@ -38,6 +38,8 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_Handler
             $view->assign('pubfields', $pubfields)
                  ->assign('pubtype', $pubtype->toArray())
                  ->assign('config', $this->configPreProcess($pubtype['config']));
+        } else {
+            $view->assign('config', $this->configPreProcess($this->configDefault()));
         }
 
         // stores the return URL
@@ -157,6 +159,33 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_Handler
     /**
      * Utility methods.
      */
+    private function configDefault()
+    {
+        $result = array(
+            'view' => array(
+                'load' => false,
+                'onlyown' => true,
+                'processrefs' => false,
+                'checkperm' => false,
+                'handleplugins' => false,
+                'loadworkflow' => false
+            ),
+            'display' => array(
+                'load' => true,
+                'onlyown' => true,
+                'processrefs' => true,
+                'checkperm' => true,
+                'handleplugins' => false,
+                'loadworkflow' => false
+            ),
+            'edit' => array(
+                'onlyown' => true
+            )
+        );
+
+        return $result;
+    }
+
     private function configPreProcess($config)
     {
         $result = array();
