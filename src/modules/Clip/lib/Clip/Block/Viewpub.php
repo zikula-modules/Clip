@@ -107,7 +107,7 @@ class Clip_Block_Viewpub extends Zikula_Controller_Block
         }
 
         // builds the pubtypes selector
-        $pubtypes = Clip_Util::getPubType(-1);
+        $pubtypes = Clip_Util::getPubType(-1)->toArray();
 
         foreach (array_keys($pubtypes) as $tid) {
             $pubtypes[$tid] = $pubtypes[$tid]['title'];
