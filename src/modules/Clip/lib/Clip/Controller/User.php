@@ -92,9 +92,7 @@ class Clip_Controller_User extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('clip:list:', "{$args['tid']}::{$args['templateid']}", ACCESS_READ)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::{$args['templateid']}", ACCESS_READ));
 
         //// Output setup
         // check if this view is cached
@@ -222,9 +220,7 @@ class Clip_Controller_User extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('clip:full:', "{$args['tid']}:{$args['pid']}:{$args['templateid']}", ACCESS_READ)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:full:', "{$args['tid']}:{$args['pid']}:{$args['templateid']}", ACCESS_READ));
 
         //// Output setup
         // check if this view is cached
@@ -283,7 +279,7 @@ class Clip_Controller_User extends Zikula_Controller
 
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
-            $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+            $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
@@ -354,7 +350,7 @@ class Clip_Controller_User extends Zikula_Controller
             }
         }
 
-        $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
         // get actual state for selecting form Template
         $stepname = 'initial';

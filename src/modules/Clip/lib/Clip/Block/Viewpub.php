@@ -19,7 +19,7 @@ class Clip_Block_Viewpub extends Zikula_Controller_Block
      */
     public function init()
     {
-        SecurityUtil::registerPermissionSchema('clip:block:viewpub', 'Block Id:Pubtype Id:');
+        SecurityUtil::registerPermissionSchema('Clip:block:viewpub', 'Block Id:Pubtype Id:');
     }
 
     /**
@@ -43,7 +43,7 @@ class Clip_Block_Viewpub extends Zikula_Controller_Block
      */
     public function display($blockinfo)
     {
-        $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+        $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
@@ -57,7 +57,7 @@ class Clip_Block_Viewpub extends Zikula_Controller_Block
         }
 
         // security check
-        if (!SecurityUtil::checkPermission('clip:block:viewpub', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('Clip:block:viewpub', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
             return;
         }
 

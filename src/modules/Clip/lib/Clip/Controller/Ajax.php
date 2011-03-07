@@ -16,9 +16,7 @@ class Clip_Controller_Ajax extends Zikula_Controller
 {
     public function changelistorder()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            AjaxUtil::error($this->__('Sorry! No authorization to access this module.'));
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         $pubfields = FormUtil::getPassedValue('pubfieldlist');
         $tid       = FormUtil::getPassedValue('tid');
@@ -57,18 +55,16 @@ class Clip_Controller_Ajax extends Zikula_Controller
     public function view()
     {
         //// Validation
-        $args['tid'] = (int)FormUtil::getPassedValue('tid', null, 'POST');
+        $args['tid'] = (int)$this->request->getPost()->get('tid', null);
 
         if ($args['tid'] <= 0) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
 
-        //// Security check
-        if (!SecurityUtil::checkPermission('clip:list:', "{$args['tid']}::", ACCESS_READ)) {
-            return LogUtil::registerPermissionError();
-        }
+        // Security check
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::", ACCESS_READ));
 
-        //// Parameters
+        // Parameters
         $pubtype = Clip_Util::getPubType($args['tid']);
         if (!$pubtype) {
             return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
@@ -76,14 +72,14 @@ class Clip_Controller_Ajax extends Zikula_Controller
 
         $args = array(
             'tid'           => (int)$args['tid'],
-            'keyword'       => FormUtil::getPassedValue('keyword', null, 'POST'),
-            'op'            => FormUtil::getPassedValue('op', 'likefirst', 'POST'),
-            'filter'        => FormUtil::getPassedValue('filter', null, 'POST'),
-            'orderby'       => FormUtil::getPassedValue('orderby', null, 'POST'),
-            'startnum'      => FormUtil::getPassedValue('startnum', null, 'POST'),
-            'itemsperpage'  => (int)FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'], 'POST'),
-            'handleplugins' => FormUtil::getPassedValue('handleplugins', true, 'POST'),
-            'loadworkflow'  => FormUtil::getPassedValue('loadworkflow', false, 'POST'),
+            'keyword'       => $this->request->getPost()->get('keyword', null),
+            'op'            => $this->request->getPost()->get('op', 'likefirst'),
+            'filter'        => $this->request->getPost()->get('filter', null),
+            'orderby'       => $this->request->getPost()->get('orderby', null),
+            'startnum'      => $this->request->getPost()->get('startnum', null),
+            'itemsperpage'  => (int)$this->request->getPost()->get('itemsperpage', $pubtype['itemsperpage']),
+            'handleplugins' => $this->request->getPost()->get('handleplugins', true),
+            'loadworkflow'  => $this->request->getPost()->get('loadworkflow', false),
             'countmode'     => 'no', // API default
             'checkperm'     => false // API default (already checked)
         );
@@ -147,12 +143,11 @@ class Clip_Controller_Ajax extends Zikula_Controller
 
         if (SecurityUtil::checkPermission('Users::', '::', ACCESS_COMMENT)) {
             $args = array(
-                'keyword' => FormUtil::getPassedValue('keyword', null, 'POST'),
-                'op'      => FormUtil::getPassedValue('op', 'likefirst', 'POST')
+                'keyword' => $this->request->getPost()->get('keyword'),
+                'op'      => $this->request->getPost()->get('op', 'likefirst')
             );
             $args['op'] = in_array($args['op'], array('search', 'likefirst')) ? $args['op'] : 'likefirst';
 
-            ModUtil::dbInfoLoad('Users');
             $tables = DBUtil::getTables();
 
             $usersColumn = $tables['users_column'];

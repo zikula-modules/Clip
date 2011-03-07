@@ -27,9 +27,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function modifyconfig()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         // return the form output
         return FormUtil::newForm('Clip', $this)
@@ -42,9 +40,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function pubtypes()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
 
@@ -57,9 +53,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function pubtype()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         // return the form output
         return FormUtil::newForm('Clip', $this)
@@ -72,9 +66,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function pubfields()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         // return the form output
         return FormUtil::newForm('Clip', $this)
@@ -87,9 +79,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function relations()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         // return the form output
         return FormUtil::newForm('Clip', $this)
@@ -102,9 +92,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function clipexport()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         // return the form output
         return FormUtil::newForm('Clip', $this)
@@ -117,9 +105,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function clipimport()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         // return the form output
         return FormUtil::newForm('Clip', $this)
@@ -150,9 +136,7 @@ class Clip_Controller_Admin extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('clip::', "{$args['tid']}::", ACCESS_EDIT)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', "{$args['tid']}::", ACCESS_EDIT));
 
         //// Misc values
         $pubtype = Clip_Util::getPubType($args['tid']);
@@ -198,9 +182,7 @@ class Clip_Controller_Admin extends Zikula_Controller
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'pid'));
         }
 
-        if (!SecurityUtil::checkPermission('clip::', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN));
 
         $pubtype = Clip_Util::getPubType($args['tid']);
         if (!$pubtype) {
@@ -231,9 +213,7 @@ class Clip_Controller_Admin extends Zikula_Controller
     public function showcode($args=array())
     {
         //// Security check
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         //// Parameters
         $args = array(
@@ -284,9 +264,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function importps()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         $step = FormUtil::getPassedValue('step');
         if (!empty($step)) {
@@ -308,9 +286,7 @@ class Clip_Controller_Admin extends Zikula_Controller
      */
     public function editlist()
     {
-        if (!SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
-        }
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         $args = array(
             'menu'       => 1,
