@@ -28,6 +28,7 @@ class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
     {
         return __FILE__;
     }
+
     /**
      * Form Framework methods.
      */
@@ -39,6 +40,22 @@ class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
         $params['maxValue'] = isset($params['maxValue']) ? $params['maxValue'] : $this->config['max'];
 
         parent::readParameters($view, $params);
+    }
+
+    /**
+     * Clip processing methods.
+     */
+    static function processQuery(&$query, $field, $args)
+    {
+        if (!$field['isuid']) {
+            return;
+        }
+
+        // restrict the query for normal users
+        if (!SecurityUtil::checkPermission("clip:{$args['func']}:", "{$args['tid']}::", ACCESS_MODERATE)) {
+            $uid = UserUtil::getVar('uid');
+            $query->andWhere("$fieldname = ?", $uid);
+        }
     }
 
     /**

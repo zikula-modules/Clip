@@ -113,7 +113,9 @@ class Clip_Api_User extends Zikula_Api
             $orderby = Clip_Util::createOrderBy($args['orderby']);
         }
 
+        //// Query setup
         $args['queryalias'] = "pub_{$args['tid']}";
+        $query = $tableObj->createQuery($args['queryalias']);
 
         //// Filter
         // resolve the FilterUtil arguments
@@ -125,17 +127,21 @@ class Clip_Api_User extends Zikula_Api
         {
             $plugin = Clip_Util::getPlugin($field['fieldplugin']);
 
+            // includes any filter default class
             if (isset($plugin->filterClass)) {
                 $filter['args']['plugins'][$plugin->filterClass]['fields'][] = $fieldname;
             }
 
+            // includes the user operator restriction if it's an UID
             if ($field['isuid']) {
-                // TODO implement filter restrictions
-                $filter['args']['restriction'][$fieldname][] = 'user';
-                //$filter['args']['plugins']['clipuser']['fields'][] = $fieldname;
+                $filter['args']['restrictions'][$fieldname][] = 'user';
+                $filter['args']['plugins']['clipuser']['fields'][] = $fieldname;
             }
 
-            // FIXME User field may restrict the list always
+            // process the query
+            if (method_exists($plugin, 'processQuery')) {
+                $plugin->processQuery($query, $field, $args);
+            }
         }
 
         // filter instance
@@ -146,9 +152,6 @@ class Clip_Api_User extends Zikula_Api
         } elseif (!empty($pubtype['defaultfilter'])) {
             $filter['obj']->setFilter($pubtype['defaultfilter']);
         }
-
-        //// Query setup
-        $query = $tableObj->createQuery($args['queryalias']);
 
         //// Relations
         // filters will be limited to the loaded relations

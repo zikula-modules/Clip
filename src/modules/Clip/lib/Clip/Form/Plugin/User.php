@@ -152,6 +152,25 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         return $uids;
     }
 
+    static function processQuery(&$query, $field, $args)
+    {
+        if (!$field['isuid']) {
+            return;
+        }
+
+        $this->parseConfig($field['typedata']);
+
+        // restrict the query for normal users
+        if (!SecurityUtil::checkPermission("clip:{$args['func']}:", "{$args['tid']}::", ACCESS_MODERATE)) {
+            $uid = UserUtil::getVar('uid');
+            if ($this->config['multiple']) {
+                $query->andWhere("$fieldname = ? OR $fieldname LIKE ?", array(":$uid:", "%:$uid:%"));
+            } else {
+                $query->andWhere("$fieldname = ?", $uid);
+            }
+        }
+    }
+
     function getPluginOutput($field)
     {
         $this->parseConfig($field['typedata']);

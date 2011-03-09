@@ -146,7 +146,7 @@
                 {formcheckbox id='issearchable' group='field'}
                 <div class="z-formnote">{gt text='The content of this field can be searched?'}</div>
             </div>
-            {if !isset($field) OR !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Email', 'Float', 'Image', 'Ms', 'MultiCheck', 'MultiList', 'Text', 'Upload', 'Url'))}
+            {if !isset($field) OR !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Email', 'Float', 'Image', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Text', 'Upload', 'Url'))}
             <div class="z-formrow">
                 {formlabel for='isuid' text='Is a User ID'}
                 {formcheckbox id='isuid' group='field'}
