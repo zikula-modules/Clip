@@ -15,6 +15,13 @@
 class Clip_Util
 {
     /**
+     * Arguments store.
+     *
+     * @var array
+     */
+    protected static $args = array();
+
+    /**
      * Retrieves the available plugins.
      *
      * @param string $id Retrieve the classname for this id.
@@ -76,7 +83,7 @@ class Clip_Util
      *
      * @return integer Publication type ID.
      */
-    public static function getTidFromStringSuffix($tablename)
+    public static function getTidFromString($tablename)
     {
         $tid = '';
         while (is_numeric(substr($tablename, -1))) {
@@ -88,15 +95,15 @@ class Clip_Util
     }
 
     /**
-     * Extract the TID from a string end.
+     * Removes any numerical suffix of a string.
      *
-     * @param string $tablename
+     * @param string $string
      *
-     * @return integer Publication type ID.
+     * @return string String without numeric suffix.
      */
     public static function getStringPrefix($string)
     {
-        $suffixnumber = self::getTidFromStringSuffix($string);
+        $suffixnumber = self::getTidFromString($string);
 
         return str_replace($suffixnumber, '', $string);
     }
@@ -562,6 +569,7 @@ class Clip_Util
         return $null;
     }
 
+    /* utility function to return the pubtype reference */
     private static function getPubTypeSub(&$pubtype, $tid)
     {
         if ($pubtype['tid'] == $tid) {
@@ -664,5 +672,58 @@ class Clip_Util
         }
 
         return $core_title;
+    }
+
+    /**
+     * User form instance builder
+     *
+     * @param Zikula_Controller $controller
+     * @see FormUtil::newForm
+     *
+     * @return Clip_Form_View User Form View instance.
+     */
+    public static function newUserForm($controller)
+    {
+        $serviceManager = ServiceUtil::getManager();
+
+        $render = new Clip_Form_View($serviceManager, 'Clip');
+
+        $render->setController($this);
+        $render->assign('controller', $controller)
+               ->add_core_data();
+
+        return $render;
+    }
+
+    /**
+     * self::$args getter and setter
+     */
+    public static function getArgs()
+    {
+        $args = self::$args;
+        self::$args = array();
+
+        return $args;
+    }
+
+    public static function setArgs($id, $args)
+    {
+        self::$args[$id] = $args;
+    }
+
+    /**
+     * Validates a TID number.
+     *
+     * @param integer $tid
+     *
+     * @return boolean True on valid publication type, false otherwise.
+     */
+    public static function validateTid($tid)
+    {
+        if (is_numeric($tid) && $tid > 0 && self::getPubType($tid)) {
+            return true;
+        }
+
+        return false;
     }
 }

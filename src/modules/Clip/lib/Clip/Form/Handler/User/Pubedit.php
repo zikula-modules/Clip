@@ -32,9 +32,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
         $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
         $this->goto = FormUtil::getPassedValue('goto', '');
 
-        //// Initialize
+        //// Initialize $pubdata
         // process a new or existing pub, and it's available actions
-        if (!empty($this->id)) {
+        if ($this->id) {
             $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', array(
                 'tid' => $this->tid,
                 'id'  => $this->id,
@@ -49,57 +49,39 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
 
                 return $view->redirect(ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid)));
             }
-
-            $this->pubAssign($pubdata);
-
-            $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->pubtype->getTableName(), 'id', 'Clip');
         } else {
             // initial values
             $classname = 'Clip_Model_Pubdata'.$this->tid;
             $pubdata = new $classname();
-
-            $this->pubDefault($pubdata);
-
-            $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'Clip');
         }
 
-        //// Validation
-        // if there are no actions the user is not allowed to change / submit / delete something.
-        // We will redirect the user to the overview page
-        if (count($actions) < 1) {
+        $this->setPub($pubdata);
+
+        //// Actions
+        if ($this->id) {
+            $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->pubtype->getTableName(), 'id', 'Clip');
+        } else {
+            $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'Clip');
+        }
+        // if there are no actions the user is not allowed to submit something.
+        // we will redirect the user to the overview page
+        if (!count($actions)) {
             LogUtil::registerError($this->__('No workflow actions found. This can be a permissions issue.'));
 
             return $view->redirect(ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid)));
         }
 
         // translate any gt string on the action parameters
-        foreach (array_keys($actions) as $aid) {
-            if (isset($actions[$aid]['parameters'])) {
-                // check if the action parameter is translatable
-                foreach (array_keys($actions[$aid]['parameters']) as $pname) {
-                    foreach ($actions[$aid]['parameters'][$pname] as $k => $v) {
-                        if (strpos($k, '__') === 0) {
-                            unset($actions[$aid]['parameters'][$pname][$k]);
-                            $k = substr($k, 2);
-                            $actions[$aid]['parameters'][$pname][$k] = $this->__($v);
-                        }
-                    }
-                }
-                // set the button title with the description if not set
-                if (!isset($actions[$aid]['parameters']['button']['title'])) {
-                    $actions[$aid]['parameters']['button']['title'] = $this->__($actions[$aid]['description']);
-                }
-            }
-        }
+        $this->translateActions($actions);
 
         //// Processing
         // handle the Doctrine_Record data as an array from here
         $data = $pubdata->toArray();
 
-        // detect the relations
-        $this->relations = array();
+        // process the relations
         $onlyown = $this->pubtype['config']['edit']['onlyown'];
 
+        $this->relations = array();
         foreach ($pubdata->getRelations($onlyown) as $key => $rel) {
             // set the data object
             if ($pubdata->reference($key)) {
@@ -119,19 +101,19 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
             $this->relations[$key] = $rel;
         }
 
-        $view->assign('relations', $this->relations);
-
         // check for set_* default values
         foreach (array_keys($this->pubfields->toArray()) as $fieldname) {
-            $val = FormUtil::getPassedValue('set_'.$fieldname, '');
-            if (!empty($val)) {
+            $val = FormUtil::getPassedValue('set_'.$fieldname);
+            if (!is_null($val)) {
                 $data[$fieldname] = $val;
             }
         }
 
-        // add the pub information to the render
-        $view->assign('pubdata', $data)
-             ->assign('pubobj', $this->pub);
+        // fills the render
+        $view->assign('pubdata',   $data)
+             ->assign('pubobj',    $this->pub)
+             ->assign('relations', $this->relations)
+             ->assign('actions',   $actions);
 
         // stores the first referer and the item URL
         if (empty($this->referer)) {
@@ -142,8 +124,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
         if (!empty($this->id)) {
             $this->itemurl = ModUtil::url('Clip', 'user', 'display', array('tid' => $this->tid, 'pid' => $this->pub['core_pid']), null, null, true);
         }
-
-        $view->assign('actions', $actions);
 
         return true;
     }
@@ -161,7 +141,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
         $data = $view->getValues();
 
         // restore the core values
-        $this->pubExtract($data['pubdata']);
+        $this->getPub($data['pubdata']);
 
         // adds any extra data to the item
         if (isset($data['core_extra'])) {
@@ -175,43 +155,22 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
                                        'pubfields'   => $this->pubfields,
                                        'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
+        if (!$data) {
+            return false;
+        }
+
         // see http://www.smarty.net/manual/en/caching.groups.php
         $tmp = Zikula_View::getInstance('Clip');
-        // clear the view of the current publication
+        // clear the displays of the current publication
         $tmp->clear_cache(null, 'display'.$this->tid.'|'.$this->pub['core_pid']);
-        // clear all page of publist
+        // clear all lists
+        // TODO cacheid for view is longer, it's ok?
         $tmp->clear_cache(null, 'view'.$this->tid);
+
         unset($tmp);
 
         // core operations processing
-        $goto = $this->itemurl;
-        $ops  = isset($data['core_operations']) ? $data['core_operations'] : array();
-
-        if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
-            // if the item moved to the depot or was deleted
-            $urltid = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
-            // check if the user comes of the display screen or not
-            $goto = (strpos($this->referer, $this->itemurl) === 0) ? $this->referer : $urltid;
-
-        } elseif (isset($ops['createPub']) && $ops['createPub']) {
-            // the publication was created
-            if ($data['core_online'] == 1) {
-                $goto = ModUtil::url('Clip', 'user', 'display',
-                                     array('tid' => $data['core_tid'],
-                                           'pid' => $data['core_pid']));
-            } else {
-                // back to the pubtype pending template or referer page if it is not approved yet
-                $goto = isset($ops['createPub']['goto']) ? $ops['createPub']['goto'] : $this->referer;
-            }
-
-        } elseif (!empty($ops)) {
-            // check if an operation thrown a goto value
-            foreach (array_keys($ops) as $op) {
-                if (isset($ops[$op]['goto'])) {
-                    $goto = $ops[$op]['goto'];
-                }
-            }
-        }
+        $goto = $this->processGoto($data);
 
         // check the goto parameter
         switch ($this->goto) {
@@ -245,13 +204,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
                 break;
 
             default:
-                //if (empty($this->goto)) {
-                    $this->goto = $goto;
-                //}
-        }
-
-        if (!$data) {
-            return false;
+                $this->goto = $goto;
         }
 
         return $view->redirect($this->goto);
@@ -297,25 +250,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
         return $this->tid;
     }
 
-    /**
-     * Publication data handlers
-     */
-    private function pubDefault(&$pubdata)
-    {
-        $pubdata['core_author']   = UserUtil::getVar('uid');
-        $pubdata['core_language'] = '';
-
-        $pubdata->pubPostProcess(array('handleplugins' => false, 'loadworkflow' => true));
-        $this->pub = $pubdata;
-    }
-
-    private function pubAssign(&$pubdata)
-    {
-        $pubdata->pubPostProcess(array('handleplugins' => false, 'loadworkflow' => true));
-        $this->pub = $pubdata;
-    }
-
-    private function pubExtract($data)
+    private function getPub($data)
     {
         if (!empty($this->id)) {
             $this->pub->assignIdentifier($this->id);
@@ -334,5 +269,80 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
 
         // fill any other data
         $this->pub->fromArray($data);
+    }
+
+    /**
+     * Publication data handlers
+     */
+    private function setPub(&$pubdata)
+    {
+        if (!$this->id) {
+            $pubdata['core_author']   = UserUtil::getVar('uid');
+            $pubdata['core_language'] = '';
+            $pubdata->mapValue('__WORKFLOW__', array('state' => 'initial'));
+        }
+
+        $pubdata->pubPostProcess();
+
+        $this->pub = $pubdata;
+    }
+
+    /**
+     * Misc
+     */
+    private function translateActions(&$actions)
+    {
+        foreach (array_keys($actions) as $aid) {
+            if (isset($actions[$aid]['parameters'])) {
+                // check if the action parameter is translatable
+                foreach (array_keys($actions[$aid]['parameters']) as $pname) {
+                    foreach ($actions[$aid]['parameters'][$pname] as $k => $v) {
+                        if (strpos($k, '__') === 0) {
+                            unset($actions[$aid]['parameters'][$pname][$k]);
+                            $k = substr($k, 2);
+                            $actions[$aid]['parameters'][$pname][$k] = $this->__($v);
+                        }
+                    }
+                }
+                // set the button title with the description if not set
+                if (!isset($actions[$aid]['parameters']['button']['title'])) {
+                    $actions[$aid]['parameters']['button']['title'] = $this->__($actions[$aid]['description']);
+                }
+            }
+        }
+    }
+
+    private function processGoto($data)
+    {
+        $goto = $this->itemurl;
+        $ops  = isset($data['core_operations']) ? $data['core_operations'] : array();
+
+        if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
+            // if the item moved to the depot or was deleted
+            $urltid = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
+            // check if the user comes of the display screen or not
+            $goto = (strpos($this->referer, $this->itemurl) === 0) ? $this->referer : $urltid;
+
+        } elseif (isset($ops['createPub']) && $ops['createPub']) {
+            // the publication was created
+            if ($data['core_online'] == 1) {
+                $goto = ModUtil::url('Clip', 'user', 'display',
+                                     array('tid' => $data['core_tid'],
+                                           'pid' => $data['core_pid']));
+            } else {
+                // back to the pubtype pending template or referer page if it is not approved yet
+                $goto = isset($ops['createPub']['goto']) ? $ops['createPub']['goto'] : $this->referer;
+            }
+
+        } elseif (!empty($ops)) {
+            // check if an operation thrown a goto value
+            foreach (array_keys($ops) as $op) {
+                if (isset($ops[$op]['goto'])) {
+                    $goto = $ops[$op]['goto'];
+                }
+            }
+        }
+
+        return $goto;
     }
 }

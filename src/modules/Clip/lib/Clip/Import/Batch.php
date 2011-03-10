@@ -141,7 +141,7 @@ class Clip_Import_Batch
                     }
                     $created = true;
                 }
-                $tid = Clip_Util::getTidFromStringSuffix($args['section']);
+                $tid = Clip_Util::getTidFromString($args['section']);
                 $oid = $args['pub']['id'];
                 unset($args['pub']['id']);
                 // null fields check
@@ -162,7 +162,7 @@ class Clip_Import_Batch
                 break;
 
             case 'workflows':
-                $tid = Clip_Util::getTidFromStringSuffix($args['section']);
+                $tid = Clip_Util::getTidFromString($args['section']);
                 $newtid = self::$idmap['tids'][$tid];
                 // update the new id refs
                 $args['workflow']['obj_id'] = self::$idmap['pids'][$args['workflow']['obj_id']];;

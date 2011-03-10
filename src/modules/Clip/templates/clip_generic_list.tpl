@@ -15,7 +15,7 @@
         {foreach from=$publist item='item'}
         <tr class="{cycle values='z-even,z-odd'}">
             <td>
-                <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">{$item[$pubtype.titlefield]}</a>
+                <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">{$item.core_title}</a>
                 <span class="z-sub z-floatright">({gt text='%s read' plural='%s reads' count=$item.core_hitcount tag1=$item.core_hitcount})</span>
             </td>
             <td class="z-right z-nowrap">

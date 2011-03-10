@@ -35,16 +35,16 @@ class Clip_Api_User extends Zikula_Api
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
-
-        $pubtype = Clip_Util::getPubType($args['tid']);
-        if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
         $pubfields = Clip_Util::getPubFields($args['tid']);
         if (!$pubfields) {
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
+
+        $pubtype = Clip_Util::getPubType($args['tid']);
         $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
 
         //// Parameters
@@ -62,7 +62,8 @@ class Clip_Api_User extends Zikula_Api
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
-            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
+            'func'          => 'list'
         );
 
         if (!$args['itemsperpage']) {
@@ -107,7 +108,7 @@ class Clip_Api_User extends Zikula_Api
                     }
                 }
             } else {
-                $orderby = 'cr_date';
+                $orderby = 'core_publishdate DESC';
             }
         } else {
             $orderby = Clip_Util::createOrderBy($args['orderby']);
@@ -155,12 +156,12 @@ class Clip_Api_User extends Zikula_Api
 
         //// Relations
         // filters will be limited to the loaded relations
-        $args['rel'] = $pubtype['config']['view'];
+        $relconfig = $pubtype['config']['view'];
 
-        if ($args['rel']['load']) {
+        if ($relconfig['load']) {
             // adds the relations data
             $record = $tableObj->getRecordInstance();
-            foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
+            foreach ($record->getRelations($relconfig['onlyown']) as $ralias => $rinfo) {
                 if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
                     $query->leftJoin("{$args['queryalias']}.{$ralias}");
                 }
@@ -196,7 +197,7 @@ class Clip_Api_User extends Zikula_Api
             //// Order by
             // replaces the core_title alias by the original field name
             if (strpos('core_title', $orderby) !== false) {
-                $orderby = str_replace('core_title', $pubtype->titlefield, $orderby);
+                $orderby = str_replace('core_title', $pubtype['titlefield'], $orderby);
             }
             // check if some plugin specific orderby has to be done
             $orderby = Clip_Util::handlePluginOrderBy($orderby, $pubfields, $args['queryalias'].'.');
@@ -225,6 +226,9 @@ class Clip_Api_User extends Zikula_Api
             }
         }
 
+        // store the arguments used
+        Clip_Util::setArgs('userapi.getall', $args);
+
         return array (
             'publist'  => isset($publist) ? $publist : null,
             'pubcount' => isset($pubcount) ? $pubcount : null
@@ -246,8 +250,11 @@ class Clip_Api_User extends Zikula_Api
     public function get($args)
     {
         //// Validation
-        if (!isset($args['tid']) || !is_numeric($args['tid'])) {
+        if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        }
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
         if (!isset($args['id']) && !isset($args['pid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
@@ -270,16 +277,6 @@ class Clip_Api_User extends Zikula_Api
 
         //// Misc values
         $pubtype = Clip_Util::getPubType($args['tid']);
-        // validate the pubtype
-        if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
-        }
-
-        $pubfields = Clip_Util::getPubFields($args['tid']);
-        // validate the pubfields
-        if (!$pubfields) {
-            return LogUtil::registerError($this->__('Error! No publication fields found.'));
-        }
 
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
@@ -318,12 +315,12 @@ class Clip_Api_User extends Zikula_Api
         }
 
         //// Relations
-        $args['rel'] = $pubtype['config']['display'];
+        $relconfig = $pubtype['config']['display'];
 
         // adds the relations data
-        if ($args['rel']['load']) {
+        if ($relconfig['load']) {
             $record = $tableObj->getRecordInstance();
-            foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
+            foreach ($record->getRelations($relconfig['onlyown']) as $ralias => $rinfo) {
                 if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
                     $query->leftJoin("{$args['queryalias']}.{$ralias}");
                 }
@@ -344,6 +341,9 @@ class Clip_Api_User extends Zikula_Api
 
         // postprocess the record and related records
         $pubdata->pubPostProcess($args);
+
+        // store the arguments used
+        Clip_Util::setArgs('userapi.get', $args);
 
         return $pubdata;
     }
@@ -385,7 +385,7 @@ class Clip_Api_User extends Zikula_Api
 
         $ret = Zikula_Workflow_Util::executeAction($schema, $obj, $args['commandName'], $pubtype->getTableName(), 'Clip');
 
-        if (empty($ret)) {
+        if ($ret === false) {
             return LogUtil::registerError($this->__('Workflow action error.'));
         }
 
@@ -587,7 +587,7 @@ class Clip_Api_User extends Zikula_Api
     {
         $_ = $args['vars'];
 
-        $functions = array('executecommand', 'main', 'view', 'display', 'edit', 'viewpub', 'pubedit');
+        $functions = array('main', 'view', 'display', 'edit', 'exec', 'viewpub', 'pubedit', 'executecommand');
         $argsnum   = count($_);
         if (!isset($_[2]) || empty($_[2])) {
             System::queryStringSetVar('func', 'main');
@@ -596,6 +596,19 @@ class Clip_Api_User extends Zikula_Api
 
         if (in_array($_[2], $functions)) {
             return false;
+        } else {
+            /* @deprecated translation table */
+            switch ($_[2]) {
+                case 'viewpub':
+                    $_[2] = 'display';
+                    break;
+                case 'pubedit':
+                    $_[2] = 'edit';
+                    break;
+                case 'executecommand':
+                    $_[2] = 'exec';
+                    break;
+            }
         }
 
         $nextvar = 3;

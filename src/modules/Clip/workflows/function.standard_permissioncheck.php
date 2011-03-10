@@ -24,7 +24,7 @@ function Clip_workflow_standard_permissioncheck($obj, $permLevel, $currentUser, 
         // process $obj and calculate an instance
         $pid = $obj['core_pid'];
 
-        $tid     = Clip_Util::getTidFromStringSuffix($obj['__WORKFLOW__']['obj_table']);
+        $tid     = Clip_Util::getTidFromString($obj['__WORKFLOW__']['obj_table']);
         $pubtype = Clip_Util::getPubType($tid);
 
         if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == $currentUser) {

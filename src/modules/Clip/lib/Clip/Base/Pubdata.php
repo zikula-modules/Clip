@@ -30,19 +30,19 @@ class Clip_Base_Pubdata extends Doctrine_Record
     public function pubPostProcess($args = array())
     {
         $tablename = $this->_table->getInternalTableName();
-        $tid = Clip_Util::getTidFromStringSuffix($tablename);
+        $tid = Clip_Util::getTidFromString($tablename);
 
         // mapped values
         $core_title = Clip_Util::getTitleField($tid);
 
-        $this->mapValue('core_tid', $tid);
+        $this->mapValue('core_tid',      $tid);
         $this->mapValue('core_uniqueid', "{$tid}-{$this['core_pid']}");
-        $this->mapValue('core_title' , $this[$core_title]);
-        $this->mapValue('core_creator', ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
-        $this->mapValue('__WORKFLOW__', array('state' => 'initial'));
+        $this->mapValue('core_title',    $this[$core_title]);
+        $this->mapValue('core_creator',  ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
+        $this->mapValue('__WORKFLOW__',  array('state' => 'initial'));
 
         // handle the plugins data if needed
-        if (!isset($args['handleplugins']) || $args['handleplugins']) {
+        if (isset($args['handleplugins']) && $args['handleplugins']) {
             Clip_Util::handlePluginFields($this);
         }
 
@@ -159,7 +159,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
         $dom = ZLanguage::getModuleDomain('Clip');
 
         $tablename = $this->_table->getInternalTableName();
-        $tid = Clip_Util::getTidFromStringSuffix($tablename);
+        $tid = Clip_Util::getTidFromString($tablename);
 
         $relations = array();
 

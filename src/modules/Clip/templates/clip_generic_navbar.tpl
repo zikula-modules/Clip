@@ -1,4 +1,4 @@
-
+{zdebug}
 <div class="z-menu">
     <span class="z-menuitem-title clip-menu">
         {strip}
@@ -45,7 +45,7 @@
                 {if isset($pubdata.id)}
                 <span>
                     <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid}">
-                        {$pubdata.core_title}
+                        {$pubdata.core_title|truncate:30}
                     </a>
                 </span>
                 {/if}

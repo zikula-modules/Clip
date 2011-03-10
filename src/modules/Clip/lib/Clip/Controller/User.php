@@ -43,41 +43,40 @@ class Clip_Controller_User extends Zikula_Controller
         // get the tid first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        if (empty($args['tid']) || !is_numeric($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
-        if (empty($pubtype)) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
-        }
 
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
         $args['getApprovalS']  = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
         // define the arguments
-        $args = array(
+        $apiargs = array(
             'tid'           => $args['tid'],
-            'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
-            'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum', 0),
-            'page'          => (isset($args['page']) && is_numeric($args['page'])) ? (int)$args['page'] : (int)abs(FormUtil::getPassedValue('page', 1)),
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)$pubtype['itemsperpage'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
+            'checkperm'     => false,
+            'countmode'     => 'both'
+        );
+        $args = array(
+            'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
+            'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum', 0),
+            'page'          => (isset($args['page']) && is_numeric($args['page'])) ? (int)$args['page'] : (int)abs(FormUtil::getPassedValue('page', 1)),
             'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
-            'checkperm'     => false, // API
-            'countmode'     => 'both' // API
         );
 
-        if ($args['itemsperpage'] <= 0) {
-            $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
+        if ($apiargs['itemsperpage'] <= 0) {
+            $apiargs['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
         }
 
         if ($args['page'] > 1) {
-            $args['startnum'] = ($args['page']-1)*$args['itemsperpage']+1;
+            $apiargs['startnum'] = ($args['page']-1)*$apiargs['itemsperpage']+1;
         }
 
         if (empty($args['template'])) {
@@ -92,7 +91,7 @@ class Clip_Controller_User extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('clip:list:', "{$args['tid']}::{$args['templateid']}", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('clip:list:', "{$apiargs['tid']}::{$args['templateid']}", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -101,11 +100,11 @@ class Clip_Controller_User extends Zikula_Controller
         if (!empty($args['cachelifetime'])) {
             $this->view->setCache_lifetime($args['cachelifetime']);
             $cachetid = true;
-            $cacheid  = 'view'.$args['tid'].'|'.$args['templateid']
-                        .'|'.(!empty($args['filter']) ? $args['filter'] : 'nofilter')
-                        .'|'.(!empty($args['orderby']) ? $args['orderby'] : 'noorderby')
-                        .'|'.(!empty($args['itemsperpage']) ? $args['itemsperpage'] : 'nolimit')
-                        .'|'.(!empty($args['startnum']) ? $args['startnum'] : 'nostartnum');
+            $cacheid  = 'view'.$apiargs['tid'].'|'.$args['templateid']
+                        .'|'.(!empty($apiargs['filter']) ? $apiargs['filter'] : 'nofilter')
+                        .'|'.(!empty($apiargs['orderby']) ? $apiargs['orderby'] : 'noorderby')
+                        .'|'.(!empty($apiargs['itemsperpage']) ? $apiargs['itemsperpage'] : 'nolimit')
+                        .'|'.(!empty($apiargs['startnum']) ? $apiargs['startnum'] : 'nostartnum');
         } else {
             $cachetid = false;
             $cacheid  = null;
@@ -122,17 +121,20 @@ class Clip_Controller_User extends Zikula_Controller
 
         //// API call
         // uses the API to get the list of publications
-        $result = ModUtil::apiFunc('Clip', 'user', 'getall', $args);
+        $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
+
+        Clip_Util::setArgs('user.view', $args);
 
         //// Build the output
         // assign the data to the output
         $this->view->assign('pubtype',   $pubtype)
                    ->assign('publist',   $result['publist'])
+                   ->assign('clipargs',  Clip_Util::getArgs())
                    ->assign('returnurl', System::getCurrentUrl());
 
         // assign the pager values
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
-                                           'itemsperpage' => $args['itemsperpage']));
+                                           'itemsperpage' => $apiargs['itemsperpage']));
 
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
@@ -171,36 +173,35 @@ class Clip_Controller_User extends Zikula_Controller
         // get the tid first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        if (empty($args['tid']) || !is_numeric($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
-        if (empty($pubtype)) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
-        }
 
         //// Parameters
         // define the arguments
-        $args = array(
+        $apiargs = array(
             'tid'           => $args['tid'],
             'pid'           => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
             'id'            => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
+            'checkperm'     => false,
+            'handleplugins' => true,
+            'loadworkflow'  => true
+        );
+        $args = array(
             'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
-            'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
-            'checkperm'     => false, // API
-            'handleplugins' => true,  // API
-            'loadworkflow'  => true   // API
+            'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime'])
         );
 
         // post validation
-        if ((empty($args['pid']) || !is_numeric($args['pid'])) && (empty($args['id']) || !is_numeric($args['id']))) {
+        if ((empty($apiargs['pid']) || !is_numeric($apiargs['pid'])) && (empty($apiargs['id']) || !is_numeric($apiargs['id']))) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
         // get the pid if it was not passed
-        if (empty($args['pid'])) {
-            $args['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $args);
+        if (empty($apiargs['pid'])) {
+            $apiargs['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $apiargs);
         }
 
         // determine the template to use
@@ -222,17 +223,17 @@ class Clip_Controller_User extends Zikula_Controller
         }
 
         //// Security check
-        if (!SecurityUtil::checkPermission('clip:full:', "{$args['tid']}:{$args['pid']}:{$args['templateid']}", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('clip:full:', "{$apiargs['tid']}:{$apiargs['pid']}:{$args['templateid']}", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
         //// Output setup
         // check if this view is cached
-        if (!empty($args['cachelifetime']) && !SecurityUtil::checkPermission('clip:input:', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN)) {
+        if (!empty($args['cachelifetime']) && !SecurityUtil::checkPermission('clip:input:', "{$apiargs['tid']}:{$apiargs['pid']}:", ACCESS_ADMIN)) {
             $this->view->setCache_lifetime($args['cachelifetime']);
             // second clause allow developer to add an edit button on the "display" template
             $cachetid = true;
-            $cacheid = 'display'.$args['tid'].'|'.$args['pid'].'|'.$args['templateid'];
+            $cacheid = 'display'.$apiargs['tid'].'|'.$apiargs['pid'].'|'.$args['templateid'];
         } else {
             $cachetid = false;
             $cacheid  = null;
@@ -263,7 +264,7 @@ class Clip_Controller_User extends Zikula_Controller
 
         //// Misc values
         // not cached or cache disabled, then get the Pub from the DB
-        $pubfields = Clip_Util::getPubFields($args['tid']);
+        $pubfields = Clip_Util::getPubFields($apiargs['tid']);
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
@@ -271,16 +272,13 @@ class Clip_Controller_User extends Zikula_Controller
         $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
 
         //// API call
-        $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $args);
+        $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $apiargs);
+
         if (!$pubdata) {
-            return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($args['tid'], $args['pid'], $args['id'])));
+            return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])));
         }
 
         //// Build the output
-        // assign the pubdata and pubtype to the output
-        $this->view->assign('pubdata', $pubdata)
-                   ->assign('pubtype', $pubtype);
-
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
             $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
@@ -298,8 +296,16 @@ class Clip_Controller_User extends Zikula_Controller
             // settings for the autogenerated display template
             $this->view->setCompile_check(true)
                        ->assign('clip_generic_tpl', true)
-                       ->assign('template_generic_code', Clip_Generator::pubdisplay($args['tid'], $pubdata));
+                       ->assign('template_generic_code', Clip_Generator::pubdisplay($apiargs['tid'], $pubdata));
         }
+
+        // stored the used arguments
+        Clip_Util::setArgs('user.display', $args);
+
+        // assign the pubdata and pubtype to the output
+        $this->view->assign('pubdata', $pubdata)
+                   ->assign('pubtype', $pubtype)
+                   ->assign('clipargs', Clip_Util::getArgs());
 
         return $this->view->fetch($args['template'], $cacheid);
     }
@@ -320,14 +326,11 @@ class Clip_Controller_User extends Zikula_Controller
         // get the tid first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        if (empty($args['tid']) || !is_numeric($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
-        if (empty($pubtype)) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
-        }
 
         //// Parameters
         // define the arguments
@@ -358,16 +361,15 @@ class Clip_Controller_User extends Zikula_Controller
 
         // get actual state for selecting form Template
         $stepname = 'initial';
-
         if ($args['id']) {
             $obj = array('id' => $args['id']);
             Zikula_Workflow_Util::getWorkflowForObject($obj, $pubtype->getTableName(), 'id', 'Clip');
             $stepname = $obj['__WORKFLOW__']['state'];
         }
-
         // adds the stepname to the pubtype
         $pubtype->mapValue('stepname', $stepname);
 
+        //// Form Handler Instance
         // no security check needed
         // the security check will be done for workflow actions and userapi.get
         $handler = new Clip_Form_Handler_User_Pubedit();
@@ -376,12 +378,7 @@ class Clip_Controller_User extends Zikula_Controller
 
         //// Build the output
         // create the output object
-        $serviceManager = ServiceUtil::getManager();
-        $render = new Clip_Form_View($serviceManager, 'Clip');
-        $render->setController($this);
-        $render->assign('controller', $this)
-               ->assign('pubtype', $pubtype)
-               ->add_core_data();
+        $render = Clip_Util::newUserForm($this);
 
         // resolve the template to use
         // 1. individual step
@@ -419,6 +416,12 @@ class Clip_Controller_User extends Zikula_Controller
                    ->assign('template_generic_code', Clip_Generator::pubedit($args['tid']));
         }
 
+        // stored the used arguments and assign them to the view
+        Clip_Util::setArgs('user.edit', $args);
+
+        $render->assign('clipargs', Clip_Util::getArgs())
+               ->assign('pubtype', $pubtype);
+
         return $render->execute($template, $handler);
     }
 
@@ -430,20 +433,17 @@ class Clip_Controller_User extends Zikula_Controller
      * @param string  $args['commandName'] Command name has to be a valid workflow action for the currenct state.
      * @param string  $args['goto']        Redirect-to after execution.
      */
-    public function executecommand($args)
+    public function exec($args)
     {
         //// Validation
         // get the tid first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        if (empty($args['tid']) || !is_numeric($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
-        if (empty($pubtype)) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
-        }
 
         //// Parameters
         // define the arguments
@@ -592,5 +592,14 @@ class Clip_Controller_User extends Zikula_Controller
     public function pubeditlist($args)
     {
         return $this->editlist($args);
+    }
+
+    /**
+     * @see Clip_Controller_User::exec
+     * @deprecated
+     */
+    public function executecommand($args)
+    {
+        return $this->exec($args);
     }
 }
