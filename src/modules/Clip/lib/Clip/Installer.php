@@ -50,6 +50,7 @@ class Clip_Installer extends Zikula_Installer
 
         // register persistent event listeners (handlers)
         EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
+        EventUtil::registerPersistentModuleHandler('Clip', 'module.content.getTypes', array('Clip_EventHandler_Listeners', 'getTypes'));
 
         // modvars
         $modvars = array(
@@ -102,6 +103,8 @@ class Clip_Installer extends Zikula_Installer
                 if (!Doctrine_Core::getTable('Clip_Model_Pubfield')->changeTable(true)) {
                     return '0.4.10';
                 }
+                Content_Installer::updateContentType('Clip');
+                EventUtil::registerPersistentModuleHandler('Clip', 'module.content.getTypes', array('Clip_EventHandler_Listeners', 'getTypes'));
             case '0.4.11':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
@@ -645,4 +648,18 @@ class Clip_Installer extends Zikula_Installer
             Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->changeTable();
         }
     }
+
+    /**
+     * map old ContentType names to new
+     * @return array
+     */
+    protected function LegacyContentTypeMap()
+    {
+        $oldToNew = array(
+            'pagesetter_pub' => 'ClipPub',
+            'pagesetter_publist' => 'ClipPublist'
+        );
+        return $oldToNew;
+    }
+
 }
