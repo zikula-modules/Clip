@@ -38,9 +38,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
             $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', array(
                 'tid' => $this->tid,
                 'id'  => $this->id,
-                'checkperm' => true,
+                'checkperm'     => true,
                 'handleplugins' => false, // do not interfer with selected values on edit form
-                'loadworkflow' => true
+                'loadworkflow'  => true
             ));
 
             // validate the pudblication
@@ -276,13 +276,15 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_Handler
      */
     private function setPub(&$pubdata)
     {
+        $args = array();
+
         if (!$this->id) {
             $pubdata['core_author']   = UserUtil::getVar('uid');
             $pubdata['core_language'] = '';
-            $pubdata->mapValue('__WORKFLOW__', array('state' => 'initial'));
+            $args = array('loadworkflow' => true);
         }
 
-        $pubdata->pubPostProcess();
+        $pubdata->pubPostProcess($args);
 
         $this->pub = $pubdata;
     }
