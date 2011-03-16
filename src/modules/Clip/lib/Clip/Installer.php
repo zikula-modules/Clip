@@ -83,7 +83,9 @@ class Clip_Installer extends Zikula_Installer
                     return '0.4.4';
                 }
             case '0.4.5':
-                self::migratePubField();
+                if (!self::migratePubField()) {
+                    return '0.4.5';
+                }
             case '0.4.6':
                 // register persistent event listeners (handlers)
                 EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
@@ -450,6 +452,10 @@ class Clip_Installer extends Zikula_Installer
      */
     private static function migratePubField()
     {
+        if (!Doctrine_Core::getTable('Clip_Model_Pubfield')->changeTable()) {
+            return false;
+        }
+
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('inputset', null, '', false, 'tid');
 
         $fields = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection("fieldplugin = 'Pub'", 'tid');
