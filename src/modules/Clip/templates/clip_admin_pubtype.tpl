@@ -20,8 +20,19 @@
             <div class="z-formrow">
                 {formlabel for='title' text='Title' mandatorysym=true}
                 {formtextinput id='title' group='pubtype' maxLength='255' mandatory=true}
-                <div class="z-formnote">{gt text='Title of the publication type, can be a custom gettext string.'}</div>
+                <div class="z-formnote">
+                    {gt text='Title of the publication type, can be a custom gettext string.'}<br />
+                    <a id="clip_pubtype_collapse" href="javascript:void(0);">{gt text='Click here'}</a> {gt text='to set a custom URL title for the publication type'}
+                </div>
             </div>
+            <div id="clip_pubtype_urltitle">
+                <div class="z-formrow">
+                    {formlabel for='urltitle' text='URL title'}
+                    {formtextinput id='urltitle' group='pubtype' maxLength='150'}
+                    <div class="z-formnote">{gt text='Leave blank to autogenerate from the title.'}</div>
+                </div>
+            </div>
+
             <div class="z-formrow">
                 {formlabel for='description' text='Description'}
                 {formtextinput id='description' group='pubtype' maxLength='255'}

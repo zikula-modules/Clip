@@ -29,6 +29,7 @@ function clip_pubtype_init()
     clip_view_process_onclick();
     clip_display_load_onclick();
     clip_display_process_onclick();
+    clip_urltitle_init();
 }
 
 function clip_view_load_onclick()
@@ -49,4 +50,21 @@ function clip_display_load_onclick()
 function clip_display_process_onclick()
 {
     Zikula.checkboxswitchdisplaystate('display_processrefs', 'display_advancedprocess', true);
+}
+
+function clip_urltitle_init()
+{
+    $('clip_pubtype_collapse').observe('click', clip_urltitle_click);
+    $('clip_pubtype_collapse').addClassName('z-toggle-link');
+    clip_urltitle_click();
+}
+
+function clip_urltitle_click()
+{
+    if ($('clip_pubtype_urltitle').style.display != 'none') {
+        Element.removeClassName.delay(0.9, $('clip_pubtype_collapse'), 'z-toggle-link-open');
+    } else {
+        $('clip_pubtype_collapse').addClassName('z-toggle-link-open');
+    }
+    switchdisplaystate('clip_pubtype_urltitle');
 }

@@ -84,6 +84,8 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_Handler
                 // cleanup some fields
                 if (empty($pubtype->urltitle)) {
                     $pubtype->urltitle = DataUtil::formatPermalink($pubtype->title);
+                } else {
+                    $pubtype->urltitle = DataUtil::formatPermalink($pubtype->urltitle);
                 }
                 $pubtype->outputset = DataUtil::formatPermalink($pubtype->outputset);
                 $pubtype->inputset  = DataUtil::formatPermalink($pubtype->inputset);
