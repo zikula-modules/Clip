@@ -413,3 +413,50 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 .z-form div.z-formrow > .z-auto-container ul li.z-auto-focus em {
   background: none;
 }
+
+/* Default pubtypes generic styles */
+
+/* blog */
+.clip-post-title {
+  line-height: 1.3em;
+  margin-bottom: 0;
+}
+.clip-post-title a:link,
+.clip-post-title a:visited {
+  text-decoration: none;
+}
+.clip-post-title a:active,
+.clip-post-title a:hover {
+  color: #FF4B33;
+}
+.clip-post-meta {
+  color: #888888;
+  font-size: 0.95em;
+}
+.clip-post-content {
+  clear: both;
+  padding: 12px 0 0;
+  margin-bottom: 1em;
+}
+.clip-post-utility {
+  clear: both;
+  color: #888888;
+  font-size: 0.95em;
+  line-height: 18px;
+}
+
+/* pages */
+.clip-page-title {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 7px;
+  margin-bottom: 0px;
+}
+.clip-page-content {
+  padding: 7px;
+}
+.clip-page-info {
+  border-top: 1px solid #ddd;
+  font-size: smaller;
+  line-height: 1.5em;
+  padding: 5px;
+}
