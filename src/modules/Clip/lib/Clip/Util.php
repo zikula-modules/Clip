@@ -83,6 +83,25 @@ class Clip_Util
      *
      * @return integer Publication type ID.
      */
+    public static function getDefaultCategoryID()
+    {
+        static $id;
+
+        if (!isset($id)) {
+            $cat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
+            $id = $cat['id'];
+        }
+
+        return $id;
+    }
+
+    /**
+     * Extract the TID from a string end.
+     *
+     * @param string $tablename
+     *
+     * @return integer Publication type ID.
+     */
     public static function getTidFromString($tablename)
     {
         $tid = '';

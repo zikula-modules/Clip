@@ -94,6 +94,13 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         return $cat_arr;
     }
 
+    public function getRootCategoryID($typedata)
+    {
+        $this->parseConfig($typedata);
+
+        return $this->config[0];
+    }
+
     /**
      * Clip admin methods.
      */
@@ -156,10 +163,8 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         // config string: "(int)categoryID|(int)editLink"
         $typedata = explode('|', $typedata);
 
-        $default = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
-
         $this->config = array(
-            'cat'  => $typedata[0] ? (int)$typedata[0] : $default['id'],
+            'cat'  => $typedata[0] ? (int)$typedata[0] : Clip_Util::getDefaultCategoryID(),
             'edit' => isset($typedata[1]) ? (bool)$typedata[1] : false
         );
     }

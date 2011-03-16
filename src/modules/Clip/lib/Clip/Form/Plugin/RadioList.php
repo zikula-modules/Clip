@@ -131,6 +131,13 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         return $cat;
     }
 
+    public function getRootCategoryID($typedata)
+    {
+        $this->parseConfig($typedata);
+
+        return $this->config[0];
+    }
+
     static function getPluginOutput($field)
     {
         $full = '    {if !empty($pubdata.'.$field['name'].')}'."\n".
@@ -210,10 +217,8 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         // config string: "(int)categoryID|(int)editLink"
         $typedata = explode('|', $typedata);
 
-        $default = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
-
         $this->config = array(
-            'cat'  => $typedata[0] ? (int)$typedata[0] : $default['id'],
+            'cat'  => $typedata[0] ? (int)$typedata[0] : Clip_Util::getDefaultCategoryID(),
             'edit' => isset($typedata[1]) ? (bool)$typedata[1] : false
         );
     }

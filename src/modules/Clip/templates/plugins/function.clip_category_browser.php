@@ -11,18 +11,18 @@
 
 /**
  * Generates HTML vor Category Browsing
+ * Additional parameters will be added to the category URL
  *
- * @author kundi
- * @param $args['tid'] tid
- * @param $args['field'] fieldname of the pubfield which contains category
- * @param $args['template'] optional filename of template
- * @param $args['count'] optional count available pubs in this category
- * @param $args['multiselect'] are more selection in one browser allowed (makes only sense for multilist fields)
- * @param $args['globalmultiselect'] are more then one selections in all available browsers allowed
- * @param $args['togglediv'] this div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus)
- * @param $args['cache'] enable smarty cache
- * @param $args['cache_count'] enable count cache (apc is required)
- * @param $args['assign'] optional
+ * @param $args['tid']               Publication type ID
+ * @param $args['field']             Fieldname of the pubfield which contains category
+ * @param $args['tpl']               Optional filename of template
+ * @param $args['count']             Optional count available pubs in this category
+ * @param $args['multiselect']       Are more selection in one browser allowed (makes only sense for multilist fields)
+ * @param $args['globalmultiselect'] Are more then one selections in all available browsers allowed
+ * @param $args['togglediv']         This div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus)
+ * @param $args['cache']             Enable smarty cache
+ * @param $args['cache_count']       Enable count cache (apc is required)
+ * @param $args['assign']            Optional
 
  * @return html of category tree
  */
@@ -41,10 +41,11 @@ function smarty_function_clip_category_browser($params, &$smarty)
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'field', $dom));
     }
 
+    // get the plugin parametes
     $count             = isset($params['count']) ? $params['count'] : false;
     $togglediv         = isset($params['togglediv']) ? $params['togglediv'] : false;
 
-    $template          = isset($params['template']) ? $params['template'] : 'clip_category_browser.tpl';
+    $template          = isset($params['tpl']) ? $params['tpl'] : 'clip_category_browser.tpl';
     $assign            = isset($params['assign']) ? $params['assign'] : null;
     $operator          = isset($params['operator']) ? $params['operator'] : 'sub';
     $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;
@@ -52,6 +53,19 @@ function smarty_function_clip_category_browser($params, &$smarty)
     $cache             = isset($params['cache']) ? $params['cache'] : false;
     $cache_count       = isset($params['cache_count']) ? $params['cache_count'] : true;
 
+    // left any additional parameters
+    if (isset($params['field'])) { unset($params['field']); }
+    if (isset($params['count'])) { unset($params['count']); }
+    if (isset($params['togglediv'])) { unset($params['togglediv']); }
+    if (isset($params['tpl'])) { unset($params['tpl']); }
+    if (isset($params['assign'])) { unset($params['assign']); }
+    if (isset($params['operator'])) { unset($params['operator']); }
+    if (isset($params['multiselect'])) { unset($params['multiselect']); }
+    if (isset($params['globalmultiselect'])) { unset($params['globalmultiselect']); }
+    if (isset($params['cache'])) { unset($params['cache']); }
+    if (isset($params['cache_count'])) { unset($params['cache_count']); }
+
+    // category browser processing
     $filter     = FormUtil::getPassedValue('filter');
     $filter_arr = explode(',', $filter);
     $lang       = ZLanguage::getLanguageCode();
@@ -66,7 +80,8 @@ function smarty_function_clip_category_browser($params, &$smarty)
     }
 
     $pubfields = Clip_Util::getPubFields($tid);
-    $id = $pubfields[$field]['typedata'];
+    $plugin = Clip_Util::getPlugin($pubfields[$field]['fieldplugin']);
+    $id = $plugin->getRootCategoryID($pubfields[$field]['typedata']);
 
     $cats = CategoryUtil::getSubCategories($id);
 
@@ -139,13 +154,12 @@ function smarty_function_clip_category_browser($params, &$smarty)
             }
         }
 
+        $args = $params;
         if ($new_filter == '') {
-            $url = ModUtil::url('Clip', 'user', 'view',
-                                array('tid'    => $tid));
+            $url = ModUtil::url('Clip', 'user', 'view', $args);
         } else {
-            $url = ModUtil::url('Clip', 'user', 'view',
-                                array('tid'    => $tid,
-                                      'filter' => $new_filter));
+            $args['filter'] = $new_filter;
+            $url = ModUtil::url('Clip', 'user', 'view', $args);
         }
 
         if ($count) {
