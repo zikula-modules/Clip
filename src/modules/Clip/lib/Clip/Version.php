@@ -45,11 +45,11 @@ class Clip_Version extends Zikula_Version
 
         // Permissions schema
         $meta['securityschema'] = array(
-                'clip::'      => '::',
-                'clip:input:' => 'tid::',
-                'clip:input:' => 'tid:pid:workflowstate',
-                'clip:full:'  => 'tid:pid:template',
-                'clip:list:'  => 'tid::template'
+                'Clip::'      => '::',
+                'Clip:input:' => 'tid::',
+                'Clip:input:' => 'tid:pid:workflowstate',
+                'Clip:full:'  => 'tid:pid:template',
+                'Clip:list:'  => 'tid::template'
         );
 
         // Module depedencies

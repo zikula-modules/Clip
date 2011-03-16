@@ -19,7 +19,7 @@ class Clip_Block_Pubeditlist extends Zikula_Controller_Block
      */
     public function init()
     {
-        SecurityUtil::registerPermissionSchema('clip:block:pubeditlist', 'Block Id:Pubtype Id:');
+        SecurityUtil::registerPermissionSchema('Clip:block:pubeditlist', 'Block Id:Pubtype Id:');
     }
 
     /**
@@ -47,7 +47,7 @@ class Clip_Block_Pubeditlist extends Zikula_Controller_Block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
 
         // security check
-        if (!SecurityUtil::checkPermission('clip:block:pubeditlist', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('Clip:block:pubeditlist', "$blockinfo[title]:$blockinfo[bid]:$vars[tid]", ACCESS_READ)) {
             return;
         }
 
