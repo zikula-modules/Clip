@@ -121,7 +121,7 @@ class Clip_Controller_User extends Zikula_Controller
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
 
-        Clip_Util::setArgs('user.view', $args);
+        Clip_Util::setArgs('user_view', $args);
 
         //// Build the output
         // assign the data to the output
@@ -296,7 +296,7 @@ class Clip_Controller_User extends Zikula_Controller
         }
 
         // stored the used arguments
-        Clip_Util::setArgs('user.display', $args);
+        Clip_Util::setArgs('user_display', $args);
 
         // assign the pubdata and pubtype to the output
         $this->view->assign('pubdata', $pubdata)
@@ -413,7 +413,7 @@ class Clip_Controller_User extends Zikula_Controller
         }
 
         // stored the used arguments and assign them to the view
-        Clip_Util::setArgs('user.edit', $args);
+        Clip_Util::setArgs('user_edit', $args);
 
         $render->assign('clipargs', Clip_Util::getArgs())
                ->assign('pubtype', $pubtype);

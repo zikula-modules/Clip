@@ -187,6 +187,15 @@ class Clip_Api_User extends Zikula_Api
         // enrich the query with the Filterutil stuff
         $filter['obj']->enrichQuery($query);
 
+        // fill $args.filter with the final filter used
+        $args['filter'] = array();
+        foreach ($filter['obj']->getObject() as $f1) {
+            foreach ($f1 as $farray) {
+                $args['filter'][$farray['field']]['ops'][] = $farray['op'];
+                $args['filter'][$farray['field']][$farray['op']][] = $farray['value'];
+            }
+        }
+
         //// Count execution
         if ($args['countmode'] != 'no') {
             $pubcount = $query->count();
@@ -227,7 +236,7 @@ class Clip_Api_User extends Zikula_Api
         }
 
         // store the arguments used
-        Clip_Util::setArgs('userapi.getall', $args);
+        Clip_Util::setArgs('userapi_getall', $args);
 
         return array (
             'publist'  => isset($publist) ? $publist : null,
@@ -343,7 +352,7 @@ class Clip_Api_User extends Zikula_Api
         $pubdata->pubPostProcess($args);
 
         // store the arguments used
-        Clip_Util::setArgs('userapi.get', $args);
+        Clip_Util::setArgs('userapi_get', $args);
 
         return $pubdata;
     }
