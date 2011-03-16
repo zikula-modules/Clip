@@ -1,4 +1,4 @@
-{zdebug}
+
 <div class="z-menu">
     <span class="z-menuitem-title clip-menu">
         {strip}
