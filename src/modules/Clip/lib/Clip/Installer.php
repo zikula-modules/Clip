@@ -225,16 +225,11 @@ class Clip_Installer extends Zikula_Installer
      */
     private function createTempDir()
     {
-        // upload dir creation if the temp dir is not outside the root (relative path)
-        $tempdir = CacheUtil::getLocalDir();
-        $tmpdir   = $tempdir.'/Clip';
+        // upload dir creation
+        $uploaddir = FileUtil::getDataDirectory().'/Clip/uploads';
 
-        if (StringUtil::left($tempdir, 1) <> '/') {
-            if (CacheUtil::createLocalDir('Clip')) {
-                LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $tmpdir));
-            }
-        } else {
-            LogUtil::registerStatus($this->__f('Clip could not create the upload directory [%s]. Please create an upload directory, accessible via web and writable by the webserver.', $tmpdir));
+        if (!FileUtil::mkdirs($uploaddir, System::getVar('system.chmod_dir', 0777))) {
+            LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $tmpdir));
         }
 
         return $tmpdir;
