@@ -47,7 +47,7 @@ class Clip_Block_List extends Zikula_Controller_Block
 
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
-var_dump($vars);
+
         // validation of required parameters
         if (!isset($vars['tid']) || empty($vars['tid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
@@ -72,14 +72,14 @@ var_dump($vars);
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
         $blockinfo['content'] = ModUtil::func('Clip', 'user', 'view',
-                                              array('tid'                => $vars['tid'],
-                                                    'template'           => 'block_'.$template,
-                                                    'filter'             => $filterStr,
-                                                    'orderby'            => $orderBy,
-                                                    'itemsperpage'       => $listCount,
-                                                    'startnum'           => $listOffset,
+                                              array('tid'           => $vars['tid'],
+                                                    'template'      => 'block_'.$template,
+                                                    'filter'        => $filterStr,
+                                                    'orderby'       => $orderBy,
+                                                    'itemsperpage'  => $listCount,
+                                                    'startnum'      => $listOffset,
                                                     'handleplugins' => true,
-                                                    'cachelifetime'      => $cachelifetime));
+                                                    'cachelifetime' => $cachelifetime));
 
         if (empty($blockinfo['content'])) {
             return;

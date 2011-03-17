@@ -137,6 +137,7 @@ class Clip_Controller_User extends Zikula_Controller
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
             $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
@@ -278,6 +279,7 @@ class Clip_Controller_User extends Zikula_Controller
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
             $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
