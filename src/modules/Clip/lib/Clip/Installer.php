@@ -105,11 +105,12 @@ class Clip_Installer extends Zikula_Installer
                 if (!Doctrine_Core::getTable('Clip_Model_Pubfield')->changeTable(true)) {
                     return '0.4.10';
                 }
-                Content_Installer::updateContentType('Clip');
-                EventUtil::registerPersistentModuleHandler('Clip', 'module.content.getTypes', array('Clip_EventHandler_Listeners', 'getTypes'));
             case '0.4.11':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
+                // * contenttype stuff
+                //   Content_Installer::updateContentType('Clip');
+                //   EventUtil::registerPersistentModuleHandler('Clip', 'module.content.getTypes', array('Clip_EventHandler_Listeners', 'getTypes'));
         }
 
         return true;
