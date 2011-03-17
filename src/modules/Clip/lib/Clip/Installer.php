@@ -636,6 +636,8 @@ class Clip_Installer extends Zikula_Installer
         unset($dbfields);
 
         $fields->delete();
+
+        return true;
     }
 
     /**

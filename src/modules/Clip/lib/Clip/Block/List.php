@@ -47,7 +47,7 @@ class Clip_Block_List extends Zikula_Controller_Block
 
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
-
+var_dump($vars);
         // validation of required parameters
         if (!isset($vars['tid']) || empty($vars['tid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
@@ -78,8 +78,7 @@ class Clip_Block_List extends Zikula_Controller_Block
                                                     'orderby'            => $orderBy,
                                                     'itemsperpage'       => $listCount,
                                                     'startnum'           => $listOffset,
-                                                    'checkPerm'          => true,
-                                                    'handlePluginFields' => true,
+                                                    'handleplugins' => true,
                                                     'cachelifetime'      => $cachelifetime));
 
         if (empty($blockinfo['content'])) {
@@ -129,7 +128,7 @@ class Clip_Block_List extends Zikula_Controller_Block
 
         $pubfields = array();
         if (!empty($vars['tid'])) {
-            $pubfields = Clip_Util::getPubFields($vars['tid']);
+            $pubfields = Clip_Util::getPubFields($vars['tid'])->toArray();
 
             $arraysort = array(
                 'core_empty' => array(),
@@ -162,19 +161,19 @@ class Clip_Block_List extends Zikula_Controller_Block
                 ),
                 'core_pu_date' => array(
                     'text'  => $this->__('Publish date'),
-                    'value' => 'pm_publishdate'
+                    'value' => 'core_publishdate'
                 ),
                 'core_ex_date' => array(
                     'text'  => $this->__('Expire date'),
-                    'value' => 'pm_expiredate'
+                    'value' => 'core_expiredate'
                 ),
                 'core_language' => array(
                     'text'  => $this->__('Language'),
-                    'value' => 'pm_language'
+                    'value' => 'core_language'
                 ),
                 'core_hitcount' => array(
                     'text'  => $this->__('Number of reads'),
-                    'value' => 'pm_hitcount'
+                    'value' => 'core_hitcount'
                 )
             );
 
@@ -188,6 +187,7 @@ class Clip_Block_List extends Zikula_Controller_Block
 
             $pubarr = array_values(array_filter(array_merge($arraysort, $pubarr)));
 
+            $pubfields = array();
             foreach (array_keys($pubarr) as $k) {
                 $pubfields[$pubarr[$k]['value']] = $pubarr[$k]['text'];
             }
