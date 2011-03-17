@@ -13,20 +13,15 @@ function smarty_function_clip_multilistdecode($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
-    $field = $params['field'];
-    $value = $params['value'];
+    $field = isset($params['field']) ? $params['field'] : 'fullTitle';
 
-    if (!$field) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'field', $dom));
-    }
-
-    if (!$value) {
+    if (!isset($params['value']) || !$value) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'value', $dom));
     }
 
     $html = '';
-    foreach ($value as $cat) {
-        $html .=  $cat['fullTitle'].'<br />';
+    foreach ($params['value'] as $cat) {
+        $html .=  (isset($cat[$field]) ? $cat[$field] : $cat['fullTitle']) . '<br />';
     }
 
     if (isset($params['assign'])) {
