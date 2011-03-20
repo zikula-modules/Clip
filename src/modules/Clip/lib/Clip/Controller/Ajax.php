@@ -12,7 +12,7 @@
 /**
  * Ajax Controller.
  */
-class Clip_Controller_Ajax extends Zikula_Controller
+class Clip_Controller_Ajax extends Zikula_AbstractController
 {
     public function changelistorder()
     {

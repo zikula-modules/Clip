@@ -12,7 +12,7 @@
 /**
  * Form handler to update module vars.
  */
-class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_Handler
+class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
 {
     private $siteroot;
 

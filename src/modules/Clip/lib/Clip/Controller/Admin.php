@@ -12,7 +12,7 @@
 /**
  * Admin Controller.
  */
-class Clip_Controller_Admin extends Zikula_Controller
+class Clip_Controller_Admin extends Zikula_AbstractController
 {
     /**
      * Main admin screen.

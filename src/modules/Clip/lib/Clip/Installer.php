@@ -12,7 +12,7 @@
 /**
  * Clip Installer.
  */
-class Clip_Installer extends Zikula_Installer
+class Clip_Installer extends Zikula_AbstractInstaller
 {
     /**
      * Clip installation

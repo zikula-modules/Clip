@@ -12,7 +12,7 @@
 /**
  * User Model.
  */
-class Clip_Api_User extends Zikula_Api
+class Clip_Api_User extends Zikula_AbstractApi
 {
     /**
      * Returns a Publication List.

@@ -12,7 +12,7 @@
 /**
  * Form handler to update publication types.
  */
-class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_Handler
+class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 {
     private $tid;
     private $returnurl;

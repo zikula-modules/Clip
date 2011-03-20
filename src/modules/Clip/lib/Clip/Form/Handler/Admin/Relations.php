@@ -12,7 +12,7 @@
 /**
  * Form handler to manage the relations.
  */
-class Clip_Form_Handler_Admin_Relations extends Zikula_Form_Handler
+class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 {
     private $id;
     private $tid;

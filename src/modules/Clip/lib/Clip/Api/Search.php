@@ -12,7 +12,7 @@
 /**
  * Search Model.
  */
-class Clip_Api_Search extends Zikula_Api
+class Clip_Api_Search extends Zikula_AbstractApi
 {
     /**
      * Search plugin info.
