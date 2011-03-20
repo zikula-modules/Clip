@@ -126,7 +126,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
      *
      * @return void
      */
-    public function postHydrate(Doctrine_Event $event)
+    public function postHydrate($event)
     {
         if (is_object($event->data) && isset($event->data->config)) {
             if (!empty($event->data->config) && is_string($event->data->config)) {
