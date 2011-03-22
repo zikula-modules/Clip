@@ -1,6 +1,6 @@
 <?php
 
-class Clip_ContentType_ClipPub extends Content_ContentType
+class Clip_ContentType_ClipPub extends Content_AbstractContentType
 {
     protected $tid;
     protected $pid;
