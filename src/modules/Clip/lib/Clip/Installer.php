@@ -657,7 +657,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
      * map old ContentType names to new
      * @return array
      */
-    public function LegacyContentTypeMap()
+    public static function LegacyContentTypeMap()
     {
         $oldToNew = array(
             'pagesetter_pub' => 'ClipPub',
