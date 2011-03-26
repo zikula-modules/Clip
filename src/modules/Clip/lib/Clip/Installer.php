@@ -50,7 +50,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
 
         // register persistent event listeners (handlers)
         EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
-        EventUtil::registerPersistentModuleHandler('Clip', 'module.content.getTypes', array('Clip_EventHandler_Listeners', 'getTypes'));
+        EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
 
         // modvars
         $modvars = array(
@@ -110,7 +110,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
                 //   Content_Installer::updateContentType('Clip');
-                //   EventUtil::registerPersistentModuleHandler('Clip', 'module.content.getTypes', array('Clip_EventHandler_Listeners', 'getTypes'));
+                //   EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
         }
 
         return true;
