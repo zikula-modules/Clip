@@ -444,6 +444,11 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   font-size: 0.95em;
   line-height: 18px;
 }
+.clip-post-utility a:link,
+.clip-post-utility a:visited {
+  color: #888888;
+  text-decoration: underline;
+}
 
 /* pages */
 .clip-page-title {

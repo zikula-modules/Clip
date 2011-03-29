@@ -29,6 +29,14 @@
 
         <span class="text_separator">|</span>
         {/if}
+        <span class="clip-post-permalink">
+            {gt text='Permalink to %s' tag1=$pubdata.core_title assign='bookmark_title'}
+            {modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid assign='bookmark_url'}
+            {gt text='Bookmark the <a rel="bookmark" title="%1$s" href="%2$s">permalink</a>' tag1=$bookmark_title tag2=$bookmark_url}
+        </span>
+
+        <span class="text_separator">|</span>
+
         <span class="clip-post-edit-link">
             {checkpermissionblock component='clip:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
                 <span class="z-nowrap">

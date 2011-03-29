@@ -28,6 +28,9 @@
 
         <span class="text_separator">|</span>
         {/if}
+
+        {*EZComments plugin here*}
+
         <span class="clip-post-edit-link">
             {checkpermissionblock component='clip:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
                 <span class="z-nowrap">
