@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<clip>
+ <pubtypes>
+  <pubtype>
+   <tid>2</tid>
+   <title>Pages</title>
+   <urltitle>staticpages</urltitle>
+   <outputset>pages</outputset>
+   <inputset>pages</inputset>
+   <description>Static pages of the site</description>
+   <itemsperpage>25</itemsperpage>
+   <sortfield1></sortfield1>
+   <sortdesc1></sortdesc1>
+   <sortfield2></sortfield2>
+   <sortdesc2></sortdesc2>
+   <sortfield3></sortfield3>
+   <sortdesc3></sortdesc3>
+   <workflow>none.xml</workflow>
+   <defaultfilter></defaultfilter>
+   <enablerevisions></enablerevisions>
+   <enableeditown></enableeditown>
+   <cachelifetime>0</cachelifetime>
+   <config>a:3:{s:4:&quot;view&quot;;a:6:{s:4:&quot;load&quot;;b:0;s:7:&quot;onlyown&quot;;b:1;s:11:&quot;processrefs&quot;;b:0;s:9:&quot;checkperm&quot;;b:0;s:13:&quot;handleplugins&quot;;b:0;s:12:&quot;loadworkflow&quot;;b:0;}s:7:&quot;display&quot;;a:6:{s:4:&quot;load&quot;;b:0;s:7:&quot;onlyown&quot;;b:1;s:11:&quot;processrefs&quot;;b:1;s:9:&quot;checkperm&quot;;b:1;s:13:&quot;handleplugins&quot;;b:0;s:12:&quot;loadworkflow&quot;;b:0;}s:4:&quot;edit&quot;;a:1:{s:7:&quot;onlyown&quot;;b:1;}}</config>
+   <obj_status>A</obj_status>
+   <cr_date>2011-01-01 00:00:00</cr_date>
+   <cr_uid>2</cr_uid>
+   <lu_date>2011-01-01 00:00:00</lu_date>
+   <lu_uid>2</lu_uid>
+  </pubtype>
+ </pubtypes>
+ <pubfields>
+  <pubfield>
+   <id>5</id>
+   <tid>2</tid>
+   <name>title</name>
+   <title>Title</title>
+   <description></description>
+   <fieldtype>C(255)</fieldtype>
+   <fieldplugin>String</fieldplugin>
+   <fieldmaxlength/>
+   <typedata></typedata>
+   <istitle>1</istitle>
+   <ispageable></ispageable>
+   <issearchable>1</issearchable>
+   <ismandatory>1</ismandatory>
+   <isuid></isuid>
+   <lineno>1</lineno>
+   <obj_status>A</obj_status>
+   <cr_date>2011-01-01 00:00:00</cr_date>
+   <cr_uid>2</cr_uid>
+   <lu_date>2011-01-01 00:00:00</lu_date>
+   <lu_uid>2</lu_uid>
+  </pubfield>
+  <pubfield>
+   <id>6</id>
+   <tid>2</tid>
+   <name>category</name>
+   <title>Category</title>
+   <description></description>
+   <fieldtype>I4</fieldtype>
+   <fieldplugin>List</fieldplugin>
+   <fieldmaxlength/>
+   <typedata>,1,0</typedata>
+   <istitle></istitle>
+   <ispageable></ispageable>
+   <issearchable></issearchable>
+   <ismandatory></ismandatory>
+   <isuid></isuid>
+   <lineno>2</lineno>
+   <obj_status>A</obj_status>
+   <cr_date>2011-01-01 00:00:00</cr_date>
+   <cr_uid>2</cr_uid>
+   <lu_date>2011-01-01 00:00:00</lu_date>
+   <lu_uid>2</lu_uid>
+  </pubfield>
+  <pubfield>
+   <id>7</id>
+   <tid>2</tid>
+   <name>content</name>
+   <title>Content</title>
+   <description></description>
+   <fieldtype>C(65535)</fieldtype>
+   <fieldplugin>Text</fieldplugin>
+   <fieldmaxlength/>
+   <typedata>1</typedata>
+   <istitle></istitle>
+   <ispageable></ispageable>
+   <issearchable>1</issearchable>
+   <ismandatory></ismandatory>
+   <isuid></isuid>
+   <lineno>3</lineno>
+   <obj_status>A</obj_status>
+   <cr_date>2011-01-01 00:00:00</cr_date>
+   <cr_uid>2</cr_uid>
+   <lu_date>2011-01-01 00:00:00</lu_date>
+   <lu_uid>2</lu_uid>
+  </pubfield>
+  <pubfield>
+   <id>8</id>
+   <tid>2</tid>
+   <name>displayinfo</name>
+   <title>Display page information</title>
+   <description></description>
+   <fieldtype>L</fieldtype>
+   <fieldplugin>Checkbox</fieldplugin>
+   <fieldmaxlength/>
+   <typedata></typedata>
+   <istitle></istitle>
+   <ispageable></ispageable>
+   <issearchable></issearchable>
+   <ismandatory></ismandatory>
+   <isuid></isuid>
+   <lineno>4</lineno>
+   <obj_status>A</obj_status>
+   <cr_date>2011-01-01 00:00:00</cr_date>
+   <cr_uid>2</cr_uid>
+   <lu_date>2011-01-01 00:00:00</lu_date>
+   <lu_uid>2</lu_uid>
+  </pubfield>
+ </pubfields>
+ <pubdata2>
+  <pub>
+   <core_pid>1</core_pid>
+   <id>1</id>
+   <title>About Clip Static Pages</title>
+   <category/>
+   <content>&lt;p&gt;As you may know, Clip can handle multiple purpose applications through its publication types. This default &quot;Pages&quot; publication type shows how it can be useful to manage the static pages of your site.
+&lt;/p&gt;
+&lt;p&gt;The default fields defined are as follows:
+&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;a title (string),&lt;/li&gt;
+  &lt;li&gt;the page's content (text),&lt;/li&gt;
+  &lt;li&gt;a category (list),&lt;/li&gt;
+  &lt;li&gt;and even a config option (checkbox)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The default templates are examples of how you can structure your publication type to fit your needs, in this case, a three step navigation: initially showing a list with the available categories (list.tpl), to present a list with the available pages inside one of them (list_category.tpl), and finally display the page (display.tpl).
+&lt;/p&gt;
+&lt;p&gt; The list_category.tpl template has some logic on it to resolve the title depending on the filter used.
+  &lt;br /&gt;
+&lt;/p&gt;
+&lt;p&gt;The edit form is also customized to look pretty like the one of the Pages module.
+&lt;/p&gt;
+&lt;p&gt;Hope that his example be useful to you.
+  &lt;br /&gt; Enjoy the possibilities!
+&lt;/p&gt;
+&lt;p&gt;(this is pre-release content, to be enriched with users’ feedback)
+&lt;/p&gt;</content>
+   <displayinfo>1</displayinfo>
+   <core_author>2</core_author>
+   <core_hitcount>17</core_hitcount>
+   <core_language></core_language>
+   <core_revision>3</core_revision>
+   <core_online>1</core_online>
+   <core_indepot></core_indepot>
+   <core_showinmenu></core_showinmenu>
+   <core_showinlist>1</core_showinlist>
+   <core_publishdate>2011-01-01 00:00:00</core_publishdate>
+   <core_expiredate/>
+   <obj_status>A</obj_status>
+   <cr_date>2011-01-01 00:00:00</cr_date>
+   <cr_uid>2</cr_uid>
+   <lu_date>2011-01-01 00:00:00</lu_date>
+   <lu_uid>2</lu_uid>
+  </pub>
+  <pub>
+   <core_pid>2</core_pid>
+   <id>2</id>
+   <title>About Us</title>
+   <category/>
+   <content>&lt;p&gt;This is a temptative About Us page for your site.&lt;/p&gt;
+
+&lt;p&gt;You can enrich it easily with the help of Scribite and its WYSIWYG editors. By default, the content (a text field) have enabled the use of Scribite on its config, but it requires the module installed on the site to work.&lt;/p&gt;</content>
+   <displayinfo>1</displayinfo>
+   <core_author>2</core_author>
+   <core_hitcount>3</core_hitcount>
+   <core_language></core_language>
+   <core_revision>0</core_revision>
+   <core_online>1</core_online>
+   <core_indepot></core_indepot>
+   <core_showinmenu></core_showinmenu>
+   <core_showinlist>1</core_showinlist>
+   <core_publishdate>2011-01-01 00:00:00</core_publishdate>
+   <core_expiredate/>
+   <obj_status>A</obj_status>
+   <cr_date>2011-01-01 00:00:00</cr_date>
+   <cr_uid>2</cr_uid>
+   <lu_date>2011-01-01 00:00:00</lu_date>
+   <lu_uid>2</lu_uid>
+  </pub>
+ </pubdata2>
+ <workflows2>
+  <workflow>
+   <id>2</id>
+   <metaid>0</metaid>
+   <module>Clip</module>
+   <schemaname>none</schemaname>
+   <state>approved</state>
+   <type>1</type>
+   <obj_table>clip_pubdata2</obj_table>
+   <obj_idcolumn>id</obj_idcolumn>
+   <obj_id>1</obj_id>
+   <busy>0</busy>
+   <debug/>
+  </workflow>
+  <workflow>
+   <id>3</id>
+   <metaid>0</metaid>
+   <module>Clip</module>
+   <schemaname>none</schemaname>
+   <state>approved</state>
+   <type>1</type>
+   <obj_table>clip_pubdata2</obj_table>
+   <obj_idcolumn>id</obj_idcolumn>
+   <obj_id>2</obj_id>
+   <busy>0</busy>
+   <debug/>
+  </workflow>
+ </workflows2>
+</clip>
