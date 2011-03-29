@@ -48,6 +48,7 @@ function smarty_function_clip_category_browser($params, &$smarty)
     $template          = isset($params['tpl']) ? $params['tpl'] : 'clip_category_browser.tpl';
     $assign            = isset($params['assign']) ? $params['assign'] : null;
     $operator          = isset($params['operator']) ? $params['operator'] : 'sub';
+    $includenulllink   = isset($params['includenulllink']) ? $params['includenulllink'] : true;
     $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;
     $globalmultiselect = isset($params['globalmultiselect']) ? $params['globalmultiselect'] : false;
     $cache             = isset($params['cache']) ? $params['cache'] : false;
@@ -60,6 +61,7 @@ function smarty_function_clip_category_browser($params, &$smarty)
     if (isset($params['tpl'])) { unset($params['tpl']); }
     if (isset($params['assign'])) { unset($params['assign']); }
     if (isset($params['operator'])) { unset($params['operator']); }
+    if (isset($params['includenulllink'])) { unset($params['includenulllink']); }
     if (isset($params['multiselect'])) { unset($params['multiselect']); }
     if (isset($params['globalmultiselect'])) { unset($params['globalmultiselect']); }
     if (isset($params['cache'])) { unset($params['cache']); }
@@ -180,6 +182,19 @@ function smarty_function_clip_category_browser($params, &$smarty)
         $cats[$k]['depth']     = $depth;
         $cats[$k]['url']       = $url;
         $cats[$k]['fullTitle'] = isset($cats[$k]['display_name'][$lang]) ? $cats[$k]['display_name'][$lang] : $cats[$k]['name'];
+    }
+
+    if ($includenulllink) {
+        $args = $params;
+        $args['filter'] = $field.':null';
+        $nullcat = array(
+            -1 => array(
+                'fullTitle' => __('Uncategorized', $dom),
+                'url'       => ModUtil::url('Clip', 'user', 'view', $args),
+                'depth'     => 0
+            )
+        );
+        $cats = array_merge($nullcat, $cats);
     }
 
     // TODO Remove this in 1.3 to use DBUtil cache
