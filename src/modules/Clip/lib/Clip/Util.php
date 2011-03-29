@@ -546,8 +546,8 @@ class Clip_Util
 
             $params = array();
             $plugin = new $pluginClass($view, $params);
-            if (!$plugin instanceof Zikula_Form_Plugin) {
-                throw new InvalidArgumentException(__f('Plugin [%s] must be an instance of Zikula_Form_Plugin.', $pluginName, $dom));
+            if (!$plugin instanceof Zikula_Form_AbstractPlugin) {
+                throw new InvalidArgumentException(__f('Plugin [%s] must be an instance of Zikula_Form_AbstractPlugin.', $pluginClass, $dom));
             }
             $plugin->setup();
 
