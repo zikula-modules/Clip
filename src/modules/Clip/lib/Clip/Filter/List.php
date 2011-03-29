@@ -73,6 +73,14 @@ class Clip_Filter_List extends FilterUtil_Filter_Category
                     $where = "$column IN (".implode(',', $items).")";
                 }
                 break;
+
+            case 'null':
+                $where = "($column = '' OR $column IS NULL)";
+                break;
+
+            case 'notnull':
+                $where = "($column <> '' OR $column IS NOT NULL)";
+                break;
         }
 
         return array('where' => $where, 'params' => $params);
