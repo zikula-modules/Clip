@@ -8,7 +8,7 @@
  * @license See license.txt
  */
 
-class Clip_ContentType_ClipPublist extends Content_ContentType
+class Clip_ContentType_ClipPublist extends Content_AbstractContentType
 {
     protected $tid;
     protected $numpubs;

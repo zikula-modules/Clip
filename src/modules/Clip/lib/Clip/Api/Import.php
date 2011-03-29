@@ -12,7 +12,7 @@
 /**
  * Import Model.
  */
-class Clip_Api_Import extends Zikula_Api
+class Clip_Api_Import extends Zikula_AbstractApi
 {
     /**
      * Convert Lists to Categories.

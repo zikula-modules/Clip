@@ -12,7 +12,7 @@
 /**
  * Admin Model.
  */
-class Clip_Api_Admin extends Zikula_Api
+class Clip_Api_Admin extends Zikula_AbstractApi
 {
     /**
      * Get admin panel links.

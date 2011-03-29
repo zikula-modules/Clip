@@ -12,7 +12,7 @@
 /**
  * Clip Version Info.
  */
-class Clip_Version extends Zikula_Version
+class Clip_Version extends Zikula_AbstractVersion
 {
     protected function setupHookBundles()
     {

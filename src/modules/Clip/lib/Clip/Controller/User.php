@@ -12,7 +12,7 @@
 /**
  * User Controller.
  */
-class Clip_Controller_User extends Zikula_Controller
+class Clip_Controller_User extends Zikula_AbstractController
 {
     /**
      * Main user function.

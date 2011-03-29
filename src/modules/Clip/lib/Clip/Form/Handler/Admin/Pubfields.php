@@ -12,7 +12,7 @@
 /**
  * Form handler to update publication fields.
  */
-class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_Handler
+class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 {
     private $tid;
     private $id;

@@ -12,7 +12,7 @@
 /**
  * List Block.
  */
-class Clip_Block_List extends Zikula_Controller_Block
+class Clip_Block_List extends Zikula_Controller_AbstractBlock
 {
     /**
      * Initialise block.

@@ -12,7 +12,7 @@
 /**
  * Viewpub Block.
  */
-class Clip_Block_Viewpub extends Zikula_Controller_Block
+class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
 {
     /**
      * Initialise block.
