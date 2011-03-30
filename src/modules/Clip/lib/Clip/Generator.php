@@ -34,7 +34,7 @@ class Clip_Generator
                 "\n".
                 '{include file=\'clip_generic_navbar.tpl\' section=\'display\'}'."\n".
                 "\n".
-                '{if $pubtype.description neq \'\'}'."\n".
+                '{if $pubtype.description}'."\n".
                 '    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".
@@ -154,12 +154,19 @@ class Clip_Generator
                 if ($recfield == 'relation') {
                     //$rowcode['body'] = '{$pubdata.'.$key.'.id|safetext}';
                     $rowcode['body'] = '<pre>{clip_array array=$pubdata.'.$key.'->toArray()}</pre>';
+                    $rowcode['full'] =
+                        '    {if $pubdata.'.$key.' AND count($pubdata.'.$key.')}'."\n".
+                        '        <div class="z-formrow">'."\n".
+                        '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
+                        '            <span class="z-formnote">'.$rowcode['body'].'<span>'."\n".
+                        '        </div>'."\n".
+                        '    {/if}';
                 }
 
                 // build the final row if not filled
                 if (empty($rowcode['full'])) {
                     $rowcode['full'] =
-                        '    {if $pubdata.'.$key.' neq \'\'}'."\n".
+                        '    {if $pubdata.'.$key.'}'."\n".
                         '        <div class="z-formrow">'."\n".
                         '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
                         '            <span class="z-formnote">'.$rowcode['body'].'<span>'."\n".
@@ -197,7 +204,7 @@ class Clip_Generator
                 "\n".
                 '{include file=\'clip_generic_navbar.tpl\' section=\'form\'}'."\n".
                 "\n".
-                '{if $pubtype.description neq \'\'}'."\n".
+                '{if $pubtype.description}'."\n".
                 '    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".

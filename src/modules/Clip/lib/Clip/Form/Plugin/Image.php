@@ -248,7 +248,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
     static function getPluginOutput($field)
     {
-        $full = '    {if $pubdata.'.$field['name'].'.url neq \'\'}'."\n".
+        $full = '    {if $pubdata.'.$field['name'].'.url}'."\n".
                 '        <div class="z-formrow">'."\n".
                 '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
                 '            <span class="z-formnote">'."\n".
