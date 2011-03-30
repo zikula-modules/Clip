@@ -41,6 +41,6 @@
 </table>
 
 {if $pager.itemsperpage neq $modvars.Clip.maxperpage}
-    {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage}
-    {*pager display='startnum' posvar='startnum' rowcount=$pager.numitems limit=$pager.itemsperpage*}
+    {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=7}
+    {*pager display='startnum' posvar='startnum' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=7*}
 {/if}
