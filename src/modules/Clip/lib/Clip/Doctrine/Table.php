@@ -69,7 +69,7 @@ class Clip_Doctrine_Table extends Doctrine_Table
      * @param string  $field    The name of the field we wish to marshall.
      * @param array   $where    The where clause (optional) (default=array()).
      * @param string  $orderBy  The orderby clause (optional) (default='').
-     * @param boolean $distinct Whether or not to add a 'DISTINCT' clause (optional) (default=false).
+     * @param boolean $distinct Whether or not to add a 'DISTINCT' clause (optional) (works without a assocKey) (default=false).
      * @param string  $assocKey The key field to use to build the associative index (optional) (default='').
      *
      * @return array The resulting array of field values.
@@ -143,7 +143,7 @@ class Clip_Doctrine_Table extends Doctrine_Table
         }
 
         // adds the distinct clause id needed
-        $field = ($distinct ? "DISTINCT $field" : "$field");
+        $field = ($distinct ? "DISTINCT $field as $field" : "$field");
 
         // creates the query instance
         $q = $this->createQuery($queryAlias)

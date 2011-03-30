@@ -1,5 +1,5 @@
 
-<input type="hidden" id="active_Clip" name="Clip" value="1" checked="checked" />
+<input type="hidden" id="active_clip" name="active[Clip]" value="1" checked="checked" />
 
 {foreach from=$pubtypes item=pubtype}
 <div>
