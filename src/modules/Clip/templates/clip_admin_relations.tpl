@@ -16,15 +16,15 @@
             <legend>{gt text='Relations'}</legend>
 
             <span class="z-nowrap">
-                {formlabel for='tid1' text='Filter by owner'}
-                {formdropdownlist items=$typeselector id='tid1' group='filter'}
+                {formlabel for='withtid1' text='Filter by owner'}
+                {formdropdownlist items=$typeselector id='withtid1' group='filter'}
             </span>
             <span class="z-nowrap">
                 {formdropdownlist items=$ops id='op' group='filter'}
             </span>
             <span class="z-nowrap">
-                {formlabel for='tid2' text='related'}
-                {formdropdownlist items=$typeselector id='tid2' group='filter'}
+                {formlabel for='withtid2' text='related'}
+                {formdropdownlist items=$typeselector id='withtid2' group='filter'}
             </span>
             <span class="z-nowrap z-buttons">
                 {formbutton commandName='filter' __text='Filter' class='z-bt-small'}

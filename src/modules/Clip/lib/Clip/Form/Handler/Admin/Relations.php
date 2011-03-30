@@ -44,9 +44,9 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
         // process the handler values
         $id   = (int)FormUtil::getPassedValue('id', 0);
         $tid  = FormUtil::getPassedValue('tid');
-        $tid1 = FormUtil::getPassedValue('tid1');
+        $tid1 = FormUtil::getPassedValue('withtid1');
         $op   = FormUtil::getPassedValue('op', 'or');
-        $tid2 = FormUtil::getPassedValue('tid2');
+        $tid2 = FormUtil::getPassedValue('withtid2');
 
         $this->tid = in_array($tid, $tids) ? $tid : null;
 
