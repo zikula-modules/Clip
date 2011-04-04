@@ -67,7 +67,7 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['outputset'];
         $listCount     = (isset($vars['listCount']) && (int)$vars['listCount'] > 0) ? $vars['listCount'] : 5;
         $listOffset    = (isset($vars['listOffset'])) ? $vars['listOffset'] : 0;
-        $filterStr     = (isset($vars['filters'])) ? $vars['filters'] : '';
+        $filterStr     = (isset($vars['listfilter'])) ? $vars['listfilter'] : '';
         $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
@@ -109,8 +109,8 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         if (!isset($vars['cachelifetime'])) {
             $vars['cachelifetime'] = 0;
         }
-        if (!isset($vars['filters'])) {
-            $vars['filters'] = '';
+        if (!isset($vars['listfilter'])) {
+            $vars['listfilter'] = '';
         }
         if (!isset($vars['orderBy'])) {
             $vars['orderBy'] = '';
@@ -208,7 +208,7 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         $vars = array (
             'tid'           => FormUtil::getPassedValue('tid'),
             'orderBy'       => FormUtil::getPassedValue('orderBy'),
-            'filters'       => FormUtil::getPassedValue('filters'),
+            'listfilter'    => FormUtil::getPassedValue('listfilter'),
             'listCount'     => FormUtil::getPassedValue('listCount'),
             'listOffset'    => FormUtil::getPassedValue('listOffset'),
             'template'      => FormUtil::getPassedValue('template'),

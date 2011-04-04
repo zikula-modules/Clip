@@ -11,7 +11,7 @@
 
 <div class="z-formrow">
     <label for="viewpub_filters">{gt text='Filter string'}</label>
-    <input id="viewpub_filters" name="filters" type="text" size="30" maxlength="255" value="{$vars.filters|safetext}" />
+    <input id="viewpub_filters" name="listfilter" type="text" size="30" maxlength="255" value="{$vars.listfilter|safetext}" />
 </div>
 
 <div class="z-formrow">
