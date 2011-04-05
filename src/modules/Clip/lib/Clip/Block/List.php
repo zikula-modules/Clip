@@ -74,7 +74,7 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         $blockinfo['content'] = ModUtil::func('Clip', 'user', 'view',
                                               array('tid'           => $vars['tid'],
                                                     'template'      => 'block_'.$template,
-                                                    'filter'        => $filterStr,
+                                                    'filter'        => !empty($filterStr)  ? $filterStr : '()',
                                                     'orderby'       => $orderBy,
                                                     'itemsperpage'  => $listCount,
                                                     'startnum'      => $listOffset,
