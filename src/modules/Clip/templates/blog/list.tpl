@@ -5,7 +5,7 @@
 {foreach from=$publist item='item'}
 <div id="clip-post-{$item.core_pid}" class="clip-post-{$item.core_pid} clip-post">
     <h2 class="clip-post-title">
-        <a rel="bookmark" href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid}">{$item.core_title}</a>
+        <a rel="bookmark" href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid title=$item.core_title|formatpermalink}">{$item.core_title}</a>
     </h2>
     <div class="clip-post-meta">
         {usergetvar name='uname' uid=$item.core_author assign='uname'}

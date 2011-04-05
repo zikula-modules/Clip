@@ -122,7 +122,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         if (!empty($this->id)) {
-            $this->itemurl = ModUtil::url('Clip', 'user', 'display', array('tid' => $this->tid, 'pid' => $this->pub['core_pid']), null, null, true);
+            $params = array('tid' => $this->tid, 'pid' => $this->pub['core_pid'], 'title' => DataUtil::formatPermalink($this->pub['core_title']));
+            $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params, null, null, true);
         }
 
         return true;

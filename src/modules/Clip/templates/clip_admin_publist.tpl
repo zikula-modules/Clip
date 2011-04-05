@@ -83,7 +83,7 @@
                 </td>
                 <td>
                     <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.png' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
-                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid id=$pubitem.id}" title="{gt text='View'}">{img modname='core' src='demo.png' set='icons/extrasmall' __title='View'}</a>&nbsp;
+                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid id=$pubitem.id title=$pubitem.core_title|formatpermalink}" title="{gt text='View'}">{img modname='core' src='demo.png' set='icons/extrasmall' __title='View'}</a>&nbsp;
                     <a href="{modurl modname='Clip' type='admin' func='history' tid=$pubtype.tid pid=$pubitem.core_pid}" title="{gt text='History'}">{img modname='core' src='clock.png' set='icons/extrasmall' __title='History'}</a>
                 </td>
             </tr>

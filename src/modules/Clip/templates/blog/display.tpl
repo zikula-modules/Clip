@@ -31,7 +31,7 @@
         {/if}
         <span class="clip-post-permalink">
             {gt text='Permalink to %s' tag1=$pubdata.core_title assign='bookmark_title'}
-            {modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid assign='bookmark_url'}
+            {modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink assign='bookmark_url'}
             {gt text='Bookmark the <a rel="bookmark" title="%1$s" href="%2$s">permalink</a>' tag1=$bookmark_title tag2=$bookmark_url}
         </span>
 

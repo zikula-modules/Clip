@@ -34,7 +34,7 @@ $this->assign ('referer', 'index.php');
                     {else}
                     <a href="{modurl modname='Clip' type=$returntype func='editlist' tid=$tid pid=$pub.core_pid _id=$thisID goto='editlist'}">{$pub._title}</a>
                     {/if}
-                    &nbsp;<a href="{modurl modname='Clip' type='user' func='display' tid=$tid pid=$pub.core_pid }"><img src="images/icons/extrasmall/demo.png" width="10" height="10" alt="{gt text="View this publication"}"></a>
+                    &nbsp;<a href="{modurl modname='Clip' type='user' func='display' tid=$tid pid=$pub.core_pid title=$pub.core_title|formatpermalink}"><img src="images/icons/extrasmall/demo.png" width="10" height="10" alt="{gt text="View this publication"}"></a>
                 </li>
                 {/foreach}
             </ul>

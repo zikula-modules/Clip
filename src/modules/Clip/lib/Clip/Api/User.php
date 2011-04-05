@@ -565,12 +565,22 @@ class Clip_Api_User extends Zikula_AbstractApi
                 return false;
             }
 
-            $titlefield = Clip_Util::getTitleField($tid);
+            if (isset($args['args']['title']) && !empty($args['args']['title'])) {
+                $pubTitle = $args['args']['title'];
+            } else {
+                $pubTitle = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
+                            ->selectFieldBy(Clip_Util::getTitleField($tid), $pid, 'core_pid');
+                $pubTitle = DataUtil::formatPermalink($pubTitle);
+            }
+            if (isset($args['args']['title'])) {
+                unset($args['args']['title']);
+            }
 
-            $pubTitle = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
-                        ->selectFieldBy($titlefield, $pid, 'core_pid');
+            $pubTitle = '/'.$pubTitle.'.'.$pid;
 
-            $pubTitle = '/'.DataUtil::formatPermalink($pubTitle).'.'.$pid;
+            if (isset($id)) {
+                $pubTitle .= '/'.$id;
+            }
         }
 
         $params = '';
@@ -635,11 +645,13 @@ class Clip_Api_User extends Zikula_AbstractApi
         if (isset($_[3]) && !empty($_[3])) {
             $permalinksseparator = System::getVar('shorturlsseparator');
             $match = '';
-            $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+$~i', $_[3], $match);
+            $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+(\/(\d+))?+$~i', $_[3], $match);
             if ($isPub) {
-                $pid = $match[1];
                 System::queryStringSetVar('func', 'display');
-                System::queryStringSetVar('pid', $pid);
+                System::queryStringSetVar('pid', $match[1]);
+                if (isset($match[3])) {
+                    System::queryStringSetVar('id', $match[3]);
+                }
                 $nextvar = 4;
             }
         }

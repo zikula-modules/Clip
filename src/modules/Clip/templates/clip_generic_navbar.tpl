@@ -44,7 +44,7 @@
                 {* edit check *}
                 {if isset($pubdata.id)}
                 <span>
-                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid}">
+                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}">
                         {$pubdata.core_title|truncate:30}
                     </a>
                 </span>
