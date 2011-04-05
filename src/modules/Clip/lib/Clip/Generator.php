@@ -16,7 +16,7 @@ class Clip_Generator
 {
     protected static $tablesloaded = false;
 
-    public static function pubdisplay($tid, $public=true)
+    public static function pubdisplay($tid, $public=true, $forblock=false)
     {
         // build and process a dummy pubdata object
         $className = "Clip_Model_Pubdata{$tid}";
@@ -26,7 +26,9 @@ class Clip_Generator
         $recfields = $pubdata->pubFields();
 
         // build the display code
-        $template_code = "\n".
+        $template_code = "\n";
+        if (!$forblock) {
+            $template_code .=
                 '{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}'."\n".
                 '{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
@@ -39,6 +41,11 @@ class Clip_Generator
                 '{/if}'."\n".
                 "\n".
                 '<div class="z-form clip-pub-details">';
+        } else {
+            $template_code .=
+                '<div class="z-form clip-pub-block">'."\n".
+                '    <div class="z-linear">'."\n";
+        }
 
         $pubfields = Clip_Util::getPubFields($tid);
 
@@ -85,7 +92,8 @@ class Clip_Generator
                     switch ($key) {
                         // title
                         case 'core_title':
-                            $rowcode['full'] = '    <h3'.($public ? ' class="z-center"' : '').'>{gt text=$pubdata.'.$key.'}</h3>';
+                            $hd = $forblock ? 'h5' : 'h3';
+                            $rowcode['full'] = '    <'.$hd.($public ? ' class="z-center"' : '').'>{gt text=$pubdata.'.$key.'}</'.$hd.'>';
                             break;
 
                         // reads
@@ -152,7 +160,6 @@ class Clip_Generator
 
                 // check for relation fields
                 if ($recfield == 'relation') {
-                    //$rowcode['body'] = '{$pubdata.'.$key.'.id|safetext}';
                     $rowcode['body'] = '<pre>{clip_array array=$pubdata.'.$key.'->toArray()}</pre>';
                     $rowcode['full'] =
                         '    {if $pubdata.'.$key.' AND count($pubdata.'.$key.')}'."\n".
@@ -179,11 +186,16 @@ class Clip_Generator
             $template_code .= "\n".$rowcode['full']."\n";
         }
 
-        // add the Hooks support for display
-        $template_code .= '</div>'."\n".
+        if (!$forblock) {
+            // add the Hooks support for display
+            $template_code .= '</div>'."\n".
                 "\n".
                 '{*notifydisplayhooks eventname=\'clip.hook.item.ui.view\' area=\'module_area.clip.item\' subject=$pubdata module=\'Clip\'*}'.
                 "\n";
+        } else {
+            $template_code .= '    </div>'."\n".
+                              '</div>';
+        }
 
         // if the template is a public output
         if ($public) {

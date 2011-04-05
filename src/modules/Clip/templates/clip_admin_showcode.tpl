@@ -26,9 +26,11 @@
         {/case}
     {/switch}
 
+    {if isset($cliptplname) AND isset($clipfolder)}
     <p class="z-warningmsg">
         {gt text='Create a template file named <strong>%1$s</strong> with this code, and store it in the the directory: <strong>/config/templates/Clip/%2$s/%1$s</strong>, or within your theme in the <strong>/themes/YourTheme/templates/modules/Clip/%2$s/%1$s</strong>.' tag1=$cliptplname tag2=$clipfolder}
     </p>
+    {/if}
 
     <pre class="clip-showcode">{$code}</pre>
 </div>

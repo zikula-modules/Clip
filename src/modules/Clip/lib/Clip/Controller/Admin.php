@@ -245,6 +245,15 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                 $path = $this->view->get_template_path('clip_generic_list.tpl');
                 $code = file_get_contents($path.'/clip_generic_list.tpl');
                 break;
+
+            case 'blockpub':
+                $code = Clip_Generator::pubdisplay($args['tid'], false, true);
+                break;
+
+            case 'blocklist':
+                $path = $this->view->get_template_path('clip_generic_blocklist.tpl');
+                $code = file_get_contents($path.'/clip_generic_blocklist.tpl');
+                break;
         }
 
         // code cleaning

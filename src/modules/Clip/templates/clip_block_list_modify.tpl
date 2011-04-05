@@ -28,11 +28,16 @@
     <label for="viewpub_template">{gt text='Template'}</label>
     <input id="viewpub_template" name="template" type="text" size="30" maxlength="255" value="{$vars.template|safetext}" />
     {gt text='Template' assign='tpl'}
+    {gt text='OUTPUTSET' assign='set'}
     {assign var='tpl' value=$tpl|strtoupper}
-    {assign var='tpl' value="OUTPUTSET/list_block_$tpl.tpl"}
+    {assign var='tpl' value="$set/list_block_$tpl.tpl"}
     <em class="z-formnote">
         {gt text="The block will use the template '%s'." tag1=$tpl}
-        <br />{gt text='If the template is not found, Clip will show an error if the development mode is enabled.'}
+        {if $vars.tid}
+        {modurl modname='Clip' type='admin' func='showcode' tid=$vars.tid mode='blocklist' assign='codeurl'}
+        <br />{gt text='You can customize the generic code <a href="%s">available here</a>.' tag1=$codeurl|safetext}
+        {/if}
+        <br />{gt text='If the template is not found, clip_generic_blocklist.tpl will be used.'}
     </em>
 </div>
 

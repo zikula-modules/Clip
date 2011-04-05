@@ -72,7 +72,9 @@ function smarty_function_clip_admin_submenu($params, $view)
         $output .= '<span class="clip-option">'.DataUtil::formatForDisplay(__('Generate templates', $dom)).'</span><span class="clip-option">&raquo;</span>';
         $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input'))).'">') . __('Input template', $dom).'</a></span> | ';
         $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist'))).'">') . __('List template', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull'))).'">') . __('Display template', $dom).'</a></span>';
+        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull'))).'">') . __('Display template', $dom).'</a></span> | ';
+        $output .= '<span>'.($params['mode'] == 'blocklist'  ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'blocklist'))).'">') . __('List block', $dom).'</a></span> | ';
+        $output .= '<span>'.($params['mode'] == 'blockpub'   ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'blockpub'))).'">') . __('Pub block', $dom).'</a></span>';
     } else {
         $output .= '</span> | ';
         $output .= '<span>'.DataUtil::formatForDisplayHTML('<a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Generate templates', $dom).'</a>').'</span>';
