@@ -700,13 +700,13 @@ class Clip_Util
      *
      * @return Clip_Form_View User Form View instance.
      */
-    public static function newUserForm($controller)
+    public static function newUserForm(&$controller)
     {
         $serviceManager = ServiceUtil::getManager();
 
         $render = new Clip_Form_View($serviceManager, 'Clip');
 
-        $render->setController($this);
+        $render->setController($controller);
         $render->assign('controller', $controller)
                ->add_core_data();
 

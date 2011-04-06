@@ -14,7 +14,7 @@
         <span class="clip-post-reads">({gt text='%s read' plural='%s reads' count=$pubdata.core_hitcount tag1=$pubdata.core_hitcount})</span>
     </div>
     <div class="clip-post-content">
-        {$pubdata.content|safehtml}
+        {$pubdata.content|safehtml|notifyfilters:"clip.hook.`$pubtype.tid`.ui.filter"}
     </div>
     <div class="clip-post-utility">
         {if $pubdata.category}
@@ -47,4 +47,4 @@
     </div>
 </div>
 
-{*notifydisplayhooks eventname='clip.hook.item.ui.view' area='module_area.clip.item' subject=$pubdata module='Clip'*}
+{notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module='Clip'}

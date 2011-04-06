@@ -52,8 +52,6 @@
             </div>
         </fieldset>
 
-        {*notifydisplayhooks eventname='clip.hook.config.ui.edit' area='module_area.clip.config' module='Clip' subject=$modvars.Clip*}
-
         <div class="z-buttons z-formbuttons">
             {formbutton id='update' commandName='update' __text='Save' class='z-bt-ok'}
             {formbutton id='cancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}

@@ -9,7 +9,7 @@
     </h2>
 
     <div class="clip-page-content">
-        {$pubdata.content|safehtml}
+        {$pubdata.content|safehtml|notifyfilters:"clip.hook.`$pubtype.tid`.ui.filter"}
     </div>
 
     {if $pubdata.displayinfo}
@@ -45,4 +45,4 @@
     {/if}
 </div>
 
-{*notifydisplayhooks eventname='clip.hook.item.ui.view' area='module_area.clip.item' subject=$pubdata module='Clip'*}
+{notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module='Clip'}

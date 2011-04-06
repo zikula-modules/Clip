@@ -78,11 +78,7 @@
         </fieldset>
         {/if}
 
-        {*if $pubdata.id}
-            {notifydisplayhooks eventname='clip.hook.item.ui.edit' area='module_area.clip.item' subject=$pubdata module='Clip'}
-        {else}
-            {notifydisplayhooks eventname='clip.hook.item.ui.edit' area='module_area.clip.item' module='Clip'}
-        {/if*}
+        {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.edit" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubobj module='Clip'}
 
         <div class="z-buttons z-formbuttons">
             {foreach item='action' from=$actions}
