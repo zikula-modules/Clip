@@ -112,12 +112,13 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
                 '        <div class="z-formrow">'."\n".
                 '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
                 '            <span class="z-formnote">'."\n".
+                '                {*clip_multilistdecode value=$pubdata.'.$field['name'].'*}'."\n".
                 '                <ul>'."\n".
                 '                    {foreach from=$pubdata.'.$field['name'].' item=\'item\'}'."\n".
                 '                        <li>{$item.fullTitle}</li>'."\n".
                 '                    {/foreach}'."\n".
                 '                </ul>'."\n".
-                '            <span>'."\n".
+                '            </span>'."\n".
                 '        </div>'."\n".
                 '    {/if}';
 

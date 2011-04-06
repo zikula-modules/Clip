@@ -9,20 +9,26 @@
  * @subpackage View_Plugins
  */
 
+/**
+ * Plugin to be used on display templates.
+ */
 function smarty_function_clip_multilistdecode($params, &$smarty)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
-    $field = isset($params['field']) ? $params['field'] : 'fullTitle';
-
-    if (!isset($params['value']) || !$value) {
+    if (!isset($params['value']) || !$params['value']) {
         return LogUtil::registerError(__f('Error! Missing argument [%s].', 'value', $dom));
     }
 
-    $html = '';
+    $field = isset($params['field']) ? $params['field'] : 'fullTitle';
+    $list  = isset($params['list']) ? (bool)$params['list'] : true;
+
+    $html = $list ? '<ul>' : '';
     foreach ($params['value'] as $cat) {
-        $html .=  (isset($cat[$field]) ? $cat[$field] : $cat['fullTitle']) . '<br />';
+        $value = isset($cat[$field]) ? $cat[$field] : $cat['fullTitle'];
+        $html .=  ($list ? '<li>' : '') . $value . ($list ? '</li>' : '<br />');
     }
+    $html .= $list ? '</ul>' : '';
 
     if (isset($params['assign'])) {
         $smarty->assign($params['assign'], $html);
