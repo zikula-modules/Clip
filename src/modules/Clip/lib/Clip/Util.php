@@ -88,8 +88,7 @@ class Clip_Util
         static $id;
 
         if (!isset($id)) {
-            $cat = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
-            $id = $cat['id'];
+            $id = CategoryRegistryUtil::getRegisteredModuleCategory('Clip', 'clip_pubtypes', 'Global');
         }
 
         return $id;

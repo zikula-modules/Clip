@@ -116,6 +116,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 // register the pubtype hooks
                 HookUtil::registerHookSubscriberBundles($this->version);
             case '0.4.12':
+                $this->createCategoryTree();
+            case '0.4.13':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
@@ -166,6 +168,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
 
         // delete the category registry and modvars
         CategoryRegistryUtil::deleteEntry('Clip');
+        //CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/Clip', 'path');
         $this->delVars();
 
         return true;
@@ -176,61 +179,123 @@ class Clip_Installer extends Zikula_AbstractInstaller
     /**
      * Default category tree creation.
      */
-    private function createCategoryTree()
+    private function createCategoryTree($regpath = '/__SYSTEM__/Modules')
     {
-        $regpath = '/__SYSTEM__/Modules';
-
         $lang = ZLanguage::getLanguageCode();
 
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip');
-        if (!$rootcat) {
-            $rootcat = CategoryUtil::getCategoryByPath($regpath);
+        $c = CategoryUtil::getCategoryByPath($regpath.'/Clip');
+        if (!$c) {
+            $c = CategoryUtil::getCategoryByPath($regpath);
 
-            $cat = new Categories_DBObject_Category();
-            $cat->setDataField('parent_id', $rootcat['id']);
-            $cat->setDataField('name', 'Clip');
-            $cat->setDataField('display_name', array($lang => $this->__('Clip')));
-            $cat->setDataField('display_desc', array($lang => $this->__('Clip root category')));
-            $cat->setDataField('value', '');
-            if (!$cat->validate()) {
-                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'Clip'));
+            $args = array(
+                'cid'   => $c['id'],
+                'name'  => 'Clip',
+                'dname' => array($lang => $this->__('Clip')),
+                'ddesc' => array($lang => $this->__('Clip root category'))
+            );
+            if (!$this->createCategory($args)) {
+                return false;
             }
-            $cat->insert();
-            $cat->update();
         }
 
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip/lists');
-        if (!$rootcat) {
-            $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip');
+        $c = CategoryUtil::getCategoryByPath($regpath.'/Clip/Topics');
+        if (!$c) {
+            $c = CategoryUtil::getCategoryByPath($regpath.'/Clip');
 
-            $cat = new Categories_DBObject_Category();
-            $cat->setDataField('parent_id', $rootcat['id']);
-            $cat->setDataField('name', 'lists');
-            //! this is the 'lists' root category name
-            $cat->setDataField('display_name', array($lang => $this->__('lists')));
-            $cat->setDataField('display_desc', array($lang => $this->__('Clip lists for its publications')));
-            $cat->setDataField('value', '');
-            if (!$cat->validate()) {
-                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', 'lists'));
+            $args = array(
+                'cid'   => $c['id'],
+                'name'  => 'Topics',
+                //! this is the 'Topics' category name to registry
+                'dname' => array($lang => $this->__('Topics')),
+                'ddesc' => array($lang => $this->__('Clip topics for its publications'))
+            );
+            if (!$this->createCategory($args)) {
+                return false;
             }
-            $cat->insert();
-            $cat->update();
         }
 
-        // create the PM category registry
-        $rootcat = CategoryUtil::getCategoryByPath($regpath.'/clip/lists');
-        if ($rootcat) {
-            // create an entry in the categories registry to the Lists property
-            $registry = new Categories_DBObject_Registry();
-            $registry->setDataField('modname', 'Clip');
-            $registry->setDataField('table', 'clip_pubtypes');
-            $registry->setDataField('property', 'Lists');
-            $registry->setDataField('category_id', $rootcat['id']);
-            if ($registry->validatePostProcess()) {
-                $registry->insert();
-            }
+        // create the global Category Registry
+        $c = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
+
+        $args = array(
+            'prop' => 'Global',
+            'cid'  => $c['id']
+        );
+        $this->createCategoryRegistry($args);
+
+        // create some example subcategories
+        $c = CategoryUtil::getCategoryByPath($regpath.'/Clip/Topics');
+
+        if ($c) {
+            $args = array(
+                'cid'   => $c['id'],
+                'name'  => 'Zikula',
+                'dname' => array($lang => 'Zikula'),
+                'ddesc' => array($lang => $this->__('Zikula related publications')),
+                'leaf'  => 1
+            );
+            $this->createCategory($args);
+
+            $args = array(
+                'cid'   => $c['id'],
+                'name'  => 'FreeSoftware',
+                //! this is the 'Free Software' example category name
+                'dname' => array($lang => $this->__('Free Software')),
+                'ddesc' => array($lang => $this->__('Free software related publications')),
+                'leaf'  => 1
+            );
+            $this->createCategory($args);
+
+            $args = array(
+                'cid'   => $c['id'],
+                'name'  => 'Community',
+                //! this is the 'Community' example category name
+                'dname' => array($lang => $this->__('Community')),
+                'ddesc' => array($lang => $this->__('Community related publications')),
+                'leaf'  => 1
+            );
+            $this->createCategory($args);
+
+            // create the Category Registry
+            // create an entry in the categories registry to the Topics property
+            $args = array(
+                'prop' => 'Topics',
+                'cid'  => $c['id']
+            );
+            $this->createCategoryRegistry($args);
         } else {
-            LogUtil::registerError($this->__f('Error! Could not create the [%s] Category Registry for Clip.', 'Lists'));
+            LogUtil::registerError($this->__f('Error! Could not create the [%s] Category Registry for Clip.', 'Topics'));
+        }
+    }
+
+    private function createCategory($args)
+    {
+        $cat = new Categories_DBObject_Category();
+        $cat->setDataField('parent_id',     $args['cid']);
+        $cat->setDataField('name',          $args['name']);
+        //! this is the 'lists' root category name
+        $cat->setDataField('display_name',  $args['dname']);
+        $cat->setDataField('display_desc',  $args['ddesc']);
+        $cat->setDataField('value',   isset($args['value']) ? $args['value'] : '');
+        $cat->setDataField('is_leaf', isset($args['leaf']) ? $args['leaf'] : 0);
+        if (!$cat->validate()) {
+            return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', $args['name']));
+        }
+        $cat->insert();
+        $cat->update();
+
+        return true;
+    }
+
+    private function createCategoryRegistry($args)
+    {
+        $registry = new Categories_DBObject_Registry();
+        $registry->setDataField('modname',     'Clip');
+        $registry->setDataField('table',       'clip_pubtypes');
+        $registry->setDataField('property',    $args['prop']);
+        $registry->setDataField('category_id', $args['cid']);
+        if ($registry->validatePostProcess()) {
+            $registry->insert();
         }
     }
 
