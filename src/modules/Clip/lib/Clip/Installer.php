@@ -145,7 +145,18 @@ class Clip_Installer extends Zikula_AbstractInstaller
             }
         }
 
-        // FIXME delete m2m relation tables
+        // delete m2m relation tables
+        $rels = Clip_Util::getRelations(-1, false, true);
+        foreach ($rels as $tid => $relations) {
+            foreach ($relations as $relation) {
+                if ($relation['type'] == 3) {
+                    $table = 'Clip_Model_Relation'.$relation['id'];
+                    if (!Doctrine_Core::getTable($table)->dropTable()) {
+                        return false;
+                    }
+                }
+            }
+        }
 
         // drop base tables
         $tables = array(
