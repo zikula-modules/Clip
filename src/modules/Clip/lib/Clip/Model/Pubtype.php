@@ -159,4 +159,62 @@ class Clip_Model_Pubtype extends Doctrine_Record
             $event->data['config'] = unserialize($event->data['config']);
         }
     }
+
+    /**
+     * Utility method to create the hook bundles.
+     *
+     * @return void
+     */
+    public function registerHookBundles(Clip_Version &$clipVersion, $tid=null, $name=null)
+    {
+        $tid  = $tid ? $tid : $this->tid;
+        $name = $name ? $name : $this->title;
+
+        // display/edit hooks
+        $bundle = new Zikula_Version_HookSubscriberBundle("modulehook_area.clip.item.$tid", $clipVersion->__f('%s Item Hooks', $name));
+        $bundle->addType('ui.view',         "clip.hook.$tid.ui.view");
+        $bundle->addType('ui.edit',         "clip.hook.$tid.ui.edit");
+        $bundle->addType('validate.edit',   "clip.hook.$tid.validate.edit");
+        $bundle->addType('validate.delete', "clip.hook.$tid.validate.delete");
+        $bundle->addType('process.edit',    "clip.hook.$tid.process.edit");
+        $bundle->addType('process.delete',  "clip.hook.$tid.process.delete");
+        $clipVersion->registerHookSubscriberBundle($bundle);
+
+        // filter hooks
+        $bundle = new Zikula_Version_HookSubscriberBundle("modulehook_area.clip.filter.$tid", $clipVersion->__f('Filter %s', $name));
+        $bundle->addType('ui.filter', "clip.hook.$tid.ui.filter");
+        $clipVersion->registerHookSubscriberBundle($bundle);
+    }
+
+    /**
+     * Create hook.
+     *
+     * @return void
+     */
+    public function postInsert(Doctrine_Event $event)
+    {
+        $clipVersion = new Clip_Version_Hooks();
+
+        // register hook bundles
+        $data = $event->getInvoker();
+        $this->createHookBundles($clipVersion, $data['tid'], $data['title']);
+
+        HookUtil::registerHookSubscriberBundles($clipVersion);
+    }
+
+    /**
+     * Delete hook.
+     *
+     * @return void
+     */
+    public function postDelete(Doctrine_Event $event)
+    {
+        $clipVersion = new Clip_Version_Hooks();
+
+        // unregister hook bundles
+        $data = $event->getInvoker();
+        $this->createHookBundles($clipVersion, $data['tid'], $data['title']);
+
+        HookUtil::unregisterHookSubscriberBundles($clipVersion);
+    }
 }

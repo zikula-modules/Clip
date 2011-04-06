@@ -16,15 +16,11 @@ class Clip_Version extends Zikula_AbstractVersion
 {
     protected function setupHookBundles()
     {
-        $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.item', $this->__('Clip Item Hooks'));
-        $bundle->addType('ui.view', 'clip.hook.item.ui.view');
-        $bundle->addType('ui.edit', 'clip.hook.item.ui.edit');
-        $this->registerHookSubscriberBundle($bundle);
+        $pubtypes = Clip_Util::getPubType();
 
-        // filter hooks
-        $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.clip.articlesfilter', $this->__('Filter articles'));
-        $bundle->addType('ui.filter', 'clip.hook.articlesfilter.filter');
-        $this->registerHookSubscriberBundle($bundle);
+        foreach ($pubtypes as $pubtype) {
+            $pubtype->registerHookBundles($this);
+        }
     }
 
     public function getMetaData()
@@ -35,7 +31,7 @@ class Clip_Version extends Zikula_AbstractVersion
         $meta['oldnames']       = array('PageMaster');
         //! module name that appears in URL
         $meta['url']            = $this->__('clip');
-        $meta['version']        = '0.4.11';
+        $meta['version']        = '0.4.12';
         $meta['core_min']       = '1.3.0';
 
         // Capabilities

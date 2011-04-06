@@ -50,7 +50,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
 
         // register persistent event listeners (handlers)
         EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
-        EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
+        //EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
 
         // modvars
         $modvars = array(
@@ -92,8 +92,6 @@ class Clip_Installer extends Zikula_AbstractInstaller
             case '0.4.7':
                 self::tempUpdate047();
             case '0.4.8':
-                // register the hooks
-                HookUtil::registerHookSubscriberBundles($this->version);
             case '0.4.9':
                 if (!Doctrine_Core::getTable('Clip_Model_Pubtype')->changeTable(true)) {
                     return '0.4.9';
@@ -106,6 +104,18 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     return '0.4.10';
                 }
             case '0.4.11':
+                // clean any old registered hook bundles
+                $bundles = array(
+                    array('modulehook_area.clip.item', 'ui.view', 'clip.hook.item.ui.view'),
+                    array('modulehook_area.clip.item', 'ui.edit', 'clip.hook.item.ui.edit'),
+                    array('modulehook_area.clip.articlesfilter', 'ui.filter', 'clip.hook.articlesfilter.filter')
+                );
+                foreach ($bundles as $bundle) {
+                    HookUtil::unregisterSubscriber('Clip', $bundle[0], $bundle[1], $bundle[2]);
+                }
+                // register the pubtype hooks
+                HookUtil::registerHookSubscriberBundles($this->version);
+            case '0.4.12':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
@@ -133,7 +143,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
             }
         }
 
-        // FIXME Hooks, Workflows registries deleted?
+        // FIXME delete m2m relation tables
 
         // drop base tables
         $tables = array(
@@ -148,10 +158,14 @@ class Clip_Installer extends Zikula_AbstractInstaller
             }
         }
 
-        // FIXME delete m2m relation tables
+        // FIXME anything more to delete on uninstall?
+        DBUtil::deleteWhere('workflows', "module = 'Clip'");
+
+        // unregister the pubtype hooks
+        HookUtil::unregisterHookSubscriberBundles($this->version);
 
         // delete the category registry and modvars
-        CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/clip', 'path');
+        CategoryRegistryUtil::deleteEntry('Clip');
         $this->delVars();
 
         return true;
