@@ -21,7 +21,7 @@
         {if $cat.selected eq 1}<strong>{/if}
             <a href="{$cat.url}">
                 {$cat.fullTitle}
-                {if $options.count}
+                {if $options.count and isset($cat.count)}
                     ({$cat.count})
                 {/if}
             </a>

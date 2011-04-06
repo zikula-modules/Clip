@@ -98,7 +98,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
     {
         $this->parseConfig($typedata);
 
-        return $this->config[0];
+        return $this->config['cat'];
     }
 
     static function getPluginOutput($field)

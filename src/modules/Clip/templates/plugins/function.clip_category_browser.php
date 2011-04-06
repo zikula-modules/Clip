@@ -171,7 +171,7 @@ function smarty_function_clip_category_browser($params, &$smarty)
                 $pubarr = ModUtil::apiFunc('Clip', 'user', 'getall',
                                        array('tid'                => $tid,
                                              'countmode'          => 'just',
-                                             'filter'             => $filter_act,
+                                             'filter'             => !empty($filter_act) ? $filter_act : '()',
                                              'checkPerm'          => false,
                                              'handlePluginFields' => false));
 
