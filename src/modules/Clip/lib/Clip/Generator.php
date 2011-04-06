@@ -329,7 +329,7 @@ class Clip_Generator
                 '            </div>'."\n".
                 '        </fieldset>'."\n".
                 "\n".
-                '        {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.edit" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubobj module=\'Clip\'}'."\n".
+                '        {*notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.edit" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubobj module=\'Clip\'*}'."\n".
                 "\n".
                 '        <div class="z-buttons z-formbuttons">'."\n".
                 '            {foreach item=\'action\' from=$actions}'."\n".
