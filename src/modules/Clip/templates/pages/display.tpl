@@ -14,7 +14,7 @@
 
     {if $pubdata.displayinfo}
     <div class="clip-page-info">
-        {capture assign='author'}<span class="author vcard">{$pubdata.core_author|uidprofilelink}</span>{/capture}
+        {capture assign='author'}<span class="author vcard">{$pubdata.core_author|profilelinkbyuid}</span>{/capture}
         <span class="clip-page-date">{gt text='Posted by %1$s on %2$s' tag1=$author tag2=$pubdata.core_publishdate|dateformat:'datelong'}</span>
 
         <br />

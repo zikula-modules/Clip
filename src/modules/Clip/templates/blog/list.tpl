@@ -8,7 +8,7 @@
         <a rel="bookmark" href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid title=$item.core_title|formatpermalink}">{$item.core_title}</a>
     </h2>
     <div class="clip-post-meta">
-        {capture assign='author'}<span class="author vcard">{$item.core_author|uidprofilelink}</span>{/capture}
+        {capture assign='author'}<span class="author vcard">{$item.core_author|profilelinkbyuid}</span>{/capture}
         <span class="clip-post-date">{gt text='Posted on %1$s by %2$s' tag1=$item.core_publishdate|dateformat:'datebrief' tag2=$author}</span>
     </div>
     <div class="clip-post-content">

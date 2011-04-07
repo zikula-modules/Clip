@@ -177,7 +177,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 
         $body = "\n".
             '                {foreach from=$pubdata.'.$field['name'].' key=\'pubuid\' item=\'pubuname\'}'."\n".
-            '                    {$pubuname|userprofilelink}'."\n".
+            '                    {$pubuname|profilelinkbyuname}'."\n".
             '                    <span class="z-sub">[{$pubuid|safehtml}]</span><br />'."\n".
             '                {/foreach}'."\n".
             '            ';

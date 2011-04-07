@@ -129,7 +129,7 @@ class Clip_Generator
                         case 'cr_uid':
                         case 'lu_uid':
                             $rowcode['body'] = "\n".
-                                '                {$pubdata.'.$key.'|uidprofilelink}'."\n".
+                                '                {$pubdata.'.$key.'|profilelinkbyuid}'."\n".
                                 '                <span class="z-sub">[{$pubdata.'.$key.'|safehtml}]</span>'."\n".
                                 '            ';
                             break;
