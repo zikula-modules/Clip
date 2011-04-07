@@ -96,7 +96,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                     while ($tbl->findBy('urltitle', $pubtype->urltitle)->count()) {
                         $pubtype->urltitle++;
                     }
-                } elseif ($tbl->findBy('urltitle', $pubtype->urltitle)->count()) {
+                } elseif ($tbl->findBy('urltitle', $pubtype->urltitle)->count() > 1) {
                     $plugin = $view->getPluginById('urltitle');
                     $plugin->setError($this->__('The submitted value already exists. Please choose a different one.'));
                     return false;
