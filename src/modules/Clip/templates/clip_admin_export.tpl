@@ -1,5 +1,5 @@
 
-{ajaxheader module='Clip' filename='clip_admin_export.js'}
+{*ajaxheader module='Clip' filename='clip_admin_export.js'*}
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
@@ -33,6 +33,9 @@
                 {formtextinput id='filter' maxLength='1000'}
                 <div class="z-formnote">{gt text='Any filter string to use in the export.'}</div>
             </div>
+            {assign var='outputto' value=1}
+            {formtextinput id='outputto' textMode="hidden"}
+            {*
             <div class="z-formrow">
                 {formlabel text='Output to'}
                 <div id="output_options">
@@ -48,6 +51,7 @@
                     <div class="z-formnote">{gt text='Without the extension.'}</div>
                 </div>
             </div>
+            *}
         </fieldset>
 
         <div class="z-buttons z-formbuttons">

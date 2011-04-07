@@ -103,7 +103,7 @@ class Clip_Export_Batch
     {
         switch ($this->outputto) {
             case 0: // File
-                // TODO
+                // TODO Postponed to Clip 1.0
                 break;
 
             case 1: // Browser
