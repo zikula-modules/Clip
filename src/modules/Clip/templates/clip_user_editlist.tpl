@@ -29,7 +29,7 @@ $this->assign ('referer', 'index.php');
                 </td>
                 {/if}
                 {if ($menu && $edit)}
-                <td style="width: 1px; background-color: #cccccc;"><td>
+                <td style="width: 1px; background-color: #cccccc; padding: 0"><td>
                 {/if}
                 {if ($edit)}
                 <td>

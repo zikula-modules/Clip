@@ -20,7 +20,7 @@ $this->assign ('referer', 'index.php');
         {checkpermission assign="addAuth" component="clip:input:" instance="$tid::" level="ACCESS_ADD"}
         {checkpermission assign="adminAuth" component="clip:input:" instance="$tid::" level="ACCESS_ADMIN"}
         <li id="{$thisIDLabel}">
-            <a href="#">{$type}</a>
+            <a href="#{$thisIDLabel}">{$type}</a>
             {if ($addAuth)}&nbsp;<a href="{modurl modname='Clip' type='user' func='editlist' tid=$tid}" title="{gt text="Add new publication"}"><img src="images/icons/extrasmall/edit_add.png" width="10" height="10" alt="{gt text="Add new publication"}" /></a>{/if}
             {if ($adminAuth)}&nbsp;<a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$tid}" title="{gt text="Edit this publication type"}"><img src="images/icons/extrasmall/db_status.png" width="10" height="10" alt="{gt text="Edit this publication type"}" /></a>{/if}
             {if ($adminAuth)}&nbsp;<a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$tid}" title="{gt text="Add, edit or modify the fields of this publication type"}"><img src="images/icons/extrasmall/db_comit.png" width="10" height="10" alt="{gt text="Add, edit or modify the fields of this publication type"}" /></a>{/if}
