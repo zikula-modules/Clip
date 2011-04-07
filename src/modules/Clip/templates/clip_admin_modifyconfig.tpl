@@ -6,9 +6,14 @@
 
     <h2>{gt text='Settings'}</h2>
 
-    <div class="z-menu clip-menu">
-        <span class="z-menuitem-title"><a href="{modurl modname='Clip' type='admin' func='importps'}">{gt text='Import pagesetter publications'}</a></span>
-    </div>
+    <ul class="z-menulinks clip-menu">
+        <li>
+            <a href="{modurl modname='Clip' type='admin' func='defaultypes'}">{gt text="Install 'Blog' and 'Pages' publication types"}</a>
+        </li>
+        <li>
+            <a href="{modurl modname='Clip' type='admin' func='importps'}">{gt text='Import pagesetter publications'}</a>
+        </li>
+    </ul>
 
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
     <div>

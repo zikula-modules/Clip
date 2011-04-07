@@ -181,7 +181,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $clipVersion->registerHookSubscriberBundle($bundle);
 
         // filter hooks
-        $bundle = new Zikula_Version_HookSubscriberBundle("modulehook_area.clip.filter.$tid", $clipVersion->__f('Filter %s', $name));
+        $bundle = new Zikula_Version_HookSubscriberBundle("modulehook_area.clip.filter.$tid", $clipVersion->__f('%s Filter', $name));
         $bundle->addType('ui.filter', "clip.hook.$tid.ui.filter");
         $clipVersion->registerHookSubscriberBundle($bundle);
     }
@@ -197,7 +197,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
         // register hook bundles
         $data = $event->getInvoker();
-        $this->createHookBundles($clipVersion, $data['tid'], $data['title']);
+        $this->registerHookBundles($clipVersion, $data['tid'], $data['title']);
 
         HookUtil::registerHookSubscriberBundles($clipVersion);
     }
@@ -213,7 +213,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
         // unregister hook bundles
         $data = $event->getInvoker();
-        $this->createHookBundles($clipVersion, $data['tid'], $data['title']);
+        $this->registerHookBundles($clipVersion, $data['tid'], $data['title']);
 
         HookUtil::unregisterHookSubscriberBundles($clipVersion);
     }

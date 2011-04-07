@@ -93,7 +93,7 @@ class Clip_Import_Batch
      */
     static public function parseSection($args)
     {
-        static $created = false;
+        static $tablescreated = false;
 
         switch (Clip_Util::getStringPrefix($args['section']))
         {
@@ -114,6 +114,9 @@ class Clip_Import_Batch
                 break;
 
             case 'pubfields':
+                if (!isset(self::$idmap['tids'][$args['pubfield']['tid']])) {
+                    continue;
+                }
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubfield');
                 $obj = $tbl->getRecord();
                 $oid = $args['pubfield']['id'];
@@ -132,16 +135,19 @@ class Clip_Import_Batch
                 break;
 
             case 'pubdata':
-                if (!$created) {
+                if (!$tablescreated) {
                     // recreate models once the field has been added
                     Clip_Generator::loadDataClasses(true);
                     // create the new tables
                     foreach (self::$idmap['tids'] as $tid) {
                         Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
                     }
-                    $created = true;
+                    $tablescreated = true;
                 }
                 $tid = Clip_Util::getTidFromString($args['section']);
+                if (!isset(self::$idmap['tids'][$tid])) {
+                    continue;
+                }
                 $oid = $args['pub']['id'];
                 unset($args['pub']['id']);
                 // null fields check

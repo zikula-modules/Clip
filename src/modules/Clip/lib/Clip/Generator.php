@@ -777,10 +777,10 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 
         // validates the existence of all the pubdata tables
         // to ensure the creation of all the dynamic classes
-        $pubtypes = array_keys(Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes()->toArray());
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             if (!isset($tables["clip_pubdata{$tid}"])) {
-                self::_addtable($tables, $tid, $tablecolumncore, $tabledefcore);
+                self::_addtable($tables, $tid, array(), array());
             }
         }
 
