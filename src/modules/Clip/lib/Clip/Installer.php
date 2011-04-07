@@ -46,6 +46,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $tmpdir = self::createTempDir();
 
         // register the hooks
+        //$this->version->setupPubtypeBundles(); // interactive install: default pubtypes
         HookUtil::registerHookSubscriberBundles($this->version);
 
         // register persistent event listeners (handlers)
@@ -114,6 +115,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     HookUtil::unregisterSubscriber('Clip', $bundle[0], $bundle[1], $bundle[2]);
                 }
                 // register the pubtype hooks
+                $this->version->setupPubtypeBundles();
                 HookUtil::registerHookSubscriberBundles($this->version);
             case '0.4.12':
                 $this->createCategoryTree();
@@ -175,6 +177,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         DBUtil::deleteWhere('workflows', "module = 'Clip'");
 
         // unregister the pubtype hooks
+        $this->version->setupPubtypeBundles();
         HookUtil::unregisterHookSubscriberBundles($this->version);
 
         // delete the category registry and modvars

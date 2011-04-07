@@ -16,6 +16,10 @@ class Clip_Version extends Zikula_AbstractVersion
 {
     protected function setupHookBundles()
     {
+    }
+
+    public function setupPubtypeBundles()
+    {
         $pubtypes = Clip_Util::getPubType();
 
         foreach ($pubtypes as $pubtype) {
