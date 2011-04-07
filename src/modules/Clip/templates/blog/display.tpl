@@ -8,8 +8,7 @@
         {gt text=$pubdata.core_title}
     </h2>
     <div class="clip-post-meta">
-        {usergetvar name='uname' uid=$pubdata.core_author assign='uname'}
-        {capture assign='author'}<span class="author vcard">{$uname|userprofilelink}</span>{/capture}
+        {capture assign='author'}<span class="author vcard">{$pubdata.core_author|uidprofilelink}</span>{/capture}
         <span class="clip-post-date">{gt text='Posted on %1$s by %2$s' tag1=$pubdata.core_publishdate|dateformat:'datebrief' tag2=$author}</span>
         <span class="clip-post-reads">({gt text='%s read' plural='%s reads' count=$pubdata.core_hitcount tag1=$pubdata.core_hitcount})</span>
     </div>
