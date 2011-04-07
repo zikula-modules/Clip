@@ -103,8 +103,7 @@ class Clip_Import_Batch
                 $oid = $args['pubtype']['tid'];
                 unset($args['pubtype']['tid']);
                 // validate the non-duplication of the urlname
-                while ($tbl->findBy('urltitle', $args['pubtype']['urltitle'])->count())
-                {
+                while ($tbl->findBy('urltitle', $args['pubtype']['urltitle'])->count()) {
                     $args['pubtype']['urltitle']++;
                 }
                 // process the record

@@ -62,6 +62,8 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
             return $view->redirect($this->returnurl);
         }
 
+        $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
+
         $data = $view->getValues();
 
         // creates and fill a Pubtype instance
@@ -89,6 +91,16 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 }
                 $pubtype->outputset = DataUtil::formatPermalink($pubtype->outputset);
                 $pubtype->inputset  = DataUtil::formatPermalink($pubtype->inputset);
+                // set a unique urltitle
+                if (empty($this->tid)) {
+                    while ($tbl->findBy('urltitle', $pubtype->urltitle)->count()) {
+                        $pubtype->urltitle++;
+                    }
+                } elseif ($tbl->findBy('urltitle', $pubtype->urltitle)->count()) {
+                    $plugin = $view->getPluginById('urltitle');
+                    $plugin->setError($this->__('The submitted value already exists. Please choose a different one.'));
+                    return false;
+                }
                 $pubtype->save();
 
                 // create/edit status messages
@@ -111,6 +123,9 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 
                 $newpubtype = $pubtype->copy();
                 $newpubtype->title = $this->__f('%s Clon', $pubtype->title);
+                while ($tbl->findBy('urltitle', $newpubtype->urltitle)->count()) {
+                    $newpubtype->urltitle++;
+                }
                 $newpubtype->save();
 
                 // clone the pubtype fields

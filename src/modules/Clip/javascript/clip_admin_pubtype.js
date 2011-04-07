@@ -56,7 +56,9 @@ function clip_urltitle_init()
 {
     $('clip_pubtype_collapse').observe('click', clip_urltitle_click);
     $('clip_pubtype_collapse').addClassName('z-toggle-link');
-    clip_urltitle_click();
+    if (!$('urltitle').hasClassName('z-form-error')) {
+        clip_urltitle_click();
+    }
 }
 
 function clip_urltitle_click()
