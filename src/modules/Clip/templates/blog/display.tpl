@@ -4,6 +4,12 @@
 {include file='clip_generic_navbar.tpl' section='display'}
 
 <div id="clip-post-{$pubdata.core_pid}" class="clip-post clip-post-{$pubdata.core_pid}">
+    {*
+    <div class="clip-post-socialise">
+        {twitter url=$returnurl title=$pubdata.core_title count='vertical'}
+        {fblike url=$returnurl title=$pubdata.core_title layout='vertical' tpl='xfbml'}
+    </div>
+    *}
     <h2 class="clip-post-title">
         {gt text=$pubdata.core_title}
     </h2>
@@ -43,7 +49,14 @@
                 </span>
             {/checkpermissionblock}
         </span>
+        {*
+        <span class="text_separator">|</span>
+        {sharethis id=$pubdata.core_uniqueid url=$returnurl title=$pubdata.core_title __text='Share'}
+        *}
+        {*sexybookmarks url=$returnurl title=$pubdata.core_title*}
     </div>
 </div>
 
-{notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module='Clip'}
+<div class="clip-display-hooks">
+    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module='Clip'}
+</div>

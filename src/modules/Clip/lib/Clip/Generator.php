@@ -190,7 +190,9 @@ class Clip_Generator
             // add the Hooks support for display
             $template_code .= '</div>'."\n".
                 "\n".
-                '{notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module=\'Clip\'}'.
+                '<div class="clip-display-hooks">'."\n".
+                '    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module=\'Clip\'}'.
+                '</div>'."\n".
                 "\n";
         } else {
             $template_code .= '    </div>'."\n".

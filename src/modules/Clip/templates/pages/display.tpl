@@ -40,8 +40,19 @@
             </a>
         </span>
         {/if}
+        {*
+        <span class="text_separator">|</span>
+        {sharethis id=$pubdata.core_uniqueid url=$returnurl title=$pubdata.core_title __text='Share'}
+
+        <span class="text_separator">|</span>
+        {twitter url=$returnurl title=$pubdata.core_title count='horizontal'}
+        {fblike url=$returnurl title=$pubdata.core_title action='recommend' layout='horizontal'}
+        *}
+        {*sexybookmarks url=$returnurl title=$pubdata.core_title*}
     </div>
     {/if}
 </div>
 
-{notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module='Clip'}
+<div class="clip-display-hooks">
+    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module='Clip'}
+</div>

@@ -416,6 +416,11 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 
 /* Default pubtypes generic styles */
 
+/* generic */
+.clip-display-hooks {
+  margin-top: 1.5em;
+}
+
 /* blog */
 .clip-post-title {
   line-height: 1.3em;
@@ -434,12 +439,17 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   font-size: 0.95em;
 }
 .clip-post-content {
-  clear: both;
   padding: 12px 0 0;
   margin-bottom: 1em;
 }
+.clip-post-socialise {
+  float: right;
+  padding: 0 0 10px 7px;
+}
+.clip-post-socialise iframe {
+  vertical-align: top;
+}
 .clip-post-utility {
-  clear: both;
   color: #888888;
   font-size: 0.95em;
   line-height: 18px;
@@ -462,6 +472,11 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 .clip-page-info {
   border-top: 1px solid #ddd;
   font-size: smaller;
-  line-height: 1.5em;
+  line-height: 2.2em;
   padding: 5px;
+}
+.clip-page-info a:link,
+.clip-page-info a:visited {
+  color: #888888;
+  text-decoration: underline;
 }
