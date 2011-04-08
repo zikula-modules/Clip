@@ -25,14 +25,14 @@ function pubfieldlistorderchanged()
 function pubfieldlistorderchanged_response(req)
 {
     if (req.status != 200) {
-        pnshowajaxerror(req.responseText);
+        Zikula.showajaxerror(req.responseText);
         return;
     }
 
-    var json = pndejsonize(req.responseText);
-    pnupdateauthids(json.authid);
+    var json = Zikula.dejsonize(req.responseText);
+    Zikula.updateauthids(json.authid);
 
-    pnrecolor('pubfieldlist', 'pubfieldlistheader');
+    Zikula.recolor('pubfieldlist', 'pubfieldlistheader');
 }
 
 function pubfieldlistsortinit()

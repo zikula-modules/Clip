@@ -14,6 +14,11 @@
  */
 class Clip_Controller_Ajax extends Zikula_AbstractController
 {
+    public function _postSetup()
+    {
+        // no need for a Zikula_View so override it.
+    }
+
     public function changelistorder()
     {
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));

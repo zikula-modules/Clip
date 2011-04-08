@@ -68,5 +68,5 @@ function clip_urltitle_click()
     } else {
         $('clip_pubtype_collapse').addClassName('z-toggle-link-open');
     }
-    switchdisplaystate('clip_pubtype_urltitle');
+    Zikula.switchdisplaystate('clip_pubtype_urltitle');
 }
