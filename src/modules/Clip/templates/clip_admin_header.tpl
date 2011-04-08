@@ -1,7 +1,7 @@
 
-{admincategorymenu xhtml=1}
+{admincategorymenu}
 
 <div class="z-adminbox">
-    <h1>{modgetinfo modname='Clip' info='displayname'} v{modgetinfo modname='Clip' info='version'}</h1>
-    {modulelinks modname='Clip'}
+    <h1>{$modinfo.displayname} v{$modinfo.version}</h1>
+    {modulelinks modname='Clip' type='admin'}
 </div>
