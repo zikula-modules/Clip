@@ -7,6 +7,9 @@
             <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='mydocuments.png' set='icons/extrasmall' alt='' __title='Publication admin panel'}
             </a>
+            <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubtype.tid}">
+                {img width='12' height='12' modname='core' src='editclear.png' set='icons/extrasmall' alt='' __title='Publication fields panel'}
+            </a>
         </span>
         {/checkpermissionblock}
 
@@ -83,7 +86,7 @@
 {insert name='getstatusmsg'}
 
 {* Clip developer notices*}
-{if isset($clip_generic_tpl) and $zcore.Clip.devmode|default:true}
+{if isset($clip_generic_tpl) and $modvars.Clip.devmode|default:true}
     {* excludes simple templates *}
     {if $section neq 'pending'}
 
