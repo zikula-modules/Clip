@@ -89,7 +89,7 @@ class ClipFormRelation extends Zikula_Form_Plugin_TextInput
         $this->maxitems = (isset($params['maxitems']) && is_int($params['maxitems'])) ? abs($params['maxitems']) : 20;
         $this->minchars = (isset($params['minchars']) && is_int($params['minchars'])) ? abs($params['minchars']) : 2;
 
-        $this->op = (isset($params['op']) && in_array($params['op'], array('search', 'likefirst', 'like'))) ? $params['op'] : 'likefirst';
+        $this->op = (isset($params['op']) && in_array($params['op'], array('search', 'likefirst', 'like'))) ? $params['op'] : 'search';
     }
 
     /**
