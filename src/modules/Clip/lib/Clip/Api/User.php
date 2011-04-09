@@ -395,7 +395,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $ret = Zikula_Workflow_Util::executeAction($schema, $obj, $args['commandName'], $pubtype->getTableName(), 'Clip');
 
         if ($ret === false) {
-            return LogUtil::registerError($this->__('Workflow action error.'));
+            return LogUtil::hasErrors() ? false : LogUtil::registerError($this->__('Unknown workflow action error. Operation failed.'));
         }
 
         $obj->mapValue('core_operations', $ret);
