@@ -54,7 +54,7 @@
 
         <span class="text_separator">|</span>
         {twitter url=$returnurl title=$pubdata.core_title count='horizontal'}
-        {fblike url=$returnurl title=$pubdata.core_title action='recommend' layout='horizontal'}
+        {fblike url=$returnurl action='recommend' layout='horizontal' rel='display'}
         *}
         {*sexybookmarks url=$returnurl title=$pubdata.core_title*}
     </div>

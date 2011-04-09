@@ -15,7 +15,7 @@
     {*
     <div class="clip-post-socialise">
         {twitter url=$returnurl title=$pubdata.core_title count='vertical'}
-        {fblike url=$returnurl title=$pubdata.core_title layout='vertical' tpl='xfbml'}
+        {fblike url=$returnurl layout='vertical' tpl='xfbml' rel='display'}
     </div>
     *}
     <h2 class="clip-post-title">
