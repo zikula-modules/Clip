@@ -782,7 +782,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             if (!isset($tables["clip_pubdata{$tid}"])) {
-                self::_addtable($tables, $tid, array(), array());
+                self::_addtable($tables, $tid, $tablecolumncore, $tabledefcore);
             }
         }
 
