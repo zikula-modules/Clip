@@ -16,14 +16,23 @@ class Clip_Version extends Zikula_AbstractVersion
 {
     protected function setupHookBundles()
     {
+        $modinfo = ModUtil::getInfoFromName($this->getName());
+        if ($modinfo['state'] == ModUtil::STATE_ACTIVE) {
+            $this->setupPubtypeBundles();
+        }
     }
 
     public function setupPubtypeBundles()
     {
-        $pubtypes = Clip_Util::getPubType();
+        static $loaded = false; // paranoic check for module upgrade
 
-        foreach ($pubtypes as $pubtype) {
-            $pubtype->registerHookBundles($this);
+        if (!$loaded) {
+            $pubtypes = Clip_Util::getPubType();
+
+            foreach ($pubtypes as $pubtype) {
+                $pubtype->registerHookBundles($this);
+            }
+            $loaded = true;
         }
     }
 
