@@ -105,21 +105,19 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
     function preSave($data, $field)
     {
-        $id   = $data['id'];
-        $tid  = $data['core_tid'];
-        $PostData = $data[$field['name']];
+        $postData = $data[$field['name']];
 
         // ugly to get old image from DB
-        if ($id != NULL) {
-            $old_image = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
-                         ->selectFieldBy($field['name'], $id, 'id');
+        if ($data['id'] != NULL) {
+            $old_image = (string)Doctrine_Core::getTable('Clip_Model_Pubdata'.$data['core_tid'])
+                                 ->selectFieldBy($field['name'], $data['id'], 'id');
         }
 
-        if (!empty($PostData['name'])) {
+        if (!empty($postData['name'])) {
             $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
 
             // delete the old file
-            if ($id != NULL) {
+            if ($data['id'] != NULL) {
                 $old_image_arr = unserialize($old_image);
                 unlink($uploadpath.'/'.$old_image_arr['tmb_name']);
                 unlink($uploadpath.'/'.$old_image_arr['pre_name']);
@@ -127,8 +125,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 unlink($uploadpath.'/'.$old_image_arr['file_name']);
             }
 
-            $srcFilename     = $PostData['tmp_name'];
-            $ext             = strtolower(FileUtil::getExtension($PostData['name']));
+            $srcFilename     = $postData['tmp_name'];
+            $ext             = strtolower(FileUtil::getExtension($postData['name']));
             $randName        = Clip_Util::getNewFileReference();
             $newFileNameOrig = $randName.'.'.$ext;
             $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
@@ -160,8 +158,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 }
             }
 
-            $srcFilename =   $PostData['tmp_name'];
-            $ext             = strtolower(FileUtil::getExtension($PostData['name']));
+            $srcFilename =   $postData['tmp_name'];
+            $ext             = strtolower(FileUtil::getExtension($postData['name']));
             $randName        = Clip_Util::getNewFileReference();
             $newFileNameOrig = $randName.'.'.$ext;
             $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
@@ -228,7 +226,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             }
 
             $arrTypeData = array(
-                'orig_name' => $PostData['name'],
+                'orig_name' => $postData['name'],
                 'tmb_name'  => $newFilenameTmp,
                 'pre_name'  => $newFilenamePre,
                 'full_name' => $newFilenameFull,
@@ -237,7 +235,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
             return serialize($arrTypeData);
 
-        } elseif ($id != NULL) {
+        } elseif ($data['id'] != NULL) {
             // if it's not a new pub
             // return the old image if no new is selected
             return $old_image;

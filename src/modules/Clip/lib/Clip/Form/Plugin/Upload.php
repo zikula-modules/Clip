@@ -86,27 +86,25 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
     static function preSave($data, $field)
     {
-        $id   = $data['id'];
-        $tid  = $data['core_tid'];
-        $data = $data[$field['name']];
+        $postData = $data[$field['name']];
 
-        if ($id != NULL) {
+        if ($data['id'] != NULL) {
             // if it's not a new pub get the old upload
-            $old_upload = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
-                          ->selectFieldBy($field['name'], $id, 'id');
+            $old_upload = (string)Doctrine_Core::getTable('Clip_Model_Pubdata'.$data['core_tid'])
+                                  ->selectFieldBy($field['name'], $data['id'], 'id');
         }
 
-        if (!empty($data['name'])) {
+        if (!empty($postData['name'])) {
             $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
 
             // delete the old file
-            if ($id != NULL) {
+            if ($data['id'] != NULL) {
                 $old_upload_arr = unserialize($old_upload);
                 unlink($uploadpath.'/'.$old_upload_arr['file_name']);
             }
 
-            $srcTempFilename = $data['tmp_name'];
-            $ext             = strtolower(FileUtil::getExtension($data['name']));
+            $srcTempFilename = $postData['tmp_name'];
+            $ext             = strtolower(FileUtil::getExtension($postData['name']));
             $randName        = Clip_Util::getNewFileReference();
             $new_filename    = "{$randName}.{$ext}";
             $dstFilename     = "{$uploadpath}/{$new_filename}";
@@ -114,14 +112,14 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
             copy($srcTempFilename, $dstFilename);
 
             $arrTypeData = array (
-                'orig_name' => $data['name'],
+                'orig_name' => $postData['name'],
                 'file_name' => $new_filename,
                 'file_size' => filesize($dstFilename)
             );
 
             return serialize($arrTypeData);
 
-        } elseif ($id != NULL) {
+        } elseif ($data['id'] != NULL) {
             // if it's not a new pub
             // return the old upload if no new is selected
             return $old_upload;
