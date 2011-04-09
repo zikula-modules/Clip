@@ -26,9 +26,9 @@ class Clip_Generator
         $recfields = $pubdata->pubFields();
 
         // build the display code
-        $template_code = "\n";
+        $code = "\n";
         if (!$forblock) {
-            $template_code .=
+            $code .=
                 '{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}'."\n".
                 '{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
@@ -42,7 +42,7 @@ class Clip_Generator
                 "\n".
                 '<div class="z-form clip-pub-details">';
         } else {
-            $template_code .=
+            $code .=
                 '<div class="z-form clip-pub-block">'."\n".
                 '    <div class="z-linear">'."\n";
         }
@@ -183,29 +183,29 @@ class Clip_Generator
             }
 
             // add the snippet to the final template
-            $template_code .= "\n".$rowcode['full']."\n";
+            $code .= "\n".$rowcode['full']."\n";
         }
 
         if (!$forblock) {
             // add the Hooks support for display
-            $template_code .= '</div>'."\n".
+            $code .= '</div>'."\n".
                 "\n".
                 '<div class="clip-display-hooks">'."\n".
                 '    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module=\'Clip\'}'.
                 '</div>'."\n".
                 "\n";
         } else {
-            $template_code .= '    </div>'."\n".
-                              '</div>';
+            $code .= '    </div>'."\n".
+                     '</div>';
         }
 
         // if the template is a public output
         if ($public) {
             // add the row cycles
-            $template_code = str_replace('z-formrow', 'z-formrow {cycle values=\'z-odd,z-even\'}', $template_code);
+            $code = str_replace('z-formrow', 'z-formrow {cycle values=\'z-odd,z-even\'}', $code);
         }
 
-        return $template_code;
+        return $code;
     }
 
     public static function pubedit($tid)
@@ -213,7 +213,7 @@ class Clip_Generator
         $title_newpub  = no__('New publication');
         $title_editpub = no__('Edit publication');
 
-        $template_code = "\n".
+        $code = "\n".
                 '<h2>{gt text=$pubtype.title}</h2>'."\n".
                 "\n".
                 '{include file=\'clip_generic_navbar.tpl\' section=\'form\'}'."\n".
@@ -267,21 +267,21 @@ class Clip_Generator
             // scape simple quotes where needed
             $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']);
 
-            $template_code .= "\n".
+            $code .= "\n".
                     '            <div class="z-formrow">'."\n".
                     '                {formlabel for=\''.$pubfields[$k]['name'].'\' _'.'_text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
                     '                {clip_form_genericplugin id=\''.$pubfields[$k]['name'].'\''.$maxlength.$plugadd.' group=\'pubdata\'}'."\n".
         ($toolTip ? '                <span class="z-formnote z-sub">{gt text=\''.$toolTip.'\'}</span>'."\n" : '').
                     '            </div>'."\n";
         }
-        $template_code .=
+        $code .=
                 '        </fieldset>'."\n".
                 "\n";
 
         // publication relations
         no__('Related publications');
 
-        $template_code .=
+        $code .=
                 '        {if $relations}'."\n".
                 '        <fieldset>'."\n".
                 '            <legend>{gt text=\'Related publications\'}</legend>'."\n".
@@ -306,7 +306,7 @@ class Clip_Generator
         no__('Show in list');
         no__('Cancel');
 
-        $template_code .=
+        $code .=
                 '        <fieldset>'."\n".
                 '            <legend>{gt text=\'Publication options\'}</legend>'."\n".
                 "\n".
@@ -343,7 +343,7 @@ class Clip_Generator
                 '    </div>'."\n".
                 '{/form}'."\n\n";
 
-        return $template_code;
+        return $code;
     }
 
     /**
@@ -385,18 +385,18 @@ class Clip_Generator
             }
             if ($method) {
                 // build the relation code
-                $reldefinition = "Clip_Model_Pubdata{$relation['tid2']} as {$relation['alias1']}";
+                $relDefinition = "Clip_Model_Pubdata{$relation['tid2']} as {$relation['alias1']}";
                 // set the relation arguments
                 switch ($relation['type']) {
                     case 0: // o2o
                     case 1: // o2m
-                        $relargs = array(
+                        $relArgs = array(
                             'local'   => 'id',
                             'foreign' => "rel_{$relation['id']}"
                         );
                         break;
                     case 2: // m2o
-                        $relargs = array(
+                        $relArgs = array(
                             'local'   => "rel_{$relation['id']}",
                             'foreign' => 'id'
                         );
@@ -409,20 +409,20 @@ class Clip_Generator
                         );
                         break;
                     case 3: // m2m
-                        $relargs = array(
+                        $relArgs = array(
                             'local'    => "rel_{$relation['id']}_1",
                             'foreign'  => "rel_{$relation['id']}_2",
                             'refClass' => "Clip_Model_Relation{$relation['id']}"
                         );
                 }
-                $relargs = var_export($relargs, true);
-                $relargs = str_replace('array (', 'array(', $relargs);
-                $relargs = str_replace(",\n)", "\n)", $relargs);
-                $relargs = str_replace("\n", "\n            ", $relargs);
-                $relargs = str_replace("\n            )", "\n        )", $relargs);
+                $relArgs = var_export($relArgs, true);
+                $relArgs = str_replace('array (', 'array(', $relArgs);
+                $relArgs = str_replace(",\n)", "\n)", $relArgs);
+                $relArgs = str_replace("\n", "\n            ", $relArgs);
+                $relArgs = str_replace("\n            )", "\n        )", $relArgs);
                 // add the code line
                 $hasRelations .= "
-        \$this->$method('$reldefinition', $relargs);
+        \$this->$method('$relDefinition', $relArgs);
         ";
             }
         }
@@ -442,12 +442,12 @@ class Clip_Generator
             }
             if ($method) {
                 // build the relation code
-                $reldefinition = "Clip_Model_Pubdata{$relation['tid1']} as {$relation['alias2']}";
+                $relDefinition = "Clip_Model_Pubdata{$relation['tid1']} as {$relation['alias2']}";
                 // set the relation arguments
                 switch ($relation['type']) {
                     case 0: //o2o
                     case 1: //o2m
-                        $relargs = array(
+                        $relArgs = array(
                             'local'   => "rel_{$relation['id']}",
                             'foreign' => 'id'
                         );
@@ -460,26 +460,26 @@ class Clip_Generator
                         );
                         break;
                     case 2: //m2o
-                        $relargs = array(
+                        $relArgs = array(
                             'local'   => 'id',
                             'foreign' => "rel_{$relation['id']}"
                         );
                         break;
                     case 3: // m2m
-                        $relargs = array(
+                        $relArgs = array(
                             'local'    => "rel_{$relation['id']}_2",
                             'foreign'  => "rel_{$relation['id']}_1",
                             'refClass' => "Clip_Model_Relation{$relation['id']}"
                         );
                 }
-                $relargs = var_export($relargs, true);
-                $relargs = str_replace('array (', 'array(', $relargs);
-                $relargs = str_replace(",\n)", "\n)", $relargs);
-                $relargs = str_replace("\n", "\n            ", $relargs);
-                $relargs = str_replace("\n            )", "\n        )", $relargs);
+                $relArgs = var_export($relArgs, true);
+                $relArgs = str_replace('array (', 'array(', $relArgs);
+                $relArgs = str_replace(",\n)", "\n)", $relArgs);
+                $relArgs = str_replace("\n", "\n            ", $relArgs);
+                $relArgs = str_replace("\n            )", "\n        )", $relArgs);
                 // add the code line
                 $hasRelations .= "
-        \$this->$method('$reldefinition', $relargs);
+        \$this->$method('$relDefinition', $relArgs);
         ";
             }
         }
@@ -674,13 +674,13 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
     }
 
     // dynamic pubdata tables
-    private static function _addtable(&$tables, $tid, $tablecolumn, $tabledef)
+    private static function _addtable(&$tables, $tid, $tableColumn, $tableDef)
     {
         $tablename = "clip_pubdata{$tid}";
 
         $tables[$tablename] = DBUtil::getLimitedTablename($tablename);
-        $tables[$tablename.'_column']     = $tablecolumn;
-        $tables[$tablename.'_column_def'] = $tabledef;
+        $tables[$tablename.'_column']     = $tableColumn;
+        $tables[$tablename.'_column_def'] = $tableDef;
 
         //ObjectUtil::addStandardFieldsToTableDefinition($tables[$tablename.'_column'], 'pm_');
         //ObjectUtil::addStandardFieldsToTableDataDefinition($tables[$tablename.'_column_def']);
@@ -716,11 +716,11 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 
         $old_tid = 0;
 
-        $tableorder = array(
+        $tableOrder = array(
             'core_pid'         => 'pm_pid',
             'id'               => 'pm_id'
         );
-        $tablecolumncore = array(
+        $tableColumnCore = array(
             'id'               => 'pm_id',
             'core_pid'         => 'pm_pid',
             'core_author'      => 'pm_author',
@@ -734,7 +734,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             'core_publishdate' => 'pm_publishdate',
             'core_expiredate'  => 'pm_expiredate'
         );
-        $tabledefcore = array(
+        $tableDefCore = array(
             'id'               => 'I4 PRIMARY AUTO',
             'core_pid'         => 'I4 NOTNULL',
             'core_author'      => 'I4 NOTNULL',
@@ -751,30 +751,30 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 
         // loop the pubfields adding their definitions
         // to their pubdata tables
-        $tablecolumn = array();
-        $tabledef    = array();
+        $tableColumn = array();
+        $tableDef    = array();
 
         foreach ($pubfields as $pubfield) {
             // if we change of publication type
             if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
                 // add the table definition to the $tables array
-                self::_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+                self::_addtable($tables, $old_tid, array_merge($tableOrder, $tableColumn, $tableColumnCore), array_merge($tableDefCore, $tableDef));
                 // and reset the columns and definitions for the next pubtype
-                $tablecolumn = array();
-                $tabledef    = array();
+                $tableColumn = array();
+                $tableDef    = array();
             }
 
             // add the column and definition for this field
-            $tablecolumn[$pubfield['name']] = "pm_{$pubfield['id']}";
-            $tabledef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
+            $tableColumn[$pubfield['name']] = "pm_{$pubfield['id']}";
+            $tableDef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
 
             // set the actual tid to check a pubtype change in the next cycle
             $old_tid = $pubfield['tid'];
         }
 
         // the final one doesn't trigger a tid change
-        if (!empty($tablecolumn)) {
-            self::_addtable($tables, $old_tid, array_merge($tableorder, $tablecolumn, $tablecolumncore), array_merge($tabledefcore, $tabledef));
+        if (!empty($tableColumn)) {
+            self::_addtable($tables, $old_tid, array_merge($tableOrder, $tableColumn, $tableColumnCore), array_merge($tableDefCore, $tableDef));
         }
 
         // validates the existence of all the pubdata tables
@@ -782,7 +782,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             if (!isset($tables["clip_pubdata{$tid}"])) {
-                self::_addtable($tables, $tid, $tablecolumncore, $tabledefcore);
+                self::_addtable($tables, $tid, $tableColumnCore, $tableDefCore);
             }
         }
 
