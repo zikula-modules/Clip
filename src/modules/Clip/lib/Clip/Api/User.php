@@ -541,7 +541,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         } else {
             $tid          = (int)$args['args']['tid'];
             $pubtype      = Clip_Util::getPubType($tid);
-            $pubtypeTitle = DataUtil::formatPermalink($pubtype['urltitle']);
+            $pubtypeTitle = $pubtype['urltitle'];
 
             unset($args['args']['tid']);
             unset($pubtype);
@@ -565,7 +565,9 @@ class Clip_Api_User extends Zikula_AbstractApi
                 return false;
             }
 
-            if (isset($args['args']['title']) && !empty($args['args']['title'])) {
+            if (isset($cache['title'][$tid][$pid])) {
+                $pubTitle = $cache['title'][$tid][$pid];
+            } elseif (isset($args['args']['title']) && !empty($args['args']['title'])) {
                 $pubTitle = $args['args']['title'];
             } else {
                 $pubTitle = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
@@ -575,6 +577,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             if (isset($args['args']['title'])) {
                 unset($args['args']['title']);
             }
+            $cache['title'][$tid][$pid] = $pubTitle;
 
             $pubTitle = '/'.$pubTitle.'.'.$pid;
 
