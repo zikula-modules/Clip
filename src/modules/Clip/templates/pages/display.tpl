@@ -1,6 +1,14 @@
 {pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}
 {clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}
 
+{* Open Graph tags
+{ogtag prop='title' content=$pubdata.core_title}
+{ogtag prop='type' content='article'}
+{ogtag prop='image' content=''}
+{ogtag prop='url' content=$returnurl}
+{ogtag prop='site_name' content=$modvars.ZConfig.sitename}
+*}
+
 {include file='clip_generic_navbar.tpl' section='display'}
 
 <div id="clip-page-{$pubdata.core_pid}" class="clip-page clip-page-{$pubdata.core_pid}">
