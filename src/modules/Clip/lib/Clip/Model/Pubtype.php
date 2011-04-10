@@ -209,10 +209,35 @@ class Clip_Model_Pubtype extends Doctrine_Record
      */
     public function postDelete(Doctrine_Event $event)
     {
+        $data = $event->getInvoker();
+
+        // delete m2m relation tables
+        $ownSides = array(true, false);
+        foreach ($ownSides as $ownSide) {
+            $rels = Clip_Util::getRelations($data['tid'], $ownSide);
+            foreach ($rels as $tid => $relations) {
+                foreach ($relations as $relation) {
+                    if ($relation['type'] == 3) {
+                        $table = 'Clip_Model_Relation'.$relation['id'];
+                        Doctrine_Core::getTable($table)->dropTable();
+                    }
+                }
+            }
+        }
+
+        // delete any relation
+        $where = array("tid1 = '{$data['tid']}' OR tid2 = '{$data['tid']}'");
+        Doctrine_Core::getTable('Clip_Model_Pubrelation')->deleteWhere($where);
+
+        // delete the data table
+        Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->dropTable();
+
+        // delete workflows
+        DBUtil::deleteWhere('workflows', "module = 'Clip' AND obj_table = 'clip_pubdata{$data['tid']}'");
+
         $clipVersion = new Clip_Version_Hooks();
 
         // unregister hook bundles
-        $data = $event->getInvoker();
         $this->registerHookBundles($clipVersion, $data['tid'], $data['title']);
 
         HookUtil::unregisterHookSubscriberBundles($clipVersion);

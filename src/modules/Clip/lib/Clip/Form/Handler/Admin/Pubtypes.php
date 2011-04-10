@@ -154,15 +154,6 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 Clip_Util::getPubType($this->tid)->delete();
                 Clip_Util::getPubFields($this->tid)->delete();
 
-                // delete any relation
-                $where = array("tid1 = '{$this->tid}' OR tid2 = '{$this->tid}'");
-                Doctrine_Core::getTable('Clip_Model_Pubrelation')->deleteWhere($where);
-                // FIXME m2m relations needs something more?
-
-                // delete the data table
-                Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->dropTable();
-                // FIXME Delete related stuff is needed? Hooks, Workflows registries?
-
                 // status message
                 LogUtil::registerStatus($this->__('Done! Publication type deleted.'));
 
