@@ -58,7 +58,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             'tid'           => $args['tid'],
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
-            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)$pubtype['itemsperpage'],
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)FormUtil::getPassedValue('itemsperpage', 0),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
             'checkperm'     => false,
@@ -72,7 +72,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         );
 
         if ($apiargs['itemsperpage'] <= 0) {
-            $apiargs['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
+            $apiargs['itemsperpage'] = $pubtype['itemsperpage'] > 10 ? $pubtype['itemsperpage'] : 15;
         }
 
         if ($args['page'] > 1) {
@@ -122,13 +122,16 @@ class Clip_Controller_User extends Zikula_AbstractController
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
 
         Clip_Util::setArgs('user_view', $args);
+        $returnurl = ModUtil::url('Clip', 'user', 'view',
+                                  array('tid' => $pubtype['tid']),
+                                  null, null, true);
 
         //// Build the output
         // assign the data to the output
         $this->view->assign('pubtype',   $pubtype)
                    ->assign('publist',   $result['publist'])
                    ->assign('clipargs',  Clip_Util::getArgs())
-                   ->assign('returnurl', System::getCurrentUrl());
+                   ->assign('returnurl', $returnurl);
 
         // assign the pager values
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
@@ -307,7 +310,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $returnurl = ModUtil::url('Clip', 'user', 'display',
                                   array('tid' => $apiargs['userapi_get']['tid'],
                                         'pid' => $apiargs['userapi_get']['pid']),
-                                 null, null, true);
+                                  null, null, true);
 
         // assign the pubdata and pubtype to the output
         $this->view->assign('pubdata', $pubdata)

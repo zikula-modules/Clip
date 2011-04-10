@@ -1,6 +1,5 @@
 {pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}
 
-{modurl modname='Clip' func='view' tid=$pubtype.tid fqurl=true assign='returnurl'}
 <h2>
     {gt text=$pubtype.title}
     {fblike url=$returnurl layout='horizontal' width=150 addmetatags=1 metatitle=$pubtype.title rel='list_title'}

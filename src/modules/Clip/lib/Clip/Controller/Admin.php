@@ -118,47 +118,65 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function publist($args=array())
     {
-        //// Parameters
-        $args = array(
-            'tid'           => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
-            'startnum'      => isset($args['startnum']) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum'),
-            'itemsperpage'  => isset($args['itemsperpage']) ? (int)$args['itemsperpage'] : (int)FormUtil::getPassedValue('itemsperpage'),
-            'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
-            'handleplugins' => true,  // API default
-            'loadworkflow'  => true,  // API default
-            'checkperm'     => false, // API default
-            'countmode'     => 'both' // API default
-        );
-
         //// Validation
-        if ($args['tid'] <= 0) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        // get the tid first
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
         //// Security check
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', "{$args['tid']}::", ACCESS_EDIT));
 
-        //// Misc values
         $pubtype = Clip_Util::getPubType($args['tid']);
-        if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
+
+        // define the arguments
+        $filter = FormUtil::getPassedValue('filter') ? '' : 'core_online:eq:1';
+
+        $apiargs = array(
+            'tid'           => $args['tid'],
+            'filter'        => isset($args['filter']) ? $args['filter'] : $filter,
+            'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)FormUtil::getPassedValue('itemsperpage', 0),
+            'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : false,
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : false,
+            'checkperm'     => false,
+            'countmode'     => 'both'
+        );
+        $args = array(
+            'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum', 0),
+            'page'          => (isset($args['page']) && is_numeric($args['page'])) ? (int)$args['page'] : (int)abs(FormUtil::getPassedValue('page', 1))
+        );
+
+        //// Misc values
+        if ($apiargs['itemsperpage'] <= 0) {
+            $apiargs['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : 10;
         }
 
-        if (!$args['itemsperpage']) {
-            $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
+        if ($args['page'] > 1) {
+            $apiargs['startnum'] = ($args['page']-1)*$apiargs['itemsperpage']+1;
         }
-
-        System::queryStringSetVar('filter', 'core_online:eq:1');
 
         //// Execution
         // uses the API to get the list of publications
-        $result = ModUtil::apiFunc('Clip', 'user', 'getall', $args);
+        $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
+
+        Clip_Util::setArgs('admin_list', $args);
 
         //// Output
         $this->view->assign('pubtype', $pubtype)
                    ->assign('publist', $result['publist'])
-                   ->assign('pager',   array('numitems'     => $result['pubcount'],
-                                             'itemsperpage' => $args['itemsperpage']));
+                   ->assign('clipargs',  Clip_Util::getArgs())
+                   ->add_core_data();
+
+        // assign the pager values
+        $this->view->assign('pager', array('numitems'     => $result['pubcount'],
+                                           'itemsperpage' => $apiargs['itemsperpage']));
+
+        if ($this->view->template_exists("clip_admin_publist_{$args['tid']}.tpl")) {
+            return $this->view->fetch("clip_admin_publist_{$args['tid']}.tpl");
+        }
 
         return $this->view->fetch('clip_admin_publist.tpl');
     }

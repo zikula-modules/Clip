@@ -8,7 +8,7 @@
 
     {clip_admin_submenu tid=$pubtype.tid}
 
-    {pager display='page' rowcount=$pager.numitems limit=$pager.itemsperpage posvar='startnum'}
+    {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=9}
 
     <table class="z-admintable">
         <thead>
