@@ -44,24 +44,10 @@ class Clip_Api_Search extends Zikula_AbstractApi
      */
     public function search($args)
     {
-        $search_tid = isset($args['tids']) ? $args['tids'] : FormUtil::getPassedValue('search_tid', '', 'REQUEST');
-
         ModUtil::dbInfoLoad('Search');
 
-        $tables = DBUtil::getTables();
-        $searchTable  = $tables['search_result'];
-        $searchColumn = $tables['search_result_column'];
-        $where_arr    = array();
-
-        $sessionId = session_id();
-        $insertSql = "INSERT INTO $searchTable
-                          ($searchColumn[title],
-                          $searchColumn[text],
-                          $searchColumn[extra],
-                          $searchColumn[created],
-                          $searchColumn[module],
-                          $searchColumn[session])
-                      VALUES ";
+        $search_tid = isset($args['tids']) ? $args['tids'] : FormUtil::getPassedValue('search_tid', '', 'REQUEST');
+        $sessionId  = session_id();
 
         $pubtypes = self::get_searchable();
 
@@ -86,17 +72,16 @@ class Clip_Api_Search extends Zikula_AbstractApi
 
                 foreach ($publist as $pub)
                 {
-                    $extra = serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid']));
-                    $sql = $insertSql . '('
-                    . '\'' . DataUtil::formatForStore($pub[$core_title]) . '\', '
-                    . '\'' . DataUtil::formatForStore('') . '\', '
-                    . '\'' . DataUtil::formatForStore($extra) . '\', '
-                    . '\'' . DataUtil::formatForStore($pub['cr_date']) . '\', '
-                    . '\'' . 'Clip' . '\', '
-                    . '\'' . DataUtil::formatForStore($sessionId) . '\')';
+                    $record = array(
+                        'title'   => $pub[$core_title],
+                        'text'    => '',
+                        'extra'   => serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid'])),
+                        'created' => $pub['cr_date'],
+                        'module'  => 'Clip',
+                        'session' => $sessionId
+                    );
 
-                    $insertResult = DBUtil::executeSQL($sql);
-                    if (!$insertResult) {
+                    if (!DBUtil::insertObject($record, 'search_result')) {
                         return LogUtil::registerError($this->__('Error! Could not save the search results.'));
                     }
                 }
