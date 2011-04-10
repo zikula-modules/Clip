@@ -15,6 +15,7 @@
 class Clip_Import_Batch
 {
     static $idmap;
+    static $tablescreated;
 
     protected $filename;
     protected $file;
@@ -25,16 +26,16 @@ class Clip_Import_Batch
     protected $gzip = false;
 
     /**
-     * Constructor.
+     * Setup function.
      *
      * @param string  $args['filter']   Filter to use in the export (optional).
      * @param string  $args['format']   Format of the output.
      * @param integer $args['outputto'] Type of output (0: File, 1: Browser).
      * @param string  $args['filename'] File name to use if the output is to a file (0).
      *
-     * @return void
+     * @return boolean True on success, false otherwise.
      */
-    public function __construct($args)
+    public function setup($args)
     {
         $objInfo = get_class_vars(get_class($this));
 
@@ -60,12 +61,22 @@ class Clip_Import_Batch
 
         $this->format = strtoupper($this->format);
 
+        return true;
+    }
+
+    /**
+     * Internal reset.
+     */
+    protected function reset()
+    {
         // reset the old/new IDs map
         self::$idmap = array(
             'tids' => array(), // pubtypes map
             'fids' => array(), // pubfields map
             'pids' => array()  // publications map
         );
+
+        self::$tablescreated = false;
     }
 
     /**
@@ -83,7 +94,11 @@ class Clip_Import_Batch
         $manager = Doctrine_Manager::getInstance();
         $manager->setAttribute(Doctrine_Core::ATTR_VALIDATE, Doctrine_Core::VALIDATE_NONE);
 
-        return $parser->parseSections(array('Clip_Import_Batch', 'parseSection'));
+        $result = $parser->parseSections(array($this, 'parseSection'));
+
+        $this->reset();
+
+        return $result;
     }
 
     /**
@@ -91,10 +106,8 @@ class Clip_Import_Batch
      *
      * @return void
      */
-    static public function parseSection($args)
+    public function parseSection($args)
     {
-        static $tablescreated = false;
-
         switch (Clip_Util::getStringPrefix($args['section']))
         {
             case 'pubtypes':
@@ -134,14 +147,14 @@ class Clip_Import_Batch
                 break;
 
             case 'pubdata':
-                if (!$tablescreated) {
+                if (!self::$tablescreated) {
                     // recreate models once the field has been added
                     Clip_Generator::loadDataClasses(true);
                     // create the new tables
                     foreach (self::$idmap['tids'] as $tid) {
                         Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
                     }
-                    $tablescreated = true;
+                    self::$tablescreated = true;
                 }
                 $tid = Clip_Util::getTidFromString($args['section']);
                 if (!isset(self::$idmap['tids'][$tid])) {

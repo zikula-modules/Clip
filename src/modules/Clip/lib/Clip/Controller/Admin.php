@@ -291,7 +291,8 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function defaultypes()
     {
-        $lang = ZLanguage::getLanguageCode();
+        $lang  = ZLanguage::getLanguageCode();
+        $batch = new Clip_Import_Batch();
 
         $defaults = array('blog', 'staticpages');
 
@@ -307,9 +308,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                     $file = "modules/Clip/docs/xml/en/$default.xml";
                 }
 
-                $batch = new Clip_Import_Batch(array('url' => $file));
-
-                if ($batch->execute()) {
+                if ($batch->setup(array('url' => $file)) && $batch->execute()) {
                     LogUtil::registerStatus($this->__f("'%s' publication type imported successfully.", $default));
                 } else {
                     LogUtil::registerStatus($this->__f("Could not import the '%s' publication type.", $default));
