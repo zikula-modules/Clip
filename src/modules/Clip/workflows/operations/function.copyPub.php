@@ -37,9 +37,10 @@ function Clip_operation_copyPub(&$pub, $params)
     // initializes the result flag
     $result = false;
 
+    $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
+
     // finds the higher pid
-    $maxpid = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
-    $copy['core_pid'] = $maxpid + 1;
+    $copy['core_pid'] = $tbl->selectFieldFunction('core_pid', 'MAX') + 1;
 
     // save the publication
     if ($copy->isValid()) {
@@ -53,8 +54,7 @@ function Clip_operation_copyPub(&$pub, $params)
         $workflow = new Zikula_Workflow($copy['__WORKFLOW__']['schemaname'], 'Clip');
 
         if ($workflow->registerWorkflow($copy, $copystate)) {
-            // let know that a publication was created
-            ModUtil::callHooks('item', 'create', $copy['core_uniqueid'], array('module' => 'Clip'));
+            // TODO let know hooks that a publication was created
 
         } else {
             $result = false;

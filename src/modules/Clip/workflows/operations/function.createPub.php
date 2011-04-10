@@ -28,14 +28,15 @@ function Clip_operation_createPub(&$pub, $params)
     // initializes the result flag
     $result = false;
 
+    $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
+
     // validate or find a new pid
     if (isset($pub['core_pid']) && !empty($pub['core_pid'])) {
-        if (DBUtil::selectFieldByID($pub['__WORKFLOW__']['obj_table'], 'id', $pub['core_pid'], 'core_pid')) {
+        if (count($tbl->findBy('core_pid', $pub['core_pid']))) {
             return LogUtil::registerError(__('Error! The fixed publication id already exists on the database. Please contact the administrator.', $dom));
         }
     } else {
-        $maxpid = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_pid', 'MAX');
-        $pub['core_pid'] = $maxpid + 1;
+        $pub['core_pid'] = $tbl->selectFieldFunction('core_pid', 'MAX') + 1;
     }
 
     // assign the author
@@ -51,8 +52,7 @@ function Clip_operation_createPub(&$pub, $params)
         $pub->save();
         $result = true;
 
-        // let know that a publication was created
-        ModUtil::callHooks('item', 'create', $pub['core_uniqueid'], array('module' => 'Clip'));
+        // TODO let know that a publication was created
     }
 
     // output message

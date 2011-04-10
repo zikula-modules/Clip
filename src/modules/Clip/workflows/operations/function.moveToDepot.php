@@ -33,8 +33,7 @@ function Clip_operation_moveToDepot($pub, $params)
         $pub->save();
         $result = true;
 
-        // let know that the publication was updated
-        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'Clip'));
+        // TODO let know hooks that the publication was updated
     }
 
     // output message

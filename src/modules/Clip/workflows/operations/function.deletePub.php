@@ -28,12 +28,13 @@ function Clip_operation_deletePub(&$pub, $params)
     if (Zikula_Workflow_Util::deleteWorkflow($pub)) {
         $result = true;
 
+        $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
+
         // checks if there's any other revision of this publication
-        $count = DBUtil::selectObjectCount($pub['__WORKFLOW__']['obj_table'], "pm_pid = '{$pub['core_pid']}'");
+        $count = $tbl->selectFieldFunction('1', 'COUNT', array(array('core_pid = ?', $pub['core_pid']))) + 1;
 
         if ($count == 0) {
-            // if no other revisions, let know that the publication was deleted
-            ModUtil::callHooks('item', 'delete', $pub['core_uniqueid'], array('module' => 'Clip'));
+            // TODO if no other revisions, let know hooks that the publication was deleted
         }
     }
 

@@ -30,27 +30,27 @@ function Clip_operation_updatePub(&$pub, &$params)
     $newrevision = isset($params['newrevision']) ? (bool)$params['newrevision'] : true;
     $silent      = isset($params['silent']) ? (bool)$params['silent'] : false;
 
+    $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
+
     // overrides newrevision in pubtype. gives the dev. the possibility to not genereate a new revision
     // e.g. when the revision is pending (waiting state) and will be updated
     $pubtype = Clip_Util::getPubType($pub['core_tid']);
 
     if ($pubtype['enablerevisions'] && $pub['core_online'] == 1) {
         // set all other to offline
-        $data = array('core_online' => 0);
-
-        if (!DBUtil::updateObject($data, $pub['__WORKFLOW__']['obj_table'], "pm_online = '1' AND pm_pid = '{$pub['core_pid']}'")) {
-            if (!$silent) {
-                LogUtil::registerError(__('Error! Could not unpublish the other revisions of this publication.', $dom));
-            }
-            return array($pub['id'] => false);
-        }
+        $tbl->createQuery()
+            ->update()
+            ->set('core_online', 0)
+            ->where('core_online = ?', 1)
+            ->andWhere('core_pid = ?', $pub['core_pid'])
+            ->execute();
     }
 
     // initializes the result flag
     $result = false;
 
     // get the max revision
-    $maxrev = DBUtil::selectFieldMax($pub['__WORKFLOW__']['obj_table'], 'core_revision', 'MAX', "pm_pid = '{$pub['core_pid']}'");
+    $maxrev = $tbl->selectFieldFunction('core_revision', 'MAX', array(array('core_pid = ?', $pub['core_pid'])));
 
     if ($pubtype['enablerevisions'] && $newrevision) {
         // create the new revision
@@ -87,8 +87,7 @@ function Clip_operation_updatePub(&$pub, &$params)
     }
 
     if ($result) {
-        // let know that the publication was updated
-        ModUtil::callHooks('item', 'update', $pub['core_uniqueid'], array('module' => 'Clip'));
+        // TODO let know hooks that the publication was updated
     }
 
     // output message
