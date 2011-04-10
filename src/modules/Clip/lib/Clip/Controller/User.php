@@ -37,28 +37,34 @@ class Clip_Controller_User extends Zikula_AbstractController
      *
      * @return string Publication list output.
      */
-    public function view($args)
+    public function view($args=array())
     {
         //// Validation
         // get the tid first
-        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+        $tid = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
-        if (!Clip_Util::validateTid($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+        if (!Clip_Util::validateTid($tid)) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
         }
 
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($tid);
 
         //// Parameters
+        // process itemsperpage depending it it's an API call or browser call
+        if (!empty($args)) {
+            $itemsperpage = (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : $pubtype['itemsperpage'];
+        } else {
+            $itemsperpage = abs((int)FormUtil::getPassedValue('itemsperpage'));
+        }
         // old parameters (will be removed on Clip 1.0)
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
         $args['getApprovalS']  = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
         // define the arguments
         $apiargs = array(
-            'tid'           => $args['tid'],
+            'tid'           => $tid,
+            'itemsperpage'  => $itemsperpage,
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
-            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)FormUtil::getPassedValue('itemsperpage', 0),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
             'checkperm'     => false,
@@ -71,8 +77,8 @@ class Clip_Controller_User extends Zikula_AbstractController
             'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
         );
 
-        if ($apiargs['itemsperpage'] <= 0) {
-            $apiargs['itemsperpage'] = $pubtype['itemsperpage'] > 10 ? $pubtype['itemsperpage'] : 15;
+        if ($apiargs['itemsperpage'] == 0) {
+            $apiargs['itemsperpage'] = $this->getVar('maxperpage', 100);
         }
 
         if ($args['page'] > 1) {

@@ -138,7 +138,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
             'tid'           => $args['tid'],
             'filter'        => isset($args['filter']) ? $args['filter'] : $filter,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
-            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)FormUtil::getPassedValue('itemsperpage', 0),
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : abs((int)FormUtil::getPassedValue('itemsperpage')),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : false,
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : false,
             'checkperm'     => false,
@@ -150,7 +150,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         );
 
         //// Misc values
-        if ($apiargs['itemsperpage'] <= 0) {
+        if ($apiargs['itemsperpage'] == 0) {
             $apiargs['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : 10;
         }
 
