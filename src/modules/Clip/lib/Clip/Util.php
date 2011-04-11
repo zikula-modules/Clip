@@ -744,4 +744,39 @@ class Clip_Util
 
         return false;
     }
+
+    /**
+     * Install the default 'blog' and 'staticpages' publication types.
+     *
+     * @return void
+     */
+    public static function installDefaultypes()
+    {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        $lang  = ZLanguage::getLanguageCode();
+        $batch = new Clip_Import_Batch();
+
+        $defaults = array('blog', 'staticpages');
+
+        foreach ($defaults as $default) {
+            // check if the pubtype exists
+            $pubtype = Doctrine_Core::getTable('Clip_Model_Pubtype')->findByUrltitle($default);
+            if (count($pubtype)) {
+                LogUtil::registerStatus(__f("There is already a '%s' publication type.", $default, $dom));
+            } else {
+                // import the default XML
+                $file = "modules/Clip/docs/xml/$lang/$default.xml";
+                if (!file_exists($file)) {
+                    $file = "modules/Clip/docs/xml/en/$default.xml";
+                }
+
+                if ($batch->setup(array('url' => $file)) && $batch->execute()) {
+                    LogUtil::registerStatus(__f("'%s' publication type created successfully.", $default, $dom));
+                } else {
+                    LogUtil::registerStatus(__f("Could not import the '%s' publication type.", $default, $dom));
+                }
+            }
+        }
+    }
 }

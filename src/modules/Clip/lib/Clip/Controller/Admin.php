@@ -291,30 +291,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function defaultypes()
     {
-        $lang  = ZLanguage::getLanguageCode();
-        $batch = new Clip_Import_Batch();
-
-        $defaults = array('blog', 'staticpages');
-
-        foreach ($defaults as $default) {
-            // check if the pubtype exists
-            $pubtype = Doctrine_Core::getTable('Clip_Model_Pubtype')->findByUrltitle($default);
-            if (count($pubtype)) {
-                LogUtil::registerStatus($this->__f("There is already a '%s' publication type.", $default));
-            } else {
-                // import the default XML
-                $file = "modules/Clip/docs/xml/$lang/$default.xml";
-                if (!file_exists($file)) {
-                    $file = "modules/Clip/docs/xml/en/$default.xml";
-                }
-
-                if ($batch->setup(array('url' => $file)) && $batch->execute()) {
-                    LogUtil::registerStatus($this->__f("'%s' publication type imported successfully.", $default));
-                } else {
-                    LogUtil::registerStatus($this->__f("Could not import the '%s' publication type.", $default));
-                }
-            }
-        }
+        Clip_Util::installDefaultypes();
 
         $this->redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
     }

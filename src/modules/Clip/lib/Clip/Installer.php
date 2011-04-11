@@ -45,9 +45,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // try to create the upload directory
         $tmpdir = self::createTempDir();
 
-        // register the hooks
-        //$this->version->setupPubtypeBundles(); // interactive install: default pubtypes
-        HookUtil::registerHookSubscriberBundles($this->version);
+        //  install: default pubtypes
+        Clip_Util::installDefaultypes();
 
         // register persistent event listeners (handlers)
         EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
@@ -293,7 +292,13 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $cat->setDataField('value',   isset($args['value']) ? $args['value'] : '');
         $cat->setDataField('is_leaf', isset($args['leaf']) ? $args['leaf'] : 0);
         if (!$cat->validate()) {
-            return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', $args['name']));
+            $ve = FormUtil::getValidationErrors();
+            // compares the Categories_DBObject already exist error message
+            $error = __f('Category %s must be unique under parent', $args['name']);
+            if ($ve && $ve[$cat->_objPath]['name'] != $error) {
+                LogUtil::registerError($ve[$cat->_objPath]['name']);
+                return LogUtil::registerError($this->__f('Error! Could not create the [%s] category.', $args['name']));
+            }
         }
         $cat->insert();
         $cat->update();
@@ -311,6 +316,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         if ($registry->validatePostProcess()) {
             $registry->insert();
         }
+        FormUtil::clearValidationErrors();
     }
 
     /**
