@@ -73,6 +73,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
                                  } else {
                                      $(\'typedata\').value = 0;
                                  }
+
                                  closeTypeData();
                              }';
 

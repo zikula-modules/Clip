@@ -270,6 +270,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         $saveTypeDataFunc = 'function saveTypeData()
                              {
                                  $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\');
+
                                  closeTypeData();
                              }';
 

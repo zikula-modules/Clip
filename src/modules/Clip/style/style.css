@@ -98,20 +98,6 @@ pre.clip-showcode {
   width: 66.2%;
 }
 
-#typeDataDiv {
-  width: 550px;
-  height: auto !important;
-  height: 75px;
-  min-height: 75px;
-  z-index: 9999;
-  left: 50%;
-  margin-left: -275px;
-
-  background-color: #FFFFFF;
-  padding: 10px;
-  text-align: left;
-}
-
 /* relations selectors */
 .z-form-relations div.z-formrow select {
   display: inline;

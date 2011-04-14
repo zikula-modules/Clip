@@ -128,13 +128,14 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         $saveTypeDataFunc = 'function saveTypeData()
                              {
                                  $(\'typedata\').value = $F(\'clipplugin_checklist\') ;
-                                 closeTypeData();
                                  $(\'typedata\').value += \'|\';
                                  if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
                                      $(\'typedata\').value += 1;
                                  } else {
                                      $(\'typedata\').value += 0;
                                  }
+
+                                 closeTypeData();
                              }';
 
         return $saveTypeDataFunc;

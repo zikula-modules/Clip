@@ -101,7 +101,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
                                  if ($F(\'clipplugin_categorylist\') != null) {
                                      $(\'typedata\').value = $F(\'clipplugin_categorylist\');
                                  } else {
-                                     $(\'typedata\').value = 30;
+                                     $(\'typedata\').value = '.Clip_Util::getDefaultCategoryID().';
                                  }
                                  $(\'typedata\').value += \',\';
                                  if ($F(\'clipplugin_categoryempty\') == \'on\') {
@@ -115,6 +115,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
                                  } else {
                                      $(\'typedata\').value += 0;
                                  }
+
                                  closeTypeData();
                              }';
 

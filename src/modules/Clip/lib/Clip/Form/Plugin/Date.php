@@ -67,6 +67,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
                                  } else {
                                      $(\'typedata\').value = 0;
                                  }
+
                                  closeTypeData();
                              }';
 

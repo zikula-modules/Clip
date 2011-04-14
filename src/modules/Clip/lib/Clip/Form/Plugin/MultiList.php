@@ -145,8 +145,8 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
                                  } else {
                                      config.push(\'0\');
                                  }
-
                                  $(\'typedata\').value = config.join(\'|\')
+
                                  closeTypeData();
                              }';
 

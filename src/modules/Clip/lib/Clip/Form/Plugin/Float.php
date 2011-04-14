@@ -56,6 +56,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
                                  if ($F(\'clipplugin_maxvalue\') != null) {
                                      $(\'typedata\').value += $F(\'clipplugin_maxvalue\');
                                  }
+
                                  closeTypeData();
                              }';
 

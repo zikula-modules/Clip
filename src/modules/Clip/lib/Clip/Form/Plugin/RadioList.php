@@ -161,7 +161,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
                                  if ($F(\'clipplugin_categorylist\') != null) {
                                      $(\'typedata\').value = $F(\'clipplugin_categorylist\');
                                  } else {
-                                     $(\'typedata\').value = 30;
+                                     $(\'typedata\').value = '.Clip_Util::getDefaultCategoryID().';
                                  }
                                  $(\'typedata\').value += \'|\';
                                  if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
@@ -169,6 +169,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
                                  } else {
                                      $(\'typedata\').value += 0;
                                  }
+
                                  closeTypeData();
                              }';
 

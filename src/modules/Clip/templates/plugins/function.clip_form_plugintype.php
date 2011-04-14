@@ -39,39 +39,32 @@ class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
 
         $typeDataHtml = '';
         if (!empty($this->selectedValue) && !empty($this->items)) {
-            PageUtil::addVar('javascript', 'livepipe');
+            PageUtil::addVar('javascript', 'zikula.ui');
             $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
             $plugin = Clip_Util::getPlugin($this->selectedValue);
-            if (method_exists($plugin, 'getTypeHtml'))
-            {
+            if (method_exists($plugin, 'getTypeHtml')) {
                 if (method_exists($plugin, 'getSaveTypeDataFunc')) {
-                    $script .= $plugin->getSaveTypeDataFunc($this);
+                    $script .= $plugin->getSaveTypeDataFunc($this)."\n";
                 } else {
-                    $script .= 'function saveTypeData(){ closeTypeData(); }';
+                    $script .= 'function saveTypeData() { closeTypeData(); }'."\n";
                 }
                 // init functions for modalbox and unobtrusive buttons
                 $script .= '
+                var clip_pluginwindow = null;
                 function closeTypeData() {
-                    clip_modalbox.close();
+                    clip_pluginwindow.closeHandler();
                 }
-                function clip_enablePluginConfig(){
+                function clip_enablePluginConfig() {
+                    clip_pluginwindow = new Zikula.UI.Window($(\'showTypeButton\'), {modal:true, title:\''.$this->__('Plugin configuration').'\', width: 600, overlayOpacity: 0.6});
                     $(\'saveTypeButton\').observe(\'click\', saveTypeData);
                     $(\'cancelTypeButton\').observe(\'click\', closeTypeData);
-                    clip_modalbox = new Control.Modal($(\'showTypeButton\'), {
-                        overlayOpacity: 0.6,
-                        className: \'clip-modalpopup\',
-                        fade: true,
-                        iframeshim: false,
-                        closeOnClick: false
-                    });
-                    $(document.body).insert($(\'typeDataDiv\'));
                 }
                 Event.observe( window, \'load\', clip_enablePluginConfig, false);
                 ';
 
                 $typeDataHtml  = '
-                <a id="showTypeButton" href="#typeDataDiv"><img src="images/icons/extrasmall/configure.png" alt="'.$this->__('Modify config').'" /></a>
-                <div id="typeDataDiv" class="clip-modalpopup z-form">
+                <a id="showTypeButton" href="#typeDataDiv" title="'.$this->__('Open the plugin configuration popup').'"><img src="images/icons/extrasmall/configure.png" alt="'.$this->__('Configuration').'" /></a>
+                <div id="typeDataDiv" class="z-form" style="display: none">
                     '.$plugin->getTypeHtml($this, $render).'
                     <div class="z-formbuttons">
                         <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/small/filesave.png" alt="'.$this->__('Save').'" /></button>&nbsp;

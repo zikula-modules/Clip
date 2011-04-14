@@ -72,6 +72,7 @@ class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
                                  if ($F(\'clipplugin_maxvalue\') != null) {
                                      $(\'typedata\').value += $F(\'clipplugin_maxvalue\');
                                  }
+
                                  closeTypeData();
                              }';
 
