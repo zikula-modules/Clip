@@ -71,8 +71,8 @@ class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
                 function clip_enablePluginConfig() {
                     clip_pluginwindow = new Zikula.UI.Dialog($(\'showTypeButton\'),
                                                              [
-                                                                 {name:\'save\', value:\'save\', label:\'<img src="images/icons/small/filesave.png" alt="" /> '.$this->__('Save').'\'},
-                                                                 {name:\'cancel\', value:\'cancel\', label:\'<img src="images/icons/small/button_cancel.png" alt="" /> '.$this->__('Cancel').'\'}
+                                                                 {name:\'save\', class:\'z-bt-ok z-btgreen\', label:\''.$this->__('Save').'\'},
+                                                                 {name:\'cancel\', class:\'z-bt-cancel z-btred\', label:\''.$this->__('Cancel').'\'}
                                                              ],
                                                              {callback: clip_plugincallback, modal:true, title:\''.$this->__('Plugin configuration').'\', width: 600, overlayOpacity: 0.6});
                 }
