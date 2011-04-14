@@ -88,7 +88,7 @@ class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
                 $script .= 'Event.observe( window, \'load\', function() { $(\'typedata_wrapper\').hide(); }, false);';
             }
             $script .= "\n// ]]>\n</script>";
-            PageUtil::addVar('rawtext', $script);
+            PageUtil::addVar('header', $script);
         }
 
         return $result . $typeDataHtml;

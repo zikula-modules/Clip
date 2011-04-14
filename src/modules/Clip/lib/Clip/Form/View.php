@@ -46,7 +46,7 @@ class Clip_Form_View extends Zikula_Form_View
 
                 // add the scripts to page header
                 if ($scribite) {
-                    PageUtil::AddVar('rawtext', $scribite);
+                    PageUtil::AddVar('header', $scribite);
                 }
             }
         }

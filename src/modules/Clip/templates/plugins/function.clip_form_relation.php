@@ -135,7 +135,7 @@ class ClipFormRelation extends Zikula_Form_Plugin_TextInput
             }
             Event.observe(window, \'load\', clip_enable_'.$this->id.', false);
         '."\n// ]]>\n</script>";
-        PageUtil::addVar('rawtext', $script);
+        PageUtil::addVar('header', $script);
 
         // build the autocompleter output
         $typeDataHtml = '

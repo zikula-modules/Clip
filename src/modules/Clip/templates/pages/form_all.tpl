@@ -115,4 +115,4 @@
 </script>
 {/capture}
 {ajaxheader}
-{pageaddvar name='rawtext' value=$clippagejs}
+{pageaddvar name='header' value=$clippagejs}
