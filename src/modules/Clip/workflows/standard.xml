@@ -119,7 +119,7 @@
       <parameter class="z-bt-icon clip-bt-deactivate">button</parameter>
     </action>
 
-    <action id="MoveToDepot">
+    <action id="depot">
       <title>Move to depot</title>
       <description>Move the publication to the depot</description>
       <permission>moderator</permission>
@@ -132,7 +132,7 @@
     <action id="delete">
       <title>Delete</title>
       <description>Delete the publication</description>
-      <permission>moderator</permission>
+      <permission>delete</permission>
       <state>approved</state>
       <operation>deletePub</operation>
 

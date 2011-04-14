@@ -31,7 +31,7 @@
     <action id="approve">
       <title>Submit and Approve</title>
       <description>Submit new content and approve immediately</description>
-      <permission>moderator</permission>
+      <permission>editor</permission>
       <nextState>approved</nextState>
       <operation online="1">createPub</operation>
 
@@ -41,7 +41,7 @@
     <action id="accept">
       <title>Submit and Accept</title>
       <description>Submit new content for approval</description>
-      <permission>editor</permission>
+      <permission>moderator</permission>
       <nextState>preview</nextState>
       <operation>createPub</operation>
 
@@ -51,7 +51,7 @@
     <action id="submit">
       <title>Submit</title>
       <description>Submit new content for acceptance by the local editor</description>
-      <permission>author</permission>
+      <permission>comment</permission>
       <nextState>waiting</nextState>
       <operation>createPub</operation>
       <operation type="contentnew" group="editors">mailNotification</operation>
@@ -109,7 +109,7 @@
     <action id="approve">
       <title>Approve</title>
       <description>Approve content for online publishing</description>
-      <permission>moderator</permission>
+      <permission>editor</permission>
       <state>preview</state>
       <nextState>approved</nextState>
       <operation online="1">updatePub</operation>
@@ -130,7 +130,7 @@
     <action id="delete">
       <title>Delete</title>
       <description>Delete the publication</description>
-      <permission>moderator</permission>
+      <permission>editor</permission>
       <state>preview</state>
       <operation>deletePub</operation>
 
@@ -142,7 +142,7 @@
     <action id="updateApprove">
       <title>Update and Approve</title>
       <description>Update content and approve for online publishing</description>
-      <permission>moderator</permission>
+      <permission>editor</permission>
       <state>approved</state>
       <operation online="1" nextState="approved">updatePub</operation>
 
@@ -163,7 +163,7 @@
     <action id="online">
       <title>Publish</title>
       <description>Make the publication available</description>
-      <permission>moderator</permission>
+      <permission>editor</permission>
       <state>approved</state>
       <operation online="1">updateOnlineState</operation>
 
@@ -173,17 +173,17 @@
     <action id="offline">
       <title>Unpublish</title>
       <description>Hide the publication</description>
-      <permission>moderator</permission>
+      <permission>editor</permission>
       <state>approved</state>
       <operation online="0">updateOnlineState</operation>
 
       <parameter class="z-bt-icon clip-bt-deactivate">button</parameter>
     </action>
 
-    <action id="MoveToDepot">
+    <action id="depot">
       <title>Move to depot</title>
       <description>Move the publication to the depot</description>
-      <permission>moderator</permission>
+      <permission>editor</permission>
       <state>approved</state>
       <operation>moveToDepot</operation>
 
@@ -193,7 +193,7 @@
     <action id="delete">
       <title>Delete</title>
       <description>Delete the publication</description>
-      <permission>moderator</permission>
+      <permission>editor</permission>
       <state>approved</state>
       <operation>deletePub</operation>
 
