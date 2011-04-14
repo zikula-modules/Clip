@@ -56,13 +56,25 @@ class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
                 // init functions for modalbox and unobtrusive buttons
                 $script .= '
                 var clip_pluginwindow = null;
+                var clip_plugincallback = function(button) {
+                    switch (button.name) {
+                        case \'save\':
+                            saveTypeData();
+                            break;
+                        case \'cancel\':
+                            closeTypeData();
+                    }
+                }
                 function closeTypeData() {
                     clip_pluginwindow.closeHandler();
                 }
                 function clip_enablePluginConfig() {
-                    clip_pluginwindow = new Zikula.UI.Window($(\'showTypeButton\'), {modal:true, title:\''.$this->__('Plugin configuration').'\', width: 600, overlayOpacity: 0.6});
-                    $(\'saveTypeButton\').observe(\'click\', saveTypeData);
-                    $(\'cancelTypeButton\').observe(\'click\', closeTypeData);
+                    clip_pluginwindow = new Zikula.UI.Dialog($(\'showTypeButton\'),
+                                                             [
+                                                                 {name:\'save\', value:\'save\', label:\'<img src="images/icons/small/filesave.png" alt="" /> '.$this->__('Save').'\'},
+                                                                 {name:\'cancel\', value:\'cancel\', label:\'<img src="images/icons/small/button_cancel.png" alt="" /> '.$this->__('Cancel').'\'}
+                                                             ],
+                                                             {callback: clip_plugincallback, modal:true, title:\''.$this->__('Plugin configuration').'\', width: 600, overlayOpacity: 0.6});
                 }
                 Event.observe( window, \'load\', clip_enablePluginConfig, false);
                 ';
@@ -71,10 +83,6 @@ class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
                 <a id="showTypeButton" class="tooltips" href="#typeDataDiv" title="'.$this->__('Open the plugin configuration popup').'"><img src="images/icons/extrasmall/configure.png" alt="'.$this->__('Configuration').'" /></a>
                 <div id="typeDataDiv" class="z-form" style="display: none">
                     '.$plugin->getTypeHtml($this, $render).'
-                    <div class="z-formbuttons">
-                        <button type="button" id="saveTypeButton" name="saveTypeButton"><img src="images/icons/small/filesave.png" alt="" /> '.$this->__('Save').'</button>&nbsp;
-                        <button type="button" id="cancelTypeButton" name="cancelTypeButton"><img src="images/icons/small/button_cancel.png" alt="" /> '.$this->__('Cancel').'</button>
-                    </div>
                 </div>';
             } else {
                 $script .= 'Event.observe( window, \'load\', function() { $(\'typedata_wrapper\').hide(); }, false);';
