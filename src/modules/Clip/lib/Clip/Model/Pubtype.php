@@ -191,7 +191,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
      *
      * @return void
      */
-    public function postInsert(Doctrine_Event $event)
+    public function postInsert($event)
     {
         $clipVersion = new Clip_Version_Hooks();
 
@@ -207,7 +207,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
      *
      * @return void
      */
-    public function postDelete(Doctrine_Event $event)
+    public function postDelete($event)
     {
         $data = $event->getInvoker();
 
