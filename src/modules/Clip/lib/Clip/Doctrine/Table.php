@@ -521,7 +521,11 @@ class Clip_Doctrine_Table extends Doctrine_Table
         try {
             Doctrine_Manager::connection()->export->createTable($data['tableName'], $data['columns'], $data['options']);
         } catch (Exception $e) {
-            return LogUtil::registerError($e->getMessage());
+            // omit the already exists error
+            $msg = $e->getMessage();
+            if (get_class($e) == 'Doctrine_Connection_Mysql_Exception' && strpos($msg, 'SQLSTATE[42S01]') !== 0) {
+                return LogUtil::registerError($msg);
+            }
         }
 
         return true;
