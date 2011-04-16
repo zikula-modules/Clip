@@ -66,7 +66,12 @@
 
         <echo msg="Creating archive..." />
         <!-- zip's don't play nicely in Phing - using direct command -->
-        <exec escape="false" command="cd ${exportdir}; zip -D -r ${archivedir}/${package}.zip ." />
+        <!-- exec escape="false" command="cd ${exportdir}; zip -D -r ${archivedir}/${package}.zip ." / -->
+        <zip destfile="${archivedir}/${package}.tar.gz">
+         <fileset dir="${exportdir}/${job_name}">
+             <include name="**/**" />
+         </fileset>
+        </zip>
 
         <tar destfile="${archivedir}/${package}.tar.gz" compression="gzip">
             <fileset dir="${exportdir}/${job_name}">
