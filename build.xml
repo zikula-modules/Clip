@@ -69,10 +69,11 @@
         <exec escape="false" command="cd ${exportdir}; zip -D -r ${archivedir}/${package}.zip ." />
 
         <tar destfile="${archivedir}/${package}.tar.gz" compression="gzip">
-            <fileset dir="${exportdir}">
-                <include name="${job_name}" />
+            <fileset dir="${exportdir}/${job_name}">
+                <include name="**/**" />
             </fileset>
         </tar>
+
         <echo msg="Files copied and compressed in build directory OK!" />
 
         <phingcall target="build_checksums" />
