@@ -45,8 +45,9 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // try to create the upload directory
         $tmpdir = self::createTempDir();
 
-        //  install: default pubtypes
+        //  install: default pubtypes and grouptypes
         Clip_Util::installDefaultypes();
+        $this->createGrouptypesTree();
 
         // register persistent event listeners (handlers)
         EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
@@ -119,6 +120,14 @@ class Clip_Installer extends Zikula_AbstractInstaller
             case '0.4.12':
                 $this->createCategoryTree();
             case '0.4.13':
+                if (!Doctrine_Core::getTable('Clip_Model_Grouptype')->createTable()) {
+                    return '0.4.13';
+                }
+                if (!Doctrine_Core::getTable('Clip_Model_Pubtype')->changeTable()) {
+                    return '0.4.13';
+                }
+                $this->createGrouptypesTree();
+            case '0.4.14':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
@@ -137,7 +146,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         Clip_Generator::loadDataClasses();
 
         // drop pubtype tables
-        $pubtypes = array_keys(Clip_Util::getPubType(-1)->toArray());
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
 
         foreach ($pubtypes as $tid) {
             $table = "Clip_Model_Pubdata$tid";
@@ -317,6 +326,31 @@ class Clip_Installer extends Zikula_AbstractInstaller
             $registry->insert();
         }
         FormUtil::clearValidationErrors();
+    }
+
+    /**
+     * Default grouptypes tree creation.
+     */
+    private function createGrouptypesTree()
+    {
+        $lang = ZLanguage::getLanguageCode();
+
+        // Create the Root and the 'Ungrouped' root category and adds there all the existing pubtypes
+        $tids = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+        $tree = Doctrine_Core::getTable('Clip_Model_Grouptype')->getTree();
+
+        // root
+        $root = new Clip_Model_Grouptype();
+        $root->name = '__ROOT__';
+        $root->save();
+        $tree->createRoot($root);
+
+        // ungrouped
+        $ungr = new Clip_Model_Grouptype();
+        $ungr->name = array($lang => $this->__('Ungrouped'));
+        $ungr->description = array($lang => $this->__('Pubtypes without a group.'));
+        $ungr->link('pubtypes', $tids);
+        $ungr->getNode()->insertAsLastChildOf($root);
     }
 
     /**

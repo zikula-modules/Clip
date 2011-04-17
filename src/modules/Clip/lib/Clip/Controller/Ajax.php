@@ -12,7 +12,7 @@
 /**
  * Ajax Controller.
  */
-class Clip_Controller_Ajax extends Zikula_AbstractController
+class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
 {
     public function _postSetup()
     {
@@ -21,6 +21,7 @@ class Clip_Controller_Ajax extends Zikula_AbstractController
 
     public function changelistorder()
     {
+        $this->checkAjaxToken();
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         $pubfields = FormUtil::getPassedValue('pubfieldlist');
@@ -59,6 +60,8 @@ class Clip_Controller_Ajax extends Zikula_AbstractController
      */
     public function view()
     {
+        $this->checkAjaxToken();
+
         //// Validation
         $args['tid'] = (int)$this->request->getPost()->get('tid', null);
 
@@ -144,6 +147,8 @@ class Clip_Controller_Ajax extends Zikula_AbstractController
      */
     public function getusers()
     {
+        $this->checkAjaxToken();
+
         $result = array();
 
         if (SecurityUtil::checkPermission('Users::', '::', ACCESS_COMMENT)) {
@@ -178,5 +183,95 @@ class Clip_Controller_Ajax extends Zikula_AbstractController
         }
 
         return new Zikula_Response_Ajax_Json(array('data' => $result));
+    }
+
+    /**
+     * Resequence group/pubtypes
+     */
+    public function treeresequence()
+    {
+        $this->checkAjaxToken();
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_EDIT));
+
+        // build a map of the input data
+        $data = json_decode($this->request->getPost()->get('data'), true);
+
+        $tids = array();
+        $map  = array(1 => array());
+        foreach ($data as $id => $item) {
+            $id = explode('-', $id);
+            $item['parent'] = $item['parent'] == 0 ? 1 : $item['parent'];
+            if (!isset($id[1])) {
+                // grouptype
+                $map[$item['parent']][] = $id[0];
+                $map[$id[0]] = array();
+            } else {
+                // pubtype
+                $tids[$item['parent']][] = $id[1];
+            }
+        }
+        unset($data);
+
+        // build a map of the existing tree
+        $grouptypes = Doctrine_Core::getTable('Clip_Model_Grouptype')->getTree()->fetchTree();
+
+        $parents  = array(0 => 1);
+        $original = array(1 => array());
+
+        foreach ($grouptypes as $item) {
+            $original[$item['gid']] = array();
+            if ($item['level'] > 0) {
+                $parentid = $parents[$item['level'] - 1];
+                $original[$parentid][] = $item['gid'];
+                // assign and link its pubtypes
+                $item->order = $tids[$item['gid']];
+                $item->link('pubtypes', $tids[$item['gid']]);
+            }
+            $parents[$item['level']] = $item['gid'];
+        }
+        $grouptypes->save();
+        unset($grouptypes);
+        unset($tids);
+
+        // check the differences between maps
+        $diffs = array();
+        foreach (array_keys($original) as $gid) {
+            $diffs[$gid] = array_diff($map[$gid], $original[$gid]);
+        }
+        $diffs = array_filter($diffs);
+        $keys  = array_keys($diffs);
+
+        // validate that there's only one change at time
+        $result = true;
+        if (count($keys) == 1 && count($diffs[$keys[0]]) == 1) {
+            $tbl = Doctrine_Core::getTable('Clip_Model_Grouptype');
+
+            foreach ($diffs as $gid => $diff) {
+                $newpos = key($diff);
+                $maxpos = count($map[$gid]) - 1;
+                switch ($newpos) {
+                    case 0:
+                        $method = 'moveAsFirstChildOf';
+                        break;
+                    case $maxpos:
+                        $method = 'moveAsLastChildOf';
+                        break;
+                    default:
+                        $gid = $map[$gid][$newpos-1];
+                        $method = 'moveAsNextSiblingOf';
+                }
+                $parent = $tbl->find($gid);
+                $moved  = $tbl->find(current($diff));
+                $moved->getNode()->$method($parent);
+            }
+        } elseif (count($keys) > 1) {
+            // TODO error message because it has more than one change
+            $result = false;
+        }
+
+        $result = array(
+            'response' => $result
+        );
+        return new Zikula_Response_Ajax($result);
     }
 }

@@ -33,6 +33,11 @@ class Clip_Api_Admin extends Zikula_AbstractApi
                 'text' => $this->__('New publication type')
             );
             $links[] = array (
+                // temporal link for testing
+                'url'  => ModUtil::url('Clip', 'admin', 'groups'),
+                'text' => $this->__('Groups')
+            );
+            $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'relations'),
                 'text' => $this->__('Manage relations')
             );

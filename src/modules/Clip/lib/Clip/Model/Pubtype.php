@@ -89,6 +89,8 @@ class Clip_Model_Pubtype extends Doctrine_Record
         ));
 
         $this->hasColumn('pm_config as config', 'clob');
+
+        $this->hasColumn('pm_group as grouptype', 'integer', 4);
     }
 
     /**
@@ -99,6 +101,11 @@ class Clip_Model_Pubtype extends Doctrine_Record
     public function setUp()
     {
         $this->actAs('Zikula_Doctrine_Template_StandardFields', array('oldColumnPrefix' => 'pm_'));
+
+        $this->hasOne('Clip_Model_Grouptype as group', array(
+              'local' => 'grouptype',
+              'foreign' => 'gid'
+        ));
     }
 
     /**
@@ -184,6 +191,18 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $bundle = new Zikula_Version_HookSubscriberBundle("modulehook_area.clip.filter.$tid", $clipVersion->__f('%s Filter', $name));
         $bundle->addType('ui.filter', "clip.hook.$tid.ui.filter");
         $clipVersion->registerHookSubscriberBundle($bundle);
+    }
+
+    /**
+     * Save hook.
+     *
+     * @return void
+     */
+    public function preInsert($event)
+    {
+        $invoker = $event->getInvoker();
+
+        // TODO make sure it belongs to a group
     }
 
     /**

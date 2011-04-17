@@ -746,6 +746,118 @@ class Clip_Util
     }
 
     /**
+     * Get the JavaScript for the grouptypes tree.
+     *
+     * @param array   $grouptypes    The grouptypes array to represent in the tree.
+     * @param boolean $doReplaceRoot Whether or not to replace the root name with a localized string (optional) (default=true).
+     * @param boolean $sortable      Sets the zikula tree option sortable (optional) (default=false).
+     * @param array   $options       Options array for Zikula_Tree.
+     *
+     * @return generated tree JS text.
+     */
+    public static function getGrouptypesTreeJS($withPubtypes = false, $doReplaceRoot = true, $sortable = false, array $options = array())
+    {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        $tbl     = Doctrine_Core::getTable('Clip_Model_Grouptype');
+        $treeObj = $tbl->getTree();
+
+        if ($withPubtypes) {
+            $q = $tbl->createQuery('g')
+                     ->select('g.*, p.tid, p.title, p.description')
+                     ->leftJoin('g.pubtypes p');
+            $treeObj->setBaseQuery($q);
+        }
+
+        // Array hydration does not work with postHydrate hook
+        $grouptypes = $treeObj->fetchTree()->toArray();
+
+        $data = array();
+        foreach ($grouptypes as $k => $g) {
+            if ($doReplaceRoot && $g['level'] == 0) {
+                $g['name'] = __('Root', $dom);
+            }
+            $data[] = self::getGrouptypesTreeJSNode($g);
+        }
+        unset($grouptypes);
+
+        $tree = new Zikula_Tree();
+        $tree->setOption('objid', 'gid');
+        $tree->setOption('id', 'grouptypesTree');
+        $tree->setOption('sortable', $sortable);
+        $tree->setOption('nestedSet', true);
+        $tree->setOption('renderRoot', false);
+        // disable drag and drop for root category
+        $tree->setOption('disabled', array(1));
+        if (!empty($options)) {
+            $tree->setOptionArray($options);
+        }
+        $tree->loadArrayData($data);
+
+        return $tree->getHTML();
+    }
+
+    /**
+     * Prepare a grouptype for the tree.
+     *
+     * @param array $grouptype Grouptype data.
+     *
+     * @return Prepared grouptype data.
+     */
+    public static function getGrouptypesTreeJSNode($grouptype)
+    {
+        $dom  = ZLanguage::getModuleDomain('Clip');
+        $lang = ZLanguage::getLanguageCode();
+        $sysl = System::getVar('language_i18n');
+
+        // name
+        if (is_string($grouptype['name'])) {
+            $grouptype['name'] = DataUtil::formatForDisplay($grouptype['name']);
+        } elseif (isset($grouptype['name'][$lang]) && !empty($grouptype['name'][$lang])) {
+            $grouptype['name'] = DataUtil::formatForDisplay($grouptype['name'][$lang]);
+        } elseif ($lang != $sysl && isset($grouptype['name'][$sysl]) && !empty($grouptype['name'][$sysl])) {
+            $grouptype['name'] = DataUtil::formatForDisplay($grouptype['name'][$sysl]);
+        } else {
+            $grouptype['name'] = __f('Group ID [%s]', $grouptype['gid'], $dom);
+        }
+
+        // description
+        if (isset($grouptype['description'][$lang]) && !empty($grouptype['description'][$lang])) {
+            $grouptype['description'] = DataUtil::formatForDisplay($grouptype['description'][$lang]);
+        } elseif ($lang != $sysl && isset($grouptype['description'][$sysl]) && !empty($grouptype['description'][$sysl])) {
+            $grouptype['description'] = DataUtil::formatForDisplay($grouptype['description'][$sysl]);
+        } else {
+            $grouptype['description'] = '';
+        }
+
+        // link title
+        $grouptype['href']    = "javascript:void();";
+
+        $grouptype['title'] = array();
+        $grouptype['title'][] = __('ID') . ": " . $grouptype['gid'];
+        $grouptype['title'][] = __('Description') . ": " . $grouptype['description'];
+        $grouptype['title'] = implode('&lt;br /&gt;', $grouptype['title']);
+
+        $grouptype['icon'] = 'folder_open.png';
+        $grouptype['class'] = 'z-tree-fixedparent';
+
+        // eval pubtypes as nodes
+        $grouptype['nodes'] = array();
+        if (isset($grouptype['pubtypes']) && $grouptype['pubtypes']) {
+            foreach ($grouptype['pubtypes'] as $k => $pubtype) {
+                $grouptype['nodes']["{$grouptype['gid']}-{$pubtype['tid']}"] = array(
+                    'href'  => "javascript:Zikula.Clip.AjaxList({$pubtype['tid']});",
+                    'name'  => DataUtil::formatForDisplay($pubtype['title']),
+                    'title' => DataUtil::formatForDisplay($pubtype['description'])
+                );
+            }
+            unset($grouptype['pubtypes']);
+        }
+
+        return $grouptype;
+    }
+
+    /**
      * Install the default 'blog' and 'staticpages' publication types.
      *
      * @return void

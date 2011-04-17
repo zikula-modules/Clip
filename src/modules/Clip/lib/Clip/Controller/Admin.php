@@ -23,6 +23,23 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     }
 
     /**
+     * Grouptypes list screen.
+     */
+    public function groups($args=array())
+    {
+        //// Security check
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_EDIT));
+
+        $treejscode = Clip_Util::getGrouptypesTreeJS(true, true, true);
+
+        //// Output
+        $this->view->assign('treejscode', $treejscode)
+                   ->add_core_data();
+
+        return $this->view->fetch('clip_admin_grouptypes.tpl');
+    }
+
+    /**
      * Module configuration.
      */
     public function modifyconfig()
