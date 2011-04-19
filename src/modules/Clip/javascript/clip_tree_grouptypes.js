@@ -2,18 +2,353 @@
 
 Zikula.define('Clip');
 
-Event.observe(window, 'load', function() {
-    Zikula.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence;
-    Zikula.UI.Tooltips($$('.tree a'));
+/* Customization of TreeSortable */
+Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.TreeSortable.prototype */
+{
+    /**
+     * Redraws selected node - sets proper class names on node, removes orphaned ul elements
+     * @private
+     * @param {HTMLElement} node Node to draw
+     * @return void
+     */
+    drawNode: function ($super, node) {
+        $super(node);
+        var a = node.down('a'), id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
+        if (id != parseInt(id)) {
+            id = id.split('-')[1];
+            a.writeAttribute('href', 'javascript:Zikula.Clip.AjaxList('+id+');');
+        } else {
+            a.writeAttribute('href', '#');
+        }
+    }
 });
 
+Object.extend(Zikula.Clip.TreeSortable,/** @lends Zikula.Clip.TreeSortable.prototype */
+{
+    /**
+     * List of initilized trees.
+     * Trees initilized via add method are avaiable as Zikula.Clip.TreeSortable.trees[element.id]
+     * @static
+     * @name Zikula.Clip.TreeSortable.trees
+     */
+    trees: {},
+    /**
+     * Static method allowing to initialize global available Zikula.Clip.TreeSortable instances
+     * @see Zikula.Clip.TreeSortable construct for details
+     * @static
+     * @name Zikula.Clip.TreeSortable.add
+     * @function
+     * @param {HTMLElement|String} element Element id or reference
+     * @param {Object} [config] Config object
+     * @retun void
+     */
+    add: function(element, config) {
+        if (!this.trees.hasOwnProperty(element)) {
+            this.trees[element] = new Zikula.Clip.TreeSortable(element, config);
+            this.trees[element].drawNodes();
+        }
+    }
+});
+
+/* Clip load */
+Event.observe(window, 'load', function() {
+    Zikula.Clip.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence;
+    Zikula.UI.Tooltips($$('.tree a'));
+
+    $('groupNew').observe('click', function(e) {
+        e.preventDefault();
+        Zikula.Clip.MenuAction(null, 'addroot');
+    });
+    $('groupExpand').observe('click', function(e) {
+        e.preventDefault();
+        Zikula.Clip.TreeSortable.trees.grouptypesTree.expandAll();
+    });
+    $('groupCollapse').observe('click', function(e) {
+        e.preventDefault();
+        Zikula.Clip.TreeSortable.trees.grouptypesTree.collapseAll();
+    });
+
+    $('groupControls').removeClassName('z-hide');
+
+    Zikula.Clip.AttachMenu();
+});
+
+/* Context Menu */
+Zikula.Clip.AttachMenu = function () {
+    Zikula.Clip.ContextMenu = new Control.ContextMenu(Zikula.Clip.TreeSortable.trees.grouptypesTree.tree, {
+        animation: false,
+        beforeOpen: function(event) {
+            Zikula.Clip.ContextMenu.lastClick = event;
+            if (!event.findElement('a')) {
+                throw $break;
+            }
+            var node = event.findElement('a').up('li');
+            var id   = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
+            if (id != parseInt(id)) {
+                throw $break;
+            }
+        }
+    });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Edit'),
+        callback: function(node) {
+            Zikula.Clip.MenuAction(node, 'edit');
+        }
+    });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Delete'),
+        condition: function() {
+            return !Zikula.Clip.ContextMenu.lastClick.findElement('a').up('li').down('ul');
+        },
+        callback: function(node){
+            Zikula.Clip.DeleteMenuAction(node);
+        }
+    });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Add group (after selected)'),
+        callback: function(node){
+            Zikula.Clip.MenuAction(node, 'addafter');
+        }
+    });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Add subgroup (into selected)'),
+        callback: function(node){
+            Zikula.Clip.MenuAction(node, 'addchild');
+        }
+    });
+};
+
+Zikula.Clip.MenuAction = function(node, action) {
+    if (!['edit', 'delete', 'addafter', 'addchild', 'addroot'].include(action)) {
+        return false;
+    }
+
+    if (node) {
+        node.insert({after: Zikula.Clip.Indicator()});
+    }
+
+    var url = "ajax.php?module=Clip&func=",
+        pars = {
+            gid:  node ? Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')) : null,
+            mode: 'add'
+        };
+
+    switch (action) {
+        case 'edit':
+            pars.mode = 'edit';
+            break;
+        case 'addafter':
+            action = 'edit';
+            pars.pos = 'after';
+            pars.parent = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li'));
+            break;
+        case 'addchild':
+            action = 'edit';
+            pars.pos = 'bottom';
+            pars.parent = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li'));
+            break;
+        case 'addroot':
+            action = 'edit';
+            pars.pos = 'root';
+            break;
+    }
+    url = url + action + 'group';
+
+    new Zikula.Ajax.Request(
+        url, {
+            parameters: pars,
+            onComplete: Zikula.Clip.MenuActionCallback
+        });
+
+    return true;
+};
+
+Zikula.Clip.MenuActionCallback = function(req) {
+    if (!req.isSuccess()) {
+        Zikula.showajaxerror(req.getMessage());
+        return false;
+    }
+
+    var data = req.getData();
+
+    switch (data.action) {
+        case 'delete':
+            var node = $(Zikula.Clip.TreeSortable.trees.grouptypesTree.config.nodePrefix + data.gid);
+            Droppables.remove(node);
+            node.select('li').each(function(subnode) {
+                Droppables.remove(subnode);
+            });
+            Effect.SwitchOff(node,{
+                afterFinish: function() {node.remove();}
+            });
+            Zikula.Clip.TreeSortable.trees.grouptypesTree.drawNodes();
+            break;
+        case 'edit':
+            $(document.body).insert(data.result);
+            Zikula.Clip.OpenForm(data, Zikula.Clip.EditNode);
+            break;
+        case 'add':
+            $(document.body).insert(data.result);
+            Zikula.Clip.OpenForm(data, Zikula.Clip.AddNode);
+            break;
+    }
+    return true;
+};
+
+/* Form Methods */
+Zikula.Clip.OpenForm = function(data, callback) {
+    if (Zikula.Clip.Form) {
+        Zikula.Clip.Form.destroy();
+    }
+
+    Zikula.Clip.Form = new Zikula.UI.FormDialog($('clip_ajax_form_container'), callback, {
+        title: $('clip_ajax_form_container').title,
+        width: 700,
+        buttons: [
+            {label: Zikula.__('Submit'), type: 'submit', name: 'submit', value: 'submit', 'class': 'z-btgreen', close: false},
+            {label: Zikula.__('Cancel'), type: 'submit', name: 'cancel', value: false, 'class': 'z-btred', close: true}
+        ]
+    });
+
+    return Zikula.Clip.Form.open();
+};
+
+
+Zikula.Clip.CloseForm = function() {
+    Zikula.Clip.Form.destroy();
+    Zikula.Clip.Form = null;
+};
+
+Zikula.Clip.UpdateForm = function(data) {
+    $('clip_ajax_form_container').replace(data);
+    Zikula.Clip.Form.window.indicator.fade({duration: 0.2});
+    $('clip_ajax_form_container').show();
+};
+
+/* Mode callbacks */
+Zikula.Clip.DeleteMenuAction = function(node) {
+    if (Zikula.Clip.ContextMenu.lastClick.findElement('a').up('li').down('ul')) {
+        return false;
+    }
+
+    var msg = new Element('div', {id:'dialogContent'}).insert(
+            new Element('p').update(Zikula.__('Do you really want to delete this group?'))
+        ),
+        buttons = [
+            {name: 'Delete', value: 'Delete', label: Zikula.__('Delete'), 'class': 'z-btgreen'},
+            {name: 'Cancel', value: 'Cancel', label: Zikula.__('Cancel'), 'class': 'z-btred'},
+        ];
+
+    Zikula.Clip.DeleteDialog = new Zikula.UI.Dialog(
+        msg,
+        buttons,
+        {title: Zikula.__('Confirmation prompt'), width: 500, callback: function(res) {
+             switch (res.value) {
+                 case 'Delete':
+                    Zikula.Clip.MenuAction(node, 'delete');
+                    Zikula.Clip.DeleteDialog.destroy();
+                    break;
+                default:
+                    Zikula.Clip.DeleteDialog.destroy();
+             }
+        }}
+    );
+    Zikula.Clip.DeleteDialog.open()
+    Zikula.Clip.DeleteDialog.container.down('button[name=Cancel]').focus();
+};
+
+Zikula.Clip.EditNode = function(res) {
+    if (!res || (res.hasOwnProperty('cancel') && res.cancel === false)) {
+        Zikula.Clip.CloseForm();
+        return false;
+    }
+
+    Zikula.Clip.Form.window.indicator.appear({to: 0.7, duration: 0.2});
+
+    var pars = Zikula.Clip.Form.serialize(true);
+    pars.mode = 'edit';
+
+    new Zikula.Ajax.Request('ajax.php?module=Clip&func=savegroup', {
+        parameters: pars,
+        onComplete: function(req) {
+            var data = req.getData();
+            if (!req.isSuccess()) {
+                Zikula.showajaxerror(req.getMessage());
+                Zikula.Clip.CloseForm();
+            } else {
+                var nodeId  = Zikula.Clip.TreeSortable.trees.grouptypesTree.config.nodePrefix + data.gid;
+                var nodeOld = $(nodeId).replace(data.node);
+                if (nodeOld.down('ul')) {
+                    $(nodeId).insert(nodeOld.down('ul'))
+                }
+                Zikula.Clip.ReinitTreeNode($(nodeId), data);
+                Zikula.Clip.CloseForm();
+            }
+        }
+    });
+
+    return true;
+};
+
+Zikula.Clip.AddNode = function(res) {
+    if (!res || (res.hasOwnProperty('cancel') && res.cancel === false)) {
+        Zikula.Clip.CloseForm();
+        return false;
+    }
+
+    Zikula.Clip.Form.window.indicator.appear({to: 0.7, duration: 0.2});
+
+    var pars = Zikula.Clip.Form.serialize(true);
+    pars.mode = 'add';
+
+    new Zikula.Ajax.Request('ajax.php?module=Clip&func=savegroup', {
+        parameters: pars,
+        onComplete: function(req) {
+            var data = req.getData();
+            if (!req.isSuccess()) {
+                Zikula.showajaxerror(req.getMessage());
+                Zikula.Clip.CloseForm();
+            } else {
+                var relNode   = $(Zikula.Clip.TreeSortable.trees.grouptypesTree.config.nodePrefix + data.parent);
+
+                if (data.pos == 'root') {
+                    $('grouptypesTree').insert({'bottom': data.node});
+                } else if (data.pos == 'after') {
+                    relNode.insert({'after': data.node});
+                } else {
+                    var newParent = relNode.down('ul');
+                    if (!newParent) {
+                        newParent = new Element(('ul'), {'class': 'tree'});
+                        relNode.insert(newParent);
+                    }
+                    newParent.insert({'bottom': data.node});
+                }
+
+                var node = $(Zikula.Clip.TreeSortable.trees.grouptypesTree.config.nodePrefix + data.gid);
+                Zikula.Clip.ReinitTreeNode(node, data);
+                Zikula.Clip.CloseForm();
+            }
+        }
+    });
+
+    return true;
+};
+
+Zikula.Clip.ReinitTreeNode = function(node, data) {
+    Zikula.Clip.TreeSortable.trees.grouptypesTree.initNode(node);
+    Zikula.Clip.TreeSortable.trees.grouptypesTree.drawNodes();
+    Zikula.UI.Tooltips(node.select('a'));
+};
+
+/* Ajax Indicator */
 Zikula.Clip.Indicator = function() {
     return $('ajax_indicator') ? $('ajax_indicator') : new Element('img',{id: 'ajax_indicator', src: 'images/ajax/indicator_circle.gif'});
 };
 
+/* Reorder method */
 Zikula.Clip.Resequence = function(node, params, data) {
     // only allow inserts of grouptypes on root level
-    var id = Zikula.TreeSortable.trees.grouptypesTree.getNodeId(node)
+    var id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node)
     if (node.up('li') === undefined && id != parseInt(id)) {
         return false;
     }

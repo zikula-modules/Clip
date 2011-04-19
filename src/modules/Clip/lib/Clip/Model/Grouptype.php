@@ -60,7 +60,7 @@ class Clip_Model_Grouptype extends Doctrine_Record
     }
 
     /**
-     * Save hook.
+     * Save hooks.
      *
      * @return void
      */
@@ -79,6 +79,23 @@ class Clip_Model_Grouptype extends Doctrine_Record
         $invoker->order       = isset($invoker->order) && !empty($invoker->order)
                                     ? (DataUtil::is_serialized($invoker->order) ? $invoker->order : serialize($invoker->order))
                                     : serialize(array());
+    }
+
+    public function postSave($event)
+    {
+        $data = $event->getInvoker();
+
+        $data['name']        = isset($data['name']) && !empty($data['name'])
+                                   ? (DataUtil::is_serialized($data['name']) ? unserialize($data['name']) : $data['name'])
+                                   : array();
+
+        $data['description'] = isset($data['description']) && !empty($data['description'])
+                                   ? (DataUtil::is_serialized($data['description']) ? unserialize($data['description']) : $data['description'])
+                                   : array();
+
+        $data['order']       = isset($data['order']) && !empty($data['order'])
+                                   ? (DataUtil::is_serialized($data['order']) ? unserialize($data['order']) : $data['order'])
+                                   : array();
     }
 
     /**

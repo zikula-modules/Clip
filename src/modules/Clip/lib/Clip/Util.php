@@ -755,40 +755,48 @@ class Clip_Util
      *
      * @return generated tree JS text.
      */
-    public static function getGrouptypesTreeJS($withPubtypes = false, $doReplaceRoot = true, $sortable = false, array $options = array())
+    public static function getGrouptypesTreeJS($grouptypes = null, $withPubtypes = false, $sortable = false, array $options = array())
     {
         $dom = ZLanguage::getModuleDomain('Clip');
 
-        $tbl     = Doctrine_Core::getTable('Clip_Model_Grouptype');
-        $treeObj = $tbl->getTree();
+        $renderRoot = true;
+        if (!$grouptypes) {
+            $tbl     = Doctrine_Core::getTable('Clip_Model_Grouptype');
+            $treeObj = $tbl->getTree();
 
-        if ($withPubtypes) {
-            $q = $tbl->createQuery('g')
-                     ->select('g.*, p.tid, p.title, p.description')
-                     ->leftJoin('g.pubtypes p');
-            $treeObj->setBaseQuery($q);
+            if ($withPubtypes) {
+                $q = $tbl->createQuery('g')
+                         ->select('g.*, p.tid, p.title, p.description')
+                         ->leftJoin('g.pubtypes p');
+                $treeObj->setBaseQuery($q);
+            }
+
+            // Array hydration does not work with postHydrate hook
+            $grouptypes = $treeObj->fetchTree()->toArray();
+
+            $renderRoot = false;
         }
 
-        // Array hydration does not work with postHydrate hook
-        $grouptypes = $treeObj->fetchTree()->toArray();
-
         $data = array();
-        foreach ($grouptypes as $k => $g) {
-            if ($doReplaceRoot && $g['level'] == 0) {
-                $g['name'] = __('Root', $dom);
+        $leafNodes = array();
+        foreach ($grouptypes as $group) {
+            if ($group['level'] == 0) {
+                $group['name'] = __('Root', $dom);
             }
-            $data[] = self::getGrouptypesTreeJSNode($g);
+            $data[] = self::getGrouptypesTreeJSNode($group, $leafNodes);
         }
         unset($grouptypes);
 
         $tree = new Zikula_Tree();
         $tree->setOption('objid', 'gid');
+        $tree->setOption('customJSClass', 'Zikula.Clip.TreeSortable');
+        $tree->setOption('nestedSet', true);
+        $tree->setOption('renderRoot', $renderRoot);
         $tree->setOption('id', 'grouptypesTree');
         $tree->setOption('sortable', $sortable);
-        $tree->setOption('nestedSet', true);
-        $tree->setOption('renderRoot', false);
         // disable drag and drop for root category
         $tree->setOption('disabled', array(1));
+        $tree->setOption('disabledForDrop', $leafNodes);
         if (!empty($options)) {
             $tree->setOptionArray($options);
         }
@@ -804,7 +812,7 @@ class Clip_Util
      *
      * @return Prepared grouptype data.
      */
-    public static function getGrouptypesTreeJSNode($grouptype)
+    public static function getGrouptypesTreeJSNode($grouptype, &$leafNodes)
     {
         $dom  = ZLanguage::getModuleDomain('Clip');
         $lang = ZLanguage::getLanguageCode();
@@ -831,7 +839,7 @@ class Clip_Util
         }
 
         // link title
-        $grouptype['href']    = "javascript:void();";
+        $grouptype['href'] = '#';
 
         $grouptype['title'] = array();
         $grouptype['title'][] = __('ID') . ": " . $grouptype['gid'];
@@ -844,12 +852,26 @@ class Clip_Util
         // eval pubtypes as nodes
         $grouptype['nodes'] = array();
         if (isset($grouptype['pubtypes']) && $grouptype['pubtypes']) {
-            foreach ($grouptype['pubtypes'] as $k => $pubtype) {
-                $grouptype['nodes']["{$grouptype['gid']}-{$pubtype['tid']}"] = array(
-                    'href'  => "javascript:Zikula.Clip.AjaxList({$pubtype['tid']});",
+            $pubtypes = array();
+
+            $last = 100000;
+            foreach ($grouptype['pubtypes'] as $pubtype) {
+                $pos = array_search($pubtype['tid'], $grouptype['order']);
+                if ($pos === false) {
+                    $pos = $last++;
+                }
+                $pubtypes[$pos] = $pubtype;
+            }
+            ksort($pubtypes);
+
+            foreach ($pubtypes as $pubtype) {
+                $id = "{$grouptype['gid']}-{$pubtype['tid']}";
+                $grouptype['nodes'][$id] = array(
+                    'href'  => ModUtil::url('Clip', 'admin', 'main', array('tid' => $pubtype['tid'])),
                     'name'  => DataUtil::formatForDisplay($pubtype['title']),
                     'title' => DataUtil::formatForDisplay($pubtype['description'])
                 );
+                $leafNodes[] = $id;
             }
             unset($grouptype['pubtypes']);
         }

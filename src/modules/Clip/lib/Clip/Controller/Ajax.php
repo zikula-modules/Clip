@@ -13,12 +13,12 @@
  * Ajax Controller.
  */
 class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
-{
+{/*
     public function _postSetup()
     {
         // no need for a Zikula_View so override it.
     }
-
+*/
     public function changelistorder()
     {
         $this->checkAjaxToken();
@@ -185,6 +185,113 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         return new Zikula_Response_Ajax_Json(array('data' => $result));
     }
 
+    public function editgroup($args = array())
+    {
+        $this->checkAjaxToken();
+
+        $mode = $this->request->getPost()->get('mode', 'add');
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ($mode == 'edit') ? ACCESS_EDIT : ACCESS_ADD));
+
+        $gid    = $this->request->getPost()->get('gid', 0);
+        $pos    = $this->request->getPost()->get('pos', 'root');
+        $parent = $this->request->getPost()->get('parent', 1);
+
+        if ($mode == 'edit') {
+            // edit mode of an existing item
+            if (!$gid) {
+                return new Zikula_Response_Ajax_BadData($this->__f("Error! Cannot determine valid '%s' for edit in '%s'.", array('gid', 'editgroup')));
+            }
+            $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
+            $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
+        } else {
+            // new item mode
+            $group = new Clip_Model_Grouptype();
+            $group->mapValue('parent', $parent);
+        }
+
+        Zikula_AbstractController::configureView();
+        $this->view->setCaching(false);
+
+        $this->view->assign('mode', $mode)
+                   ->assign('pos', $pos)
+                   ->assign('group', $group)
+                   ->assign('languages', ZLanguage::getInstalledLanguages());
+
+        $result = array(
+            'action' => $mode,
+            'result' => $this->view->fetch('clip_ajax_groupedit.tpl')
+        );
+        return new Zikula_Response_Ajax($result);
+    }
+
+    public function savegroup()
+    {
+        $this->checkAjaxToken();
+
+        $mode = $this->request->getPost()->get('mode', 'new');
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ($mode == 'edit') ? ACCESS_EDIT : ACCESS_ADD));
+
+        $pos  = $this->request->getPost()->get('pos', 'root');
+        $data = $this->request->getPost()->get('group');
+
+        if ($mode == 'add') {
+            $method = 'insertAsLastChildOf';
+            switch ($pos) {
+                case 'root':
+                    $data['parent'] = 1;
+                    break;
+                case 'after':
+                    $method = 'insertAsNextSiblingOf';
+                    break;
+            }
+            $parent = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($data['parent']);
+
+            $group = new Clip_Model_Grouptype();
+            $group->fromArray($data);
+            $group->gid = (int)$data['gid'];
+            $group->getNode()->$method($parent);
+        } else {
+            $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($data['gid']);
+            $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
+
+            $group->synchronizeWithArray($data);
+            $group->save();
+        }
+
+        $node    = array($group->toArray());
+        $options = array('withWraper' => false);
+        $nodejscode = Clip_Util::getGrouptypesTreeJS($node, true, true, $options);
+
+        $result = array(
+            'action' => $mode,
+            'pos'    => $pos,
+            'gid'    => $group['gid'],
+            'parent' => $data['parent'],
+            'node'   => $nodejscode,
+            'result' => true
+        );
+        return new Zikula_Response_Ajax($result);
+    }
+
+    public function deletegroup()
+    {
+        $this->checkAjaxToken();
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_DELETE));
+
+        $gid   = $this->request->getPost()->get('gid');
+        $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
+        $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
+
+        $group->getNode()->delete();
+
+        $result = array(
+            'action' => 'delete',
+            'gid'    => $gid,
+            'result' => true
+        );
+        return new Zikula_Response_Ajax($result);
+    }
+
     /**
      * Resequence group/pubtypes
      */
@@ -234,37 +341,79 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         unset($tids);
 
         // check the differences between maps
-        $diffs = array();
+        $diffs  = array();
+        $udiffs = array();
         foreach (array_keys($original) as $gid) {
-            $diffs[$gid] = array_diff($map[$gid], $original[$gid]);
+            $diffs[$gid]  = array_diff($map[$gid], $original[$gid]);
+            $udiffs[$gid] = array_diff_assoc($map[$gid], $original[$gid]);
         }
-        $diffs = array_filter($diffs);
-        $keys  = array_keys($diffs);
 
-        // validate that there's only one change at time
         $result = true;
-        if (count($keys) == 1 && count($diffs[$keys[0]]) == 1) {
+
+        // for move between trees
+        $diffs = array_filter($diffs);
+        if (count($diffs)) {
+            $keys = array_keys($diffs);
+            // validate that there's only one change at time
+            if (count($keys) == 1 && count($diffs[$keys[0]]) == 1) {
+                $tbl = Doctrine_Core::getTable('Clip_Model_Grouptype');
+
+                foreach ($diffs as $gid => $diff) {
+                    $newpos = key($diff);
+                    $maxpos = count($map[$gid]) - 1;
+                    switch ($newpos) {
+                        case 0:
+                            $method = 'moveAsFirstChildOf';
+                            break;
+                        case $maxpos:
+                            $method = 'moveAsLastChildOf';
+                            break;
+                        default:
+                            $gid = $map[$gid][$newpos-1];
+                            $method = 'moveAsNextSiblingOf';
+                    }
+                    $refer = $tbl->find($gid);
+                    $moved = $tbl->find(current($diff));
+                    $moved->getNode()->$method($refer);
+                }
+            } elseif (count($keys) > 1) {
+                // TODO error message because it has more than one change
+                $result = false;
+            }
+        }
+
+        // for leaf reorder
+        $udiffs = array_filter($udiffs);
+        if (count($udiffs) == 1) {
+            // validate that there's only one change at time
             $tbl = Doctrine_Core::getTable('Clip_Model_Grouptype');
 
-            foreach ($diffs as $gid => $diff) {
-                $newpos = key($diff);
-                $maxpos = count($map[$gid]) - 1;
-                switch ($newpos) {
-                    case 0:
-                        $method = 'moveAsFirstChildOf';
-                        break;
-                    case $maxpos:
-                        $method = 'moveAsLastChildOf';
-                        break;
-                    default:
-                        $gid = $map[$gid][$newpos-1];
-                        $method = 'moveAsNextSiblingOf';
+            foreach ($udiffs as $gid => $udiff) {
+                $maxpos = count($original[$gid]) - 1;
+                // check the first item
+                $ufirst = reset($udiff);
+                $kfirst = key($udiff);
+                $pfirst = array_search($ufirst, $original[$gid]);
+                // check the last item
+                $ulast = end($udiff);
+                $klast = key($udiff);
+                $plast = array_search($ulast, $original[$gid]);
+                if ($pfirst == $maxpos || $original[$gid][$pfirst+1] != $udiff[$kfirst+1]) {
+                    // check if it was the last one or moved up
+                    $rel = $udiff[$kfirst+1];
+                    $gid = $ufirst;
+                    $method = 'moveAsPrevSiblingOf';
+                } elseif ($plast == 0 || $original[$gid][$plast-1] != $udiff[$klast-1]) {
+                    // check if it was the first or the original order doesn't match
+                    $rel = $udiff[$klast-1];
+                    $gid = $ulast;
+                    $method = 'moveAsNextSiblingOf';
                 }
-                $parent = $tbl->find($gid);
-                $moved  = $tbl->find(current($diff));
-                $moved->getNode()->$method($parent);
+                $refer = $tbl->find($rel);
+                $moved = $tbl->find($gid);
+                $moved->getNode()->$method($refer);
             }
-        } elseif (count($keys) > 1) {
+        } elseif (count($udiffs) > 1) {
             // TODO error message because it has more than one change
             $result = false;
         }

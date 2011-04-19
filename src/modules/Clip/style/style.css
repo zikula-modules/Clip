@@ -8,6 +8,21 @@
  * @subpackage CSS
  */
 
+/* Admin GUI */
+#clip_cols_container {
+  overflow: hidden;
+}
+#clip_cols_maincol {
+  margin-left: 25%;
+}
+#clip_cols_sidecol {
+  float: left;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  width: 25%;
+}
+
 /* GUI */
 .z-module-clip .z-menu {
   margin-bottom: 1em;
