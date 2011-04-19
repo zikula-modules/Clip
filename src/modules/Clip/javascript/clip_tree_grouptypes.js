@@ -18,7 +18,7 @@ Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.Tr
             id = id.split('-')[1];
             a.writeAttribute('href', 'javascript:Zikula.Clip.AjaxList('+id+');');
         } else {
-            a.writeAttribute('href', '#');
+            a.writeAttribute('href', 'javascript:void(0)');
         }
     }
 });
@@ -127,10 +127,12 @@ Zikula.Clip.MenuAction = function(node, action) {
         node.insert({after: Zikula.Clip.Indicator()});
     }
 
-    var url = "ajax.php?module=Clip&func=",
-        pars = {
-            gid:  node ? Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')) : null,
-            mode: 'add'
+    var pars = {
+            module: 'Clip',
+            type: 'ajax',
+            func: action+'group',
+            mode: 'add',
+            gid:  node ? Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')) : null
         };
 
     switch (action) {
@@ -138,24 +140,25 @@ Zikula.Clip.MenuAction = function(node, action) {
             pars.mode = 'edit';
             break;
         case 'addafter':
-            action = 'edit';
-            pars.pos = 'after';
+            pars.func = 'editgroup';
+            pars.pos  = 'after';
             pars.parent = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li'));
             break;
         case 'addchild':
-            action = 'edit';
-            pars.pos = 'bottom';
+            pars.func = 'editgroup';
+            pars.pos  = 'bottom';
             pars.parent = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li'));
             break;
         case 'addroot':
-            action = 'edit';
-            pars.pos = 'root';
+            pars.func = 'editgroup';
+            pars.pos  = 'root';
             break;
+        case 'delete':
+            pars.type = 'ajaxexec';
     }
-    url = url + action + 'group';
 
     new Zikula.Ajax.Request(
-        url, {
+        'ajax.php', {
             parameters: pars,
             onComplete: Zikula.Clip.MenuActionCallback
         });
@@ -268,7 +271,7 @@ Zikula.Clip.EditNode = function(res) {
     var pars = Zikula.Clip.Form.serialize(true);
     pars.mode = 'edit';
 
-    new Zikula.Ajax.Request('ajax.php?module=Clip&func=savegroup', {
+    new Zikula.Ajax.Request('ajax.php?module=Clip&type=ajaxexec&func=savegroup', {
         parameters: pars,
         onComplete: function(req) {
             var data = req.getData();
@@ -301,7 +304,7 @@ Zikula.Clip.AddNode = function(res) {
     var pars = Zikula.Clip.Form.serialize(true);
     pars.mode = 'add';
 
-    new Zikula.Ajax.Request('ajax.php?module=Clip&func=savegroup', {
+    new Zikula.Ajax.Request('ajax.php?module=Clip&type=ajaxexec&func=savegroup', {
         parameters: pars,
         onComplete: function(req) {
             var data = req.getData();
@@ -356,7 +359,7 @@ Zikula.Clip.Resequence = function(node, params, data) {
     node.insert({bottom: Zikula.Clip.Indicator()});
 
     var request = new Zikula.Ajax.Request(
-        "ajax.php?module=Clip&func=treeresequence",
+        "ajax.php?module=Clip&type=ajaxexec&func=treeresequence",
         {
             parameters: {'data': data},
             onComplete: Zikula.Clip.ResequenceCallback

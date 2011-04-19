@@ -71,6 +71,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
                                                   fetchFile: Zikula.Config.baseURL+\'ajax.php\',
                                                   parameters: {
                                                     module: "Clip",
+                                                    type: "ajaxdata"
                                                     func: "getusers",
                                                     op: "'.$this->config['operator'].'"
                                                   },

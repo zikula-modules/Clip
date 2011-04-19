@@ -10,7 +10,7 @@
 
 function pubfieldlistorderchanged()
 {
-    var params = 'module=Clip&func=changelistorder&tid=' + $('clip_tid').innerHTML
+    var params = 'module=Clip&type=ajaxexec&func=changelistorder&tid=' + $('clip_tid').innerHTML
                    + '&' + Sortable.serialize('pubfieldlist');
 
     new Zikula.Ajax.Request(

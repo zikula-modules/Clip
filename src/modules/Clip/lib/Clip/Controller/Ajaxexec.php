@@ -12,43 +12,102 @@
 /**
  * Ajax Controller.
  */
-class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
+class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
 {
-    public function editgroup($args = array())
+    public function _postSetup()
+    {
+        // no need for a Zikula_View so override it.
+    }
+
+    public function changelistorder()
+    {
+        $this->checkAjaxToken();
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
+
+        $pubfields = FormUtil::getPassedValue('pubfieldlist');
+        $tid       = FormUtil::getPassedValue('tid');
+
+        foreach ($pubfields as $key => $value)
+        {
+            $result = Doctrine_Query::create()
+                      ->update('Clip_Model_Pubfield pf')
+                      ->set('pf.lineno', '?', $key)
+                      ->where('pf.id = ?', $value)
+                      ->addWhere('pf.tid = ?', $tid)
+                      ->execute();
+
+            if ($result === false) {
+                AjaxUtil::error($this->__('Error! Update attempt failed.'));
+            }
+        }
+
+        return array('result' => true);
+    }
+
+    public function savegroup()
     {
         $this->checkAjaxToken();
 
-        $mode = $this->request->getPost()->get('mode', 'add');
+        $mode = $this->request->getPost()->get('mode', 'new');
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ($mode == 'edit') ? ACCESS_EDIT : ACCESS_ADD));
 
-        $gid    = $this->request->getPost()->get('gid', 0);
-        $pos    = $this->request->getPost()->get('pos', 'root');
-        $parent = $this->request->getPost()->get('parent', 1);
+        $pos  = $this->request->getPost()->get('pos', 'root');
+        $data = $this->request->getPost()->get('group');
 
-        if ($mode == 'edit') {
-            // edit mode of an existing item
-            if (!$gid) {
-                return new Zikula_Response_Ajax_BadData($this->__f("Error! Cannot determine valid '%s' for edit in '%s'.", array('gid', 'editgroup')));
+        if ($mode == 'add') {
+            $method = 'insertAsLastChildOf';
+            switch ($pos) {
+                case 'root':
+                    $data['parent'] = 1;
+                    break;
+                case 'after':
+                    $method = 'insertAsNextSiblingOf';
+                    break;
             }
-            $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
-            $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
-        } else {
-            // new item mode
+            $parent = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($data['parent']);
+
             $group = new Clip_Model_Grouptype();
-            $group->mapValue('parent', $parent);
+            $group->fromArray($data);
+            $group->gid = (int)$data['gid'];
+            $group->getNode()->$method($parent);
+        } else {
+            $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($data['gid']);
+            $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
+
+            $group->synchronizeWithArray($data);
+            $group->save();
         }
 
-        Zikula_AbstractController::configureView();
-        $this->view->setCaching(false);
-
-        $this->view->assign('mode', $mode)
-                   ->assign('pos', $pos)
-                   ->assign('group', $group)
-                   ->assign('languages', ZLanguage::getInstalledLanguages());
+        $node    = array($group->toArray());
+        $options = array('withWraper' => false);
+        $nodejscode = Clip_Util::getGrouptypesTreeJS($node, true, true, $options);
 
         $result = array(
             'action' => $mode,
-            'result' => $this->view->fetch('clip_ajax_groupedit.tpl')
+            'pos'    => $pos,
+            'gid'    => $group['gid'],
+            'parent' => $data['parent'],
+            'node'   => $nodejscode,
+            'result' => true
+        );
+        return new Zikula_Response_Ajax($result);
+    }
+
+    public function deletegroup()
+    {
+        $this->checkAjaxToken();
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_DELETE));
+
+        $gid   = $this->request->getPost()->get('gid');
+        $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
+        $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
+
+        $group->getNode()->delete();
+
+        $result = array(
+            'action' => 'delete',
+            'gid'    => $gid,
+            'result' => true
         );
         return new Zikula_Response_Ajax($result);
     }
