@@ -87,31 +87,31 @@ class Clip_Api_User extends Zikula_AbstractApi
         if (empty($args['orderby'])) {
             if (!empty($pubtype['sortfield1'])) {
                 if ($pubtype['sortdesc1'] == 1) {
-                    $orderby = $pubtype['sortfield1'].' DESC ';
+                    $args['orderby'] = $pubtype['sortfield1'].' DESC ';
                 } else {
-                    $orderby = $pubtype['sortfield1'].' ASC ';
+                    $args['orderby'] = $pubtype['sortfield1'].' ASC ';
                 }
 
                 if (!empty($pubtype['sortfield2'])) {
                     if ($pubtype['sortdesc2'] == 1) {
-                        $orderby .= ', '.$pubtype['sortfield2'].' DESC ';
+                        $args['orderby'] .= ', '.$pubtype['sortfield2'].' DESC ';
                     } else {
-                        $orderby .= ', '.$pubtype['sortfield2'].' ASC ';
+                        $args['orderby'] .= ', '.$pubtype['sortfield2'].' ASC ';
                     }
                 }
 
                 if (!empty($pubtype['sortfield3'])) {
                     if ($pubtype['sortdesc3'] == 1) {
-                        $orderby .= ', '.$pubtype['sortfield3'].' DESC ';
+                        $args['orderby'] .= ', '.$pubtype['sortfield3'].' DESC ';
                     } else {
-                        $orderby .= ', '.$pubtype['sortfield3'].' ASC ';
+                        $args['orderby'] .= ', '.$pubtype['sortfield3'].' ASC ';
                     }
                 }
             } else {
-                $orderby = 'core_publishdate DESC';
+                $args['orderby'] = 'core_publishdate DESC';
             }
         } else {
-            $orderby = Clip_Util::createOrderBy($args['orderby']);
+            $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);
         }
 
         //// Query setup
@@ -204,18 +204,18 @@ class Clip_Api_User extends Zikula_AbstractApi
         //// Collection execution
         if ($args['countmode'] != 'just') {
             //// Order by
+            // map the unprocessed orderby to the pubtype
+            $pubtype->mapValue('orderby', $args['orderby']);
             // replaces the core_title alias by the original field name
-            if (strpos('core_title', $orderby) !== false) {
-                $orderby = str_replace('core_title', $pubtype['titlefield'], $orderby);
+            if (strpos($args['orderby'], 'core_title') !== false) {
+                $args['orderby'] = str_replace('core_title', $pubtype['titlefield'], $args['orderby']);
             }
             // check if some plugin specific orderby has to be done
-            $orderby = Clip_Util::handlePluginOrderBy($orderby, $pubfields, $args['queryalias'].'.');
-            // map the orderby to the pubtype
-            $pubtype->mapValue('orderby', $orderby);
+            $args['orderby'] = Clip_Util::handlePluginOrderBy($args['orderby'], $pubfields, $args['queryalias'].'.');
 
             // add the orderby to the query
-            foreach (explode(', ', $orderby) as $order) {
-                $query->orderBy($order);
+            foreach (explode(', ', $args['orderby']) as $orderby) {
+                $query->orderBy($orderby);
             }
 
             //// Offset and limit
