@@ -14,7 +14,24 @@
  */
 class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
 {
-    public function editgroup($args = array())
+    public function __call($func, $args)
+    {
+        $this->checkAjaxToken();
+
+        // try to get a method checking both controllers
+        $response = false;
+        if (method_exists('Clip_Controller_Admin', $func)) {
+            $response = ModUtil::func('Clip', 'admin', $func, $args);
+        } elseif (method_exists('Clip_Controller_User', $func)) {
+            $response = ModUtil::func('Clip', 'user', $func, $args);
+        }
+
+        $this->throwNotFoundUnless($response);
+
+        return new Zikula_Response_Ajax_Plain($response);
+    }
+
+    public function editgroup()
     {
         $this->checkAjaxToken();
 

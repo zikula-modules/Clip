@@ -15,17 +15,9 @@
 class Clip_Controller_Admin extends Zikula_AbstractController
 {
     /**
-     * Main admin screen.
+     * Grouptypes list screen with the existing pubtypes.
      */
     public function main()
-    {
-        return $this->pubtypes();
-    }
-
-    /**
-     * Grouptypes list screen.
-     */
-    public function groups($args=array())
     {
         //// Security check
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_EDIT));
@@ -36,7 +28,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $this->view->assign('treejscode', $treejscode)
                    ->add_core_data();
 
-        return $this->view->fetch('clip_admin_grouptypes.tpl');
+        return $this->view->fetch('clip_admin_main.tpl');
     }
 
     /**
@@ -150,6 +142,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
         // define the arguments
         $filter = FormUtil::getPassedValue('filter') ? '' : 'core_online:eq:1';
+        $type   = FormUtil::getPassedValue('type', 'admin');
 
         $apiargs = array(
             'tid'           => $args['tid'],
@@ -191,11 +184,11 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
                                            'itemsperpage' => $apiargs['itemsperpage']));
 
-        if ($this->view->template_exists("clip_admin_publist_{$args['tid']}.tpl")) {
-            return $this->view->fetch("clip_admin_publist_{$args['tid']}.tpl");
+        if ($this->view->template_exists("clip_{$type}_publist_{$args['tid']}.tpl")) {
+            return $this->view->fetch("clip_{$type}_publist_{$args['tid']}.tpl");
         }
 
-        return $this->view->fetch('clip_admin_publist.tpl');
+        return $this->view->fetch("clip_{$type}_publist.tpl");
     }
 
     /**
@@ -308,6 +301,8 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function defaultypes()
     {
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
+
         Clip_Util::installDefaultypes();
 
         $this->redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));

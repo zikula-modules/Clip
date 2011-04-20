@@ -9,12 +9,18 @@
  */
 
 /* Admin GUI */
+#groupControls {
+  color: #999999;
+  margin-bottom: 5px;
+}
 #clip_cols_container {
   overflow: hidden;
 }
 #clip_cols_maincol {
   margin-left: 26%;
-  padding: 0 0 0 5px;
+  overflow: hidden;
+  padding: 0 0 0 7px;
+  position: relative;
 }
 #clip_cols_sidecol {
   border-right: 1px solid #CCCCCC;

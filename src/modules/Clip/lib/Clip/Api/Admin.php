@@ -25,17 +25,16 @@ class Clip_Api_Admin extends Zikula_AbstractApi
 
         if (SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
             $links[] = array (
+                'url'  => ModUtil::url('Clip', 'admin', 'main'),
+                'text' => $this->__('Index')
+            );
+            $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'pubtypes'),
                 'text' => $this->__('List publication types')
             );
             $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'pubtype'),
                 'text' => $this->__('New publication type')
-            );
-            $links[] = array (
-                // temporal link for testing
-                'url'  => ModUtil::url('Clip', 'admin', 'groups'),
-                'text' => $this->__('Groups')
             );
             $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'relations'),

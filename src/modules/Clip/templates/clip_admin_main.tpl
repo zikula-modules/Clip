@@ -1,11 +1,12 @@
 {ajaxheader filename='clip_tree_grouptypes.js' ui=true}
+{pageaddvar name='stylesheet' value='system/Theme/style/pagercss.css'}
 
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='utilities.png' set='icons/large' __alt='Publications list'}</div>
 
-    <h2>{gt text='Group types list'}</h2>
+    <h2>{gt text='Clip Admin Panel'}</h2>
 
     <div id="clip_cols_container">
         <div id="clip_cols_sidecol">
@@ -20,7 +21,10 @@
         </div>
 
         <div id="clip_cols_maincol">
-            <div class="z-informationmsg">{gt text='Click any publication type to get its publication list, or right click the tree elements to manage them.'}</div>
+            <div id="clip_cols_indicator" class="z-window-indicator" style="display: none"></div>
+            <div id="clip_cols_maincontent">
+                <div class="z-informationmsg">{gt text='Click any publication type to get its publication list, or right click the tree elements to manage them.'}</div>
+            </div>
         </div>
     </div>
 </div>

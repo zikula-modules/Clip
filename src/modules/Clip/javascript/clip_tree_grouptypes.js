@@ -6,6 +6,18 @@ Zikula.define('Clip');
 Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.TreeSortable.prototype */
 {
     /**
+     * Redraws whole tree and update the column heights
+     * @private
+     * @return void
+     */
+    drawNodes: function() {
+        this.tree.select('li').each(this.drawNode.bind(this));
+        if ($('clip_cols_maincol')) {
+        }
+
+    },
+
+    /**
      * Redraws selected node - sets proper class names on node, removes orphaned ul elements
      * @private
      * @param {HTMLElement} node Node to draw
@@ -16,7 +28,7 @@ Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.Tr
         var a = node.down('a'), id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
         if (id != parseInt(id)) {
             id = id.split('-')[1];
-            a.writeAttribute('href', 'javascript:Zikula.Clip.AjaxList('+id+');');
+            a.writeAttribute('href', 'javascript:Zikula.Clip.AjaxRequest({tid:'+id+'})');
         } else {
             a.writeAttribute('href', 'javascript:void(0)');
         }
@@ -50,9 +62,81 @@ Object.extend(Zikula.Clip.TreeSortable,/** @lends Zikula.Clip.TreeSortable.proto
     }
 });
 
+Zikula.Clip.Container = Class.create({
+    initialize: function(options) {
+        this.indicatorEffects = {
+            fade: false,
+            appear: false
+        };
+        //options
+        this.options = Object.extend({
+            indicator: false,
+            sidecol: null,
+            content: null,
+            fade: true,
+            fadeDuration: 0.75
+        }, options || {});
+
+        this.indicator = this.options.indicator ? $(this.options.indicator) : $('clip_cols_indicator');
+        this.sidecol   = this.options.sidecol ? $(this.options.sidecol) : $('clip_cols_sidecol');
+        this.content   = this.options.content ? $(this.options.content) : $('clip_cols_maincontent');
+
+        this.numberid  = Zikula.Clip.Container.items.length + 1; //only useful for the effect scoping
+    },
+    updateHeights: function(){
+        this.content.removeAttribute('style');
+        this.sidecol.removeAttribute('style');
+        var max = Math.max(this.content.getHeight(), side = this.sidecol.getHeight());
+        this.content.setAttribute('style', "min-height: "+max+"px");
+        this.sidecol.setAttribute('style', "min-height: "+max+"px");
+    },
+    updateContent: function(content) {
+        this.content.update(content);
+        this.updateHeights();
+        this.hideIndicator();
+    },
+    showIndicator: function(){
+        this.showIndicatorTimeout = window.setTimeout(function(){
+            if (this.options.fade){
+                this.indicatorEffects.appear = new Effect.Appear(this.indicator, {
+                    queue: {
+                        position: 'front',
+                        scope: 'Zikula.Clip.Container.' + this.numberid
+                    },
+                    from: 0,
+                    to: 1,
+                    duration: this.options.fadeDuration / 2
+                });
+            } else {
+                this.indicator.show();
+            }
+        }.bind(this), 250);
+    },
+    hideIndicator: function(){
+        if (this.showIndicatorTimeout) {
+            window.clearTimeout(this.showIndicatorTimeout);
+        }
+        this.indicator.hide();
+    }
+});
+
+Object.extend(Zikula.Clip.Container,
+{
+    items: {},
+    register: function(element, config) {
+        if (!this.items.hasOwnProperty(element)) {
+            this.items[element] = new Zikula.Clip.Container(config);
+            this.items[element].updateHeights();
+        }
+    }
+});
+
 /* Clip load */
 Event.observe(window, 'load', function() {
     Zikula.Clip.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence;
+
+    Zikula.Clip.Container.register('main');
+
     Zikula.UI.Tooltips($$('.tree a'));
 
     $('groupNew').observe('click', function(e) {
@@ -374,6 +458,42 @@ Zikula.Clip.ResequenceCallback = function(req)
         Zikula.showajaxerror(req.getMessage());
         return Zikula.TreeSortable.grouptypesTree.revertInsertion();
     }
+
+    return true;
+};
+
+
+/* Ajax view functions */
+Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
+{
+    Zikula.Clip.Container.items.main.showIndicator();
+
+    pars.module = 'Clip';
+    pars.type   = type ? type : 'ajax';
+    pars.func   = func ? func : 'publist';
+
+    if (!callback) {
+        callback = Zikula.Clip.AjaxRequestCallback;
+    }
+
+    new Zikula.Ajax.Request(
+        'ajax.php',
+        {
+            method: 'get',
+            parameters: pars,
+            onComplete: callback
+        });
+};
+
+
+Zikula.Clip.AjaxRequestCallback = function(req)
+{
+    if (!req.isSuccess()) {
+        Zikula.showajaxerror(req.getMessage());
+        return false;
+    }
+
+    Zikula.Clip.Container.items.main.updateContent(req.getData());
 
     return true;
 };
