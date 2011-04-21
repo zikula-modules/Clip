@@ -28,9 +28,9 @@ Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.Tr
         var a = node.down('a'), id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
         if (id != parseInt(id)) {
             id = id.split('-')[1];
-            a.writeAttribute('href', 'javascript:Zikula.Clip.AjaxRequest({tid:'+id+'})');
+            a.writeAttribute('onClick', 'javascript:Zikula.Clip.AjaxRequest({tid:'+id+'}); return false;');
         } else {
-            a.writeAttribute('href', 'javascript:void(0)');
+            a.writeAttribute('onClick', 'return false;');
         }
     }
 });
