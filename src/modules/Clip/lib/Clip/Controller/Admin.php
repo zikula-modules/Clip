@@ -184,8 +184,8 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
                                            'itemsperpage' => $apiargs['itemsperpage']));
 
-        if ($this->view->template_exists("clip_{$type}_publist_{$args['tid']}.tpl")) {
-            return $this->view->fetch("clip_{$type}_publist_{$args['tid']}.tpl");
+        if ($this->view->template_exists("clip_{$type}_publist_{$apiargs['tid']}.tpl")) {
+            return $this->view->fetch("clip_{$type}_publist_{$apiargs['tid']}.tpl");
         }
 
         return $this->view->fetch("clip_{$type}_publist.tpl");

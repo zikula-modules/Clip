@@ -77,6 +77,69 @@ class Clip_Util
     }
 
     /**
+     * Plugin getter.
+     *
+     * @param string $pluginClass Class name of the plugin.
+     *
+     * @return mixed Class instance.
+     */
+    public static function getPlugin($pluginID)
+    {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        $sm = ServiceUtil::getManager();
+
+        if (!$sm->hasService("clip.plugin.$pluginID")) {
+            $view = self::newUserForm();
+
+            $pluginClass = self::getPluginClasses($pluginID);
+            if (!$pluginClass) {
+                throw new InvalidArgumentException(__f('Plugin ID [%s] not found in the available plugins.', $pluginID, $dom));
+            }
+
+            $params = array();
+            $plugin = new $pluginClass($view, $params);
+            if (!$plugin instanceof Zikula_Form_AbstractPlugin) {
+                throw new InvalidArgumentException(__f('Plugin [%s] must be an instance of Zikula_Form_AbstractPlugin.', $pluginClass, $dom));
+            }
+            $plugin->setup();
+
+            $sm->attachService("clip.plugin.$pluginID", $plugin);
+        }
+
+        return $sm->getService("clip.plugin.$pluginID");
+    }
+
+    /**
+     * User form instance builder
+     *
+     * @param Zikula_Controller $controller
+     * @see FormUtil::newForm
+     *
+     * @return Clip_Form_View User Form View instance.
+     */
+    public static function newUserForm(&$controller=null)
+    {
+        $serviceManager = ServiceUtil::getManager();
+        $serviceId      = 'zikula.view.form.clip';
+
+        if (!$serviceManager->hasService($serviceId)) {
+            $view = new Clip_Form_View($serviceManager, 'Clip');
+            $view->add_core_data();
+            $serviceManager->attachService($serviceId, $view);
+        } else {
+            $view = $serviceManager->getService($serviceId);
+        }
+
+        if ($controller) {
+            $view->setController($controller);
+            $view->assign('controller', $controller);
+        }
+
+        return $view;
+    }
+
+    /**
      * Extract the TID from a string end.
      *
      * @param string $tablename
@@ -523,40 +586,6 @@ class Clip_Util
     }
 
     /**
-     * Plugin getter.
-     *
-     * @param string $pluginClass Class name of the plugin.
-     *
-     * @return mixed Class instance.
-     */
-    public static function getPlugin($pluginID)
-    {
-        $dom = ZLanguage::getModuleDomain('Clip');
-
-        $sm = ServiceUtil::getManager();
-
-        if (!$sm->hasService("clip.plugin.$pluginID")) {
-            $view = Zikula_View::getInstance('Clip');
-
-            $pluginClass = self::getPluginClasses($pluginID);
-            if (!$pluginClass) {
-                throw new InvalidArgumentException(__f('Plugin ID [%s] not found in the available plugins.', $pluginID, $dom));
-            }
-
-            $params = array();
-            $plugin = new $pluginClass($view, $params);
-            if (!$plugin instanceof Zikula_Form_AbstractPlugin) {
-                throw new InvalidArgumentException(__f('Plugin [%s] must be an instance of Zikula_Form_AbstractPlugin.', $pluginClass, $dom));
-            }
-            $plugin->setup();
-
-            $sm->attachService("clip.plugin.$pluginID", $plugin);
-        }
-
-        return $sm->getService("clip.plugin.$pluginID");
-    }
-
-    /**
      * PubType getter.
      *
      * @param integer $tid Pubtype ID.
@@ -690,27 +719,6 @@ class Clip_Util
         }
 
         return $core_title;
-    }
-
-    /**
-     * User form instance builder
-     *
-     * @param Zikula_Controller $controller
-     * @see FormUtil::newForm
-     *
-     * @return Clip_Form_View User Form View instance.
-     */
-    public static function newUserForm(&$controller)
-    {
-        $serviceManager = ServiceUtil::getManager();
-
-        $render = new Clip_Form_View($serviceManager, 'Clip');
-
-        $render->setController($controller);
-        $render->assign('controller', $controller)
-               ->add_core_data();
-
-        return $render;
     }
 
     /**
