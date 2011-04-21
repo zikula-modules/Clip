@@ -1,5 +1,5 @@
 
-{pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=9 processUrls=false useThemeView=false template='pagerajax.tpl'}
+{pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=9 owner='Clip' template='pagerajax.tpl' processUrls=false}
 
 <table class="z-admintable">
     <thead>
