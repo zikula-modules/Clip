@@ -86,7 +86,7 @@ Zikula.Clip.Container = Class.create({
     updateHeights: function(){
         this.content.removeAttribute('style');
         this.sidecol.removeAttribute('style');
-        var max = Math.max(this.content.getHeight(), side = this.sidecol.getHeight());
+        var max = Math.max(300, this.content.getHeight(), side = this.sidecol.getHeight());
         this.content.setAttribute('style', "min-height: "+max+"px");
         this.sidecol.setAttribute('style', "min-height: "+max+"px");
     },

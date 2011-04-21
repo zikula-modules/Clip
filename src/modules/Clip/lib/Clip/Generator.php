@@ -697,10 +697,9 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
     {
         $modinfo = ModUtil::getInfoFromName('Clip');
 
-        if ($modinfo['state'] == ModUtil::STATE_UNINITIALISED) {
+        if ($modinfo['state'] == ModUtil::STATE_UNINITIALISED && !$force) {
             return;
         }
-
         if (self::$tablesloaded && !$force) {
             return;
         }

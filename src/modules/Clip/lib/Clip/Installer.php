@@ -23,6 +23,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $tables = array(
             'Clip_Model_Pubfield',
             'Clip_Model_Pubtype',
+            'Clip_Model_Grouptype',
             'Clip_Model_Pubrelation'
         );
 
@@ -43,7 +44,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         self::createCategoryTree();
 
         // try to create the upload directory
-        $tmpdir = self::createTempDir();
+        $uploadDir = self::createUploadDir();
 
         //  install: default pubtypes and grouptypes
         Clip_Util::installDefaultypes();
@@ -55,7 +56,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
 
         // modvars
         $modvars = array(
-            'uploadpath' => $tmpdir,
+            'uploadpath' => $uploadDir,
             'maxperpage' => 100,
             'devmode'    => true
         );
@@ -168,10 +169,15 @@ class Clip_Installer extends Zikula_AbstractInstaller
             }
         }
 
+        // unregister the pubtype hooks
+        $this->version->setupPubtypeBundles();
+        HookUtil::unregisterHookSubscriberBundles($this->version);
+
         // drop base tables
         $tables = array(
             'Clip_Model_Pubfield',
             'Clip_Model_Pubtype',
+            'Clip_Model_Grouptype',
             'Clip_Model_Pubrelation'
         );
 
@@ -183,10 +189,6 @@ class Clip_Installer extends Zikula_AbstractInstaller
 
         // FIXME anything more to delete on uninstall?
         DBUtil::deleteWhere('workflows', "module = 'Clip'");
-
-        // unregister the pubtype hooks
-        $this->version->setupPubtypeBundles();
-        HookUtil::unregisterHookSubscriberBundles($this->version);
 
         // delete the category registry and modvars
         CategoryRegistryUtil::deleteEntry('Clip');
@@ -356,7 +358,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
     /**
      * Upload directory creation
      */
-    private function createTempDir()
+    private function createUploadDir()
     {
         // upload dir creation
         $uploaddir = FileUtil::getDataDirectory().'/Clip/uploads';
@@ -365,7 +367,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
             LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $tmpdir));
         }
 
-        return $tmpdir;
+        return $uploaddir;
     }
 
     /**
