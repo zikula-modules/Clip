@@ -7,6 +7,8 @@
             <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='mydocuments.png' set='icons/extrasmall' alt='' __title='Publication admin panel'}
             </a>
+        </span>
+        <span>
             <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='editclear.png' set='icons/extrasmall' alt='' __title='Publication fields panel'}
             </a>
