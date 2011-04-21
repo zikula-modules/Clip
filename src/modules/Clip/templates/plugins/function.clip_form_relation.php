@@ -123,7 +123,7 @@ class ClipFormRelation extends Zikula_Form_Plugin_TextInput
                                                   fetchFile: Zikula.Config.baseURL+\'ajax.php\',
                                                   parameters: {
                                                     module: "Clip",
-                                                    type: "ajaxdata"
+                                                    type: "ajaxdata",
                                                     func: "autocomplete",
                                                     tid: '.$this->relinfo['tid'].',
                                                     itemsperpage: '.$this->numitems.',

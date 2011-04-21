@@ -96,6 +96,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 } else {
                     $data[$key] = null;
                 }
+            } else {
+                $data[$key] = null;
             }
             // set additional relation fields
             $this->relations[$key] = $rel;
