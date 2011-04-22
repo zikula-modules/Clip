@@ -24,11 +24,13 @@ function clip_pubtype_init()
     }
     $('view_processrefs').observe('change', clip_view_process_onclick);
     $('display_processrefs').observe('change', clip_display_process_onclick);
+    $('edit_load').observe('change', clip_edit_load_onclick);
 
     clip_view_load_onclick();
     clip_view_process_onclick();
     clip_display_load_onclick();
     clip_display_process_onclick();
+    clip_edit_load_onclick();
     clip_urltitle_init();
 }
 
@@ -50,6 +52,11 @@ function clip_display_load_onclick()
 function clip_display_process_onclick()
 {
     Zikula.checkboxswitchdisplaystate('display_processrefs', 'display_advancedprocess', true);
+}
+
+function clip_edit_load_onclick()
+{
+    Zikula.checkboxswitchdisplaystate('edit_load', 'edit_advancedprocess', true);
 }
 
 function clip_urltitle_init()

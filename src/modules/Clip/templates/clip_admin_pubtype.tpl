@@ -200,8 +200,14 @@
             <fieldset>
                 <legend>{gt text='Edit form'}</legend>
                 <div class="z-formrow">
-                    {formcheckbox id='edit_onlyown' name='edit.onlyown' dataField='edit.onlyown' group='config'}
-                    {formlabel for='edit_onlyown' __text='Edit only own relations?'}
+                    {formcheckbox id='edit_load' name='edit.load' dataField='edit.load' group='config'}
+                    {formlabel for='edit_load' __text='Load relations autocompleters?'}
+                </div>
+                <div id="edit_advancedprocess">
+                    <div class="z-formrow">
+                        {formcheckbox id='edit_onlyown' name='edit.onlyown' dataField='edit.onlyown' group='config'}
+                        {formlabel for='edit_onlyown' __text='Edit only own relations?'}
+                    </div>
                 </div>
             </fieldset>
         </fieldset>

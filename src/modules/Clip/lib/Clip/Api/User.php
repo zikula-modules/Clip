@@ -162,6 +162,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             // adds the relations data
             $record = $tableObj->getRecordInstance();
             foreach ($record->getRelations($relconfig['onlyown']) as $ralias => $rinfo) {
+                // load the relation if it means to load ONE related record only
                 if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
                     $query->leftJoin("{$args['queryalias']}.{$ralias}");
                 }
@@ -330,6 +331,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         if ($relconfig['load']) {
             $record = $tableObj->getRecordInstance();
             foreach ($record->getRelations($relconfig['onlyown']) as $ralias => $rinfo) {
+                // load the relation if it means to load ONE related record only
                 if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
                     $query->leftJoin("{$args['queryalias']}.{$ralias}");
                 }

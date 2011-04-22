@@ -116,6 +116,38 @@ class Clip_Model_Pubtype extends Doctrine_Record
         return 'clip_pubdata'.$this->tid;
     }
 
+    public function defaultConfig($config)
+    {
+        $default = array(
+            'view' => array(
+                'load' => false,
+                'onlyown' => true,
+                'processrefs' => false,
+                'checkperm' => false,
+                'handleplugins' => false,
+                'loadworkflow' => false
+            ),
+            'display' => array(
+                'load' => true,
+                'onlyown' => true,
+                'processrefs' => true,
+                'checkperm' => true,
+                'handleplugins' => false,
+                'loadworkflow' => false
+            ),
+            'edit' => array(
+                'load' => true,
+                'onlyown' => true
+            )
+        );
+
+        foreach ($default as $k => $v) {
+            $config[$k] = isset($config[$k]) ? array_merge($v, $config[$k]) : $v;
+        }
+
+        return $config;
+    }
+
     /**
      * Saving hook.
      *
@@ -137,35 +169,21 @@ class Clip_Model_Pubtype extends Doctrine_Record
     {
         $data = $event->data;
 
-        if (is_object($data) && isset($data->config)) {
-            if (!empty($data->config) && is_string($data->config)) {
+        if (is_object($data)) {
+            if (isset($data->config) && !empty($data->config) && is_string($data->config)) {
                 $data->config = unserialize($data->config);
             } else {
-                $data->config = array(
-                    'view' => array(
-                        'load' => false,
-                        'onlyown' => true,
-                        'processrefs' => false,
-                        'checkperm' => false,
-                        'handleplugins' => false,
-                        'loadworkflow' => false
-                    ),
-                    'display' => array(
-                        'load' => true,
-                        'onlyown' => true,
-                        'processrefs' => true,
-                        'checkperm' => true,
-                        'handleplugins' => false,
-                        'loadworkflow' => false
-                    ),
-                    'edit' => array(
-                        'onlyown' => true
-                    )
-                );
-
+                $data->config = array();
             }
-        } elseif (is_array($data) && isset($data['config']) && !empty($data['config']) && is_string($data['config'])) {
-            $data['config'] = unserialize($data['config']);
+            $data->config = $this->defaultConfig($data->config);
+
+        } elseif (is_array($data)) {
+            if (isset($data['config']) && !empty($data['config']) && is_string($data['config'])) {
+                $data['config'] = unserialize($data['config']);
+            } else {
+                $data['config'] = array();
+            }
+            $data['config'] = $this->defaultConfig($data['config']);
         }
     }
 

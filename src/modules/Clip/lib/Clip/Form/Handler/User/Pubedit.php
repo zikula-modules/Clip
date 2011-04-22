@@ -79,12 +79,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $data = $pubdata->toArray();
 
         // process the relations
-        $onlyown = $this->pubtype['config']['edit']['onlyown'];
+        $relconfig = $this->pubtype['config']['edit'];
 
         $this->relations = array();
-        foreach ($pubdata->getRelations($onlyown) as $key => $rel) {
-            // set the data object
-            if ($pubdata->reference($key)) {
+        if ($relconfig['load']) {
+            foreach ($pubdata->getRelations($relconfig['onlyown']) as $key => $rel) {
+                // set the data object
                 if ($pubdata[$key] instanceof Doctrine_Collection) {
                     foreach ($pubdata[$key] as $k => $v) {
                         $pubdata[$key][$k]->pubPostProcess();
@@ -96,11 +96,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 } else {
                     $data[$key] = null;
                 }
-            } else {
-                $data[$key] = null;
+                // set the relation info
+                $this->relations[$key] = $rel;
             }
-            // set additional relation fields
-            $this->relations[$key] = $rel;
         }
 
         // check for set_* default values
