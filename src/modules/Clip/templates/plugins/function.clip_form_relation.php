@@ -144,6 +144,9 @@ class ClipFormRelation extends Zikula_Form_Plugin_TextInput
             <div class="z-auto-default">'.
                 (!empty($this->relinfo['descr']) ? $this->relinfo['descr'] : $this->_fn('Type the title of the related publication', 'Type the titles of the related publications', $this->relinfo['single'] ? 1 : 2, array())).
             '</div>
+            <div class="z-auto-notfound">'.
+                (!empty($this->relinfo['notfound']) ? $this->relinfo['notfound'] : $this->__('There are no matches found.')).
+            '</div>
             <ul class="z-auto-feed">
                 ';
         foreach ($this->relinfo['data'] as $value => $title) {

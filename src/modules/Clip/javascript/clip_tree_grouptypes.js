@@ -6,18 +6,6 @@ Zikula.define('Clip');
 Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.TreeSortable.prototype */
 {
     /**
-     * Redraws whole tree and update the column heights
-     * @private
-     * @return void
-     */
-    drawNodes: function() {
-        this.tree.select('li').each(this.drawNode.bind(this));
-        if ($('clip_cols_maincol')) {
-        }
-
-    },
-
-    /**
      * Redraws selected node - sets proper class names on node, removes orphaned ul elements
      * @private
      * @param {HTMLElement} node Node to draw
@@ -91,7 +79,9 @@ Zikula.Clip.Container = Class.create({
         this.sidecol.setAttribute('style', "min-height: "+max+"px");
     },
     updateContent: function(content) {
-        this.content.update(content);
+        if (content) {
+            this.content.update(content);
+        }
         this.updateHeights();
         this.hideIndicator();
     },

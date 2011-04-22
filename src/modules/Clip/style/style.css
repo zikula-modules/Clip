@@ -389,7 +389,8 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   margin-left: 0 !important;
   width: 100%;
 }
-.z-form div.z-formrow > .z-auto-container .z-auto-default {
+.z-form div.z-formrow > .z-auto-container .z-auto-default,
+.z-form div.z-formrow > .z-auto-container .z-auto-notfound {
   border: 1px solid #ccc;
   border-width: 0 1px 1px;
   padding: 5px 7px;

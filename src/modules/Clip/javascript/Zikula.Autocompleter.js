@@ -368,12 +368,13 @@ var FacebookList = Class.create(TextboxList,
       this.resultsshown = true;
       this.autoresults.setStyle({'display': 'block'}).update('');
       var regexp = null;
+      regexp = new RegExp(search, 'i')
       // TODO take in account the OP filter here
-      if (this.options.get('wordMatch')) {
+      /*if (this.options.get('wordMatch')) {
         regexp = new RegExp("(^|\\s)"+search, 'i')
       } else {
         regexp = new RegExp(search, 'i')
-      }
+      }*/
       var count = 0;
       this.data.filter(function(str) { return str ? regexp.test(str.evalJSON(true).caption) : false; })
                .each(
@@ -398,11 +399,16 @@ var FacebookList = Class.create(TextboxList,
                        }
                      }, this);
     }
-    // check this.autoresults count to see if we need the 'not found' message
+    // adjust the height of the results list
     if (count > this.options.get('results')) {
       this.autoresults.setStyle({'height': (this.options.get('results')*24)+'px'});
     } else {
       this.autoresults.setStyle({'height': (count ? (count*24) : 0)+'px'});
+    }
+    // check this.autoresults count to see if we need the 'not found' message
+    if (count == 0) {
+        this.autoholder.select('.z-auto-default').first().hide();
+        this.autoholder.select('.z-auto-notfound').first().setStyle({'display': 'block'});
     }
     return this;
   },
@@ -524,6 +530,7 @@ var FacebookList = Class.create(TextboxList,
             if (!Object.isUndefined(this.options.get('fetchFile')) && input.value.length >= this.options.get('minchars')) {
               var params = this.options.get('parameters');
               params.keyword = input.value;
+              this.maininput.insert({before: Zikula.Autocompleter.Indicator()});
               new Zikula.Ajax.Request(this.options.get('fetchFile'), {
                 method: this.options.get('fetchMethod'),
                 parameters: params,
@@ -592,3 +599,7 @@ Element.addMethods({
  * TODO: Implement empty result multilanguage message
  */
 Zikula.Autocompleter = Class.create(FacebookList);
+
+Zikula.Autocompleter.Indicator = function() {
+    return $('ajax_indicator') ? $('ajax_indicator') : new Element('img', {id: 'ajax_indicator', src: Zikula.Config.baseURL + 'images/ajax/indicator_circle.gif', style: 'float: left'});
+};
