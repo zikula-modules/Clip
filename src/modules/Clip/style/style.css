@@ -9,12 +9,16 @@
  */
 
 /* Admin GUI */
+#clip_admin_buttons {
+  padding-top: 2px;
+}
 #groupControls {
   color: #999999;
   margin-bottom: 5px;
 }
 #clip_cols_container {
   overflow: hidden;
+  padding: 5px 0;
 }
 #clip_cols_maincol {
   margin-left: 26%;
@@ -93,8 +97,8 @@ table.z-admintable thead tr th {
   margin-left: 0.5em;
   padding-top: 0;
 }
-.z-module-clip .z-buttons input,
-.z-module-clip .z-buttons button {
+.z-module-clip .z-form .z-buttons input,
+.z-module-clip .z-form .z-buttons button {
   margin-bottom: 0.5em;
 }
 
