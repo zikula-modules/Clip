@@ -9,8 +9,11 @@
  */
 
 /* Admin GUI */
+#ajax_indicator {
+  margin-left: 4px;
+}
 #clip_admin_buttons {
-  padding-top: 2px;
+  padding-top: 10px;
 }
 #groupControls {
   color: #999999;
@@ -33,6 +36,30 @@
   overflow-y: hidden;
   padding: 0 5px 10px 0;
   width: 25%;
+}
+
+.clip-infotab ul {
+  list-style: none outside none;
+  margin: 1em;
+  padding: 0;
+}
+.clip-infotab li {
+  border-bottom: 1px solid #eee;
+  color: #777;
+  margin: 0 0 1.2em;
+  padding: 0 0 1em;
+}
+.clip-infotab li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.clip-infotab a {
+  font-size: 1.1em;
+  font-weight: normal;
+}
+.clip-infotab span {
+  display: block;
+  padding-top: 0.2em;
 }
 
 /* GUI */

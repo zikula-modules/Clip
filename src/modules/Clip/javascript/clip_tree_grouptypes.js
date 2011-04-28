@@ -16,7 +16,7 @@ Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.Tr
         var a = node.down('a'), id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
         if (id != parseInt(id)) {
             id = id.split('-')[1];
-            a.writeAttribute('onClick', 'javascript:Zikula.Clip.AjaxRequest({tid:'+id+'}); return false;');
+            a.writeAttribute('onClick', 'javascript:this.insert({after: Zikula.Clip.Indicator()}); Zikula.Clip.AjaxRequest({tid:\''+id+'\'}, \'pubtypeinfo\'); return false;');
         } else {
             a.writeAttribute('onClick', 'return false;');
         }
@@ -130,6 +130,7 @@ Event.observe(window, 'load', function() {
     Zikula.UI.Tooltips($$('.tree a'));
 
     $('groupNew').observe('click', function(e) {
+        e.findElement('a').insert({after: Zikula.Clip.Indicator()});
         e.preventDefault();
         Zikula.Clip.MenuAction(null, 'addroot');
     });

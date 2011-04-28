@@ -29,14 +29,6 @@ class Clip_Api_Admin extends Zikula_AbstractApi
                 'text' => $this->__('Index')
             );
             $links[] = array (
-                'url'  => ModUtil::url('Clip', 'admin', 'pubtypes'),
-                'text' => $this->__('List publication types')
-            );
-            $links[] = array (
-                'url'  => ModUtil::url('Clip', 'admin', 'pubtype'),
-                'text' => $this->__('New publication type')
-            );
-            $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'relations'),
                 'text' => $this->__('Manage relations')
             );

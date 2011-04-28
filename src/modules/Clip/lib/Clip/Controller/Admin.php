@@ -47,14 +47,23 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     /**
      * Publication types list.
      */
-    public function pubtypes()
+    public function pubtypeinfo($args=array())
     {
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
+        //// Validation
+        // get the tid first
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+        $type        = FormUtil::getPassedValue('type', 'admin');
 
-        return $this->view->assign('pubtypes', $pubtypes)
-                          ->fetch('clip_admin_pubtypes.tpl');
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+        }
+
+        $pubtype = Clip_Util::getPubType($args['tid']);
+
+        return $this->view->assign('pubtype', $pubtype)
+                          ->fetch("clip_{$type}_pubtypeinfo.tpl");
     }
 
     /**
@@ -246,7 +255,8 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         //// Parameters
         $args = array(
             'tid'  => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
-            'mode' => isset($args['mode']) ? $args['mode'] : FormUtil::getPassedValue('mode')
+            'mode' => isset($args['mode']) ? $args['mode'] : FormUtil::getPassedValue('mode'),
+            'type' => FormUtil::getPassedValue('type', 'admin')
         );
 
         //// Validation
@@ -293,7 +303,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                    ->assign('mode',    $args['mode'])
                    ->assign('pubtype', Clip_Util::getPubType($args['tid']));
 
-        return $this->view->fetch('clip_admin_showcode.tpl');
+        return $this->view->fetch("clip_{$args['type']}_showcode.tpl");
     }
 
     /**
