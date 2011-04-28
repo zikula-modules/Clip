@@ -31,15 +31,15 @@
                 {formbutton commandName='clear' __text='Clear' class='z-bt-small'}
             </span>
 
-            {if $filter.tid1 OR $filter.tid2}
+            {if $filter.withtid1 OR $filter.withtid2}
                 <div class="z-warningmsg">
-                {if $filter.tid1 AND $filter.tid2}
+                {if $filter.withtid1 AND $filter.withtid2}
                     {gt text=$filter.op assign='op'}
-                    {gt text='List filtered by [%1$s] as Owner %2$s [%3$s] as Related' tag1=$pubtypes[$filter.tid1].title tag2=$op tag3=$pubtypes[$filter.tid2].title}
-                {elseif $filter.tid1}
-                    {gt text='List filtered by [%s] as Owner' tag1=$pubtypes[$filter.tid1].title}
-                {elseif $filter.tid2}
-                    {gt text='List filtered by [%s] as Related' tag1=$pubtypes[$filter.tid2].title}
+                    {gt text='List filtered by [%1$s] as Owner %2$s [%3$s] as Related' tag1=$pubtypes[$filter.withtid1].title tag2=$op tag3=$pubtypes[$filter.withtid2].title}
+                {elseif $filter.withtid1}
+                    {gt text='List filtered by [%s] as Owner' tag1=$pubtypes[$filter.withtid1].title}
+                {elseif $filter.withtid2}
+                    {gt text='List filtered by [%s] as Related' tag1=$pubtypes[$filter.withtid2].title}
                 {/if}
                 </div>
             {/if}
@@ -72,7 +72,7 @@
                         {/if}
                     </span>
                     <span class="z-itemcell z-w10">
-                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.tid1 op=$filter.op tid2=$filter.tid2 fragment='relform'}">
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.withtid1 op=$filter.op tid2=$filter.withtid2 fragment='relform'}">
                             {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     </span>

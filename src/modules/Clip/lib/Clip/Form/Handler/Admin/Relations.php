@@ -123,7 +123,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
              ->assign('reltypes', array($reltype1, $reltype2))
              ->assign('ops', $ops)
              ->assign('tid', $tid)
-             ->assign('filter', array('tid1' => $tid1, 'op' => $op, 'tid2' => $tid2));
+             ->assign('filter', array('withtid1' => $tid1, 'op' => $op, 'withtid2' => $tid2));
 
         // stores the return URL
         if (empty($this->returnurl)) {
