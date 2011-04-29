@@ -15,7 +15,7 @@
 class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 {
     private $id;
-    private $tid;
+    private $filter;
     private $returnurl;
 
     /**
@@ -43,12 +43,9 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
         // process the handler values
         $id   = (int)FormUtil::getPassedValue('id', 0);
-        $tid  = FormUtil::getPassedValue('tid');
         $tid1 = FormUtil::getPassedValue('withtid1');
         $op   = FormUtil::getPassedValue('op', 'or');
         $tid2 = FormUtil::getPassedValue('withtid2');
-
-        $this->tid = in_array($tid, $tids) ? $tid : null;
 
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
 
@@ -81,6 +78,8 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
             $key = in_array($op, array('and', 'or')) ? (!empty($where) ? $op.'Where' : 0) : 1;
             $where[$key] = array('tid2 = ?', $tid2);
         }
+
+        $this->filter = array('withtid1' => $tid1, 'op' => $op, 'withtid2' => $tid2);
 
         $relations = $tableObj->selectCollection($where, 'tid1 ASC, tid2 ASC', -1, -1, 'id');
 
@@ -123,12 +122,11 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
              ->assign('reltypes', array($reltype1, $reltype2))
              ->assign('ops', $ops)
              ->assign('tid', $tid)
-             ->assign('filter', array('withtid1' => $tid1, 'op' => $op, 'withtid2' => $tid2));
+             ->assign('filter', $this->filter);
 
         // stores the return URL
         if (empty($this->returnurl)) {
-            $returnurl = ModUtil::url('Clip', 'admin', 'relations',
-                                      array('tid' => $this->tid));
+            $returnurl = ModUtil::url('Clip', 'admin', 'relations', array('filter' => $this->filter));
             $this->returnurl = System::serverGetVar('HTTP_REFERER', $returnurl);
         }
 
@@ -208,7 +206,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                     // setup the return url as the edit form
                     // to update the corresponding tables
                     $this->returnurl = ModUtil::url('Clip', 'admin', 'relations',
-                                                    array('tid'    => $this->tid,
+                                                    array('filter' => $this->filter,
                                                           'update' => $relation->tid1.','.$relation->tid2));
 
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
@@ -223,7 +221,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
                 if ($relation->delete()) {
                     $this->returnurl = ModUtil::url('Clip', 'admin', 'relations',
-                                                    array('tid'    => $this->tid,
+                                                    array('filter' => $this->filter,
                                                           'update' => $relation->tid1.','.$relation->tid2));
 
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));
@@ -234,8 +232,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
             // filter relation list
             case 'filter':
-                $data['filter']['tid'] = $this->tid;
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $data['filter']);
+                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', array('filter' => $this->filter));
                 break;
 
             // clear any filter
