@@ -532,7 +532,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         static $cache = array();
 
-        $supportedfunctions = array('main', 'display', 'viewpub');
+        $supportedfunctions = array('main', 'view', 'display', 'viewpub');
         if (!in_array($args['func'], $supportedfunctions)) {
             return '';
         }
