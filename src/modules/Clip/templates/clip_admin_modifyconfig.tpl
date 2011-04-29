@@ -8,10 +8,10 @@
 
     <ul class="z-menulinks clip-menu">
         <li>
-            <a href="{modurl modname='Clip' type='admin' func='defaultypes'}">{gt text="Install 'Blog' and 'Pages' publication types"}</a>
+            <a href="{modurl modname='Clip' type='import' func='defaultypes'}">{gt text="Install 'Blog' and 'Pages' publication types"}</a>
         </li>
         <li>
-            <a href="{modurl modname='Clip' type='admin' func='importps'}">{gt text='Import pagesetter publications'}</a>
+            <a href="{modurl modname='Clip' type='import' func='importps'}">{gt text='Import pagesetter publications'}</a>
         </li>
     </ul>
 

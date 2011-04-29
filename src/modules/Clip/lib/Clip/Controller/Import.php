@@ -1,0 +1,62 @@
+<?php
+/**
+ * Clip
+ *
+ * @copyright  (c) Clip Team
+ * @link       http://code.zikula.org/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
+ * @subpackage Controller
+ */
+
+/**
+ * Import Controller.
+ */
+class Clip_Controller_Import extends Zikula_AbstractController
+{
+    /**
+     * Setup to behave as the Admin controller.
+     */
+    public function postInitialize()
+    {
+        // not that easy without control theme layout to use the [ædmin] too
+        /*
+        $this->view->addPluginDir('system/Admin/templates/plugins');
+        $this->view->load_filter('output', 'admintitle');
+         */
+    }
+
+    /**
+     * Installer of default pubtypes Blog and Pages.
+     */
+    public function defaultypes()
+    {
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
+
+        Clip_Util::installDefaultypes();
+
+        $this->redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
+    }
+
+    /**
+     * Pagesetter import.
+     */
+    public function importps()
+    {
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
+
+        $step = FormUtil::getPassedValue('step');
+        if (!empty($step)) {
+            ModUtil::apiFunc('Clip', 'import', 'importps'.$step);
+        }
+
+        // check if there are pubtypes already
+        $numpubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectCount();
+
+        // build and return the output
+        $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false)
+                   ->add_core_data();
+
+        return $this->view->fetch('clip_import_ps.tpl');
+    }
+}

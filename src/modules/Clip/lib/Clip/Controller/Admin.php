@@ -307,40 +307,6 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     }
 
     /**
-     * Installer of default pubtypes Blog and Pages.
-     */
-    public function defaultypes()
-    {
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
-
-        Clip_Util::installDefaultypes();
-
-        $this->redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
-    }
-
-    /**
-     * Pagesetter import.
-     */
-    public function importps()
-    {
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
-
-        $step = FormUtil::getPassedValue('step');
-        if (!empty($step)) {
-            ModUtil::apiFunc('Clip', 'import', 'importps'.$step);
-        }
-
-        // check if there are pubtypes already
-        $numpubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectCount();
-
-        // build and return the output
-        $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false)
-                   ->add_core_data();
-
-        return $this->view->fetch('clip_admin_importps.tpl');
-    }
-
-    /**
      * Javascript hierarchical menu of edit links.
      */
     public function editlist()
