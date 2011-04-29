@@ -19,11 +19,13 @@ class Clip_Controller_Import extends Zikula_AbstractController
      */
     public function postInitialize()
     {
-        // not that easy without control theme layout to use the [ædmin] too
-        /*
+        $serviceManager = ServiceUtil::getManager();
+        $themeInstance  = $serviceManager->getService('zikula.theme');
+        $themeInstance->type = 'admin';
+        $themeInstance->load_config();
+
         $this->view->addPluginDir('system/Admin/templates/plugins');
         $this->view->load_filter('output', 'admintitle');
-         */
     }
 
     /**
