@@ -87,10 +87,15 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 // set the data object
                 if ($pubdata[$key] instanceof Doctrine_Collection) {
                     foreach ($pubdata[$key] as $k => $v) {
-                        $pubdata[$key][$k]->pubPostProcess();
+                        // exclude null records
+                        if ($v->exists()) {
+                            $pubdata[$key][$k]->pubPostProcess();
+                        } else {
+                            unset($pubdata[$key]);
+                        }
                     }
                     $data[$key] = $pubdata[$key]->toArray();
-                } elseif ($pubdata[$key] instanceof Doctrine_Record) {
+                } elseif ($pubdata[$key] instanceof Doctrine_Record && $pubdata[$key]->exists()) {
                     $pubdata[$key]->pubPostProcess();
                     $data[$key] = $pubdata[$key]->toArray();
                 } else {
@@ -263,7 +268,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // fill the relations data if present
         foreach (array_keys($this->relations) as $alias) {
             if (isset($data[$alias])) {
-                $this->pub->link($alias, (array)$data[$alias]);
+                if ($data[$alias]) {
+                    $this->pub->link($alias, (array)$data[$alias]);
+                }
                 unset($data[$alias]);
             }
         }
@@ -295,7 +302,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
      */
     private function translateActions(&$actions)
     {
-        foreach (array_keys($actions) as $aid) {
+        foreach (array_keys((array)$actions) as $aid) {
             if (isset($actions[$aid]['parameters'])) {
                 // check if the action parameter is translatable
                 foreach (array_keys($actions[$aid]['parameters']) as $pname) {
