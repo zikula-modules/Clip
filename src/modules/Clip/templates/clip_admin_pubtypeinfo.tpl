@@ -14,6 +14,23 @@
     </ul>
 
     <div id="p{$pubtype.tid}manage" class="clip-infotab">
+        <ul class="float_right z-buttons">
+            <li>
+                <a class="z-bt-new" href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}" title="{gt text='Add new publications to this publication type'}">
+                    {gt text='New publication'}
+                </a>
+            </li>
+            <li>
+                <a class="z-bt-preview" href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid}" title="{gt text='Go to the Admin publication list'}">
+                    {gt text='Admin list'}
+                </a>
+            </li>
+            <li>
+                <a class="z-bt-preview" href="{modurl modname='Clip' type='user' func='view' tid=$pubtype.tid}" title="{gt text='Go to the public publication list'}">
+                    {gt text='Public list'}
+                </a>
+            </li>
+        </ul>
         <ul>
             <li>
                 <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
@@ -121,4 +138,6 @@
 
 <script type="text/javascript">
     var pubtypetabs = new Zikula.UI.Tabs('pubtype{{$pubtype.tid}}_info', {equal: true});
+    var maxWidth = $$('.clip-infotab ul.z-buttons a').invoke('getContentWidth').max();
+    $$('.clip-infotab ul.z-buttons a').invoke('setStyle', {width: maxWidth.toUnits()});
 </script>
