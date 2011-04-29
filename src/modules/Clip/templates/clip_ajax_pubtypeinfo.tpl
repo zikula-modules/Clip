@@ -13,26 +13,52 @@
             <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}{rdelim}, 'pubtype')" title="{gt text='Edit this publication type'}">
                 {gt text="Edit '%s'" tag1=$pubtype.title|safetext}
             </a>
-            <span>
+            <p>
                 {gt text='Edit the basic information of the publication type, the output/input settings, relations settings, etc.'}
-            </span>
+            </p>
         </li>
         <li>
             <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}{rdelim}, 'pubfields')" title="{gt text='Add, sort or modify the fields of this publication type'}">
                 {gt text='Manage its fields'}
             </a>
-            <span>
+            <p>
                 {gt text='Sort, edit and configure the fields of this publication type.'}
-            </span>
+            </p>
         </li>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, withtid1:{$pubtype.tid}, op:'or', withtid2:{$pubtype.tid}{rdelim}, 'relations')" title="{gt text='Add, sort or modify the fields of this publication type'}">
-                {gt text='Manage its relation'}
+            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}withtid1:{$pubtype.tid}, op:'or', withtid2:{$pubtype.tid}{rdelim}, 'relations')" title="{gt text='Add, sort or modify the fields of this publication type'}">
+                {gt text='Manage its relations'}
             </a>
-            <span>
-                {gt text='Edit and configure the relations.'}
-                {*  Currently they are as follows: / There are no relations defined *}
-            </span>
+            <p>
+                {gt text='Edit and configure the relations.'}<br /><br />
+                {if $pubtype->getRelations(false)}
+                    {gt text='Currently they are as follows:'}
+                {else}
+                    {gt text='There are no relations defined for this publication type.'}
+                {/if}
+            </p>
+            {if $pubtype->allrelations}
+                <ul>
+                {foreach from=$pubtype->allrelations key='ralias' item='rinfo'}
+                    <li>
+                    {if $rinfo.single}
+                        {gt text='Has one %s' tag1=$rinfo.title}
+                    {else}
+                        {gt text='Has many %s' tag1=$rinfo.title}
+                    {/if}
+                    {if $rinfo.own}
+                        <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}id:{$rinfo.id},  withtid1:{$pubtype.tid}, op:'and', withtid2:{$rinfo.tid}{rdelim}, 'relations')">
+                            {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                        </a>
+                    {else}
+                        <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}id:{$rinfo.id},  withtid1:{$rinfo.tid}, op:'and', withtid2:{$pubtype.tid}{rdelim}, 'relations')">
+                            {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                        </a>
+                    {/if}
+                    </li>
+                {/foreach}
+                </ul>
+            {/if}
         </li>
     </ul>
 </div>

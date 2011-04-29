@@ -116,6 +116,58 @@ class Clip_Model_Pubtype extends Doctrine_Record
         return 'clip_pubdata'.$this->tid;
     }
 
+    public function getRelations($onlyown = true)
+    {
+        $key = ($onlyown ? 'own' : 'all').'relations';
+
+        if ($this->hasMappedValue($key)) {
+            return $this->$key;
+        }
+
+        $relations = array();
+
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        // load own
+        $records = Clip_Util::getRelations($this->tid, true);
+        foreach ($records as $relation) {
+            $relations[$relation['alias1']] = array(
+                'id'     => $relation['id'],
+                'tid'    => $relation['tid2'],
+                'type'   => $relation['type'],
+                'alias'  => $relation['alias2'],
+                'title'  => __($relation['title1'], $dom),
+                'descr'  => __($relation['descr1'], $dom),
+                'single' => $relation['type']%2 == 0 ? true : false,
+                'own'    => true
+            );
+        }
+
+        if (!$onlyown) {
+            // load foreign
+            $records = Clip_Util::getRelations($this->tid, false);
+
+            foreach ($records as $relation) {
+                if (!isset($relations[$relation['alias2']])) {
+                    $relations[$relation['alias2']] = array(
+                        'id'     => $relation['id'],
+                        'tid'    => $relation['tid1'],
+                        'type'   => $relation['type'],
+                        'alias'  => $relation['alias1'],
+                        'title'  => __($relation['title2'], $dom),
+                        'descr'  => __($relation['descr2'], $dom),
+                        'single' => $relation['type'] <= 1 ? true : false,
+                        'own'    => false
+                    );
+                }
+            }
+        }
+
+        $this->mapValue($key, $relations);
+
+        return $this->$key;
+    }
+
     public function defaultConfig($config)
     {
         $default = array(

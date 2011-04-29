@@ -590,7 +590,7 @@ class Clip_Util
      *
      * @param integer $tid Pubtype ID.
      *
-     * @return array Information of one or all the pubtypes.
+     * @return Clip_Model_Pubtype Information of one or all the pubtypes.
      */
     public static function getPubType($tid = -1)
     {

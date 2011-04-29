@@ -156,44 +156,9 @@ class Clip_Base_Pubdata extends Doctrine_Record
      */
     public function getRelations($onlyown = true)
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-
         $tablename = $this->_table->getInternalTableName();
         $tid = Clip_Util::getTidFromString($tablename);
 
-        $relations = array();
-
-        // load own
-        $records = Clip_Util::getRelations($tid, true);
-        foreach ($records as $relation) {
-            $relations[$relation['alias1']] = array(
-                'tid'    => $relation['tid2'],
-                'type'   => $relation['type'],
-                'title'  => __($relation['title1'], $dom),
-                'descr'  => __($relation['descr1'], $dom),
-                'single' => $relation['type']%2 == 0 ? true : false,
-                'own'    => true
-            );
-        }
-
-        if (!$onlyown) {
-            // load foreign
-            $records = Clip_Util::getRelations($tid, false);
-
-            foreach ($records as $relation) {
-                if (!isset($relations[$relation['alias2']])) {
-                    $relations[$relation['alias2']] = array(
-                        'tid'    => $relation['tid1'],
-                        'type'   => $relation['type'],
-                        'title'  => __($relation['title2'], $dom),
-                        'descr'  => __($relation['descr2'], $dom),
-                        'single' => $relation['type'] <= 1 ? true : false,
-                        'own'    => false
-                    );
-                }
-            }
-        }
-
-        return $relations;
+        return Clip_Util::getPubType($tid)->getRelations($onlyown);
     }
 }

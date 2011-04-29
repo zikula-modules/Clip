@@ -112,4 +112,8 @@ class Clip_Model_Pubfield extends Doctrine_Record
     {
         return 'clip_pubdata'.$this->tid;
     }
+
+    /**
+     * TODO hook detection of changes and data integrity checks (sortby)
+     */
 }
