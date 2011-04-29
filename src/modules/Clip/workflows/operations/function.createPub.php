@@ -49,7 +49,7 @@ function Clip_operation_createPub(&$pub, $params)
 
     // save the object
     if ($pub->isValid()) {
-        $pub->save();
+        $pub->trySave();
         $result = true;
 
         // TODO let know that a publication was created

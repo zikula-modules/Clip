@@ -44,7 +44,7 @@ function Clip_operation_copyPub(&$pub, $params)
 
     // save the publication
     if ($copy->isValid()) {
-        $copy->save();
+        $copy->trySave();
         $result = true;
 
         $copy['__WORKFLOW__']['obj_id'] = $copy['id'];

@@ -30,7 +30,7 @@ function Clip_operation_moveToDepot($pub, $params)
     $result = false;
 
     if ($pub->isValid()) {
-        $pub->save();
+        $pub->trySave();
         $result = true;
 
         // TODO let know hooks that the publication was updated

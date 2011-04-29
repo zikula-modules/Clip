@@ -59,7 +59,7 @@ function Clip_operation_updatePub(&$pub, &$params)
         $rev['core_revision'] = $maxrev + 1;
 
         if ($rev->isValid()) {
-            $rev->save();
+            $rev->trySave();
             $rev->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
             $result = true;
 
@@ -81,7 +81,7 @@ function Clip_operation_updatePub(&$pub, &$params)
         $pub['core_revision'] = $maxrev + 1;
 
         if ($pub->isValid()) {
-            $pub->save();
+            $pub->trySave();
             $result = true;
         }
     }

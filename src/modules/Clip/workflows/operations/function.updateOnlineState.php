@@ -29,7 +29,7 @@ function Clip_operation_updateOnlineState(&$pub, $params)
     $result = false;
 
     if ($pub->isValid()) {
-        $pub->save();
+        $pub->trySave();
         $result = true;
 
         // TODO let know hooks that the publication was updated
