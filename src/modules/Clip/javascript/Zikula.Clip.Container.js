@@ -1,6 +1,33 @@
 // Copyright Clip Team 2011 - license GNU/LGPLv3 (or at your option, any later version).
 
+/* Clip load */
 Zikula.define('Clip');
+
+Event.observe(window, 'load', function() {
+    Zikula.Clip.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence;
+
+    Zikula.Clip.Container.register('main');
+
+    Zikula.UI.Tooltips($$('.tree a'));
+
+    $('groupNew').observe('click', function(e) {
+        e.findElement('a').insert({after: Zikula.Clip.Indicator()});
+        e.preventDefault();
+        Zikula.Clip.MenuAction(null, 'addroot');
+    });
+    $('groupExpand').observe('click', function(e) {
+        e.preventDefault();
+        Zikula.Clip.TreeSortable.trees.grouptypesTree.expandAll();
+    });
+    $('groupCollapse').observe('click', function(e) {
+        e.preventDefault();
+        Zikula.Clip.TreeSortable.trees.grouptypesTree.collapseAll();
+    });
+
+    $('groupControls').removeClassName('z-hide');
+
+    Zikula.Clip.AttachMenu();
+});
 
 /* Customization of TreeSortable */
 Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.TreeSortable.prototype */
@@ -119,33 +146,6 @@ Object.extend(Zikula.Clip.Container,
             this.items[element].updateHeights();
         }
     }
-});
-
-/* Clip load */
-Event.observe(window, 'load', function() {
-    Zikula.Clip.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence;
-
-    Zikula.Clip.Container.register('main');
-
-    Zikula.UI.Tooltips($$('.tree a'));
-
-    $('groupNew').observe('click', function(e) {
-        e.findElement('a').insert({after: Zikula.Clip.Indicator()});
-        e.preventDefault();
-        Zikula.Clip.MenuAction(null, 'addroot');
-    });
-    $('groupExpand').observe('click', function(e) {
-        e.preventDefault();
-        Zikula.Clip.TreeSortable.trees.grouptypesTree.expandAll();
-    });
-    $('groupCollapse').observe('click', function(e) {
-        e.preventDefault();
-        Zikula.Clip.TreeSortable.trees.grouptypesTree.collapseAll();
-    });
-
-    $('groupControls').removeClassName('z-hide');
-
-    Zikula.Clip.AttachMenu();
 });
 
 /* Context Menu */

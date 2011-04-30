@@ -15,3 +15,5 @@
     check if it's needed to exclude already linked pubs on many to one
 
     check if the Plugin's domain set is still needed
+
+    full OO JavaScript
