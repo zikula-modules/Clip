@@ -521,6 +521,7 @@ Zikula.Clip.ResequenceCallback = function(req)
 /* Ajax view functions */
 Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 {
+    // TODO remove the indicator if the click comes of the main container (core mod?)
     Zikula.Clip.Container.items.main.showIndicator();
 
     pars.module = 'Clip';

@@ -54,7 +54,6 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         //// Validation
         // get the tid first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $type        = FormUtil::getPassedValue('type', 'admin');
 
         if (!Clip_Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
@@ -63,7 +62,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $pubtype = Clip_Util::getPubType($args['tid']);
 
         return $this->view->assign('pubtype', $pubtype)
-                          ->fetch("clip_{$type}_pubtypeinfo.tpl");
+                          ->fetch("clip_base_pubtypeinfo.tpl");
     }
 
     /**
@@ -151,7 +150,6 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
         // define the arguments
         $filter = FormUtil::getPassedValue('filter') ? '' : 'core_online:eq:1';
-        $type   = FormUtil::getPassedValue('type', 'admin');
 
         $apiargs = array(
             'tid'           => $args['tid'],
@@ -193,11 +191,11 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
                                            'itemsperpage' => $apiargs['itemsperpage']));
 
-        if ($this->view->template_exists("clip_{$type}_publist_{$apiargs['tid']}.tpl")) {
-            return $this->view->fetch("clip_{$type}_publist_{$apiargs['tid']}.tpl");
+        if ($this->view->template_exists("clip_base_publist_{$apiargs['tid']}.tpl")) {
+            return $this->view->fetch("clip_base_publist_{$apiargs['tid']}.tpl");
         }
 
-        return $this->view->fetch("clip_{$type}_publist.tpl");
+        return $this->view->fetch("clip_base_publist.tpl");
     }
 
     /**
@@ -241,7 +239,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $this->view->assign('pubtype', $pubtype)
                    ->assign('publist', $publist);
 
-        return $this->view->fetch('clip_admin_history.tpl');
+        return $this->view->fetch('clip_base_history.tpl');
     }
 
     /**
@@ -255,8 +253,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         //// Parameters
         $args = array(
             'tid'  => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
-            'mode' => isset($args['mode']) ? $args['mode'] : FormUtil::getPassedValue('mode'),
-            'type' => FormUtil::getPassedValue('type', 'admin')
+            'mode' => isset($args['mode']) ? $args['mode'] : FormUtil::getPassedValue('mode')
         );
 
         //// Validation
@@ -303,7 +300,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                    ->assign('mode',    $args['mode'])
                    ->assign('pubtype', Clip_Util::getPubType($args['tid']));
 
-        return $this->view->fetch("clip_{$args['type']}_showcode.tpl");
+        return $this->view->fetch("clip_base_showcode.tpl");
     }
 
     /**

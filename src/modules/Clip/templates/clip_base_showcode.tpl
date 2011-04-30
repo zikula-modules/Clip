@@ -1,6 +1,4 @@
 
-<h2>{gt text='Show code'}</h2>
-
 {switch expr=$mode}
     {case expr='input'}
         {assign var='cliptplname' value='form_all.tpl'}

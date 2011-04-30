@@ -22,7 +22,19 @@
  */
 function smarty_function_clip_url($params, &$smarty)
 {
-    /* only used on ajax templates ATM */
+    $params['modname'] = 'Clip';
+    $params['type']    = $smarty->getRequest()->getControllerName();
+
+    // dispatch any non-ajax request with modurl
+    if ($params['type'] != 'ajax') {
+        $args = (isset($params['args']) && $params['args']) ? $params['args'] : array();
+        unset($params['args']);
+        $params = array_merge($params, $args);
+
+        return smarty_function_modurl($params, $smarty);
+    }
+
+    // process the internal Clip ajax request output
     $type = (isset($params['type']) && $params['type']) ? $params['type'] : 'ajax';
     $func = (isset($params['func']) && $params['func']) ? $params['func'] : 'publist';
     $args = (isset($params['args']) && $params['args']) ? $params['args'] : array();
@@ -34,7 +46,5 @@ function smarty_function_clip_url($params, &$smarty)
     $params = json_encode(array_merge($params, $args));
     $params = str_replace('"', "'", $params);
 
-    $output = "javascript:Zikula.Clip.AjaxRequest($params, '$func', '$type')";
-
-    return $output;
+    return "javascript:Zikula.Clip.AjaxRequest($params, '$func', '$type')";
 }

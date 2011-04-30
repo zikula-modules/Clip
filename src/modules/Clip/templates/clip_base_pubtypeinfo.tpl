@@ -11,7 +11,7 @@
     <ul class="float_right z-buttons">
         <li>
             <a class="z-bt-new" href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}" title="{gt text='Add new publications to this publication type'}">
-                {gt text='New publication'}
+                {gt text='New article'}
             </a>
         </li>
         <li>
@@ -27,7 +27,7 @@
     </ul>
     <ul>
         <li>
-            <a href="{clip_url func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
+            <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
                 {gt text="Edit '%s'" tag1=$pubtype.title|safetext}
             </a>
             <p>
@@ -35,7 +35,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='pubfields' tid=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
+            <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
                 {gt text='Manage its fields'}
             </a>
             <p>
@@ -43,7 +43,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='relations' withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
+            <a href="{modurl modname='Clip' type='admin' func='relations' withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
                 {gt text='Manage its relations'}
             </a>
             <p>
@@ -64,11 +64,11 @@
                         {gt text='Has many %s' tag1=$rinfo.title}
                     {/if}
                     {if $rinfo.own}
-                        <a href="{clip_url func='relations' id=$rinfo.id withtid1=$pubtype.tid op='and' withtid2=$rinfo.tid}">
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$rinfo.id withtid1=$pubtype.tid op='and' withtid2=$rinfo.tid}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     {else}
-                        <a href="{clip_url func='relations' id=$rinfo.id withtid1=$rinfo.tid op='and' withtid2=$pubtype.tid}">
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$rinfo.id withtid1=$rinfo.tid op='and' withtid2=$pubtype.tid}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     {/if}

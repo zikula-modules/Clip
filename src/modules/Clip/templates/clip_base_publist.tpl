@@ -1,16 +1,16 @@
 
-{pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=9 owner='Clip' template='pagerajax.tpl' processUrls=false}
+{pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=9 owner='Clip' template='clip_pager.tpl' processUrls=false}
 
 <table class="z-admintable">
     <thead>
         <tr>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'core_pid':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_pid'}">
+                <a href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_pid'}" class="{$pubtype.orderby|clip_orderby:'core_pid':'class'}">
                     {gt text='PID'}
                 </a>
             </th>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'core_title':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_title'}">
+                <a href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_title'}" class="{$pubtype.orderby|clip_orderby:'core_title':'class'}">
                     {gt text='Title'}
                 </a>
             </th>
@@ -21,7 +21,7 @@
                 {gt text='State'}
             </th>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'core_author':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_author'}">
+                <a href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_author'}" class="{$pubtype.orderby|clip_orderby:'core_author':'class'}">
                     {gt text='Author'}
                 </a>
             </th>
@@ -29,12 +29,12 @@
                 {gt text='Online'}
             </th>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'cr_date':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'cr_date'}">
+                <a href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'cr_date'}" class="{$pubtype.orderby|clip_orderby:'cr_date':'class'}">
                     {gt text='Creation date'}
                 </a>
             </th>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'lu_date':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'lu_date'}">
+                <a href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'lu_date'}" class="{$pubtype.orderby|clip_orderby:'lu_date':'class'}">
                     {gt text='Update date'}
                 </a>
             </th>

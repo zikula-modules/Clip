@@ -1,4 +1,3 @@
-
 {assign var='separator' value='&ndash;'}
 
 <div class="{$pagerPluginArray.class} z-pagercss">
