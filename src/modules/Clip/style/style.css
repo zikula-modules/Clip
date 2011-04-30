@@ -158,7 +158,7 @@ pre.clip-showcode {
   color: #fff;
   letter-spacing: -0.04em;
   line-height: 1.1em;
-  margin: 2em 1em 1em;
+  margin: 1em;
   overflow: hidden;
   padding: 0 1em;
 }
@@ -479,6 +479,9 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 /* Default pubtypes generic styles */
 
 /* generic */
+.clip-pub-details .z-formrow {
+  overflow: hidden;
+}
 .clip-display-hooks {
   margin-top: 1.5em;
 }

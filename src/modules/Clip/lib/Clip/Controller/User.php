@@ -126,7 +126,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
 
+        // stored the used arguments
         Clip_Util::setArgs('user_view', $args);
+
+        // resolve the permalink
         $returnurl = ModUtil::url('Clip', 'user', 'view',
                                   array('tid' => $pubtype['tid']),
                                   null, null, true);
@@ -282,6 +285,22 @@ class Clip_Controller_User extends Zikula_AbstractController
             return LogUtil::registerError($this->__f('No such publication [%s - %s, %s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])));
         }
 
+        // stored the used arguments
+        Clip_Util::setArgs('user_display', $args);
+
+        // resolve the permalink
+        $apiargs = Clip_Util::getArgs();
+        $returnurl = ModUtil::url('Clip', 'user', 'display',
+                                  array('tid' => $apiargs['userapi_get']['tid'],
+                                        'pid' => $apiargs['userapi_get']['pid']),
+                                  null, null, true);
+
+        // assign the pubdata and pubtype to the output
+        $this->view->assign('pubdata', $pubdata)
+                   ->assign('pubtype', $pubtype)
+                   ->assign('clipargs', $apiargs)
+                   ->assign('returnurl', $returnurl);
+
         //// Build the output
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
@@ -305,22 +324,6 @@ class Clip_Controller_User extends Zikula_AbstractController
                        ->assign('clip_generic_tpl', true)
                        ->assign('template_generic_code', Clip_Generator::pubdisplay($apiargs['tid'], true, $isblock));
         }
-
-        // stored the used arguments
-        Clip_Util::setArgs('user_display', $args);
-
-        // resolve the permalink
-        $apiargs = Clip_Util::getArgs();
-        $returnurl = ModUtil::url('Clip', 'user', 'display',
-                                  array('tid' => $apiargs['userapi_get']['tid'],
-                                        'pid' => $apiargs['userapi_get']['pid']),
-                                  null, null, true);
-
-        // assign the pubdata and pubtype to the output
-        $this->view->assign('pubdata', $pubdata)
-                   ->assign('pubtype', $pubtype)
-                   ->assign('clipargs', $apiargs)
-                   ->assign('returnurl', $returnurl);
 
         return $this->view->fetch($args['template'], $cacheid);
     }
@@ -375,14 +378,12 @@ class Clip_Controller_User extends Zikula_AbstractController
         $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
         // get actual state for selecting form Template
-        $stepname = 'initial';
+        $args['state'] = 'initial';
         if ($args['id']) {
             $obj = array('id' => $args['id']);
             Zikula_Workflow_Util::getWorkflowForObject($obj, $pubtype->getTableName(), 'id', 'Clip');
-            $stepname = $obj['__WORKFLOW__']['state'];
+            $args['state'] = $obj['__WORKFLOW__']['state'];
         }
-        // adds the stepname to the pubtype
-        $pubtype->mapValue('stepname', $stepname);
 
         //// Form Handler Instance
         // no security check needed
@@ -396,18 +397,22 @@ class Clip_Controller_User extends Zikula_AbstractController
         $render = Clip_Util::newUserForm($this);
 
         // resolve the template to use
-        // 1. individual step
-        $template = $pubtype['inputset']."/form_{$stepname}.tpl";
+        // 1. custom template
+        if (!empty($args['template'])) {
+            $args['template'] = DataUtil::formatForOS($args['template']);
+            $template = $pubtype['inputset']."/form_custom_{$args['template']}.tpl";
 
-        if (!empty($stepname) && $render->template_exists($template)) {
-            return $render->execute($template, $handler);
+            if ($render->template_exists($template)) {
+                return $render->execute($template, $handler);
+            } else {
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
+            }
         }
 
-        // 2. custom template
-        $args['template'] = DataUtil::formatForOS($args['template']);
-        $template = $pubtype['inputset']."/form_{$args['template']}.tpl";
+        // 2. individual state
+        $template = $pubtype['inputset']."/form_{$args['state']}.tpl";
 
-        if (!empty($args['template']) && $render->template_exists($template)) {
+        if (!empty($args['state']) && $render->template_exists($template)) {
             return $render->execute($template, $handler);
         }
 
@@ -416,10 +421,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         if (!$render->template_exists($template)) {
             if ($alert) {
-                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['inputset']."/form_{$stepname}.tpl"));
-                if (!empty($args['template'])) {
-                    LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['inputset']."/form_{$args['template']}.tpl"));
-                }
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['inputset']."/form_{$args['state']}.tpl"));
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
 

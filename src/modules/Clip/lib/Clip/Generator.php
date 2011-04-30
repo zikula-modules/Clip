@@ -225,7 +225,7 @@ class Clip_Generator
                 '    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
                 '{/if}'."\n".
                 "\n".
-                '{assign var=\'zformclass\' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$pubtype.stepname`"}'."\n".
+                '{assign var=\'zformclass\' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.user_edit.state`"}'."\n".
                 "\n".
                 '{form cssClass=$zformclass enctype=\'multipart/form-data\'}'."\n".
                 '    <div>'."\n".
