@@ -52,7 +52,7 @@
       <state>approved</state>
       <operation>deletePub</operation>
 
-      <parameter class="z-bt-delete" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
+      <parameter class="z-btred z-bt-delete" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
     </action>
 
   </actions>

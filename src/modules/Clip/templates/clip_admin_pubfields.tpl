@@ -166,7 +166,7 @@
             {if $field.name}
                 {formbutton commandName='create' __text='Save' class='z-bt-save'}
                 {gt text='Are you sure you want to delete this field?' assign='confirmdeletion'}
-                {formbutton commandName='delete' __text='Delete' class='z-bt-delete' confirmMessage=$confirmdeletion}
+                {formbutton commandName='delete' __text='Delete' class='z-btred z-bt-delete' confirmMessage=$confirmdeletion}
             {else}
                 {formbutton commandName='create' __text='Create' class='z-bt-ok'}
             {/if}
