@@ -17,9 +17,8 @@
  */
 function smarty_function_clip_submenu($params, $view)
 {
-    include_once('modules/Clip/templates/plugins/function.clip_url.php');
-
     $dom = ZLanguage::getModuleDomain('Clip');
+    include_once('modules/Clip/templates/plugins/function.clip_url.php');
 
     $tid = (int)$params['tid'];
 
