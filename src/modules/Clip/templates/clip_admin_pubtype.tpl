@@ -7,7 +7,7 @@
 
     {if isset($pubtype)}
         <h2>{gt text='Edit publication type'}</h2>
-        {clip_admin_submenu tid=$pubtype.tid}
+        {clip_submenu tid=$pubtype.tid}
     {else}
         <h2>{gt text='Create publication type'}</h2>
     {/if}

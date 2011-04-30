@@ -1,4 +1,8 @@
 
+<h2>{gt text='History'}</h2>
+
+{clip_submenu tid=$pubtype.tid}
+
 <table class="z-admintable">
     <thead>
         <tr>

@@ -15,8 +15,10 @@
  * @author mateo
  * @param  $params['tid'] tid
  */
-function smarty_function_clip_admin_submenu($params, $view)
+function smarty_function_clip_submenu($params, $view)
 {
+    include_once('modules/Clip/templates/plugins/function.clip_url.php');
+
     $dom = ZLanguage::getModuleDomain('Clip');
 
     $tid = (int)$params['tid'];
@@ -29,7 +31,10 @@ function smarty_function_clip_admin_submenu($params, $view)
 
     // build the output
     $output  = '<div class="z-menu"><span class="z-menuitem-title">';
-    $output .= '<span class="clip-option">'.DataUtil::formatForDisplay($pubtype['title']).'</span><span class="clip-option">&raquo;</span>';
+    $output .= '<span class="clip-option">';
+    $args = array('func' => 'pubtypeinfo', 'args' => array('tid' => $tid));
+    $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.DataUtil::formatForDisplay($pubtype['title']).'</a>';
+    $output .= '</span><span class="clip-option">&raquo;</span>';
 
     $func = FormUtil::getPassedValue('func', 'main');
 
@@ -61,23 +66,30 @@ function smarty_function_clip_admin_submenu($params, $view)
     // pub list link
     $output .= '<span>';
     if ($func != 'publist') {
-        $output .= DataUtil::formatForDisplayHTML('<a href="'.ModUtil::url('Clip', 'admin', 'publist', array('tid' => $tid)).'">'.__('Publication list', $dom).'</a>');
+        $args = array('func' => 'publist', 'args' => array('tid' => $tid));
+        $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.__('Publication list', $dom).'</a>';
     } else {
-        $output .= DataUtil::formatForDisplayHTML('<a>'.__('Publication list', $dom).'</a>');
+        $output .= '<a>'.__('Publication list', $dom).'</a>';
     }
 
     // show code links
+    $args = array('func' => 'showcode', 'args' => array('tid' => $tid, 'mode' => 'input'));
     if ($func == 'showcode') {
         $output .= '<br />';
         $output .= '<span class="clip-option">'.DataUtil::formatForDisplay(__('Generate templates', $dom)).'</span><span class="clip-option">&raquo;</span>';
-        $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input'))).'">') . __('Input template', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputlist'))).'">') . __('List template', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'outputfull'))).'">') . __('Display template', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'blocklist'  ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'blocklist'))).'">') . __('List block', $dom).'</a></span> | ';
-        $output .= '<span>'.($params['mode'] == 'blockpub'   ? '<a>' : '<a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'blockpub'))).'">') . __('Pub block', $dom).'</a></span>';
+        $args['args']['mode'] = 'input';
+        $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Input template', $dom).'</a></span> | ';
+        $args['args']['mode'] = 'outputlist';
+        $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('List template', $dom).'</a></span> | ';
+        $args['args']['mode'] = 'outputfull';
+        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Display template', $dom).'</a></span> | ';
+        $args['args']['mode'] = 'blocklist';
+        $output .= '<span>'.($params['mode'] == 'blocklist'  ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('List block', $dom).'</a></span> | ';
+        $args['args']['mode'] = 'blockpub';
+        $output .= '<span>'.($params['mode'] == 'blockpub'   ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Pub block', $dom).'</a></span>';
     } else {
         $output .= '</span> | ';
-        $output .= '<span>'.DataUtil::formatForDisplayHTML('<a href="'.ModUtil::url('Clip', 'admin', 'showcode', array('tid' => $tid, 'mode' => 'input')).'">'.__('Generate templates', $dom).'</a>').'</span>';
+        $output .= '<span><a href="'.smarty_function_clip_url($args, $view).'">'.__('Generate templates', $dom).'</a></span>';
     }
 
     $output .= '</span></div>';

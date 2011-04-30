@@ -1,4 +1,8 @@
 
+<h2>{gt text='Show code'}</h2>
+
+{clip_submenu tid=$pubtype.tid mode=$mode}
+
 {switch expr=$mode}
     {case expr='input'}
         {assign var='cliptplname' value='form_all.tpl'}

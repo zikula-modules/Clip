@@ -8,7 +8,7 @@
 
     <h2>{gt text='Manage Publication fields'}</h2>
 
-    {clip_admin_submenu tid=$tid field=1}
+    {clip_submenu tid=$tid field=1}
 
     <p class="z-informationmsg">{gt text='You can order the fields using Drag and Drop on the following list.'}</p>
 
