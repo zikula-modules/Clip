@@ -83,7 +83,7 @@
 <div id="p{$pubtype.tid}code" class="clip-infotab">
     <ul>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='input'}">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid code='form'}">
                 {gt text='Form'}
             </a>
             <span>
@@ -91,7 +91,7 @@
             </span>
         </li>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='outputlist'}">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid code='list'}">
                 {gt text='List'}
             </a>
             <span>
@@ -99,7 +99,7 @@
             </span>
         </li>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='outputfull'}">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid code='display'}">
                 {gt text='Display'}
             </a>
             <span>

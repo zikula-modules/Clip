@@ -156,6 +156,8 @@ pre.clip-showcode {
   background: #222;
   border: 1px solid #ccc;
   color: #fff;
+  letter-spacing: -0.04em;
+  line-height: 1.1em;
   margin: 2em 1em 1em;
   padding: 0 1em;
 }

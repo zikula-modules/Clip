@@ -1,23 +1,23 @@
 
 <h2>{gt text='Show code'}</h2>
 
-{clip_submenu tid=$pubtype.tid mode=$mode}
+{clip_submenu tid=$pubtype.tid code=$code}
 
-{switch expr=$mode}
-    {case expr='input'}
+{switch expr=$code}
+    {case expr='form'}
         {assign var='cliptplname' value='form_all.tpl'}
         {assign var='clipfolder' value=$pubtype.inputset}
         <h3>{gt text='Input form template'}</h3>
     {/case}
-    {case expr='outputlist'}
+    {case expr='list'}
         {assign var='cliptplname' value='list.tpl'}
         {assign var='clipfolder' value=$pubtype.outputset}
-        <h3>{gt text='Publication list template'}</h3>
+        <h3>{gt text='List template'}</h3>
     {/case}
-    {case expr='outputfull'}
+    {case expr='display'}
         {assign var='cliptplname' value='display.tpl'}
         {assign var='clipfolder' value=$pubtype.outputset}
-        <h3>{gt text='Publication display template'}</h3>
+        <h3>{gt text='Display template'}</h3>
     {/case}
 {/switch}
 
@@ -27,4 +27,4 @@
 </p>
 {/if}
 
-<pre class="clip-showcode">{$code}</pre>
+<pre class="clip-showcode">{$output}</pre>

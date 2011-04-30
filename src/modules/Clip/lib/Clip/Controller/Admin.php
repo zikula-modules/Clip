@@ -251,51 +251,51 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         //// Parameters
         $args = array(
             'tid'  => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
-            'mode' => isset($args['mode']) ? $args['mode'] : FormUtil::getPassedValue('mode')
+            'code' => isset($args['code']) ? $args['code'] : FormUtil::getPassedValue('code')
         );
 
         //// Validation
         if ($args['tid'] <= 0) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
-        if (empty($args['mode'])) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'mode'));
+        if (empty($args['code'])) {
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'code'));
         }
 
         //// Execution
         // get the code depending of the mode
-        switch ($args['mode'])
+        switch ($args['code'])
         {
-            case 'input':
-                $code = Clip_Generator::pubedit($args['tid']);
+            case 'form':
+                $output = Clip_Generator::pubedit($args['tid']);
                 break;
 
-            case 'outputfull':
-                $code = Clip_Generator::pubdisplay($args['tid'], false);
-                break;
-
-            case 'outputlist':
+            case 'list':
                 $path = $this->view->get_template_path('clip_generic_list.tpl');
-                $code = file_get_contents($path.'/clip_generic_list.tpl');
+                $output = file_get_contents($path.'/clip_generic_list.tpl');
                 break;
 
-            case 'blockpub':
-                $code = Clip_Generator::pubdisplay($args['tid'], false, true);
+            case 'display':
+                $output = Clip_Generator::pubdisplay($args['tid'], false);
                 break;
 
             case 'blocklist':
                 $path = $this->view->get_template_path('clip_generic_blocklist.tpl');
-                $code = file_get_contents($path.'/clip_generic_blocklist.tpl');
+                $output = file_get_contents($path.'/clip_generic_blocklist.tpl');
+                break;
+
+            case 'blockpub':
+                $output = Clip_Generator::pubdisplay($args['tid'], false, true);
                 break;
         }
 
         // code cleaning
-        $code = DataUtil::formatForDisplay($code);
-        $code = str_replace("\n", '<br />', $code);
+        $output = DataUtil::formatForDisplay($output);
+        $output = str_replace("\n", '<br />', $output);
 
         //// Output
-        $this->view->assign('code',    $code)
-                   ->assign('mode',    $args['mode'])
+        $this->view->assign('code',    $args['code'])
+                   ->assign('output',  $output)
                    ->assign('pubtype', Clip_Util::getPubType($args['tid']));
 
         return $this->view->fetch("clip_base_showcode.tpl");

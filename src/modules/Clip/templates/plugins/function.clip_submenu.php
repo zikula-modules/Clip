@@ -73,20 +73,20 @@ function smarty_function_clip_submenu($params, $view)
     }
 
     // show code links
-    $args = array('func' => 'showcode', 'args' => array('tid' => $tid, 'mode' => 'input'));
+    $args = array('func' => 'showcode', 'args' => array('tid' => $tid, 'code' => 'form'));
     if ($func == 'showcode') {
         $output .= '<br />';
         $output .= '<span class="clip-option">'.DataUtil::formatForDisplay(__('Generate templates', $dom)).'</span><span class="clip-option">&raquo;</span>';
-        $args['args']['mode'] = 'input';
-        $output .= '<span>'.($params['mode'] == 'input'      ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Input template', $dom).'</a></span> | ';
-        $args['args']['mode'] = 'outputlist';
-        $output .= '<span>'.($params['mode'] == 'outputlist' ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('List template', $dom).'</a></span> | ';
-        $args['args']['mode'] = 'outputfull';
-        $output .= '<span>'.($params['mode'] == 'outputfull' ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Display template', $dom).'</a></span> | ';
-        $args['args']['mode'] = 'blocklist';
-        $output .= '<span>'.($params['mode'] == 'blocklist'  ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('List block', $dom).'</a></span> | ';
-        $args['args']['mode'] = 'blockpub';
-        $output .= '<span>'.($params['mode'] == 'blockpub'   ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Pub block', $dom).'</a></span>';
+        $args['args']['code'] = 'form';
+        $output .= '<span>'.($params['code'] == 'form'      ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Input template', $dom).'</a></span> | ';
+        $args['args']['code'] = 'list';
+        $output .= '<span>'.($params['code'] == 'list'      ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('List template', $dom).'</a></span> | ';
+        $args['args']['code'] = 'display';
+        $output .= '<span>'.($params['code'] == 'display'   ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Display template', $dom).'</a></span> | ';
+        $args['args']['code'] = 'blocklist';
+        $output .= '<span>'.($params['code'] == 'blocklist' ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('List block', $dom).'</a></span> | ';
+        $args['args']['code'] = 'blockpub';
+        $output .= '<span>'.($params['code'] == 'blockpub'  ? '<a>' : '<a href="'.smarty_function_clip_url($args, $view).'">') . __('Pub block', $dom).'</a></span>';
     } else {
         $output .= '</span> | ';
         $output .= '<span><a href="'.smarty_function_clip_url($args, $view).'">'.__('Generate templates', $dom).'</a></span>';

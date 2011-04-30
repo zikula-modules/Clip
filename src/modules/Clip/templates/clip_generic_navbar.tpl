@@ -98,15 +98,15 @@
     <div class="z-warningmsg">
         {switch expr=$section}
             {case expr='list'}
-                {modurl modname='Clip' type='admin' func='showcode' mode='outputlist' tid=$pubtype.tid assign='urlplcode'}
+                {modurl modname='Clip' type='admin' func='showcode' code='list' tid=$pubtype.tid assign='urlplcode'}
                 {gt text='This is a generic template. Your can <a href="%1$s">get the list template code</a> of this publication type, create the <strong>list.tpl</strong> file, customized it, and store it in the the config directory: <strong>/config/templates/Clip/%2$s/list.tpl</strong> or within your theme: <strong>/templates/modules/Clip/%2$s/list.tpl</strong>.' tag1=$urlplcode|safetext tag2=$pubtype.outputset|safetext}
             {/case}
             {case expr='display'}
-                {modurl modname='Clip' type='admin' func='showcode' mode='outputfull' tid=$pubtype.tid assign='urlpvcode'}
+                {modurl modname='Clip' type='admin' func='showcode' code='display' tid=$pubtype.tid assign='urlpvcode'}
                 {gt text='This is a generic template. Your can <a href="%1$s">get the display template code</a> of this publication type, create the <strong>display.tpl</strong> file, customize it, and store it in the the config directory: <strong>/config/templates/Clip/%2$s/display.tpl</strong> or within your theme: <strong>/templates/modules/Clip/%2$s/display.tpl</strong>.' tag1=$urlpvcode|safetext tag2=$pubtype.outputset|safetext}
             {/case}
             {case expr='form'}
-                {modurl modname='Clip' type='admin' func='showcode' mode='input' tid=$pubtype.tid assign='urlpecode'}
+                {modurl modname='Clip' type='admin' func='showcode' code='form' tid=$pubtype.tid assign='urlpecode'}
                 {gt text='This is a generic template. Your can <a href="%1$s">get the form template code</a> of this publication type, and create individual templates (<strong>form_<em>STEPNAME</em>.tpl</strong> or a general <strong>form_all.tpl</strong>), then store them in the the config directory: <strong>/config/templates/Clip/%2$s/form_<em>STEPNAME</em>.tpl</strong> or within your theme: <strong>/templates/modules/Clip/%2$s/form_<em>STEPNAME</em>.tpl</strong>.' tag1=$urlpecode|safetext tag2=$pubtype.inputset|safetext}
             {/case}
         {/switch}
