@@ -200,6 +200,7 @@ Zikula.Clip.AttachMenu = function () {
         }
     });
     /* Pubtype links */
+    /*
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Edit'),
         condition: function() {
@@ -233,6 +234,7 @@ Zikula.Clip.AttachMenu = function () {
             Zikula.Clip.AjaxRequest({'withtid1':tid, 'op':'or', 'withtid2':tid}, 'relations');
         }
     });
+    */
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Code'),
         condition: function() {
@@ -241,9 +243,21 @@ Zikula.Clip.AttachMenu = function () {
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'tid':tid}, 'showcode');
+            Zikula.Clip.AjaxRequest({'tid':tid, 'code':'list'}, 'showcode');
         }
     });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Admin list'),
+        condition: function() {
+            return !Zikula.Clip.ContextMenu.isGrouptype;
+        },
+        callback: function(node) {
+            node.insert({after: Zikula.Clip.Indicator()});
+            var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
+            Zikula.Clip.AjaxRequest({'tid':tid}, 'publist');
+        }
+    });
+    /*
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('New publication'),
         condition: function() {
@@ -255,6 +269,7 @@ Zikula.Clip.AttachMenu = function () {
             Zikula.Clip.AjaxRequest({'tid':tid}, 'edit');
         }
     });
+    */
 };
 
 Zikula.Clip.MenuAction = function(node, action) {

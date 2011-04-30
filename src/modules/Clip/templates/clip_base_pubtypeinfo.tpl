@@ -107,7 +107,7 @@
             </span>
         </li>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='blocklist'}">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid code='blocklist'}">
                 {gt text='List block'}
             </a>
             <span>
@@ -115,7 +115,7 @@
             </span>
         </li>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='blockpub'}">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid code='blockpub'}">
                 {gt text='Publication block'}
             </a>
             <span>
