@@ -16,5 +16,5 @@ EventUtil::getManager()->attach('module_dispatch.postexecute', array('Clip_Event
 $modinfo = ModUtil::getInfoFromName('Clip');
 
 if ($modinfo['state'] == ModUtil::STATE_ACTIVE) {
-    Clip_Generator::loadDataClasses();
+    Clip_Generator::loadModelClasses();
 }

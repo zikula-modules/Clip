@@ -106,7 +106,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 // create/edit status messages
                 if (empty($this->tid)) {
                     // create the table
-                    Clip_Generator::loadDataClasses(true);
+                    Clip_Generator::loadModelClasses(true);
                     Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubtype->tid)->createTable();
 
                     LogUtil::registerStatus($this->__('Done! Publication type created. Now you can proceed to define its fields.'));
@@ -139,7 +139,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 }
 
                 // create the cloned table
-                Clip_Generator::loadDataClasses(true);
+                Clip_Generator::loadModelClasses(true);
                 Doctrine_Core::getTable('Clip_Model_Pubdata'.$newpubtype->tid)->createTable();
 
                 // status message

@@ -144,7 +144,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
      */
     public function uninstall()
     {
-        Clip_Generator::loadDataClasses();
+        Clip_Generator::loadModelClasses();
 
         // drop pubtype tables
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
@@ -648,7 +648,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         }
 
         // 3. migrate the data to the relations
-        Clip_Generator::loadDataClasses();
+        Clip_Generator::loadModelClasses();
         // update the pubdata tables
         $existingtables = DBUtil::metaTables();
         foreach (array_keys($pubtypes) as $tid) {
@@ -782,7 +782,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $sql[] = "UPDATE $table SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
 
         // update the pubtypes table
-        Clip_Generator::loadDataClasses();
+        Clip_Generator::loadModelClasses();
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->changeTable();

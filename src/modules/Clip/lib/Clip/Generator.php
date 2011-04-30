@@ -651,7 +651,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         }
     }
 
-    public static function loadDataClasses($force = false)
+    public static function loadModelClasses($force = false)
     {
         static $loaded = array();
 

@@ -149,7 +149,7 @@ class Clip_Import_Batch
             case 'pubdata':
                 if (!self::$tablescreated) {
                     // recreate models once the field has been added
-                    Clip_Generator::loadDataClasses(true);
+                    Clip_Generator::loadModelClasses(true);
                     // create the new tables
                     foreach (self::$idmap['tids'] as $tid) {
                         Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
