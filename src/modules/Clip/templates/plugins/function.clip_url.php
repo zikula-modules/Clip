@@ -20,10 +20,10 @@
  *
  * @return string
  */
-function smarty_function_clip_url($params, &$smarty)
+function smarty_function_clip_url($params, &$view)
 {
     $params['modname'] = 'Clip';
-    $params['type']    = $smarty->getRequest()->getControllerName();
+    $params['type']    = $view->getRequest()->getControllerName();
 
     // dispatch any non-ajax request with modurl
     if ($params['type'] != 'ajax') {
@@ -31,7 +31,7 @@ function smarty_function_clip_url($params, &$smarty)
         unset($params['args']);
         $params = array_merge($params, $args);
 
-        return smarty_function_modurl($params, $smarty);
+        return smarty_function_modurl($params, $view);
     }
 
     // process the internal Clip ajax request output

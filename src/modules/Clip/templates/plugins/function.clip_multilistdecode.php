@@ -12,7 +12,7 @@
 /**
  * Plugin to be used on display templates.
  */
-function smarty_function_clip_multilistdecode($params, &$smarty)
+function smarty_function_clip_multilistdecode($params, &$view)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -31,7 +31,7 @@ function smarty_function_clip_multilistdecode($params, &$smarty)
     $html .= $list ? '</ul>' : '';
 
     if (isset($params['assign'])) {
-        $smarty->assign($params['assign'], $html);
+        $view->assign($params['assign'], $html);
     } else {
         return $html;
     }

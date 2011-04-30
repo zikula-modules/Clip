@@ -26,7 +26,7 @@
 
  * @return html of category tree
  */
-function smarty_function_clip_category_browser($params, &$smarty)
+function smarty_function_clip_category_browser($params, &$view)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -217,7 +217,7 @@ function smarty_function_clip_category_browser($params, &$smarty)
     $html = $render->fetch($template, $cacheid);
 
     if ($assign) {
-        $smarty->assign($assign, $html);
+        $view->assign($assign, $html);
     } else {
         return $html;
     }

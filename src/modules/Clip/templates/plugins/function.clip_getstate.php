@@ -19,7 +19,7 @@
  *
  * @return string
  */
-function smarty_function_clip_getstate($params, &$smarty)
+function smarty_function_clip_getstate($params, &$view)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -40,7 +40,7 @@ function smarty_function_clip_getstate($params, &$smarty)
     Zikula_Workflow_Util::getWorkflowForObject($pub, $tablename, 'id', 'Clip');
 
     if (isset($params['assign'])) {
-        $smarty->assign($params['assign'], $pub['__WORKFLOW__']);
+        $view->assign($params['assign'], $pub['__WORKFLOW__']);
     } else {
         return $pub['__WORKFLOW__'];
     }
