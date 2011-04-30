@@ -57,6 +57,17 @@ class Clip_Generator
                 'body'  => ''
             );
 
+            // check for relation fields
+            if ($recfield == 'relation') {
+                $rowcode['full'] =
+                    '    {if $pubdata.'.$key.' AND count($pubdata.'.$key.')}'."\n".
+                    '        <div class="z-formrow">'."\n".
+                    '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
+                    '            <pre class="z-formnote">{clip_array array=$pubdata.'.$key.'->toArray()}</pre>'."\n".
+                    '        </div>'."\n".
+                    '    {/if}';
+            }
+
             // check if field is to handle special
             if (isset($pubfields[$key])) {
                 // $key is $field.name
@@ -98,7 +109,8 @@ class Clip_Generator
 
                         // reads
                         case 'core_hitcount':
-                            $rowcode['body'] = '{gt text=\'%s read\' plural=\'%s reads\' count=$pubdata.'.$key.' tag1=$pubdata.'.$key.'}';
+                            $rowcode['body'] = "\n".
+                                '        <span class="z-formnote">{gt text=\'%s read\' plural=\'%s reads\' count=$pubdata.'.$key.' tag1=$pubdata.'.$key.'}</span>';
                             break;
 
                         // language
@@ -107,9 +119,9 @@ class Clip_Generator
                                 '    <div class="z-formrow">'."\n".
                                 '        <span class="z-label">'.$rowcode['label'].'</span>'."\n".
                                 '            {if !empty($pubdata.'.$key.')}'."\n".
-                                '                <span class="z-formnote">{$pubdata.'.$key.'|getlanguagename}<span>'."\n".
+                                '                <span class="z-formnote">{$pubdata.'.$key.'|getlanguagename}</span>'."\n".
                                 '            {else}'."\n".
-                                '                <span class="z-formnote">{gt text=\''.no__('Available for all languages').'\'}<span>'."\n".
+                                '                <span class="z-formnote">{gt text=\''.no__('Available for all languages').'\'}</span>'."\n".
                                 '            {/if}'."\n".
                                 '        </span>'."\n".
                                 '    </div>';
@@ -121,7 +133,8 @@ class Clip_Generator
                         case 'core_indepot':
                         case 'core_showinmenu':
                         case 'core_showinlist':
-                            $rowcode['body'] = '{$pubdata.'.$key.'|yesno}';
+                            $rowcode['body'] = "\n".
+                                '        <span class="z-formnote">{$pubdata.'.$key.'|yesno}</span>';
                             break;
 
                         // user ids
@@ -129,9 +142,10 @@ class Clip_Generator
                         case 'cr_uid':
                         case 'lu_uid':
                             $rowcode['body'] = "\n".
-                                '                {$pubdata.'.$key.'|profilelinkbyuid}'."\n".
-                                '                <span class="z-sub">[{$pubdata.'.$key.'|safehtml}]</span>'."\n".
-                                '            ';
+                                '        <span class="z-formnote">'."\n".
+                                '            {$pubdata.'.$key.'|profilelinkbyuid}'."\n".
+                                '            <span class="z-sub">[{$pubdata.'.$key.'|safehtml}]</span>'."\n".
+                                '        </span>';
                             break;
 
                         // dates
@@ -139,46 +153,35 @@ class Clip_Generator
                         case 'core_expiredate':
                         case 'cr_date':
                         case 'lu_date':
-                            $rowcode['body'] = '{$pubdata.'.$key.'|dateformat:\'datetimelong\'}';
+                            $rowcode['body'] = "\n".
+                                '        <span class="z-formnote">{$pubdata.'.$key.'|dateformat:\'datetimelong\'}</span>';
                             break;
 
                         default:
                             if (is_array($pubdata[$key])) {
                                 // generic arrays
-                                $rowcode['body'] = '<pre>{clip_array array=$pubdata.'.$key.'}</pre>';
+                                $rowcode['body'] = "\n".
+                                    '        <pre class="z-formnote">{clip_array array=$pubdata.'.$key.'}</pre>';
 
                             } elseif (is_bool($pubdata[$key])) {
                                 // generic booleans
-                                $rowcode['body'] = '{$pubdata.'.$key.'|yesno}';
+                                $rowcode['body'] = "\n".
+                                    '        <span class="z-formnote">{$pubdata.'.$key.'|yesno}</span>';
 
                             } else {
                                 // generic strings
-                                $rowcode['body'] = '{$pubdata.'.$key.'|safetext}';
+                                $rowcode['body'] = "\n".
+                                    '        <span class="z-formnote">{$pubdata.'.$key.'|safetext}</span>';
                             }
                     }
-                }
-
-                // check for relation fields
-                if ($recfield == 'relation') {
-                    $rowcode['body'] = '<pre>{clip_array array=$pubdata.'.$key.'->toArray()}</pre>';
-                    $rowcode['full'] =
-                        '    {if $pubdata.'.$key.' AND count($pubdata.'.$key.')}'."\n".
-                        '        <div class="z-formrow">'."\n".
-                        '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
-                        '            <span class="z-formnote">'.$rowcode['body'].'<span>'."\n".
-                        '        </div>'."\n".
-                        '    {/if}';
                 }
 
                 // build the final row if not filled
                 if (empty($rowcode['full'])) {
                     $rowcode['full'] =
-                        '    {if $pubdata.'.$key.'}'."\n".
-                        '        <div class="z-formrow">'."\n".
-                        '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
-                        '            <span class="z-formnote">'.$rowcode['body'].'<span>'."\n".
-                        '        </div>'."\n".
-                        '    {/if}';
+                        '    <div class="z-formrow">'."\n".
+                        '        <span class="z-label">'.$rowcode['label'].'</span>'.$rowcode['body']."\n".
+                        '    </div>';
                 }
             }
 
@@ -191,13 +194,13 @@ class Clip_Generator
             $code .= '</div>'."\n".
                 "\n".
                 '<div class="clip-display-hooks">'."\n".
-                '    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module=\'Clip\'}'.
-                '</div>'."\n".
-                "\n";
+                '    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module=\'Clip\'}'."\n".
+                '</div>';
         } else {
             $code .= '    </div>'."\n".
                      '</div>';
         }
+        $code .= "\n\n";
 
         // if the template is a public output
         if ($public) {

@@ -246,18 +246,20 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
     static function getPluginOutput($field)
     {
-        $full = '    {if $pubdata.'.$field['name'].'.url}'."\n".
-                '        <div class="z-formrow">'."\n".
-                '            <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+        $full = '    <div class="z-formrow">'."\n".
+                '        <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '        {if $pubdata.'.$field['name'].'.url}'."\n".
                 '            <span class="z-formnote">'."\n".
                 '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
               //'                <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
               //'                <br />'."\n".
                 '                <img width="250" src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
                 '                <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
-                '            <span>'."\n".
-                '        </div>'."\n".
-                '    {/if}';
+                '            </span>'."\n".
+                '        {else}'."\n".
+                '            <span class="z-formnote">{gt text=\''.no__('No image uploaded.').'\'}</span>'."\n".
+                '        {/if}'."\n".
+                '    </div>';
 
         return array('full' => $full);
     }

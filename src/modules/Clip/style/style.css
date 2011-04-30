@@ -159,6 +159,7 @@ pre.clip-showcode {
   letter-spacing: -0.04em;
   line-height: 1.1em;
   margin: 2em 1em 1em;
+  overflow: hidden;
   padding: 0 1em;
 }
 

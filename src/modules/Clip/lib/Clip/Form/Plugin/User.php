@@ -177,11 +177,12 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $this->parseConfig($field['typedata']);
 
         $body = "\n".
-            '                {foreach from=$pubdata.'.$field['name'].' key=\'pubuid\' item=\'pubuname\'}'."\n".
-            '                    {$pubuname|profilelinkbyuname}'."\n".
-            '                    <span class="z-sub">[{$pubuid|safehtml}]</span><br />'."\n".
-            '                {/foreach}'."\n".
-            '            ';
+            '        <span class="z-formnote">'."\n".
+            '            {foreach from=$pubdata.'.$field['name'].' key=\'pubuid\' item=\'pubuname\'}'."\n".
+            '                {$pubuname|profilelinkbyuname}'."\n".
+            '                <span class="z-sub">[{$pubuid|safehtml}]</span><br />'."\n".
+            '            {/foreach}'."\n".
+            '        </span>';
 
         return array('body' => $body);
     }

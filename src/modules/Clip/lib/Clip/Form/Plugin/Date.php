@@ -50,7 +50,8 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
         $this->parseConfig($field['typedata']);
         $format = $this->config['includeTime'] ? 'datetimelong' : 'datelong';
 
-        $body = '{$pubdata.'.$field['name']."|dateformat:'$format'}";
+        $body = "\n".
+            '        <span class="z-formnote">{$pubdata.'.$field['name']."|dateformat:'$format'}</span>";
 
         return array('body' => $body);
     }
