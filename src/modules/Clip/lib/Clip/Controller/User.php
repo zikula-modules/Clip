@@ -116,8 +116,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // set the output info
         $this->view->setCache_Id($cacheid)
-                   ->setCaching($cachetid)
-                   ->add_core_data();
+                   ->setCaching($cachetid);
 
         if ($cachetid && $this->view->is_cached($args['template'], $cacheid)) {
             return $this->view->fetch($args['template'], $cacheid);
@@ -247,8 +246,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // build the output
         $this->view->setCaching($cachetid)
-                   ->setCache_Id($cacheid)
-                   ->add_core_data();
+                   ->setCache_Id($cacheid);
 
         if ($cachetid && $this->view->is_cached($args['template'], $cacheid)) {
             return $this->view->fetch($args['template'], $cacheid);

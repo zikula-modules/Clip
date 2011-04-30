@@ -56,8 +56,7 @@ class Clip_Controller_Import extends Zikula_AbstractController
         $numpubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectCount();
 
         // build and return the output
-        $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false)
-                   ->add_core_data();
+        $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false);
 
         return $this->view->fetch('clip_import_ps.tpl');
     }

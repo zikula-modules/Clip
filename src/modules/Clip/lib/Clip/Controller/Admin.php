@@ -25,8 +25,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $treejscode = Clip_Util::getGrouptypesTreeJS(null, true, true);
 
         //// Output
-        $this->view->assign('treejscode', $treejscode)
-                   ->add_core_data();
+        $this->view->assign('treejscode', $treejscode);
 
         return $this->view->fetch('clip_admin_main.tpl');
     }
@@ -184,8 +183,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         //// Output
         $this->view->assign('pubtype', $pubtype)
                    ->assign('publist', $result['publist'])
-                   ->assign('clipargs',  Clip_Util::getArgs())
-                   ->add_core_data();
+                   ->assign('clipargs',  Clip_Util::getArgs());
 
         // assign the pager values
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
