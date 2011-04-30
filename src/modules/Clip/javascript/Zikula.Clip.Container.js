@@ -159,13 +159,15 @@ Zikula.Clip.AttachMenu = function () {
             }
             var node = event.findElement('a').up('li');
             var id   = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
-            if (id != parseInt(id)) {
-                throw $break;
-            }
+            Zikula.Clip.ContextMenu.isGrouptype = (id != parseInt(id)) ? false : true;
         }
     });
+    /* Grouptype links */
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Edit'),
+        condition: function() {
+            return Zikula.Clip.ContextMenu.isGrouptype;
+        },
         callback: function(node) {
             Zikula.Clip.MenuAction(node, 'edit');
         }
@@ -173,7 +175,7 @@ Zikula.Clip.AttachMenu = function () {
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Delete'),
         condition: function() {
-            return !Zikula.Clip.ContextMenu.lastClick.findElement('a').up('li').down('ul');
+            return Zikula.Clip.ContextMenu.isGrouptype && !Zikula.Clip.ContextMenu.lastClick.findElement('a').up('li').down('ul');
         },
         callback: function(node){
             Zikula.Clip.DeleteMenuAction(node);
@@ -181,14 +183,76 @@ Zikula.Clip.AttachMenu = function () {
     });
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Add group (after selected)'),
+        condition: function() {
+            return Zikula.Clip.ContextMenu.isGrouptype;
+        },
         callback: function(node){
             Zikula.Clip.MenuAction(node, 'addafter');
         }
     });
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Add subgroup (into selected)'),
+        condition: function() {
+            return Zikula.Clip.ContextMenu.isGrouptype;
+        },
         callback: function(node){
             Zikula.Clip.MenuAction(node, 'addchild');
+        }
+    });
+    /* Pubtype links */
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Edit'),
+        condition: function() {
+            return !Zikula.Clip.ContextMenu.isGrouptype;
+        },
+        callback: function(node) {
+            node.insert({after: Zikula.Clip.Indicator()});
+            var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
+            Zikula.Clip.AjaxRequest({'tid':tid}, 'pubtype');
+        }
+    });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Fields'),
+        condition: function() {
+            return !Zikula.Clip.ContextMenu.isGrouptype;
+        },
+        callback: function(node) {
+            node.insert({after: Zikula.Clip.Indicator()});
+            var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
+            Zikula.Clip.AjaxRequest({'tid':tid}, 'pubfields');
+        }
+    });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Relations'),
+        condition: function() {
+            return !Zikula.Clip.ContextMenu.isGrouptype;
+        },
+        callback: function(node) {
+            node.insert({after: Zikula.Clip.Indicator()});
+            var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
+            Zikula.Clip.AjaxRequest({'withtid1':tid, 'op':'or', 'withtid2':tid}, 'relations');
+        }
+    });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('Code'),
+        condition: function() {
+            return !Zikula.Clip.ContextMenu.isGrouptype;
+        },
+        callback: function(node) {
+            node.insert({after: Zikula.Clip.Indicator()});
+            var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
+            Zikula.Clip.AjaxRequest({'tid':tid}, 'showcode');
+        }
+    });
+    Zikula.Clip.ContextMenu.addItem({
+        label: Zikula.__('New publication'),
+        condition: function() {
+            return !Zikula.Clip.ContextMenu.isGrouptype;
+        },
+        callback: function(node) {
+            node.insert({after: Zikula.Clip.Indicator()});
+            var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
+            Zikula.Clip.AjaxRequest({'tid':tid}, 'edit');
         }
     });
 };
