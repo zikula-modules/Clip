@@ -10,7 +10,7 @@
  */
 
 // handler to decorate the some outputs
-EventUtil::getManager()->attach('module_dispatch.postexecute', array('Clip_EventHandler', 'decorateOutput'));
+EventUtil::getManager()->attach('module_dispatch.postexecute', array('Clip_EventHandler_Listeners', 'decorateOutput'));
 
 // load models check
 $modinfo = ModUtil::getInfoFromName('Clip');
