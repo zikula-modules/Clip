@@ -5,12 +5,12 @@
     <thead>
         <tr>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'core_pid':'class'}" href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, orderby:'{$pubtype.orderby|clip_orderby:'core_pid'}'{rdelim}, 'publist')">
+                <a class="{$pubtype.orderby|clip_orderby:'core_pid':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_pid'}">
                     {gt text='PID'}
                 </a>
             </th>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'core_title':'class'}" href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, orderby:'{$pubtype.orderby|clip_orderby:'core_title'}'{rdelim}, 'publist')">
+                <a class="{$pubtype.orderby|clip_orderby:'core_title':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_title'}">
                     {gt text='Title'}
                 </a>
             </th>
@@ -21,7 +21,7 @@
                 {gt text='State'}
             </th>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'core_author':'class'}" href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, orderby:'{$pubtype.orderby|clip_orderby:'core_author'}'{rdelim}, 'publist')">
+                <a class="{$pubtype.orderby|clip_orderby:'core_author':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_author'}">
                     {gt text='Author'}
                 </a>
             </th>
@@ -29,12 +29,12 @@
                 {gt text='Online'}
             </th>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'cr_date':'class'}" href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, orderby:'{$pubtype.orderby|clip_orderby:'cr_date'}'{rdelim}, 'publist')">
+                <a class="{$pubtype.orderby|clip_orderby:'cr_date':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'cr_date'}">
                     {gt text='Creation date'}
                 </a>
             </th>
             <th>
-                <a class="{$pubtype.orderby|clip_orderby:'lu_date':'class'}" href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, orderby:'{$pubtype.orderby|clip_orderby:'lu_date'}'{rdelim}, 'publist')">
+                <a class="{$pubtype.orderby|clip_orderby:'lu_date':'class'}" href="{clip_url func='publist' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'lu_date'}">
                     {gt text='Update date'}
                 </a>
             </th>
@@ -74,8 +74,8 @@
             </td>
             <td>
                 <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid id=$pubitem.id goto='referer'}" title="{gt text='Edit'}">{img modname='core' src='xedit.png' set='icons/extrasmall' __title='Edit'}</a>&nbsp;
-                <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, id:{$pubitem.id}{rdelim}, 'display')" title="{gt text='View'}">{img modname='core' src='demo.png' set='icons/extrasmall' __title='View'}</a>&nbsp;
-                <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, pid:{$pubitem.core_pid}{rdelim}, 'history')" title="{gt text='History'}">{img modname='core' src='clock.png' set='icons/extrasmall' __title='History'}</a>
+                <a href="{clip_url func='display' tid=$pubtype.tid id=$pubitem.id}" title="{gt text='View'}">{img modname='core' src='demo.png' set='icons/extrasmall' __title='View'}</a>&nbsp;
+                <a href="{clip_url func='history' tid=$pubtype.tid pid=$pubitem.core_pid}" title="{gt text='History'}">{img modname='core' src='clock.png' set='icons/extrasmall' __title='History'}</a>
             </td>
         </tr>
         {foreachelse}

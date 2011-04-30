@@ -1,5 +1,5 @@
-{ajaxheader filename='clip_tree_grouptypes.js' ui=true}
 {pageaddvar name='stylesheet' value='system/Theme/style/pagercss.css'}
+{ajaxheader filename='Zikula.Clip.Container.js' ui=true}
 
 {include file='clip_admin_header.tpl'}
 

@@ -15,7 +15,7 @@
             </a>
         </li>
         <li>
-            <a class="z-bt-preview" href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}{rdelim}, 'publist')" title="{gt text='Go to the Admin publication list'}">
+            <a class="z-bt-preview" href="{clip_url func='publist' tid=$pubtype.tid}" title="{gt text='Go to the Admin publication list'}">
                 {gt text='Admin list'}
             </a>
         </li>
@@ -27,7 +27,7 @@
     </ul>
     <ul>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}{rdelim}, 'pubtype')" title="{gt text='Edit this publication type'}">
+            <a href="{clip_url func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
                 {gt text="Edit '%s'" tag1=$pubtype.title|safetext}
             </a>
             <p>
@@ -35,7 +35,7 @@
             </p>
         </li>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}{rdelim}, 'pubfields')" title="{gt text='Add, sort or modify the fields of this publication type'}">
+            <a href="{clip_url func='pubfields' tid=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
                 {gt text='Manage its fields'}
             </a>
             <p>
@@ -43,7 +43,7 @@
             </p>
         </li>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}withtid1:{$pubtype.tid}, op:'or', withtid2:{$pubtype.tid}{rdelim}, 'relations')" title="{gt text='Add, sort or modify the fields of this publication type'}">
+            <a href="{clip_url func='relations' withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
                 {gt text='Manage its relations'}
             </a>
             <p>
@@ -64,11 +64,11 @@
                         {gt text='Has many %s' tag1=$rinfo.title}
                     {/if}
                     {if $rinfo.own}
-                        <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}id:{$rinfo.id},  withtid1:{$pubtype.tid}, op:'and', withtid2:{$rinfo.tid}{rdelim}, 'relations')">
+                        <a href="{clip_url func='relations' id=$rinfo.id withtid1=$pubtype.tid op='and' withtid2=$rinfo.tid}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     {else}
-                        <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}id:{$rinfo.id},  withtid1:{$rinfo.tid}, op:'and', withtid2:{$pubtype.tid}{rdelim}, 'relations')">
+                        <a href="{clip_url func='relations' id=$rinfo.id withtid1=$rinfo.tid op='and' withtid2=$pubtype.tid}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     {/if}
@@ -83,7 +83,7 @@
 <div id="p{$pubtype.tid}code" class="clip-infotab">
     <ul>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, mode:'input'{rdelim}, 'showcode')">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='input'}">
                 {gt text='Form'}
             </a>
             <span>
@@ -91,7 +91,7 @@
             </span>
         </li>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, mode:'outputlist'{rdelim}, 'showcode')">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='outputlist'}">
                 {gt text='List'}
             </a>
             <span>
@@ -99,7 +99,7 @@
             </span>
         </li>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, mode:'outputfull'{rdelim}, 'showcode')">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='outputfull'}">
                 {gt text='Display'}
             </a>
             <span>
@@ -107,7 +107,7 @@
             </span>
         </li>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, mode:'blocklist'{rdelim}, 'showcode')">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='blocklist'}">
                 {gt text='List block'}
             </a>
             <span>
@@ -115,7 +115,7 @@
             </span>
         </li>
         <li>
-            <a href="javascript:Zikula.Clip.AjaxRequest({ldelim}tid:{$pubtype.tid}, mode:'blockpub'{rdelim}, 'showcode')">
+            <a href="{clip_url func='showcode' tid=$pubtype.tid mode='blockpub'}">
                 {gt text='Publication block'}
             </a>
             <span>
