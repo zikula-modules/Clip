@@ -289,17 +289,17 @@ class Clip_Controller_User extends Zikula_AbstractController
         Clip_Util::setArgs('user_display', $args);
 
         // resolve the permalink
-        $apiargs = Clip_Util::getArgs();
+        $apiargs = Clip_Util::getArgs('userapi_get');
         $returnurl = ModUtil::url('Clip', 'user', 'display',
-                                  array('tid' => $apiargs['userapi_get']['tid'],
-                                        'pid' => $apiargs['userapi_get']['pid']),
+                                  array('tid' => $apiargs['tid'],
+                                        'pid' => $apiargs['pid']),
                                   null, null, true);
 
         // assign the pubdata and pubtype to the output
-        $this->view->assign('pubdata', $pubdata)
-                   ->assign('pubtype', $pubtype)
-                   ->assign('clipargs', $apiargs)
-                   ->assign('returnurl', $returnurl);
+        $this->view->assign('pubdata',   $pubdata)
+                   ->assign('pubtype',   $pubtype)
+                   ->assign('returnurl', $returnurl)
+                   ->assign('clipargs',  Clip_Util::getArgs());
 
         //// Build the output
         // check if template is available

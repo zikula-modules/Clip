@@ -724,10 +724,14 @@ class Clip_Util
     /**
      * self::$args getter and setter
      */
-    public static function getArgs()
+    public static function getArgs($id=null)
     {
         $args = self::$args;
         self::$args = array();
+
+        if ($id && isset($args[$id])) {
+            return $args[$id];
+        }
 
         return $args;
     }
