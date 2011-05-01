@@ -38,19 +38,19 @@
         {assign var='tag1' value='index.php?module=Clip&type=user&func=view&tid=1&template=categories'|safehtml}
         {capture assign='tag2'}{ldelim}modfunc modname='Clip' type='user' func='view' tid=1 template='snippet'{rdelim}{/capture}
         <p class="z-informationmsg">
-            {gt text='You can also have custom templates like <strong>list_TEMPLATE.tpl</strong> depending of the <em>template</em> parameter passed.<br />For instance, <em>%1$s</em> will use <strong>list_categories.tpl</strong>,<br />and <em>%2$s</em> will use <strong>list_snippet.tpl</strong>.' tag1=$tag1 tag2=$tag2|safehtml}
+            {gt text='You can also have custom templates like <strong>list_TEMPLATE.tpl</strong> depending of the <var>template</var> parameter passed. For instance, <code>%1$s</code> will use <strong>list_categories.tpl</strong>, and <code>%2$s</code> will use <strong>list_snippet.tpl</strong>.' tag1=$tag1 tag2=$tag2|safehtml}
         </p>
     {/case}
     {case expr='display'}
         {assign var='tag1' value='index.php?module=Clip&type=user&func=display&tid=1&pid=1&template=mini'|safehtml}
         {capture assign='tag2'}{ldelim}modfunc modname='Clip' type='user' func='display' tid=1 pid=1 template='snippet'{rdelim}{/capture}
         <p class="z-informationmsg">
-            {gt text='You can also have custom templates like <strong>display_TEMPLATE.tpl</strong> depending of the <em>template</em> parameter passed.<br />For instance, <em>%1$s</em> will use <strong>display_mini.tpl</strong>,<br />and <em>%2$s</em> will use <strong>display_snippet.tpl</strong>.' tag1=$tag1 tag2=$tag2|safehtml}
+            {gt text='You can also have custom templates like <strong>display_TEMPLATE.tpl</strong> depending of the <var>template</var> parameter passed. For instance, <code>%1$s</code> will use <strong>display_mini.tpl</strong>, and <code>%2$s</code> will use <strong>display_snippet.tpl</strong>.' tag1=$tag1 tag2=$tag2|safehtml}
         </p>
     {/case}
     {case expr='form'}
         <p class="z-informationmsg">
-            {gt text='You can also have custom templates like <strong>form_custom_TEMPLATE.tpl</strong> depending of the <em>template</em> parameter passed; or have individual templates according to the current state of the publication workflow <strong>form_STATE.tpl</strong>, for instance: form_initial.tpl, form_approved.tpl, etc.'}
+            {gt text='You can also have custom templates like <strong>form_custom_TEMPLATE.tpl</strong> depending of the <var>template</var> parameter passed; or have individual templates according to the current state of the publication workflow <strong>form_STATE.tpl</strong>, for instance: form_initial.tpl, form_approved.tpl, etc.'}
         </p>
     {/case}
 {/switch}
