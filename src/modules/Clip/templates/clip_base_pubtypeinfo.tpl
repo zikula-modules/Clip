@@ -87,41 +87,41 @@
             <a href="{clip_url func='showcode' tid=$pubtype.tid code='form'}">
                 {gt text='Form'}
             </a>
-            <span>
+            <p>
                 {gt text='Get the input form code of this publication type.'}
-            </span>
+            </p>
         </li>
         <li>
             <a href="{clip_url func='showcode' tid=$pubtype.tid code='list'}">
                 {gt text='List'}
             </a>
-            <span>
+            <p>
                 {gt text='Get the list code of this publication type.'}
-            </span>
+            </p>
         </li>
         <li>
             <a href="{clip_url func='showcode' tid=$pubtype.tid code='display'}">
                 {gt text='Display'}
             </a>
-            <span>
+            <p>
                 {gt text='Get the display code of this publication type.'}
-            </span>
+            </p>
         </li>
         <li>
             <a href="{clip_url func='showcode' tid=$pubtype.tid code='blocklist'}">
                 {gt text='List block'}
             </a>
-            <span>
+            <p>
                 {gt text='Get the generic code for a publications List block.'}
-            </span>
+            </p>
         </li>
         <li>
             <a href="{clip_url func='showcode' tid=$pubtype.tid code='blockpub'}">
                 {gt text='Publication block'}
             </a>
-            <span>
+            <p>
                 {gt text='Get the generic code for a Publication block.'}
-            </span>
+            </p>
         </li>
     </ul>
 </div>
