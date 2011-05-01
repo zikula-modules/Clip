@@ -4,16 +4,20 @@
         {strip}
         {checkpermissionblock component='clip::' instance="::" level=ACCESS_ADMIN}
         <span>
-            <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}">
-                {img width='12' height='12' modname='core' src='mydocuments.png' set='icons/extrasmall' alt='' __title='Publication admin panel'}
-            </a>
-        </span>
-        <span>
-            <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubtype.tid}">
-                {img width='12' height='12' modname='core' src='editclear.png' set='icons/extrasmall' alt='' __title='Publication fields panel'}
+            <a href="{modurl modname='Clip' type='admin' func='index'}">
+                {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
             </a>
         </span>
         {/checkpermissionblock}
+        {*
+        {checkpermissionblock component='clip::' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
+        <span>
+            <a href="{modurl modname='Clip' type='editor' func='view' tid=$pubtype.tid}">
+                {img width='12' height='12' modname='core' src='lists.png' set='icons/extrasmall' alt='' __title='Editor panel'}
+            </a>
+        </span>
+        {/checkpermissionblock}
+        *}
 
         <span>&raquo;</span>
         {if $section neq 'list'}
@@ -31,13 +35,6 @@
         <span>
             <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Add a publication'}
-            </a>
-        </span>
-        {/checkpermissionblock}
-        {checkpermissionblock component='clip::' instance="`$pubtype.tid`::" level=ACCESS_EDIT}
-        <span>
-            <a href="{modurl modname='Clip' type='admin' func='publist' tid=$pubtype.tid}">
-                {img width='12' height='12' modname='core' src='14_layer_visible.png' set='icons/extrasmall' alt='' __title='Admin list'}
             </a>
         </span>
         {/checkpermissionblock}
