@@ -126,8 +126,8 @@
                         {formtextinput id='title1' group='relation' maxLength='100' mandatory=true}
                     </div>
                     <div class="z-formrow">
-                        {formlabel for='description1' __text='Description'}
-                        {formtextinput id='description1' maxLength='4000' group='relation'}
+                        {formlabel for='descr1' __text='Description'}
+                        {formtextinput id='descr1' maxLength='4000' group='relation'}
                     </div>
                 </fieldset>
                 <fieldset class="z-floatright z-w45">
@@ -141,8 +141,8 @@
                         {formtextinput id='title2' group='relation' maxLength='100' mandatory=true}
                     </div>
                     <div class="z-formrow">
-                        {formlabel for='description2' __text='Description'}
-                        {formtextinput id='description2' maxLength='4000' group='relation'}
+                        {formlabel for='descr2' __text='Description'}
+                        {formtextinput id='descr2' maxLength='4000' group='relation'}
                     </div>
                 </fieldset>
             </div>

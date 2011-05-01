@@ -4,7 +4,7 @@
         {strip}
         {checkpermissionblock component='clip::' instance="::" level=ACCESS_ADMIN}
         <span>
-            <a href="{modurl modname='Clip' type='admin' func='index'}">
+            <a href="{modurl modname='Clip' type='admin' func='main'}">
                 {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
             </a>
         </span>
@@ -46,14 +46,14 @@
                 {* edit check *}
                 {if isset($pubdata.id)}
                 <span>
-                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}">
-                        {$pubdata.core_title|truncate:30}
+                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}" title="{$pubdata.core_title}">
+                        {$pubdata.core_title|truncate:40}
                     </a>
                 </span>
                 {/if}
             {else}
-                <span class="clip-breadtext">
-                    {$pubdata.core_title}
+                <span class="clip-breadtext" title="{$pubdata.core_title}">
+                    {$pubdata.core_title|truncate:40}
                 </span>
                 {checkpermissionblock component='clip:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD}
                 <span>
@@ -71,9 +71,9 @@
 
                 <span class="clip-breadtext">
                     {if isset($pubdata.id)}
-                        {gt text='Edit form'}
+                        {gt text='Edit'}
                     {else}
-                        {gt text='Create form'}
+                        {gt text='Create'}
                     {/if}
                 </span>
             {/if}
