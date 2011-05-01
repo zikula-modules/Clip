@@ -58,10 +58,11 @@
                 <ul>
                 {foreach from=$pubtype->allrelations key='ralias' item='rinfo'}
                     <li>
+                    {gt text=$rinfo.title assign='reltitle'}
                     {if $rinfo.single}
-                        {gt text='Has one %s' tag1=$rinfo.title}
+                        {gt text='Has one %s' tag1=$reltitle}
                     {else}
-                        {gt text='Has many %s' tag1=$rinfo.title}
+                        {gt text='Has many %s' tag1=$reltitle}
                     {/if}
                     {if $rinfo.own}
                         <a href="{modurl modname='Clip' type='admin' func='relations' id=$rinfo.id withtid1=$pubtype.tid op='and' withtid2=$rinfo.tid}">

@@ -126,8 +126,6 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
         $relations = array();
 
-        $dom = ZLanguage::getModuleDomain('Clip');
-
         // load own
         $records = Clip_Util::getRelations($this->tid, true);
         foreach ($records as $relation) {
@@ -136,8 +134,8 @@ class Clip_Model_Pubtype extends Doctrine_Record
                 'tid'    => $relation['tid2'],
                 'type'   => $relation['type'],
                 'alias'  => $relation['alias2'],
-                'title'  => __($relation['title1'], $dom),
-                'descr'  => __($relation['descr1'], $dom),
+                'title'  => $relation['title1'],
+                'descr'  => $relation['descr1'],
                 'single' => $relation['type']%2 == 0 ? true : false,
                 'own'    => true
             );
@@ -154,8 +152,8 @@ class Clip_Model_Pubtype extends Doctrine_Record
                         'tid'    => $relation['tid1'],
                         'type'   => $relation['type'],
                         'alias'  => $relation['alias1'],
-                        'title'  => __($relation['title2'], $dom),
-                        'descr'  => __($relation['descr2'], $dom),
+                        'title'  => $relation['title2'],
+                        'descr'  => $relation['descr2'],
                         'single' => $relation['type'] <= 1 ? true : false,
                         'own'    => false
                     );

@@ -24,6 +24,8 @@ class Clip_Generator
         $pubdata->pubPostProcess(false);
         // get the record fields
         $recfields = $pubdata->pubFields();
+        // and the relation fields information
+        $relfields = $pubdata->getRelations(false);
 
         // build the display code
         $code = "\n";
@@ -60,12 +62,14 @@ class Clip_Generator
             // check for relation fields
             if ($recfield == 'relation') {
                 $rowcode['full'] =
-                    '    {if $pubdata.'.$key.' AND count($pubdata.'.$key.')}'."\n".
-                    '        <div class="z-formrow">'."\n".
-                    '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
+                    '    <div class="z-formrow">'."\n".
+                    '        <span class="z-label">{gt text=\''.$relfields[$key]['title'].'\'}:</span>'."\n".
+                    '        {if $pubdata.'.$key.' AND count($pubdata.'.$key.')}'."\n".
                     '            <pre class="z-formnote">{clip_array array=$pubdata.'.$key.'->toArray()}</pre>'."\n".
-                    '        </div>'."\n".
-                    '    {/if}';
+                    '        {else}'."\n".
+                    '            <span class="z-formnote z-sub">{gt text=\''.no__('(empty)').'\'}</span>'."\n".
+                    '        {/if}'."\n".
+                    '    </div>';
             }
 
             // check if field is to handle special
