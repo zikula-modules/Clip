@@ -121,14 +121,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
              ->assign('actions',   $actions);
 
         // stores the first referer and the item URL
-        if (empty($this->referer)) {
+        if (!$view->getData('returnurl')) {
             $viewurl = ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid), null, null, true);
-            $this->referer = System::serverGetVar('HTTP_REFERER', $viewurl);
-        }
-
-        if (!empty($this->id)) {
-            $params = array('tid' => $this->tid, 'pid' => $this->pub['core_pid'], 'title' => DataUtil::formatPermalink($this->pub['core_title']));
-            $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params, null, null, true);
+            $view->setData('returnurl', System::serverGetVar('HTTP_REFERER', $viewurl));
         }
 
         return true;
@@ -136,12 +131,19 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
     function handleCommand($view, &$args)
     {
+        $this->returnurl = $view->getData('returnurl');
+
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->referer);
         }
 
         if (!$view->isValid()) {
             return false;
+        }
+
+        if (!empty($this->id)) {
+            $params = array('tid' => $this->tid, 'pid' => $this->pub['core_pid'], 'title' => DataUtil::formatPermalink($this->pub['core_title']));
+            $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params, null, null, true);
         }
 
         $data = $view->getValues();
