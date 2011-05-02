@@ -248,7 +248,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $name = $name ? $name : $this->title;
 
         // display/edit hooks
-        $bundle = new Zikula_Version_HookSubscriberBundle("modulehook_area.clip.item.$tid", $clipVersion->__f('%s Item Hooks', $name));
+        $bundle = new Zikula_HookManager_SubscriberBundle($this->name, "modulehook_area.clip.item.$tid", $clipVersion->__f('%s Item Hooks', $name));
         $bundle->addType('ui.view',         "clip.hook.$tid.ui.view");
         $bundle->addType('ui.edit',         "clip.hook.$tid.ui.edit");
         $bundle->addType('validate.edit',   "clip.hook.$tid.validate.edit");
@@ -258,7 +258,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $clipVersion->registerHookSubscriberBundle($bundle);
 
         // filter hooks
-        $bundle = new Zikula_Version_HookSubscriberBundle("modulehook_area.clip.filter.$tid", $clipVersion->__f('%s Filter', $name));
+        $bundle = new Zikula_HookManager_SubscriberBundle($this->name, "modulehook_area.clip.filter.$tid", $clipVersion->__f('%s Filter', $name));
         $bundle->addType('ui.filter', "clip.hook.$tid.ui.filter");
         $clipVersion->registerHookSubscriberBundle($bundle);
     }

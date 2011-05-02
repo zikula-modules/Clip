@@ -117,7 +117,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 }
                 // register the pubtype hooks
                 $this->version->setupPubtypeBundles();
-                HookUtil::registerHookSubscriberBundles($this->version);
+                HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
             case '0.4.12':
                 $this->createCategoryTree();
             case '0.4.13':
