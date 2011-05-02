@@ -156,12 +156,12 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Relations
         // filters will be limited to the loaded relations
-        $relconfig = $pubtype['config']['view'];
+        $args['rel'] = $pubtype['config']['view'];
 
-        if ($relconfig['load']) {
+        if ($args['rel']['load']) {
             // adds the relations data
             $record = $tableObj->getRecordInstance();
-            foreach ($record->getRelations($relconfig['onlyown']) as $ralias => $rinfo) {
+            foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
                 // load the relation if it means to load ONE related record only
                 if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
                     $query->leftJoin("{$args['queryalias']}.{$ralias}");
@@ -325,12 +325,12 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         //// Relations
-        $relconfig = $pubtype['config']['display'];
+        $args['rel'] = $pubtype['config']['display'];
 
         // adds the relations data
-        if ($relconfig['load']) {
+        if ($args['rel']['load']) {
             $record = $tableObj->getRecordInstance();
-            foreach ($record->getRelations($relconfig['onlyown']) as $ralias => $rinfo) {
+            foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
                 // load the relation if it means to load ONE related record only
                 if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
                     $query->leftJoin("{$args['queryalias']}.{$ralias}");

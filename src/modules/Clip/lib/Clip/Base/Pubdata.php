@@ -47,7 +47,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
         }
 
         // load the workflow data if needed
-        if (isset($args['loadworkflow']) && $args['loadworkflow']) {
+        if (!isset($args['loadworkflow']) || $args['loadworkflow']) {
             Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'Clip');
         }
 
