@@ -59,9 +59,9 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
              ->assign('tid', $tid);
 
         // stores the return URL
-        if (!$view->getData('returnurl')) {
+        if (!$view->getStateData('returnurl')) {
             $adminurl = ModUtil::url('Clip', 'admin');
-            $view->setData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
+            $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
         }
 
         return true;
@@ -72,7 +72,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
      */
     function handleCommand($view, &$args)
     {
-        $this->returnurl = $view->getData('returnurl');
+        $this->returnurl = $view->getStateData('returnurl');
 
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);

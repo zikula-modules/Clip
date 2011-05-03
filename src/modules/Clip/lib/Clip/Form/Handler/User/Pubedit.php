@@ -121,9 +121,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
              ->assign('actions',   $actions);
 
         // stores the first referer and the item URL
-        if (!$view->getData('returnurl')) {
+        if (!$view->getStateData('returnurl')) {
             $viewurl = ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid), null, null, true);
-            $view->setData('returnurl', System::serverGetVar('HTTP_REFERER', $viewurl));
+            $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $viewurl));
         }
 
         return true;
@@ -131,7 +131,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
     function handleCommand($view, &$args)
     {
-        $this->returnurl = $view->getData('returnurl');
+        $this->returnurl = $view->getStateData('returnurl');
 
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->referer);

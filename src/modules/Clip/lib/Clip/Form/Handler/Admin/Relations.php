@@ -125,9 +125,9 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
              ->assign('filter', $this->filter);
 
         // stores the return URL
-        if (!$view->getData('returnurl')) {
+        if (!$view->getStateData('returnurl')) {
             $returnurl = ModUtil::url('Clip', 'admin', 'relations', array('filter' => $this->filter));
-            $view->setData('returnurl', System::serverGetVar('HTTP_REFERER', $returnurl));
+            $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $returnurl));
         }
 
         return true;
@@ -138,7 +138,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
      */
     function handleCommand($view, &$args)
     {
-        $this->returnurl = $view->getData('returnurl');
+        $this->returnurl = $view->getStateData('returnurl');
 
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);
