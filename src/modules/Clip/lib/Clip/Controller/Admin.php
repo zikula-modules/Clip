@@ -178,7 +178,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
 
-        Clip_Util::setArgs('admin_list', $args);
+        Clip_Util::setArgs('adminlist', $args);
 
         //// Output
         $this->view->assign('pubtype', $pubtype)

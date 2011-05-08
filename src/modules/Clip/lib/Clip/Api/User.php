@@ -237,7 +237,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // store the arguments used
-        Clip_Util::setArgs('userapi_getall', $args);
+        Clip_Util::setArgs('getallapi', $args);
 
         return array (
             'publist'  => isset($publist) ? $publist : null,
@@ -354,7 +354,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $pubdata->pubPostProcess($args);
 
         // store the arguments used
-        Clip_Util::setArgs('userapi_get', $args);
+        Clip_Util::setArgs('getapi', $args);
 
         return $pubdata;
     }

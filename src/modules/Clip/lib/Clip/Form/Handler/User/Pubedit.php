@@ -286,12 +286,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
      */
     private function setPub(&$pubdata)
     {
-        $args = array();
+        $args = array('handleplugins' => false);
 
         if (!$this->id) {
             $pubdata['core_author']   = UserUtil::getVar('uid');
             $pubdata['core_language'] = '';
-            $args = array('loadworkflow' => true);
+            $args['loadworkflow'] = false;
         }
 
         $pubdata->pubPostProcess($args);
