@@ -66,5 +66,5 @@
 </div>
 
 <div class="clip-display-hooks">
-    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module='Clip'}
+    {*notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" id=$pubdata.id*}
 </div>

@@ -75,9 +75,6 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
                 // max items per page
                 ModUtil::setVar('Clip', 'maxperpage', $data['maxperpage']);
 
-                // let any other modules know that the modules configuration has been updated
-                ModUtil::callHooks('module', 'updateconfig', 'Clip', array('module' => 'Clip'));
-
                 LogUtil::registerStatus($this->__('Done! Module configuration updated.'));
 
                 $view->redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
