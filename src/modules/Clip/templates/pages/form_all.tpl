@@ -7,7 +7,7 @@
     <h2>{gt text='Create a page'}</h2>
 {/if}
 
-{assign var='zformclass' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$pubtype.stepname`"}
+{assign var='zformclass' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.edit.state`"}
 
 {form cssClass=$zformclass enctype='multipart/form-data'}
     <div>

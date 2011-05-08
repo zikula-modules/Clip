@@ -74,7 +74,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum', 0),
             'page'          => (isset($args['page']) && is_numeric($args['page'])) ? (int)$args['page'] : (int)abs(FormUtil::getPassedValue('page', 1)),
-            'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
+            'cachelifetime' => isset($args['cachelifetime']) ? (int)$args['cachelifetime'] : (int)FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime']),
         );
 
         if ($apiargs['itemsperpage'] == 0) {
@@ -100,26 +100,29 @@ class Clip_Controller_User extends Zikula_AbstractController
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:list:', "{$apiargs['tid']}::{$args['templateid']}", ACCESS_READ));
 
         //// Output setup
-        // check if this view is cached
+        // check if cache is enabled and this view is cached
         if (!empty($args['cachelifetime'])) {
-            $this->view->setCache_lifetime($args['cachelifetime']);
-            $cachetid = true;
-            $cacheid  = 'view'.$apiargs['tid'].'|'.$args['templateid']
-                        .'|'.(!empty($apiargs['filter']) ? $apiargs['filter'] : 'nofilter')
-                        .'|'.(!empty($apiargs['orderby']) ? $apiargs['orderby'] : 'noorderby')
-                        .'|'.(!empty($apiargs['itemsperpage']) ? $apiargs['itemsperpage'] : 'nolimit')
-                        .'|'.(!empty($apiargs['startnum']) ? $apiargs['startnum'] : 'nostartnum');
+            $this->view->setCacheLifetime($args['cachelifetime']);
+
+            $cacheid = $apiargs['tid'].'_'.$args['templateid'].'/view'
+                       .'/'.Clip_Util::getUserGIdentifier()
+                       .'/'.'perpage_'.$apiargs['itemsperpage']
+                       .(!empty($apiargs['filter']) ? '/filter_'.$apiargs['filter'] : '')
+                       .(!empty($orderby) ? '/order_'.Clip_Util::createOrderBy($apiargs['orderby']) : '')
+                       .(!empty($apiargs['startnum']) ? '/start_'.$apiargs['startnum'] : '');
+            // FIXME Add plugin specific cache sections
+            // $cacheid .= '|field'.id.'|'.output
+
+            // set the output info
+            $this->view->setCaching(2)
+                       ->setCacheId($cacheid);
+
+            if ($this->view->is_cached($args['template'])) {
+                return $this->view->fetch($args['template']);
+            }
         } else {
-            $cachetid = false;
-            $cacheid  = null;
-        }
-
-        // set the output info
-        $this->view->setCache_Id($cacheid)
-                   ->setCaching($cachetid);
-
-        if ($cachetid && $this->view->is_cached($args['template'], $cacheid)) {
-            return $this->view->fetch($args['template'], $cacheid);
+            $cacheid = null;
+            $this->view->setCaching(0);
         }
 
         //// API call
@@ -236,26 +239,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:full:', "{$apiargs['tid']}:{$apiargs['pid']}:{$args['templateid']}", ACCESS_READ));
 
         //// Output setup
-        // check if this view is cached
-        if (!empty($args['cachelifetime']) && !SecurityUtil::checkPermission('clip:input:', "{$apiargs['tid']}:{$apiargs['pid']}:", ACCESS_ADMIN)) {
-            $this->view->setCache_lifetime($args['cachelifetime']);
-            // second clause allow developer to add an edit button on the "display" template
-            $cachetid = true;
-            $cacheid = 'display'.$apiargs['tid'].'|'.$apiargs['pid'].'|'.$args['templateid'];
-        } else {
-            $cachetid = false;
-            $cacheid  = null;
-        }
-
-        // build the output
-        $this->view->setCaching($cachetid)
-                   ->setCache_Id($cacheid);
-
-        if ($cachetid && $this->view->is_cached($args['template'], $cacheid)) {
-            return $this->view->fetch($args['template'], $cacheid);
-        }
-
-        // fetch simple templates
+        // fetch simple templates (notifications, etc)
         if (isset($args['templatesimple'])) {
             if (!$this->view->template_exists($args['templatesimple'])) {
                 $args['templatesimple'] = "clip_general_{$args['template']}.tpl";
@@ -267,6 +251,27 @@ class Clip_Controller_User extends Zikula_AbstractController
                 $this->view->assign('pubtype', $pubtype);
                 return $this->view->fetch($args['templatesimple'], $cacheid);
             }
+        }
+
+        // check if cache is enabled and this view is cached
+        if (!empty($args['cachelifetime'])) {
+            $this->view->setCacheLifetime($args['cachelifetime']);
+
+            $cacheid = $apiargs['tid'].'_'.$args['templateid'].'/display_p'.$apiargs['pid'].'_i'.$apiargs['id']
+                       .'/'.Clip_Util::getUserGIdentifier();
+            // FIXME Add plugin specific cache sections
+            // $cacheid .= '|field'.id.'|'.output
+
+            // set the output info
+            $this->view->setCaching(2)
+                       ->setCacheId($cacheid);
+
+            if ($this->view->is_cached($args['template'])) {
+                return $this->view->fetch($args['template']);
+            }
+        } else {
+            $cacheid = null;
+            $this->view->setCaching(0);
         }
 
         //// Misc values
@@ -320,7 +325,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             $args['template'] = 'var:template_generic_code';
 
             // settings for the autogenerated display template
-            $this->view->setCompile_check(true)
+            $this->view->setCompileCheck(true)
                        ->assign('clip_generic_tpl', true)
                        ->assign('template_generic_code', Clip_Generator::pubdisplay($apiargs['tid'], true, $isblock));
         }
@@ -434,7 +439,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         // stored the used arguments and assign them to the view
-        Clip_Util::setArgs('user_edit', $args);
+        Clip_Util::setArgs('edit', $args);
 
         $render->assign('clipargs', Clip_Util::getArgs())
                ->assign('pubtype', $pubtype);

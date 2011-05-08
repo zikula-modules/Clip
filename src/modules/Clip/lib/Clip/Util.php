@@ -140,6 +140,64 @@ class Clip_Util
     }
 
     /**
+     * Extract the filter from the input.
+     *
+     * @param string $varname Name of the filter variable on use.
+     * @param string $default Default filter to use.
+     *
+     * @see FilterUtil::getFiltersFromInput
+     *
+     * @return integer Publication type ID.
+     */
+    public static function getFiltersFromInput($default = '', $varname = 'filter')
+    {
+        $i = 1;
+        $filter = array();
+
+        // Get unnumbered filter string
+        $filterStr = FormUtil::getPassedValue($varname, '');
+        if (!empty($filterStr)) {
+            $filter[] = $filterStr;
+        }
+
+        // Get filter1 ... filterN
+        while (true) {
+            $filterStr = FormUtil::getPassedValue("{$varname}{$i}", '');
+
+            if (empty($filterStr)) {
+                break;
+            }
+
+            $filter[] = $filterStr;
+            ++$i;
+        }
+
+        if (count($filter) > 0) {
+            $filter = "(" . implode(')*(', $filter) . ")";
+        }
+
+        return $filter;
+    }
+
+    /**
+     * Generates the current user's groups string ID.
+     *
+     * @return string String identified based on the group memberships.
+     */
+    public static function getUserGIdentifier()
+    {
+        static $id;
+
+        if (!isset($id)) {
+            $gids = UserUtil::getGroupsForUser(UserUtil::getVar('uid'));
+            sort($gids);
+            $id = 'g_'.implode('_', $gids);
+        }
+
+        return $id;
+    }
+
+    /**
      * Extract the TID from a string end.
      *
      * @param string $tablename
@@ -670,7 +728,7 @@ class Clip_Util
                                    ->selectCollection("tid = '$tid'", $orderBy, -1, -1, 'name');
         }
 
-        return isset($pubfields_arr[$tid]) ? $pubfields_arr[$tid] : null;
+        return isset($pubfields_arr[$tid]) ? $pubfields_arr[$tid] : array();
     }
 
     /**

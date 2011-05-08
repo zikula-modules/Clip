@@ -113,6 +113,7 @@
             <div class="z-formrow">
                 {formlabel for='cachelifetime' text='Caching time'}
                 {formintinput id='cachelifetime' group='pubtype' maxLength='6'}
+                <span class="z-sub" style="display: inline;">{gt text='(in seconds)'}</span>
                 <div class="z-formnote">{gt text='How long should the publications be cached. Empty for no cache.'}</div>
             </div>
         </fieldset>

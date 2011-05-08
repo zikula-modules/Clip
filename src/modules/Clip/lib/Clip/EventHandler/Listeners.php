@@ -81,11 +81,11 @@ class Clip_EventHandler_Listeners
      * 
      * @param Zikula_Event $event
      */
-    public static function getTypes(Zikula_Event $event) {
+    public static function getTypes(Zikula_Event $event)
+    {
         $types = $event->getSubject();
         // add content types with add('classname')
         $types->add('Clip_ContentType_ClipPub');
         $types->add('Clip_ContentType_ClipPublist');
     }
-
 }

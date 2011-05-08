@@ -7,7 +7,7 @@
     <h2>{gt text='New post'}</h2>
 {/if}
 
-{assign var='zformclass' value="z-form z-form-light clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$pubtype.stepname`"}
+{assign var='zformclass' value="z-form z-form-light clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.edit.state`"}
 
 {form cssClass=$zformclass enctype='multipart/form-data'}
     <div>
