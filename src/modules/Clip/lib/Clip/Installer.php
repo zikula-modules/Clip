@@ -106,18 +106,6 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     return '0.4.10';
                 }
             case '0.4.11':
-                // clean any old registered hook bundles
-                $bundles = array(
-                    array('modulehook_area.clip.item', 'ui.view', 'clip.hook.item.ui.view'),
-                    array('modulehook_area.clip.item', 'ui.edit', 'clip.hook.item.ui.edit'),
-                    array('modulehook_area.clip.articlesfilter', 'ui.filter', 'clip.hook.articlesfilter.filter')
-                );
-                foreach ($bundles as $bundle) {
-                    HookUtil::unregisterSubscriber('Clip', $bundle[0], $bundle[1], $bundle[2]);
-                }
-                // register the pubtype hooks
-                $this->version->setupPubtypeBundles();
-                HookUtil::registerHookSubscriberBundles($this->version);
             case '0.4.12':
                 $this->createCategoryTree();
             case '0.4.13':
@@ -171,7 +159,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
 
         // unregister the pubtype hooks
         $this->version->setupPubtypeBundles();
-        HookUtil::unregisterHookSubscriberBundles($this->version);
+        HookUtil::unregisterSubscriberBundles($this->version->getHookSubscriberBundles());
 
         // drop base tables
         $tables = array(

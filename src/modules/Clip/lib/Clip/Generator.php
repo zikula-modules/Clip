@@ -119,7 +119,7 @@ class Clip_Generator
 
                         // language
                         case 'core_language':
-                            $rowcode['full'] = 
+                            $rowcode['full'] =
                                 '    <div class="z-formrow">'."\n".
                                 '        <span class="z-label">'.$rowcode['label'].'</span>'."\n".
                                 '            {if !empty($pubdata.'.$key.')}'."\n".
@@ -198,7 +198,7 @@ class Clip_Generator
             $code .= '</div>'."\n".
                 "\n".
                 '<div class="clip-display-hooks">'."\n".
-                '    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubdata module=\'Clip\'}'."\n".
+                '    {*notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" id=$pubdata.id*}'."\n".
                 '</div>';
         } else {
             $code .= '    </div>'."\n".
@@ -338,7 +338,7 @@ class Clip_Generator
                 '            </div>'."\n".
                 '        </fieldset>'."\n".
                 "\n".
-                '        {*notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.edit" area="modulehook_area.clip.item.`$pubtype.tid`" subject=$pubobj module=\'Clip\'*}'."\n".
+                '        {*notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.edit" id=$pubobj.id*}'."\n".
                 "\n".
                 '        <div class="z-buttons z-formbuttons">'."\n".
                 '            {foreach item=\'action\' from=$actions}'."\n".
