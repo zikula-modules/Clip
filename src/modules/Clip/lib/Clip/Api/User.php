@@ -532,7 +532,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         static $cache = array();
 
-        $supportedfunctions = array('main', 'view', 'display', 'viewpub');
+        $supportedfunctions = array('main', 'list', 'display', 'edit', 'view', 'publist', 'viewpub');
         if (!in_array($args['func'], $supportedfunctions)) {
             return '';
         }
@@ -546,7 +546,6 @@ class Clip_Api_User extends Zikula_AbstractApi
             $pubtypeTitle = $pubtype['urltitle'];
 
             unset($args['args']['tid']);
-            unset($pubtype);
         }
 
         $pubTitle = '';
@@ -589,6 +588,12 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         $params = '';
+
+        // special function indicator
+        if ($args['func'] == 'edit') {
+            $params .= '/' . $args['func'];
+        }
+
         if (count($args['args']) > 0) {
             $paramarray = array();
             foreach ($args['args'] as $k => $v) {
@@ -611,7 +616,8 @@ class Clip_Api_User extends Zikula_AbstractApi
     {
         $_ = $args['vars'];
 
-        $functions = array('main', 'view', 'display', 'edit', 'exec', 'viewpub', 'pubedit', 'executecommand');
+        $functions = array('main', 'list', 'display', 'edit', 'exec',
+                           'view', 'viewpub', 'pubedit', 'executecommand');
         $argsnum   = count($_);
         if (!isset($_[2]) || empty($_[2])) {
             System::queryStringSetVar('func', 'main');
@@ -623,6 +629,10 @@ class Clip_Api_User extends Zikula_AbstractApi
         } else {
             /* @deprecated translation table */
             switch ($_[2]) {
+                case 'view':
+                case 'publist':
+                    $_[2] = 'list';
+                    break;
                 case 'viewpub':
                     $_[2] = 'display';
                     break;
@@ -643,22 +653,36 @@ class Clip_Api_User extends Zikula_AbstractApi
         if (!$tid) {
             return false;
         } else {
-            System::queryStringSetVar('func', 'view');
+            System::queryStringSetVar('func', 'list');
             System::queryStringSetVar('tid', $tid);
         }
 
-        if (isset($_[3]) && !empty($_[3])) {
-            $permalinksseparator = System::getVar('shorturlsseparator');
-            $match = '';
-            $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+(\/(\d+))?+$~i', $_[3], $match);
-            if ($isPub) {
-                System::queryStringSetVar('func', 'display');
-                System::queryStringSetVar('pid', $match[1]);
-                if (isset($match[3])) {
-                    System::queryStringSetVar('id', $match[3]);
+        if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
+            if (in_array($_[$nextvar], array('edit'))) {
+                // special function indicator check
+                System::queryStringSetVar('func', 'edit');
+                $nextvar++;
+
+            } else {
+                // publication url check
+                $permalinksseparator = System::getVar('shorturlsseparator');
+                $match = '';
+                $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+(\/(\d+))?+$~i', $_[$nextvar], $match);
+                if ($isPub) {
+                    System::queryStringSetVar('func', 'display');
+                    System::queryStringSetVar('pid', $match[1]);
+                    if (isset($match[3])) {
+                        System::queryStringSetVar('id', $match[3]);
+                    }
+                    $nextvar++;
                 }
-                $nextvar = 4;
             }
+        }
+
+        // special function indicator check
+        if (isset($_[$nextvar]) && in_array($_[$nextvar], array('edit'))) {
+            System::queryStringSetVar('func', 'edit');
+            $nextvar++;
         }
 
         if (isset($_[$nextvar]) && !empty($_[$nextvar])) {

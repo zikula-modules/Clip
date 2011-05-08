@@ -117,6 +117,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 }
                 $this->createGrouptypesTree();
             case '0.4.14':
+                // register the pubtype hooks
+                $this->version->setupPubtypeBundles();
+                HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
+            case '0.4.15':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
