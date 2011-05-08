@@ -198,7 +198,7 @@ class Clip_Generator
             $code .= '</div>'."\n".
                 "\n".
                 '<div class="clip-display-hooks">'."\n".
-                '    {*notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" id=$pubdata.id*}'."\n".
+                '    {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.view" id=$pubdata.core_uniqueid}'."\n".
                 '</div>';
         } else {
             $code .= '    </div>'."\n".
@@ -338,7 +338,7 @@ class Clip_Generator
                 '            </div>'."\n".
                 '        </fieldset>'."\n".
                 "\n".
-                '        {*notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.edit" id=$pubobj.id*}'."\n".
+                '        {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.edit" id=$pubobj.core_uniqueid}'."\n".
                 "\n".
                 '        <div class="z-buttons z-formbuttons">'."\n".
                 '            {foreach item=\'action\' from=$actions}'."\n".
