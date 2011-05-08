@@ -550,20 +550,24 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         $pubTitle = '';
         if (isset($args['args']['pid']) || isset($args['args']['id'])) {
+            if (!isset($args['args']['pid']) && !isset($args['args']['id'])){
+                return false;
+            }
             if (isset($args['args']['pid'])) {
                 $pid = (int)$args['args']['pid'];
                 unset($args['args']['pid']);
-            } elseif (isset($args['args']['id'])) {
+            }
+            if (isset($args['args']['id'])) {
                 $id = (int)$args['args']['id'];
                 unset($args['args']['id']);
-                if (!isset($cache['id'][$id])) {
-                    $pid = $cache['id'][$id] = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
-                                               ->selectFieldBy('core_pid', $id, 'id');
-                } else {
-                    $pid = $cache['id'][$id];
+                if (!isset($pid)) {
+                    if (!isset($cache['id'][$id])) {
+                        $pid = $cache['id'][$id] = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
+                                                   ->selectFieldBy('core_pid', $id, 'id');
+                    } else {
+                        $pid = $cache['id'][$id];
+                    }
                 }
-            } else {
-                return false;
             }
 
             if (isset($cache['title'][$tid][$pid])) {
@@ -583,7 +587,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             $pubTitle = '/'.$pubTitle.'.'.$pid;
 
             if (isset($id)) {
-                $pubTitle .= '/'.$id;
+                $pubTitle .= '.'.$id;
             }
         }
 
@@ -667,7 +671,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                 // publication url check
                 $permalinksseparator = System::getVar('shorturlsseparator');
                 $match = '';
-                $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+(\/(\d+))?+$~i', $_[$nextvar], $match);
+                $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+(\.(\d+))?+$~i', $_[$nextvar], $match);
                 if ($isPub) {
                     System::queryStringSetVar('func', 'display');
                     System::queryStringSetVar('pid', $match[1]);
