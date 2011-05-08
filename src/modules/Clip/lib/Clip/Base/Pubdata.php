@@ -42,12 +42,12 @@ class Clip_Base_Pubdata extends Doctrine_Record
         $this->mapValue('__WORKFLOW__',  array('state' => 'initial'));
 
         // handle the plugins data if needed
-        if (isset($args['handleplugins']) && $args['handleplugins']) {
+        if (!isset($args['handleplugins']) || $args['handleplugins']) {
             Clip_Util::handlePluginFields($this);
         }
 
         // load the workflow data if needed
-        if (!isset($args['loadworkflow']) || $args['loadworkflow']) {
+        if (isset($args['loadworkflow']) && $args['loadworkflow']) {
             Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'Clip');
         }
 
