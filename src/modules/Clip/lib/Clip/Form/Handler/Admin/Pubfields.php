@@ -34,7 +34,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $this->tid = $tid;
 
         // update the pubtype table with previous changes
-        Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->changeTable();
+        Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->changeTable(true);
 
         // get the pubfields table
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
