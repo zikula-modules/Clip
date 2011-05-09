@@ -18,7 +18,7 @@
 {elseif $op AND $clipargs.getallapi.filter.category.$op.0}
     {* title for a specific category requested *}
     {category_path id=$clipargs.getallapi.filter.category.$op.0 idcolumn='id' field='display_name' assign='categorytitle'}
-    {if $categorytitle[$modvars.ZConfig.language_i18n]}
+    {if isset($categorytitle[$modvars.ZConfig.language_i18n])}
         {assign var='categorytitle' value=$categorytitle[$modvars.ZConfig.language_i18n]}
     {else}
         {category_path id=$clipargs.getallapi.filter.category.$op.0 idcolumn='id' field='name' assign='categorytitle'}
