@@ -290,7 +290,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $data = $event->getInvoker();
         $this->registerHookBundles($clipVersion, $data['tid'], $data['title']);
 
-        HookUtil::registerSubscriberBundles($clipVersion);
+        HookUtil::registerSubscriberBundles($clipVersion->getHookSubscriberBundles());
     }
 
     /**

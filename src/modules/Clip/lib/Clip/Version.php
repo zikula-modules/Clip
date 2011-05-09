@@ -50,7 +50,7 @@ class Clip_Version extends Zikula_AbstractVersion
 
         // Capabilities
         $meta['capabilities'] = array(
-                HookUtil::SUBSCRIBER_CAPABLE => array('enabled' => true)
+                HookUtil::SUBSCRIBER_CAPABLE => array('enabled' => true, HookUtil::SUBSCRIBE_OWN => true),
         );
 
         // Permissions schema
