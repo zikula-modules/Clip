@@ -63,6 +63,9 @@
                             {gt text='Many <strong>%s</strong>' tag1=$pubtypes[$item.tid1]->title|safetext}
                         {/if}
                         &nbsp;
+                        <br />
+                        <span class="z-sub">{$pubtypes[$item.tid2]->title|safetext}.{$item.alias2|safetext}</span>
+                        &nbsp;&nbsp;
                     </span>
                     <span class="z-itemcell z-w40">
                         {if $item.type%2 eq 0}
@@ -70,6 +73,8 @@
                         {else}
                             {gt text='has Many <strong>%s</strong>' tag1=$pubtypes[$item.tid2]->title|safetext}
                         {/if}
+                        <br />&nbsp;
+                        <span class="z-sub">{$pubtypes[$item.tid1]->title|safetext}.{$item.alias1|safetext}</span>
                     </span>
                     <span class="z-itemcell z-w10">
                         <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.withtid1 op=$filter.op tid2=$filter.withtid2 fragment='relform'}">
@@ -119,7 +124,7 @@
                     <legend>{gt text='Owning side'}</legend>
                     <div class="z-formrow">
                         {formlabel for='alias1' __text='Alias' mandatorysym=true}
-                        {formtextinput id='alias1' group='relation' maxLength='100' mandatory=true}
+                        {formtextinput id='alias1' group='relation' maxLength='100' mandatory=true regexValidationPattern="#[^a-zA-Z0-9_]#" __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
                     </div>
                     <div class="z-formrow">
                         {formlabel for='title1' __text='Title' mandatorysym=true}
@@ -134,7 +139,7 @@
                     <legend>{gt text='Related side'}</legend>
                     <div class="z-formrow">
                         {formlabel for='alias2' __text='Alias' mandatorysym=true}
-                        {formtextinput id='alias2' group='relation' maxLength='100' mandatory=true}
+                        {formtextinput id='alias2' group='relation' maxLength='100' mandatory=true regexValidationPattern="#[^a-zA-Z0-9_]#" __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
                     </div>
                     <div class="z-formrow">
                         {formlabel for='title2' __text='Title' mandatorysym=true}

@@ -54,6 +54,7 @@
                     {gt text='There are no relations defined for this publication type.'}
                 {/if}
             </p>
+
             {if $pubtype->allrelations}
                 <ul>
                 {foreach from=$pubtype->allrelations key='ralias' item='rinfo'}
@@ -64,6 +65,8 @@
                     {else}
                         {gt text='Has many %s' tag1=$reltitle}
                     {/if}
+                    <span class="z-sub">({$rinfo.owned})</span>
+
                     {if $rinfo.own}
                         <a href="{modurl modname='Clip' type='admin' func='relations' id=$rinfo.id withtid1=$pubtype.tid op='and' withtid2=$rinfo.tid}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}

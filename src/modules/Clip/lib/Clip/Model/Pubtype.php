@@ -136,6 +136,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
                 'alias'  => $relation['alias2'],
                 'title'  => $relation['title1'],
                 'descr'  => $relation['descr1'],
+                'owned'  => $relation['alias1'],
                 'single' => $relation['type']%2 == 0 ? true : false,
                 'own'    => true
             );
@@ -154,6 +155,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
                         'alias'  => $relation['alias1'],
                         'title'  => $relation['title2'],
                         'descr'  => $relation['descr2'],
+                        'owned'  => $relation['alias2'],
                         'single' => $relation['type'] <= 1 ? true : false,
                         'own'    => false
                     );

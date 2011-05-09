@@ -679,7 +679,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             }
         }
 
-        Clip_Generator::evalrelations();
+        self::evalrelations();
     }
 
     // dynamic pubdata tables
