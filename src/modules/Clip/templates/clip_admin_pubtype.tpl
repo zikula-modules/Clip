@@ -46,7 +46,7 @@
             <div class="z-formrow">
                 {formlabel for='enablerevisions' text='Revision'}
                 {formcheckbox id='enablerevisions' group='pubtype'}
-                <div class="z-formnote">{gt text='Enable revisioning.'}</div>
+                <div class="z-formnote">{gt text='Enable revisioning. Currently, the relations does not work properly with revisioning.'}</div>
             </div>
             <div class="z-formrow">
                 {formlabel for='enableeditown' text='Edit own'}

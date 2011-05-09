@@ -325,11 +325,13 @@ class Clip_Generator
                 '            <div class="z-formrow">'."\n".
                 '                {formlabel for=\'core_publishdate\' _'.'_text=\'Publish date\'}'."\n".
                 '                {formdateinput id=\'core_publishdate\' group=\'pubdata\' includeTime=true}'."\n".
+                '                <em class="z-formnote z-sub">{gt text=\'leave blank if you do not want to schedule the publication\'}</em>'."\n".
                 '            </div>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".
                 '                {formlabel for=\'core_expiredate\' _'.'_text=\'Expire date\'}'."\n".
                 '                {formdateinput id=\'core_expiredate\' group=\'pubdata\' includeTime=true}'."\n".
+                '                <em class="z-formnote z-sub">{gt text=\'leave blank if you do not want the plublication expires\'}</em>'."\n".
                 '            </div>'."\n".
                 "\n".
                 '            <div class="z-formrow">'."\n".

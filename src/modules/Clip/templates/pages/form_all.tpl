@@ -55,11 +55,13 @@
                 <div class="z-formrow">
                     {formlabel for='core_publishdate' __text='Publish date'}
                     {formdateinput id='core_publishdate' group='pubdata' includeTime=true}
+                    <em class="z-formnote z-sub">{gt text='leave blank if you do not want to schedule the publication'}</em>
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='core_expiredate' __text='Expire date'}
                     {formdateinput id='core_expiredate' group='pubdata' includeTime=true}
+                    <em class="z-formnote z-sub">{gt text='leave blank if you do not want the plublication expires'}</em>
                 </div>
             </div>
         </fieldset>
