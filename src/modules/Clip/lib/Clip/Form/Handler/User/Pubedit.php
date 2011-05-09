@@ -151,7 +151,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $data = $view->getValues();
 
         // restore the core values
-        $this->getPub($data['pubdata']);
+        $this->getPub($data['pubdata'], $view);
 
         // adds any extra data to the item
         if (isset($data['core_extra'])) {
@@ -261,7 +261,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         return $this->tid;
     }
 
-    private function getPub($data)
+    private function getPub($data, $view)
     {
         if (!empty($this->id)) {
             $this->pub->assignIdentifier($this->id);
@@ -272,11 +272,34 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             $this->pub['core_pid'] = $data['core_pid'];
         }
 
-        // link the relations data if present
+        // link/unlink the relations data if present
         foreach (array_keys($this->relations) as $alias) {
-            if (isset($data[$alias])) {
-                if ($data[$alias]) {
-                    $this->pub->link($alias, (array)$data[$alias]);
+            if (array_key_exists($alias, $data)) {
+                $tolink = $tounlink = array();
+                // get the links present on the form before submit it
+                $links = $view->getStateData('links_'.$alias);
+                // check the removed ones
+                foreach ($links as $id) {
+                    if ($id && !in_array((string)$id, $data[$alias])) {
+                        $tounlink[] = (int)$id;
+                    }
+                }
+                // check the added ones
+                foreach ($data[$alias] as $id) {
+                    if ($id && !in_array((int)$id, $links)) {
+                        $tolink[] = (int)$id;
+                    }
+                }
+
+                //$relation = $this->pub->getRelation($alias);
+
+                // perform the operations
+                // TODO test relation field side assign to NULL
+                if ($tolink) {
+                    $this->pub->link($alias, $tolink);
+                }
+                if ($tounlink) {
+                    $this->pub->unlink($alias, $tounlink);
                 }
                 unset($data[$alias]);
             }

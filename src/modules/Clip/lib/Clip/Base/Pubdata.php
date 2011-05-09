@@ -43,6 +43,8 @@ class Clip_Base_Pubdata extends Doctrine_Record
             $this->clipWorkflow();
         }
 
+        $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
+
         // post process related records
         if (isset($args['rel']['processrefs']) && $args['rel']['processrefs']) {
             // new default values

@@ -58,6 +58,8 @@ class Clip_Form_Plugin_Relation extends Zikula_Form_Plugin_TextInput
                     }
                 }
             }
+            // save the data in the state session
+            $view->setStateData('links_'.$params['id'], array_keys($this->relinfo['data']));
         }
 
         $params['textMode'] = 'hidden';
