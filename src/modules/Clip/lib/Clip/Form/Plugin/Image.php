@@ -96,7 +96,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                                 'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
                                 'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
                                 'url'          => $url.'/'.$arrTypeData['file_name']
-                );
+                            );
             }
         }
 

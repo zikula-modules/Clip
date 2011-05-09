@@ -39,16 +39,23 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
     function loadValue($view, &$values)
     {
-        if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
-            $this->upl_arr = unserialize($values[$this->dataField]);
+        if ($this->group == null) {
+            if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
+                $this->upl_arr = unserialize($values[$this->dataField]);
+            }
+        } else {
+            if (isset($values[$this->group][$this->dataField]) && !empty($values[$this->group][$this->dataField])) {
+                $this->upl_arr = unserialize($values[$this->group][$this->dataField]);
+            }
         }
     }
 
     function render($view)
     {
         $input_html = parent::render($view);
+        $note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
 
-        return $input_html.' '.$this->upl_arr['orig_name'];
+        return $input_html.$note_html;
     }
 
     /**
@@ -56,7 +63,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
      */
     function postRead($data, $field)
     {
-        $this->upl_arr = array(
+        $upl_arr = array(
                  'orig_name' => '',
                  'file_name' => '',
                  'file_size' => 0
@@ -73,15 +80,15 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
             $path = ModUtil::getVar('Clip', 'uploadpath');
             $url  = System::getBaseUrl().$path;
             if (!empty($arrTypeData['file_name'])) {
-                $this->upl_arr =  array(
-                         'orig_name' => $arrTypeData['orig_name'],
-                         'file_name' => $url.'/'.$arrTypeData['file_name'],
-                         'file_size' => isset($arrTypeData['file_size']) && $arrTypeData['file_size'] ? $arrTypeData['file_size'] : filesize("$path/$arrTypeData[file_name]")
-                );
+                $upl_arr = array(
+                               'orig_name' => $arrTypeData['orig_name'],
+                               'file_name' => $url.'/'.$arrTypeData['file_name'],
+                               'file_size' => isset($arrTypeData['file_size']) && $arrTypeData['file_size'] ? $arrTypeData['file_size'] : filesize("$path/$arrTypeData[file_name]")
+                           );
             }
         }
 
-        return $this->upl_arr;
+        return $upl_arr;
     }
 
     static function preSave($data, $field)
