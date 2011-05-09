@@ -89,15 +89,17 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     foreach ($pubdata[$key] as $k => $v) {
                         // exclude null records
                         if ($v->exists()) {
-                            $pubdata[$key][$k]->pubPostProcess();
+                            $pubdata[$key][$k]->clipProcess();
                         } else {
                             unset($pubdata[$key]);
                         }
                     }
                     $data[$key] = $pubdata[$key]->toArray();
+
                 } elseif ($pubdata[$key] instanceof Doctrine_Record && $pubdata[$key]->exists()) {
-                    $pubdata[$key]->pubPostProcess();
+                    $pubdata[$key]->clipProcess();
                     $data[$key] = $pubdata[$key]->toArray();
+
                 } else {
                     $data[$key] = null;
                 }
@@ -224,14 +226,15 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     public function ClipSetUp($id, $tid, $pubtype=null, $pubfields=null)
     {
         $this->id = $id;
-
         $this->tid = $tid;
+
         // pubtype
         if ($pubtype) {
             $this->pubtype = $pubtype;
         } else {
             $this->pubtype = Clip_Util::getPubType($tid);
         }
+
         // pubfields
         if ($pubfields) {
             $this->pubfields = $pubfields;
@@ -263,11 +266,13 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if (!empty($this->id)) {
             $this->pub->assignIdentifier($this->id);
         }
+
         // allow specify fixed PIDs
         if (isset($data['core_pid'])) {
             $this->pub['core_pid'] = $data['core_pid'];
         }
-        // fill the relations data if present
+
+        // link the relations data if present
         foreach (array_keys($this->relations) as $alias) {
             if (isset($data[$alias])) {
                 if ($data[$alias]) {
@@ -286,15 +291,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
      */
     private function setPub(&$pubdata)
     {
-        $args = array('handleplugins' => false);
-
         if (!$this->id) {
             $pubdata['core_author']   = UserUtil::getVar('uid');
             $pubdata['core_language'] = '';
-            $args['loadworkflow'] = false;
         }
 
-        $pubdata->pubPostProcess($args);
+        $pubdata->clipProcess();
 
         $this->pub = $pubdata;
     }

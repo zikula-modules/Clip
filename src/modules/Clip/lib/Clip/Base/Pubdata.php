@@ -15,7 +15,7 @@
 class Clip_Base_Pubdata extends Doctrine_Record
 {
     /**
-     * Record post process.
+     * Record load post process.
      *
      * @param boolean $args['handleplugins']        Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']         Whether to add the workflow information.
@@ -27,31 +27,21 @@ class Clip_Base_Pubdata extends Doctrine_Record
      *
      * @return void
      */
-    public function pubPostProcess($args = array())
+    public function clipProcess($args = array())
     {
-        $tablename = $this->_table->getInternalTableName();
-        $tid = Clip_Util::getTidFromString($tablename);
-
-        // mapped values
-        $core_title = Clip_Util::getTitleField($tid);
-
-        $this->mapValue('core_tid',      $tid);
-        $this->mapValue('core_uniqueid', "{$tid}-{$this['core_pid']}");
-        $this->mapValue('core_title',    $this[$core_title]);
-        $this->mapValue('core_creator',  ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
+        // map basic values
+        $this->clipValues();
         $this->mapValue('__WORKFLOW__',  array('state' => 'initial'));
 
         // handle the plugins data if needed
-        if (!isset($args['handleplugins']) || $args['handleplugins']) {
-            Clip_Util::handlePluginFields($this);
+        if (isset($args['handleplugins']) && $args['handleplugins']) {
+            $this->clipData();
         }
 
         // load the workflow data if needed
         if (isset($args['loadworkflow']) && $args['loadworkflow']) {
-            Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'Clip');
+            $this->clipWorkflow();
         }
-
-        $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
 
         // post process related records
         if (isset($args['rel']['processrefs']) && $args['rel']['processrefs']) {
@@ -70,23 +60,90 @@ class Clip_Base_Pubdata extends Doctrine_Record
             // process the loaded related records
             foreach ($this->getRelations($args['rel']['onlyown']) as $alias => $relation) {
                 if ($this->hasReference($alias)) {
-                    if ($this[$alias] instanceof Doctrine_Record) {
-                        if ($args['rel']['checkperm'] && !SecurityUtil::checkPermission('clip:full:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
-                            $this[$alias] = false;
-                        } else {
-                            $this[$alias]->pubPostProcess($args);
-                        }
-                    } elseif ($this[$alias] instanceof Doctrine_Collection) {
-                        foreach ($this[$alias] as $k => $v) {
-                            if ($args['rel']['checkperm'] && !SecurityUtil::checkPermission('clip:full:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
-                                unset($this[$alias][$k]);
-                            } else {
-                                $this[$alias][$k]->pubPostProcess($args);
-                            }
+                    if ($this->clipRelation($alias, $args['rel']['checkperm'])) {
+                        if ($this[$alias] instanceof Doctrine_Record) {
+
                         }
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Basic values loader for the Record.
+     *
+     * @return void
+     */
+    public function clipValues($handleplugins=false)
+    {
+        $tablename = $this->_table->getInternalTableName();
+        $tid = Clip_Util::getTidFromString($tablename);
+
+        $core_title = Clip_Util::getTitleField($tid);
+
+        $this->mapValue('core_tid',      $tid);
+        $this->mapValue('core_uniqueid', $tid.'-'.$this['core_pid']);
+        $this->mapValue('core_title',    $this[$core_title]);
+        $this->mapValue('core_creator',  ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
+
+        if ($handleplugins) {
+            $this->clipData();
+        }
+    }
+
+    /**
+     * Plugins postRead processing for the Record.
+     *
+     * @return void
+     */
+    public function clipData()
+    {
+        Clip_Util::handlePluginFields($this);
+    }
+
+    /**
+     * Workflow loader for the Record.
+     *
+     * @return void
+     */
+    public function clipWorkflow()
+    {
+        if ($this->id) {
+            $tablename = $this->_table->getInternalTableName();
+            Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'Clip');
+
+        } else {
+            $this->mapValue('__WORKFLOW__',  array('state' => 'initial'));
+        }
+
+        $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
+    }
+
+    /**
+     * Relations permission filter.
+     *
+     * @return boolean Existing relation flag.
+     */
+    public function clipRelation($alias, $checkperm=true)
+    {
+        if (!$this->get($alias, true) || !($relation = $this->getRelation($alias))) {
+            return false;
+        }
+
+        if ($this[$alias] instanceof Doctrine_Record) {
+            if ($checkperm && !SecurityUtil::checkPermission('clip:full:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
+                $this[$alias] = false;
+            }
+            return (bool)$this[$alias];
+
+        } elseif ($this[$alias] instanceof Doctrine_Collection) {
+            foreach ($this[$alias] as $k => $v) {
+                if ($checkperm && !SecurityUtil::checkPermission('clip:full:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
+                    unset($this[$alias][$k]);
+                }
+            }
+            return (bool)count($this[$alias]);
         }
     }
 
@@ -160,5 +217,19 @@ class Clip_Base_Pubdata extends Doctrine_Record
         $tid = Clip_Util::getTidFromString($tablename);
 
         return Clip_Util::getPubType($tid)->getRelations($onlyown);
+    }
+
+    /**
+     * Returns the information of a specific relation.
+     *
+     * @param string $alias Alias of the relation.
+     *
+     * @return array Information of the relation if exists, false otherwise.
+     */
+    public function getRelation($alias)
+    {
+        $relations = $this->getRelations(false);
+
+        return isset($relations[$alias])? $relations[$alias] : false;
     }
 }

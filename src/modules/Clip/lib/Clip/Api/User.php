@@ -232,7 +232,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             $publist = $query->execute();
 
             for ($i = 0; $i < count($publist); $i++) {
-                $publist[$i]->pubPostProcess($args);
+                $publist[$i]->clipProcess($args);
             }
         }
 
@@ -351,7 +351,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // postprocess the record and related records
-        $pubdata->pubPostProcess($args);
+        $pubdata->clipProcess($args);
 
         // store the arguments used
         Clip_Util::setArgs('getapi', $args);

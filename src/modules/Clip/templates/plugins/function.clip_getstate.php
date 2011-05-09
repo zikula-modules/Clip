@@ -14,7 +14,7 @@
  *
  * @author kundi
  * @param $args['tid'] tid
- * @param $args['pid'] pid
+ * @param $args['id'] pid
  * @param $args['assign'] optional
  *
  * @return string

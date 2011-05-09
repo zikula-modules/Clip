@@ -181,9 +181,9 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         Clip_Util::setArgs('adminlist', $args);
 
         //// Output
-        $this->view->assign('pubtype', $pubtype)
-                   ->assign('publist', $result['publist'])
-                   ->assign('clipargs',  Clip_Util::getArgs());
+        $this->view->assign('pubtype',  $pubtype)
+                   ->assign('publist',  $result['publist'])
+                   ->assign('clipargs', Clip_Util::getArgs());
 
         // assign the pager values
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
@@ -230,7 +230,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                        ->selectCollection("core_pid = '{$args['pid']}'", 'core_revision DESC');
 
         for ($i = 0; $i < count($publist); $i++) {
-            $publist[$i]->pubPostProcess(array('loadworkflow' => true));
+            $publist[$i]->clipProcess(array('handleplugins' => true, 'loadworkflow' => true));
         }
 
         //// Output

@@ -784,14 +784,11 @@ class Clip_Util
      */
     public static function getArgs($id=null)
     {
-        $args = self::$args;
-        self::$args = array();
-
-        if ($id && isset($args[$id])) {
-            return $args[$id];
+        if ($id && isset(self::$args[$id])) {
+            return self::$args[$id];
         }
 
-        return $args;
+        return self::$args;
     }
 
     public static function setArgs($id, $args)

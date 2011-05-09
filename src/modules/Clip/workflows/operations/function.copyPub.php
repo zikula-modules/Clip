@@ -25,7 +25,7 @@ function Clip_operation_copyPub(&$pub, $params)
     // copies the publication record
     // FIXME consider better the copy of relations
     $copy = $pub->copy(false);
-    $copy->pubPostProcess();
+    $copy->clipProcess();
 
     // process the available parameters
     if (isset($params['copyonline'])) {

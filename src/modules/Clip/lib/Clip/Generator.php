@@ -21,7 +21,7 @@ class Clip_Generator
         // build and process a dummy pubdata object
         $className = "Clip_Model_Pubdata{$tid}";
         $pubdata   = new $className();
-        $pubdata->pubPostProcess(false);
+        $pubdata->clipProcess();
         // get the record fields
         $recfields = $pubdata->pubFields();
         // and the relation fields information
