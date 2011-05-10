@@ -31,8 +31,12 @@
                 {formbutton commandName='clear' __text='Clear' class='z-bt-small'}
             </span>
 
+            {assign var='filteredlist' value=0}
             {if $filter.withtid1 OR $filter.withtid2}
                 <div class="z-warningmsg">
+                {if $filter.withtid1 OR $filter.withtid2}
+                    {assign var='filteredlist' value=1}
+                {/if}
                 {if $filter.withtid1 AND $filter.withtid2}
                     {gt text=$filter.op assign='op'}
                     {gt text='List filtered by [%1$s] as Owner %2$s [%3$s] as Related' tag1=$pubtypes[$filter.withtid1].title tag2=$op tag3=$pubtypes[$filter.withtid2].title}
@@ -83,7 +87,13 @@
                     </span>
                 </li>
                 {foreachelse}
-                <li class="z-odd z-clearfix z-center">{gt text="There are no relations specified yet."}</li>
+                <li class="z-odd z-clearfix z-center">
+                    {if $filteredlist}
+                        {gt text='No relations matches the current filter.'}
+                    {else}
+                        {gt text='There are no relations specified yet.'}
+                    {/if}
+                </li>
                 {/foreach}
             </ul>
         </fieldset>
@@ -124,7 +134,7 @@
                     <legend>{gt text='Owning side'}</legend>
                     <div class="z-formrow">
                         {formlabel for='alias1' __text='Alias' mandatorysym=true}
-                        {formtextinput id='alias1' group='relation' maxLength='100' mandatory=true regexValidationPattern="#[^a-zA-Z0-9_]#" __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
+                        {formtextinput id='alias1' group='relation' maxLength='100' mandatory=true regexValidationPattern='/[a-zA-Z0-9_]+/' __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
                     </div>
                     <div class="z-formrow">
                         {formlabel for='title1' __text='Title' mandatorysym=true}
@@ -139,7 +149,7 @@
                     <legend>{gt text='Related side'}</legend>
                     <div class="z-formrow">
                         {formlabel for='alias2' __text='Alias' mandatorysym=true}
-                        {formtextinput id='alias2' group='relation' maxLength='100' mandatory=true regexValidationPattern="#[^a-zA-Z0-9_]#" __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
+                        {formtextinput id='alias2' group='relation' maxLength='100' mandatory=true regexValidationPattern='/[a-zA-Z0-9_]+/' __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
                     </div>
                     <div class="z-formrow">
                         {formlabel for='title2' __text='Title' mandatorysym=true}

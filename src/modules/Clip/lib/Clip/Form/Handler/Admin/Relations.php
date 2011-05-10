@@ -47,6 +47,10 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
         $op   = FormUtil::getPassedValue('op', 'or');
         $tid2 = FormUtil::getPassedValue('withtid2');
 
+        $tid1 = is_array($tid1) ? current($tid1) : null;
+        $op   = is_array($op) ? current($op) : null;
+        $tid2 = is_array($tid2) ? current($tid2) : null;
+
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
 
         if (!empty($id)) {
@@ -126,9 +130,11 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
         // stores the return URL
         if (!$view->getStateData('returnurl')) {
-            $returnurl = ModUtil::url('Clip', 'admin', 'relations', array('filter' => $this->filter));
+            $returnurl = ModUtil::url('Clip', 'admin', 'relations', $this->filter);
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $returnurl));
         }
+
+        $view->setStateData('filter', $this->filter);
 
         return true;
     }
@@ -138,6 +144,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
      */
     function handleCommand($view, &$args)
     {
+        $this->filter    = $view->getStateData('filter');
         $this->returnurl = $view->getStateData('returnurl');
 
         if ($args['commandName'] == 'cancel') {
@@ -207,9 +214,8 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                     }
                     // setup the return url as the edit form
                     // to update the corresponding tables
-                    $this->returnurl = ModUtil::url('Clip', 'admin', 'relations',
-                                                    array('filter' => $this->filter,
-                                                          'update' => $relation->tid1.','.$relation->tid2));
+                    $params = array_merge($this->filter, array('update' => $relation->tid1.','.$relation->tid2));
+                    $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $params);
 
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
                 } else {
@@ -222,9 +228,8 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                 $relation = Doctrine_Core::getTable('Clip_Model_Pubrelation')->find($this->id);
 
                 if ($relation->delete()) {
-                    $this->returnurl = ModUtil::url('Clip', 'admin', 'relations',
-                                                    array('filter' => $this->filter,
-                                                          'update' => $relation->tid1.','.$relation->tid2));
+                    $params = array_merge($this->filter, array('update' => $relation->tid1.','.$relation->tid2));
+                    $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $params);
 
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));
                 } else {
@@ -234,7 +239,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
             // filter relation list
             case 'filter':
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', array('filter' => $this->filter));
+                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $this->filter);
                 break;
 
             // clear any filter
