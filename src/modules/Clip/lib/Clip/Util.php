@@ -934,7 +934,7 @@ class Clip_Util
             foreach ($pubtypes as $pubtype) {
                 $id = "{$grouptype['gid']}-{$pubtype['tid']}";
                 $grouptype['nodes'][$id] = array(
-                    'href'  => ModUtil::url('Clip', 'admin', 'main', array('tid' => $pubtype['tid'])),
+                    'href'  => ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => $pubtype['tid'])),
                     'name'  => DataUtil::formatForDisplay($pubtype['title']),
                     'title' => DataUtil::formatForDisplay($pubtype['description'])
                 );
