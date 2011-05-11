@@ -31,7 +31,7 @@ class Clip_Generator
         $code = "\n";
         if (!$forblock) {
             $code .=
-                '{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}'."\n".
+                '{if !$homepage}{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
                 '{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
                 '<h2>{gt text=$pubtype.title}</h2>'."\n".
@@ -237,10 +237,12 @@ class Clip_Generator
                 '        <fieldset class="z-linear">'."\n".
                 '            <legend>'."\n".
                 '                {if $pubdata.id}'."\n".
-                '                    {gt text=\''.$title_editpub.'\'}'."\n".
+                '                    {gt text=\''.$title_editpub.'\' assign=\'pagetitle\'}'."\n".
                 '                {else}'."\n".
-                '                    {gt text=\''.$title_newpub.'\'}'."\n".
+                '                    {gt text=\''.$title_newpub.'\' assign=\'pagetitle\'}'."\n".
                 '                {/if}'."\n".
+                '                {if !$homepage}{pagesetvar name="title" value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
+                '                {$pagetitle}'."\n".
                 '            </legend>'."\n";
 
         // publication fields

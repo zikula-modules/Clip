@@ -12,7 +12,7 @@
 {if $op eq 'null'}
     {* title for uncategorized list *}
     {gt text='Uncategorized' assign='title'}
-    {pagesetvar name="title" value="$title - `$pubtype.title` - `$modvars.ZConfig.sitename`"}
+    {if !$homepage}{pagesetvar name="title" value="$title - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
     <h2>{gt text=$pubtype.title}</h2>
     <span>{gt text='Uncategorized pages published:'}</span>
 {elseif $op AND $clipargs.getallapi.filter.category.$op.0}
@@ -23,12 +23,12 @@
     {else}
         {category_path id=$clipargs.getallapi.filter.category.$op.0 idcolumn='id' field='name' assign='categorytitle'}
     {/if}
-    {pagesetvar name="title" value="$categorytitle - `$pubtype.title` - `$modvars.ZConfig.sitename`"}
+    {if !$homepage}{pagesetvar name="title" value="$categorytitle - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
     <h2>{gt text='Category:'} {$categorytitle}</h2>
     <span>{gt text='Pages published under this category:'}</span>
 {else}
     {* generic title *}
-    {pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}
+    {if !$homepage}{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
     <h2>{gt text=$pubtype.title}</h2>
 {/if}
 

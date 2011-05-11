@@ -1,4 +1,4 @@
-{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}
+{if !$homepage}{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
 {* Open Graph tags
 {modurl modname='Clip' func='view' tid=$pubtype.tid fqurl=true assign='url'}

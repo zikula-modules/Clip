@@ -1,4 +1,4 @@
-{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}
+{if !$homepage}{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 {clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}
 
 {* Open Graph tags

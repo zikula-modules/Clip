@@ -2,10 +2,13 @@
 {include file='clip_generic_navbar.tpl' section='form'}
 
 {if $pubdata.id}
-    <h2>{gt text='Edit a page'}</h2>
+    {gt text='Edit a page' assign='pagetitle'}
 {else}
-    <h2>{gt text='Create a page'}</h2>
+    {gt text='New a page' assign='pagetitle'}
 {/if}
+{if !$homepage}{pagesetvar name="title" value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
+
+<h2>{$pagetitle}</h2>
 
 {assign var='zformclass' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.edit.state`"}
 
