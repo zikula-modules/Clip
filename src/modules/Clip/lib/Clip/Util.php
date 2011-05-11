@@ -973,7 +973,7 @@ class Clip_Util
                 }
 
                 if ($batch->setup(array('url' => $file)) && $batch->execute()) {
-                    LogUtil::registerStatus(__f("'%s' publication type created successfully.", $default, $dom));
+                    LogUtil::registerStatus(__f("Default '%s' publication type created successfully.", $default, $dom));
                 } else {
                     LogUtil::registerStatus(__f("Could not import the '%s' publication type.", $default, $dom));
                 }
