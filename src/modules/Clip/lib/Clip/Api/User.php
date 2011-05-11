@@ -595,7 +595,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         // special function indicator
         if ($args['func'] == 'edit') {
-            $params .= '/' . $args['func'];
+            $params .= $pubTitle ? '/edit' : '/new';
         }
 
         if (count($args['args']) > 0) {
@@ -662,7 +662,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
-            if (in_array($_[$nextvar], array('edit'))) {
+            if (in_array($_[$nextvar], array('new', 'edit'))) {
                 // special function indicator check
                 System::queryStringSetVar('func', 'edit');
                 $nextvar++;
