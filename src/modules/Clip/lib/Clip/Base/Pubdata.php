@@ -31,7 +31,6 @@ class Clip_Base_Pubdata extends Doctrine_Record
     {
         // map basic values
         $this->clipValues();
-        $this->mapValue('__WORKFLOW__',  array('state' => 'initial'));
 
         // handle the plugins data if needed
         if (isset($args['handleplugins']) && $args['handleplugins']) {
@@ -43,7 +42,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
             $this->clipWorkflow();
         }
 
-        $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
+        $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']) ? $this['__WORKFLOW__']['state'] : null);
 
         // post process related records
         if (isset($args['rel']['processrefs']) && $args['rel']['processrefs']) {
