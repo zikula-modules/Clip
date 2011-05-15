@@ -21,7 +21,6 @@
  * @param $args['globalmultiselect'] Are more then one selections in all available browsers allowed
  * @param $args['togglediv']         This div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus)
  * @param $args['cache']             Enable smarty cache (if not already enabled)
- * @param $args['cache_count']       Enable count cache (apc is required)
  * @param $args['assign']            Optional
 
  * @return html of category tree
@@ -50,11 +49,14 @@ function smarty_function_clip_category_browser($params, &$view)
     $includenulllink   = isset($params['includenulllink']) ? $params['includenulllink'] : true;
     $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;
     $globalmultiselect = isset($params['globalmultiselect']) ? $params['globalmultiselect'] : false;
-    $cache_count       = isset($params['cache_count']) ? $params['cache_count'] : true;
     $cache             = false;
+    $wascaching        = Zikula_View::CACHE_DISABLED;
 
     if (!$view->getCaching() && isset($params['cache']) && in_array((int)$params['cache'], array(0, 1, 2))) {
         $cache = (int)$params['cache'];
+    } elseif ($view->getCaching()) {
+        $wascaching = $view->getCaching();
+        $view->setCaching(Zikula_View::CACHE_DISABLED);
     }
 
     if (isset($params['tpl']) && $params['tpl'] && $view->template_exists($params['tpl'])) {
@@ -64,17 +66,16 @@ function smarty_function_clip_category_browser($params, &$view)
     }
 
     // left any additional parameters
-    if (isset($params['field'])) { unset($params['field']); }
-    if (isset($params['count'])) { unset($params['count']); }
-    if (isset($params['togglediv'])) { unset($params['togglediv']); }
-    if (isset($params['tpl'])) { unset($params['tpl']); }
-    if (isset($params['assign'])) { unset($params['assign']); }
-    if (isset($params['operator'])) { unset($params['operator']); }
-    if (isset($params['includenulllink'])) { unset($params['includenulllink']); }
-    if (isset($params['multiselect'])) { unset($params['multiselect']); }
-    if (isset($params['globalmultiselect'])) { unset($params['globalmultiselect']); }
-    if (isset($params['cache'])) { unset($params['cache']); }
-    if (isset($params['cache_count'])) { unset($params['cache_count']); }
+    unset($params['field']);
+    unset($params['count']);
+    unset($params['togglediv']);
+    unset($params['tpl']);
+    unset($params['assign']);
+    unset($params['operator']);
+    unset($params['includenulllink']);
+    unset($params['multiselect']);
+    unset($params['globalmultiselect']);
+    unset($params['cache']);
 
     // category browser processing
     $filter     = FormUtil::getPassedValue('filter');
@@ -100,10 +101,6 @@ function smarty_function_clip_category_browser($params, &$view)
 
         if (!$cats) {
             return LogUtil::registerError(__f('Error! No such category found for the ID passed [%s].', $id, $dom));
-        }
-
-        if ($count && $cache_count && function_exists('apc_fetch')) {
-            $count_arr_old = $count_arr = apc_fetch('clip_cat_browser_count_'.$tid);
         }
 
         $one_selected = false;
@@ -207,11 +204,6 @@ function smarty_function_clip_category_browser($params, &$view)
             $cats = array_merge($nullcat, $cats);
         }
 
-        // TODO This cache will be needed with DB + Smarty caches?
-        if (function_exists('apc_store') && $count && $cache_count && $count_arr_old <> $count_arr) {
-            apc_store('clip_cat_browser_count_'.$tid, $count_arr, 3600);
-        }
-
         $view->assign('cats', $cats);
 
         // assign the plugin options
@@ -227,9 +219,7 @@ function smarty_function_clip_category_browser($params, &$view)
         $html = $view->fetch($template, $cache ? $cache_id : null);
     }
 
-    if ($cache) {
-        $view->setCaching(0);
-    }
+    $view->setCaching($wascaching);
 
     if ($assign) {
         $view->assign($assign, $html);
