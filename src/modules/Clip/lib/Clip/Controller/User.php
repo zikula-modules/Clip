@@ -103,33 +103,35 @@ class Clip_Controller_User extends Zikula_AbstractController
             $apiargs['startnum'] = ($args['page']-1)*$apiargs['itemsperpage']+1;
         }
 
+        // template comes from parameter
+        $args['template']   = DataUtil::formatForOS($args['template']);
+        // cleans it of not desired parameters
+        $args['template']   = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
         if (empty($args['template'])) {
             // template comes from pubtype
-            $args['templateid'] = $pubtype['outputset'];
+            $args['templateid'] = '';
             $args['template']   = $pubtype['outputset'].'/list.tpl';
         } else {
-            // template comes from parameter
-            $args['template']   = DataUtil::formatForOS($args['template']);
-            $args['templateid'] = $pubtype['outputset']."_{$args['template']}";
+            $args['templateid'] = "/{$args['template']}";
             $args['template']   = $pubtype['outputset']."/list_{$args['template']}.tpl";
         }
 
         //// Security check
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:list:', "{$apiargs['tid']}::{$args['templateid']}", ACCESS_READ));
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:list:', "{$apiargs['tid']}::list{$args['templateid']}", ACCESS_READ));
 
         //// Output setup
         // check if cache is enabled and this view is cached
-        if (!empty($args['cachelifetime'])) {
+        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
 
-            $cacheid = $apiargs['tid'].'_'.$args['templateid'].'/view'
+            $cacheid = 'tid_'.$apiargs['tid'].'/list'.$args['templateid'] // templateid = (/template)?
                        .'/'.Clip_Util::getUserGIdentifier()
+            // FIXME Add plugin specific cache sections
+            // $cacheid .= '|field'.id.'|'.output
                        .'/'.'perpage_'.$apiargs['itemsperpage']
                        .(!empty($apiargs['filter']) ? '/filter_'.$apiargs['filter'] : '')
                        .(!empty($orderby) ? '/order_'.Clip_Util::createOrderBy($apiargs['orderby']) : '')
                        .(!empty($apiargs['startnum']) ? '/start_'.$apiargs['startnum'] : '');
-            // FIXME Add plugin specific cache sections
-            // $cacheid .= '|field'.id.'|'.output
 
             // set the output info
             $this->view->setCaching(Zikula_View::CACHE_INDIVIDUAL)
@@ -168,7 +170,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // check if template is available
         if (!$this->view->template_exists($args['template'])) {
-            $alert = SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+            $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
             if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
@@ -216,8 +218,8 @@ class Clip_Controller_User extends Zikula_AbstractController
         // define the arguments
         $apiargs = array(
             'tid'           => $args['tid'],
-            'pid'           => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
-            'id'            => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
+            'pid'           => isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid'),
+            'id'            => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'),
             'checkperm'     => false,
             'handleplugins' => true,
             'loadworkflow'  => true
@@ -229,7 +231,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // post validation
         if ((empty($apiargs['pid']) || !is_numeric($apiargs['pid'])) && (empty($apiargs['id']) || !is_numeric($apiargs['id']))) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
+            return LogUtil::registerError($this->__f('Error! Missing or wrong argument [%s].', 'id | pid'));
         }
 
         // get the pid if it was not passed
@@ -237,16 +239,18 @@ class Clip_Controller_User extends Zikula_AbstractController
             $apiargs['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $apiargs);
         }
 
+        // template comes from parameter
+        $args['template']   = DataUtil::formatForOS($args['template']);
+        // cleans it of not desired parameters
+        $args['template']   = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
         // determine the template to use
         if (empty($args['template'])) {
             // template for the security check
-            $args['templateid'] = $pubtype['outputset'];
+            $args['templateid'] = 'display';
             // template comes from pubtype
             $args['template']   = $pubtype['outputset'].'/display.tpl';
         } else {
-            // template comes from parameter
-            $args['template']   = DataUtil::formatForOS($args['template']);
-            $args['templateid'] = $pubtype['outputset']."_{$args['template']}";
+            $args['templateid'] = "display/{$args['template']}";
             // check for related plain templates
             if (in_array($args['template'], array('pending'))) {
                 $args['templatesimple'] = $pubtype['outputset']."/display_{$args['template']}.tpl";
@@ -256,7 +260,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         //// Security check
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:full:', "{$apiargs['tid']}:{$apiargs['pid']}:{$args['templateid']}", ACCESS_READ));
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:display:', "{$apiargs['tid']}:{$apiargs['pid']}:{$args['templateid']}", ACCESS_READ));
 
         //// Output setup
         // fetch simple templates (notifications, etc)
@@ -274,10 +278,11 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         // check if cache is enabled and this view is cached
-        if (!empty($args['cachelifetime'])) {
+        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
 
-            $cacheid = $apiargs['tid'].'_'.$args['templateid'].'/display_p'.$apiargs['pid'].'_i'.$apiargs['id']
+            $dispath = str_replace('display', 'display/pid'.$apiargs['pid'].'/id'.$apiargs['id'], $args['templateid']);
+            $cacheid = 'tid_'.$apiargs['tid'].'/'.$dispath // dispath = display/pidX/idY(/template)?
                        .'/'.Clip_Util::getUserGIdentifier();
             // FIXME Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output

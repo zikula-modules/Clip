@@ -170,14 +170,10 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // see http://www.smarty.net/manual/en/caching.groups.php
-        $tmp = Zikula_View::getInstance('Clip');
         // clear the displays of the current publication
-        $tmp->clear_cache(null, 'display'.$this->tid.'|'.$this->pub['core_pid']);
+        $view->clear_cache(null, 'tid_'.$this->tid.'/display/pid'.$this->pub['core_pid']);
         // clear all lists
-        // TODO cacheid for view is longer, it's ok?
-        $tmp->clear_cache(null, 'view'.$this->tid);
-
-        unset($tmp);
+        $view->clear_cache(null, 'tid_'.$this->tid.'/list');
 
         // core operations processing
         $goto = $this->processGoto($data);

@@ -71,12 +71,12 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         //// Permission check
-        if ($args['checkperm'] && !SecurityUtil::checkPermission('clip:list:', "{$args['tid']}::", ACCESS_READ)) {
+        if ($args['checkperm'] && !SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
         // mode check
-        $args['admin'] = (isset($args['admin']) && $args['admin']) || SecurityUtil::checkPermission('clip:full:', "{$args['tid']}::", ACCESS_ADMIN);
+        $args['admin'] = (isset($args['admin']) && $args['admin']) || SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::", ACCESS_ADMIN);
         // TODO pubtype.editown + author mode parameter check
 
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
@@ -299,7 +299,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $query = $tableObj->createQuery($args['queryalias']);
 
         // add the conditions to the query
-        if (!SecurityUtil::checkPermission('clip:full:', "{$args['tid']}::", ACCESS_ADMIN))
+        if (!SecurityUtil::checkPermission('Clip:display:', "{$args['tid']}::", ACCESS_ADMIN))
         {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
                 $query->andWhere('(core_author = ? OR core_online = ?)', array($uid, 1));
@@ -346,7 +346,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // check permissions if needed
-        if ($args['checkperm'] && !SecurityUtil::checkPermission('clip:full:', "$args[tid]:$pubdata[core_pid]:", ACCESS_READ)) {
+        if ($args['checkperm'] && !SecurityUtil::checkPermission('Clip:display:', "$args[tid]:$pubdata[core_pid]:", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -497,7 +497,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                      ->toArray();
 
             foreach ($list as $k => $v) {
-                if (!SecurityUtil::checkPermission('clip:input:', "$tid:{$v['core_pid']}:", ACCESS_EDIT)) {
+                if (!SecurityUtil::checkPermission('Clip:input:', "$tid:{$v['core_pid']}:", ACCESS_EDIT)) {
                     unset($list[$k]);
                 } else {
                     $list[$k]['_title'] = $v[$coreTitle];

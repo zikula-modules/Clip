@@ -23,7 +23,7 @@ class Clip_Api_Admin extends Zikula_AbstractApi
     {
         $links = array ();
 
-        if (SecurityUtil::checkPermission('clip::', '::', ACCESS_ADMIN)) {
+        if (SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN)) {
             $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'main'),
                 'text' => $this->__('Index')

@@ -121,6 +121,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 $this->version->setupPubtypeBundles();
                 HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
             case '0.4.15':
+                // Clip:full: to Clip:display: permission component
+
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
@@ -356,7 +358,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // upload dir creation
         $uploaddir = FileUtil::getDataDirectory().'/Clip/uploads';
 
-        if (!FileUtil::mkdirs($uploaddir, System::getVar('system.chmod_dir', 0777))) {
+        if (!mkdir($uploaddir, System::getVar('system.chmod_dir', 0777), true)) {
             LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $tmpdir));
         }
 

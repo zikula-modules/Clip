@@ -56,7 +56,7 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         }
 
         Zikula_AbstractController::configureView();
-        $this->view->setCaching(false);
+        $this->view->setCaching(Zikula_View::CACHE_DISABLED);
 
         $this->view->assign('mode', $mode)
                    ->assign('pos', $pos)

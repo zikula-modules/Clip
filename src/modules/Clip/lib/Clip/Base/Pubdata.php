@@ -133,14 +133,14 @@ class Clip_Base_Pubdata extends Doctrine_Record
         }
 
         if ($this[$alias] instanceof Doctrine_Record) {
-            if ($checkperm && !SecurityUtil::checkPermission('clip:full:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
+            if ($checkperm && !SecurityUtil::checkPermission('Clip:display:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
                 $this[$alias] = false;
             }
             return (bool)$this[$alias];
 
         } elseif ($this[$alias] instanceof Doctrine_Collection) {
             foreach ($this[$alias] as $k => $v) {
-                if ($checkperm && !SecurityUtil::checkPermission('clip:full:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
+                if ($checkperm && !SecurityUtil::checkPermission('Clip:display:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
                     unset($this[$alias][$k]);
                 }
             }

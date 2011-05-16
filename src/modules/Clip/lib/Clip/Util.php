@@ -189,9 +189,8 @@ class Clip_Util
         static $id;
 
         if (!isset($id)) {
-            $gids = UserUtil::getGroupsForUser(UserUtil::getVar('uid'));
-            sort($gids);
-            $id = 'g_'.implode('_', $gids);
+            $str = UserUtil::getGroupListForUser(null, '_');
+            $id  = $str == '-1' ? 'guest' : 'groups_'.$str;
         }
 
         return $id;

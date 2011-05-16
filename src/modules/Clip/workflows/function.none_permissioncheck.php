@@ -30,13 +30,13 @@ function Clip_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $act
         if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == $currentUser) {
             return true;
         } else {
-            return SecurityUtil::checkPermission('clip:input:', "$tid:$pid:$obj[__WORKFLOW__][state]", $permLevel, $currentUser);
+            return SecurityUtil::checkPermission('Clip:input:', "$tid:$pid:{$obj['__WORKFLOW__']['state']}", $permLevel, $currentUser);
         }
     } else {
         // no object passed - user wants to create a new one
         $tid = FormUtil::getPassedValue('tid');
 
-        return SecurityUtil::checkPermission('clip:input:', "$tid::", $permLevel, $currentUser);
+        return SecurityUtil::checkPermission('Clip:input:', "$tid::", $permLevel, $currentUser);
     }
 }
 
