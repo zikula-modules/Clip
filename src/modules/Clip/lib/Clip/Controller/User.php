@@ -69,11 +69,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Parameters
         // process itemsperpage depending it it's an API call or browser call
-        if (!empty($args)) {
-            $itemsperpage = (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : $pubtype['itemsperpage'];
-        } else {
-            $itemsperpage = abs((int)FormUtil::getPassedValue('itemsperpage'));
-        }
+        $itemsperpage = (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && (int)$args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)$pubtype['itemsperpage'];
         // old parameters (will be removed on Clip 1.0)
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? (bool)$args['handlePluginFields'] : FormUtil::getPassedValue('handlePluginFields', true);
         $args['getApprovalS']  = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : FormUtil::getPassedValue('getApprovalState', false);
