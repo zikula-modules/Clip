@@ -83,7 +83,7 @@
         </fieldset>
         {/if}
 
-        {notifydisplayhooks eventname="clip.hook.`$pubtype.tid`.ui.edit" id=$pubobj.core_uniqueid}
+        {notifydisplayhooks eventname="clip.ui_hooks.item_`$pubtype.tid`.form_edit" id=$pubobj.core_uniqueid}
 
         <div class="z-buttons z-formbuttons">
             {foreach item='action' from=$actions}
