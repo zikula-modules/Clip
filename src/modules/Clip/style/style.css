@@ -90,18 +90,23 @@
 .z-module-clip .z-menu {
   margin-bottom: 1em;
 }
+.z-module-clip .clip-breadcrumbs {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
 .clip-option,
-.clip-menu span {
+.clip-breadcrumbs span {
   color: #444;
   padding: 0 3px;
 }
 .clip-option a,
-.clip-menu span a {
+.clip-breadcrumbs span a {
   padding: 3px 0;
 }
 
 .clip-pubtype-desc {
-  padding: 0 5px 0.5em;
+  padding: 0 5px;
   margin: 0;
 }
 .z-module-clip .z-pagerabc {

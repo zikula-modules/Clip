@@ -51,7 +51,8 @@
         <span class="text_separator">|</span>
 
         <span class="clip-post-edit-link">
-            {checkpermissionblock component='clip:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
+            {* FIXME edit own check? *}
+            {checkpermissionblock component='Clip:input:' instance="`$pubtype.tid`:`$pubdata.core_pid`:" level=ACCESS_EDIT}
                 <span class="z-nowrap">
                     <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$pubdata.core_pid}">{gt text='Edit'}</a>
                 </span>

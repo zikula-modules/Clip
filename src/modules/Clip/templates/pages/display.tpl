@@ -26,7 +26,8 @@
         <span class="clip-page-date">{gt text='Posted by %1$s on %2$s' tag1=$author tag2=$pubdata.core_publishdate|dateformat:'datelong'}</span>
 
         <br />
-        {checkpermissionblock component='clip:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
+        {* FIXME edit own check? *}
+        {checkpermissionblock component='Clip:input:' instance="`$pubtype.tid`:`$pubdata.core_pid`:" level=ACCESS_EDIT}
         <span class="clip-page-edit-link">
             <span class="z-nowrap">
                 <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$pubdata.core_pid}">{gt text='Edit'}</a>

@@ -22,6 +22,7 @@ class Clip_Generator
         $className = "Clip_Model_Pubdata{$tid}";
         $pubdata   = new $className();
         $pubdata->clipProcess();
+        $pubdata->clipWorkflow();
         // get the record fields
         $recfields = $pubdata->pubFields();
         // and the relation fields information
@@ -34,13 +35,9 @@ class Clip_Generator
                 '{if !$homepage}{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
                 '{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
-                '<h2>{gt text=$pubtype.title}</h2>'."\n".
-                "\n".
                 '{include file=\'clip_generic_navbar.tpl\' section=\'display\'}'."\n".
                 "\n".
-                '{if $pubtype.description}'."\n".
-                '    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
-                '{/if}'."\n".
+                '<h2>{$pubdata.core_title|safetext}</h2>'."\n".
                 "\n".
                 '<div class="z-form clip-pub-details">';
         } else {
@@ -107,8 +104,7 @@ class Clip_Generator
                     switch ($key) {
                         // title
                         case 'core_title':
-                            $hd = $forblock ? 'h5' : 'h3';
-                            $rowcode['full'] = '    <'.$hd.($public ? ' class="z-center"' : '').'>{gt text=$pubdata.'.$key.'}</'.$hd.'>';
+                            $rowcode['full'] = !$forblock ? false : '<h5'.($public ? ' class="z-center"' : '').'>$pubdata.'.$key.'</h5>';
                             break;
 
                         // reads
@@ -181,7 +177,7 @@ class Clip_Generator
                 }
 
                 // build the final row if not filled
-                if (empty($rowcode['full'])) {
+                if ($rowcode['full'] !== false && empty($rowcode['full'])) {
                     $rowcode['full'] =
                         '    <div class="z-formrow">'."\n".
                         '        <span class="z-label">'.$rowcode['label'].'</span>'.$rowcode['body']."\n".
@@ -189,8 +185,10 @@ class Clip_Generator
                 }
             }
 
-            // add the snippet to the final template
-            $code .= "\n".$rowcode['full']."\n";
+            if ($rowcode['full'] !== false) {
+                // add the snippet to the final template
+                $code .= "\n".$rowcode['full']."\n";
+            }
         }
 
         if (!$forblock) {
@@ -221,13 +219,9 @@ class Clip_Generator
         $title_editpub = no__('Edit publication');
 
         $code = "\n".
-                '<h2>{gt text=$pubtype.title}</h2>'."\n".
-                "\n".
                 '{include file=\'clip_generic_navbar.tpl\' section=\'form\'}'."\n".
                 "\n".
-                '{if $pubtype.description}'."\n".
-                '    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>'."\n".
-                '{/if}'."\n".
+                '<h2>{gt text="Edit \'%s\'" tag1=$pubdata.core_title}</h2>'."\n".
                 "\n".
                 '{assign var=\'zformclass\' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.edit.state`"}'."\n".
                 "\n".
@@ -269,6 +263,8 @@ class Clip_Generator
 
             if (method_exists($plugin, 'getPluginEdit')) {
                 $plugadd = $plugin->getPluginEdit($pubfields[$k]);
+            } elseif ($formplugin == 'String' && $pubfields[$k]['istitle']) {
+                $plugadd = ' cssClass="z-form-text-big"';
             } else {
                 $plugadd = '';
             }

@@ -1,15 +1,17 @@
 
 {if !$homepage}{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
-<h2>{gt text=$pubtype.title}</h2>
-
 {include file='clip_generic_navbar.tpl' section='list'}
 
+<h2>{gt text=$pubtype.title}</h2>
+
 {if $pubtype.description neq ''}
-    <p class="clip-pubtype-desc">{gt text=$pubtype.description}</p>
+    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>
 {/if}
 
 {*clip_pagerabc*}
+
+{checkpermission component='Clip::' instance="`$pubtype.tid`::" level=ACCESS_EDIT assign='auth_editor'}
 
 <table class="z-datatable clip-pub-list">
     <tbody>
@@ -24,12 +26,12 @@
                 <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid title=$item.core_title|formatpermalink}">
                     {img modname='core' src='demo.png' set='icons/extrasmall' __title='View' __alt='View'}
                 </a>
-                {checkpermissionblock component='clip:input:' instance="$pubtype.tid::" level=ACCESS_ADD}
+                {if $auth_editor}
                 &nbsp;
                 <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$item.core_pid}">
                     {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                 </a>
-                {/checkpermissionblock}
+                {/if}
                 {/strip}
             </td>
         </tr>
