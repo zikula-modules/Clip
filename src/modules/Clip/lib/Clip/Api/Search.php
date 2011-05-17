@@ -46,14 +46,14 @@ class Clip_Api_Search extends Zikula_AbstractApi
     {
         ModUtil::dbInfoLoad('Search');
 
-        $search_tid = isset($args['tids']) ? $args['tids'] : FormUtil::getPassedValue('search_tid', '', 'REQUEST');
+        $search_tid = isset($args['tids']) ? (array)$args['tids'] : (array)FormUtil::getPassedValue('search_tid', array(), 'REQUEST');
         $sessionId  = session_id();
 
         $pubtypes = self::get_searchable();
 
         foreach ($pubtypes as $pubtype)
         {
-            if ($search_tid == '' || $search_tid[$pubtype['tid']] == 1){
+            if ($search_tid == '' || isset($search_tid[$pubtype['tid']])) {
                 $where_arr = Doctrine_Core::getTable('Clip_Model_Pubfield')
                              ->selectFieldArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
