@@ -15,6 +15,37 @@
 class Clip_Doctrine_Table extends Doctrine_Table
 {
     /**
+     * Get Filter Columns.
+     *
+     * @param array $dynaMap Array of dynamic aliasses.
+     *
+     * @return array Indexed array with aliases => columns.
+     */
+    public function getFilterColumns($dynaMap = array())
+    {
+        $fields  = $this->getFieldNames();
+        $columns = array_combine($fields, $fields);
+
+        foreach ($this->getRelations() as $alias => $relation) {
+            // checks if this relation is not owned
+            if ($relation['local'] != 'pm_id') {
+                $columns[$alias] = str_replace('pm_', '', $relation['local']);
+            } else {
+                // when owned the foreign field is in the other table
+                $v = isset($dynaMap[$relation['class']]) ? $dynaMap[$relation['class']].'.' : $relation['class'].':';
+                $columns[$alias] = "{$v}id";
+
+            }
+        }
+
+        // add the core_title as another filter field
+        $tid = Clip_Util::getTidFromString($this->getTableName());
+        $columns['core_title'] = Clip_Util::getTitleField($tid);
+
+        return $columns;
+    }
+
+    /**
      * Getter of the internal tablename.
      *
      * @return string Internal table name.
