@@ -117,12 +117,20 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 }
                 $this->createGrouptypesTree();
             case '0.4.14':
+            case '0.4.15':
+                // update the permission schema
+                $table = DBUtil::getLimitedTablename('group_perms');
+                DBUtil::executeSQL("UPDATE $table SET z_component = 'Clip:display:' WHERE z_component = 'Clip:full:'");
+                // regenerate the hook information
+                $regtables = array('hook_runtime' => 'sowner', 'hook_binding' => 'sowner', 'hook_subscriber' => 'owner');
+                foreach ($regtables as $rtable => $rfield) {
+                    $table = DBUtil::getLimitedTablename($rtable);
+                    DBUtil::executeSQL("DELETE FROM $table WHERE $rfield = 'Clip'");
+                }
                 // register the pubtype hooks
                 $this->version->setupPubtypeBundles();
                 HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
-            case '0.4.15':
-                // Clip:full: to Clip:display: permission component
-
+            case '0.4.16':
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
