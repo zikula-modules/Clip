@@ -532,9 +532,14 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         static $cache = array();
 
-        $supportedfunctions = array('main', 'list', 'display', 'edit', 'view', 'publist', 'viewpub');
+        $supportedfunctions = array('main', 'list', 'display', 'edit', 'view', 'publist', 'viewpub', 'pubedit');
         if (!in_array($args['func'], $supportedfunctions)) {
-            return '';
+            return false;
+        }
+
+        // deprecated function transition
+        if ($args['func'] == 'pubedit') {
+            $args['func'] = 'edit';
         }
 
         $pubtypeTitle = '';
@@ -601,7 +606,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         if (count($args['args']) > 0) {
             $paramarray = array();
             foreach ($args['args'] as $k => $v) {
-                $paramarray[] = $k.'/'.urlencode($v);
+                $paramarray[] = urlencode($k).'/'.urlencode($v);
             }
             $params = '/'. implode('/', $paramarray);
         }
@@ -620,8 +625,8 @@ class Clip_Api_User extends Zikula_AbstractApi
     {
         $_ = $args['vars'];
 
-        $functions = array('main', 'list', 'display', 'edit', 'exec',
-                           'view', 'viewpub', 'pubedit', 'executecommand');
+        $functions = array('exec', 'executecommand');
+
         $argsnum   = count($_);
         if (!isset($_[2]) || empty($_[2])) {
             System::queryStringSetVar('func', 'main');
@@ -630,35 +635,19 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         if (in_array($_[2], $functions)) {
             return false;
-        } else {
-            /* @deprecated translation table */
-            switch ($_[2]) {
-                case 'view':
-                case 'publist':
-                    $_[2] = 'list';
-                    break;
-                case 'viewpub':
-                    $_[2] = 'display';
-                    break;
-                case 'pubedit':
-                    $_[2] = 'edit';
-                    break;
-                case 'executecommand':
-                    $_[2] = 'exec';
-                    break;
-            }
         }
 
-        $nextvar = 3;
+        $nextvar = 2;
 
         $tid = Doctrine_Core::getTable('Clip_Model_Pubtype')
-               ->selectFieldBy('tid', $_[2], 'urltitle');
+               ->selectFieldBy('tid', $_[$nextvar], 'urltitle');
 
         if (!$tid) {
             return false;
         } else {
             System::queryStringSetVar('func', 'list');
             System::queryStringSetVar('tid', $tid);
+            $nextvar++;
         }
 
         if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
