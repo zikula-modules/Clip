@@ -250,14 +250,14 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $name = $name ? $name : $this->title;
 
         // display/edit hooks
-        $bundle = new Zikula_HookManager_SubscriberBundle('Clip', "subscriber.ui_hooks.clip.item_$tid", 'ui_hooks', $clipVersion->__f('%s Item Hooks', $name));
-        $bundle->addEvent('display_view',    "clip.ui_hooks.item_$tid.display_view");
-        $bundle->addEvent('form_edit',       "clip.ui_hooks.item_$tid.form_edit");
-        $bundle->addEvent('form_delete',     "clip.ui_hooks.item_$tid.form_delete");
-        $bundle->addEvent('validate_edit',   "clip.ui_hooks.item_$tid.validate_edit");
-        $bundle->addEvent('validate_delete', "clip.ui_hooks.item_$tid.validate_delete");
-        $bundle->addEvent('process_edit',    "clip.ui_hooks.item_$tid.process_edit");
-        $bundle->addEvent('process_delete',  "clip.ui_hooks.item_$tid.process_delete");
+        $bundle = new Zikula_HookManager_SubscriberBundle('Clip', "subscriber.ui_hooks.clip.pubtype$tid", 'ui_hooks', $clipVersion->__f('%s Item Hooks', $name));
+        $bundle->addEvent('display_view',    "clip.ui_hooks.pubtype$tid.display_view");
+        $bundle->addEvent('form_edit',       "clip.ui_hooks.pubtype$tid.form_edit");
+        $bundle->addEvent('form_delete',     "clip.ui_hooks.pubtype$tid.form_delete");
+        $bundle->addEvent('validate_edit',   "clip.ui_hooks.pubtype$tid.validate_edit");
+        $bundle->addEvent('validate_delete', "clip.ui_hooks.pubtype$tid.validate_delete");
+        $bundle->addEvent('process_edit',    "clip.ui_hooks.pubtype$tid.process_edit");
+        $bundle->addEvent('process_delete',  "clip.ui_hooks.pubtype$tid.process_delete");
         $clipVersion->registerHookSubscriberBundle($bundle);
 
         // filter hooks
