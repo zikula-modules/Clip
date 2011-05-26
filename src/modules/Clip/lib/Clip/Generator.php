@@ -215,13 +215,23 @@ class Clip_Generator
 
     public static function pubedit($tid)
     {
-        $title_newpub  = no__('New publication');
-        $title_editpub = no__('Edit publication');
+        $title_newpub   = no__('New publication');
+        $heading_newpub = no__('Add a publication');
+        $title_editpub  = no__('Edit publication');
 
-        $code = "\n".
+        $code = '{* process the titles according the publication status *}'."\n".
+                '{if $pubdata.id}'."\n".
+                '    {gt text=\''.$title_editpub.'\' assign=\'pagetitle\'}'."\n".
+                '    {gt text="Edit \'%s\'" tag1=$pubdata.core_title assign=\'pageheading\'}'."\n".
+                '{else}'."\n".
+                '    {gt text=\''.$title_newpub.'\' assign=\'pagetitle\'}'."\n".
+                '    {gt text=\''.$heading_newpub.'\' assign=\'pageheading\'}'."\n".
+                '{/if}'."\n".
+                '{if !$homepage}{pagesetvar name="title" value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
+                "\n".
                 '{include file=\'clip_generic_navbar.tpl\' section=\'form\'}'."\n".
                 "\n".
-                '<h2>{gt text="Edit \'%s\'" tag1=$pubdata.core_title}</h2>'."\n".
+                '<h2>{$pageheading}</h2>'."\n".
                 "\n".
                 '{assign var=\'zformclass\' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.edit.state`"}'."\n".
                 "\n".
@@ -229,15 +239,7 @@ class Clip_Generator
                 '    <div>'."\n".
                 '        {formvalidationsummary}'."\n".
                 '        <fieldset class="z-linear">'."\n".
-                '            <legend>'."\n".
-                '                {if $pubdata.id}'."\n".
-                '                    {gt text=\''.$title_editpub.'\' assign=\'pagetitle\'}'."\n".
-                '                {else}'."\n".
-                '                    {gt text=\''.$title_newpub.'\' assign=\'pagetitle\'}'."\n".
-                '                {/if}'."\n".
-                '                {if !$homepage}{pagesetvar name="title" value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
-                '                {$pagetitle}'."\n".
-                '            </legend>'."\n";
+                '            <legend>{$pagetitle}</legend>'."\n";
 
         // publication fields
         $pubfields = Clip_Util::getPubFields($tid)->toArray();
