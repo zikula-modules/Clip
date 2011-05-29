@@ -10,10 +10,9 @@
  */
 
 /**
- * Displays the admin sub menu
+ * Displays the admin sub menu.
  *
- * @author mateo
- * @param  $params['tid'] tid
+ * @param  $params['tid'] tid.
  */
 function smarty_function_clip_submenu($params, $view)
 {

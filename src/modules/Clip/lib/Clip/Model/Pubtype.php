@@ -111,6 +111,17 @@ class Clip_Model_Pubtype extends Doctrine_Record
     /**
      * Clip utility methods
      */
+    public function mapTitleField()
+    {
+        if ($this->contains('titlefield')) {
+            return $this;
+        }
+
+        $this->mapValue('titlefield', Clip_Util::getTitleField($this->tid));
+
+        return $this;
+    }
+
     public function getTableName()
     {
         return 'clip_pubdata'.$this->tid;
@@ -224,23 +235,23 @@ class Clip_Model_Pubtype extends Doctrine_Record
      */
     public function postHydrate($event)
     {
-        $data = $event->data;
+        $pubtype = $event->data;
 
-        if (is_object($data)) {
-            if (isset($data->config) && !empty($data->config) && is_string($data->config)) {
-                $data->config = unserialize($data->config);
+        if (is_object($pubtype)) {
+            if (isset($pubtype->config) && !empty($pubtype->config) && is_string($pubtype->config)) {
+                $pubtype->config = unserialize($pubtype->config);
             } else {
-                $data->config = array();
+                $pubtype->config = array();
             }
-            $data->config = $this->defaultConfig($data->config);
+            $pubtype->config = $this->defaultConfig($pubtype->config);
 
-        } elseif (is_array($data)) {
-            if (isset($data['config']) && !empty($data['config']) && is_string($data['config'])) {
-                $data['config'] = unserialize($data['config']);
+        } elseif (is_array($pubtype)) {
+            if (isset($pubtype['config']) && !empty($pubtype['config']) && is_string($pubtype['config'])) {
+                $pubtype['config'] = unserialize($pubtype['config']);
             } else {
-                $data['config'] = array();
+                $pubtype['config'] = array();
             }
-            $data['config'] = $this->defaultConfig($data['config']);
+            $pubtype['config'] = $this->defaultConfig($pubtype['config']);
         }
     }
 
@@ -255,14 +266,14 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $name = $name ? $name : $this->title;
 
         // display/edit hooks
-        $bundle = new Zikula_HookManager_SubscriberBundle('Clip', "subscriber.ui_hooks.clip.pubtype$tid", 'ui_hooks', $clipVersion->__f('%s Item Hooks', $name));
-        $bundle->addEvent('display_view',    "clip.ui_hooks.pubtype$tid.display_view");
-        $bundle->addEvent('form_edit',       "clip.ui_hooks.pubtype$tid.form_edit");
-        $bundle->addEvent('form_delete',     "clip.ui_hooks.pubtype$tid.form_delete");
-        $bundle->addEvent('validate_edit',   "clip.ui_hooks.pubtype$tid.validate_edit");
-        $bundle->addEvent('validate_delete', "clip.ui_hooks.pubtype$tid.validate_delete");
-        $bundle->addEvent('process_edit',    "clip.ui_hooks.pubtype$tid.process_edit");
-        $bundle->addEvent('process_delete',  "clip.ui_hooks.pubtype$tid.process_delete");
+        $bundle = new Zikula_HookManager_SubscriberBundle('Clip', "subscriber.ui_hooks.clip.pubtype{$tid}", 'ui_hooks', $clipVersion->__f('%s Item Hooks', $name));
+        $bundle->addEvent('display_view',    "clip.ui_hooks.pubtype{$tid}.display_view");
+        $bundle->addEvent('form_edit',       "clip.ui_hooks.pubtype{$tid}.form_edit");
+        $bundle->addEvent('form_delete',     "clip.ui_hooks.pubtype{$tid}.form_delete");
+        $bundle->addEvent('validate_edit',   "clip.ui_hooks.pubtype{$tid}.validate_edit");
+        $bundle->addEvent('validate_delete', "clip.ui_hooks.pubtype{$tid}.validate_delete");
+        $bundle->addEvent('process_edit',    "clip.ui_hooks.pubtype{$tid}.process_edit");
+        $bundle->addEvent('process_delete',  "clip.ui_hooks.pubtype{$tid}.process_delete");
         $clipVersion->registerHookSubscriberBundle($bundle);
 
         // filter hooks
@@ -300,8 +311,8 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $clipVersion = new Clip_Version_Hooks();
 
         // register hook bundles
-        $data = $event->getInvoker();
-        $this->registerHookBundles($clipVersion, $data['tid'], $data['title']);
+        $pubtype = $event->getInvoker();
+        $this->registerHookBundles($clipVersion, $pubtype['tid'], $pubtype['title']);
 
         HookUtil::registerSubscriberBundles($clipVersion->getHookSubscriberBundles());
     }
@@ -313,12 +324,12 @@ class Clip_Model_Pubtype extends Doctrine_Record
      */
     public function postDelete($event)
     {
-        $data = $event->getInvoker();
+        $pubtype = $event->getInvoker();
 
         // delete m2m relation tables
         $ownSides = array(true, false);
         foreach ($ownSides as $ownSide) {
-            $rels = Clip_Util::getRelations($data['tid'], $ownSide);
+            $rels = Clip_Util::getRelations($pubtype['tid'], $ownSide);
             foreach ($rels as $tid => $relations) {
                 foreach ($relations as $relation) {
                     if ($relation['type'] == 3) {
@@ -330,19 +341,19 @@ class Clip_Model_Pubtype extends Doctrine_Record
         }
 
         // delete any relation
-        $where = array("tid1 = '{$data['tid']}' OR tid2 = '{$data['tid']}'");
+        $where = array("tid1 = '{$pubtype['tid']}' OR tid2 = '{$pubtype['tid']}'");
         Doctrine_Core::getTable('Clip_Model_Pubrelation')->deleteWhere($where);
 
         // delete the data table
         Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->dropTable();
 
         // delete workflows
-        DBUtil::deleteWhere('workflows', "module = 'Clip' AND obj_table = 'clip_pubdata{$data['tid']}'");
+        DBUtil::deleteWhere('workflows', "module = 'Clip' AND obj_table = 'clip_pubdata{$pubtype['tid']}'");
 
         $clipVersion = new Clip_Version_Hooks();
 
         // unregister hook bundles
-        $this->registerHookBundles($clipVersion, $data['tid'], $data['title']);
+        $this->registerHookBundles($clipVersion, $pubtype['tid'], $pubtype['title']);
 
         HookUtil::unregisterSubscriberBundles($clipVersion);
     }

@@ -508,6 +508,20 @@ class Clip_Workflow
     }
 
     /**
+     * Method to validate a specific action string for the object state.
+     *
+     * @param string $action Action to validate.
+     *
+     * @return boolean True if valid, false otherwise.
+     */
+    public function isValidAction($action)
+    {
+        $actions = array_keys($this->getActions());
+
+        return in_array($action, $actions);
+    }
+
+    /**
      * Item object setter.
      *
      * @param object &$obj Record object.

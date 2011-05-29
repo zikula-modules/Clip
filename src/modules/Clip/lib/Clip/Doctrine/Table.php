@@ -24,6 +24,7 @@ class Clip_Doctrine_Table extends Doctrine_Table
     public function getFilterColumns($dynaMap = array())
     {
         $fields  = $this->getFieldNames();
+        // TODO remove the rel_X fields
         $columns = array_combine($fields, $fields);
 
         foreach ($this->getRelations() as $alias => $relation) {

@@ -10,13 +10,13 @@
  */
 
 /**
- * Increase Hit Counter
- * This logic is implemented in a plugin to let the user decide if he wants to use it or not
- * Hitcount breaks mysql table cache
+ * Increase Hit Counter.
  *
- * @author kundi
- * @param $args['tid'] tid
- * @param $args['pid'] pid
+ * This logic is implemented in a plugin to let the user decide if he wants to use it or not
+ * Hitcount breaks mysql table cache.
+ *
+ * @param $args['tid'] tid.
+ * @param $args['pid'] pid.
  */
 function smarty_function_clip_hitcount($params, $view)
 {

@@ -151,7 +151,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $goto = $this->processGoto($data);
 
         // check the goto parameter
-        switch ($this->goto) {
+        switch ($this->goto)
+        {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
                 $this->goto = ModUtil::url('Clip', 'user', 'edit',
@@ -160,25 +161,24 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                                              'goto' => 'stepmode'));
                 break;
 
-            case 'referer':
-                $this->goto = $goto ? $goto : $this->referer;
+            case 'list':
+                $this->goto = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
                 break;
 
-            case 'editlist':
-                $this->goto = ModUtil::url('Clip', 'admin', 'editlist',
-                                       array('_id' => $data['core_tid'].'_'.$data['core_pid']));
+            case 'display':
+                $goto = $displayUrl;
                 break;
 
             case 'admin':
                 $this->goto = ModUtil::url('Clip', 'admin', 'publist', array('tid' => $data['core_tid']));
                 break;
 
-            case 'index':
-                $this->goto = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
-                break;
-
             case 'home':
                 $this->goto = System::getHomepageUrl();
+                break;
+
+            case 'referer':
+                $this->goto = $goto ? $goto : $this->referer;
                 break;
 
             default:

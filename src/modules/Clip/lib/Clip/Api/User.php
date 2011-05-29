@@ -40,12 +40,12 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         $pubfields = Clip_Util::getPubFields($args['tid']);
+
         if (!$pubfields) {
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype = Clip_Util::getPubType($args['tid']);
-        $pubtype->mapValue('titlefield', Clip_Util::findTitleField($pubfields));
+        $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
 
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
@@ -70,14 +70,14 @@ class Clip_Api_User extends Zikula_AbstractApi
             $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
         }
 
-        //// Permission check
+        //// Security
         if ($args['checkperm'] && !SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
         // mode check
+        // FIXME SECURITY enrich with all the possibilities
         $args['admin'] = (isset($args['admin']) && $args['admin']) || SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::", ACCESS_ADMIN);
-        // TODO pubtype.editown + author mode parameter check
 
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
@@ -183,7 +183,6 @@ class Clip_Api_User extends Zikula_AbstractApi
             $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
             $query->andWhere('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
         }
-        // TODO Implement author view condition
 
         // enrich the query with the Filterutil stuff
         $filter['obj']->enrichQuery($query);
@@ -197,12 +196,12 @@ class Clip_Api_User extends Zikula_AbstractApi
             }
         }
 
-        //// Count execution
+        //// Count
         if ($args['countmode'] != 'no') {
             $pubcount = $query->count();
         }
 
-        //// Collection execution
+        //// Collection
         if ($args['countmode'] != 'just') {
             //// Order by
             // map the unprocessed orderby to the pubtype
@@ -236,6 +235,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             }
         }
 
+        //// Result
         // store the arguments used
         Clip_Util::setArgs('getallapi', $args);
 
@@ -345,12 +345,14 @@ class Clip_Api_User extends Zikula_AbstractApi
             return false;
         }
 
+        //// Security
         // check permissions if needed
         if ($args['checkperm'] && !SecurityUtil::checkPermission('Clip:display:', "$args[tid]:$pubdata[core_pid]:", ACCESS_READ)) {
             return LogUtil::registerPermissionError();
         }
 
-        // postprocess the record and related records
+        //// Result
+        // postprocess the record and related records depending on the call arguments
         $pubdata->clipProcess($args);
 
         // store the arguments used
@@ -370,6 +372,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      */
     public function edit($args)
     {
+        //// Validation
         if (!isset($args['data'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'data'));
         }
@@ -377,15 +380,17 @@ class Clip_Api_User extends Zikula_AbstractApi
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'commandName').' '.$this->__('commandName has to be a valid workflow action for the current state.'));
         }
 
+        //// Execution
         // assign for easy handling of the data
         $obj = $args['data'];
 
-        // extract the schema name
+        // create the workflow and executes the action
         $pubtype  = Clip_Util::getPubType($obj['core_tid']);
         $workflow = new Clip_Workflow($pubtype, $obj);
 
         $ret = $workflow->executeAction($args['commandName']);
 
+        // checks for a failure
         if ($ret === false) {
             return LogUtil::hasErrors() ? false : LogUtil::registerError($this->__('Unknown workflow action error. Operation failed.'));
         }
@@ -398,7 +403,6 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Returns pid.
      *
-     * @author kundi
      * @param int $args['tid']
      * @param int $args['id']
      *
@@ -406,6 +410,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      */
     public function getPid($args)
     {
+        //// Validation
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
@@ -413,6 +418,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'));
         }
 
+        //// Result
         return Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])
                ->selectFieldBy('core_pid', $args['id'], 'id');
     }
@@ -428,6 +434,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      */
     public function getId($args)
     {
+        //// Validation
         if (!isset($args['tid']) || !is_numeric($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
@@ -436,6 +443,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
         $args['lastrev'] = isset($args['lastrev']) ? (bool)$args['lastrev'] : false;
 
+        //// Execution
         $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
         // checks for a online pub first
@@ -445,7 +453,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         $id = $tbl->selectField('id', $where);
 
-        // checks for the recent
+        // checks for the last revision if asked for
         if ($args['lastrev'] && !$id) {
             $where = array(
                          array('core_pid = ?', $args['pid'])
@@ -522,8 +530,7 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Form custom url string.
      *
-     * @author Philipp Niethammer <webmaster@nochwer.de>
-     * @param  array $args Arguments given by ModUtil::url.
+     * @param array $args Arguments given by ModUtil::url.
      *
      * @return string Custom URL string.
      */
@@ -620,7 +627,7 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Decode custom url string.
      *
-     * @author Philipp Niethammer
+     * @param array $args Arguments given by Core::init.
      *
      * @return bool true if succeded false otherwise.
      */
@@ -694,7 +701,8 @@ class Clip_Api_User extends Zikula_AbstractApi
 
     /**
      * @see Clip_Api_User::getall
-     * @deprecated
+     *
+     * @deprecated 0.9
      */
     public function pubList($args)
     {
@@ -703,7 +711,8 @@ class Clip_Api_User extends Zikula_AbstractApi
 
     /**
      * @see Clip_Api_User::get
-     * @deprecated
+     *
+     * @deprecated 0.9
      */
     public function getPub($args)
     {
@@ -712,7 +721,8 @@ class Clip_Api_User extends Zikula_AbstractApi
 
     /**
      * @see Clip_Api_User::edit
-     * @deprecated
+     *
+     * @deprecated 0.9
      */
     public function editPub($args)
     {
@@ -721,7 +731,8 @@ class Clip_Api_User extends Zikula_AbstractApi
 
     /**
      * @see Clip_Api_User::editlist
-     * @deprecated
+     *
+     * @deprecated 0.9
      */
     public function pubeditlist($args)
     {

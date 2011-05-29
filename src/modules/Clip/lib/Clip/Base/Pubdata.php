@@ -25,7 +25,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
      * @param boolean $args['rel']['handleplugins'] Whether to parse the plugin fields.
      * @param boolean $args['rel']['loadworkflow']  Whether to add the workflow information.
      *
-     * @return void
+     * @return $this
      */
     public function clipProcess($args = array())
     {
@@ -69,12 +69,14 @@ class Clip_Base_Pubdata extends Doctrine_Record
                 }
             }
         }
+
+        return $this;
     }
 
     /**
      * Basic values loader for the Record.
      *
-     * @return void
+     * @return $this
      */
     public function clipValues($handleplugins=false)
     {
@@ -91,22 +93,26 @@ class Clip_Base_Pubdata extends Doctrine_Record
         if ($handleplugins) {
             $this->clipData();
         }
+
+        return $this;
     }
 
     /**
      * Plugins postRead processing for the Record.
      *
-     * @return void
+     * @return $this
      */
     public function clipData()
     {
         Clip_Util::handlePluginFields($this);
+
+        return $this;
     }
 
     /**
      * Workflow loader for the Record.
      *
-     * @return void
+     * @return $this
      */
     public function clipWorkflow()
     {
@@ -115,6 +121,8 @@ class Clip_Base_Pubdata extends Doctrine_Record
         $workflow->getWorkflow();
 
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
+
+        return $this;
     }
 
     /**

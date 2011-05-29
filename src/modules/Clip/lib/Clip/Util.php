@@ -140,24 +140,23 @@ class Clip_Util
     }
 
     /**
-     * Extract the filter from the input.
+     * Extract the filter from the input to build a cacheid.
      *
      * @param string $varname Name of the filter variable on use.
-     * @param string $default Default filter to use.
      *
-     * @see FilterUtil::getFiltersFromInput
+     * @see FilterUtil::getFiltersFromInput()
      *
-     * @return integer Publication type ID.
+     * @return string Filter id to use inside cacheid.
      */
-    public static function getFiltersFromInput($default = '', $varname = 'filter')
+    public static function getFilterCacheId($varname = 'filter')
     {
         $i = 1;
-        $filter = array();
+        $filterid = array();
 
         // Get unnumbered filter string
         $filterStr = FormUtil::getPassedValue($varname, '');
         if (!empty($filterStr)) {
-            $filter[] = $filterStr;
+            $filterid[] = urldecode($filterStr);
         }
 
         // Get filter1 ... filterN
@@ -168,15 +167,27 @@ class Clip_Util
                 break;
             }
 
-            $filter[] = $filterStr;
+            $filterid[] = urldecode($filterStr);
             ++$i;
         }
 
-        if (count($filter) > 0) {
-            $filter = "(" . implode(')*(', $filter) . ")";
+        if (count($filterid) > 0) {
+            $filterid = implode('__', $filter);
         }
 
-        return $filter;
+        return self::getFilterCacheString($filterid);
+    }
+
+    /**
+     * Replace some critical vars of the filter definition.
+     *
+     * @param string $filter Filter definition.
+     *
+     * @return string Filter string to use inside cacheid.
+     */
+    public static function getFilterCacheString($filter)
+    {
+        return str_replace(array('(', ')', '*', ','), array('', '', '__', '___'), $filter);
     }
 
     /**

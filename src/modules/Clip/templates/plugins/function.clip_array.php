@@ -15,10 +15,10 @@
  * Example
  *   <!--[clip_array array=$myarray]--> prints the array in a friendly way
  *
- * @author       Mateo Tibaquira
- * @since        30 January 2010
- * @param        array     $array     the array to display
- * @return       string    the friendly output
+ * @since 30 January 2010
+ * @param array  $array The array to display.
+ *
+ * @return string The developer readable output.
  */
 function smarty_function_clip_array($array)
 {

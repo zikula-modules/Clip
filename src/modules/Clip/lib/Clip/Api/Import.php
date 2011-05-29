@@ -17,7 +17,6 @@ class Clip_Api_Import extends Zikula_AbstractApi
     /**
      * Convert Lists to Categories.
      *
-     * @author kundi
      * @return boolean
      */
     public function importps1()
@@ -99,7 +98,6 @@ class Clip_Api_Import extends Zikula_AbstractApi
     /**
      * Import DB Structure.
      *
-     * @author kundi
      * @return boolean
      */
     public function importps2()
@@ -285,7 +283,6 @@ class Clip_Api_Import extends Zikula_AbstractApi
     /**
      * Create DB Tables.
      *
-     * @author kundi
      * @return boolean
      */
     public function importps3()
@@ -306,7 +303,6 @@ class Clip_Api_Import extends Zikula_AbstractApi
     /**
      * Load Data.
      *
-     * @author kundi
      * @return boolean
      */
     public function importps4()

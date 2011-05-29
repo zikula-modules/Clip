@@ -131,7 +131,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 $this->version->setupPubtypeBundles();
                 HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
             case '0.4.16':
-                // rename preview state to accepted (?)
+                // rename 'preview' state to 'accepted' (?)
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
@@ -190,13 +190,17 @@ class Clip_Installer extends Zikula_AbstractInstaller
             }
         }
 
-        // FIXME anything more to delete on uninstall?
-        DBUtil::deleteWhere('workflows', "module = 'Clip'");
+        // delete the workflow registries
+        Clip_Workflow_Util::deleteWorkflowsForModule('Clip');
 
-        // delete the category registry and modvars
+        // delete the category registry
         CategoryRegistryUtil::deleteEntry('Clip');
         //CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/Clip', 'path');
+
+        // delete the modvars
         $this->delVars();
+
+        // FIXME anything more to delete on uninstall?
 
         return true;
     }

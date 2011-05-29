@@ -30,8 +30,8 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function main()
     {
-        //// Security check
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_EDIT));
+        //// Security
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         $treejscode = Clip_Util::getGrouptypesTreeJS(null, true, true);
 
@@ -46,9 +46,10 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function modifyconfig()
     {
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        // return the form output
+        //// Output
         return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_modifyconfig.tpl',
                          new Clip_Form_Handler_Admin_ModifyConfig());
@@ -57,12 +58,13 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     /**
      * Publication types list.
      */
-    public function pubtypeinfo($args=array())
+    public function pubtypeinfo($args = array())
     {
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        //// Validation
-        // get the tid first
+        //// Pubtype
+        // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
         if (!Clip_Util::validateTid($args['tid'])) {
@@ -71,6 +73,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
         $pubtype = Clip_Util::getPubType($args['tid']);
 
+        //// Output
         return $this->view->assign('pubtype', $pubtype)
                           ->fetch("clip_base_pubtypeinfo.tpl");
     }
@@ -80,9 +83,10 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function pubtype()
     {
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        // return the form output
+        //// Output
         return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_pubtype.tpl',
                          new Clip_Form_Handler_Admin_Pubtypes());
@@ -93,9 +97,10 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function pubfields()
     {
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        // return the form output
+        //// Output
         return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_pubfields.tpl',
                          new Clip_Form_Handler_Admin_Pubfields());
@@ -106,9 +111,10 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function relations()
     {
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        // return the form output
+        //// Output
         return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_relations.tpl',
                          new Clip_Form_Handler_Admin_Relations());
@@ -119,9 +125,10 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function clipexport()
     {
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        // return the form output
+        //// Output
         return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_export.tpl',
                          new Clip_Form_Handler_Admin_Export());
@@ -132,9 +139,10 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function clipimport()
     {
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        // return the form output
+        //// Output
         return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_import.tpl',
                          new Clip_Form_Handler_Admin_Import());
@@ -143,29 +151,28 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     /**
      * Admin publist screen.
      */
-    public function publist($args=array())
+    public function publist($args = array())
     {
-        //// Validation
-        // get the tid first
+        //// Pubtype
+        // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
         if (!Clip_Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
-        //// Security check
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', "{$args['tid']}::", ACCESS_EDIT));
+        $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
 
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        //// Security
+        // FIXME SECURITY move this to editors panel
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', "{$args['tid']}::", ACCESS_ADMIN));
 
         // define the arguments
-        $filter = FormUtil::getPassedValue('filter') ? '' : 'core_online:eq:1';
-
         $apiargs = array(
             'tid'           => $args['tid'],
-            'filter'        => isset($args['filter']) ? $args['filter'] : $filter,
+            'filter'        => isset($args['filter']) ? $args['filter'] : (FormUtil::getPassedValue('filter') ? null : 'core_online:eq:1'),
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
-            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : abs((int)FormUtil::getPassedValue('itemsperpage')),
+            'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : abs((int)FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'])),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : false,
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : true,
             'checkperm'     => false,
@@ -185,13 +192,14 @@ class Clip_Controller_Admin extends Zikula_AbstractController
             $apiargs['startnum'] = ($args['page']-1)*$apiargs['itemsperpage']+1;
         }
 
+        Clip_Util::setArgs('adminlist', $args);
+
         //// Execution
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
 
-        Clip_Util::setArgs('adminlist', $args);
-
         //// Output
+        // assign the output variables
         $this->view->assign('pubtype',  $pubtype)
                    ->assign('publist',  $result['publist'])
                    ->assign('clipargs', Clip_Util::getArgs());
@@ -200,43 +208,50 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $this->view->assign('pager', array('numitems'     => $result['pubcount'],
                                            'itemsperpage' => $apiargs['itemsperpage']));
 
-        if ($this->view->template_exists("clip_base_publist_{$apiargs['tid']}.tpl")) {
-            return $this->view->fetch("clip_base_publist_{$apiargs['tid']}.tpl");
+        // custom pubtype template check
+        $customtpl = $pubtype['outputset'].'/adminlist.tpl';
+
+        if ($this->view->template_exists($customtpl)) {
+            return $this->view->fetch($customtpl);
         }
 
-        return $this->view->fetch("clip_base_publist.tpl");
+        return $this->view->fetch('clip_base_publist.tpl');
     }
 
     /**
      * History screen.
      */
-    public function history($args=array())
+    public function history($args = array())
     {
+        //// Pubtype
+        // validate and get the publication type first
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+        }
+
+        $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
+
         //// Parameters
+        // define the arguments
         $args = array(
-            'tid' => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
+            'tid' => $args['tid'],
             'pid' => isset($args['pid']) ? (int)$args['pid'] : (int)FormUtil::getPassedValue('pid')
         );
 
         //// Validation
-        if ($args['tid'] <= 0) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
-        }
-        if ($args['pid'] <= 0) {
+        // validate the passed publication ID
+        if (empty($args['pid']) || !is_numeric($args['pid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'pid'));
         }
 
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', "{$args['tid']}:{$args['pid']}:", ACCESS_ADMIN));
-
-        $pubtype = Clip_Util::getPubType($args['tid']);
-        if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
-        }
-
-        $pubtype->mapValue('titlefield', Clip_Util::getTitleField($args['tid']));
+        //// Security
+        // FIXME rework with Clip_Util_Security to check the online/latest revision state access
+        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:edit:', "{$args['tid']}:{$args['pid']}:", ACCESS_EDIT));
 
         //// Execution
-        // get the Doctrine_Table object
+        // get the collection of pubs
         $publist = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])
                        ->selectCollection("core_pid = '{$args['pid']}'", 'core_revision DESC');
 
@@ -254,27 +269,32 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     /**
      * Code generation.
      */
-    public function showcode($args=array())
+    public function showcode($args = array())
     {
-        //// Security check
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
+
+        //// Pubtype
+        // validate and get the publication type
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+        }
 
         //// Parameters
         $args = array(
-            'tid'  => isset($args['tid']) ? (int)$args['tid'] : (int)FormUtil::getPassedValue('tid'),
-            'code' => isset($args['code']) ? $args['code'] : FormUtil::getPassedValue('code')
+            'tid'  => $args['tid'],
+            'code' => isset($args['code']) ? $args['code'] : FormUtil::getPassedValue('code', 'form')
         );
 
         //// Validation
-        if ($args['tid'] <= 0) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
-        }
-        if (empty($args['code'])) {
+        if (!$args['code']) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'code'));
         }
 
         //// Execution
-        // get the code depending of the mode
+        // get the required output code
         switch ($args['code'])
         {
             case 'form':
@@ -317,6 +337,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function editlist()
     {
+        //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
         $args = array(
