@@ -150,7 +150,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         Clip_Util::setArgs('list', $args);
 
         // resolve the permalink
-        $returnurl = ModUtil::url('Clip', 'user', 'view',
+        $returnurl = ModUtil::url('Clip', 'user', 'list',
                                   array('tid' => $pubtype['tid']),
                                   null, null, true, true);
 
@@ -431,7 +431,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             if (!$pubdata) {
                 LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($args['tid'], $args['id'])));
 
-                return $view->redirect(ModUtil::url('Clip', 'user', 'view', array('tid' => $args['tid'])));
+                return $view->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid'])));
             }
         } else {
             // initial values
@@ -601,7 +601,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                 break;
 
             case 'list':
-                $goto = ModUtil::url('Clip', 'user', 'view', array('tid' => $args['tid']));
+                $goto = ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid']));
                 break;
 
             case 'display':

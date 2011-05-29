@@ -20,7 +20,7 @@
             </a>
         </li>
         <li>
-            <a class="z-bt-preview" href="{modurl modname='Clip' type='user' func='view' tid=$pubtype.tid}" title="{gt text='Go to the public publication list'}">
+            <a class="z-bt-preview" href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid}" title="{gt text='Go to the public publication list'}">
                 {gt text='Public list'}
             </a>
         </li>

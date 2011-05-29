@@ -1,11 +1,10 @@
 {if !$homepage}{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
 {* Open Graph tags
-{modurl modname='Clip' func='view' tid=$pubtype.tid fqurl=true assign='url'}
 {ogtag prop='title' content=$pubtype.title}
 {ogtag prop='type' content='site_section'}
 {ogtag prop='image' content=''}
-{ogtag prop='url' content=$url}
+{ogtag prop='url' content=$returnurl}
 {ogtag prop='site_name' content=$modvars.ZConfig.sitename}
 *}
 
@@ -27,7 +26,7 @@
         {if $item.category}
         <span class="clip-post-category">
             {capture assign='category'}
-            <a href="{modurl modname='Clip' func='view' tid=$pubtype.tid filter="category:sub:`$item.category.id`"}" title="{gt text='View all posts in %s' tag1=$item.category.fullTitle}">
+            <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid filter="category:sub:`$item.category.id`"}" title="{gt text='View all posts in %s' tag1=$item.category.fullTitle}">
                 {$item.category.fullTitle|safetext}
             </a>
             {/capture}

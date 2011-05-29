@@ -18,7 +18,7 @@
         {*
         {if $auth_editor}
         <span>
-            <a href="{modurl modname='Clip' type='editor' func='view' tid=$pubtype.tid}">
+            <a href="{modurl modname='Clip' type='editor' func='list' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='lists.png' set='icons/extrasmall' alt='' __title='Editor panel'}
             </a>
         </span>

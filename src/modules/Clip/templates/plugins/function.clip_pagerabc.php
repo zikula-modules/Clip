@@ -16,7 +16,7 @@
  *  Example:
  *    {clip_pagerabc class='abcpager' class_num='abclink' class_numon='abclink_on'}
  *    results on links like:
- *    index.php?module=Clip&func=view&tid=*&filter=core_author:eq:2&filter1=core_title:likefirst:*
+ *    index.php?module=Clip&func=list&tid=**&filter=core_author:eq:2&filter1=core_title:likefirst:**
  *    from the default list.
  *
  * Parameters:

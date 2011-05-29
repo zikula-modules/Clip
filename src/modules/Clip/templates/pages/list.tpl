@@ -1,11 +1,10 @@
 {if !$homepage}{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
 {* Open Graph tags
-{modurl modname='Clip' func='view' tid=$pubtype.tid fqurl=true assign='url'}
 {ogtag prop='title' content=$pubtype.title}
 {ogtag prop='type' content='site_section'}
 {ogtag prop='image' content=''}
-{ogtag prop='url' content=$url}
+{ogtag prop='url' content=$returnurl}
 {ogtag prop='site_name' content=$modvars.ZConfig.sitename}
 *}
 

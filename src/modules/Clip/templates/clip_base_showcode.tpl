@@ -35,8 +35,8 @@
 
 {switch expr=$code}
     {case expr='list'}
-        {assign var='tag1' value='index.php?module=Clip&type=user&func=view&tid=1&template=categories'|safehtml}
-        {capture assign='tag2'}{ldelim}modfunc modname='Clip' type='user' func='view' tid=1 template='snippet'{rdelim}{/capture}
+        {assign var='tag1' value='index.php?module=Clip&type=user&func=list&tid=1&template=categories'|safehtml}
+        {capture assign='tag2'}{ldelim}modfunc modname='Clip' type='user' func='list' tid=1 template='snippet'{rdelim}{/capture}
         <p class="z-informationmsg">
             {gt text='You can also have custom templates like <strong>list_TEMPLATE.tpl</strong> depending of the <var>template</var> parameter passed. For instance, <code>%1$s</code> will use <strong>list_categories.tpl</strong>, and <code>%2$s</code> will use <strong>list_snippet.tpl</strong>.' tag1=$tag1 tag2=$tag2|safehtml}
         </p>

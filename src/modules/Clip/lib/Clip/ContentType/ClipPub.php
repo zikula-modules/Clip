@@ -60,7 +60,7 @@ class Clip_ContentType_ClipPub extends Content_AbstractContentType
         $pid = DataUtil::formatForDisplayHTML($this->pid);
         $tpl = DataUtil::formatForDisplayHTML($this->tpl);
 
-        $url = ModUtil::url('clip', 'user', 'view', array('tid' => $tid, 'pid' => $pid));
+        $url = ModUtil::url('clip', 'user', 'list', array('tid' => $tid, 'pid' => $pid));
         $url = htmlspecialchars($url);
 
         // get the formatted publication
@@ -85,7 +85,7 @@ class Clip_ContentType_ClipPub extends Content_AbstractContentType
         $pid = DataUtil::formatForDisplayHTML($this->pid);
         $tpl = DataUtil::formatForDisplayHTML($this->tpl);
 
-        $url = ModUtil::url('clip', 'user', 'view', array('tid' => $tid, 'pid' => $pid));
+        $url = ModUtil::url('clip', 'user', 'list', array('tid' => $tid, 'pid' => $pid));
         $url = htmlspecialchars($url);
 
         // get the formatted publication

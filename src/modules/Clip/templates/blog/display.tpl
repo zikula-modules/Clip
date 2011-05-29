@@ -33,7 +33,7 @@
         {if $pubdata.category}
         <span class="clip-post-category">
             {capture assign='category'}
-            <a href="{modurl modname='Clip' func='view' tid=$pubtype.tid filter="category:sub:`$pubdata.category.id`"}" title="{gt text='View all posts in %s' tag1=$pubdata.category.fullTitle}">
+            <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid filter="category:sub:`$pubdata.category.id`"}" title="{gt text='View all posts in %s' tag1=$pubdata.category.fullTitle}">
                 {$pubdata.category.fullTitle|safetext}
             </a>
             {/capture}

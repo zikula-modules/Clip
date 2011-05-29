@@ -96,7 +96,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // stores the first referer and the item URL
         if (!$view->getStateData('returnurl')) {
-            $viewurl = ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid), null, null, true);
+            $viewurl = ModUtil::url('Clip', 'user', 'list', array('tid' => $this->tid), null, null, true);
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $viewurl));
         }
 
@@ -162,7 +162,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             case 'list':
-                $this->goto = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
+                $this->goto = ModUtil::url('Clip', 'user', 'list', array('tid' => $data['core_tid']));
                 break;
 
             case 'display':
@@ -326,7 +326,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if (isset($ops['delete'][$pid])) {
             // if the item was deleted
             // FIXME perm check here?
-            $urltid = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
+            $urltid = ModUtil::url('Clip', 'user', 'list', array('tid' => $data['core_tid']));
             // check if the user comes of the display screen or not
             $goto = (strpos($this->itemurl, $this->referer) !== 0) ? $this->referer : $urltid;
 

@@ -71,7 +71,7 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
         $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
 
-        $blockinfo['content'] = ModUtil::func('Clip', 'user', 'view',
+        $blockinfo['content'] = ModUtil::func('Clip', 'user', 'list',
                                               array('tid'           => $vars['tid'],
                                                     'template'      => 'block_'.$template,
                                                     'filter'        => !empty($filterStr)  ? $filterStr : '()',

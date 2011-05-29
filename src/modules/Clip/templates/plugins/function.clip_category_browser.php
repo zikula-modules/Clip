@@ -164,10 +164,10 @@ function smarty_function_clip_category_browser($params, &$view)
 
             $args = $params;
             if ($new_filter == '') {
-                $url = ModUtil::url('Clip', 'user', 'view', $args);
+                $url = ModUtil::url('Clip', 'user', 'list', $args);
             } else {
                 $args['filter'] = $new_filter;
-                $url = ModUtil::url('Clip', 'user', 'view', $args);
+                $url = ModUtil::url('Clip', 'user', 'list', $args);
             }
 
             if ($count) {
@@ -196,7 +196,7 @@ function smarty_function_clip_category_browser($params, &$view)
             $nullcat = array(
                 -1 => array(
                     'fullTitle' => __('Uncategorized', $dom),
-                    'url'       => ModUtil::url('Clip', 'user', 'view', $args),
+                    'url'       => ModUtil::url('Clip', 'user', 'list', $args),
                     'depth'     => 0,
                     'selected'  => 0
                 )
