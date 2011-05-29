@@ -20,23 +20,19 @@
  */
 function Clip_workflow_enterprise_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
-    if (!empty($obj)) {
-        // process $obj and calculate an instance
-        $pid = $obj['core_pid'];
+    $pubtype = Clip_Util::getPubType($obj['core_tid']);
 
-        $tid     = Clip_Util::getTidFromString($obj['__WORKFLOW__']['obj_table']);
-        $pubtype = Clip_Util::getPubType($tid);
-
-        if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == $currentUser) {
+    if ($obj->exists()) {
+        // check existing publication author and granular permission access check
+        if ($pubtype['enableeditown'] == 1 && $obj['core_author'] == $currentUser) {
             return true;
-        } else {
-            return SecurityUtil::checkPermission('Clip:input:', "$tid:$pid:{$obj['__WORKFLOW__']['state']}", $permLevel, $currentUser);
         }
-    } else {
-        // no object passed - user wants to create a new one        
-        $tid = FormUtil::getPassedValue('tid');
 
-        return SecurityUtil::checkPermission('Clip:input:', "$tid::", $permLevel, $currentUser);
+        return SecurityUtil::checkPermission('Clip:input:', "{$obj['core_tid']}:{$obj['core_pid']}:", $permLevel, $currentUser);
+
+    } else {
+        // publication not saved yet - user wants to create a new one
+        return SecurityUtil::checkPermission('Clip:input:', "{$obj['core_tid']}::", $permLevel, $currentUser);
     }
 }
 
@@ -46,12 +42,12 @@ function Clip_workflow_enterprise_gettextstrings()
 
     return array(
         'title' => no__('Enterprise'),
-        'description' => no__("This is a three staged workflow with stages for untrusted submissions, editor's acceptance, and final approval control by a moderator."),
+        'description' => no__("This is a three staged workflow with stages for untrusted submissions, moderator's acceptance, and approval control by a editor; approved publications are handled by authors staff."),
 
         // state titles
         'states' => array(
             no__('Waiting') => no__('Content has been submitted and is waiting for acceptance'),
-            no__('Preview') => no__('Content has been accepted and is waiting for approval'),
+            no__('Accepted') => no__('Content has been accepted and is waiting for approval'),
             no__('Approved') => no__('Content has been approved is available online')
         ),
 
@@ -59,27 +55,33 @@ function Clip_workflow_enterprise_gettextstrings()
         'actions' => array(
             'initial' => array(
                 no__('Submit and Approve') => no__('Submit a publication and approve immediately'),
-                no__('Submit and Accept') => no__('Submit new content for approval'),
-                no__('Submit') => no__('Submit new content for acceptance by the local editor')
+                no__('Submit and Accept') => no__('Submit a publication and accept immediately'),
+                no__('Submit') => no__('Submit a publication for acceptance by a moderator')
             ),
             'waiting' => array(
-                no__('Approve') => no__('Approve content for online publishing'),
-                no__('Accept') => no__('Accept submitted content for later approval'),
-                no__('Update') => no__('Save content with no workflow change'),
-                no__('Reject') => no__('Reject and delete submitted content')
+                no__('Update and Approve') => no__('Update the content and approve for immediate publishing'),
+                no__('Approve') => no__('Approve the publication for immediate publishing'),
+                no__('Accept') => no__('Accept the publication for editors approval'),
+                no__('Update') => no__('Update the content of the publication'),
+                no__('Trash') => no__('Move the publication to the recycle bin'),
+                no__('Recover') => no__('Recover the publication from the recycle bin'),
+                no__('Reject') => no__('Reject and delete the submitted content permanently')
             ),
-            'preview' => array(
-                no__('Approve') => no__('Approve content for online publishing'),
-                no__('Update') => no__('Update the publication'),
-                no__('Delete') => no__('Delete the publication')
+            'accepted' => array(
+                no__('Update and Approve') => no__('Approve the publication for immediate publishing'),
+                no__('Update') => no__('Update the content of the publication'),
+                no__('Trash') => no__('Move the publication to the recycle bin'),
+                no__('Recover') => no__('Recover the publication from the recycle bin'),
+                no__('Delete') => no__('Delete the publication permanently')
             ),
             'approved' => array(
-                no__('Update and Approve') => no__('Update content and approve for online publishing'),
-                no__('Update') => no__('Update content for approval'),
+                no__('Update') => no__('Update the content of the publication'),
+                no__('Disapprove') => no__('Disapprove this publication'),
                 no__('Publish') => no__('Make the publication available'),
                 no__('Unpublish') => no__('Hide the publication'),
-                no__('Move to depot') => no__('Move the publication to the depot'),
-                no__('Delete') => no__('Delete the publication')
+                no__('Trash') => no__('Move the publication to the recycle bin'),
+                no__('Recover') => no__('Recover the publication from the recycle bin'),
+                no__('Delete') => no__('Delete the publication permanently')
             )
         )
     );

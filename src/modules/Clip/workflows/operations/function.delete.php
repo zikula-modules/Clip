@@ -10,23 +10,29 @@
  */
 
 /**
- * deletePub operation
+ * delete operation.
  *
- * @param  array  $pub               publication to delete
- * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
- * @return array  publication id as index with boolean value: true if success, false otherwise
+ * @param object $pub              Publication to delete.
+ * @param bool   $params['allrev'] Wheter to delete only the pub or all its revisions (optional) (default: true).
+ * @param bool   $params['silent'] Hide or display a status/error message (optional) (default: false).
+ *
+ * @return bool|array False on failure or Publication core_uniqueid as index with true as value.
  */
-function Clip_operation_deletePub(&$pub, $params)
+function Clip_operation_delete(&$pub, $params)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
     // process the available parameters
+    // TODO implement allrev, dleeting all workflows
     $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
 
     // process the deletion
     $result = false;
-    if (Zikula_Workflow_Util::deleteWorkflow($pub)) {
-        $result = true;
+
+    $workflow = new Clip_Workflow($pubtype, $pub);
+
+    if ($workflow->deleteWorkflow()) {
+        $result = array($pub['core_uniqueid'] => true);
 
         $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
 
@@ -34,7 +40,7 @@ function Clip_operation_deletePub(&$pub, $params)
         $count = $tbl->selectFieldFunction('1', 'COUNT', array(array('core_pid = ?', $pub['core_pid']))) + 1;
 
         if ($count == 0) {
-            // TODO if no other revisions, let know hooks that the publication was deleted
+            // TODO HOOKS if no other revisions, let know hooks that the publication was deleted
         }
     }
 
@@ -47,6 +53,6 @@ function Clip_operation_deletePub(&$pub, $params)
         }
     }
 
-    // returns the result
+    // returns the operation result
     return $result;
 }

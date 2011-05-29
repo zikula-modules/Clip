@@ -215,23 +215,20 @@ class Clip_Generator
 
     public static function pubedit($tid)
     {
-        $title_newpub   = no__('New publication');
-        $heading_newpub = no__('Add a publication');
-        $title_editpub  = no__('Edit publication');
+        $heading_newpub = no__('Submit a publication');
+        $legend_pubcontent = no__('Publication content');
 
-        $code = '{* process the titles according the publication status *}'."\n".
+        $code = '{* process the title according the publication status *}'."\n".
                 '{if $pubdata.id}'."\n".
-                '    {gt text=\''.$title_editpub.'\' assign=\'pagetitle\'}'."\n".
-                '    {gt text="Edit \'%s\'" tag1=$pubdata.core_title assign=\'pageheading\'}'."\n".
+                '    {gt text="Edit \'%s\'" tag1=$pubdata.core_title|truncate:50 assign=\'pagetitle\'}'."\n".
                 '{else}'."\n".
-                '    {gt text=\''.$title_newpub.'\' assign=\'pagetitle\'}'."\n".
-                '    {gt text=\''.$heading_newpub.'\' assign=\'pageheading\'}'."\n".
+                '    {gt text=\''.$heading_newpub.'\' assign=\'pagetitle\'}'."\n".
                 '{/if}'."\n".
                 '{if !$homepage}{pagesetvar name="title" value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
                 "\n".
                 '{include file=\'clip_generic_navbar.tpl\' section=\'form\'}'."\n".
                 "\n".
-                '<h2>{$pageheading}</h2>'."\n".
+                '<h2>{$pagetitle}</h2>'."\n".
                 "\n".
                 '{assign var=\'zformclass\' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.edit.state`"}'."\n".
                 "\n".
@@ -239,7 +236,7 @@ class Clip_Generator
                 '    <div>'."\n".
                 '        {formvalidationsummary}'."\n".
                 '        <fieldset class="z-linear">'."\n".
-                '            <legend>{$pagetitle}</legend>'."\n";
+                '            <legend>{gt text=\''.$legend_pubcontent.'\'}</legend>'."\n";
 
         // publication fields
         $pubfields = Clip_Util::getPubFields($tid)->toArray();
@@ -748,7 +745,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             'core_author'      => 'I4 NOTNULL',
             'core_hitcount'    => 'I8 DEFAULT 0',
             'core_language'    => "C(10) NOTNULL", //FIXME how many chars are needed for a gettext code?
-            'core_revision'    => 'I4 NOTNULL DEFAULT 0',
+            'core_revision'    => 'I4 NOTNULL DEFAULT 1',
             'core_online'      => 'L DEFAULT 0',
             'core_indepot'     => 'L DEFAULT 0',
             'core_showinmenu'  => 'L DEFAULT 0',

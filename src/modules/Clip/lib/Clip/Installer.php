@@ -131,6 +131,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 $this->version->setupPubtypeBundles();
                 HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
             case '0.4.16':
+                // rename preview state to accepted (?)
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff

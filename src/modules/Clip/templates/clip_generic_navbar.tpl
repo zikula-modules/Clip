@@ -80,7 +80,7 @@
                     {if isset($pubdata.id)}
                         {gt text='Edit'}
                     {else}
-                        {gt text='Create'}
+                        {gt text='Submit'}
                     {/if}
                 </span>
             {/if}

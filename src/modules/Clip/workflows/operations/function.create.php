@@ -10,25 +10,27 @@
  */
 
 /**
- * createPub operation
+ * create operation.
  *
- * @param  array  $pub               object to create
- * @param  int    $params['online']  (optional) online value for the object, default: false
- * @param  bool   $params['silent']  (optional) hide or display a status/error message, default: false
- * @return array  publication id as index with boolean value: true if success, false otherwise
+ * @param object $pub              Publication object to create.
+ * @param bool   $params['online'] Online value for the new publication (optional) (default: 0).
+ * @param bool   $params['silent'] Hide or display a status/error message (optional) (default: false).
+ *
+ * @return bool|array False on failure or Publication core_uniqueid as index with true as value.
  */
-function Clip_operation_createPub(&$pub, $params)
+function Clip_operation_create(&$pub, $params)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
-    // process the available parameters
-    $pub['core_online'] = isset($params['online']) ? (int)$params['online'] : 0;
+    // parameters processing
+    $pub['core_online'] = isset($params['online']) ? (int)(bool)$params['online'] : 0;
     $silent             = isset($params['silent']) ? (bool)$params['silent'] : false;
+
+    // utility vars
+    $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
 
     // initializes the result flag
     $result = false;
-
-    $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
 
     // validate or find a new pid
     if (isset($pub['core_pid']) && !empty($pub['core_pid'])) {
@@ -50,9 +52,9 @@ function Clip_operation_createPub(&$pub, $params)
     // save the object
     if ($pub->isValid()) {
         $pub->trySave();
-        $result = true;
+        $result = array($pub['core_uniqueid'] => true);
 
-        // TODO let know that a publication was created
+        // TODO HOOKS let know that a publication was created
     }
 
     // output message
@@ -61,17 +63,17 @@ function Clip_operation_createPub(&$pub, $params)
             if ($pub['core_online']) {
                 LogUtil::registerStatus(__('Done! Publication created.', $dom));
             } else {
-                // redirect to the simple pending template
-                $result = array('goto' => ModUtil::url('Clip', 'user', 'display',
-                                                   array('tid' => $pub['core_tid'],
-                                                         'pid' => $pub['core_pid'],
-                                                         'template' => 'pending')));
+                // setup a redirect to the pending template
+                $result['goto'] = ModUtil::url('Clip', 'user', 'display',
+                                               array('tid' => $pub['core_tid'],
+                                                     'pid' => $pub['core_pid'],
+                                                     'template' => 'pending'));
             }
         } else {
             LogUtil::registerError(__('Error! Failed to create the publication.', $dom));
         }
     }
 
-    // returns the result
+    // returns the operation result
     return $result;
 }

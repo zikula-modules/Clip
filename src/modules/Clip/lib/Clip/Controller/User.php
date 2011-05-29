@@ -269,7 +269,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
             if ($args['templatesimple'] != '') {
                 $this->view->assign('pubtype', $pubtype);
-                return $this->view->fetch($args['templatesimple'], $cacheid);
+                return $this->view->fetch($args['templatesimple']);
             }
         }
 
@@ -384,10 +384,12 @@ class Clip_Controller_User extends Zikula_AbstractController
             'pid'      => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
             'id'       => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
             'template' => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
+            'lastrev'  => true
         );
 
         //// Misc values
         $pubfields = Clip_Util::getPubFields($args['tid'], 'lineno');
+
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
@@ -402,22 +404,38 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
         }
 
-        $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
-
-        // get actual state for selecting form Template
-        $args['state'] = 'initial';
+        // process a new or existing pub, and it's available actions
         if ($args['id']) {
-            $obj = array('id' => $args['id']);
-            Zikula_Workflow_Util::getWorkflowForObject($obj, $pubtype->getTableName(), 'id', 'Clip');
-            $args['state'] = $obj['__WORKFLOW__']['state'];
+            $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', array(
+                'tid' => $args['tid'],
+                'id'  => $args['id'],
+                'checkperm'     => true,
+                'handleplugins' => false, // do not interfer with selected values on edit form
+                'loadworkflow'  => false
+            ));
+
+            // validate the pudblication
+            if (!$pubdata) {
+                LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($args['tid'], $args['id'])));
+
+                return $view->redirect(ModUtil::url('Clip', 'user', 'view', array('tid' => $args['tid'])));
+            }
+        } else {
+            // initial values
+            $classname = 'Clip_Model_Pubdata'.$args['tid'];
+            $pubdata = new $classname();
         }
+
+        $workflow = new Clip_Workflow($pubtype, $pubdata);
+
+        $args['state'] = $workflow->getWorkflow('state');
 
         //// Form Handler Instance
         // no security check needed
         // the security check will be done for workflow actions and userapi.get
         $handler = new Clip_Form_Handler_User_Pubedit();
         // setup the form handler
-        $handler->ClipSetUp($args['id'], $args['tid'], $pubtype, $pubfields);
+        $handler->ClipSetUp($args['id'], $args['tid'], $pubdata, $workflow, $pubtype, $pubfields);
 
         //// Build the output
         // create the output object
@@ -444,6 +462,8 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         // 3. generic edit
+        $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+
         $template = $pubtype['inputset'].'/form_all.tpl';
 
         if (!$render->template_exists($template)) {

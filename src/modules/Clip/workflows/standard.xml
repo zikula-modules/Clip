@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <workflow>
 
   <title>Standard</title>
-  <description>This is a two staged workflow with stages for untrusted submissions and finally approved publications. It does not allow untrusted corrections to published pages.</description>
+  <description>This is a two staged workflow with stages for untrusted submissions and finally approved publications. It does not allow corrections of non-editors to published pages.</description>
 
   <states>
 
@@ -14,7 +14,7 @@
 
     <state id="approved">
       <title>Approved</title>
-      <description>Content has been approved is available online</description>
+      <description>Content has been approved and is available online</description>
     </state>
 
   </states>
@@ -26,20 +26,24 @@
     <action id="approve">
       <title>Submit and Approve</title>
       <description>Submit a publication and approve immediately</description>
-      <permission>moderator</permission>
       <nextState>approved</nextState>
-      <operation online="1">createPub</operation>
+      <permission>moderator</permission>
 
+      <operation online="1">create</operation>
+
+      <parameter mode="form">action</parameter>
       <parameter class="z-bt-ok">button</parameter>
     </action>
 
     <action id="submit">
       <title>Submit</title>
       <description>Submit a publication for acceptance by a moderator</description>
-      <permission>comment</permission>
       <nextState>waiting</nextState>
-      <operation>createPub</operation>
+      <permission>comment</permission>
 
+      <operation>create</operation>
+
+      <parameter mode="form">action</parameter>
       <parameter class="z-bt-new">button</parameter>
     </action>
 
@@ -48,42 +52,77 @@
     <action id="updateApprove">
       <title>Update and Approve</title>
       <description>Update the content and approve for immediate publishing</description>
+      <state>waiting</state>
+      <nextState>approved</nextState>
       <permission>editor</permission>
-      <state>waiting</state>
-      <nextState>approved</nextState>
-      <operation online="1" nextstate="approved">updatePub</operation>
 
-      <parameter class="z-bt-ok">button</parameter>
-    </action>
+      <operation core_online="1">update</operation>
 
-    <action id="approve">
-      <title>Approve</title>
-      <description>Approve the publication for immediate publishing</description>
-      <permission>moderator</permission>
-      <state>waiting</state>
-      <nextState>approved</nextState>
-      <operation online="1" newrevision="0">updatePub</operation><!-- only update online state -->      
-
+      <parameter mode="form">action</parameter>
       <parameter class="z-bt-ok">button</parameter>
     </action>
 
     <action id="update">
       <title>Update</title>
       <description>Update the content for later publishing</description>
-      <permission>editor</permission>
       <state>waiting</state>
-      <operation newrevision="0">updatePub</operation>
+      <permission>editor</permission>
 
+      <operation>update</operation>
+
+      <parameter mode="form">action</parameter>
       <parameter class="z-bt-save">button</parameter>
+    </action>
+
+    <action id="approve">
+      <title>Approve</title>
+      <description>Approve the publication for immediate publishing</description>
+      <state>waiting</state>
+      <nextState>approved</nextState>
+      <permission>moderator</permission>
+
+      <operation core_online="1">updateValues</operation>
+
+      <parameter core_online="0">condition</parameter>
+      <parameter mode="exec">action</parameter>
+      <parameter class="clip-iconlink clip-op-activate">link</parameter>
+    </action>
+
+    <action id="trash">
+      <title>Trash</title>
+      <description>Move the publication to the recycle bin</description>
+      <state>waiting</state>
+      <permission>moderator</permission>
+
+      <operation allrev="1" core_indepot="1">updateValues</operation>
+
+      <parameter core_indepot="0">condition</parameter>
+      <parameter class="clip-bt-trash">button</parameter>
+      <parameter class="clip-iconlink clip-op-trash">link</parameter>
+    </action>
+
+    <action id="recover">
+      <title>Recover</title>
+      <description>Recover the publication from the recycle bin</description>
+      <state>waiting</state>
+      <permission>moderator</permission>
+
+      <operation allrev="1" core_indepot="0">updateValues</operation>
+
+      <parameter core_indepot="1">condition</parameter>
+      <parameter class="clip-bt-recover">button</parameter>
+      <parameter class="clip-iconlink clip-op-recover">link</parameter>
     </action>
 
     <action id="delete">
       <title>Delete</title>
-      <description>Delete the publication</description>
-      <permission>delete</permission>
+      <description>Delete the publication permanently</description>
       <state>waiting</state>
-      <operation>deletePub</operation>
+      <permission>delete</permission>
 
+      <operation>delete</operation>
+
+      <parameter class="clip-iconlink clip-op-delete">link</parameter>
       <parameter class="z-btred z-bt-delete" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
     </action>
 
@@ -91,51 +130,77 @@
 
     <action id="update">
       <title>Update</title>
-      <description>Update the publication</description>
-      <permission>editor</permission>
+      <description>Update the publication content</description>
       <state>approved</state>
-      <operation>updatePub</operation>
+      <permission>editor</permission>
 
+      <operation>update</operation>
+
+      <parameter mode="form">action</parameter>
       <parameter class="z-bt-ok">button</parameter>
     </action>
 
-    <action id="online">
+    <action id="publish">
       <title>Publish</title>
       <description>Make the publication available</description>
-      <permission>moderator</permission>
       <state>approved</state>
-      <operation online="1">updateOnlineState</operation>
+      <permission>editor</permission>
 
-      <parameter class="z-bt-icon clip-bt-activate">button</parameter>
+      <operation core_online="1">updateValues</operation>
+
+      <parameter core_online="0">condition</parameter>
+      <parameter class="clip-bt-activate">button</parameter>
+      <parameter class="clip-iconlink clip-op-activate">link</parameter>
     </action>
 
-    <action id="offline">
+    <action id="unpublish">
       <title>Unpublish</title>
       <description>Hide the publication</description>
-      <permission>moderator</permission>
       <state>approved</state>
-      <operation online="0">updateOnlineState</operation>
+      <permission>editor</permission>
 
-      <parameter class="z-bt-icon clip-bt-deactivate">button</parameter>
+      <operation core_online="0">updateValues</operation>
+
+      <parameter core_online="1">condition</parameter>
+      <parameter class="clip-bt-deactivate">button</parameter>
+      <parameter class="clip-iconlink clip-op-deactivate">link</parameter>
     </action>
 
-    <action id="depot">
-      <title>Move to depot</title>
-      <description>Move the publication to the depot</description>
-      <permission>moderator</permission>
+    <action id="trash">
+      <title>Trash</title>
+      <description>Move the publication to the recycle bin</description>
       <state>approved</state>
-      <operation>moveToDepot</operation>
+      <permission>editor</permission>
 
-      <parameter class="z-bt-archive">button</parameter>
+      <operation allrev="1" core_indepot="1">updateValues</operation>
+
+      <parameter core_indepot="0">condition</parameter>
+      <parameter class="clip-bt-trash">button</parameter>
+      <parameter class="clip-iconlink clip-op-trash">link</parameter>
+    </action>
+
+    <action id="recover">
+      <title>Recover</title>
+      <description>Recover the publication from the recycle bin</description>
+      <state>approved</state>
+      <permission>editor</permission>
+
+      <operation allrev="1" core_indepot="0">updateValues</operation>
+
+      <parameter core_indepot="1">condition</parameter>
+      <parameter class="clip-bt-recover">button</parameter>
+      <parameter class="clip-iconlink clip-op-recover">link</parameter>
     </action>
 
     <action id="delete">
       <title>Delete</title>
-      <description>Delete the publication</description>
-      <permission>delete</permission>
+      <description>Delete the publication permanently</description>
       <state>approved</state>
-      <operation>deletePub</operation>
+      <permission>delete</permission>
 
+      <operation>delete</operation>
+
+      <parameter class="clip-iconlink clip-op-delete">link</parameter>
       <parameter class="z-btred z-bt-delete" __confirmMessage="Are you sure you want to delete this publication?">button</parameter>
     </action>
 

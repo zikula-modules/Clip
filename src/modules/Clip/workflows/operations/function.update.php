@@ -10,16 +10,17 @@
  */
 
 /**
- * updatePub operation
+ * update operation.
  *
- * @param  array  $pub                    publication to update
- * @param  int    $params['online']       (optional) online value for the publication
- * @param  bool   $params['newrevision']  (optional) flag to disable a new revision creation, default: true
- * @param  string $params['nextstate']    (optional) state for the updated publication
- * @param  bool   $params['silent']       (optional) hide or display a status/error message, default: false
- * @return array  publication id as index with boolean value: true if success, false otherwise
+ * @param object $pub                   Publication to update.
+ * @param bool   $params['newrevision'] Flag to disable a new revision creation (default: true) (optional).
+ * @param bool   $params['silent']      Hide or display a status/error message, (default: false) (optional).
+ * @param string $params['nextstate']   State for the updated publication if revisions enabled (optional).
+ * @param array  $params                Fixed value(s) to change in the publication.
+ *
+ * @return bool|array False on failure or Publication core_uniqueid as index with true as value.
  */
-function Clip_operation_updatePub(&$pub, &$params)
+function Clip_operation_update(&$pub, &$params)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -30,6 +31,7 @@ function Clip_operation_updatePub(&$pub, &$params)
     $newrevision = isset($params['newrevision']) ? (bool)$params['newrevision'] : true;
     $silent      = isset($params['silent']) ? (bool)$params['silent'] : false;
 
+    // utility vars
     $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
 
     // overrides newrevision in pubtype. gives the dev. the possibility to not genereate a new revision
@@ -46,6 +48,14 @@ function Clip_operation_updatePub(&$pub, &$params)
             ->execute();
     }
 
+    // checks if there are fixed operation values to update
+    $update = array();
+    foreach ($params as $key => $val) {
+        if (!in_array($key, array('newrevision', 'silent', 'nextstate')) && $pub->contains($key)) {
+            $pub[$key] = $val;
+        }
+    }
+
     // initializes the result flag
     $result = false;
 
@@ -60,13 +70,14 @@ function Clip_operation_updatePub(&$pub, &$params)
 
         if ($rev->isValid()) {
             $rev->trySave();
-            $rev->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
             $result = true;
 
             // register the new workflow, return false if failure
-            $obj = new Zikula_Workflow($rev['__WORKFLOW__']['schemaname'], 'Clip');
+            $rev->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
 
-            if (!$obj->registerWorkflow($rev, $params['nextstate'])) {
+            $workflow = new Clip_Workflow($pubtype, $rev);
+
+            if (!$workflow->registerWorkflow($params['nextstate'])) {
                 $result = false;
 
                 // delete the previously inserted record
@@ -87,7 +98,7 @@ function Clip_operation_updatePub(&$pub, &$params)
     }
 
     if ($result) {
-        // TODO let know hooks that the publication was updated
+        // TODO HOOKS let know hooks that the publication was updated
     }
 
     // output message
@@ -99,6 +110,6 @@ function Clip_operation_updatePub(&$pub, &$params)
         }
     }
 
-    // return the update result
+    // returns the operation result
     return $result;
 }

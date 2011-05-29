@@ -16,6 +16,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 {
     private $id;
     private $pub;
+    private $workflow;
     private $relations;
 
     private $tid;
@@ -32,43 +33,14 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
         $this->goto = FormUtil::getPassedValue('goto', '');
 
-        //// Initialize $pubdata
-        // process a new or existing pub, and it's available actions
-        if ($this->id) {
-            $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', array(
-                'tid' => $this->tid,
-                'id'  => $this->id,
-                'checkperm'     => true,
-                'handleplugins' => false, // do not interfer with selected values on edit form
-                'loadworkflow'  => true
-            ));
-
-            // validate the pudblication
-            if (!$pubdata) {
-                LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($this->tid, $this->id)));
-
-                return $view->redirect(ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid)));
-            }
-        } else {
-            // initial values
-            $classname = 'Clip_Model_Pubdata'.$this->tid;
-            $pubdata = new $classname();
-        }
-
-        $this->setPub($pubdata);
-
         //// Actions
-        if ($this->id) {
-            $actions = Zikula_Workflow_Util::getActionsForObject($pubdata, $this->pubtype->getTableName(), 'id', 'Clip');
-        } else {
-            $actions = Zikula_Workflow_Util::getActionsByStateArray(str_replace('.xml', '', $this->pubtype->workflow), 'Clip');
-        }
-        // if there are no actions the user is not allowed to submit something.
-        // we will redirect the user to the overview page
+        $actions = $this->workflow->getActions(Clip_Workflow::ACTIONS_FORM);
+        // if there are no actions the user is not allowed to execute anything.
+        // we will redirect the user to the list page
         if (!count($actions)) {
-            LogUtil::registerError($this->__('No workflow actions found. This can be a permissions issue.'));
+            LogUtil::registerError($this->__('You have no permissions to execute any action on this publication.'));
 
-            return $view->redirect(ModUtil::url('Clip', 'user', 'view', array('tid' => $this->tid)));
+            return $view->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $this->tid)));
         }
 
         // translate any gt string on the action parameters
@@ -76,29 +48,29 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         //// Processing
         // handle the Doctrine_Record data as an array from here
-        $data = $pubdata->toArray();
+        $data = $this->pub->toArray();
 
         // process the relations
         $relconfig = $this->pubtype['config']['edit'];
 
         $this->relations = array();
         if ($relconfig['load']) {
-            foreach ($pubdata->getRelations($relconfig['onlyown']) as $key => $rel) {
+            foreach ($this->pub->getRelations($relconfig['onlyown']) as $key => $rel) {
                 // set the data object
-                if ($pubdata[$key] instanceof Doctrine_Collection) {
-                    foreach ($pubdata[$key] as $k => $v) {
+                if ($this->pub[$key] instanceof Doctrine_Collection) {
+                    foreach ($this->pub[$key] as $k => $v) {
                         // exclude null records
                         if ($v->exists()) {
-                            $pubdata[$key][$k]->clipProcess();
+                            $this->pub[$key][$k]->clipProcess();
                         } else {
-                            unset($pubdata[$key]);
+                            unset($this->pub[$key]);
                         }
                     }
-                    $data[$key] = $pubdata[$key]->toArray();
+                    $data[$key] = $this->pub[$key]->toArray();
 
-                } elseif ($pubdata[$key] instanceof Doctrine_Record && $pubdata[$key]->exists()) {
-                    $pubdata[$key]->clipProcess();
-                    $data[$key] = $pubdata[$key]->toArray();
+                } elseif ($this->pub[$key] instanceof Doctrine_Record && $this->pub[$key]->exists()) {
+                    $this->pub[$key]->clipProcess();
+                    $data[$key] = $this->pub[$key]->toArray();
 
                 } else {
                     $data[$key] = null;
@@ -145,7 +117,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         if (!empty($this->id)) {
             $params = array('tid' => $this->tid, 'pid' => $this->pub['core_pid'], 'title' => DataUtil::formatPermalink($this->pub['core_title']));
-            $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params, null, null, true);
+            $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params);
         }
 
         $data = $view->getValues();
@@ -189,7 +161,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             case 'referer':
-                $this->goto = $this->referer;
+                $this->goto = $goto ? $goto : $this->referer;
                 break;
 
             case 'editlist':
@@ -210,7 +182,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             default:
-                $this->goto = $goto;
+                $this->goto = $goto ? $goto : ($this->itemurl ? $this->itemurl : $this->referer);
         }
 
         return $view->redirect($this->goto);
@@ -219,10 +191,13 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     /**
      * Setters and getters
      */
-    public function ClipSetUp($id, $tid, $pubtype=null, $pubfields=null)
+    public function ClipSetUp($id, $tid, &$pubdata, &$workflow, $pubtype=null, $pubfields=null)
     {
         $this->id = $id;
         $this->tid = $tid;
+        $this->workflow = $workflow;
+
+        $this->setPub($pubdata);
 
         // pubtype
         if ($pubtype) {
@@ -259,10 +234,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
     private function getPub($data, $view)
     {
-        if (!empty($this->id)) {
-            $this->pub->assignIdentifier($this->id);
-        }
-
         // allow specify fixed PIDs
         if (isset($data['core_pid'])) {
             $this->pub['core_pid'] = $data['core_pid'];
@@ -347,16 +318,19 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
     private function processGoto($data)
     {
-        $goto = $this->itemurl;
+        $goto = null;
+        $pid  = $data['core_pid'];
+
         $ops  = isset($data['core_operations']) ? $data['core_operations'] : array();
 
-        if ($data['core_indepot'] == 1 || (isset($ops['deletePub']) && $ops['deletePub'])) {
-            // if the item moved to the depot or was deleted
+        if (isset($ops['delete'][$pid])) {
+            // if the item was deleted
+            // FIXME perm check here?
             $urltid = ModUtil::url('Clip', 'user', 'view', array('tid' => $data['core_tid']));
             // check if the user comes of the display screen or not
-            $goto = (strpos($this->referer, $this->itemurl) === 0) ? $this->referer : $urltid;
+            $goto = (strpos($this->itemurl, $this->referer) !== 0) ? $this->referer : $urltid;
 
-        } elseif (isset($ops['createPub']) && $ops['createPub']) {
+        } elseif (isset($ops['create']) && $ops['create']) {
             // the publication was created
             if ($data['core_online'] == 1) {
                 $goto = ModUtil::url('Clip', 'user', 'display',
@@ -364,7 +338,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                                            'pid' => $data['core_pid']));
             } else {
                 // back to the pubtype pending template or referer page if it is not approved yet
-                $goto = isset($ops['createPub']['goto']) ? $ops['createPub']['goto'] : $this->referer;
+                $goto = isset($ops['create']['goto']) ? $ops['create']['goto'] : $this->referer;
             }
 
         } elseif (!empty($ops)) {

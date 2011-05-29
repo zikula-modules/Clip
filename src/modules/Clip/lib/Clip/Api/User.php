@@ -173,10 +173,10 @@ class Clip_Api_User extends Zikula_AbstractApi
         $uid = UserUtil::getVar('uid');
 
         if (!$args['admin']) {
-            if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-                $query->andWhere('(core_online = ? AND (core_author = ? OR core_showinlist = ?))', array(1, $uid, 1));
+            if ($uid && $pubtype['enableeditown'] == 1) {
+                $query->andWhere('core_author = ? OR core_showinlist = ?', array($uid, 1));
             } else {
-                $query->andWhere('core_online = ? AND core_showinlist = ?', array(1, 1));
+                $query->andWhere('core_showinlist = ?', 1);
             }
             $query->andWhere('core_indepot = ?', 0);
             $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
@@ -317,10 +317,10 @@ class Clip_Api_User extends Zikula_AbstractApi
                 $query->andWhere('id = ?', $args['id']);
             }
         } else {
-            if (empty($args['id'])) {
-                $query->where('(core_pid = ? AND core_online = ?)', array($args['pid'], 1));
-            } else {
+            if (!empty($args['id'])) {
                 $query->where('id = ?', $args['id']);
+            } else {
+                $query->where('core_pid = ?', $args['pid']);
             }
         }
 
@@ -381,20 +381,10 @@ class Clip_Api_User extends Zikula_AbstractApi
         $obj = $args['data'];
 
         // extract the schema name
-        $pubtype = Clip_Util::getPubType($obj['core_tid']);
-        $schema  = str_replace('.xml', '', $pubtype->workflow);
+        $pubtype  = Clip_Util::getPubType($obj['core_tid']);
+        $workflow = new Clip_Workflow($pubtype, $obj);
 
-        $pubfields = Clip_Util::getPubFields($obj['core_tid']);
-
-        foreach ($pubfields as $fieldname => $field)
-        {
-            $plugin = Clip_Util::getPlugin($field['fieldplugin']);
-            if (method_exists($plugin, 'preSave')) {
-                $obj[$fieldname] = $plugin->preSave($obj, $field);
-            }
-        }
-
-        $ret = Zikula_Workflow_Util::executeAction($schema, $obj, $args['commandName'], $pubtype->getTableName(), 'Clip');
+        $ret = $workflow->executeAction($args['commandName']);
 
         if ($ret === false) {
             return LogUtil::hasErrors() ? false : LogUtil::registerError($this->__('Unknown workflow action error. Operation failed.'));
@@ -430,9 +420,9 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Returns the ID of the online publication.
      *
-     * @author kundi
      * @param int $args['tid']
      * @param int $args['pid']
+     * @param bool $args['lastrev']
      *
      * @return int id.
      */
@@ -444,14 +434,27 @@ class Clip_Api_User extends Zikula_AbstractApi
         if (!isset($args['pid']) || !is_numeric($args['pid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'pid'));
         }
+        $args['lastrev'] = isset($args['lastrev']) ? (bool)$args['lastrev'] : false;
 
-        // build the where clause
+        $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
+
+        // checks for a online pub first
         $where = array(
                      array('core_pid = ? AND core_online = ?', array($args['pid'], 1))
                  );
 
-        return Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])
-               ->selectField('id', $where);
+        $id = $tbl->selectField('id', $where);
+
+        // checks for the recent
+        if ($args['lastrev'] && !$id) {
+            $where = array(
+                         array('core_pid = ?', $args['pid'])
+                     );
+
+            $id = $tbl->selectField('id', $where, 'core_revision');
+        }
+
+        return $id;
     }
 
     /**
@@ -600,7 +603,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         // special function indicator
         if ($args['func'] == 'edit') {
-            $params .= $pubTitle ? '/edit' : '/new';
+            $params .= '/' . ($pubTitle ? $this->__('edit') : $this->__('submit'));
         }
 
         if (count($args['args']) > 0) {
@@ -608,7 +611,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             foreach ($args['args'] as $k => $v) {
                 $paramarray[] = urlencode($k).'/'.urlencode($v);
             }
-            $params = '/'. implode('/', $paramarray);
+            $params .= '/'. implode('/', $paramarray);
         }
 
         return $args['modname'].'/'.$pubtypeTitle.$pubTitle.$params;
@@ -650,8 +653,10 @@ class Clip_Api_User extends Zikula_AbstractApi
             $nextvar++;
         }
 
+        $shortedits = array($this->__('edit'), $this->__('submit'));
+
         if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
-            if (in_array($_[$nextvar], array('new', 'edit'))) {
+            if (in_array($_[$nextvar], $shortedits)) {
                 // special function indicator check
                 System::queryStringSetVar('func', 'edit');
                 $nextvar++;
@@ -673,7 +678,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // special function indicator check
-        if (isset($_[$nextvar]) && in_array($_[$nextvar], array('edit'))) {
+        if (isset($_[$nextvar]) && in_array($_[$nextvar], $shortedits)) {
             System::queryStringSetVar('func', 'edit');
             $nextvar++;
         }

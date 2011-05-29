@@ -116,6 +116,11 @@ class Clip_Model_Pubtype extends Doctrine_Record
         return 'clip_pubdata'.$this->tid;
     }
 
+    public function getSchema()
+    {
+        return FileUtil::getFilebase($this->workflow);
+    }
+
     public function getRelations($onlyown = true)
     {
         $key = ($onlyown ? 'own' : 'all').'relations';
@@ -273,10 +278,8 @@ class Clip_Model_Pubtype extends Doctrine_Record
      */
     public function preInsert($event)
     {
-        $invoker = $event->getInvoker();
-
         // make sure it belongs to a group (the first one after root)
-        // TODO make this configurable
+        // TODO make this select-able on the pubtype form
         $gid = Doctrine_Core::getTable('Clip_Model_Grouptype')
                    ->createQuery()
                    ->select('gid')

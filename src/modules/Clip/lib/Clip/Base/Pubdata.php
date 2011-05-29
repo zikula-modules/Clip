@@ -63,7 +63,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
                 if ($this->hasReference($alias)) {
                     if ($this->clipRelation($alias, $args['rel']['checkperm'])) {
                         if ($this[$alias] instanceof Doctrine_Record) {
-
+                            // TODO process??
                         }
                     }
                 }
@@ -110,13 +110,9 @@ class Clip_Base_Pubdata extends Doctrine_Record
      */
     public function clipWorkflow()
     {
-        if ($this->id) {
-            $tablename = $this->_table->getInternalTableName();
-            Zikula_Workflow_Util::getWorkflowForObject($this, $tablename, 'id', 'Clip');
-
-        } else {
-            $this->mapValue('__WORKFLOW__',  array('state' => 'initial'));
-        }
+        $pubtype  = Clip_Util::getPubType($this['core_tid']);
+        $workflow = new Clip_Workflow($pubtype, $this);
+        $workflow->getWorkflow();
 
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
     }
@@ -161,7 +157,6 @@ class Clip_Base_Pubdata extends Doctrine_Record
             $fields[$column] = 'column';
         }
 
-        // FIXME From Doctrine: prevent mapped Doctrine_Records from being displayed fully
         foreach ($this->_values as $key => $value) {
             $fields[$key] = 'value';
         }
@@ -232,5 +227,30 @@ class Clip_Base_Pubdata extends Doctrine_Record
         $relations = $this->getRelations(false);
 
         return isset($relations[$alias])? $relations[$alias] : false;
+    }
+
+    /**
+     * Save hooks.
+     *
+     * @return void
+     */
+    public function preSave($event)
+    {
+        $obj = $event->getInvoker();
+
+        if (isset($obj['core_tid'])) {
+            $pubfields = Clip_Util::getPubFields($obj['core_tid']);
+
+            // TODO only modified fields check?
+            // FIXME move to a non-util method
+            foreach ($pubfields as $fieldname => $field)
+            {
+                $plugin = Clip_Util::getPlugin($field['fieldplugin']);
+
+                if (method_exists($plugin, 'preSave')) {
+                    $obj[$fieldname] = $plugin->preSave($obj, $field);
+                }
+            }
+        }
     }
 }

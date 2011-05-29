@@ -64,13 +64,14 @@ class Clip_Doctrine_Table extends Doctrine_Table
      *
      * @param string $field The name of the field we wish to marshall.
      * @param arry   $where The where clause (optional) (default=array()).
+     * @param string  $orderBy  The orderby clause (optional) (default='').
      *
      * @return string The resulting field value.
      */
-    public function selectField($field, $where = array())
+    public function selectField($field, $where = array(), $orderBy = '')
     {
         // creates the query instance
-        $q = $this->selectFieldQuery($field, $where);
+        $q = $this->selectFieldQuery($field, $where, $orderBy);
 
         return $q->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
     }
@@ -81,13 +82,14 @@ class Clip_Doctrine_Table extends Doctrine_Table
      * @param string  $field  The field we wish to select.
      * @param integer $value  The value we wish to select with.
      * @param string  $column The column to use (optional) (default='id').
+     * @param string  $orderBy  The orderby clause (optional) (default='').
      *
      * @return mixed The resulting field value.
      */
-    public function selectFieldBy($field, $value, $column = 'id')
+    public function selectFieldBy($field, $value, $column = 'id', $orderBy = '')
     {
         // creates the query instance
-        $q = $this->selectFieldQuery($field);
+        $q = $this->selectFieldQuery($field, array(), $orderBy);
 
         $q->where($this->buildFindByWhere($column), (array)$value);
 

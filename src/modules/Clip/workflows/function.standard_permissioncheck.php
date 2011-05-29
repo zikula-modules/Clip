@@ -20,23 +20,19 @@
  */
 function Clip_workflow_standard_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
-    if (!empty($obj)) {
-        // process $obj and calculate an instance
-        $pid = $obj['core_pid'];
+    $pubtype = Clip_Util::getPubType($obj['core_tid']);
 
-        $tid     = Clip_Util::getTidFromString($obj['__WORKFLOW__']['obj_table']);
-        $pubtype = Clip_Util::getPubType($tid);
-
-        if ($pubtype['enableeditown'] == 1 and $obj['core_author'] == $currentUser) {
+    if ($obj->exists()) {
+        // check existing publication author and granular permission access check
+        if ($pubtype['enableeditown'] == 1 && $obj['core_author'] == $currentUser) {
             return true;
-        } else {
-            return SecurityUtil::checkPermission('Clip:input:', "$tid:$pid:{$obj['__WORKFLOW__']['state']}", $permLevel, $currentUser);
         }
-    } else {
-        // no object passed - user wants to create a new one        
-        $tid = FormUtil::getPassedValue('tid');
 
-        return SecurityUtil::checkPermission('Clip:input:', "$tid::", $permLevel, $currentUser);
+        return SecurityUtil::checkPermission('Clip:input:', "{$obj['core_tid']}:{$obj['core_pid']}:", $permLevel, $currentUser);
+
+    } else {
+        // publication not saved yet - user wants to create a new one
+        return SecurityUtil::checkPermission('Clip:input:', "{$obj['core_tid']}::", $permLevel, $currentUser);
     }
 }
 
@@ -46,12 +42,12 @@ function Clip_workflow_standard_gettextstrings()
 
     return array(
         'title' => no__('Standard'),
-        'description' => no__('This is a two staged workflow with stages for untrusted submissions and finally approved publications. It does not allow untrusted corrections to published pages.'),
+        'description' => no__('This is a two staged workflow with stages for untrusted submissions and finally approved publications. It does not allow corrections of non-editors to published pages.'),
 
         // state titles
         'states' => array(
             no__('Waiting') => no__('Content has been submitted and is waiting for acceptance'),
-            no__('Approved') => no__('Content has been approved is available online')
+            no__('Approved') => no__('Content has been approved and is available online')
         ),
 
         // action titles and descriptions for each state
@@ -62,16 +58,19 @@ function Clip_workflow_standard_gettextstrings()
             ),
             'waiting' => array(
                 no__('Update and Approve') => no__('Update the content and approve for immediate publishing'),
-                no__('Approve') => no__('Approve the publication for immediate publishing'),
                 no__('Update') => no__('Update the content for later publishing'),
-                no__('Delete') => no__('Delete the publication')
+                no__('Approve') => no__('Approve the publication for immediate publishing'),
+                no__('Trash') => no__('Move the publication to the recycle bin'),
+                no__('Recover') => no__('Recover the publication from the recycle bin'),
+                no__('Delete') => no__('Delete the publication permanently')
             ),
             'approved' => array(
-                no__('Update') => no__('Update the publication'),
+                no__('Update') => no__('Update the publication content'),
                 no__('Publish') => no__('Make the publication available'),
                 no__('Unpublish') => no__('Hide the publication'),
-                no__('Move to depot') => no__('Move the publication to the depot'),
-                no__('Delete') => no__('Delete the publication')
+                no__('Trash') => no__('Move the publication to the recycle bin'),
+                no__('Recover') => no__('Recover the publication from the recycle bin'),
+                no__('Delete') => no__('Delete the publication permanently')
             )
         )
     );
