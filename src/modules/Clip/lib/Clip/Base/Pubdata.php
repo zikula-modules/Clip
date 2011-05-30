@@ -34,7 +34,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
 
         // handle the plugins data if needed
         if (isset($args['handleplugins']) && $args['handleplugins']) {
-            $this->clipData();
+            $this->clipPostRead();
         }
 
         // load the workflow data if needed
@@ -91,7 +91,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
         $this->mapValue('core_creator',  ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
 
         if ($handleplugins) {
-            $this->clipData();
+            $this->clipPostRead();
         }
 
         return $this;
@@ -102,9 +102,9 @@ class Clip_Base_Pubdata extends Doctrine_Record
      *
      * @return $this
      */
-    public function clipData()
+    public function clipPostRead()
     {
-        Clip_Util::handlePluginFields($this);
+        Clip_Util_Plugins::postRead($this);
 
         return $this;
     }
@@ -253,7 +253,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
             // FIXME move to a non-util method
             foreach ($pubfields as $fieldname => $field)
             {
-                $plugin = Clip_Util::getPlugin($field['fieldplugin']);
+                $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
                 if (method_exists($plugin, 'preSave')) {
                     $obj[$fieldname] = $plugin->preSave($obj, $field);

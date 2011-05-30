@@ -11,7 +11,8 @@
 
 /**
  * Generic form Plugin
- * Loads the disired plugin from fieldtype definition
+ *
+ * Loads the desired plugin from fieldtype definition
  */
 function smarty_function_clip_form_genericplugin($params, &$render)
 {
@@ -33,7 +34,7 @@ function smarty_function_clip_form_genericplugin($params, &$render)
         $params['maxLength'] = $pubfields[$params['id']]['fieldmaxlength'];
     }
 
-    $plugin = Clip_Util::getPlugin($pubfields[$params['id']]['fieldplugin']);
+    $plugin = Clip_Util_Plugins::get($pubfields[$params['id']]['fieldplugin']);
 
     if (method_exists($plugin, 'pluginRegister')) {
         return $plugin->pluginRegister($params, $render);

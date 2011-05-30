@@ -33,7 +33,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
 
-        $treejscode = Clip_Util::getGrouptypesTreeJS(null, true, true);
+        $treejscode = Clip_Util_Grouptypes::getTreeJS(null, true, true);
 
         //// Output
         $this->view->assign('treejscode', $treejscode);

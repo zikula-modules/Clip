@@ -77,7 +77,7 @@ class Clip_Generator
                 $rowcode['label'] = '{gt text=\''.$field['title'].'\'}:';
 
                 // process the postRead and getPluginOutput
-                $plugin = Clip_Util::getPlugin($field['fieldplugin']);
+                $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
                 if (method_exists($plugin, 'postRead')) {
                     $pubdata[$key] = $plugin->postRead('', $key);
@@ -259,7 +259,7 @@ class Clip_Generator
 
             // specific edit parameters
             // process the getPluginEdit of the plugin
-            $plugin = Clip_Util::getPlugin($formplugin);
+            $plugin = Clip_Util_Plugins::get($formplugin);
 
             if (method_exists($plugin, 'getPluginEdit')) {
                 $plugadd = $plugin->getPluginEdit($pubfields[$k]);

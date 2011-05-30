@@ -19,7 +19,7 @@ class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
     function __construct($view, &$params)
     {
         $this->autoPostBack = true;
-        $plugins = Clip_Util::getPluginsOptionList();
+        $plugins = Clip_Util_Selectors::plugins();
 
         foreach ($plugins as $id => $plugin) {
             $items[] = array (
@@ -46,7 +46,7 @@ class ClipFormPluginType extends Zikula_Form_Plugin_DropdownList
         if (!empty($this->selectedValue) && !empty($this->items)) {
             PageUtil::addVar('javascript', 'zikula.ui');
             $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
-            $plugin = Clip_Util::getPlugin($this->selectedValue);
+            $plugin = Clip_Util_Plugins::get($this->selectedValue);
             if (method_exists($plugin, 'getTypeHtml')) {
                 if (method_exists($plugin, 'getSaveTypeDataFunc')) {
                     $script .= $plugin->getSaveTypeDataFunc($this)."\n";

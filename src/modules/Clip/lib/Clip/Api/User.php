@@ -126,7 +126,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         );
         foreach ($pubfields as $fieldname => $field)
         {
-            $plugin = Clip_Util::getPlugin($field['fieldplugin']);
+            $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
             // includes any filter default class
             if (isset($plugin->filterClass)) {
@@ -211,7 +211,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                 $args['orderby'] = str_replace('core_title', $pubtype['titlefield'], $args['orderby']);
             }
             // check if some plugin specific orderby has to be done
-            $args['orderby'] = Clip_Util::handlePluginOrderBy($args['orderby'], $pubfields, $args['queryalias'].'.');
+            $args['orderby'] = Clip_Util_Plugins::handleOrderBy($args['orderby'], $pubfields, $args['queryalias'].'.');
 
             // add the orderby to the query
             foreach (explode(', ', $args['orderby']) as $orderby) {

@@ -40,8 +40,8 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
             )
         );
 
-        $view->assign('pubtypes', Clip_Util::getPubtypesSelector())
-             ->assign('formats', Clip_Util::getFormatsSelector(false))
+        $view->assign('pubtypes', Clip_Util_Selectors::pubtypes())
+             ->assign('formats', Clip_Util_Selectors::exportFormats(false))
              ->assign('outputs', $outputs);
 
         return true;

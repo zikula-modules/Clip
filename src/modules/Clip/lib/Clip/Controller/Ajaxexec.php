@@ -80,7 +80,7 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
 
         $node    = array($group->toArray());
         $options = array('withWraper' => false);
-        $nodejscode = Clip_Util::getGrouptypesTreeJS($node, true, true, $options);
+        $nodejscode = Clip_Util_Grouptypes::getTreeJS($node, true, true, $options);
 
         $result = array(
             'action' => $mode,

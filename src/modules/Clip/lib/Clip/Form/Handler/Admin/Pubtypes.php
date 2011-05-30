@@ -28,7 +28,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
             $this->tid = $tid;
 
             $pubtype   = Clip_Util::getPubType($tid);
-            $pubfields = Clip_Util::getFieldsSelector($tid);
+            $pubfields = Clip_Util_Selectors::fields($tid);
 
             if (!$pubtype) {
                 LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
@@ -48,7 +48,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
         }
 
-        $view->assign('clipworkflows', Clip_Util::getWorkflowsOptionList());
+        $view->assign('clipworkflows', Clip_Util_Selectors::workflows());
 
         return true;
     }

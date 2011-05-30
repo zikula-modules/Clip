@@ -94,7 +94,7 @@ function smarty_function_clip_category_browser($params, &$view)
 
     if (!isset($html)) {
         $pubfields = Clip_Util::getPubFields($tid);
-        $plugin = Clip_Util::getPlugin($pubfields[$field]['fieldplugin']);
+        $plugin = Clip_Util_Plugins::get($pubfields[$field]['fieldplugin']);
         $id = $plugin->getRootCategoryID($pubfields[$field]['typedata']);
 
         $cats = CategoryUtil::getSubCategories($id);
@@ -175,11 +175,11 @@ function smarty_function_clip_category_browser($params, &$view)
                     $cats[$k]['count'] = $count_arr[$filter_act];
                 } else {
                     $pubarr = ModUtil::apiFunc('Clip', 'user', 'getall',
-                                           array('tid'                => $tid,
-                                                 'countmode'          => 'just',
-                                                 'filter'             => !empty($filter_act) ? $filter_act : '()',
-                                                 'checkPerm'          => false,
-                                                 'handlePluginFields' => false));
+                                           array('tid'           => $tid,
+                                                 'countmode'     => 'just',
+                                                 'filter'        => !empty($filter_act) ? $filter_act : '()',
+                                                 'checkperm'     => false,
+                                                 'handleplugins' => false));
 
                     $cats[$k]['count'] = $count_arr[$filter_act] = $pubarr['pubcount'];
                 }

@@ -121,7 +121,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
         // fill the view
         $view->assign('pubtypes', $pubtypes)
-             ->assign('typeselector', Clip_Util::getPubtypesSelector(true, true))
+             ->assign('typeselector', Clip_Util_Selectors::pubtypes(true, true))
              ->assign('relations', $relations)
              ->assign('reltypes', array($reltype1, $reltype2))
              ->assign('ops', $ops)

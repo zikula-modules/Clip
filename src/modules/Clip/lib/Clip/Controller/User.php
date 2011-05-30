@@ -121,7 +121,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             $filterid = $apiargs['filter'] ? Clip_Util::getFilterCacheString($apiargs['filter']) : Clip_Util::getFilterCacheId();
 
             $cacheid = 'tid_'.$apiargs['tid'].'/list'
-                       .'/'.Clip_Util::getUserGIdentifier()
+                       .'/'.UserUtil::getGidCacheString()
                        .'/tpl_'.(!empty($args['templateid']) ? $args['templateid'] : 'clipdefault')
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
@@ -288,7 +288,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                        .'/pid'.$apiargs['pid']
                        .'/id'.$apiargs['id']
                        .'/tpl_'.(!empty($args['templateid']) ? $args['templateid'] : 'clipdefault')
-                       .'/'.Clip_Util::getUserGIdentifier();
+                       .'/'.UserUtil::getGidCacheString();
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
 

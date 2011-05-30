@@ -264,7 +264,7 @@ class Clip_Api_Import extends Zikula_AbstractApi
                         }
                 }
 
-                $plugin = Clip_Util::getPlugin($datafield['fieldplugin']);
+                $plugin = Clip_Util_Plugins::get($datafield['fieldplugin']);
 
                 $datafield['fieldtype']    = $plugin->columnDef;
                 $datafield['istitle']      = $pubfield['isTitle'];

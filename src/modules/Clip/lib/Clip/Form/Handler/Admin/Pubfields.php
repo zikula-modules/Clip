@@ -57,7 +57,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 
         $view->assign('pubfields', $pubfields)
              ->assign('pubtype', $pubtype)
-             ->assign('tid', $tid);
+             ->assign('tid', $this->tid);
 
         // stores the return URL
         if (!$view->getStateData('returnurl')) {
@@ -91,7 +91,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $pubfield->fromArray($data['field']);
 
         // fill default data
-        $plugin = Clip_Util::getPlugin($pubfield->fieldplugin);
+        $plugin = Clip_Util_Plugins::get($pubfield->fieldplugin);
 
         $pubfield->tid = (int)$this->tid;
         $pubfield->fieldtype = $plugin->columnDef;
