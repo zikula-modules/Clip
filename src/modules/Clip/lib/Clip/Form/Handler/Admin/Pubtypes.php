@@ -81,11 +81,14 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 
         // creates and fill a Pubtype instance
         if (!empty($this->tid)) {
-            // object fetch due the use of default values
-            $pubtype = $tbl->find($this->tid);
+            // clone to avoid interferences of the Doctrine_Table cache
+            $pubtype = $tbl->find($this->tid)->copy(true);
+            $pubtype->assignIdentifier($this->tid);
         } else {
             $pubtype = new Clip_Model_Pubtype();
         }
+
+        // update the pubtype with the form values
         $pubtype->fromArray($data['pubtype']);
         $pubtype->config = $this->configPostProcess($data['config']);
 
@@ -174,7 +177,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 $this->returnurl = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $newpubtype->tid));
                 break;
 
-            // delete
+            // delete this pubtype
             case 'delete':
                 // delete the pubtype data and fields
                 Clip_Util::getPubType($this->tid)->delete();

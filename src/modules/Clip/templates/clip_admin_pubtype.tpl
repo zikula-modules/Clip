@@ -5,7 +5,7 @@
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='db.png' set='icons/large' __alt='Create / Edit publication type' }</div>
 
-    {if isset($pubtype)}
+    {if $pubtype.tid}
         <h2>{$pubtype.title} &raquo; {gt text='Edit publication type'}</h2>
         {clip_submenu tid=$pubtype.tid}
     {else}
@@ -214,7 +214,7 @@
         </fieldset>
 
         <div class="z-buttons z-formbuttons">
-            {if isset($pubtype)}
+            {if $pubtype.tid}
                 {formbutton commandName='save' __text='Save' class='z-bt-save'}
                 {formbutton commandName='clone' __text='Clone' class='clip-bt-clone'}
                 {gt text='Are you sure you want to delete this publication type and all its fields and publications?' assign='confirmdeletion'}
