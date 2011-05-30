@@ -218,7 +218,8 @@ class Clip_Generator
         $heading_newpub = no__('Submit a publication');
         $legend_pubcontent = no__('Publication content');
 
-        $code = '{* process the title according the publication status *}'."\n".
+        $code = "\n".
+                '{* process the title according the publication status *}'."\n".
                 '{if $pubdata.id}'."\n".
                 '    {gt text="Edit \'%s\'" tag1=$pubdata.core_title|truncate:50 assign=\'pagetitle\'}'."\n".
                 '{else}'."\n".

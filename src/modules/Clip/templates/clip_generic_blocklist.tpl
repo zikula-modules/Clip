@@ -1,3 +1,4 @@
+
 {checkpermission component='Clip::' instance="`$pubtype.tid`::" level=ACCESS_EDIT assign='auth_editor'}
 
 <ul class="clip-block-list">

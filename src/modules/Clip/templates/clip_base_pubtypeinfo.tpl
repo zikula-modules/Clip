@@ -1,6 +1,8 @@
 
 <h2>{$pubtype.title}</h2>
 
+{clip_submenu tid=$pubtype.tid}
+
 <ul id="pubtype{$pubtype.tid}_info">
     <li class="tab"><a href="#p{$pubtype.tid}manage">{gt text='Manage'}</a></li>
     <li class="tab"><a href="#p{$pubtype.tid}code">{gt text='Get the code'}</a></li>
@@ -43,7 +45,7 @@
             </p>
         </li>
         <li>
-            <a href="{modurl modname='Clip' type='admin' func='relations' withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
+            <a href="{modurl modname='Clip' type='admin' func='relations' withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Edit the relations of this publication type'}">
                 {gt text='Manage its relations'}
             </a>
             <p>
@@ -87,7 +89,7 @@
 <div id="p{$pubtype.tid}code" class="clip-infotab">
     <ul>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid code='form'}">
+            <a href="{clip_url func='generator' tid=$pubtype.tid code='form'}">
                 {gt text='Form'}
             </a>
             <p>
@@ -95,7 +97,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid code='list'}">
+            <a href="{clip_url func='generator' tid=$pubtype.tid code='list'}">
                 {gt text='List'}
             </a>
             <p>
@@ -103,7 +105,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid code='display'}">
+            <a href="{clip_url func='generator' tid=$pubtype.tid code='display'}">
                 {gt text='Display'}
             </a>
             <p>
@@ -111,7 +113,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid code='blocklist'}">
+            <a href="{clip_url func='generator' tid=$pubtype.tid code='blocklist'}">
                 {gt text='List block'}
             </a>
             <p>
@@ -119,7 +121,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='showcode' tid=$pubtype.tid code='blockpub'}">
+            <a href="{clip_url func='generator' tid=$pubtype.tid code='blockpub'}">
                 {gt text='Publication block'}
             </a>
             <p>

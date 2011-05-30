@@ -6,9 +6,9 @@
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='db_update.png' set='icons/large' __alt='Manage Publication fields' }</div>
 
-    <h2>{gt text='Manage Publication fields'}</h2>
+    <h2>{$pubtype.title} &raquo; {gt text='Manage Publication fields'}</h2>
 
-    {clip_submenu tid=$tid field=1}
+    {clip_submenu tid=$tid field=$field.name}
 
     <p class="z-informationmsg">{gt text='You can order the fields using Drag and Drop on the following list.'}</p>
 
@@ -129,7 +129,7 @@
                 {formcheckbox id='istitle' group='field'}
                 <div class="z-formnote">{gt text='The content of this field will be used as the title?'}</div>
             </div>
-            {*if !isset($field) OR $field.fieldplugin eq 'Text'}
+            {*if $field.fieldplugin eq 'Text'}
             <div class="z-formrow">
                 {formlabel for='ispageable' text='Pageable'}
                 {formcheckbox id='ispageable' group='field'}
@@ -146,14 +146,14 @@
                 {formcheckbox id='issearchable' group='field'}
                 <div class="z-formnote">{gt text='The content of this field can be searched?'}</div>
             </div>
-            {if !isset($field) OR !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Email', 'Float', 'Image', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Text', 'Upload', 'Url'))}
+            {if !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Email', 'Float', 'Image', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Text', 'Upload', 'Url'))}
             <div class="z-formrow">
                 {formlabel for='isuid' text='Is a User ID'}
                 {formcheckbox id='isuid' group='field'}
                 <div class="z-formnote">{gt text='This field contains a User ID? If enabled it will be filtered only with the user operator.'}</div>
             </div>
             {/if}
-            {if !isset($field) OR !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Float', 'Image', 'Int', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Upload', 'User'))}
+            {if !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Float', 'Image', 'Int', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Upload', 'User'))}
             <div class="z-formrow">
                 {formlabel for='fieldmaxlength' text='Max. length'}
                 {formintinput id='fieldmaxlength' group='field' maxLength='15'}

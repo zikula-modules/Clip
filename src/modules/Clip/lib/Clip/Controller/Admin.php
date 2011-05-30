@@ -269,7 +269,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     /**
      * Code generation.
      */
-    public function showcode($args = array())
+    public function generator($args = array())
     {
         //// Security
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
@@ -329,7 +329,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                    ->assign('output',  $output)
                    ->assign('pubtype', Clip_Util::getPubType($args['tid']));
 
-        return $this->view->fetch("clip_base_showcode.tpl");
+        return $this->view->fetch("clip_base_generator.tpl");
     }
 
     /**
@@ -347,5 +347,15 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         );
 
         return ModUtil::func('Clip', 'user', 'editlist', $args);
+    }
+
+    /**
+     * @see Clip_Controller_Admin::generate
+     *
+     * @deprecated 0.9
+     */
+    public function showcode($args)
+    {
+        return $this->generator($args);
     }
 }

@@ -35,7 +35,6 @@ class Clip_Doctrine_Table extends Doctrine_Table
                 // when owned the foreign field is in the other table
                 $v = isset($dynaMap[$relation['class']]) ? $dynaMap[$relation['class']].'.' : $relation['class'].':';
                 $columns[$alias] = "{$v}id";
-
             }
         }
 

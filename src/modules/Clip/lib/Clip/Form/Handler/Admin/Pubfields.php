@@ -23,15 +23,16 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
      */
     function initialize($view)
     {
-        $tid = FormUtil::getPassedValue('tid');
-        $id  = FormUtil::getPassedValue('id');
+        $this->tid = FormUtil::getPassedValue('tid');
+        $this->id  = FormUtil::getPassedValue('id', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
 
         // validation check
-        if (empty($tid) || !is_numeric($tid)) {
-            $view->setErrorMsg($this->__f('Error! %s not set.', 'tid'));
-            return $view->redirect(ModUtil::url('Clip', 'admin'));
+        if (!Clip_Util::validateTid($this->tid)) {
+            $view->setErrorMsg($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($this->tid)));
+            return $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
         }
-        $this->tid = $tid;
+
+        $pubtype = Clip_Util::getPubType($this->tid);
 
         // update the pubtype table with previous changes
         Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->changeTable(true);
@@ -39,28 +40,28 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         // get the pubfields table
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
 
-        if (!empty($id)) {
-            $this->id = $id;
-            $pubfield = $tableObj->find($id);
+        if (!empty($this->id)) {
+            $pubfield = $tableObj->find($this->id);
 
             if (!$pubfield) {
-                LogUtil::registerError($this->__f('Error! No such publication field [%s] found.', $id));
+                LogUtil::registerError($this->__f('Error! No such publication field [%s] found.', $this->id));
                 return $view->redirect(ModUtil::url('Clip', 'admin'));
             }
 
             $view->assign('field', $pubfield->toArray());
         } else {
-            $view->assign('field', $tableObj->getRecord());
+            $view->assign('field', $tableObj->getRecord()->toArray());
         }
 
-        $pubfields = $tableObj->selectCollection("tid = '$tid'", 'lineno', -1, -1, 'name');
+        $pubfields = $tableObj->selectCollection("tid = '{$this->tid}'", 'lineno', -1, -1, 'name');
 
         $view->assign('pubfields', $pubfields)
+             ->assign('pubtype', $pubtype)
              ->assign('tid', $tid);
 
         // stores the return URL
         if (!$view->getStateData('returnurl')) {
-            $adminurl = ModUtil::url('Clip', 'admin');
+            $adminurl = ModUtil::url('Clip', 'admin', 'main');
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
         }
 

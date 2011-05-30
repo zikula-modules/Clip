@@ -19,7 +19,7 @@
     <em class="z-formnote">
         {gt text="The block will use the template '%s'." tag1=$tpl}
         {if $vars.tid}
-        {modurl modname='Clip' type='admin' func='showcode' tid=$vars.tid mode='blocklist' assign='codeurl'}
+        {modurl modname='Clip' type='admin' func='generator' tid=$vars.tid mode='blocklist' assign='codeurl'}
         <br />{gt text='You can customize the generic code <a href="%s">available here</a>.' tag1=$codeurl|safetext}
         {/if}
         <br />{gt text='If the template is not found, Clip will show an error if the development mode is enabled.'}

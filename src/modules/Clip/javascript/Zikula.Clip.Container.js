@@ -3,7 +3,8 @@
 /* Clip load */
 Zikula.define('Clip');
 
-Event.observe(window, 'load', function() {
+Event.observe(window, 'load', function()
+{
     Zikula.Clip.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence;
 
     Zikula.Clip.Container.register('main');
@@ -77,7 +78,8 @@ Object.extend(Zikula.Clip.TreeSortable,/** @lends Zikula.Clip.TreeSortable.proto
     }
 });
 
-Zikula.Clip.Container = Class.create({
+Zikula.Clip.Container = Class.create(
+{
     initialize: function(options) {
         this.indicatorEffects = {
             fade: false,
@@ -149,7 +151,8 @@ Object.extend(Zikula.Clip.Container,
 });
 
 /* Context Menu */
-Zikula.Clip.AttachMenu = function () {
+Zikula.Clip.AttachMenu = function ()
+{
     Zikula.Clip.ContextMenu = new Control.ContextMenu(Zikula.Clip.TreeSortable.trees.grouptypesTree.tree, {
         animation: false,
         beforeOpen: function(event) {
@@ -243,7 +246,7 @@ Zikula.Clip.AttachMenu = function () {
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'tid':tid, 'code':'list'}, 'showcode');
+            Zikula.Clip.AjaxRequest({'tid':tid, 'code':'list'}, 'generator');
         }
     });
     Zikula.Clip.ContextMenu.addItem({
@@ -272,7 +275,8 @@ Zikula.Clip.AttachMenu = function () {
     */
 };
 
-Zikula.Clip.MenuAction = function(node, action) {
+Zikula.Clip.MenuAction = function(node, action)
+{
     if (!['edit', 'delete', 'addafter', 'addchild', 'addroot'].include(action)) {
         return false;
     }
@@ -320,7 +324,10 @@ Zikula.Clip.MenuAction = function(node, action) {
     return true;
 };
 
-Zikula.Clip.MenuActionCallback = function(req) {
+Zikula.Clip.MenuActionCallback = function(req)
+{
+    Zikula.Clip.Indicator().remove();
+
     if (!req.isSuccess()) {
         Zikula.showajaxerror(req.getMessage());
         return false;
@@ -349,11 +356,13 @@ Zikula.Clip.MenuActionCallback = function(req) {
             Zikula.Clip.OpenForm(data, Zikula.Clip.AddNode);
             break;
     }
+
     return true;
 };
 
 /* Form Methods */
-Zikula.Clip.OpenForm = function(data, callback) {
+Zikula.Clip.OpenForm = function(data, callback)
+{
     if (Zikula.Clip.Form) {
         Zikula.Clip.Form.destroy();
     }
@@ -371,19 +380,22 @@ Zikula.Clip.OpenForm = function(data, callback) {
 };
 
 
-Zikula.Clip.CloseForm = function() {
+Zikula.Clip.CloseForm = function()
+{
     Zikula.Clip.Form.destroy();
     Zikula.Clip.Form = null;
 };
 
-Zikula.Clip.UpdateForm = function(data) {
+Zikula.Clip.UpdateForm = function(data)
+{
     $('clip_ajax_form_container').replace(data);
     Zikula.Clip.Form.window.indicator.fade({duration: 0.2});
     $('clip_ajax_form_container').show();
 };
 
 /* Mode callbacks */
-Zikula.Clip.DeleteMenuAction = function(node) {
+Zikula.Clip.DeleteMenuAction = function(node)
+{
     if (Zikula.Clip.ContextMenu.lastClick.findElement('a').up('li').down('ul')) {
         return false;
     }
@@ -414,7 +426,8 @@ Zikula.Clip.DeleteMenuAction = function(node) {
     Zikula.Clip.DeleteDialog.container.down('button[name=Cancel]').focus();
 };
 
-Zikula.Clip.EditNode = function(res) {
+Zikula.Clip.EditNode = function(res)
+{
     if (!res || (res.hasOwnProperty('cancel') && res.cancel === false)) {
         Zikula.Clip.CloseForm();
         return false;
@@ -447,7 +460,8 @@ Zikula.Clip.EditNode = function(res) {
     return true;
 };
 
-Zikula.Clip.AddNode = function(res) {
+Zikula.Clip.AddNode = function(res)
+{
     if (!res || (res.hasOwnProperty('cancel') && res.cancel === false)) {
         Zikula.Clip.CloseForm();
         return false;
@@ -491,7 +505,8 @@ Zikula.Clip.AddNode = function(res) {
     return true;
 };
 
-Zikula.Clip.ReinitTreeNode = function(node, data) {
+Zikula.Clip.ReinitTreeNode = function(node, data)
+{
     Zikula.Clip.TreeSortable.trees.grouptypesTree.initNode(node);
     Zikula.Clip.TreeSortable.trees.grouptypesTree.drawNodes();
     Zikula.UI.Tooltips(node.select('a'));
@@ -503,7 +518,8 @@ Zikula.Clip.Indicator = function() {
 };
 
 /* Reorder method */
-Zikula.Clip.Resequence = function(node, params, data) {
+Zikula.Clip.Resequence = function(node, params, data)
+{
     // only allow inserts of grouptypes on root level
     var id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node)
     if (node.up('li') === undefined && id != parseInt(id)) {
@@ -536,7 +552,6 @@ Zikula.Clip.ResequenceCallback = function(req)
 /* Ajax view functions */
 Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 {
-    // TODO remove the indicator if the click comes of the main container (core mod?)
     Zikula.Clip.Container.items.main.showIndicator();
 
     pars.module = 'Clip';
@@ -559,6 +574,10 @@ Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 
 Zikula.Clip.AjaxRequestCallback = function(req)
 {
+    if ($('ajax_indicator')) {
+        $('ajax_indicator').remove();
+    }
+
     if (!req.isSuccess()) {
         Zikula.showajaxerror(req.getMessage());
         return false;

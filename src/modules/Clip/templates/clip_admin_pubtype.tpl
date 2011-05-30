@@ -6,7 +6,7 @@
     <div class="z-adminpageicon">{img modname='core' src='db.png' set='icons/large' __alt='Create / Edit publication type' }</div>
 
     {if isset($pubtype)}
-        <h2>{gt text='Edit publication type'}</h2>
+        <h2>{$pubtype.title} &raquo; {gt text='Edit publication type'}</h2>
         {clip_submenu tid=$pubtype.tid}
     {else}
         <h2>{gt text='Create publication type'}</h2>

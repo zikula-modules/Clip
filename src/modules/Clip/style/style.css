@@ -9,6 +9,16 @@
  */
 
 /*** Admin GUI ***/
+.z-module-clip div.z-admincontainer .z-menu {
+  margin-top: -15px;
+}
+.z-module-clip div.z-admincontainer #clip_cols_maincol .z-menu {
+  margin-top: 0;
+}
+.z-module-clip div.z-admincontainer .clip-breadcrumbs {
+  border: none;
+  line-height: 1.5em;
+}
 #ajax_indicator {
   margin-left: 4px;
 }
@@ -29,6 +39,11 @@
   padding: 0 0 0 7px;
   position: relative;
 }
+  #z-maincontent div.z-admincontainer #clip_cols_maincol h2 {
+    margin: 0;
+    padding: 0;
+  }
+
 #clip_cols_sidecol {
   border-right: 1px solid #CCCCCC;
   float: left;
@@ -164,7 +179,7 @@ img {
   vertical-align: middle;
 }
 
-pre.clip-showcode {
+pre.clip-generatorcode {
   background: #222;
   border: 1px solid #ccc;
   color: #fff;
