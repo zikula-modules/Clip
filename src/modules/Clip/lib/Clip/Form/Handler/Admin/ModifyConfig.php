@@ -14,10 +14,10 @@
  */
 class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
 {
-    private $siteroot;
+    protected $siteroot;
 
     /**
-     * Initialize function
+     * Initialize function.
      */
     function initialize($view)
     {
@@ -42,6 +42,7 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
             }
         }
 
+        // fill the output
         $view->assign('siteroot', DataUtil::formatForDisplay($this->siteroot))
              ->assign('updirstatus', $updirstatus)
              ->assign($modvars);
@@ -50,9 +51,9 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
     }
 
     /**
-     * Command handler
+     * Command handler.
      */
-    function handleCommand($view, &$args)
+    function handleCommand(Zikula_Form_View $view, &$args)
     {
         $data = $view->getValues();
 
@@ -82,7 +83,7 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
 
             // cancel
             case 'cancel':
-                $view->redirect(ModUtil::url('Clip', 'admin'));
+                $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
         }
 
         return true;

@@ -14,10 +14,10 @@
  */
 class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
 {
-    private $returnurl;
+    protected $returnurl;
 
     /**
-     * Initialize function
+     * Initialize function.
      */
     function initialize($view)
     {
@@ -29,6 +29,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
             $view->assign('outputto', 1);
         }
 
+        // available export outputs
         $outputs = array(
             array(
                 'text'  => $this->__('File'),
@@ -48,20 +49,23 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
     }
 
     /**
-     * Command handler
+     * Command handler.
      */
-    function handleCommand($view, &$args)
+    function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->returnurl = $view->getStateData('returnurl');
 
+        // cancel processing
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);
         }
 
+        // validates the input
         if (!$view->isValid()) {
             return false;
         }
 
+        // get the data set in the form
         $data = $view->getValues();
 
         // handle the commands
@@ -71,9 +75,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
             case 'export':
                 // validate filename if it's output to file
                 if ($data['outputto'] == 0 && !$data['filename']) {
-                    $plugin = $view->getPluginById('filename');
-                    $plugin->setError($this->__('There must be a filename for the output.'));
-                    return false;
+                    return $view->setPluginErrorMsg('filename', $this->__('There must be a filename for the output.'));
                 }
 
                 // build the export instance

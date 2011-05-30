@@ -161,6 +161,25 @@ class Clip_Util
     }
 
     /**
+     * Validates that a value is not a reserved word.
+     *
+     * @param string $value
+     *
+     * @return boolean True on valid, false on reserved word.
+     */
+    public static function validateReservedWord($value)
+    {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        $reservedwords = array(
+            'module', 'func', 'type', 'tid', 'pid', '__WORKFLOW__',
+            'submit', 'edit', __('submit', $dom), __('edit', $dom)
+        );
+
+        return (in_array($value, $reservedwords) || strpos('core_', $value) === 0);
+    }
+
+    /**
      * Validates a TID number.
      *
      * @param integer $tid

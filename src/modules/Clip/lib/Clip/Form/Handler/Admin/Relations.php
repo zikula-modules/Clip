@@ -14,12 +14,12 @@
  */
 class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 {
-    private $id;
-    private $filter;
-    private $returnurl;
+    protected $id;
+    protected $filter;
+    protected $returnurl;
 
     /**
-     * Initialize function
+     * Initialize function.
      */
     function initialize($view)
     {
@@ -42,23 +42,25 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
         }
 
         // process the handler values
-        $id   = (int)FormUtil::getPassedValue('id', 0);
-        $tid1 = FormUtil::getPassedValue('withtid1');
-        $op   = FormUtil::getPassedValue('op', 'or');
-        $tid2 = FormUtil::getPassedValue('withtid2');
+        $this->id = FormUtil::getPassedValue('id', 0, 'GET', FILTER_SANITIZE_NUMBER_INT);
 
-        $tid1 = is_array($tid1) ? current($tid1) : null;
-        $op   = is_array($op) ? current($op) : null;
-        $tid2 = is_array($tid2) ? current($tid2) : null;
+        $tid  = FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
+        $tid1 = FormUtil::getPassedValue('withtid1', null, 'GET');
+        $op   = FormUtil::getPassedValue('op', 'or', null, 'GET', FILTER_SANITIZE_STRING);
+        $tid2 = FormUtil::getPassedValue('withtid2', null, 'GET');
 
+        $tid1 = is_array($tid1) ? current($tid1) : (in_array($tid1, $tids) ? $tid1 : null);
+        $op   = is_array($op) ? current($op) : $op;
+        $tid2 = is_array($tid2) ? current($tid2) : (in_array($tid2, $tids) ? $tid2 : null);
+
+        // get the table object for utility purposes
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
 
-        if (!empty($id)) {
-            $this->id = $id;
-            $relation = $tableObj->find($id);
+        if (!empty($this->id)) {
+            $relation = $tableObj->find($this->id);
 
             if (!$relation) {
-                LogUtil::registerError($this->__f('No such relation found [%s].', $id));
+                LogUtil::registerError($this->__f('No such relation found [%s].', $this->id));
 
                 return $view->redirect(ModUtil::url('Clip', 'admin', 'relations'));
             }
@@ -128,7 +130,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
              ->assign('tid', $tid)
              ->assign('filter', $this->filter);
 
-        // stores the return URL
+        // stores the return URL and filter
         if (!$view->getStateData('returnurl')) {
             $returnurl = ModUtil::url('Clip', 'admin', 'relations', $this->filter);
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $returnurl));
@@ -140,20 +142,23 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
     }
 
     /**
-     * Command handler
+     * Command handler.
      */
-    function handleCommand($view, &$args)
+    function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->filter    = $view->getStateData('filter');
         $this->returnurl = $view->getStateData('returnurl');
 
+        // cancel processing
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);
         }
 
+        // get the data set in the form
         $data = $view->getValues();
 
-        if ($data['relation']['tid1']) {
+        // load the relation object for the specific commands
+        if (in_array($args['commandName'], array('save', 'delete'))) {
             // creates and fill a Relation instance
             $relation = new Clip_Model_Pubrelation();
             if (!empty($this->id)) {
@@ -161,15 +166,15 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
             }
             $relation->fromArray($data['relation']);
 
-            // fill default data
+            // build the decimal type value
             $relation->type = bindec("{$data['relation']['type1']}{$data['relation']['type2']}");
         }
 
         // handle the commands
         switch ($args['commandName'])
         {
-            // create a relation
-            case 'create':
+            // create/update a relation
+            case 'save':
                 if (!$view->isValid()) {
                     return false;
                 }
@@ -205,13 +210,8 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
                 $relation->save();
 
-                // create/edit status messages
+                // create/update status messages
                 if (empty($this->id)) {
-                    // create the table
-                    Clip_Generator::evalrelations();
-                    if ($relation->type == 3) {
-                        Doctrine_Core::getTable('Clip_Model_Relation'.$relation->id)->createTable();
-                    }
                     // setup the return url as the edit form
                     // to update the corresponding tables
                     $params = array_merge($this->filter, array('update' => $relation->tid1.','.$relation->tid2));

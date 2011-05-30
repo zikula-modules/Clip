@@ -283,7 +283,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
     }
 
     /**
-     * Save hook.
+     * Create hook.
      *
      * @return void
      */
@@ -315,6 +315,10 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $this->registerHookBundles($clipVersion, $pubtype['tid'], $pubtype['title']);
 
         HookUtil::registerSubscriberBundles($clipVersion->getHookSubscriberBundles());
+
+        // create the pubtype table
+        Clip_Generator::loadModelClasses(true);
+        Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubtype->tid)->createTable();
     }
 
     /**

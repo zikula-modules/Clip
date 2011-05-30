@@ -14,7 +14,7 @@
  */
 class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
 {
-    private $returnurl;
+    protected $returnurl;
 
     /**
      * Initialize function
@@ -33,18 +33,21 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
     /**
      * Command handler
      */
-    function handleCommand($view, &$args)
+    function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->returnurl = $view->getStateData('returnurl');
 
+        // cancel processing
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);
         }
 
+        // validates the input
         if (!$view->isValid()) {
             return false;
         }
 
+        // get the data set in the form
         $data = $view->getValues();
 
         // handle the commands
@@ -52,6 +55,7 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
         {
             // import
             case 'import':
+                // check for a problem uploading the file
                 if (isset($data['file']['error']) && $data['file']['error'] !== 0) {
                     return $view->setErrorMsg(FileUtil::uploadErrorMsg($data['file']['error']));
                 }
@@ -60,10 +64,11 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
                 $batch = new Clip_Import_Batch($data);
 
                 if (!$batch->execute()) {
-                    $view->errorMsgSet = true;
-                } else {
-                    LogUtil::registerStatus($this->__('Import done successfully.'));
+                    return $view->registerError(true);
                 }
+
+                LogUtil::registerStatus($this->__('Import done successfully.'));
+
                 break;
         }
 

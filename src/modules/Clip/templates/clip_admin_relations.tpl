@@ -165,11 +165,11 @@
 
         <div class="z-buttons z-formbuttons">
             {if isset($relation)}
-                {formbutton commandName='create' __text='Save' class='z-bt-save'}
+                {formbutton commandName='save' __text='Save' class='z-bt-save'}
                 {gt text='Are you sure you want to delete this relation?' assign='confirmdeletion'}
                 {formbutton commandName='delete' __text='Delete' class='z-btred z-bt-delete' confirmMessage=$confirmdeletion}
             {else}
-                {formbutton commandName='create' __text='Create' class='z-bt-ok'}
+                {formbutton commandName='save' __text='Create' class='z-bt-ok'}
             {/if}
             {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
         </div>

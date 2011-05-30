@@ -14,33 +14,43 @@
  */
 class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 {
-    private $tid;
-    private $returnurl;
+    protected $tid;
+    protected $returnurl;
 
     /**
-     * Initialize function
+     * Initialize function.
      */
     function initialize($view)
     {
-        $tid = (int)FormUtil::getPassedValue('tid');
+        $this->tid = FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
 
-        if (!empty($tid) && is_numeric($tid)) {
-            $this->tid = $tid;
+        // validate the tid if exists
+        if ($this->tid && !Clip_Util::validateTid($this->tid)) {
+            $view->setErrorMsg($this->__f('Error! Invalid publication type ID passed [%s].', $this->tid));
+            return $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
+        }
 
-            $pubtype   = Clip_Util::getPubType($tid);
-            $pubfields = Clip_Util_Selectors::fields($tid);
+        // edit a pubtype or create one
+        if ($this->tid) {
+            $pubtype   = Clip_Util::getPubType($this->tid);
+            $pubfields = Clip_Util_Selectors::fields($this->tid);
 
             if (!$pubtype) {
-                LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $tid));
+                $view->setErrorMsg($this->__f('Error! No such publication type [%s] found.', $this->tid));
                 return $view->redirect(ModUtil::url('Clip', 'admin'));
             }
 
+            // assigns the pubfuelds for the sort configuration
             $view->assign('pubfields', $pubfields)
-                 ->assign('pubtype', $pubtype->toArray())
                  ->assign('config', $this->configPreProcess($pubtype['config']));
         } else {
+            $pubtype = new Clip_Model_Pubtype();
+
             $view->assign('config', $this->configPreProcess($this->configDefault()));
         }
+
+        $view->assign('clipworkflows', Clip_Util_Selectors::workflows())
+             ->assign('pubtype', $pubtype->toArray());
 
         // stores the return URL
         if (!$view->getStateData('returnurl')) {
@@ -48,30 +58,33 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
         }
 
-        $view->assign('clipworkflows', Clip_Util_Selectors::workflows());
-
         return true;
     }
 
     /**
-     * Command handler
+     * Command handler.
      */
-    function handleCommand($view, &$args)
+    function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->returnurl = $view->getStateData('returnurl');
 
+        // cancel processing
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);
         }
 
+        // get the table object for utility purposes
         $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
 
+        // get the data set in the form
         $data = $view->getValues();
 
         // creates and fill a Pubtype instance
-        $pubtype = new Clip_Model_Pubtype();
         if (!empty($this->tid)) {
-            $pubtype->assignIdentifier($this->tid);
+            // object fetch due the use of default values
+            $pubtype = $tbl->find($this->tid);
+        } else {
+            $pubtype = new Clip_Model_Pubtype();
         }
         $pubtype->fromArray($data['pubtype']);
         $pubtype->config = $this->configPostProcess($data['config']);
@@ -79,8 +92,8 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         // handle the commands
         switch ($args['commandName'])
         {
-            // create a pubtype
-            case 'create':
+            // create/update a pubtype
+            case 'save':
                 if (!$view->isValid()) {
                     return false;
                 }
@@ -91,26 +104,33 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 } else {
                     $pubtype->urltitle = DataUtil::formatPermalink($pubtype->urltitle);
                 }
-                $pubtype->outputset = DataUtil::formatPermalink($pubtype->outputset);
-                $pubtype->inputset  = DataUtil::formatPermalink($pubtype->inputset);
-                // set a unique urltitle
-                if (empty($this->tid)) {
-                    while ($tbl->findBy('urltitle', $pubtype->urltitle)->count()) {
-                        $pubtype->urltitle++;
-                    }
-                } elseif ($tbl->findBy('urltitle', $pubtype->urltitle)->count() > 1) {
-                    $plugin = $view->getPluginById('urltitle');
-                    $plugin->setError($this->__('The submitted value already exists. Please choose a different one.'));
-                    return false;
+
+                // purge the folder names of undesired chars
+                $pubtype->outputset = preg_replace('#[^a-zA-Z0-9_/]+#', '', $pubtype->outputset);
+                $pubtype->inputset  = preg_replace('#[^a-zA-Z0-9_/]+#', '', $pubtype->inputset);
+
+                // reserved words check
+                if (Clip_Util::validateReservedWord($pubtype->title)) {
+                    return $view->setPluginErrorMsg('title', $this->__('The submitted value is a reserved word. Please choose a different one.'), array('text' => $pubtype->title));
                 }
+                if (Clip_Util::validateReservedWord($pubtype->urltitle)) {
+                    return $view->setPluginErrorMsg('urltitle', $this->__('The submitted value is a reserved word. Please choose a different one.'), array('text' => $pubtype->urltitle));
+                }
+
+                // verify a unique title and urltitle
+                $n = empty($this->tid) ? 0 : 1;
+                if ($tbl->findBy('title', $pubtype->title)->count() > $n) {
+                    return $view->setPluginErrorMsg('title', $this->__('The submitted value already exists. Please choose a different one.'), array('text' => $pubtype->title));
+                }
+                if ($tbl->findBy('urltitle', $pubtype->urltitle)->count() > $n) {
+                    return $view->setPluginErrorMsg('urltitle', $this->__('The submitted value already exists. Please choose a different one.'), array('text' => $pubtype->urltitle));
+                }
+
+                // save the pubtype
                 $pubtype->save();
 
-                // create/edit status messages
+                // create/update status messages
                 if (empty($this->tid)) {
-                    // create the table
-                    Clip_Generator::loadModelClasses(true);
-                    Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubtype->tid)->createTable();
-
                     LogUtil::registerStatus($this->__('Done! Publication type created. Now you can proceed to define its fields.'));
                     $this->returnurl = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $pubtype->tid));
                 } else {
@@ -125,9 +145,16 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 
                 $newpubtype = $pubtype->copy();
                 $newpubtype->title = $this->__f('%s Clon', $pubtype->title);
-                while ($tbl->findBy('urltitle', $newpubtype->urltitle)->count()) {
+                // be sure that title is unique
+                while ($tbl->findBy('title', $newpubtype->title)->count() || Clip_Util::validateReservedWord($newpubtype->title)) {
+                    $newpubtype->title++;
+                }
+                // and also the urltitle
+                while ($tbl->findBy('urltitle', $newpubtype->urltitle)->count() || Clip_Util::validateReservedWord($newpubtype->urltitle)) {
                     $newpubtype->urltitle++;
                 }
+
+                // save the new pubtype to get the new tid
                 $newpubtype->save();
 
                 // clone the pubtype fields
@@ -140,14 +167,11 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                     }
                 }
 
-                // create the cloned table
-                Clip_Generator::loadModelClasses(true);
-                Doctrine_Core::getTable('Clip_Model_Pubdata'.$newpubtype->tid)->createTable();
-
                 // status message
                 LogUtil::registerStatus($this->__('Done! Publication type cloned.'));
 
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'pubtype', array('tid' => $newpubtype->tid));
+                // redirect to pubfields to update the table
+                $this->returnurl = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $newpubtype->tid));
                 break;
 
             // delete

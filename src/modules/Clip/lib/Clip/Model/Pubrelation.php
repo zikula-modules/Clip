@@ -66,4 +66,20 @@ class Clip_Model_Pubrelation extends Doctrine_Record
     {
         
     }
+
+    /**
+     * Create hook.
+     *
+     * @return void
+     */
+    public function postInsert($event)
+    {
+        $relation = $event->getInvoker();
+
+        // create the relation table
+        Clip_Generator::evalrelations();
+        if ($relation->type == 3) {
+            Doctrine_Core::getTable('Clip_Model_Relation'.$relation->id)->createTable();
+        }
+    }
 }

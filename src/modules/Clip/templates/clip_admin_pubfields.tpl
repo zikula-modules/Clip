@@ -8,7 +8,7 @@
 
     <h2>{$pubtype.title} &raquo; {gt text='Manage Publication fields'}</h2>
 
-    {clip_submenu tid=$tid field=$field.name}
+    {clip_submenu tid=$tid field=$field.id}
 
     <p class="z-informationmsg">{gt text='You can order the fields using Drag and Drop on the following list.'}</p>
 
@@ -92,12 +92,12 @@
     <div>
         {formvalidationsummary}
         <fieldset>
-            {if $field.name}
+            {if $field.id}
                 <legend>{gt text='Edit publication field'}</legend>
             {else}
                 <legend>{gt text='Add a publication field'}</legend>
             {/if}
-            {if $field.name}
+            {if $field.id}
             <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
             {/if}
             <div class="z-formrow">
@@ -116,7 +116,7 @@
                 <div class="z-formnote">{gt text='Optional tooltip of this field used on the input form, and can be a custom gettext string.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='fieldplugin' text='Fieldtype (Plugin)'}
+                {formlabel for='fieldplugin' text='Fieldtype (Plugin)' mandatorysym=true}
                 {clip_form_plugintype id='fieldplugin' group='field'}
                 <span class="z-formnote">{gt text='Which kind of fieldtype is used (can be extended by plugins). Detailed informations about the individual plugins can be found in the documentation.'}</span>
                 <span class="z-formnote" id="typedata_wrapper">
@@ -163,12 +163,12 @@
         </fieldset>
 
         <div class="z-buttons z-formbuttons">
-            {if $field.name}
-                {formbutton commandName='create' __text='Save' class='z-bt-save'}
+            {if $field.id}
+                {formbutton commandName='save' __text='Save' class='z-bt-save'}
                 {gt text='Are you sure you want to delete this field?' assign='confirmdeletion'}
                 {formbutton commandName='delete' __text='Delete' class='z-btred z-bt-delete' confirmMessage=$confirmdeletion}
             {else}
-                {formbutton commandName='create' __text='Create' class='z-bt-ok'}
+                {formbutton commandName='save' __text='Create' class='z-bt-ok'}
             {/if}
             {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
         </div>

@@ -14,24 +14,25 @@
  */
 class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 {
-    private $tid;
-    private $id;
-    private $returnurl;
+    protected $tid;
+    protected $id;
+    protected $returnurl;
 
     /**
-     * Initialize function
+     * Initialize function.
      */
     function initialize($view)
     {
-        $this->tid = FormUtil::getPassedValue('tid');
+        $this->tid = FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
         $this->id  = FormUtil::getPassedValue('id', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
 
-        // validation check
+        // validate the tid
         if (!Clip_Util::validateTid($this->tid)) {
-            $view->setErrorMsg($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($this->tid)));
+            $view->setErrorMsg($this->__f('Error! Invalid publication type ID passed [%s].', $this->tid));
             return $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
         }
 
+        // get the pubtype object
         $pubtype = Clip_Util::getPubType($this->tid);
 
         // update the pubtype table with previous changes
@@ -40,11 +41,12 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         // get the pubfields table
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
 
+        // set the field information
         if (!empty($this->id)) {
             $pubfield = $tableObj->find($this->id);
 
             if (!$pubfield) {
-                LogUtil::registerError($this->__f('Error! No such publication field [%s] found.', $this->id));
+                $view->setErrorMsg($this->__f('Error! No such publication field [%s] found.', $this->id));
                 return $view->redirect(ModUtil::url('Clip', 'admin'));
             }
 
@@ -53,7 +55,8 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
             $view->assign('field', $tableObj->getRecord()->toArray());
         }
 
-        $pubfields = $tableObj->selectCollection("tid = '{$this->tid}'", 'lineno', -1, -1, 'name');
+        // assign all the existing fields
+        $pubfields = Clip_Util::getPubFields($this->tid);
 
         $view->assign('pubfields', $pubfields)
              ->assign('pubtype', $pubtype)
@@ -69,16 +72,18 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
     }
 
     /**
-     * Command handler
+     * Command handler.
      */
-    function handleCommand($view, &$args)
+    function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->returnurl = $view->getStateData('returnurl');
 
+        // cancel processing
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->returnurl);
         }
 
+        // get the data set in the form
         $data = $view->getValues();
 
         // creates a Pubfield instance
@@ -93,7 +98,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         // fill default data
         $plugin = Clip_Util_Plugins::get($pubfield->fieldplugin);
 
-        $pubfield->tid = (int)$this->tid;
+        $pubfield->tid       = $this->tid;
         $pubfield->fieldtype = $plugin->columnDef;
 
         $this->returnurl = ModUtil::url('Clip', 'admin', 'pubfields',
@@ -102,8 +107,8 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         // handle the commands
         switch ($args['commandName'])
         {
-            // create a field
-            case 'create':
+            // create/update a field
+            case 'save':
                 if (!$view->isValid()) {
                     return false;
                 }
@@ -112,38 +117,31 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 
                 // name restrictions
                 $pubfield->name = str_replace("'", '', $pubfield->name);
-                $pubfield->name = $submittedname = DataUtil::formatForStore($pubfield->name);
+                $pubfield->name = DataUtil::formatForStore($pubfield->name);
 
                 // reserved names
-                $reserved = array('module', 'func', 'type', 'tid', 'pid');
-                if (in_array($submittedname, $reserved)) {
-                    $plugin = $view->getPluginById('name');
-                    $plugin->setError($this->__('The submitted name is reserved. Please choose a different one.'));
-                    return false;
+                if (Clip_Util::validateReservedWord($pubfield->name)) {
+                    return $view->setPluginErrorMsg('name', $this->__('The submitted name is reserved. Please choose a different one.'));
                 }
 
                 // check that the name is unique
                 if (empty($this->id)) {
-                    $where = "name = '$submittedname' AND tid = '{$pubfield->tid}'";
+                    $where = "name = '{$pubfield->name}' AND tid = '{$pubfield->tid}'";
                 } else {
-                    $where = "id <> '{$this->id}' AND name = '$submittedname' AND tid = '{$pubfield->tid}'";
+                    $where = "id <> '{$this->id}' AND name = '{$pubfield->name}' AND tid = '{$pubfield->tid}'";
                 }
 
                 $nameUnique = (int)$tableObj->selectFieldFunction('id', 'COUNT', $where);
                 if ($nameUnique > 0) {
-                    $plugin = $view->getPluginById('name');
-                    $plugin->setError($this->__('Another field already has this name.'));
-                    return false;
+                    return $view->setPluginErrorMsg('name', $this->__('Another field already has this name.'));
                 }
 
                 // check that the new name is not another publication property
                 if (empty($this->id)) {
                     $pubClass = 'Clip_Model_Pubdata'.$this->tid;
                     $pubObj   = new $pubClass();
-                    if (isset($pubObj[$pubfield->name])) {
-                        $plugin = $view->getPluginById('name');
-                        $plugin->setError($this->__('The provided name is reserved for the publication standard fields.'));
-                        return false;
+                    if ($pubObj->contains($pubfield->name)) {
+                        return $view->setPluginErrorMsg('name', $this->__('The provided name is reserved for the publication standard fields.'));
                     }
                 }
 

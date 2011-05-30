@@ -11,7 +11,7 @@
         </a>
     </div>
 
-    <h1>{$modinfo.displayname} v{$modinfo.version} &raquo; {gt text='Module Management'}</h1>
+    <h1>{$modinfo.displayname} v{$modinfo.version} &raquo; {gt text='Administration'}</h1>
     <div class="z-warningmsg">
         <strong>Development note</strong>: Clip's Admin Panel is under rework, some ajax links are broken.
         <br />Edit publications and the editlist block will get deprecated with the new Editors interface.
