@@ -25,8 +25,9 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
         if (!$view->getStateData('returnurl')) {
             $adminurl = ModUtil::url('Clip', 'admin');
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
-            // default output
+            // default values
             $view->assign('outputto', 1);
+            $view->assign('exportdata', 1);
         }
 
         // available export outputs
@@ -99,7 +100,8 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                 // * pubfields
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubfield');
                 $query = $tbl->createQuery();
-                $query->where('tid = ?', $data['tid']);
+                $query->where('tid = ?', $data['tid'])
+                      ->orderBy('lineno');
                 $params = array(
                     'idfield' => 'id',
                     'name'    => 'pubfields',
@@ -109,35 +111,38 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                 $section = new Clip_Export_Section($params);
                 $batch->addSection($section);
 
-                // * pubdata
-                $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$data['tid']);
-                $query = $tbl->createQuery();
-                $params = array(
-                    'idfield'  => 'id',
-                    'name'     => 'pubdata'.$data['tid'],
-                    'rowname'  => 'pub',
-                    'pagesize' => 30,
-                    'query'    => $query
-                );
-                $section = new Clip_Export_Section($params);
-                $batch->addSection($section);
+                // check if the data is needed
+                if ($data['exportdata'] == 1) {
+                    // * pubdata
+                    $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$data['tid']);
+                    $query = $tbl->createQuery();
+                    $params = array(
+                        'idfield'  => 'id',
+                        'name'     => 'pubdata'.$data['tid'],
+                        'rowname'  => 'pub',
+                        'pagesize' => 30,
+                        'query'    => $query
+                    );
+                    $section = new Clip_Export_Section($params);
+                    $batch->addSection($section);
 
-                // * workflows
-                DBUtil::loadDBUtilDoctrineModel('workflows', 'Clip_Model_Workflow');
-                $tbl = Doctrine_Core::getTable('Clip_Model_Workflow');
-                $query = $tbl->createQuery();
-                $query->where('module = ?', 'Clip')
-                      ->where('obj_table = ?', 'clip_pubdata'.$data['tid']);
-                $params = array(
-                    'idfield'  => 'id',
-                    'name'     => 'workflows'.$data['tid'],
-                    'rowname'  => 'workflow',
-                    'addfrom'  => array('pubdata'.$data['tid'] => 'obj_id'),
-                    'pagesize' => 30,
-                    'query'    => $query
-                );
-                $section = new Clip_Export_Section($params);
-                $batch->addSection($section);
+                    // * workflows
+                    DBUtil::loadDBUtilDoctrineModel('workflows', 'Clip_Model_Workflow');
+                    $tbl = Doctrine_Core::getTable('Clip_Model_Workflow');
+                    $query = $tbl->createQuery();
+                    $query->where('module = ?', 'Clip')
+                          ->where('obj_table = ?', 'clip_pubdata'.$data['tid']);
+                    $params = array(
+                        'idfield'  => 'id',
+                        'name'     => 'workflows'.$data['tid'],
+                        'rowname'  => 'workflow',
+                        'addfrom'  => array('pubdata'.$data['tid'] => 'obj_id'),
+                        'pagesize' => 30,
+                        'query'    => $query
+                    );
+                    $section = new Clip_Export_Section($params);
+                    $batch->addSection($section);
+                }
 
                 // execute the export
                 $batch->execute();

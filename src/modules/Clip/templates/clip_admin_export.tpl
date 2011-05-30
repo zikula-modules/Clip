@@ -33,6 +33,13 @@
                 {formtextinput id='filter' maxLength='1000'}
                 <div class="z-formnote">{gt text='Any filter string to use in the export.'}</div>
             </div>
+            <div class="z-formrow">
+                {formlabel text='Export data'}
+                <div id="exportdata_options">
+                    {formradiobutton id='exportdata1' dataField='exportdata' value=1} {formlabel for='exportdata1' __text='Yes'}
+                    {formradiobutton id='exportdata0' dataField='exportdata' value=0} {formlabel for='exportdata0' __text='No'}
+                </div>
+            </div>
             {assign var='outputto' value=1}
             {formtextinput id='outputto' textMode="hidden"}
             {*
