@@ -21,7 +21,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
     /**
      * Initialize function.
      */
-    function initialize($view)
+    function initialize(Zikula_Form_View $view)
     {
         $this->tid = FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
         $this->id  = FormUtil::getPassedValue('id', null, 'GET', FILTER_SANITIZE_NUMBER_INT);

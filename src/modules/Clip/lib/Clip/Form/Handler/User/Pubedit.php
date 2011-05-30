@@ -14,23 +14,26 @@
  */
 class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 {
-    private $id;
-    private $pub;
-    private $workflow;
-    private $relations;
+    protected $id;
+    protected $pub;
+    protected $workflow;
+    protected $relations;
 
-    private $tid;
-    private $pubtype;
-    private $pubfields;
-    private $itemurl;
-    private $referer;
-    private $goto;
+    protected $tid;
+    protected $pubtype;
+    protected $pubfields;
+    protected $itemurl;
+    protected $referer;
+    protected $goto;
 
-    function initialize($view)
+    /**
+     * Initialize function.
+     */
+    function initialize(Zikula_Form_View $view)
     {
         //// Parameters
         // process the input parameters
-        $this->tid  = (isset($this->pubtype['tid']) && $this->pubtype['tid'] > 0) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid');
+        $this->tid  = isset($this->pubtype['tid']) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
         $this->goto = FormUtil::getPassedValue('goto', '');
 
         //// Actions
@@ -103,14 +106,19 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         return true;
     }
 
-    function handleCommand($view, &$args)
+    /**
+     * Command handler.
+     */
+    function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->returnurl = $view->getStateData('returnurl');
 
+        // cancel processing
         if ($args['commandName'] == 'cancel') {
             return $view->redirect($this->referer);
         }
 
+        // validated the input
         if (!$view->isValid()) {
             return false;
         }
@@ -120,6 +128,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params);
         }
 
+        // get the data set in the form
         $data = $view->getValues();
 
         // restore the core values
@@ -137,10 +146,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                                        'pubfields'   => $this->pubfields,
                                        'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
+        // detect a workflow operation fail
         if (!$data) {
             return false;
         }
 
+        // clear the cached templates
         // see http://www.smarty.net/manual/en/caching.groups.php
         // clear the displays of the current publication
         $view->clear_cache(null, 'tid_'.$this->tid.'/display/pid'.$this->pub['core_pid']);
@@ -189,7 +200,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     }
 
     /**
-     * Setters and getters
+     * Setters and getters.
      */
     public function ClipSetUp($id, $tid, &$pubdata, &$workflow, $pubtype=null, $pubfields=null)
     {
@@ -232,7 +243,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         return $this->tid;
     }
 
-    private function getPub($data, $view)
+    protected function getPub($data, $view)
     {
         // allow specify fixed PIDs
         if (isset($data['core_pid'])) {
@@ -279,7 +290,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     /**
      * Publication data handlers
      */
-    private function setPub(&$pubdata)
+    protected function setPub(&$pubdata)
     {
         if (!$this->id) {
             $pubdata['core_author']   = UserUtil::getVar('uid');
@@ -292,9 +303,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     }
 
     /**
-     * Misc
+     * Translate the action texts to display them on the form.
      */
-    private function translateActions(&$actions)
+    protected function translateActions(&$actions)
     {
         foreach (array_keys((array)$actions) as $aid) {
             if (isset($actions[$aid]['parameters'])) {
@@ -316,7 +327,10 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
     }
 
-    private function processGoto($data)
+    /**
+     * Process the result and search for operations redirects.
+     */
+    protected function processGoto($data)
     {
         $goto = null;
         $pid  = $data['core_pid'];

@@ -17,9 +17,9 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
     protected $returnurl;
 
     /**
-     * Initialize function
+     * Initialize function.
      */
-    function initialize($view)
+    function initialize(Zikula_Form_View $view)
     {
         // stores the return URL
         if (!$view->getStateData('rStateeturnurl')) {
@@ -31,7 +31,7 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
     }
 
     /**
-     * Command handler
+     * Command handler.
      */
     function handleCommand(Zikula_Form_View $view, &$args)
     {

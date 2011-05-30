@@ -19,7 +19,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
     /**
      * Initialize function.
      */
-    function initialize($view)
+    function initialize(Zikula_Form_View $view)
     {
         // stores the return URL
         if (!$view->getStateData('returnurl')) {

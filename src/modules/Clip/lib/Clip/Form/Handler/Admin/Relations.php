@@ -21,7 +21,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
     /**
      * Initialize function.
      */
-    function initialize($view)
+    function initialize(Zikula_Form_View $view)
     {
         $pubtypes = Clip_Util::getPubType(-1);
 
