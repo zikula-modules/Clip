@@ -25,6 +25,8 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
         if (!$view->getStateData('rStateeturnurl')) {
             $adminurl = ModUtil::url('Clip', 'admin');
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
+            // default values
+            $view->assign('redirect', 0);
         }
 
         return true;
@@ -63,8 +65,16 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
                 // build the import instance
                 $batch = new Clip_Import_Batch($data);
 
-                if (!$batch->execute()) {
+                $result = $batch->execute();
+
+                if (!$result) {
+                    LogUtil::registerError($this->__('Import attempt failed.'));
                     return $view->registerError(true);
+                }
+
+                // check if the user wants to be redirected to the newly created pubtype
+                if ($data['redirect'] == 1) {
+                    $this->returnurl = $result;
                 }
 
                 LogUtil::registerStatus($this->__('Import done successfully.'));

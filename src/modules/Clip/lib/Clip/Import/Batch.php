@@ -25,6 +25,11 @@ class Clip_Import_Batch
     protected $data = array();
     protected $gzip = false;
 
+    public function  __construct($args)
+    {
+        $this->setup($args);
+    }
+
     /**
      * Setup function.
      *
@@ -47,7 +52,8 @@ class Clip_Import_Batch
         }
 
         if (empty($this->file) && empty($this->url)) {
-            return LogUtil::registerError($this->__('Must specify a file or an url to import from.'));
+            return LogUtil::registerError($this->__('You must specify a file to import from.'));
+            //return LogUtil::registerError($this->__('You must specify a file or a url to import from.'));
         } else {
             $this->filename = !empty($this->url) ? $this->url : $this->file['name'];
             $this->file     = !empty($this->url) ? $this->url : $this->file['tmp_name'];
@@ -96,6 +102,12 @@ class Clip_Import_Batch
 
         $result = $parser->parseSections(array($this, 'parseSection'));
 
+        if ($result) {
+            // redirect to the first pubtype imported info screen
+            $result = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => reset(self::$idmap['tids'])));
+        }
+
+        // reset this object for later clean use
         $this->reset();
 
         return $result;

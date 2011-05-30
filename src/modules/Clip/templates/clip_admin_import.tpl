@@ -15,6 +15,14 @@
                 {formuploadinput id='file'}
                 <div class="z-formnote">{gt text='Select the file with the publication(s) data.'}</div>
             </div>
+            <div class="z-formrow">
+                {formlabel text='Redirect'}
+                <div id="redirect_options">
+                    {formradiobutton id='redirect1' dataField='redirect' value=1} {formlabel for='redirect1' __text='Yes'}
+                    {formradiobutton id='redirect0' dataField='redirect' value=0} {formlabel for='redirect0' __text='No'}
+                </div>
+                <span class="z-formnote">{gt text='Go to the newly created publication type after the import.'}</span>
+            </div>
         </fieldset>
 
         <div class="z-buttons z-formbuttons">
