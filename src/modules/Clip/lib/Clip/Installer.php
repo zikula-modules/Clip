@@ -357,8 +357,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // ungrouped
         $ungr = new Clip_Model_Grouptype();
         //! name of the Default group of pubtypes
-        $ungr->name = array($lang => $this->__('Default'));
-        $ungr->description = array($lang => $this->__('Publication types without a group.'));
+        $ungr->name = array($lang => $this->__('Contents'));
+        $ungr->description = array($lang => $this->__('Publication contents of this site.'));
         $ungr->link('pubtypes', $tids);
         $ungr->getNode()->insertAsLastChildOf($root);
     }

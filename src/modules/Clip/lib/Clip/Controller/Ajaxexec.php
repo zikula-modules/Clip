@@ -79,7 +79,7 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
         }
 
         $node    = array($group->toArray());
-        $options = array('withWraper' => false);
+        $options = array('withWraper' => false, 'sortable' => true);
         $nodejscode = Clip_Util_Grouptypes::getTreeJS($node, true, true, $options);
 
         $result = array(
