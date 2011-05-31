@@ -79,6 +79,10 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                     return $view->setPluginErrorMsg('filename', $this->__('There must be a filename for the output.'));
                 }
 
+                // get the url of the pubtype as name of the filename
+                $pubtype = Clip_Util::getPubType($data['tid']);
+                $data['name'] = $pubtype['urltitle'];
+
                 // build the export instance
                 $batch = new Clip_Export_Batch($data);
 

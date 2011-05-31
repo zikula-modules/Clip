@@ -14,6 +14,7 @@
  */
 class Clip_Export_Batch
 {
+    protected $name;
     protected $filter;
     protected $format;
     protected $outputto;
@@ -107,7 +108,7 @@ class Clip_Export_Batch
                 break;
 
             case 1: // Browser
-                $filename = "clip-export-".DateUtil::getDatetime_Date().'.'.$this->format;
+                $filename = "clip-{$this->name}-".DateUtil::getDatetime_Date().'.'.$this->format;
                 header("Content-disposition: attachment; filename=$filename");
 
                 switch ($this->format) {
