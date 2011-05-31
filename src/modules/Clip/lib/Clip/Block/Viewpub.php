@@ -43,7 +43,7 @@ class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
      */
     public function display($blockinfo)
     {
-        $alert = SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+        $alert = Clip_Access::toClip(ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
 
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
@@ -57,6 +57,7 @@ class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
         }
 
         // security check
+        // FIXME SECURITY centralize on Clip_Access
         if (!SecurityUtil::checkPermission('Clip:block:viewpub', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
             return;
         }

@@ -33,7 +33,7 @@ class Clip_Controller_Import extends Zikula_AbstractController
      */
     public function defaultypes()
     {
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
 
         Clip_Util::installDefaultypes();
 
@@ -45,7 +45,7 @@ class Clip_Controller_Import extends Zikula_AbstractController
      */
     public function importps()
     {
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
 
         $step = FormUtil::getPassedValue('step');
         if (!empty($step)) {

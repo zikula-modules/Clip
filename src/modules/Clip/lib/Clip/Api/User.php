@@ -62,8 +62,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
-            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
-            'func'          => 'list'
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
         );
 
         if (!$args['itemsperpage']) {
@@ -71,13 +70,13 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         //// Security
-        if ($args['checkperm'] && !SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::", ACCESS_READ)) {
+        if ($args['checkperm'] && !Clip_Access::toPubtype($args['tid'], 'list')) {
             return LogUtil::registerPermissionError();
         }
 
         // mode check
         // FIXME SECURITY enrich with all the possibilities
-        $args['admin'] = (isset($args['admin']) && $args['admin']) || SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::", ACCESS_ADMIN);
+        $args['admin'] = (isset($args['admin']) && $args['admin']) || Clip_Access::toPubtype($args['tid'], 'editor');
 
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
@@ -231,6 +230,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             $publist = $query->execute();
 
             for ($i = 0; $i < count($publist); $i++) {
+                // FIXME SECURITY individual permission check here and fetch additional ones?
                 $publist[$i]->clipProcess($args);
             }
         }
@@ -279,8 +279,10 @@ class Clip_Api_User extends Zikula_AbstractApi
         $args = array(
             'tid'           => (int)$args['tid'],
             'pid'           => isset($args['pid']) ? (int)$args['pid'] : null,
+            'by'            => isset($args['by']) ? $args['by'] : 'core_revision', // for pubtype editors and a pid only
             'id'            => isset($args['id']) ? (int)$args['id'] : null,
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
+            'templateid'    => isset($args['templateid']) ? $args['templateid'] : '', // for perm check
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
         );
@@ -299,7 +301,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $query = $tableObj->createQuery($args['queryalias']);
 
         // add the conditions to the query
-        if (!SecurityUtil::checkPermission('Clip:display:', "{$args['tid']}::", ACCESS_ADMIN))
+        if (!Clip_Access::toPubtype($args['tid'], 'editor'))
         {
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
                 $query->andWhere('(core_author = ? OR core_online = ?)', array($uid, 1));
@@ -320,7 +322,8 @@ class Clip_Api_User extends Zikula_AbstractApi
             if (!empty($args['id'])) {
                 $query->where('id = ?', $args['id']);
             } else {
-                $query->where('core_pid = ?', $args['pid']);
+                $query->where('core_pid = ?', $args['pid'])
+                      ->orderBy($args['by']);
             }
         }
 
@@ -347,7 +350,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Security
         // check permissions if needed
-        if ($args['checkperm'] && !SecurityUtil::checkPermission('Clip:display:', "$args[tid]:$pubdata[core_pid]:", ACCESS_READ)) {
+        if ($args['checkperm'] && !Clip_Access::toPub($args['tid'], $pubdata, ACCESS_READ, null, 'display', $args['templateid'])) {
             return LogUtil::registerPermissionError();
         }
 

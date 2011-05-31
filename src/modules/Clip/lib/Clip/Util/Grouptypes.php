@@ -103,7 +103,7 @@ class Clip_Util_Grouptypes
 
         // checks the permissions for the remaining ones
         foreach ($grouptypes as $k => $g) {
-            if (!SecurityUtil::checkPermission("Clip:{$g['gid']}:", '::', $accessLevel)) {
+            if (!Clip_Access::toGrouptype($g['gid'], $accessLevel)) {
                 unset($grouptypes[$k]);
             }
         }

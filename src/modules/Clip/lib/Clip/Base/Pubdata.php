@@ -114,15 +114,19 @@ class Clip_Base_Pubdata extends Doctrine_Record
      *
      * @return $this
      */
-    public function clipWorkflow()
+    public function clipWorkflow($field = null)
     {
+        if (isset($this['__WORKFLOW__']['state'])) {
+            return ($field && array_key_exists($field, $this['__WORKFLOW__'])) ? $this['__WORKFLOW__'][$field] : $this;
+        }
+
         $pubtype  = Clip_Util::getPubType($this['core_tid']);
         $workflow = new Clip_Workflow($pubtype, $this);
         $workflow->getWorkflow();
 
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
 
-        return $this;
+        return ($field && array_key_exists($field, $this['__WORKFLOW__'])) ? $this['__WORKFLOW__'][$field] : $this;
     }
 
     /**
@@ -130,22 +134,27 @@ class Clip_Base_Pubdata extends Doctrine_Record
      *
      * @return boolean Existing relation flag.
      */
-    public function clipRelation($alias, $checkperm=true)
+    public function clipRelation($alias, $checkperm = true)
     {
         if (!$this->get($alias, true) || !($relation = $this->getRelation($alias))) {
             return false;
         }
 
         if ($this[$alias] instanceof Doctrine_Record) {
-            if ($checkperm && !SecurityUtil::checkPermission('Clip:display:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
+            // check the list and individual permission if needed
+            if ($checkperm && (!Clip_Access::toPubtype($relation['tid'], 'list') || !Clip_Access::toPub($relation['tid'], $this[$alias], ACCESS_READ, null, 'display'))) {
                 $this[$alias] = false;
             }
             return (bool)$this[$alias];
 
         } elseif ($this[$alias] instanceof Doctrine_Collection) {
-            foreach ($this[$alias] as $k => $v) {
-                if ($checkperm && !SecurityUtil::checkPermission('Clip:display:', "{$relation['tid']}:{$this[$alias]['core_pid']}:", ACCESS_READ)) {
-                    unset($this[$alias][$k]);
+            if ($checkperm && !Clip_Access::toPubtype($relation['tid'], 'list')) {
+                $this[$alias] = false;
+            } else {
+                foreach ($this[$alias] as $k => $v) {
+                    if ($checkperm && !Clip_Access::toPub($relation['tid'], $this[$alias][$k], ACCESS_READ, null, 'display')) {
+                        unset($this[$alias][$k]);
+                    }
                 }
             }
             return (bool)count($this[$alias]);

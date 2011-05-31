@@ -25,15 +25,12 @@ function Clip_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $act
     if ($obj->exists()) {
         // check existing publication author and granular permission access check
         if ($pubtype['enableeditown'] == 1 && $obj['core_author'] == $currentUser) {
+            // FIXME allow this only on update operations (actionId standard)
             return true;
         }
-
-        return SecurityUtil::checkPermission('Clip:input:', "{$obj['core_tid']}:{$obj['core_pid']}:", $permLevel, $currentUser);
-
-    } else {
-        // publication not saved yet - user wants to create a new one
-        return SecurityUtil::checkPermission('Clip:input:', "{$obj['core_tid']}::", $permLevel, $currentUser);
     }
+
+    return Clip_Access::toPub($obj['core_tid'], $obj, $permLevel, $currentUser);
 }
 
 function Clip_workflow_none_gettextstrings()

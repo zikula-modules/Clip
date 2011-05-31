@@ -37,7 +37,7 @@ class Clip_Form_Plugin_String extends Zikula_Form_Plugin_TextInput
         }
 
         // restrict the query for normal users
-        if (!SecurityUtil::checkPermission("Clip:{$args['func']}:", "{$args['tid']}::", ACCESS_MODERATE)) {
+        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
             $uid = UserUtil::getVar('uid');
             $query->andWhere("$fieldname = ?", $uid);
         }

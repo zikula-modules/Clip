@@ -132,6 +132,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
             case '0.4.16':
                 // rename 'preview' state to 'accepted' (?)
+                // rename Clip:input: to Clip:edit:, and GTs?
                 // further upgrade handling
                 // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff

@@ -162,7 +162,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $this->parseConfig($field['typedata']);
 
         // restrict the query for normal users
-        if (!SecurityUtil::checkPermission("Clip:{$args['func']}:", "{$args['tid']}::", ACCESS_MODERATE)) {
+        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
             $uid = UserUtil::getVar('uid');
             if ($this->config['multiple']) {
                 $query->andWhere("$fieldname = ? OR $fieldname LIKE ?", array(":$uid:", "%:$uid:%"));

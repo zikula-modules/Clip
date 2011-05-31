@@ -36,7 +36,8 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         $this->checkAjaxToken();
 
         $mode = $this->request->getPost()->get('mode', 'add');
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ($mode == 'edit') ? ACCESS_EDIT : ACCESS_ADD));
+        // FIXME SECURITY check this
+        $this->throwForbiddenUnless(Clip_Access::toClip($mode == 'edit' ? ACCESS_EDIT : ACCESS_ADD));
 
         $gid    = $this->request->getPost()->get('gid', 0);
         $pos    = $this->request->getPost()->get('pos', 'root');
@@ -76,7 +77,8 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
     public function treeresequence()
     {
         $this->checkAjaxToken();
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_EDIT));
+        // FIXME SECURITY check this
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT));
 
         // build a map of the input data
         $data = json_decode($this->request->getPost()->get('data'), true);

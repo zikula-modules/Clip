@@ -28,7 +28,7 @@ class Clip_Api_Search extends Zikula_AbstractApi
      */
     public function options($args)
     {
-        if (SecurityUtil::checkPermission('Clip::', '::', ACCESS_READ)) {
+        if (Clip_Access::toClip(ACCESS_READ)) {
             $render = Zikula_View::getInstance('Clip');
 
             $render->assign('pubtypes', self::get_searchable());

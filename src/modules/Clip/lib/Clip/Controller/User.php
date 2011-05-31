@@ -102,16 +102,15 @@ class Clip_Controller_User extends Zikula_AbstractController
         // cleans it of not desired parameters
         $args['template']   = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
         if (empty($args['template'])) {
-            $args['templateid'] = '';
+            $apiargs['templateid'] = '';
             $args['template']   = $pubtype['outputset'].'/list.tpl';
         } else {
-            $args['templateid'] = "{$args['template']}";
+            $apiargs['templateid'] = "{$args['template']}";
             $args['template']   = $pubtype['outputset']."/list_{$args['template']}.tpl";
         }
 
         //// Security
-        // FIXME SECURITY rework this with all the possibilities
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:list:', "{$apiargs['tid']}::{$args['templateid']}", ACCESS_READ));
+        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'list', $apiargs['templateid']));
 
         //// Cache
         // check if cache is enabled and this view is cached
@@ -122,7 +121,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             $cacheid = 'tid_'.$apiargs['tid'].'/list'
                        .'/'.UserUtil::getGidCacheString()
-                       .'/tpl_'.(!empty($args['templateid']) ? $args['templateid'] : 'clipdefault')
+                       .'/tpl_'.(!empty($apiargs['templateid']) ? $apiargs['templateid'] : 'clipdefault')
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
                        .'/perpage_'.$apiargs['itemsperpage']
@@ -172,14 +171,14 @@ class Clip_Controller_User extends Zikula_AbstractController
                 return LogUtil::registerError($this->__('The list cannot be displayed. Please contact the administrator.'));
             }
 
-            $isadmin = SecurityUtil::checkPermission('Clip::', "{$pubtype->tid}::", ACCESS_ADMIN);
+            $isadmin = Clip_Access::toPubtype($pubtype);
 
             if ($isadmin) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
 
             // check the generic template to use
-            if (strpos($args['templateid'], 'block_') === 0) {
+            if (strpos($apiargs['templateid'], 'block_') === 0) {
                 $args['template'] = 'clip_generic_blocklist.tpl';
             } else {
                 $args['template'] = 'clip_generic_list.tpl';
@@ -248,10 +247,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         // cleans it of not desired parameters
         $args['template'] = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
         if (empty($args['template'])) {
-            $args['templateid'] = '';
+            $apiargs['templateid'] = '';
             $args['template']   = $pubtype['outputset'].'/display.tpl';
         } else {
-            $args['templateid'] = "{$args['template']}";
+            $apiargs['templateid'] = "{$args['template']}";
             // check for simple-templates request
             $simpletemplates = array('pending');
             if (in_array($args['template'], $simpletemplates)) {
@@ -276,8 +275,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         //// Security
-        // FIXME SECURITY rework this with all the possibilities
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:display:', "{$apiargs['tid']}:{$apiargs['pid']}:{$args['templateid']}", ACCESS_READ));
+        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], ACCESS_READ, null, 'display', $apiargs['templateid']));
 
         //// Cache
         // check if cache is enabled and this view is cached
@@ -287,7 +285,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             $cacheid = 'tid_'.$apiargs['tid']
                        .'/pid'.$apiargs['pid']
                        .'/id'.$apiargs['id']
-                       .'/tpl_'.(!empty($args['templateid']) ? $args['templateid'] : 'clipdefault')
+                       .'/tpl_'.(!empty($apiargs['templateid']) ? $apiargs['templateid'] : 'clipdefault')
                        .'/'.UserUtil::getGidCacheString();
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
@@ -306,7 +304,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Execution
         // setup an admin flag
-        $isadmin = SecurityUtil::checkPermission('Clip::', "{$pubtype->tid}::", ACCESS_ADMIN);
+        $isadmin = Clip_Access::toPubtype($pubtype);
 
         // get the publication from the database
         $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $apiargs);
@@ -349,7 +347,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
 
             // check the generic template to use
-            if (strpos($args['templateid'], 'block_') === 0) {
+            if (strpos($apiargs['templateid'], 'block_') === 0) {
                 $isblock = true;
             } else {
                 $isblock = false;
@@ -445,8 +443,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['state'] = $workflow->getWorkflow('state');
 
         //// Form Handler
-        // no security check needed
-        // the security check will be done for workflow actions
+        // no security check needed, will be done by the workflow actions for the state
         $handler = new Clip_Form_Handler_User_Pubedit();
 
         // setup the form handler
@@ -492,7 +489,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                 return LogUtil::registerError($this->__('The form cannot be displayed. Please contact the administrator.'));
             }
 
-            $alert = SecurityUtil::checkPermission('Clip::', "{$pubtype->tid}::", ACCESS_ADMIN);
+            $alert = Clip_Access::toPubtype($pubtype);
 
             if ($alert) {
                 if (!empty($args['template'])) {
@@ -571,6 +568,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         // execute the action and check if failed
+        // permission check inside of this method
         $ret = $workflow->executeAction($args['action']);
 
         if ($ret === false) {

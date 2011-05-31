@@ -37,22 +37,20 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
     {
         $this->checkAjaxToken();
 
-        //// Validation
+        //// Pubtype
+        // validate and get the publication type first
         $args['tid'] = (int)$this->request->getPost()->get('tid', null);
 
-        if ($args['tid'] <= 0) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
+
+        $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
 
         // Security check
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:list:', "{$args['tid']}::", ACCESS_READ));
+        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'list'));
 
-        // Parameters
-        $pubtype = Clip_Util::getPubType($args['tid']);
-        if (!$pubtype) {
-            return LogUtil::registerError($this->__f('Error! No such publication type [%s] found.', $args['tid']));
-        }
-
+        //// Parameters
         $args = array(
             'tid'           => (int)$args['tid'],
             'keyword'       => $this->request->getPost()->get('keyword', null),
@@ -60,18 +58,20 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
             'filter'        => $this->request->getPost()->get('filter', null),
             'orderby'       => $this->request->getPost()->get('orderby', null),
             'startnum'      => $this->request->getPost()->get('startnum', null),
-            'itemsperpage'  => (int)$this->request->getPost()->get('itemsperpage', $pubtype['itemsperpage']),
+            'startnum'      => $this->request->getPost()->get('startnum', null),
+            'itemsperpage'  => $pubtype['itemsperpage'],
             'handleplugins' => $this->request->getPost()->get('handleplugins', true),
             'loadworkflow'  => $this->request->getPost()->get('loadworkflow', false),
             'countmode'     => 'no', // API default
             'checkperm'     => false // API default (already checked)
         );
 
-        $args['itemsperpage'] = $args['itemsperpage'] > 0 ? $args['itemsperpage'] : $pubtype['itemsperpage'];
+        if ($args['itemsperpage'] == 0) {
+            $args['itemsperpage'] = $this->getVar('maxperpage', 100);
+        }
 
         //// Misc values
         $titlefield = Clip_Util::getTitleField($args['tid']);
-        $pubtype->mapValue('titlefield', $titlefield);
 
         // piece needed by the autocompleter
         if (!empty($args['keyword'])) {
@@ -126,6 +126,7 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
 
         $result = array();
 
+        // FIXME SECURITY check this
         if (SecurityUtil::checkPermission('Users::', '::', ACCESS_COMMENT)) {
             $args = array(
                 'keyword' => $this->request->getPost()->get('keyword'),

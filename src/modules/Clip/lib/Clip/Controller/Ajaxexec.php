@@ -22,7 +22,8 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
     public function changelistorder()
     {
         $this->checkAjaxToken();
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_ADMIN));
+        // FIXME SECURITY check this
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
 
         $pubfields = FormUtil::getPassedValue('pubfieldlist');
         $tid       = FormUtil::getPassedValue('tid');
@@ -49,7 +50,8 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
         $this->checkAjaxToken();
 
         $mode = $this->request->getPost()->get('mode', 'new');
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ($mode == 'edit') ? ACCESS_EDIT : ACCESS_ADD));
+        // FIXME SECURITY check this
+        $this->throwForbiddenUnless(Clip_Access::toClip($mode == 'edit' ? ACCESS_EDIT : ACCESS_ADD));
 
         $pos  = $this->request->getPost()->get('pos', 'root');
         $data = $this->request->getPost()->get('group');
@@ -96,7 +98,8 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
     public function deletegroup()
     {
         $this->checkAjaxToken();
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_DELETE));
+        // FIXME SECURITY check this
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_DELETE));
 
         $gid   = $this->request->getPost()->get('gid');
         $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
@@ -118,7 +121,8 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
     public function treeresequence()
     {
         $this->checkAjaxToken();
-        $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip::', '::', ACCESS_EDIT));
+        // FIXME SECURITY check this
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT));
 
         // build a map of the input data
         $data = json_decode($this->request->getPost()->get('data'), true);
