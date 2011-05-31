@@ -142,7 +142,7 @@ class Clip_Util
         }
 
         if (count($filterid) > 0) {
-            $filterid = implode('__', $filter);
+            $filterid = implode('__', $filterid);
         }
 
         return self::getFilterCacheString($filterid);
