@@ -179,7 +179,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
 
             // check the generic template to use
-            if (strpos($args['templateid'], $pubtype['outputset'].'_block_') === 0) {
+            if (strpos($args['templateid'], 'block_') === 0) {
                 $args['template'] = 'clip_generic_blocklist.tpl';
             } else {
                 $args['template'] = 'clip_generic_list.tpl';
@@ -349,7 +349,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
 
             // check the generic template to use
-            if (strpos($args['templateid'], $pubtype['outputset'].'_block_') === 0) {
+            if (strpos($args['templateid'], 'block_') === 0) {
                 $isblock = true;
             } else {
                 $isblock = false;
