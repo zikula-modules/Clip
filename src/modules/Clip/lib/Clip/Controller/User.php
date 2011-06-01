@@ -252,15 +252,14 @@ class Clip_Controller_User extends Zikula_AbstractController
         } else {
             $apiargs['templateid'] = "{$args['template']}";
             // check for simple-templates request
-            $simpletemplates = array('pending');
-            if (in_array($args['template'], $simpletemplates)) {
+            if (Clip_Util::isSimpleTemplate($args['template'])) {
                 $args['templatesimple'] = $pubtype['outputset']."/displaysimple_{$args['template']}.tpl";
             } else {
                 $args['template'] = $pubtype['outputset']."/display_{$args['template']}.tpl";
             }
         }
 
-        // fetch simple templates (pending)
+        // fetch simple templates
         if (isset($args['templatesimple'])) {
             if (!$this->view->template_exists($args['templatesimple'])) {
                 $args['templatesimple'] = "clip_general_{$args['template']}.tpl";
@@ -269,7 +268,8 @@ class Clip_Controller_User extends Zikula_AbstractController
                 }
             }
             if ($args['templatesimple'] != '') {
-                $this->view->assign('pubtype', $pubtype);
+                $this->view->assign('clip_simple_tpl', true)
+                           ->assign('pubtype', $pubtype);
                 return $this->view->fetch($args['templatesimple']);
             }
         }

@@ -44,7 +44,7 @@
         </span>
         {/clip_accessblock}
 
-        {if $section neq 'list' and $section neq 'pending'}
+        {if $section neq 'list' and !isset($clip_simple_tpl)}
             <span class="text_separator">&raquo;</span>
 
             {if $section neq 'display'}
@@ -92,7 +92,7 @@
 {* Clip developer notices *}
 {if isset($clip_generic_tpl) and $modvars.Clip.devmode|default:true}
     {* excludes simple templates *}
-    {if $section neq 'pending'}
+    {if !isset($clip_simple_tpl)}
 
     {if $section eq 'display'}{zdebug}{/if}
 

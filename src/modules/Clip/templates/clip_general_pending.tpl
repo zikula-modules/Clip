@@ -1,7 +1,7 @@
 
 <h1>{$pubtype.title}</h1>
 
-{include file='clip_generic_navbar.tpl' section='pending'}
+{include file='clip_generic_navbar.tpl'}
 
 <p class="z-statusmsg">{gt text='Publication accepted, pending moderation.'}</p>
 

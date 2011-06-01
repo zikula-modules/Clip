@@ -149,6 +149,23 @@ class Clip_Util
     }
 
     /**
+     * Checker of simple templates.
+     *
+     * Simple templates are display ones without a Publication loaded on them,
+     * useful for notifications like pending.
+     *
+     * @param string $template Template to evaluate.
+     *
+     * @return boolean True if it's a simple template, false otherwise.
+     */
+    public static function isSimpleTemplate($template)
+    {
+        $simpletemplates = array('pending');
+
+        return in_array($template, $simpletemplates);
+    }
+
+    /**
      * Replace some critical vars of the filter definition.
      *
      * @param string $filter Filter definition.
