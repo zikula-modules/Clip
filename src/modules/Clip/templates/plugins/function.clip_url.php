@@ -12,15 +12,22 @@
 /**
  * Returns a url depending on the context.
  *
- * @param $args['modname'] module name (unsetted by now)
- * @param $args['type']    type (default: ajax)
- * @param $args['func']    function
- * @param $args['args']    arguments to the function (optional)
- * @param $args            remaining parameters goes as url arguments
+ * Available parameters:
+ *  - type    (string) Target function type (default: current type).
+ *  - func    (string) Target function name.
+ *  - args    (array)  URL arguments.
+ *  - *       Remaining parameters goes as url arguments.
  *
- * @return string
+ * Example:
+ *
+ *  <samp>{clip_url func='pubtypeinfo' tid=$pubtype.tid}</samp>
+ *
+ * @param array       $params All parameters passed to this plugin from the template.
+ * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+ *
+ * @return mixed Context URL href value.
  */
-function smarty_function_clip_url($params, &$view)
+function smarty_function_clip_url($params, Zikula_View &$view)
 {
     $params['modname'] = 'Clip';
     $params['type']    = $view->getRequest()->getControllerName();
@@ -39,10 +46,8 @@ function smarty_function_clip_url($params, &$view)
     $type = (isset($params['type']) && $params['type']) ? $params['type'] : 'ajax';
     $func = (isset($params['func']) && $params['func']) ? $params['func'] : 'publist';
     $args = (isset($params['args']) && $params['args']) ? $params['args'] : array();
-    unset($params['modname']);
-    unset($params['type']);
-    unset($params['func']);
-    unset($params['args']);
+
+    unset($params['modname'], $params['type'], $params['func'], $params['args']);
 
     $params = json_encode(array_merge($params, $args));
     $params = str_replace('"', "'", $params);

@@ -10,28 +10,35 @@
  */
 
 /**
- * Increase Hit Counter.
+ * Hit counter.
  *
- * This logic is implemented in a plugin to let the user decide if he wants to use it or not
+ * Presentation layer plugin to increment the reads count when desired.
  * Hitcount breaks mysql table cache.
  *
- * @param $args['tid'] tid.
- * @param $args['pid'] pid.
+ * Available parameters:
+ *  - tid (integer) Publication type ID.
+ *  - pid (integer) Publication id.
+ *
+ * Example:
+ *
+ *  <samp>{clip_hitcount tid=$pubtype.tid pid=$pubdata.core_pid}</samp>
+ *
+ * @param array       $params All parameters passed to this plugin from the template.
+ * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+ *
+ * @return mixed False on failure, void otherwise.
  */
-function smarty_function_clip_hitcount($params, $view)
+function smarty_function_clip_hitcount($params, Zikula_View &$view)
 {
-    $dom = ZLanguage::getModuleDomain('Clip');
-
-    $tid = (int)$params['tid'];
-    $pid = (int)$params['pid'];
-
-    if (!$tid) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
+    if (!isset($params['tid']) || !$params['tid']) {
+        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_hitcount', 'tid')));
+        return false;
     }
 
-    if (!$pid) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'pid', $dom));
+    if (!isset($params['pid']) || !$params['pid']) {
+        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_hitcount', 'pid')));
+        return false;
     }
 
-    DBUtil::incrementObjectFieldByID('clip_pubdata'.$tid, 'core_hitcount', $pid, 'core_pid');
+    DBUtil::incrementObjectFieldByID('clip_pubdata'.$params['tid'], 'core_hitcount', $params['pid'], 'core_pid');
 }

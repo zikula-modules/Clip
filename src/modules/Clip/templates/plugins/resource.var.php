@@ -3,21 +3,17 @@
  * Smarty resource
  * 
  * @copyright  (c) Zikula Development Team
- * @version    $Id$
  * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @category   Zikula_3rdParty_Stuff
  * @package    Smarty
- * @subpackage plugins
+ * @subpackage Resource
  */
 
 /**
- * Smarty plugin 
+ * Smarty Resource.
  * 
- * Type:     resource 
- * Purpose:  fetches template from a Smarty object variable or a global one 
- * Version:  1.0 [Sep 28, 2002 boots since Sep 28, 2002 boots] 
+ * Fetches template from a Smarty object variable or a global one.
  */ 
-
 function smarty_resource_var_source($tpl_name, &$tpl_source, &$smarty)
 {
     if (isset($tpl_name) && !empty($tpl_name)) {

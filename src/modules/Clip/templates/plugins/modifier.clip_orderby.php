@@ -13,20 +13,27 @@
  * Clip modifier to process the orderby string
  * and return the corresponding link CSS class or revert parameter.
  *
- * Examples
+ * Examples:
  *
- *   {'core_title'|clip_orderby:'core_title'} returns 'core_title:desc'
- *   {'core_pid'|clip_orderby:'core_title'} returns 'core_title'
- *   {'core_title'|clip_orderby:'core_title'} returns 'z-order-desc'
- *   {'core_pid'|clip_orderby:'core_title'} returns 'z-order-asc'
+ *  <samp>{'core_title'|clip_orderby:'core_title'}</samp>
+ *  returns 'core_title:desc'.
+ *   
+ *  <samp>{'core_pid'|clip_orderby:'core_title'}</samp>
+ *  returns 'core_title'.
+ *
+ *  <samp>{'core_title'|clip_orderby:'core_title':'css'} </samp>
+ *  returns 'z-order-desc'.
+ *
+ *  <samp>{'core_pid'|clip_orderby:'core_title':'css'} </samp>
+ *  returns 'z-order-asc'.
  *
  * @param string $orderby The orderby to process.
  * @param string $field   Field to compare.
- * @param string $return  Value to return (param or class)
+ * @param string $return  Value to return (param or class).
  *
  * @return string CSS class or parameter result.
  */
-function smarty_modifier_clip_orderby($orderby, $field, $return='param')
+function smarty_modifier_clip_orderby($orderby, $field, $return = 'param')
 {
     if (stripos($orderby, $field) !== false) {
         $order = (stripos($orderby, "$field desc") === false) ? 'desc' : 'asc';
@@ -39,6 +46,7 @@ function smarty_modifier_clip_orderby($orderby, $field, $return='param')
         case 'param':
             $output = "$field:$order";
             break;
+
         case 'class':
             $output = "z-order-$order";
             break;

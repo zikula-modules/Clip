@@ -10,14 +10,14 @@
  */
 
 /**
- * Plugin Selector of the Clip's available form plugins.
+ * Plugin Selector of the Clip's available pubtypes.
  *
  * @param array            $params All parameters passed to this plugin from the template.
  * @param Zikula_Form_View $render Reference to the {@link Zikula_Form_View} object.
  *
  * @return mixed Plugin output.
  */
-function smarty_function_clip_form_plugintype($params, Zikula_Form_View &$render)
+function smarty_function_clip_form_pubtype($params, Zikula_Form_View &$render)
 {
-    return $render->registerPlugin('Clip_Form_PluginType', $params);
+    return $render->registerPlugin('Clip_Form_Pubtype', $params);
 }

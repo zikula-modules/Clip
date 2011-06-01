@@ -232,13 +232,17 @@ class Clip_Util_Selectors
         $plugins = array();
         foreach ($availablePlugins as $id => $className) {
             $plugin = Clip_Util_Plugins::get($id);
-            $plugins[$id] = array(
-                'plugin' => $plugin,
-                'class'  => $className,
+            $plugins[] = array(
+                'text'  => $plugin,
+                'value' => $id,
             );
         }
 
         uasort($plugins, 'Clip_Util_Selectors::sortPlugins');
+
+        foreach ($plugins as $id => $plugin) {
+            $plugins[$id]['text'] = $plugin['text']->pluginTitle;
+        }
 
         return $plugins;
     }
@@ -253,6 +257,6 @@ class Clip_Util_Selectors
      */
     public static function sortPlugins($a, $b)
     {
-        return strcmp($a['plugin']->pluginTitle, $b['plugin']->pluginTitle);
+        return strcmp($a['text']->pluginTitle, $b['text']->pluginTitle);
     }
 }

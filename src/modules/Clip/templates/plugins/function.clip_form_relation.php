@@ -10,8 +10,14 @@
  */
 
 /**
- * Relation form plugin.
+ * Form Plugin to handle a pubtype's relation Autocompleter.
+ *
+ * @param array            $params All parameters passed to this plugin from the template.
+ * @param Zikula_Form_View $render Reference to the {@link Zikula_Form_View} object.
+ *
+ * @return mixed False on failure, or the HTML output.
  */
-function smarty_function_clip_form_relation($params, &$view) {
-    return $view->registerPlugin('Clip_Form_Plugin_Relation', $params);
+function smarty_function_clip_form_relation($params, Zikula_Form_View &$render)
+{
+    return $render->registerPlugin('Clip_Form_Relation', $params);
 }

@@ -10,21 +10,32 @@
  */
 
 /**
- * Generic form Plugin
+ * Generic Form Plugin.
+ * Clip's interface to load one of its plugins.
  *
- * Loads the desired plugin from fieldtype definition
+ * Available parameters:
+ *  - id        (string) Pubtype's field id (name).
+ *  - mandatory (bool) Wheter this form field is mandatory.
+ *  - maxLength (bool) Maximum lenght of the input (optional).
+ *
+ * Example:
+ *
+ *  <samp>{clip_form_genericplugin id='title' mandatory=true}</samp>
+ *
+ * @param array            $params All parameters passed to this plugin from the template.
+ * @param Zikula_Form_View $view   Reference to the {@link Zikula_Form_View} object.
+ *
+ * @return mixed Plugin output.
  */
-function smarty_function_clip_form_genericplugin($params, &$render)
+function smarty_function_clip_form_genericplugin($params, Zikula_Form_View &$render)
 {
-    $dom = ZLanguage::getModuleDomain('Clip');
-
     if (!$params['id']) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'id', $dom));
+        return LogUtil::registerError($render->__f('Error! Missing argument [%s].', 'id'));
     }
 
     $tid = $render->eventHandler->getTid();
 
-    $pubfields   = Clip_Util::getPubFields($tid);
+    $pubfields = Clip_Util::getPubFields($tid);
 
     // read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])){

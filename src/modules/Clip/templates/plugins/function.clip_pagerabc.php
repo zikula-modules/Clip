@@ -5,7 +5,6 @@
  * @copyright   Zikula Foundation 2009 - Zikula Application Framework
  * @link        http://www.zikula.org
  * @license     GNU/LGPLv3 (or at your option, any later version).
- * @version     $ Id $
  * @package     Clip
  * @subpackage  View_Plugins
  */
@@ -13,39 +12,44 @@
 /**
  * Clip alpha filter.
  *
- *  Example:
- *    {clip_pagerabc class='abcpager' class_num='abclink' class_numon='abclink_on'}
- *    results on links like:
- *    index.php?module=Clip&func=list&tid=**&filter=core_author:eq:2&filter1=core_title:likefirst:**
- *    from the default list.
+ * Available parameters:
+ *  - field       Name of the field to use in the filter (default: core_title).
+ *  - forwardvars Comma- semicolon- or space-delimited list of POST and GET variables to forward in the pager links. If unset, all vars are forwarded.
+ *  - addvars     Comma- semicolon- or space-delimited list of additional variable and value pairs to forward in the links. eg "foo=2,bar=4".
+ *  - class       Class for the pager.
+ *  - class_num   Class for the pager links (<a> tags).
+ *  - class_numon Class for the active page.
+ *  - separator   String to put between the letters, eg "|" makes " A | B | C | D | ...".
+ *  - printempty  Print empty selection ('-').
+ *  - names       String or array of names to select from (array or csv).
+ *  - values      Optional parameter for the previous names (array or cvs).
+ *  - modname     Module name for the links (optional).
+ *  - type        Type of the function for the links (optional).
+ *  - func        Function name for the links (optional).
  *
- * Parameters:
- *  field       Name of the field to use in the filter (default=core_title)
- *  forwardvars Comma- semicolon- or space-delimited list of POST and GET variables to forward in the pager links. If unset, all vars are forwarded.
- *  addvars     Comma- semicolon- or space-delimited list of additional variable and value pairs to forward in the links. eg "foo=2,bar=4"
- *  class       Class for the pager
- *  class_num   Class for the pager links (<a> tags)
- *  class_numon Class for the active page
- *  separator   String to put between the letters, eg "|" makes " A | B | C | D | ..."
- *  printempty  Print empty selection ('-')
- *  names       String or array of names to select from (array or csv)
- *  values      Optional parameter for the previous names (array or cvs)
- *  modname     Module name for the links (optional)
- *  type        Type of the function for the links (optional)
- *  func        Function name for the links (optional)
+ * Example:
  *
- * @param array       $params All attributes passed to this function from the template.
+ *  <samp>{clip_pagerabc class='abcpager' class_num='abclink' class_numon='abclink_on'}</samp>
+ *
+ *  Results on links like:
+ *  index.php?module=Clip&func=list&tid=**&filter=core_author:eq:2&filter1=core_title:likefirst:**
+ *  from the default list.
+ *
+ * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the Zikula_View object.
  *
- * @return string
+ * @return string HTML output.
  */
-function smarty_function_clip_pagerabc($params, $view)
+function smarty_function_clip_pagerabc($params, Zikula_View &$view)
 {
+    $pubtype = $view->getTplVar('pubtype');
+
     if (!isset($params['field'])) {
         $params['field'] = 'core_title';
     }
+
     if ($params['field'] == 'core_title') {
-        $params['field'] = $view->_tpl_vars['pubtype']['titlefield'];
+        $params['field'] = $pubtype['titlefield'];
     }
 
     if (!isset($params['varname'])) {

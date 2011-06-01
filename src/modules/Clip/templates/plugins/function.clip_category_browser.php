@@ -10,35 +10,45 @@
  */
 
 /**
- * Generates HTML vor Category Browsing
- * Additional parameters will be added to the category URL
+ * Generates HTML for pubtype's Category Browsing.
  *
- * @param $args['tid']               Publication type ID
- * @param $args['field']             Fieldname of the pubfield which contains category
- * @param $args['tpl']               Optional filename of template
- * @param $args['count']             Optional count available pubs in this category
- * @param $args['multiselect']       Are more selection in one browser allowed (makes only sense for multilist fields)
- * @param $args['globalmultiselect'] Are more then one selections in all available browsers allowed
- * @param $args['togglediv']         This div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus)
- * @param $args['cache']             Enable smarty cache (if not already enabled)
- * @param $args['assign']            Optional
-
- * @return html of category tree
+ * Additional parameters will be added to the category URL.
+ *
+ * Available parameters:
+ *  - tid               (integer) Publication type ID.
+ *  - field             (string) Fieldname of the pubfield which contains category.
+ *  - tpl               (string) Optional filename of template (default: clip_category_browser.tpl).
+ *  - count             (bool) Optional count available pubs in this category.
+ *  - multiselect       (bool) Are more selection in one browser allowed (makes only sense for multilist fields).
+ *  - globalmultiselect (bool) Are more then one selections in all available browsers allowed.
+ *  - togglediv         (bool) This div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus).
+ *  - cache             (bool) Enable render cache (if not already enabled).
+ *  - assign            (string) Optionalvariable name to assign the output to.
+ *
+ * Examples:
+ *
+ *  <samp>{clip_category_browser tid=1 field='category'}</samp>
+ *  <samp>{clip_category_browser tid=2 field='list' tpl='pubtype2folder/browser.tpl' togglediv=1 cache=1}</samp>
+ *
+ * @param array       $params All parameters passed to this plugin from the template.
+ * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+ *
+ * @return mixed False on failure, or the HTML output.
  */
-function smarty_function_clip_category_browser($params, &$view)
+function smarty_function_clip_category_browser($params, Zikula_View &$view)
 {
-    $dom = ZLanguage::getModuleDomain('Clip');
+    if (!isset($params['tid']) || !$params['tid']) {
+        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_category_browser', 'array')));
+        return false;
+    }
+
+    if (!isset($params['field']) || !$params['field']) {
+        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_category_browser', 'field')));
+        return false;
+    }
 
     $tid   = $params['tid'];
     $field = $params['field'];
-
-    if (!$tid) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'tid', $dom));
-    }
-
-    if (!$field) {
-        return LogUtil::registerError(__f('Error! Missing argument [%s].', 'field', $dom));
-    }
 
     // get the plugin parametes
     $count             = isset($params['count']) ? $params['count'] : false;
@@ -100,7 +110,7 @@ function smarty_function_clip_category_browser($params, &$view)
         $cats = CategoryUtil::getSubCategories($id);
 
         if (!$cats) {
-            return LogUtil::registerError(__f('Error! No such category found for the ID passed [%s].', $id, $dom));
+            return LogUtil::registerError($view->__f('Error! No such category found for the ID passed [%s].', $id));
         }
 
         $one_selected = false;
@@ -195,7 +205,7 @@ function smarty_function_clip_category_browser($params, &$view)
             $args['filter'] = $field.':null';
             $nullcat = array(
                 -1 => array(
-                    'fullTitle' => __('Uncategorized', $dom),
+                    'fullTitle' => $view->__('Uncategorized'),
                     'url'       => ModUtil::url('Clip', 'user', 'list', $args),
                     'depth'     => 0,
                     'selected'  => 0

@@ -55,7 +55,7 @@
                         </dl>
                     </span>
                     <span class="z-itemcell z-w15">
-                        {$pubfield.fieldplugin|clip_pluginname}&nbsp;
+                        {$pubfield.fieldplugin|clip_plugintitle}&nbsp;
                     </span>
                     <span class="z-itemcell z-w10">
                         {if $pubfield.istitle}

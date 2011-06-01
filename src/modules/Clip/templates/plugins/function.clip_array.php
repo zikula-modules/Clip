@@ -10,20 +10,28 @@
  */
 
 /**
- * Smarty plugin to display an array
+ * Plugin to show an array in a human readable way.
  *
- * Example
- *   <!--[clip_array array=$myarray]--> prints the array in a friendly way
+ * Available parameters:
+ *  - array (array) Array to display.
  *
- * @since 30 January 2010
- * @param array  $array The array to display.
+ * Examples:
  *
- * @return string The developer readable output.
+ *  <samp>{clip_array array=$data}</samp>
+ *  <samp>{clip_array array=$pubdata->toArray()}</samp>
+ *
+ * @param array       $params All parameters passed to this plugin from the template.
+ * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+ *
+ * @return mixed HTML output.
  */
-function smarty_function_clip_array($array)
+function smarty_function_clip_array($params, Zikula_View &$view)
 {
-    $array = array_values($array);
+    if (!isset($params['array'])) {
+        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_array', 'array')));
+        return false;
+    }
 
     // removes a useless "\n1" ending
-    return substr(DataUtil::formatForDisplayHTML(print_r($array[0])), 0, -2);
+    return substr(DataUtil::formatForDisplayHTML(print_r($params['array'])), 0, -2);
 }
