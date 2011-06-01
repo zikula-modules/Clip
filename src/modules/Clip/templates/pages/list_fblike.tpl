@@ -1,14 +1,14 @@
 {if !$homepage}{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
 <h2>
-    {gt text=$pubtype.title}
+    {$pubtype.title}
     {fblike url=$returnurl layout='horizontal' width=150 addmetatags=1 metatitle=$pubtype.title rel='list_title'}
 </h2>
 
 {include file='clip_generic_navbar.tpl' section='list'}
 
 {if $pubtype.description neq ''}
-    <p class="clip-pubtype-desc">{gt text=$pubtype.description}</p>
+    <p class="clip-pubtype-desc">{$pubtype.description}</p>
 {/if}
 
 {*clip_pagerabc*}

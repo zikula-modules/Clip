@@ -28,12 +28,12 @@
         {if $section neq 'list'}
             <span>
                 <a href="{modurl modname='Clip' tid=$pubtype.tid}">
-                    {gt text=$pubtype.title}
+                    {$pubtype.title}
                 </a>
             </span>
         {else}
             <span class="clip-breadtext">
-                {gt text=$pubtype.title}
+                {$pubtype.title}
             </span>
         {/if}
 

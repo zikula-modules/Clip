@@ -308,6 +308,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     protected function translateActions(&$actions)
     {
         foreach (array_keys((array)$actions) as $aid) {
+            // FIXME think on a solution for these translations
+            $actions[$aid]['title'] = $this->__($actions[$aid]['title']);
             if (isset($actions[$aid]['parameters'])) {
                 // check if the action parameter is translatable
                 foreach (array_keys($actions[$aid]['parameters']) as $pname) {

@@ -19,7 +19,7 @@
     </div>
     *}
     <h2 class="clip-post-title">
-        {gt text=$pubdata.core_title}
+        {$pubdata.core_title}
     </h2>
     <div class="clip-post-meta">
         {capture assign='author'}<span class="author vcard">{$pubdata.core_author|profilelinkbyuid}</span>{/capture}

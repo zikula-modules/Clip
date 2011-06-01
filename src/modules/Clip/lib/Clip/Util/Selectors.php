@@ -118,7 +118,7 @@ class Clip_Util_Selectors
 
         foreach ($pubtypes as $tid => $pubtype) {
             $array[$tid] = array(
-                'text'  => __($pubtype['title'], $dom).($includetid ? " ($tid)" : ''),
+                'text'  => $pubtype['title'].($includetid ? " ($tid)" : ''),
                 'value' => $tid
             );
         }
@@ -193,7 +193,7 @@ class Clip_Util_Selectors
         foreach ($pubfields as $fieldname => $pubfield) {
             $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
             $array[$index] = array(
-                'text'  => __($pubfield['title'], $dom),
+                'text'  => $pubfield['title'],
                 'value' => $fieldname
             );
         }

@@ -13,7 +13,7 @@
 
 <div id="clip-page-{$pubdata.core_pid}" class="clip-page clip-page-{$pubdata.core_pid}">
     <h2 class="clip-page-title">
-        {gt text=$pubdata.core_title}
+        {$pubdata.core_title}
     </h2>
 
     <div class="clip-page-content">

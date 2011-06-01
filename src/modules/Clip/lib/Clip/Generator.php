@@ -342,8 +342,7 @@ class Clip_Generator
                 "\n".
                 '        <div class="z-buttons z-formbuttons">'."\n".
                 '            {foreach item=\'action\' from=$actions}'."\n".
-                '                {gt text=$action.title assign=\'actiontitle\'}'."\n".
-                '                {formbutton commandName=$action.id text=$actiontitle zparameters=$action.parameters.button|default:\'\'}'."\n".
+                '                {formbutton commandName=$action.id text=$action.title zparameters=$action.parameters.button|default:\'\'}'."\n".
                 '            {/foreach}'."\n".
                 '            {formbutton commandName=\'cancel\' __text=\'Cancel\' class=\'z-bt-cancel\'}'."\n".
                 '        </div>'."\n".

@@ -10,7 +10,7 @@
 
 {include file='clip_generic_navbar.tpl' section='list'}
 
-<h2>{gt text=$pubtype.title}</h2>
+<h2>{$pubtype.title}</h2>
 
 <div class="clip-pages-categories">
     {clip_category_browser tid=$pubtype.tid field='category' template='category'}

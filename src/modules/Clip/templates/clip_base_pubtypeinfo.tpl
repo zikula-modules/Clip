@@ -61,11 +61,10 @@
                 <ul>
                 {foreach from=$pubtype->allrelations key='ralias' item='rinfo'}
                     <li>
-                    {gt text=$rinfo.title assign='reltitle'}
                     {if $rinfo.single}
-                        {gt text='Has one %s' tag1=$reltitle}
+                        {gt text='Has one %s' tag1=$rinfo.title}
                     {else}
-                        {gt text='Has many %s' tag1=$reltitle}
+                        {gt text='Has many %s' tag1=$rinfo.title}
                     {/if}
                     <span class="z-sub">({$rinfo.owned})</span>
 

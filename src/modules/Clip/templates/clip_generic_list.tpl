@@ -3,10 +3,10 @@
 
 {include file='clip_generic_navbar.tpl' section='list'}
 
-<h2>{gt text=$pubtype.title}</h2>
+<h2>{$pubtype.title}</h2>
 
 {if $pubtype.description neq ''}
-    <div class="clip-pubtype-desc">{gt text=$pubtype.description}</div>
+    <div class="clip-pubtype-desc">{$pubtype.description}</div>
 {/if}
 
 {*clip_pagerabc*}

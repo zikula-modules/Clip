@@ -87,8 +87,7 @@
 
         <div class="z-buttons z-formbuttons">
             {foreach item='action' from=$actions}
-                {gt text=$action.title assign='actiontitle'}
-                {formbutton commandName=$action.id text=$actiontitle zparameters=$action.parameters.button|default:''}
+                {formbutton commandName=$action.id text=$action.title zparameters=$action.parameters.button|default:''}
             {/foreach}
             {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
         </div>

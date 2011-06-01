@@ -13,7 +13,7 @@
     {* title for uncategorized list *}
     {gt text='Uncategorized' assign='title'}
     {if !$homepage}{pagesetvar name="title" value="$title - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
-    <h2>{gt text=$pubtype.title}</h2>
+    <h2>{$pubtype.title}</h2>
     <span>{gt text='Uncategorized pages published:'}</span>
 {elseif $op AND $clipargs.getallapi.filter.category.$op.0}
     {* title for a specific category requested *}
@@ -29,7 +29,7 @@
 {else}
     {* generic title *}
     {if !$homepage}{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
-    <h2>{gt text=$pubtype.title}</h2>
+    <h2>{$pubtype.title}</h2>
 {/if}
 
 {checkpermission component='Clip:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD assign='auth_tid'}

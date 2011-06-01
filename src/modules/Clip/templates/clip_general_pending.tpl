@@ -1,5 +1,5 @@
 
-<h1>{gt text=$pubtype.title}</h1>
+<h1>{$pubtype.title}</h1>
 
 {include file='clip_generic_navbar.tpl' section='pending'}
 
