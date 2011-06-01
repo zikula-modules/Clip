@@ -120,6 +120,10 @@ class Clip_Base_Pubdata extends Doctrine_Record
             return ($field && array_key_exists($field, $this['__WORKFLOW__'])) ? $this['__WORKFLOW__'][$field] : $this;
         }
 
+        if (!isset($this['core_tid'])) {
+            $this->clipValues();
+        }
+
         $pubtype  = Clip_Util::getPubType($this['core_tid']);
         $workflow = new Clip_Workflow($pubtype, $this);
         $workflow->getWorkflow();
@@ -142,7 +146,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
 
         if ($this[$alias] instanceof Doctrine_Record) {
             // check the list and individual permission if needed
-            if ($checkperm && (!Clip_Access::toPubtype($relation['tid'], 'list') || !Clip_Access::toPub($relation['tid'], $this[$alias], ACCESS_READ, null, 'display'))) {
+            if ($checkperm && (!Clip_Access::toPubtype($relation['tid'], 'list') || !Clip_Access::toPub($relation['tid'], $this[$alias], null, ACCESS_READ, null, 'display'))) {
                 $this[$alias] = false;
             }
             return (bool)$this[$alias];
@@ -152,7 +156,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
                 $this[$alias] = false;
             } else {
                 foreach ($this[$alias] as $k => $v) {
-                    if ($checkperm && !Clip_Access::toPub($relation['tid'], $this[$alias][$k], ACCESS_READ, null, 'display')) {
+                    if ($checkperm && !Clip_Access::toPub($relation['tid'], $this[$alias][$k], null, ACCESS_READ, null, 'display')) {
                         unset($this[$alias][$k]);
                     }
                 }

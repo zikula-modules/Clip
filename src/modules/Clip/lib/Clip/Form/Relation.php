@@ -12,7 +12,7 @@
 /**
  * Plugin used for relations but not publication fields.
  */
-class Clip_Form_Plugin_Relation extends Zikula_Form_Plugin_TextInput
+class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
 {
     public $relinfo;
 
