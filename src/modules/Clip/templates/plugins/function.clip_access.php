@@ -48,6 +48,7 @@ function smarty_function_clip_access($params, Zikula_View &$view)
     $context = isset($params['context']) ? $params['context'] : null;
     $permlvl = isset($params['permlvl']) ? constant($params['permlvl']) : null;
     $tplid   = isset($params['tplid']) ? $params['tplid'] : '';
+    $assign  = isset($params['assign']) ? $params['assign'] : null;
 
     $result  = false;
 

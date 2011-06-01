@@ -87,13 +87,17 @@ class Clip_Access
 
             case 'editor': // panel
                 // TODO consider edit.own
-                // FIXME use workflow initial maxlevel action
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}::", ACCESS_EDIT, $uid);
+                $workflow = new Clip_Workflow($pubtype);
+                // assumes level 1 as the first moderator permission
+                $permlvl = $workflow->getPermissionLevel(1, 'initial');
+                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}::", $permlvl, $uid);
                 break;
 
             case 'submit': // submit new content
-                // FIXME workflow initial minlevel action permcheck
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}::", ACCESS_COMMENT, $uid);
+                $workflow = new Clip_Workflow($pubtype);
+                // assumes level 0 as the basic submit permission
+                $permlvl = $workflow->getPermissionLevel(0, 'initial');
+                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}::", $permlvl, $uid);
                 break;
 
             case 'list':
@@ -187,7 +191,7 @@ class Clip_Access
                     // gets the minimum state permission level
                     $workflow = new Clip_Workflow($pubtype);
                     $mode    = $context == 'editinline' ? Clip_Workflow::ACTIONS_ALL : Clip_Workflow::ACTIONS_FORM;
-                    $permlvl = $workflow->getMinimumPermission($state, $mode);
+                    $permlvl = $workflow->getPermissionLevel(0, $state, $mode);
                 }
                 $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}:$pid:$state", $permlvl, $uid);
                 break;

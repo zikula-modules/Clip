@@ -466,19 +466,16 @@ class Clip_Workflow
     }
 
     /**
-     * Get minimum access level by state.
+     * Get an access level by state.
      *
-     * Returns the minimum permission level needed to execute one action on a specific state.
-     *
+     * @param integer $level Level to get (default: 0 - minimum).
      * @param string  $state State to evaluate, default = object's state.
      * @param integer $mode  One of the Clip_Workflow modes.
      *
-     * @return integer Minimum system permission level to execute an action.
+     * @return integer The level requested inside the available state permissions.
      */
-    public function getMinimumPermission($state = null, $mode = self::ACTIONS_ALL)
+    public function getPermissionLevel($level = 0, $state = null, $mode = self::ACTIONS_ALL)
     {
-        $minimum = ACCESS_ADMIN;
-
         $levels = $this->getActionsField('permission', $mode, $state);
 
         if (!$levels) {
@@ -487,15 +484,21 @@ class Clip_Workflow
 
         $levels = array_unique($levels);
 
-        foreach ($levels as $level) {
-            $level = Clip_Workflow_Util::translatePermission($level);
+        $statelevels = array();
+        foreach ($levels as $l) {
+            $l = Clip_Workflow_Util::translatePermission($l);
 
-            if ($level && $level < $minimum) {
-                $minimum = $level;
-            }
+            $statelevels[$l] = true;
+        }
+        ksort($statelevels);
+
+        $statelevels = array_keys($statelevels);
+
+        if ($level > count($statelevels)) {
+            $level = count($statelevels);
         }
 
-        return $minimum;
+        return $statelevels[$level];
     }
 
     /**
