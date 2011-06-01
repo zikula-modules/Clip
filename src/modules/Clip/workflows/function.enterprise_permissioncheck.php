@@ -25,12 +25,12 @@ function Clip_workflow_enterprise_permissioncheck($obj, $permLevel, $currentUser
     if ($obj->exists()) {
         // check existing publication author and granular permission access check
         if ($pubtype['enableeditown'] == 1 && $obj['core_author'] == $currentUser) {
-            // FIXME allow this only on update operations (actionId standard)
+            // FIXME allow this only on update operations on not online ones? and notify (actionId standard)
             return true;
         }
     }
 
-    return Clip_Access::toPub($obj['core_tid'], $obj, $permLevel, $currentUser);
+    return Clip_Access::toPub($obj['core_tid'], $obj, null, $permLevel, $currentUser);
 }
 
 function Clip_workflow_enterprise_gettextstrings()

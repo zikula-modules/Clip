@@ -31,7 +31,7 @@ function smarty_function_clip_submenu($params, Zikula_View &$view)
     $tid = (int)$params['tid'];
 
     if (!$tid) {
-        return LogUtil::registerError($view->__f('Error! Missing argument [%s].', 'tid'));
+        return LogUtil::registerError($view->__f('%1$s: Invalid publication type ID passed [%2$s].', array('{clip_submenu}', DataUtil::formatForDisplay($tid))));
     }
 
     $pubtype = Clip_Util::getPubType($tid);

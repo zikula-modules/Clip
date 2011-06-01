@@ -32,8 +32,6 @@
     <h2>{$pubtype.title}</h2>
 {/if}
 
-{checkpermission component='Clip:input:' instance="`$pubtype.tid`::" level=ACCESS_ADD assign='auth_tid'}
-
 <table class="z-datatable clip-pub-list">
     <tbody>
         {foreach from=$publist item='item'}
@@ -47,12 +45,12 @@
                 <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid title=$item.core_title|formatpermalink}">
                     {img modname='core' src='demo.png' set='icons/extrasmall' __title='View' __alt='View'}
                 </a>
-                {if $auth_tid}
+                {clip_accessblock tid=$pubtype.tid pid=$item context='edit'}
                 &nbsp;
                 <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$item.core_pid}">
                     {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                 </a>
-                {/if}
+                {/clip_accessblock}
                 {/strip}
             </td>
         </tr>

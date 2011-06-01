@@ -23,7 +23,7 @@
  *  - globalmultiselect (bool) Are more then one selections in all available browsers allowed.
  *  - togglediv         (bool) This div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus).
  *  - cache             (bool) Enable render cache (if not already enabled).
- *  - assign            (string) Optionalvariable name to assign the output to.
+ *  - assign            (string) Optional variable name to assign the output to.
  *
  * Examples:
  *

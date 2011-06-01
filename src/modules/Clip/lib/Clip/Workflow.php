@@ -391,7 +391,8 @@ class Clip_Workflow
     /**
      * Workflow actions available for the current object and user.
      *
-     * @param string $state State actions to retrieve, default = object's state.
+     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param string  $state State actions to retrieve, default = object's state.
      *
      * @return array Allowed actions.
      */
@@ -441,8 +442,9 @@ class Clip_Workflow
      *
      * Returns allowed action ids and titles only, for given state.
      *
-     * @param string $field Field to retrieve (title, description, permission, state, nextState).
-     * @param string $state State actions to retrieve, default = object's state.
+     * @param string  $field Field to retrieve (title, description, permission, state, nextState).
+     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param string  $state State actions to retrieve, default = object's state.
      *
      * @return mixed Array of allowed actions on the form $action[id] => $action[$field] or false on failure.
      */
@@ -468,25 +470,28 @@ class Clip_Workflow
      *
      * Returns the minimum permission level needed to execute one action on a specific state.
      *
-     * @param string $state State to evaluate, default = object's state.
+     * @param string  $state State to evaluate, default = object's state.
+     * @param integer $mode  One of the Clip_Workflow modes.
      *
      * @return integer Minimum system permission level to execute an action.
      */
-    public function getMinimumLevel($mode = self::ACTIONS_ALL, $state = null)
+    public function getMinimumPermission($state = null, $mode = self::ACTIONS_ALL)
     {
         $minimum = ACCESS_ADMIN;
 
         $levels = $this->getActionsField('permission', $mode, $state);
 
-        if ($levels) {
-            $levels = array_unique($levels);
+        if (!$levels) {
+            return false;
+        }
 
-            foreach ($levels as $level) {
-                $level = Clip_Workflow_Util::translatePermission($level);
+        $levels = array_unique($levels);
 
-                if ($level && $level < $minimum) {
-                    $minimum = $level;
-                }
+        foreach ($levels as $level) {
+            $level = Clip_Workflow_Util::translatePermission($level);
+
+            if ($level && $level < $minimum) {
+                $minimum = $level;
             }
         }
 

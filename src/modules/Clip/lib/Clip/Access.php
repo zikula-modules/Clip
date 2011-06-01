@@ -22,7 +22,7 @@ class Clip_Access
      *
      * @return boolean True if allowed, false otherwise.
      */
-    public static function toClip($permlvl = ACCESS_OVERVIEW, $instance = '::')
+    public static function toClip($permlvl = null, $instance = null)
     {
         // fill default values if needed
         $permlvl = $permlvl ? $permlvl : ACCESS_OVERVIEW;
@@ -40,8 +40,12 @@ class Clip_Access
      *
      * @return boolean True if allowed, false otherwise.
      */
-    public static function toGrouptype($gid, $permlvl = ACCESS_OVERVIEW)
+    public static function toGrouptype($gid, $permlvl = null)
     {
+        if (!$gid) {
+            return LogUtil::registerError($this->__f('%1$s: Invalid grouptype ID passed [%2$s].', array('Clip_Access::toGrouptype', DataUtil::formatForDisplay($gid))));
+        }
+
         // fill default values if needed
         $permlvl = $permlvl ? $permlvl : ACCESS_OVERVIEW;
 
@@ -59,15 +63,16 @@ class Clip_Access
      *
      * @return boolean True if allowed, false otherwise.
      */
-    public static function toPubtype($pubtype, $context = 'admin', $tplid = '', $uid = null)
+    public static function toPubtype($pubtype, $context = null, $tplid = null, $uid = null)
     {
         // fill default values if needed
         $context = $context ? strtolower($context) : 'admin';
+        $tplid   = $tplid ? $tplid : '';
 
         // be sure to have a Clip_Model_Pubtype instance
         if (!$pubtype instanceof Clip_Model_Pubtype) {
             if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($pubtype)));
+                return LogUtil::registerError($this->__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPubtype', DataUtil::formatForDisplay($pubtype))));
             }
 
             $pubtype = Clip_Util::getPubType($pubtype);
@@ -108,23 +113,25 @@ class Clip_Access
      *
      * @param integer $pubtype Publication type instance or ID.
      * @param integer $pub     Publication instance or ID.
-     * @param integer $permlvl Required permission level to have, used on edit context only (default: ACCESS_EDIT).
+     * @param integer $id      Publication revision ID.
+     * @param integer $permlvl Required permission level to have, used on edit context only (default: null).
      * @param integer $uid     User ID of the user to check permission for (default: current user).
      * @param string  $context Context to check the access for (default: edit).
      * @param string  $tplid   Template ID required for permission check on display (default: '').
      *
      * @return boolean True if allowed, false otherwise.
      */
-    public static function toPub($pubtype, $pub, $permlvl = ACCESS_EDIT, $uid = null, $context = 'edit', $tplid = '')
+    public static function toPub($pubtype, $pub, $id = null, $permlvl = null, $uid = null, $context = null, $tplid = null)
     {
         // fill default values if needed
-        $permlvl = $permlvl ? $permlvl : ACCESS_EDIT;
         $context = $context ? strtolower($context) : 'edit';
+        $tplid   = $tplid ? $tplid : '';
+        $state   = '';
 
         // be sure to have a Clip_Model_Pubtype instance
         if (!$pubtype instanceof Clip_Model_Pubtype) {
             if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($pubtype)));
+                return LogUtil::registerError($this->__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPub', DataUtil::formatForDisplay($pubtype))));
             }
 
             $pubtype = Clip_Util::getPubType($pubtype);
@@ -147,19 +154,42 @@ class Clip_Access
                 $state = $pub->clipWorkflow('state');
             } else {
                 // the user may wants to save a new record
-                $pid = $state = '';
+                $pid = '';
             }
         } else {
-            // plain PID means initial access check
+            // plain PID
             $pid = $pub;
+            // check if we need additional information
+            if (strpos($context, 'edit') === 0) {
+                // gets the online/latest revision state, if $id not specified
+                if (!$id) {
+                    $id = (int)ModUtil::apiFunc('Clip', 'user', 'getId', array('tid' => $pubtype->tid, 'pid' => $pid, 'lastrev'  => true));
+                }
+
+                // query for the state
+                $dbtables = DBUtil::getTables();
+                $wfcolumn = $dbtables['workflows_column'];
+                $where = "WHERE $wfcolumn[module] = 'Clip' AND $wfcolumn[obj_table] = '{$pubtype->getTableName()}'
+                            AND $wfcolumn[obj_idcolumn] = 'id' AND $wfcolumn[obj_id] = '" . DataUtil::formatForStore($id) . "'";
+
+                $state = DBUtil::selectField('workflows', 'state', $where);
+            }
+            $state = $state ? $state : '';
         }
 
         // evaluate the access depending of the required context
         switch ($context)
         {
             case 'edit':
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:$context", "{$pubtype->tid}:$pid:$state", $permlvl, $uid);
-                // TODO consider edit.own, state permissions
+            case 'editinline':
+                // TODO consider edit.own
+                if (!$permlvl) {
+                    // gets the minimum state permission level
+                    $workflow = new Clip_Workflow($pubtype);
+                    $mode    = $context == 'editinline' ? Clip_Workflow::ACTIONS_ALL : Clip_Workflow::ACTIONS_FORM;
+                    $permlvl = $workflow->getMinimumPermission($state, $mode);
+                }
+                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}:$pid:$state", $permlvl, $uid);
                 break;
 
             case 'display':

@@ -275,7 +275,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], ACCESS_READ, null, 'display', $apiargs['templateid']));
+        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], ACCESS_READ, null, 'display', $apiargs['templateid']));
 
         //// Cache
         // check if cache is enabled and this view is cached

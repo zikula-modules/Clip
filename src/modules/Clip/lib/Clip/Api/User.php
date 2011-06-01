@@ -350,7 +350,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Security
         // check permissions if needed
-        if ($args['checkperm'] && !Clip_Access::toPub($args['tid'], $pubdata, ACCESS_READ, null, 'display', $args['templateid'])) {
+        if ($args['checkperm'] && !Clip_Access::toPub($args['tid'], $pubdata, null, ACCESS_READ, null, 'display', $args['templateid'])) {
             return LogUtil::registerPermissionError();
         }
 

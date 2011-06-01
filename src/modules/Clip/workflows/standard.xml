@@ -149,7 +149,7 @@
       <operation core_online="1">updateValues</operation>
 
       <parameter core_online="0">condition</parameter>
-      <parameter class="clip-bt-activate">button</parameter>
+      <parameter class="clip-bt-reload">button</parameter>
       <parameter class="clip-iconlink clip-op-activate">link</parameter>
     </action>
 
@@ -162,7 +162,7 @@
       <operation core_online="0">updateValues</operation>
 
       <parameter core_online="1">condition</parameter>
-      <parameter class="clip-bt-deactivate">button</parameter>
+      <parameter class="clip-bt-reload">button</parameter>
       <parameter class="clip-iconlink clip-op-deactivate">link</parameter>
     </action>
 

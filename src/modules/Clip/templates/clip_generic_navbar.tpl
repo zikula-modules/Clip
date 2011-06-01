@@ -1,5 +1,4 @@
-{checkpermission component='Clip::' instance='::' level=ACCESS_ADMIN assign='auth_admin'}
-{checkpermission component='Clip::' instance="`$pubtype.tid`::" level=ACCESS_EDIT assign='auth_editor'}
+{clip_access tid=$pubtype.tid assign='auth_admin'}
 
 <div class="z-menu">
     <span class="z-menuitem-title clip-breadcrumbs">
@@ -16,13 +15,13 @@
         </span>
         {/if}
         {*
-        {if $auth_editor}
+        {clip_accessblock tid=$pubtype.tid context='editor'}
         <span>
             <a href="{modurl modname='Clip' type='editor' func='list' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='lists.png' set='icons/extrasmall' alt='' __title='Editor panel'}
             </a>
         </span>
-        {/if}
+        {/clip_accessblock}
         *}
 
         {if $section neq 'list'}
@@ -37,14 +36,13 @@
             </span>
         {/if}
 
-        {* FIXME edit own check? *}
-        {if $auth_editor}
+        {clip_accessblock tid=$pubtype.tid context='submit'}
         <span>
             <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Add a publication'}
             </a>
         </span>
-        {/if}
+        {/clip_accessblock}
 
         {if $section neq 'list' and $section neq 'pending'}
             <span class="text_separator">&raquo;</span>
@@ -62,13 +60,13 @@
                 <span class="clip-breadtext" title="{$pubdata.core_title}">
                     {$pubdata.core_title|truncate:40}
                 </span>
-                {if $auth_editor}
+                {clip_accessblock tid=$pubtype.tid pid=$pubdata.core_pid context='edit'}
                 <span>
                     <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubdata.core_tid id=$pubdata.id}">
                         {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                     </a>
                 </span>
-                {/if}
+                {/clip_accessblock}
             {/if}
 
             {if $section neq 'display'}
