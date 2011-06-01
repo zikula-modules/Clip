@@ -474,7 +474,7 @@ class Clip_Doctrine_Table extends Doctrine_Table
      */
     public function deleteByID($id, $idfield = 'id')
     {
-        $where = array(array($idfield, $id));
+        $where = array(array("$idfield = ?", $id));
 
         return $this->deleteWhere($where);
     }
@@ -520,9 +520,11 @@ class Clip_Doctrine_Table extends Doctrine_Table
      */
     public function incrementFieldBy($incfield, $value, $column = 'id', $inccount = 1)
     {
+        $sign = ($inccount > 0) ? '+' : '-';
+
         return $this->createQuery('dctrn_find')
                     ->update()
-                    ->set("$incfield", "$incfield + $inccount")
+                    ->set("$incfield", "$incfield $sign $inccount")
                     ->where("$column = ?", array($value))
                     ->execute();
     }
