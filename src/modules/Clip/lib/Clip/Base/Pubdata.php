@@ -116,7 +116,7 @@ class Clip_Base_Pubdata extends Doctrine_Record
      */
     public function clipWorkflow($field = null)
     {
-        if (isset($this['__WORKFLOW__']['state'])) {
+        if (isset($this['__WORKFLOW__'])) {
             return ($field && array_key_exists($field, $this['__WORKFLOW__'])) ? $this['__WORKFLOW__'][$field] : $this;
         }
 
