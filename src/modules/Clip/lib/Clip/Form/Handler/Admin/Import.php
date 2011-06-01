@@ -63,7 +63,9 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
                 }
 
                 // build the import instance
-                $batch = new Clip_Import_Batch($data);
+                $batch = new Clip_Import_Batch();
+
+                $batch->setup($data);
 
                 $result = $batch->execute();
 

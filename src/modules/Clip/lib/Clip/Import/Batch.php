@@ -25,11 +25,6 @@ class Clip_Import_Batch
     protected $data = array();
     protected $gzip = false;
 
-    public function  __construct($args)
-    {
-        $this->setup($args);
-    }
-
     /**
      * Setup function.
      *
