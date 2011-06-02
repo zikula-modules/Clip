@@ -1,15 +1,15 @@
 
 <ul class="clip-block-list">
-    {foreach from=$publist item='item'}
+    {foreach from=$publist item='pubdata'}
         <li>
             {strip}
-            <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$item.core_pid title=$item.core_title|formatpermalink}">
-                {$item.core_title}
+            <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}">
+                {$pubdata.core_title}
             </a>
 
-            {clip_accessblock tid=$pubtype.tid pid=$item context='edit'}
+            {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
             &nbsp;
-            <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$item.core_pid}">
+            <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$pubdata.core_pid}">
                 {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
             </a>
             {/clip_accessblock}
