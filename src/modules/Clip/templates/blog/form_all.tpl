@@ -1,5 +1,5 @@
 
-{include file='clip_generic_navbar.tpl' section='form'}
+{include file='clip_generic_navbar.tpl'}
 
 {if $pubdata.id}
     {gt text='Edit post' assign='pagetitle'}

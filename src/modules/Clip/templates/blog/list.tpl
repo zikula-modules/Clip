@@ -8,7 +8,7 @@
 {ogtag prop='site_name' content=$modvars.ZConfig.sitename}
 *}
 
-{include file='clip_generic_navbar.tpl' section='list'}
+{include file='clip_generic_navbar.tpl'}
 
 {foreach from=$publist item='item'}
 <div id="clip-post-{$item.core_pid}" class="clip-post-{$item.core_pid} clip-post">

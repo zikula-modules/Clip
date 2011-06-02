@@ -5,7 +5,7 @@
     {fblike url=$returnurl layout='horizontal' width=150 addmetatags=1 metatitle=$pubtype.title rel='list_title'}
 </h2>
 
-{include file='clip_generic_navbar.tpl' section='list'}
+{include file='clip_generic_navbar.tpl'}
 
 {if $pubtype.description neq ''}
     <p class="clip-pubtype-desc">{$pubtype.description}</p>

@@ -35,7 +35,7 @@ class Clip_Generator
                 '{if !$homepage}{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
                 '{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
                 "\n".
-                '{include file=\'clip_generic_navbar.tpl\' section=\'display\'}'."\n".
+                '{include file=\'clip_generic_navbar.tpl\'}'."\n".
                 "\n".
                 '<h2>{$pubdata.core_title|safetext}</h2>'."\n".
                 "\n".
@@ -227,7 +227,7 @@ class Clip_Generator
                 '{/if}'."\n".
                 '{if !$homepage}{pagesetvar name="title" value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
                 "\n".
-                '{include file=\'clip_generic_navbar.tpl\' section=\'form\'}'."\n".
+                '{include file=\'clip_generic_navbar.tpl\'}'."\n".
                 "\n".
                 '<h2>{$pagetitle}</h2>'."\n".
                 "\n".

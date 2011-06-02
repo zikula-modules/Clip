@@ -9,7 +9,7 @@
 {ogtag prop='site_name' content=$modvars.ZConfig.sitename}
 *}
 
-{include file='clip_generic_navbar.tpl' section='display'}
+{include file='clip_generic_navbar.tpl'}
 
 <div id="clip-page-{$pubdata.core_pid}" class="clip-page clip-page-{$pubdata.core_pid}">
     <h2 class="clip-page-title">

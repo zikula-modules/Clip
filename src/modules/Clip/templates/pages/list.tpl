@@ -8,7 +8,7 @@
 {ogtag prop='site_name' content=$modvars.ZConfig.sitename}
 *}
 
-{include file='clip_generic_navbar.tpl' section='list'}
+{include file='clip_generic_navbar.tpl'}
 
 <h2>{$pubtype.title}</h2>
 

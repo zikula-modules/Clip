@@ -1,4 +1,4 @@
-{include file='clip_generic_navbar.tpl' section='list'}
+{include file='clip_generic_navbar.tpl'}
 
 {* resolve the title depending of any existing filter *}
 {if 'null'|in_array:$clipargs.getallapi.filter.category.ops}
