@@ -1,8 +1,11 @@
 
   0.9
+    Introduced a new Editor Panel to separate the content administration
+    Deprecated editlist*
+    Extended workflow support
     Blocks refactored and reworked. Template names changed.
-    User methods renamed from main/viewpub/pubedit/pubeditlist to view/display/edit/editlist
-    User Api methods renamed from pubList/getPub/editPub/pubeditlist to getall/get/edit/editlist
+    User methods renamed from main/viewpub/pubedit to view/display/edit
+    User Api methods renamed from pubList/getPub/editPub to getall/get/edit
     Template paths changed to a folder per pubtype, and with filenames: list.tpl, display.tpl and form_all.tpl
     Template permission check altered:
         clip:list: | tid::outputset_templateArg

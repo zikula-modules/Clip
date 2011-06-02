@@ -349,23 +349,6 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     }
 
     /**
-     * Javascript hierarchical menu of edit links.
-     */
-    public function editlist()
-    {
-        //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
-
-        $args = array(
-            'menu'       => 1,
-            'returntype' => 'admin',
-            'orderby'    => 'core_title'
-        );
-
-        return ModUtil::func('Clip', 'user', 'editlist', $args);
-    }
-
-    /**
      * @see Clip_Controller_Admin::generate
      *
      * @deprecated 0.9

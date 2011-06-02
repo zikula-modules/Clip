@@ -632,46 +632,6 @@ class Clip_Controller_User extends Zikula_AbstractController
     }
 
     /**
-     * Javascript hierarchical menu of edit links.
-     *
-     * @author rgasch
-     * @param  $args['tid']
-     * @param  $args['pid'] (optional)
-     * @param  $args['edit'] (optional)
-     * @param  $args['menu'] (optional)
-     * @param  $args['orderby'] (optional)
-     * @param  $args['returntype'] (optional)
-     * @param  $args['source'] (optional)
-     *
-     * @return Publication menu and/or edit mask.
-     */
-    public function editlist($args=array())
-    {
-        $tid        = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $pid        = isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid');
-        $edit       = isset($args['edit']) ? $args['edit'] : FormUtil::getPassedValue('edit', 1);
-        $menu       = isset($args['menu']) ? $args['menu'] : FormUtil::getPassedValue('menu', 1);
-        $returntype = isset($args['returntype']) ? $args['returntype'] : FormUtil::getPassedValue('returntype', 'user');
-        $source     = isset($args['source']) ? $args['source'] : FormUtil::getPassedValue('source', 'module');
-
-        $args['orderby'] = isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_title');
-
-        $pubData = ModUtil::apiFunc('Clip', 'user', 'editlist', $args);
-
-        // create the output object
-        $this->view->assign('allTypes',   $pubData['allTypes'])
-                   ->assign('publist',    $pubData['pubList'])
-                   ->assign('tid',        $tid)
-                   ->assign('pid',        $pid)
-                   ->assign('edit',       $edit)
-                   ->assign('menu',       $menu)
-                   ->assign('returntype', $returntype)
-                   ->assign('source',     $source);
-
-        return $this->view->fetch('clip_user_editlist.tpl');
-    }
-
-    /**
      * @see Clip_Controller_User::display
      *
      * @deprecated 0.9
@@ -689,16 +649,6 @@ class Clip_Controller_User extends Zikula_AbstractController
     public function pubedit($args)
     {
         return $this->edit($args);
-    }
-
-    /**
-     * @see Clip_Controller_User::editlist
-     *
-     * @deprecated 0.9
-     */
-    public function pubeditlist($args)
-    {
-        return $this->editlist($args);
     }
 
     /**

@@ -36,10 +36,6 @@ class Clip_Api_Admin extends Zikula_AbstractApi
                 'text' => $this->__('Manage relations')
             );
             $links[] = array (
-                'url'  => ModUtil::url('Clip', 'admin', 'editlist'),
-                'text' => $this->__('Edit publications')
-            );
-            $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'clipexport'),
                 'text' => $this->__('Export')
             );
