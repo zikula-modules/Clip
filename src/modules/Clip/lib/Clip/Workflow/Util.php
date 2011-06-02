@@ -49,15 +49,30 @@ class Clip_Workflow_Util
         $parser = new Zikula_Workflow_Parser();
 
         // parse workflow and return workflow object
-        $workflowXML    = file_get_contents($path);
-        $workflowSchema = $parser->parse($workflowXML, $schema, $module);
+        $workflowXML = file_get_contents($path);
+        $data = $parser->parse($workflowXML, $schema, $module);
 
         // destroy parser and XML contents
         unset($parser);
         unset($workflowXML);
 
+        // translate the action permissions to system values
+        foreach ($data['actions'] as $state => &$actions) {
+            foreach ($actions as $id => &$action) {
+                $action['permission'] = self::translatePermission($action['permission']);
+                // discard a bad defined action permission
+                if (!$action['permission']) {
+                    unset($actions[$id]);
+                }
+            }
+        }
+
         // cache workflow
-        self::$workflows[$module][$schema] = $workflowSchema;
+        self::$workflows[$module][$schema] = array(
+                                                   'workflow' => $data['workflow'],
+                                                   'states' => $data['states'],
+                                                   'actions' => $data['actions']
+                                                  );
 
         // return workflow object
         return self::$workflows[$module][$schema];
@@ -194,14 +209,6 @@ class Clip_Workflow_Util
      */
     public static function permissionCheck($obj, $module, $schema, $permLevel = 'overview', $actionID = null)
     {
-        // translate permission string to its system value
-        $permLevel = self::translatePermission($permLevel);
-
-        // test conversion worked
-        if (!$permLevel) {
-            return false;
-        }
-
         // get current user
         $currentUser = UserUtil::getVar('uid');
 

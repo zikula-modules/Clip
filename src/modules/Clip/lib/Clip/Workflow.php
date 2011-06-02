@@ -476,23 +476,15 @@ class Clip_Workflow
      */
     public function getPermissionLevel($level = 0, $state = null, $mode = self::ACTIONS_ALL)
     {
-        $levels = $this->getActionsField('permission', $mode, $state);
+        $statelevels = $this->getActionsField('permission', $mode, $state);
 
-        if (!$levels) {
+        // checks an invalid state
+        if (!$statelevels) {
             return false;
         }
 
-        $levels = array_unique($levels);
-
-        $statelevels = array();
-        foreach ($levels as $l) {
-            $l = Clip_Workflow_Util::translatePermission($l);
-
-            $statelevels[$l] = true;
-        }
-        ksort($statelevels);
-
-        $statelevels = array_keys($statelevels);
+        $statelevels = array_unique($statelevels);
+        sort($statelevels);
 
         if ($level >= count($statelevels)) {
             $level = count($statelevels) - 1;
