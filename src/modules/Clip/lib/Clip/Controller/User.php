@@ -86,6 +86,9 @@ class Clip_Controller_User extends Zikula_AbstractController
             'cachelifetime' => isset($args['cachelifetime']) ? (int)$args['cachelifetime'] : $pubtype['cachelifetime'],
         );
 
+        // sets the function parameter (navbar)
+        $this->view->assign('func', 'list');
+
         //// Validation
         // for public list allows a maximum of items
         if ($apiargs['itemsperpage'] == 0) {
@@ -229,6 +232,9 @@ class Clip_Controller_User extends Zikula_AbstractController
             'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
             'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime'])
         );
+
+        // sets the function parameter (navbar)
+        $this->view->assign('func', 'display');
 
         //// Validation
         // required the publication ID or record ID
@@ -396,6 +402,9 @@ class Clip_Controller_User extends Zikula_AbstractController
             'template' => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
             'lastrev'  => true
         );
+
+        // sets the function parameter (navbar)
+        $this->view->assign('func', 'edit');
 
         //// Validation
         // check for the pubfields
