@@ -46,9 +46,10 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
         $tid  = FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
         $tid1 = FormUtil::getPassedValue('withtid1', null, 'GET');
-        $op   = FormUtil::getPassedValue('op', 'or', null, 'GET', FILTER_SANITIZE_STRING);
+        $op   = FormUtil::getPassedValue('op', 'or', 'GET');
         $tid2 = FormUtil::getPassedValue('withtid2', null, 'GET');
 
+        $tid  = (in_array($tid, $tids) ? $tid : null);
         $tid1 = is_array($tid1) ? current($tid1) : (in_array($tid1, $tids) ? $tid1 : null);
         $op   = is_array($op) ? current($op) : $op;
         $tid2 = is_array($tid2) ? current($tid2) : (in_array($tid2, $tids) ? $tid2 : null);
@@ -122,7 +123,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
         );
 
         // fill the view
-        $view->assign('pubtypes', $pubtypes)
+        $view->assign('pubtypes', $pubtypes->toArray())
              ->assign('typeselector', Clip_Util_Selectors::pubtypes(true, true))
              ->assign('relations', $relations)
              ->assign('reltypes', array($reltype1, $reltype2))
@@ -136,7 +137,8 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $returnurl));
         }
 
-        $view->setStateData('filter', $this->filter);
+        $view->setStateData('filter', $this->filter)
+             ->setStateData('tid', $tid);
 
         return true;
     }
@@ -146,7 +148,9 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
      */
     function handleCommand(Zikula_Form_View $view, &$args)
     {
-        $this->filter    = $view->getStateData('filter');
+        $tid = $view->getStateData('tid');
+        $this->filter = $view->getStateData('filter');
+        $this->filter = array_merge(array('tid' => $tid), $this->filter);
         $this->returnurl = $view->getStateData('returnurl');
 
         // cancel processing
@@ -239,12 +243,13 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
             // filter relation list
             case 'filter':
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $this->filter);
+                $params = array_merge(array('tid' => $tid), $data['filter']);
+                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $params);
                 break;
 
             // clear any filter
             case 'clear':
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations');
+                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', array('tid' => $tid));
                 break;
         }
 

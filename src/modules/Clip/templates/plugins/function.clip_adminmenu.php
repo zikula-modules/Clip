@@ -67,7 +67,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 
     // relations link
     $output .= '<span>';
-    $output .= DataUtil::formatForDisplayHTML('<a href="'.ModUtil::url('Clip', 'admin', 'relations', array('withtid1' => $tid, 'op' => 'or', 'withtid2' => $tid)).'">'.$view->__('Relations').'</a>');
+    $output .= DataUtil::formatForDisplayHTML('<a href="'.ModUtil::url('Clip', 'admin', 'relations', array('tid' => $tid, 'withtid1' => $tid, 'op' => 'or', 'withtid2' => $tid)).'">'.$view->__('Relations').'</a>');
 
     // show code links
     $args = array('func' => 'generator', 'args' => array('tid' => $tid, 'code' => 'form'));

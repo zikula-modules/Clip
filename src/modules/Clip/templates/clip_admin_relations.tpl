@@ -4,10 +4,11 @@
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='agt_softwareD.png' set='icons/large' __alt='Manage Relations'}</div>
 
-    <h2>{gt text='Manage Relations'}</h2>
-
     {if $tid}
+        <h2>{$pubtypes[$tid].title} &raquo; {gt text='Relations'}</h2>
         {clip_adminmenu tid=$tid}
+    {else}
+        <h2>{gt text='Manage Relations'}</h2>
     {/if}
 
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
@@ -62,23 +63,23 @@
                     </span>
                     <span class="z-itemcell z-w40 z-right">
                         {if $item.type lt 2}
-                            {gt text='One <strong>%s</strong>' tag1=$pubtypes[$item.tid1]->title|safetext}
+                            {gt text='One <strong>%s</strong>' tag1=$pubtypes[$item.tid1].title|safetext}
                         {else}
-                            {gt text='Many <strong>%s</strong>' tag1=$pubtypes[$item.tid1]->title|safetext}
+                            {gt text='Many <strong>%s</strong>' tag1=$pubtypes[$item.tid1].title|safetext}
                         {/if}
                         &nbsp;
                         <br />
-                        <span class="z-sub">{$pubtypes[$item.tid2]->title|safetext}.{$item.alias2|safetext}</span>
+                        <span class="z-sub">{$pubtypes[$item.tid2].title|safetext}.{$item.alias2|safetext}</span>
                         &nbsp;&nbsp;
                     </span>
                     <span class="z-itemcell z-w40">
                         {if $item.type%2 eq 0}
-                            {gt text='has One <strong>%s</strong>' tag1=$pubtypes[$item.tid2]->title|safetext}
+                            {gt text='has One <strong>%s</strong>' tag1=$pubtypes[$item.tid2].title|safetext}
                         {else}
-                            {gt text='has Many <strong>%s</strong>' tag1=$pubtypes[$item.tid2]->title|safetext}
+                            {gt text='has Many <strong>%s</strong>' tag1=$pubtypes[$item.tid2].title|safetext}
                         {/if}
                         <br />&nbsp;
-                        <span class="z-sub">{$pubtypes[$item.tid1]->title|safetext}.{$item.alias1|safetext}</span>
+                        <span class="z-sub">{$pubtypes[$item.tid1].title|safetext}.{$item.alias1|safetext}</span>
                     </span>
                     <span class="z-itemcell z-w10">
                         <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.withtid1 op=$filter.op tid2=$filter.withtid2 fragment='relform'}">
