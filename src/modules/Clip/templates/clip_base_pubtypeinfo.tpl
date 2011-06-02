@@ -1,7 +1,7 @@
 
 <h2>{$pubtype.title}</h2>
 
-{clip_submenu tid=$pubtype.tid}
+{clip_adminmenu tid=$pubtype.tid}
 
 <ul id="pubtype{$pubtype.tid}_info">
     <li class="tab"><a href="#p{$pubtype.tid}manage">{gt text='Manage'}</a></li>

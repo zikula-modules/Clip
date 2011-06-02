@@ -1,7 +1,7 @@
 
 <h2>{$pubtype.title} &raquo; {gt text='Template code'}</h2>
 
-{clip_submenu tid=$pubtype.tid code=$code}
+{clip_adminmenu tid=$pubtype.tid code=$code}
 
 <hr />
 
