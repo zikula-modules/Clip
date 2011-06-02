@@ -101,7 +101,105 @@
   line-height: 1.4em;
 }
 
-/*** GUI ***/
+
+/*** Editor GUI ***/
+#clip_editor_buttons {
+  padding-right: 20px;
+}
+.clip-editorpanel h2 {
+  background: none;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+  margin-top: 0px;
+  padding-top: 0.5em;
+  text-align: left;
+}
+.clip-editorpanelicon {
+  padding: 0;
+}
+.clip-editorpanelicon img {
+  float: right;
+  padding-top: 5px;
+}
+.clip-editorpanelicon + h2 {
+  margin: 0;
+  padding-top: 10px;
+}
+
+.z-module-clip .clip-editorpanel .z-menu {
+  margin: 7px 0;
+}
+.z-module-clip .clip-editorpanel .clip-breadcrumbs {
+  border: none;
+}
+.clip-editorlist {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  list-style: none;
+  margin: 0 0 1.5em;
+}
+.clip-editorlist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.8em;
+}
+.clip-editorlist li {
+  margin: 0;
+  padding: 0;
+}
+.clip-editorlist li li {
+  padding: 0 0 0 0.8em;
+}
+
+.clip-grouptype {
+  border-bottom: 1px solid #eee;
+}
+.clip-grouptype strong {
+  border-bottom: 1px solid #eee;
+  display: block;
+  font-size: 1.3em;
+  font-weight: normal;
+  line-height: 1.9em;
+  padding: 0 0.8em;
+}
+.clip-editorlist .clip-pubtype {
+  padding: 5px 0.8em;
+}
+.clip-pubtype span {
+  color: #777;
+  display: block;
+}
+.clip-grouptype ul .clip-pubtype {
+  border-bottom: 1px solid #eee;
+}
+.clip-grouptype ul .clip-pubtype:last-child {
+  border-bottom: none;
+}
+
+.clip-editorpanel table.z-datatable {
+  margin: 0;
+  word-wrap: break-word;
+}
+.clip-editorpanel table.z-datatable td {
+  padding: 0.5em;
+  vertical-align: top;
+}
+.clip-editorpanel .z-pager {
+  margin-bottom: 1em;
+}
+
+.clip-editoractions {
+  font-size: 11px;
+  padding: 5px 0 3px;
+}
+.clip-editoractions .clip-ac-delete a {
+  color: #9b3b3b;
+}
+
+
+/*** User GUI ***/
 .z-module-clip .z-menu {
   margin-bottom: 1em;
 }
@@ -120,11 +218,11 @@
 .clip-breadcrumbs span a {
   padding: 3px 0;
 }
-
-.clip-pubtype-desc {
-  padding: 0 5px;
-  margin: 0;
+.clip-breadcrumbs em {
+  font-style: normal;
+  padding: 0;
 }
+
 .z-module-clip .z-pagerabc {
   border-top: 1px solid #CCCCCC;
 }

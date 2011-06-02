@@ -572,7 +572,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $workflow = new Clip_Workflow($pubtype, $pub);
 
         // be sure to have a valid action
-        if (empty($args['action']) || $workflow->isValidAction($args['action'])) {
+        if (empty($args['action']) || !$workflow->isValidAction($args['action'])) {
             return LogUtil::registerError($this->__('Error! Invalid action passed.'));
         }
 

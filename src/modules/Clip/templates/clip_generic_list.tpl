@@ -5,10 +5,6 @@
 
 <h2>{$pubtype.title}</h2>
 
-{if $pubtype.description neq ''}
-    <div class="clip-pubtype-desc">{$pubtype.description}</div>
-{/if}
-
 {*clip_pagerabc*}
 
 <table class="z-datatable clip-pub-list">

@@ -7,10 +7,6 @@
 
 {include file='clip_generic_navbar.tpl'}
 
-{if $pubtype.description neq ''}
-    <p class="clip-pubtype-desc">{$pubtype.description}</p>
-{/if}
-
 {*clip_pagerabc*}
 
 <table class="z-datatable clip-pub-list">
