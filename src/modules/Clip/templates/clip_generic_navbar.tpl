@@ -39,7 +39,7 @@
         {clip_accessblock tid=$pubtype.tid context='submit'}
         <span>
             <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
-                {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Add a publication'}
+                {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Submit a publication'}
             </a>
         </span>
         {/clip_accessblock}
