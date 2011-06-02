@@ -494,8 +494,8 @@ class Clip_Workflow
 
         $statelevels = array_keys($statelevels);
 
-        if ($level > count($statelevels)) {
-            $level = count($statelevels);
+        if ($level >= count($statelevels)) {
+            $level = count($statelevels) - 1;
         }
 
         return $statelevels[$level];
