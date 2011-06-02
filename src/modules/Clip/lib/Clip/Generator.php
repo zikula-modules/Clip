@@ -544,7 +544,7 @@ class Clip_Generator
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class Clip_Model_Pubdata{$tid} extends Clip_Base_Pubdata
+class Clip_Model_Pubdata{$tid} extends Clip_Doctrine_Pubdata
 {
     /**
      * Set table definition.

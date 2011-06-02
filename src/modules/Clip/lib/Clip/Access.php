@@ -147,7 +147,7 @@ class Clip_Access
         }
 
         // when it's an instance we can do a complete check
-        if ($pub instanceof Clip_Base_Pubdata) {
+        if ($pub instanceof Clip_Doctrine_Pubdata) {
             // check an already stored record
             if ($pub->exists()) {
                 if (!isset($pub['core_pid'])) {

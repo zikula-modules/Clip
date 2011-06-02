@@ -10,9 +10,9 @@
  */
 
 /**
- * This is the model class that define the entity structure and behaviours.
+ * Clip's base class for publications.
  */
-class Clip_Base_Pubdata extends Doctrine_Record
+class Clip_Doctrine_Pubdata extends Doctrine_Record
 {
     /**
      * Record load post process.
