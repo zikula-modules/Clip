@@ -16,24 +16,14 @@
  *  - pub    (object) Publication instance.
  *  - assign (string) Optional variable name to assign the result to.
  *
- * Examples:
+ * Example:
  *
- *  For Clip access check:
- *  <samp>{clip_access permlvl=ACCESS_ADMIN}</samp>
- *
- *  For Grouptype access check:
- *  <samp>{clip_access gid=$gid}</samp>
- *
- *  For Pubtype access check:
- *  <samp>{clip_access tid=$pubtype}</samp>
- *
- *  For Publication edit access check:
- *  <samp>{clip_access tid=$pubtype.tid pid=$pubdata context='edit'}</samp>
+ *  <samp>{clip_editoractions pub=$pubdata}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
  *
- * @return boolean
+ * @return string HTML plugin output.
  */
 function smarty_function_clip_editoractions($params, Zikula_View &$view)
 {
