@@ -54,7 +54,8 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
     $output = '<div class="clip-editoractions">';
 
     // common action exec arguments
-    $args = array('tid' => $pub['core_tid'], 'id' => $pub['id']);
+    $token = SecurityUtil::generateCsrfToken();
+    $args  = array('tid' => $pub['core_tid'], 'id' => $pub['id']);
 
     $links = array();
 
@@ -69,6 +70,7 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
     foreach ($actions as $aid => $action) {
         //$class = isset($action['parameters']['link']['class']) ? $action['parameters']['link']['class'] : '';
         $args['action'] = $aid;
+        $args['csrftoken'] = $token;
         $links[] = '<span class="clip-ac-'.$aid.'">'.
                    '  <a href="'.ModUtil::url('Clip', 'user', 'exec', $args).'" title="'.$action['description'].'">'.$action['title'].'</a>'.
                    '</span>';
