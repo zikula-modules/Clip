@@ -383,8 +383,6 @@ class Clip_Controller_User extends Zikula_AbstractController
      */
     public function edit($args)
     {
-        $this->checkCsrfToken();
-
         //// Pubtype
         // get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
@@ -531,6 +529,8 @@ class Clip_Controller_User extends Zikula_AbstractController
      */
     public function exec($args)
     {
+        $this->checkCsrfToken();
+
         //// Pubtype
         // get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
