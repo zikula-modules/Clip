@@ -106,6 +106,9 @@
 #clip_editor_buttons {
   padding-right: 20px;
 }
+.clip-editorpanel {
+  margin-bottom: 1.5em;
+}
 .clip-editorpanel h2 {
   background: none;
   border-bottom: 1px solid #ddd;
@@ -187,7 +190,7 @@
   vertical-align: top;
 }
 .clip-editorpanel .z-pager {
-  margin-bottom: 1em;
+  padding-bottom: 0;
 }
 
 .clip-editoractions {
