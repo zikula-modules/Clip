@@ -181,7 +181,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             case 'admin':
-                $this->goto = ModUtil::url('Clip', 'admin', 'publist', array('tid' => $data['core_tid']));
+                $this->goto = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => $data['core_tid']));
                 break;
 
             case 'home':

@@ -249,18 +249,18 @@ Zikula.Clip.AttachMenu = function ()
             Zikula.Clip.AjaxRequest({'tid':tid, 'code':'list'}, 'generator');
         }
     });
+    /*
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Admin list'),
+        label: Zikula.__('Editor list'),
         condition: function() {
             return !Zikula.Clip.ContextMenu.isGrouptype;
         },
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'tid':tid}, 'publist');
+            Zikula.Clip.AjaxRequest({'tid':tid}, 'list');
         }
     });
-    /*
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('New publication'),
         condition: function() {
@@ -556,7 +556,7 @@ Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 
     pars.module = 'Clip';
     pars.type   = type ? type : 'ajax';
-    pars.func   = func ? func : 'publist';
+    pars.func   = func ? func : 'pubtypeinfo';
 
     if (!callback) {
         callback = Zikula.Clip.AjaxRequestCallback;

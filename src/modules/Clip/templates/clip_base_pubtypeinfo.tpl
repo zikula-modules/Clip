@@ -17,8 +17,8 @@
             </a>
         </li>
         <li>
-            <a class="z-bt-preview" href="{clip_url func='publist' tid=$pubtype.tid}" title="{gt text='Go to the Admin publication list'}">
-                {gt text='Admin list'}
+            <a class="z-bt-preview" href="{modurl modname='Clip' type='editor' func='list' tid=$pubtype.tid}" title="{gt text='Go to the Editor publication list'}">
+                {gt text='Editor list'}
             </a>
         </li>
         <li>

@@ -618,7 +618,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                 break;
 
             case 'admin':
-                $goto = ModUtil::url('Clip', 'admin', 'publist', array('tid' => $args['tid']));
+                $goto = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => $args['tid']));
                 break;
 
             case 'home':

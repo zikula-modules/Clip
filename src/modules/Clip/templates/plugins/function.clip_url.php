@@ -44,7 +44,7 @@ function smarty_function_clip_url($params, Zikula_View &$view)
 
     // process the internal Clip ajax request output
     $type = (isset($params['type']) && $params['type']) ? $params['type'] : 'ajax';
-    $func = (isset($params['func']) && $params['func']) ? $params['func'] : 'publist';
+    $func = (isset($params['func']) && $params['func']) ? $params['func'] : 'pubtypeinfo';
     $args = (isset($params['args']) && $params['args']) ? $params['args'] : array();
 
     unset($params['modname'], $params['type'], $params['func'], $params['args']);

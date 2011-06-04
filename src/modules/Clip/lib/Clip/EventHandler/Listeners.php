@@ -30,7 +30,7 @@ class Clip_EventHandler_Listeners
                 $func = $event->getArg('modfunc');
 
                 // and only for the methods using base templates
-                if (in_array($func[1], array('pubtypeinfo', 'publist', 'history', 'generator'))) {
+                if (in_array($func[1], array('pubtypeinfo', 'generator'))) {
                     $view->assign('maincontent', $event->getData());
 
                     $output = $view->fetch("clip_admin_{$func[1]}.tpl");
