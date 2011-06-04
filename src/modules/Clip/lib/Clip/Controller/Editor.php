@@ -81,7 +81,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         $apiargs = array(
             'tid'           => $args['tid'],
             'filter'        => isset($args['filter']) ? $args['filter'] : (FormUtil::getPassedValue('filter') ? null : 'core_online:eq:1'),
-            'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
+            'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid:desc'),
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : abs((int)FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'])),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : false,
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : true,
@@ -97,8 +97,8 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         $this->view->assign('func', 'list');
 
         //// Misc values
-        if ($apiargs['itemsperpage'] == 0) {
-            $apiargs['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : 15;
+        if ($apiargs['itemsperpage'] < 10) {
+            $apiargs['itemsperpage'] = $pubtype['itemsperpage'] >= 10 ? $pubtype['itemsperpage'] : 10;
         }
 
         if ($args['page'] > 1) {
