@@ -529,7 +529,8 @@ class Clip_Controller_User extends Zikula_AbstractController
      */
     public function exec($args)
     {
-        $this->checkCsrfToken();
+        //// Token check
+        $this->checkCsrfToken($this->request->getGet()->get('csrftoken', 'notokenpresent'));
 
         //// Pubtype
         // get the publication type first
