@@ -63,7 +63,7 @@
                 <td class="z-sub z-right">
                     {$pubitem.lu_date|dateformat:'datebrief'}
                     <br />
-                    {$pubitem.__WORKFLOW__.state}
+                    {$pubitem.__WORKFLOW__.statetitle}
                 </td>
             </tr>
             {foreachelse}

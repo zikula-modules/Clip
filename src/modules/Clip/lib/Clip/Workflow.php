@@ -157,6 +157,11 @@ class Clip_Workflow
                               'obj_id'       => null);
         }
 
+        // adds the translated state title
+        $states = Clip_Workflow_Util::getStatesMap($this->module, $this->schema);
+
+        $workflow['statetitle'] = isset($states[$workflow['state']]) ? $states[$workflow['state']]['title'] : '';
+
         // attach workflow to object
         $this->obj->mapValue('__WORKFLOW__', $workflow);
 
