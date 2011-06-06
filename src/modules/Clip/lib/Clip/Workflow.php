@@ -15,9 +15,9 @@
  * From a developers standpoint, we only use this class to address workflows
  * as the rest is for internal use by the workflow engine.
  */
-class Clip_Workflow
+class Clip_Workflow extends Zikula_AbstractBase
 {
-    // Action retrieve mode
+    // Action types
     const ACTIONS_ALL = 1;
     const ACTIONS_FORM = 2;
     const ACTIONS_EXEC = 3;
@@ -90,6 +90,8 @@ class Clip_Workflow
      */
     public function __construct(Clip_Model_Pubtype $pubtype, Doctrine_Record &$obj = null)
     {
+        parent::__construct(ServiceUtil::getManager());
+
         $this->setup($pubtype, $obj);
     }
 
@@ -121,7 +123,7 @@ class Clip_Workflow
     public function getWorkflow($field = null)
     {
         if (!isset($this->obj) || !is_object($this->obj)) {
-            return LogUtil::registerError(__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getWorkflow'));
+            return LogUtil::registerError($this->__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getWorkflow'));
         }
 
         if (isset($this->obj['__WORKFLOW__'])) {
@@ -160,7 +162,7 @@ class Clip_Workflow
         // adds the translated state title
         $states = Clip_Workflow_Util::getStatesMap($this->module, $this->schema);
 
-        $workflow['statetitle'] = isset($states[$workflow['state']]) ? $states[$workflow['state']]['title'] : '';
+        $workflow['statetitle'] = isset($states[$workflow['state']]) ? $states[$workflow['state']]['title'] : $this->__('Invalid');
 
         // attach workflow to object
         $this->obj->mapValue('__WORKFLOW__', $workflow);
@@ -241,7 +243,7 @@ class Clip_Workflow
     public function executeAction($actionID)
     {
         if (!isset($this->obj) || !is_object($this->obj)) {
-            return LogUtil::registerError(__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getWorkflow'));
+            return LogUtil::registerError($this->__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getWorkflow'));
         }
 
         $stateID = $this->getWorkflow('state');
@@ -250,19 +252,19 @@ class Clip_Workflow
 
         // check if state exists
         if (!$actionMap) {
-            return LogUtil::registerError(__f('State [%s] not found.', $stateID));
+            return LogUtil::registerError($this->__f('State [%s] not found.', $stateID));
         }
 
         // check the action exists for given state
         if (!isset($actionMap[$actionID])) {
-            return LogUtil::registerError(__f('Action [%1$s] not available in State [%2$s].', array($actionID, $stateID)));
+            return LogUtil::registerError($this->__f('Action [%1$s] not available in State [%2$s].', array($actionID, $stateID)));
         }
 
         $action = $actionMap[$actionID];
 
         // permission check
         if (!Clip_Workflow_Util::permissionCheck($this->obj, $this->module, $this->schema, $action['permission'], $actionID)) {
-            return LogUtil::registerError(__f('No permission to execute the [%s] action.', $actionID));
+            return LogUtil::registerError($this->__f('No permission to execute the [%s] action.', $actionID));
         }
 
         // define the next state to be passed to the operations
@@ -329,14 +331,14 @@ class Clip_Workflow
             $path = Clip_Workflow_Util::findPath($file, $this->module);
 
             if (!$path) {
-                return LogUtil::registerError(__f('Workflow operation file [%s] does not exist', $operation['name']));
+                return LogUtil::registerError($this->__f('Workflow operation file [%s] does not exist', $operation['name']));
             }
 
             // load file and test if function exists
             include_once $path;
 
             if (!function_exists($function)) {
-                return LogUtil::registerError(__f('Workflow operation function [%s] is not defined', $function));
+                return LogUtil::registerError($this->__f('Workflow operation function [%s] is not defined', $function));
             }
         }
 
@@ -405,7 +407,7 @@ class Clip_Workflow
     {
         if (!$state) {
             if (!isset($this->obj) || !is_object($this->obj)) {
-                return LogUtil::registerError(__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getActions'));
+                return LogUtil::registerError($this->__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getActions'));
             }
 
             $state = $this->getWorkflow('state');
