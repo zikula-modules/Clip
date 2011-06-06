@@ -47,7 +47,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 
             if (!$pubfield) {
                 $view->setErrorMsg($this->__f('Error! No such publication field [%s] found.', $this->id));
-                return $view->redirect(ModUtil::url('Clip', 'admin'));
+                return $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
             }
 
             $view->assign('field', $pubfield->toArray());

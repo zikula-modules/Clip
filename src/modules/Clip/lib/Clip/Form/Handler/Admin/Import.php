@@ -23,7 +23,7 @@ class Clip_Form_Handler_Admin_Import extends Zikula_Form_AbstractHandler
     {
         // stores the return URL
         if (!$view->getStateData('rStateeturnurl')) {
-            $adminurl = ModUtil::url('Clip', 'admin');
+            $adminurl = ModUtil::url('Clip', 'admin', 'main');
             $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
             // default values
             $view->assign('redirect', 0);

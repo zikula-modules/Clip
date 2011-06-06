@@ -37,7 +37,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 
             if (!$pubtype) {
                 $view->setErrorMsg($this->__f('Error! No such publication type [%s] found.', $this->tid));
-                return $view->redirect(ModUtil::url('Clip', 'admin'));
+                return $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
             }
 
             // assigns the pubfuelds for the sort configuration
@@ -186,7 +186,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 // status message
                 LogUtil::registerStatus($this->__('Done! Publication type deleted.'));
 
-                $this->returnurl = ModUtil::url('Clip', 'admin');
+                $this->returnurl = ModUtil::url('Clip', 'admin', 'main');
                 break;
         }
 
