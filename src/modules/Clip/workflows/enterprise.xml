@@ -4,6 +4,7 @@
 
   <title>Enterprise</title>
   <description>This is a three staged workflow with stages for untrusted submissions, moderator's acceptance, and approval control by a editor; approved publications are handled by authors staff.</description>
+  <domain>module_clip</domain>
 
   <states>
 

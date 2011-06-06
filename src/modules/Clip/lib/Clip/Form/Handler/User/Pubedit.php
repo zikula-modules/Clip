@@ -46,9 +46,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             return $view->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $this->tid)));
         }
 
-        // translate any gt string on the action parameters
-        $this->translateActions($actions);
-
         //// Processing
         // handle the Doctrine_Record data as an array from here
         $data = $this->pub->toArray();
@@ -300,33 +297,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $pubdata->clipProcess();
 
         $this->pub = $pubdata;
-    }
-
-    /**
-     * Translate the action texts to display them on the form.
-     */
-    protected function translateActions(&$actions)
-    {
-        foreach (array_keys((array)$actions) as $aid) {
-            // FIXME think on a solution for these translations
-            $actions[$aid]['title'] = $this->__($actions[$aid]['title']);
-            if (isset($actions[$aid]['parameters'])) {
-                // check if the action parameter is translatable
-                foreach (array_keys($actions[$aid]['parameters']) as $pname) {
-                    foreach ($actions[$aid]['parameters'][$pname] as $k => $v) {
-                        if (strpos($k, '__') === 0) {
-                            unset($actions[$aid]['parameters'][$pname][$k]);
-                            $k = substr($k, 2);
-                            $actions[$aid]['parameters'][$pname][$k] = $this->__($v);
-                        }
-                    }
-                }
-                // set the button title with the description if not set
-                if (!isset($actions[$aid]['parameters']['button']['title'])) {
-                    $actions[$aid]['parameters']['button']['title'] = $this->__($actions[$aid]['description']);
-                }
-            }
-        }
     }
 
     /**

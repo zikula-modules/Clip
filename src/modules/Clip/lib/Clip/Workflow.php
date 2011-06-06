@@ -6,7 +6,7 @@
  * @link       http://code.zikula.org/clip/
  * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package    Clip
- * @subpackage Version
+ * @subpackage Workflow
  */
 
 /**
@@ -72,6 +72,8 @@ class Clip_Workflow extends Zikula_AbstractBase
         if (!isset($args['schema']) || !isset($args['module']) || !isset($args['table']) || !isset($args['idcolumn'])) {
             throw new Exception('Missing required parameter for Clip_Workflow');
         }
+
+        parent::__construct(ServiceUtil::getManager());
 
         $this->module   = $args['module'];
         $this->schema   = $args['schema'];

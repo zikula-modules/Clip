@@ -4,6 +4,7 @@
 
   <title>Standard</title>
   <description>This is a two staged workflow with stages for untrusted submissions and finally approved publications. It does not allow corrections of non-editors to published pages.</description>
+  <domain>module_clip</domain>
 
   <states>
 

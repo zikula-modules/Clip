@@ -4,6 +4,7 @@
 
   <title>None</title>
   <description>This is like a non-existing workflow. Everything is online immediately after creation.</description>
+  <domain>module_clip</domain>
 
   <states>
 

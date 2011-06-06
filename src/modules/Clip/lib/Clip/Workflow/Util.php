@@ -6,7 +6,7 @@
  * @link       http://code.zikula.org/clip/
  * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package    Clip
- * @subpackage Version
+ * @subpackage Workflow
  */
 
 /**
@@ -46,7 +46,7 @@ class Clip_Workflow_Util
         }
 
         // instanciate Workflow Parser
-        $parser = new Zikula_Workflow_Parser();
+        $parser = new Clip_Workflow_Parser();
 
         // parse workflow and return workflow object
         $workflowXML = file_get_contents($path);
@@ -56,7 +56,14 @@ class Clip_Workflow_Util
         unset($parser);
         unset($workflowXML);
 
-        // translate the action permissions to system values
+        // only take the info we need
+        $data = array(
+            'workflow' => $data['workflow'],
+            'states'   => $data['states'],
+            'actions'  => $data['actions']
+        );
+
+        // translate the action permissions to system number values
         foreach ($data['actions'] as $state => &$actions) {
             foreach ($actions as $id => &$action) {
                 $action['permission'] = self::translatePermission($action['permission']);
@@ -67,12 +74,46 @@ class Clip_Workflow_Util
             }
         }
 
+        // translate workflow texts according the especified or module gettext domain
+        $dom = isset($data['workflow']['domain']) ? $data['workflow']['domain'] : ZLanguage::getModuleDomain($module);
+
+        // workflow translation
+        $data['workflow']['title']       = isset($data['workflow']['title']) ? __($data['workflow']['title'], $dom) : $data['workflow']['id'];
+        $data['workflow']['description'] = isset($data['workflow']['description']) ? __($data['workflow']['description'], $dom) : '';
+
+        // states translation
+        foreach ($data['states'] as $id => &$state) {
+            $state['title']       = isset($state['title']) ? __($state['title'], $dom) : $id;
+            $state['description'] = isset($state['description']) ? __($state['description'], $dom) : '';
+        }
+
+        // actions translation
+        foreach ($data['actions'] as $stateid => &$actions) {
+            foreach ($actions as $id => &$action) {
+                $action['title']       = isset($action['title']) ? __($action['title'], $dom) : $id;
+                $action['description'] = isset($action['description']) ? __($action['description'], $dom) : '';
+                // translate action parameters
+                if (isset($action['parameters'])) {
+                    // check if the action parameter is translatable
+                    foreach (array_keys($action['parameters']) as $pname) {
+                        foreach ($action['parameters'][$pname] as $k => $v) {
+                            if (strpos($k, '__') === 0) {
+                                unset($action['parameters'][$pname][$k]);
+                                $k = substr($k, 2);
+                                $action['parameters'][$pname][$k] = __($v, $dom);
+                            }
+                        }
+                    }
+                    // set the button title with the description if not set
+                    if (isset($action['parameters']['button']) && !isset($action['parameters']['button']['title'])) {
+                        $action['parameters']['button']['title'] = $action['description'];
+                    }
+                }
+            }
+        }
+
         // cache workflow
-        self::$workflows[$module][$schema] = array(
-                                                   'workflow' => $data['workflow'],
-                                                   'states' => $data['states'],
-                                                   'actions' => $data['actions']
-                                                  );
+        self::$workflows[$module][$schema] = $data;
 
         // return workflow object
         return self::$workflows[$module][$schema];
