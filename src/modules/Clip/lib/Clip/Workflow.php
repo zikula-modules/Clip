@@ -19,10 +19,11 @@ class Clip_Workflow extends Zikula_AbstractBase
 {
     // Action types
     const ACTIONS_ALL = 1;
-    const ACTIONS_FORM = 2;
-    const ACTIONS_EXEC = 3;
-    const ACTIONS_INLINE = 4;
-    const ACTIONS_CUSTOM = 5;
+    const ACTIONS_MASSIVE = 2;
+    const ACTIONS_FORM = 3;
+    const ACTIONS_EXEC = 4;
+    const ACTIONS_INLINE = 5;
+    const ACTIONS_CUSTOM = 6;
 
     /**
      * Item object.
@@ -372,6 +373,12 @@ class Clip_Workflow extends Zikula_AbstractBase
             foreach ($actions as $id => $action) {
                 switch ($mode)
                 {
+                    case self::ACTIONS_MASSIVE:
+                        if (!isset($action['parameters']['action']['massive']) || !(bool)$action['parameters']['action']['massive']) {
+                            unset($actions[$id]);
+                        }
+                        break;
+
                     case self::ACTIONS_FORM:
                         if (isset($action['parameters']['action']['mode']) && $action['parameters']['action']['mode'] != 'form') {
                             unset($actions[$id]);
