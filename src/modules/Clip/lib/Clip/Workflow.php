@@ -22,6 +22,7 @@ class Clip_Workflow extends Zikula_AbstractBase
     const ACTIONS_FORM = 2;
     const ACTIONS_EXEC = 3;
     const ACTIONS_INLINE = 4;
+    const ACTIONS_CUSTOM = 5;
 
     /**
      * Item object.
@@ -372,19 +373,25 @@ class Clip_Workflow extends Zikula_AbstractBase
                 switch ($mode)
                 {
                     case self::ACTIONS_FORM:
-                        if (isset($action['parameters']['action']['mode']) && $action['parameters']['action']['mode'] == 'exec') {
+                        if (isset($action['parameters']['action']['mode']) && $action['parameters']['action']['mode'] != 'form') {
                             unset($actions[$id]);
                         }
                         break;
 
                     case self::ACTIONS_EXEC:
-                        if (isset($action['parameters']['action']['mode']) && $action['parameters']['action']['mode'] == 'form') {
+                        if (isset($action['parameters']['action']['mode']) && $action['parameters']['action']['mode'] != 'exec') {
                             unset($actions[$id]);
                         }
                         break;
 
                     case self::ACTIONS_INLINE:
-                        if (!isset($action['parameters']['action']['mode']) || $action['parameters']['action']['mode'] == 'form') {
+                        if (!isset($action['parameters']['action']['mode']) || $action['parameters']['action']['mode'] != 'exec') {
+                            unset($actions[$id]);
+                        }
+                        break;
+
+                    case self::ACTIONS_CUSTOM:
+                        if (!isset($action['parameters']['action']['mode']) || $action['parameters']['action']['mode'] != 'custom') {
                             unset($actions[$id]);
                         }
                         break;
