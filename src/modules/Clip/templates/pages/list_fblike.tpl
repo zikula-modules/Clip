@@ -30,7 +30,7 @@
                 {/clip_accessblock}
                 {/strip}
 
-                {modurl modname='Clip' func='display' tid=$pubtype.tid pid=$pubdata.core_pid fqurl=true assign='returnurl'}
+                {modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid fqurl=true assign='returnurl'}
                 {fblike url=$returnurl width=150 layout='horizontal' rel='list_item'}
             </td>
         </tr>
