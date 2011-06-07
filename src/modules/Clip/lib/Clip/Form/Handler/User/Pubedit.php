@@ -128,7 +128,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // get the data set in the form
         $data = $view->getValues();
 
-        // restore the core values
+        // fill the new values
         $this->getPub($data['pubdata'], $view);
 
         // adds any extra data to the item
@@ -242,13 +242,14 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
     protected function getPub($data, $view)
     {
-        // allow specify fixed PIDs
-        if (isset($data['core_pid'])) {
+        // allow specify fixed PIDs for new pubs
+        if (!$this->pub['core_pid'] && isset($data['core_pid'])) {
             $this->pub['core_pid'] = $data['core_pid'];
         }
 
-        // link/unlink the relations data if present
         foreach (array_keys($this->relations) as $alias) {
+            // stores the relations data if present
+            // for later DB update
             if (array_key_exists($alias, $data)) {
                 $tolink = $tounlink = array();
                 // get the links present on the form before submit it
@@ -266,17 +267,16 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     }
                 }
 
-                //$relation = $this->pub->getRelation($alias);
+                // unset this data field
+                unset($data[$alias]);
 
                 // perform the operations
-                // TODO test relation field side assign to NULL
                 if ($tolink) {
                     $this->pub->link($alias, $tolink);
                 }
                 if ($tounlink) {
                     $this->pub->unlink($alias, $tounlink);
                 }
-                unset($data[$alias]);
             }
         }
 
