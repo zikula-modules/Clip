@@ -75,7 +75,7 @@ class Clip_Generator
             if (empty($rowcode['full'])) {
                 // fill the label if empty
                 if (empty($rowcode['label'])) {
-                    $rowcode['label'] = "{gt text='$name'}:";
+                    $rowcode['label'] = "$name:";
                 }
 
                 // fill the body if empty
@@ -138,7 +138,7 @@ class Clip_Generator
 
                         case 'core_expiredate':
                             $rowcode['body'] = "\n".
-                                '        {gt text=\''.no__('No expire date specified.').'\' assign=\'defexpire\'}'.
+                                '        {gt text=\''.no__('No expire date specified.').'\' assign=\'defexpire\'}'."\n".
                                 '        <span class="z-formnote">{$pubdata.'.$name.'|dateformat:\'datetimelong\'|default:$defexpire}</span>';
                             break;
 

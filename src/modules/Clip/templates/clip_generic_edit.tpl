@@ -11,7 +11,7 @@
 
 <h2>{$pagetitle}</h2>
 
-{assign var='zformclass' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.edit.state`"}
+{assign var='zformclass' value="z-form clip-editform clip-editform-`$pubtype.urltitle` clip-editform-`$pubtype.urltitle`-`$clipargs.edit.state`"}
 
 {form cssClass=$zformclass enctype='multipart/form-data'}
     <div>
