@@ -247,10 +247,10 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return NULL;
     }
 
-    static function getPluginOutput($field)
+    static function getOutputDisplay($field)
     {
         $full = '    <div class="z-formrow">'."\n".
-                '        <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '        <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
                 '        {if $pubdata.'.$field['name'].'.url}'."\n".
                 '            <span class="z-formnote">'."\n".
                 '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".

@@ -101,10 +101,10 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         return $this->config['cat'];
     }
 
-    static function getPluginOutput($field)
+    static function getOutputDisplay($field)
     {
         $full = '    <div class="z-formrow">'."\n".
-                '        <span class="z-label">{gt text=\''.$field['title'].'\'}:</span>'."\n".
+                '        <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
                 '        {if $pubdata.'.$field['name'].'}'."\n".
                 '            {*clip_multilistdecode value=$pubdata.'.$field['name'].'*}'."\n".
                 '            <ul class="z-formnote">'."\n".

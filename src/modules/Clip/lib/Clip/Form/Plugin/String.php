@@ -43,7 +43,7 @@ class Clip_Form_Plugin_String extends Zikula_Form_Plugin_TextInput
         }
     }
 
-    static function getPluginOutput($field)
+    static function getOutputDisplay($field)
     {
         $body = "\n".
             '        <span class="z-formnote">{$pubdata.'.$field['name'].'|safehtml}</span>';

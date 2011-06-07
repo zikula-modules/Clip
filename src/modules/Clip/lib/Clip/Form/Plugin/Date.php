@@ -45,7 +45,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     /**
      * Clip processing methods.
      */
-    function getPluginOutput($field)
+    function getOutputDisplay($field)
     {
         $this->parseConfig($field['typedata']);
         $format = $this->config['includeTime'] ? 'datetimelong' : 'datelong';

@@ -49,7 +49,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
-    static function getPluginOutput($field)
+    static function getOutputDisplay($field)
     {
         $body = "\n".
             '         <span class="z-formnote">{$pubdata.'.$field['name'].'|safehtml|notifyfilters:"clip.hook.`$pubtype.tid`.ui.filter"}</span>';
@@ -57,7 +57,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
         return array('body' => $body);
     }
 
-    static function getPluginEdit($field)
+    static function getOutputEdit($field)
     {
         return " rows='15' cols='70'";
     }

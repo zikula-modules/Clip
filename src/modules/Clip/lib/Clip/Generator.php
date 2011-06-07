@@ -25,30 +25,11 @@ class Clip_Generator
         $pubdata->clipWorkflow();
         // get the record fields
         $recfields = $pubdata->pubFields();
-        // and the relation fields information
-        $relfields = $pubdata->getRelations(false);
 
-        // build the display code
-        $code = "\n";
-        if (!$forblock) {
-            $code .=
-                '{if !$homepage}{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
-                '{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}'."\n".
-                "\n".
-                '{include file=\'clip_generic_navbar.tpl\'}'."\n".
-                "\n".
-                '<h2>{$pubdata.core_title|safetext}</h2>'."\n".
-                "\n".
-                '<div class="z-form clip-pub-details">';
-        } else {
-            $code .=
-                '<div class="z-form clip-pub-block">'."\n".
-                '    <div class="z-linear">'."\n";
-        }
+        $pubfields = Clip_Util::getPubFields($tid)->toArray();
 
-        $pubfields = Clip_Util::getPubFields($tid);
-
-        foreach ($recfields as $key => $recfield)
+        $code = '';
+        foreach ($recfields as $name => $recfield)
         {
             $rowcode = array(
                 'full'  => '',
@@ -60,9 +41,9 @@ class Clip_Generator
             if ($recfield == 'relation') {
                 $rowcode['full'] =
                     '    <div class="z-formrow">'."\n".
-                    '        <span class="z-label">{gt text=\''.$relfields[$key]['title'].'\'}:</span>'."\n".
-                    '        {if $pubdata.'.$key.' AND count($pubdata.'.$key.')}'."\n".
-                    '            <pre class="z-formnote">{clip_array array=$pubdata.'.$key.'->toArray()}</pre>'."\n".
+                    '        <span class="z-label">{$relations.'.$name.'|clip_translate}:</span>'."\n".
+                    '        {if $pubdata.'.$name.' AND count($pubdata.'.$name.')}'."\n".
+                    '            <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'->toArray()}</pre>'."\n".
                     '        {else}'."\n".
                     '            <span class="z-formnote z-sub">{gt text=\''.no__('(empty)').'\'}</span>'."\n".
                     '        {/if}'."\n".
@@ -70,23 +51,22 @@ class Clip_Generator
             }
 
             // check if field is to handle special
-            if (isset($pubfields[$key])) {
-                // $key is $field.name
-                $field = $pubfields[$key];
+            if (isset($pubfields[$name])) {
+                $field = $pubfields[$name];
 
-                $rowcode['label'] = '{gt text=\''.$field['title'].'\'}:';
+                $rowcode['label'] = '{$pubfields.'.$name.'|clip_translate}:';
 
                 // process the postRead and getPluginOutput
                 $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
                 if (method_exists($plugin, 'postRead')) {
-                    $pubdata[$key] = $plugin->postRead('', $key);
+                    $pubdata[$name] = $plugin->postRead('', $name);
                 } else {
-                    $pubdata[$key] = '';
+                    $pubdata[$name] = '';
                 }
 
-                if (method_exists($plugin, 'getPluginOutput')) {
-                    $plugincode = $plugin->getPluginOutput($field);
+                if (method_exists($plugin, 'getOutputDisplay')) {
+                    $plugincode = $plugin->getOutputDisplay($field);
                     $rowcode = array_merge($rowcode, (array)$plugincode);
                 }
             }
@@ -95,22 +75,22 @@ class Clip_Generator
             if (empty($rowcode['full'])) {
                 // fill the label if empty
                 if (empty($rowcode['label'])) {
-                    $rowcode['label'] = $key.':';
+                    $rowcode['label'] = "{gt text='$name'}:";
                 }
 
                 // fill the body if empty
                 if (empty($rowcode['body'])) {
                     // filter some core fields
-                    switch ($key) {
+                    switch ($name) {
                         // title
                         case 'core_title':
-                            $rowcode['full'] = !$forblock ? false : '<h5'.($public ? ' class="z-center"' : '').'>$pubdata.'.$key.'</h5>';
+                            $rowcode['full'] = !$forblock ? false : '    <h5>$pubdata.'.$name.'</h5>';
                             break;
 
                         // reads
                         case 'core_hitcount':
                             $rowcode['body'] = "\n".
-                                '        <span class="z-formnote">{gt text=\'%s read\' plural=\'%s reads\' count=$pubdata.'.$key.' tag1=$pubdata.'.$key.'}</span>';
+                                '        <span class="z-formnote">{gt text=\'%s read\' plural=\'%s reads\' count=$pubdata.'.$name.' tag1=$pubdata.'.$name.'}</span>';
                             break;
 
                         // language
@@ -118,10 +98,10 @@ class Clip_Generator
                             $rowcode['full'] =
                                 '    <div class="z-formrow">'."\n".
                                 '        <span class="z-label">'.$rowcode['label'].'</span>'."\n".
-                                '            {if !empty($pubdata.'.$key.')}'."\n".
-                                '                <span class="z-formnote">{$pubdata.'.$key.'|getlanguagename}</span>'."\n".
+                                '            {if !empty($pubdata.'.$name.')}'."\n".
+                                '                <span class="z-formnote">{$pubdata.'.$name.'|getlanguagename}</span>'."\n".
                                 '            {else}'."\n".
-                                '                <span class="z-formnote">{gt text=\''.no__('Available for all languages').'\'}</span>'."\n".
+                                '                <span class="z-formnote">{gt text=\''.no__('Available for all languages.').'\'}</span>'."\n".
                                 '            {/if}'."\n".
                                 '        </span>'."\n".
                                 '    </div>';
@@ -134,7 +114,7 @@ class Clip_Generator
                         case 'core_showinmenu':
                         case 'core_showinlist':
                             $rowcode['body'] = "\n".
-                                '        <span class="z-formnote">{$pubdata.'.$key.'|yesno}</span>';
+                                '        <span class="z-formnote">{$pubdata.'.$name.'|yesno}</span>';
                             break;
 
                         // user ids
@@ -143,35 +123,40 @@ class Clip_Generator
                         case 'lu_uid':
                             $rowcode['body'] = "\n".
                                 '        <span class="z-formnote">'."\n".
-                                '            {$pubdata.'.$key.'|profilelinkbyuid}'."\n".
-                                '            <span class="z-sub">[{$pubdata.'.$key.'|safehtml}]</span>'."\n".
+                                '            {$pubdata.'.$name.'|profilelinkbyuid}'."\n".
+                                '            <span class="z-sub">[{$pubdata.'.$name.'|safehtml}]</span>'."\n".
                                 '        </span>';
                             break;
 
                         // dates
                         case 'core_publishdate':
-                        case 'core_expiredate':
                         case 'cr_date':
                         case 'lu_date':
                             $rowcode['body'] = "\n".
-                                '        <span class="z-formnote">{$pubdata.'.$key.'|dateformat:\'datetimelong\'}</span>';
+                                '        <span class="z-formnote">{$pubdata.'.$name.'|dateformat:\'datetimelong\'}</span>';
+                            break;
+
+                        case 'core_expiredate':
+                            $rowcode['body'] = "\n".
+                                '        {gt text=\''.no__('No expire date specified.').'\' assign=\'defexpire\'}'.
+                                '        <span class="z-formnote">{$pubdata.'.$name.'|dateformat:\'datetimelong\'|default:$defexpire}</span>';
                             break;
 
                         default:
-                            if (is_array($pubdata[$key])) {
+                            if (is_array($pubdata[$name])) {
                                 // generic arrays
                                 $rowcode['body'] = "\n".
-                                    '        <pre class="z-formnote">{clip_array array=$pubdata.'.$key.'}</pre>';
+                                    '        <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'}</pre>';
 
-                            } elseif (is_bool($pubdata[$key])) {
+                            } elseif (is_bool($pubdata[$name])) {
                                 // generic booleans
                                 $rowcode['body'] = "\n".
-                                    '        <span class="z-formnote">{$pubdata.'.$key.'|yesno}</span>';
+                                    '        <span class="z-formnote">{$pubdata.'.$name.'|yesno}</span>';
 
                             } else {
                                 // generic strings
                                 $rowcode['body'] = "\n".
-                                    '        <span class="z-formnote">{$pubdata.'.$key.'|safetext}</span>';
+                                    '        <span class="z-formnote">{$pubdata.'.$name.'|safetext}</span>';
                             }
                     }
                 }
@@ -191,165 +176,72 @@ class Clip_Generator
             }
         }
 
-        if (!$forblock) {
-            // add the Hooks support for display
-            $code .= '</div>'."\n".
-                "\n".
-                '<div class="clip-display-hooks">'."\n".
-                '    {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.display_view" id=$pubdata.core_uniqueid}'."\n".
-                '</div>';
-        } else {
-            $code .= '    </div>'."\n".
-                     '</div>';
-        }
-        $code .= "\n\n";
-
         // if the template is a public output
-        if ($public) {
+        if ($public && !$forblock) {
             // add the row cycles
             $code = str_replace('z-formrow', 'z-formrow {cycle values=\'z-odd,z-even\'}', $code);
         }
 
-        return $code;
+        // build the output
+        $view = Zikula_View::getInstance('Clip');
+
+        $template = 'clip_generic_'.($forblock ? 'blockpub' : 'display').'.tpl';
+        $tplpath  = $view->get_template_path($template);
+        $output   = file_get_contents($tplpath.'/'.$template);
+
+        return str_replace('{$code}', $code, $output);
     }
 
     public static function pubedit($tid)
     {
-        $heading_newpub = no__('Submit a publication');
-        $legend_pubcontent = no__('Publication content');
-
-        $code = "\n".
-                '{* process the title according the publication status *}'."\n".
-                '{if $pubdata.id}'."\n".
-                '    {gt text="Edit \'%s\'" tag1=$pubdata.core_title|truncate:50 assign=\'pagetitle\'}'."\n".
-                '{else}'."\n".
-                '    {gt text=\''.$heading_newpub.'\' assign=\'pagetitle\'}'."\n".
-                '{/if}'."\n".
-                '{if !$homepage}{pagesetvar name="title" value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}'."\n".
-                "\n".
-                '{include file=\'clip_generic_navbar.tpl\'}'."\n".
-                "\n".
-                '<h2>{$pagetitle}</h2>'."\n".
-                "\n".
-                '{assign var=\'zformclass\' value="z-form clip-editform clip-editform-`$pubtype.tid` clip-editform-`$pubtype.tid`-`$clipargs.edit.state`"}'."\n".
-                "\n".
-                '{form cssClass=$zformclass enctype=\'multipart/form-data\'}'."\n".
-                '    <div>'."\n".
-                '        {formvalidationsummary}'."\n".
-                '        <fieldset class="z-linear">'."\n".
-                '            <legend>{gt text=\''.$legend_pubcontent.'\'}</legend>'."\n";
-
         // publication fields
         $pubfields = Clip_Util::getPubFields($tid)->toArray();
 
-        foreach (array_keys($pubfields) as $k) {
+        $code = '';
+        foreach (array_keys($pubfields) as $name) {
             // get the formplugin name
-            $formplugin = $pubfields[$k]['fieldplugin'];
+            $formplugin = $pubfields[$name]['fieldplugin'];
 
             // FIXME lenghts
-            if (!empty($pubfields[$k]['fieldmaxlength'])) {
-                $maxlength = " maxLength='{$pubfields[$k]['fieldmaxlength']}'";
+            if (!empty($pubfields[$name]['fieldmaxlength'])) {
+                $maxlength = " maxLength='{$pubfields[$name]['fieldmaxlength']}'";
             } elseif ($formplugin == 'Text') {
                 $maxlength = " maxLength='65535'";
             } else {
                 $maxlength = '';
             }
 
-            $toolTip = !empty($pubfields[$k]['description']) ? str_replace("'", "\'", $pubfields[$k]['description']) : '';
-
             // specific edit parameters
             // process the getPluginEdit of the plugin
             $plugin = Clip_Util_Plugins::get($formplugin);
 
-            if (method_exists($plugin, 'getPluginEdit')) {
-                $plugadd = $plugin->getPluginEdit($pubfields[$k]);
-            } elseif ($formplugin == 'String' && $pubfields[$k]['istitle']) {
+            if (method_exists($plugin, 'getOutputEdit')) {
+                $plugadd = $plugin->getOutputEdit($pubfields[$name]);
+            } elseif ($formplugin == 'String' && $pubfields[$name]['istitle']) {
                 $plugadd = ' cssClass="z-form-text-big"';
             } else {
                 $plugadd = '';
             }
 
-            // scape simple quotes where needed
-            $pubfields[$k]['title'] = str_replace("'", "\'", $pubfields[$k]['title']);
-
+            // build the field's row output
             $code .= "\n".
                     '            <div class="z-formrow">'."\n".
-                    '                {formlabel for=\''.$pubfields[$k]['name'].'\' _'.'_text=\''.$pubfields[$k]['title'].'\''.((bool)$pubfields[$k]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                    '                {clip_form_genericplugin id=\''.$pubfields[$k]['name'].'\''.$maxlength.$plugadd.' group=\'pubdata\'}'."\n".
-        ($toolTip ? '                <span class="z-formnote z-sub">{gt text=\''.$toolTip.'\'}</span>'."\n" : '').
+                    '                {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfields[$name]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                    '                {clip_form_genericplugin id=\''.$name.'\''.$maxlength.$plugadd.' group=\'pubdata\'}'."\n".
+                    '                {if $pubfields.'.$name.'.description|clip_translate}'."\n".
+                    '                    <span class="z-formnote z-sub">{$pubfields.'.$name.'.description|clip_translate}</span>'."\n".
+                    '                {/if}'."\n".
                     '            </div>'."\n";
         }
-        $code .=
-                '        </fieldset>'."\n".
-                "\n";
 
-        // publication relations
-        no__('Related publications');
+        // build the output
+        $view = Zikula_View::getInstance('Clip');
 
-        $code .=
-                '        {if $relations}'."\n".
-                '        <fieldset>'."\n".
-                '            <legend>{gt text=\'Related publications\'}</legend>'."\n".
-                "\n".
-                '            {foreach from=$relations key=\'alias\' item=\'item\' name=\'relations\'}'."\n".
-                '            <div class="z-formrow">'."\n".
-                '                {formlabel for=$alias text=$item.title}'."\n".
-                '                {clip_form_relation id=$alias relation=$item minchars=2 op=\'search\' group=\'pubdata\'}'."\n".
-                '            </div>'."\n".
-                '            {/foreach}'."\n".
-                "\n".
-                '        </fieldset>'."\n".
-                '        {/if}'."\n".
-                "\n".
-        '';
+        $tplpath  = $view->get_template_path('clip_generic_edit.tpl');
+        $output   = file_get_contents($tplpath.'/clip_generic_edit.tpl');
+        $output   = str_replace('{$code}', $code, $output);
 
-        // publication options
-        no__('Publication options');
-        no__('Language');
-        no__('Publish date');
-        no__('Expire date');
-        no__('Show in list');
-        no__('Cancel');
-
-        $code .=
-                '        <fieldset>'."\n".
-                '            <legend>{gt text=\'Publication options\'}</legend>'."\n".
-                "\n".
-                '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\'core_language\' _'.'_text=\'Language\'}'."\n".
-                '                {formlanguageselector id=\'core_language\' group=\'pubdata\' mandatory=false}'."\n".
-                '            </div>'."\n".
-                "\n".
-                '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\'core_publishdate\' _'.'_text=\'Publish date\'}'."\n".
-                '                {formdateinput id=\'core_publishdate\' group=\'pubdata\' includeTime=true}'."\n".
-                '                <em class="z-formnote z-sub">{gt text=\'leave blank if you do not want to schedule the publication\'}</em>'."\n".
-                '            </div>'."\n".
-                "\n".
-                '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\'core_expiredate\' _'.'_text=\'Expire date\'}'."\n".
-                '                {formdateinput id=\'core_expiredate\' group=\'pubdata\' includeTime=true}'."\n".
-                '                <em class="z-formnote z-sub">{gt text=\'leave blank if you do not want the plublication expires\'}</em>'."\n".
-                '            </div>'."\n".
-                "\n".
-                '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\'core_showinlist\' _'.'_text=\'Show in list\'}'."\n".
-                '                {formcheckbox id=\'core_showinlist\' group=\'pubdata\' checked=\'checked\'}'."\n".
-                '            </div>'."\n".
-                '        </fieldset>'."\n".
-                "\n".
-                '        {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.form_edit" id=$pubobj.core_uniqueid}'."\n".
-                "\n".
-                '        <div class="z-buttons z-formbuttons">'."\n".
-                '            {foreach item=\'action\' from=$actions}'."\n".
-                '                {formbutton commandName=$action.id text=$action.title zparameters=$action.parameters.button|default:\'\'}'."\n".
-                '            {/foreach}'."\n".
-                '            {formbutton commandName=\'cancel\' __text=\'Cancel\' class=\'z-bt-cancel\'}'."\n".
-                '        </div>'."\n".
-                '    </div>'."\n".
-                '{/form}'."\n\n";
-
-        return $code;
+        return $output;
     }
 
     /**

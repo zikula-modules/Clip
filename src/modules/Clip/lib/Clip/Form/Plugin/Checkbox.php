@@ -28,9 +28,9 @@ class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
     }
 
     /**
-     * Form Framework methods.
+     * Clip processing methods.
      */
-    static function getPluginOutput($field)
+    static function getOutputDisplay($field)
     {
         $body = "\n".
             '        <span class="z-formnote">{$pubdata.'.$field['name'].'|yesno}</span>';

@@ -225,15 +225,16 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      * Returns the record relations as an indexed array.
      *
      * @param boolean $onlyown Retrieves owning relations only (default: false).
+     * @param strung  $field   Retrieve a KeyValue array as alias => $field (default: null).
      *
-     * @return array List of available relations => tids.
+     * @return array List of available relations.
      */
-    public function getRelations($onlyown = true)
+    public function getRelations($onlyown = true, $field = null)
     {
         $tablename = $this->_table->getInternalTableName();
         $tid = Clip_Util::getTidFromString($tablename);
 
-        return Clip_Util::getPubType($tid)->getRelations($onlyown);
+        return Clip_Util::getPubType($tid)->getRelations($onlyown, $field);
     }
 
     /**

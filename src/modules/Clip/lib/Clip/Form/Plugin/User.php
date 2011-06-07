@@ -172,7 +172,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         }
     }
 
-    function getPluginOutput($field)
+    function getOutputDisplay($field)
     {
         $this->parseConfig($field['typedata']);
 
@@ -187,7 +187,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         return array('body' => $body);
     }
 
-    static function getPluginEdit($field)
+    static function getOutputEdit($field)
     {
         return " minchars='3' numitems='30'";
     }

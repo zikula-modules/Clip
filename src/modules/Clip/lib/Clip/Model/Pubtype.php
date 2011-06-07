@@ -132,12 +132,30 @@ class Clip_Model_Pubtype extends Doctrine_Record
         return FileUtil::getFilebase($this->workflow);
     }
 
-    public function getRelations($onlyown = true)
+    private function toKeyValueArray($key, $field = null)
     {
+        if (!$field) {
+            return $this->$key;
+        }
+
+        $result = array();
+        foreach ($this->$key as $k => $v) {
+            if (!isset($v[$field])) {
+                throw new Exception('Invalid field requested to Pubtype->getRelations().');
+            }
+            $result[$k] = $v[$field];
+        }
+
+        return $result;
+    }
+
+    public function getRelations($onlyown = true, $field = null)
+    {
+        // TODO listen (own/all)relations get attempt
         $key = ($onlyown ? 'own' : 'all').'relations';
 
         if ($this->hasMappedValue($key)) {
-            return $this->$key;
+            return $this->toKeyValueArray($key, $field);
         }
 
         $relations = array();
@@ -181,7 +199,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
         $this->mapValue($key, $relations);
 
-        return $this->$key;
+        return $this->toKeyValueArray($key, $field);
     }
 
     public function defaultConfig($config)

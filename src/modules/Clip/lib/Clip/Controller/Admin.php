@@ -218,7 +218,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
         // code cleaning
         $output = DataUtil::formatForDisplay($output);
-        $output = str_replace("\n", '<br />', $output);
+        $output = str_replace("\n", '<br />', $output).'<br />';
 
         //// Output
         $this->view->assign('code',    $args['code'])
