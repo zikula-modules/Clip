@@ -42,7 +42,7 @@ class Clip_Generator
                 $rowcode['full'] =
                     '    <div class="z-formrow">'."\n".
                     '        <span class="z-label">{$relations.'.$name.'|clip_translate}:</span>'."\n".
-                    '        {if $pubdata.'.$name.' AND count($pubdata.'.$name.')}'."\n".
+                    '        {if $pubdata.'.$name.'|clip_exists}'."\n".
                     '            <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'->toArray()}</pre>'."\n".
                     '        {else}'."\n".
                     '            <span class="z-formnote z-sub">{gt text=\''.no__('(empty)').'\'}</span>'."\n".
