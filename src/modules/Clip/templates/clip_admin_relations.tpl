@@ -17,14 +17,14 @@
             <legend>{gt text='Relations'}</legend>
 
             <span class="z-nowrap">
-                {formlabel for='withtid1' text='Filter by owner'}
+                {formlabel for='withtid1' __text='Filter by owner'}
                 {formdropdownlist items=$typeselector id='withtid1' group='filter'}
             </span>
             <span class="z-nowrap">
                 {formdropdownlist items=$ops id='op' group='filter'}
             </span>
             <span class="z-nowrap">
-                {formlabel for='withtid2' text='related'}
+                {formlabel for='withtid2' __text='related'}
                 {formdropdownlist items=$typeselector id='withtid2' group='filter'}
             </span>
             <span class="z-nowrap z-buttons">
@@ -109,7 +109,7 @@
                 <legend>{gt text='Add a relation'}</legend>
             {/if}
             <div class="z-formrow">
-                {formlabel for='type1' text='Definition' mandatorysym=true}
+                {formlabel for='type1' __text='Definition' mandatorysym=true}
                 {formdropdownlist items=$reltypes.0 id='type1' group='relation'}
                 {formdropdownlist items=$typeselector id='tid1' group='relation'}
                 {formdropdownlist items=$reltypes.1 id='type2' group='relation'}

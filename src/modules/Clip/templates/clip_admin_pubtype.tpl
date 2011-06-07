@@ -18,7 +18,7 @@
         <fieldset>
             <legend>{gt text='General options'}</legend>
             <div class="z-formrow">
-                {formlabel for='title' text='Title' mandatorysym=true}
+                {formlabel for='title' __text='Title' mandatorysym=true}
                 {formtextinput id='title' group='pubtype' maxLength='255' mandatory=true}
                 <div class="z-formnote">
                     {gt text='Title of the publication type, can be a custom gettext string.'}<br />
@@ -27,39 +27,39 @@
             </div>
             <div id="clip_pubtype_urltitle">
                 <div class="z-formrow">
-                    {formlabel for='urltitle' text='URL title'}
+                    {formlabel for='urltitle' __text='URL title'}
                     {formtextinput id='urltitle' group='pubtype' maxLength='150'}
                     <div class="z-formnote">{gt text='Leave blank to autogenerate from the title.'}</div>
                 </div>
             </div>
 
             <div class="z-formrow">
-                {formlabel for='description' text='Description'}
+                {formlabel for='description' __text='Description'}
                 {formtextinput id='description' group='pubtype' maxLength='255'}
                 <div class="z-formnote">{gt text='Description of the publication type, can be a custom gettext string.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='itemsperpage' text='Items per page' mandatorysym=true}
+                {formlabel for='itemsperpage' __text='Items per page' mandatorysym=true}
                 {formintinput id='itemsperpage' group='pubtype' maxLength='255' mandatory=true}
                 <div class="z-formnote">{gt text='After how many publications the list will be paged. 0 for no paging.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='enablerevisions' text='Revision'}
+                {formlabel for='enablerevisions' __text='Revision'}
                 {formcheckbox id='enablerevisions' group='pubtype'}
                 <div class="z-formnote">{gt text='Enable revisioning. Currently, the relations does not work properly with revisioning.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='enableeditown' text='Edit own'}
+                {formlabel for='enableeditown' __text='Edit own'}
                 {formcheckbox id='enableeditown' group='pubtype'}
                 <div class="z-formnote">{gt text='Allow editing of own publications.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='defaultfilter' text='Default filter'}
+                {formlabel for='defaultfilter' __text='Default filter'}
                 {formtextinput id='defaultfilter' group='pubtype' maxLength='255'}
                 <div class="z-formnote">{gt text='The filter which is used by default.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='workflow' text='Workflow'}
+                {formlabel for='workflow' __text='Workflow'}
                 {formdropdownlist id='workflow' group='pubtype' items=$clipworkflows}
                 <div class="z-formnote">{gt text='You can choose a special workflow for the publications.'}</div>
             </div>
@@ -69,30 +69,30 @@
         <fieldset>
             <legend>{gt text='Sort options'}</legend>
             <div class="z-formrow">
-                {formlabel for='sortfield1' text='Sort field'}
+                {formlabel for='sortfield1' __text='Sort field'}
                 {formdropdownlist items=$pubfields id='sortfield1' group='pubtype'}
                 <div class="z-formnote">{gt text='Field for sorting.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='sortdesc1' text='Sort descending'}
+                {formlabel for='sortdesc1' __text='Sort descending'}
                 {formcheckbox id='sortdesc1' group='pubtype'}
             </div>
             <div class="z-formrow">
-                {formlabel for='sortfield2' text='Sort field'}
+                {formlabel for='sortfield2' __text='Sort field'}
                 {formdropdownlist items=$pubfields id='sortfield2' group='pubtype'}
                 <div class="z-formnote">{gt text='Field for sorting.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='sortdesc2' text='Sort descending'}
+                {formlabel for='sortdesc2' __text='Sort descending'}
                 {formcheckbox id='sortdesc2' group='pubtype'}
             </div>
             <div class="z-formrow">
-                {formlabel for='sortfield3' text='Sort field'}
+                {formlabel for='sortfield3' __text='Sort field'}
                 {formdropdownlist items=$pubfields id='sortfield3' group='pubtype'}
                 <div class="z-formnote">{gt text='Field for sorting.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='sortdesc3' text='Sort descending'}
+                {formlabel for='sortdesc3' __text='Sort descending'}
                 {formcheckbox id='sortdesc3' group='pubtype'}
             </div>
         </fieldset>
@@ -101,17 +101,17 @@
         <fieldset>
             <legend>{gt text='Output options'}</legend>
             <div class="z-formrow">
-                {formlabel for='outputset' text='Output template set' mandatorysym=true}
+                {formlabel for='outputset' __text='Output template set' mandatorysym=true}
                 {formtextinput id='outputset' group='pubtype' maxLength='255' mandatory=true}
                 <div class="z-formnote">{gt text='Folder where the list and display template are.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='inputset' text='Input template set' mandatorysym=true}
+                {formlabel for='inputset' __text='Input template set' mandatorysym=true}
                 {formtextinput id='inputset' group='pubtype' maxLength='255' mandatory=true}
                 <div class="z-formnote">{gt text='Folder where the edit form template is.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='cachelifetime' text='Caching time'}
+                {formlabel for='cachelifetime' __text='Caching time'}
                 {formintinput id='cachelifetime' group='pubtype' maxLength='6'}
                 <span class="z-sub" style="display: inline;">{gt text='(in seconds)'}</span>
                 <div class="z-formnote">{gt text='How long should the publications be cached. Empty for no cache.'}</div>

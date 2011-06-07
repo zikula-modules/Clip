@@ -101,22 +101,25 @@
             <p class="z-warningmsg">{gt text='Warning: When publication fields are changed or deleted, the database table of the publication type is updated automatically, and you could loss data of this publication type permanently. Be careful!'}</p>
             {/if}
             <div class="z-formrow">
-                {formlabel for='name' text='Name' mandatorysym=true}
+                {formlabel for='name' __text='Name' mandatorysym=true}
                 {formtextinput id='name' group='field' maxLength='255' mandatory=true}
+                <div class="z-formnote z-warningmsg" style="margin-bottom: 0 !important">
+                    {gt text='This value is used as the form field ID, so be sure to choose a unique one.'}
+                </div>
                 <div class="z-formnote">{gt text='Name of this field (is used e.g. in the template variables).'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='title' text='Display name' mandatorysym=true}
+                {formlabel for='title' __text='Display name' mandatorysym=true}
                 {formtextinput id='title' group='field' maxLength='255' mandatory=true}
                 <div class="z-formnote">{gt text="Title (is shown e.g. in the automatically generated templates) and can be a custom gettext string."}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='description' text='Note'}
+                {formlabel for='description' __text='Note'}
                 {formtextinput id='description' group='field' maxLength='255'}
                 <div class="z-formnote">{gt text='Optional tooltip of this field used on the input form, and can be a custom gettext string.'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='fieldplugin' text='Fieldtype (Plugin)' mandatorysym=true}
+                {formlabel for='fieldplugin' __text='Fieldtype (Plugin)' mandatorysym=true}
                 {clip_form_plugintype id='fieldplugin' group='field'}
                 <span class="z-formnote">{gt text='Which kind of fieldtype is used (can be extended by plugins). Detailed informations about the individual plugins can be found in the documentation.'}</span>
                 <span class="z-formnote" id="typedata_wrapper">
@@ -125,37 +128,37 @@
                 </span>
             </div>
             <div class="z-formrow">
-                {formlabel for='istitle' text='Title field'}
+                {formlabel for='istitle' __text='Title field'}
                 {formcheckbox id='istitle' group='field'}
                 <div class="z-formnote">{gt text='The content of this field will be used as the title?'}</div>
             </div>
             {*if $field.fieldplugin eq 'Text'}
             <div class="z-formrow">
-                {formlabel for='ispageable' text='Pageable'}
+                {formlabel for='ispageable' __text='Pageable'}
                 {formcheckbox id='ispageable' group='field'}
                 <div class="z-formnote">{gt text='The content of this field is pageable?'}</div>
             </div>
             {/if*}
             <div class="z-formrow">
-                {formlabel for='ismandatory' text='Mandatory'}
+                {formlabel for='ismandatory' __text='Mandatory'}
                 {formcheckbox id='ismandatory' group='field'}
                 <div class="z-formnote">{gt text='Is this field mandatory?'}</div>
             </div>
             <div class="z-formrow">
-                {formlabel for='issearchable' text='Searchable'}
+                {formlabel for='issearchable' __text='Searchable'}
                 {formcheckbox id='issearchable' group='field'}
                 <div class="z-formnote">{gt text='The content of this field can be searched?'}</div>
             </div>
             {if !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Email', 'Float', 'Image', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Text', 'Upload', 'Url'))}
             <div class="z-formrow">
-                {formlabel for='isuid' text='Is a User ID'}
+                {formlabel for='isuid' __text='Is a User ID'}
                 {formcheckbox id='isuid' group='field'}
                 <div class="z-formnote">{gt text='This field contains a User ID? If enabled it will be filtered only with the user operator.'}</div>
             </div>
             {/if}
             {if !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Float', 'Image', 'Int', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Upload', 'User'))}
             <div class="z-formrow">
-                {formlabel for='fieldmaxlength' text='Max. length'}
+                {formlabel for='fieldmaxlength' __text='Max. length'}
                 {formintinput id='fieldmaxlength' group='field' maxLength='15'}
                 <div class="z-formnote">{gt text='The maximum length for the content of this field.'}</div>
             </div>
