@@ -77,7 +77,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                        'preUrl'       => '',
                        'fullUrl'      => '',
                        'thumbnailUrl' => '',
-                       'url'          => ''
+                       'url'          => '',
+                       'extension'    => ''
                    );
 
         // if the data is not empty, process it
@@ -95,7 +96,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                                 'preUrl'       => !empty($arrTypeData['pre_name']) ? $url.'/'.$arrTypeData['pre_name'] : '',
                                 'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
                                 'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
-                                'url'          => $url.'/'.$arrTypeData['file_name']
+                                'url'          => $url.'/'.$arrTypeData['file_name'],
+                                'extension'    => FileUtil::getExtension($arrTypeData['orig_name'])
                             );
             }
         }
@@ -106,6 +108,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     function preSave($data, $field)
     {
         $postData = $data[$field['name']];
+        // FIXME validate a supported image format uploaded
 
         // ugly to get old image from DB
         if ($data['id'] != NULL) {
