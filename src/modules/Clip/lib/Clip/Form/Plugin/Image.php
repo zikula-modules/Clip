@@ -113,7 +113,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                                  ->selectFieldBy($field['name'], $data['id'], 'id');
         }
 
-        if (!empty($postData['name'])) {
+        if ($postData != $old_image && !empty($postData['name'])) {
             $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
 
             // delete the old file
