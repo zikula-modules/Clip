@@ -56,6 +56,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         // define the arguments
         $args = array(
             'tid'           => (int)$args['tid'],
+            'where'         => isset($args['where']) ? $args['where'] : array(),
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : null,
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)abs($args['startnum']) : 1,
@@ -168,19 +169,23 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // add the conditions to the query
+        // restrictions for non-editors
         if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
-            $uid = UserUtil::getVar('uid');
-
-            if ($uid && $pubtype['enableeditown'] == 1) {
-                $query->andWhere('core_author = ? OR core_showinlist = ?', array($uid, 1));
-            } else {
-                $query->andWhere('core_showinlist = ?', 1);
-            }
-
-            $query->andWhere('core_indepot = ?', 0);
-            $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
             $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
             $query->andWhere('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
+        }
+        // query for the current user language
+        $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
+        // additional call specifications
+        foreach ($args['where'] as $method => $condition) {
+            if (is_numeric($method)) {
+                $method = 'andWhere';
+            }
+            if (is_array($condition)) {
+                $query->$method($condition[0], $condition[1]);
+            } else {
+                $query->$method($condition);
+            }
         }
 
         // enrich the query with the Filterutil stuff
@@ -280,8 +285,8 @@ class Clip_Api_User extends Zikula_AbstractApi
         $args = array(
             'tid'           => (int)$args['tid'],
             'pid'           => isset($args['pid']) ? (int)$args['pid'] : null,
-            'by'            => isset($args['by']) ? $args['by'] : 'core_revision', // for pubtype editors and a pid only
             'id'            => isset($args['id']) ? (int)$args['id'] : null,
+            'where'         => isset($args['where']) ? $args['where'] : array(),
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'templateid'    => isset($args['templateid']) ? $args['templateid'] : '', // for perm check
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
@@ -302,31 +307,28 @@ class Clip_Api_User extends Zikula_AbstractApi
         $query = $tableObj->createQuery($args['queryalias']);
 
         // add the conditions to the query
+        if (!empty($args['id'])) {
+            $query->where('id = ?', $args['id']);
+        } else {
+            $query->where('core_pid = ?', $args['pid'])
+                  ->orderBy('core_language DESC, core_revision DESC');
+        }
+        // query for the current user language
+        $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
+        // restrictions for non-editors
         if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
-            $uid = UserUtil::getVar('uid');
-
-            if (!empty($uid) && $pubtype['enableeditown'] == 1) {
-                $query->andWhere('(core_author = ? OR core_online = ?)', array($uid, 1));
-            } else {
-                $query->andWhere('core_online = ?', 1);
-            }
-
-            $query->andWhere('core_indepot = ?', 0);
-            $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
             $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
             $query->andWhere('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
-
-            if (empty($args['id'])) {
-                $query->andWhere('core_pid = ?', $args['pid']);
-            } else {
-                $query->andWhere('id = ?', $args['id']);
+        }
+        // additional call specifications
+        foreach ($args['where'] as $method => $condition) {
+            if (is_numeric($method)) {
+                $method = 'andWhere';
             }
-        } else {
-            if (!empty($args['id'])) {
-                $query->where('id = ?', $args['id']);
+            if (is_array($condition)) {
+                $query->$method($condition[0], $condition[1]);
             } else {
-                $query->where('core_pid = ?', $args['pid'])
-                      ->orderBy($args['by']);
+                $query->$method($condition);
             }
         }
 

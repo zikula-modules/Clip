@@ -108,6 +108,13 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         Clip_Util::setArgs('adminlist', $args);
 
         //// Execution
+        // fill the conditions of the list to get
+        $apiargs['where'] = array();
+        if (UserUtil::isLoggedIn() && $pubtype['enableeditown'] == 1) {
+            $apiargs['where']['orWhere'] = array('core_author = ?', array(UserUtil::getVar('uid')));
+        }
+        $apiargs['where'][] = array('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
+
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
 

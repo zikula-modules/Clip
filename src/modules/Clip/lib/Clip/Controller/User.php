@@ -146,6 +146,15 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         //// Execution
+        // fill the conditions of the item to get
+        $apiargs['where']   = array();
+        $apiargs['where'][] = array('core_showinlist = ?', 1);
+        $apiargs['where'][] = array('core_online = ?', 1);
+        $apiargs['where'][] = array('core_indepot = ?', 0);
+        $apiargs['where'][] = array('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
+        $apiargs['where'][] = array('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
+        $apiargs['where'][] = array('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
+
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
 
@@ -311,11 +320,18 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         //// Execution
-        // setup an admin flag
-        $isadmin = Clip_Access::toPubtype($pubtype);
+        // fill the conditions of the item to get
+        $apiargs['where'] = array();
+        if (!Clip_Access::toPubtype($apiargs['tid'], 'editor')) {
+            $apiargs['where'][] = array('core_online = ?', 1);
+            $apiargs['where'][] = array('core_indepot = ?', 0);
+        }
 
         // get the publication from the database
         $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $apiargs);
+
+        // setup an admin flag
+        $isadmin = Clip_Access::toPubtype($pubtype);
 
         if (!$pubdata) {
             if ($isadmin) {
