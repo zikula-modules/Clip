@@ -42,7 +42,7 @@
             {* action icons *}
             {if $auth_admin}
             <span>
-                <a href="{modurl modname='Clip' type='admin' func='main'}">
+                <a href="{modurl modname='Clip' type='admin' func='main' fragment="`$pubtype.tid`/pubtypeinfo"}">
                     {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
                 </a>
             </span>

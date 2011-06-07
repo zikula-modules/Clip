@@ -11,6 +11,7 @@ Event.observe(window, 'load', function()
 
     Zikula.UI.Tooltips($$('.tree a'));
 
+    // group buttons
     $('groupNew').observe('click', function(e) {
         e.findElement('a').insert({after: Zikula.Clip.Indicator()});
         e.preventDefault();
@@ -28,7 +29,36 @@ Event.observe(window, 'load', function()
     $('groupControls').removeClassName('z-hide');
 
     Zikula.Clip.AttachMenu();
+
+    // hash behaviors
+    Event.observe(window, 'hashchange', Zikula.Clip.Hash)
+
+    Zikula.Clip.Hash();
 });
+
+/* Hash manager */
+Zikula.Clip.Hash = function()
+{
+    if (window.location.hash.empty() || window.location.hash == '#') {
+        return;
+    }
+
+    this.active = true;
+
+    var hash = window.location.hash;
+    var args = hash.replace('#', '').split('/');
+    var pars = {'tid': args[0]};
+    var func = (typeof args[1] != 'undefined') ? args[1] : null;
+    // additional parameters
+    if (args.size() > 2 && args.size() % 2 == 0) {
+        for (var i = 2; i < args.size(); i = i+2) {
+            var key = args[i];
+            pars[key] = args[i+1];
+        }
+    }
+
+    Zikula.Clip.AjaxRequest(pars, func)
+}
 
 /* Customization of TreeSortable */
 Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.TreeSortable.prototype */
@@ -554,20 +584,30 @@ Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 {
     Zikula.Clip.Container.items.main.showIndicator();
 
+    if (typeof pars != 'object' || typeof pars['tid'] == 'undefined') {
+        return;
+    }
+
+    var newhash = '';
+    for (var i in pars) {
+        if (i != 'tid') {
+            newhash += '/'+i+'/'+pars[i];
+        }
+    }
+
     pars.module = 'Clip';
     pars.type   = type ? type : 'ajax';
     pars.func   = func ? func : 'pubtypeinfo';
 
-    if (!callback) {
-        callback = Zikula.Clip.AjaxRequestCallback;
-    }
+    newhash = pars['tid']+'/'+func+newhash;
+    window.location.hash = newhash;
 
     new Zikula.Ajax.Request(
         'ajax.php',
         {
             method: 'get',
             parameters: pars,
-            onComplete: callback
+            onComplete: callback ? callback : Zikula.Clip.AjaxRequestCallback
         });
 };
 
