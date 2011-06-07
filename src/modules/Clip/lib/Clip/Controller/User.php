@@ -77,7 +77,8 @@ class Clip_Controller_User extends Zikula_AbstractController
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : true,
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : false,
             'checkperm'     => false,
-            'countmode'     => 'both'
+            'countmode'     => 'both',
+            'rel'           => $pubtype['config']['view']
         );
         $args = array(
             'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
@@ -226,7 +227,8 @@ class Clip_Controller_User extends Zikula_AbstractController
             'id'            => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'),
             'checkperm'     => false,
             'handleplugins' => true,
-            'loadworkflow'  => true
+            'loadworkflow'  => true,
+            'rel'           => $pubtype['config']['display']
         );
         $args = array(
             'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),

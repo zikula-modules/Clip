@@ -26,6 +26,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param boolean $args['checkperm']     Whether to check the permissions.
      * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']  Whether to add the workflow information.
+     * @param array   $args['rel']           Relation configuration flags to use {load, onlyown, processrefs, checkperm, handleplugins, loadworkflow}.
      *
      * @return array Collection of publications and/or Count.
      */
@@ -62,7 +63,8 @@ class Clip_Api_User extends Zikula_AbstractApi
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
-            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
+            'rel'           => isset($args['rel']) ? $args['rel'] : null
         );
 
         if (!$args['itemsperpage']) {
@@ -74,13 +76,10 @@ class Clip_Api_User extends Zikula_AbstractApi
             return LogUtil::registerPermissionError();
         }
 
-        // mode check
-        // FIXME SECURITY enrich with all the possibilities
-        $args['admin'] = (isset($args['admin']) && $args['admin']) || Clip_Access::toPubtype($args['tid'], 'editor');
-
+        //// Misc values
+        // utility table object
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
 
-        //// Misc values
         // set the order
         // handling column names till the end
         if (empty($args['orderby'])) {
@@ -155,9 +154,9 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Relations
         // filters will be limited to the loaded relations
-        $args['rel'] = $pubtype['config']['view'];
+        $args['rel'] = isset($args['rel']) ? Clip_Util::getPubtypeConfig('view', $args['rel']) : array();
 
-        if ($args['rel']['load']) {
+        if ($args['rel'] && $args['rel']['load']) {
             // adds the relations data
             $record = $tableObj->getRecordInstance();
             foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
@@ -169,14 +168,15 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // add the conditions to the query
-        $uid = UserUtil::getVar('uid');
+        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
+            $uid = UserUtil::getVar('uid');
 
-        if (!$args['admin']) {
             if ($uid && $pubtype['enableeditown'] == 1) {
                 $query->andWhere('core_author = ? OR core_showinlist = ?', array($uid, 1));
             } else {
                 $query->andWhere('core_showinlist = ?', 1);
             }
+
             $query->andWhere('core_indepot = ?', 0);
             $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
             $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
@@ -254,6 +254,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param boolean $args['checkperm']     Whether to check the permissions.
      * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']  Whether to add the workflow information.
+     * @param array   $args['rel']           Relation configuration flags to use {load, onlyown, processrefs, checkperm, handleplugins, loadworkflow}.
      *
      * @return Doctrine_Record One publication.
      */
@@ -284,7 +285,8 @@ class Clip_Api_User extends Zikula_AbstractApi
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'templateid'    => isset($args['templateid']) ? $args['templateid'] : '', // for perm check
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
-            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS']
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
+            'rel'           => isset($args['rel']) ? $args['rel'] : null
         );
 
         //// Misc values
@@ -297,17 +299,18 @@ class Clip_Api_User extends Zikula_AbstractApi
                               .($args['pid'] ? $args['pid'] : '')
                               .($args['id'] ? '_'.$args['id'] : '');
 
-        $uid   = UserUtil::getVar('uid');
         $query = $tableObj->createQuery($args['queryalias']);
 
         // add the conditions to the query
-        if (!Clip_Access::toPubtype($args['tid'], 'editor'))
-        {
+        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
+            $uid = UserUtil::getVar('uid');
+
             if (!empty($uid) && $pubtype['enableeditown'] == 1) {
                 $query->andWhere('(core_author = ? OR core_online = ?)', array($uid, 1));
             } else {
                 $query->andWhere('core_online = ?', 1);
             }
+
             $query->andWhere('core_indepot = ?', 0);
             $query->andWhere('(core_language = ? OR core_language = ?)', array('', ZLanguage::getLanguageCode()));
             $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
@@ -328,10 +331,10 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         //// Relations
-        $args['rel'] = $pubtype['config']['display'];
+        $args['rel'] = isset($args['rel']) ? Clip_Util::getPubtypeConfig('display', $args['rel']) : array();
 
         // adds the relations data
-        if ($args['rel']['load']) {
+        if ($args['rel'] && $args['rel']['load']) {
             $record = $tableObj->getRecordInstance();
             foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
                 // load the relation if it means to load ONE related record only

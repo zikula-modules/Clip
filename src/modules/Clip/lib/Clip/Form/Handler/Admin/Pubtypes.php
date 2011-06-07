@@ -46,7 +46,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         } else {
             $pubtype = new Clip_Model_Pubtype();
 
-            $view->assign('config', $this->configPreProcess($this->configDefault()));
+            $view->assign('config', $this->configPreProcess(Clip_Util::getPubtypeConfig()));
         }
 
         $view->assign('clipworkflows', Clip_Util_Selectors::workflows())
@@ -196,33 +196,6 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
     /**
      * Utility methods.
      */
-    private function configDefault()
-    {
-        $result = array(
-            'view' => array(
-                'load' => false,
-                'onlyown' => true,
-                'processrefs' => false,
-                'checkperm' => false,
-                'handleplugins' => false,
-                'loadworkflow' => false
-            ),
-            'display' => array(
-                'load' => true,
-                'onlyown' => true,
-                'processrefs' => true,
-                'checkperm' => true,
-                'handleplugins' => false,
-                'loadworkflow' => false
-            ),
-            'edit' => array(
-                'onlyown' => true
-            )
-        );
-
-        return $result;
-    }
-
     private function configPreProcess($config)
     {
         $result = array();

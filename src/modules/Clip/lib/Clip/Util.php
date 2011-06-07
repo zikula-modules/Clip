@@ -178,6 +178,49 @@ class Clip_Util
     }
 
     /**
+     * Publication type configuration getter.
+     *
+     * @param string $section Section to retrieve.
+     * @param array  $config  A configuration section to validate.
+     *
+     * @return array Pubtype config array.
+     */
+    public static function getPubtypeConfig($section = null, $config = array())
+    {
+        $result = array(
+            'view' => array(
+                'load' => false,
+                'onlyown' => true,
+                'processrefs' => false,
+                'checkperm' => false,
+                'handleplugins' => false,
+                'loadworkflow' => false
+            ),
+            'display' => array(
+                'load' => true,
+                'onlyown' => true,
+                'processrefs' => true,
+                'checkperm' => true,
+                'handleplugins' => false,
+                'loadworkflow' => false
+            ),
+            'edit' => array(
+                'onlyown' => true
+            )
+        );
+
+        if ($config && $section && isset($result[$section])) {
+            return array_merge($result[$section], $config);
+        }
+
+        if ($section && isset($result[$section])) {
+            return $result[$section];
+        }
+
+        return $result;
+    }
+
+    /**
      * Validates that a value is not a reserved word.
      *
      * @param string $value
