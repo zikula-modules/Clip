@@ -20,7 +20,7 @@
  *
  * @return boolean True if exists and not empty, false otherwise.
  */
-function smarty_modifier_clip_translate($data, $lang=null)
+function smarty_modifier_clip_exists($data, $lang=null)
 {
     if (!is_object($data)) {
         return $data;
