@@ -11,9 +11,10 @@
         </a>
     </div>
 
+    {img modname='Clip' src='admin.gif'}
     <h1>{$modinfo.displayname} v{$modinfo.version} &raquo; {gt text='Administration'}</h1>
     <div class="z-warningmsg">
-        <strong>Development note</strong>: Clip's Admin Panel is under rework, some ajax links are broken.
+        <strong>Development note</strong>: Clip's Admin Panel is under rework, forms are not ajax ATM.
     </div>
     {modulelinks modname='Clip' type='admin'}
 </div>
