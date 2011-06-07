@@ -42,8 +42,10 @@ class Clip_Access
      */
     public static function toGrouptype($gid, $permlvl = null)
     {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
         if (!$gid) {
-            return LogUtil::registerError($this->__f('%1$s: Invalid grouptype ID passed [%2$s].', array('Clip_Access::toGrouptype', DataUtil::formatForDisplay($gid))));
+            return LogUtil::registerError(__f('%1$s: Invalid grouptype ID passed [%2$s].', array('Clip_Access::toGrouptype', DataUtil::formatForDisplay($gid)), $dom));
         }
 
         // fill default values if needed
@@ -65,6 +67,8 @@ class Clip_Access
      */
     public static function toPubtype($pubtype, $context = null, $tplid = null, $uid = null)
     {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
         // fill default values if needed
         $context = $context ? strtolower($context) : 'admin';
         $tplid   = $tplid ? $tplid : '';
@@ -72,7 +76,7 @@ class Clip_Access
         // be sure to have a Clip_Model_Pubtype instance
         if (!$pubtype instanceof Clip_Model_Pubtype) {
             if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError($this->__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPubtype', DataUtil::formatForDisplay($pubtype))));
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPubtype', DataUtil::formatForDisplay($pubtype)), $dom));
             }
 
             $pubtype = Clip_Util::getPubType($pubtype);
@@ -127,6 +131,8 @@ class Clip_Access
      */
     public static function toPub($pubtype, $pub, $id = null, $permlvl = null, $uid = null, $context = null, $tplid = null)
     {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
         // fill default values if needed
         $context = $context ? strtolower($context) : 'edit';
         $tplid   = $tplid ? $tplid : '';
@@ -135,7 +141,7 @@ class Clip_Access
         // be sure to have a Clip_Model_Pubtype instance
         if (!$pubtype instanceof Clip_Model_Pubtype) {
             if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError($this->__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPub', DataUtil::formatForDisplay($pubtype))));
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPub', DataUtil::formatForDisplay($pubtype)), $dom));
             }
 
             $pubtype = Clip_Util::getPubType($pubtype);
