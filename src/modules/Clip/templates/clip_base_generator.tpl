@@ -1,9 +1,12 @@
+{ajaxheader module='Clip' filename='clip_admin_generator.js' ui=true}
 
 <h2>{$pubtype.title} &raquo; {gt text='Template code'}</h2>
 
 {clip_adminmenu tid=$pubtype.tid code=$code}
 
 <hr />
+
+{clip_copytoclipboard id='clip_generatorcode' class='tooltips'}
 
 {switch expr=$code}
     {case expr='list'}
@@ -71,4 +74,9 @@
     {/case}
 {/switch}
 
-<pre class="clip-generatorcode">{$output}</pre>
+{* HTML workaround: SCRIPT is the unoque that do not scape HTML nor any Chars *}
+<script id="clip_generatorcode" type="text/html">{{$output}}</script>
+
+<pre class="clip-generatorcode">
+    {$output|safetext}
+</pre>

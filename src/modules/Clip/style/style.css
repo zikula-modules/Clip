@@ -290,6 +290,10 @@ pre.clip-generatorcode {
   overflow: hidden;
   padding: 0 1em;
 }
+#clippy_clip_generatorcode {
+  float: left;
+  margin: 5px 4px 0;
+}
 
 #pubfieldlist {
   background: #fff;

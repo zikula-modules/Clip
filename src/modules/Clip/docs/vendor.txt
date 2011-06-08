@@ -1,0 +1,13 @@
+This file contains a list of vendor stuff included into Clip
+---------------------------------------------------------------------
+
+Clippy.swf
+-------------
+
+CLIPPY 0.6.5
+
+    Vendor website: https://github.com/mojombo/clippy/tree/
+    Downloaded from: https://github.com/mojombo/clippy/blob/master/build/clippy.swf
+    License: MIT
+    Location in Zikula: modules/Clip/templates/Clippy.swf
+    Patch details: none
