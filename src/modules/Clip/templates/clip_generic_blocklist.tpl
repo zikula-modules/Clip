@@ -8,6 +8,7 @@
             </a>
 
             {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
+            &nbsp;
             <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$pubdata.core_pid}">
                 {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
             </a>
