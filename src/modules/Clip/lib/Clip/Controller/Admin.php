@@ -218,6 +218,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
         // code cleaning
         $output = DataUtil::formatForDisplay($output);
+        $output = str_replace("\r", '', $output);
         $output = str_replace("\n", '<br />', $output).'<br />';
 
         //// Output
