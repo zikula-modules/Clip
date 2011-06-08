@@ -139,7 +139,23 @@ Zikula.Clip.Container = Class.create(
     },
     updateContent: function(content) {
         if (content) {
+            var clipcode = '';
+            content = content.sub(/<script id="clip_generatorcode" type="text\/html">([\s\S\/]+)<pre class="clip-generatorcode">/, function (match) {
+                clipcode = match[0].sub(/<script id="clip_generatorcode" type="text\/html">/, '').sub(/<\/script>([\s\S]+)$/, '');
+                return '<pre class="clip-generatorcode">';
+            })
             this.content.update(content);
+            if (clipcode != '') {
+                var script = document.createElement('script');
+                script.id  = 'clip_generatorcode';
+                script.type = 'text/html';
+                script.update(clipcode);
+                this.content.appendChild(script);
+                $('clip_generatorcode').innerHTML = $('clip_generatorcode').innerHTML.gsub(/href="(.*?)"/, function (match) {
+                    match[1] = match[1].replace(Zikula.Config.baseURL, '');
+                    return 'href="'+match[1]+'"';
+                });
+            }
         }
         this.updateHeights();
         this.hideIndicator();
