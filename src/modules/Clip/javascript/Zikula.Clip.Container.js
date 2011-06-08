@@ -39,11 +39,9 @@ Event.observe(window, 'load', function()
 /* Hash manager */
 Zikula.Clip.Hash = function()
 {
-    if (window.location.hash.empty() || window.location.hash == '#') {
+    if (Zikula.Clip.AjaxBusy || window.location.hash.empty() || window.location.hash == '#') {
         return;
     }
-
-    this.active = true;
 
     var hash = window.location.hash;
     var args = hash.replace('#', '').split('/');
@@ -596,13 +594,17 @@ Zikula.Clip.ResequenceCallback = function(req)
 
 
 /* Ajax view functions */
+Zikula.Clip.AjaxBusy = false;
+
 Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 {
-    Zikula.Clip.Container.items.main.showIndicator();
-
     if (typeof pars != 'object' || typeof pars['tid'] == 'undefined') {
         return;
     }
+
+    Zikula.Clip.AjaxBusy = true;
+
+    Zikula.Clip.Container.items.main.showIndicator();
 
     var newhash = '';
     for (var i in pars) {
@@ -616,6 +618,7 @@ Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
     pars.func   = func ? func : 'pubtypeinfo';
 
     newhash = pars['tid']+'/'+func+newhash;
+
     window.location.hash = newhash;
 
     new Zikula.Ajax.Request(
@@ -640,6 +643,8 @@ Zikula.Clip.AjaxRequestCallback = function(req)
     }
 
     Zikula.Clip.Container.items.main.updateContent(req.getData());
+
+    Zikula.Clip.AjaxBusy = false;
 
     return true;
 };
