@@ -476,7 +476,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $handler = new Clip_Form_Handler_User_Pubedit();
 
         // setup the form handler
-        $handler->ClipSetUp($args['id'], $args['tid'], $pubdata, $workflow, $pubtype, $pubfields);
+        $handler->ClipSetUp($pubdata, $workflow, $pubtype, $pubfields);
 
         //// Output
         // checks for the input template value

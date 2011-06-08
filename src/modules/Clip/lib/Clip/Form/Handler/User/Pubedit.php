@@ -33,7 +33,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     {
         //// Parameters
         // process the input parameters
-        $this->tid  = isset($this->pubtype['tid']) ? $this->pubtype['tid'] : FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
         $this->goto = FormUtil::getPassedValue('goto', '');
 
         //// Actions
@@ -200,10 +199,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     /**
      * Setters and getters.
      */
-    public function ClipSetUp($id, $tid, &$pubdata, &$workflow, $pubtype=null, $pubfields=null)
+    public function ClipSetUp(&$pubdata, &$workflow, $pubtype, $pubfields=null)
     {
-        $this->id = $id;
-        $this->tid = $tid;
+        $this->id  = $pubdata['id'];
+        $this->tid = $pubtype['tid'];
+
         $this->workflow = $workflow;
 
         $this->setPub($pubdata);
