@@ -74,16 +74,25 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
     if ($func == 'generator') {
         $output .= '<br />';
         $output .= '<span class="clip-option">'.$view->__('Generate templates').'</span><span class="clip-option">&raquo;</span>';
+
+        $links = array();
+
         $args['args']['code'] = 'form';
-        $output .= '<span>'.($params['code'] == 'form'      ? '<a href="#">' : '<a href="'.smarty_function_clip_url($args, $view).'">').$view->__('Input template').'</a></span> | ';
+        $links[] = $params['code'] == 'form'      ? $view->__('Form')       : '<a class="tooltips" title="'.$view->__('Publication input form template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Form').'</a>';
+
         $args['args']['code'] = 'list';
-        $output .= '<span>'.($params['code'] == 'list'      ? '<a href="#">' : '<a href="'.smarty_function_clip_url($args, $view).'">').$view->__('List template').'</a></span> | ';
+        $links[] = $params['code'] == 'list'      ? $view->__('List')       : '<a class="tooltips" title="'.$view->__('Publications list template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('List').'</a>';
+
         $args['args']['code'] = 'display';
-        $output .= '<span>'.($params['code'] == 'display'   ? '<a href="#">' : '<a href="'.smarty_function_clip_url($args, $view).'">').$view->__('Display template').'</a></span> | ';
+        $links[] = $params['code'] == 'display'   ? $view->__('Display')    : '<a class="tooltips" title="'.$view->__('Publication display template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Display').'</a>';
+
         $args['args']['code'] = 'blocklist';
-        $output .= '<span>'.($params['code'] == 'blocklist' ? '<a href="#">' : '<a href="'.smarty_function_clip_url($args, $view).'">').$view->__('List block').'</a></span> | ';
+        $links[] = $params['code'] == 'blocklist' ? $view->__('List block') : '<a class="tooltips" title="'.$view->__('List block template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('List block').'</a>';
+
         $args['args']['code'] = 'blockpub';
-        $output .= '<span>'.($params['code'] == 'blockpub'  ? '<a href="#">' : '<a href="'.smarty_function_clip_url($args, $view).'">').$view->__('Pub block').'</a></span>';
+        $links[] = $params['code'] == 'blockpub'  ? $view->__('Pub block')  : '<a class="tooltips" title="'.$view->__('Publication block template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Pub block').'</a>';
+
+        $output .= '<span>'.implode('</span> | <span>', $links).'</span>';
     } else {
         $output .= '</span> | ';
         $output .= '<span><a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Generate templates').'</a></span>';
