@@ -121,6 +121,8 @@ class Clip_Controller_User extends Zikula_AbstractController
         if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
 
+            Clip_Util::register_nocache_plugins($this->view);
+
             $filterid = $apiargs['filter'] ? Clip_Util::getFilterCacheString($apiargs['filter']) : Clip_Util::getFilterCacheId();
 
             $cacheid = 'tid_'.$apiargs['tid'].'/list'
@@ -299,7 +301,9 @@ class Clip_Controller_User extends Zikula_AbstractController
         if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
 
-            $cacheid = 'tid_'.$apiargs['tid']
+            Clip_Util::register_nocache_plugins($this->view);
+
+            $cacheid = 'tid_'.$apiargs['tid'].'/display'
                        .'/pid'.$apiargs['pid']
                        .'/id'.$apiargs['id']
                        .'/tpl_'.(!empty($apiargs['templateid']) ? $apiargs['templateid'] : 'clipdefault')

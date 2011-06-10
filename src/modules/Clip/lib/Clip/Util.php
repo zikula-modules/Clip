@@ -459,7 +459,7 @@ class Clip_Util
     }
 
     /**
-     * User form instance builder
+     * User form instance builder.
      *
      * @param Zikula_Controller $controller
      * @see FormUtil::newForm
@@ -485,5 +485,28 @@ class Clip_Util
         }
 
         return $view;
+    }
+
+    /**
+     * Registration of Clip's plugins sensible to cache.
+     *
+     * @return void
+     */
+    public static function register_nocache_plugins(&$view)
+    {
+        // disables the cache for them and do not load them yet
+        // that happens later when required
+        $delayed_load = true;
+        $cacheable    = false;
+
+        /* blocks */
+        // clip_accessblock
+        Zikula_View_Resource::register($view, 'block', 'clip_accessblock', $delayed_load, $cacheable, array('gid', 'tid', 'pid', 'id', 'context', 'permlvl', 'tplid', 'assign'));
+
+        /* plugins */
+        // clip_access
+        Zikula_View_Resource::register($view, 'function', 'clip_access', $delayed_load, $cacheable, array('gid', 'pid', 'tid', 'context', 'permlvl', 'tplid', 'assign'));
+        // clip_hitcount
+        Zikula_View_Resource::register($view, 'function', 'clip_hitcount', $delayed_load, $cacheable, array('pid', 'tid'));
     }
 }
