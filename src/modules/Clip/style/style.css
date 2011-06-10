@@ -34,9 +34,9 @@
   padding: 5px 0;
 }
 #clip_cols_maincol {
-  margin-left: 26%;
+  margin-left: 235px;
   overflow: hidden;
-  padding: 0 0 0 7px;
+  padding: 0 0 0 15px;
   position: relative;
 }
   #z-maincontent div.z-admincontainer #clip_cols_maincol h2 {
@@ -50,7 +50,7 @@
   overflow-x: scroll;
   overflow-y: hidden;
   padding: 0 5px 10px 0;
-  width: 25%;
+  width: 225px;
 }
 
 /* pubtype info */
