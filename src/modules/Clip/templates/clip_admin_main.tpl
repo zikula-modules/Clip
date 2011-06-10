@@ -27,4 +27,8 @@
             </div>
         </div>
     </div>
+
+    <div class="z-right">
+        <span class="z-sub">Clip  v{$modinfo.version}</span>
+    </div>
 </div>

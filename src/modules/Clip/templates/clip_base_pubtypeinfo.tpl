@@ -10,7 +10,7 @@
 </ul>
 
 <div id="p{$pubtype.tid}manage" class="clip-infotab">
-    <ul class="float_right z-buttons">
+    <ul class="z-floatright z-buttons">
         <li>
             <a class="z-bt-new" href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}" title="{gt text='Add new publications to this publication type'}">
                 {gt text='New article'}

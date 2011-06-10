@@ -5,4 +5,8 @@
     <div class="z-adminpageicon">{img modname='core' src='exec.png' set='icons/large' __alt='Show code'}</div>
 
     {$maincontent}
+
+    <div class="z-right">
+        <span class="z-sub">Clip  v{$modinfo.version}</span>
+    </div>
 </div>

@@ -2,7 +2,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='agt_softwareD.png' set='icons/large' __alt='Manage Relations'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='attach.png' set='icons/large' __alt='Manage Relations'}</div>
 
     {if $tid}
         <h2>{$pubtypes[$tid].title} &raquo; {gt text='Relations'}</h2>
@@ -176,4 +176,8 @@
         </div>
     </div>
     {/form}
+
+    <div class="z-right">
+        <span class="z-sub">Clip  v{$modinfo.version}</span>
+    </div>
 </div>
