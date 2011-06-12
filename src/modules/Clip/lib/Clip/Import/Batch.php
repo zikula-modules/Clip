@@ -46,6 +46,8 @@ class Clip_Import_Batch
             }
         }
 
+        $this->reset();
+
         if (empty($this->file) && empty($this->url)) {
             return LogUtil::registerError($this->__('You must specify a file to import from.'));
             //return LogUtil::registerError($this->__('You must specify a file or a url to import from.'));
@@ -70,14 +72,35 @@ class Clip_Import_Batch
      */
     protected function reset()
     {
+        // process any pubtype not saved
+        if (isset(self::$idmap['objs'])) {
+            $this->savePubtypes();
+        }
+
         // reset the old/new IDs map
         self::$idmap = array(
             'tids' => array(), // pubtypes map
+            'objs' => array(), // pubtypes instances
             'fids' => array(), // pubfields map
             'pids' => array()  // publications map
         );
 
         self::$tablescreated = false;
+    }
+
+    /**
+     * Internal pubtype saver.
+     */
+    protected function savePubtypes()
+    {
+        if (!self::$tablescreated && !empty(self::$idmap['objs'])) {
+            foreach (self::$idmap['objs'] as $obj) {
+                $obj->save();
+            }
+
+            self::$idmap['objs']  = array();
+            self::$tablescreated = true;
+        }
     }
 
     /**
@@ -119,8 +142,8 @@ class Clip_Import_Batch
         {
             case 'pubtypes':
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
-                $obj = $tbl->getRecord();
-                $oid = $args['pubtype']['tid'];
+                $obj = $tbl->getRecord()->copy();
+                $oid = (int)$args['pubtype']['tid'];
                 unset($args['pubtype']['tid']);
                 // validate the non-duplication of the urlname
                 while ($tbl->findBy('urltitle', $args['pubtype']['urltitle'])->count()) {
@@ -128,18 +151,37 @@ class Clip_Import_Batch
                 }
                 // process the record
                 $obj->fromArray($args['pubtype']);
-                $obj->save();
-                self::$idmap['tids'][$oid] = $obj['tid'];
+                // see if we have the next tid already
+                static $nexttid;
+                if (!isset($nexttid)) {
+                    // get the connection name to figure our the database name in use
+                    $tablename = Doctrine_Core::getTable('Clip_Model_Pubtype')->getTableName();
+                    $statement = Doctrine_Manager::getInstance()->connection();
+                    $connname  = $statement->getName();
+                    // get the databases list
+                    $serviceManager = ServiceUtil::getManager();
+                    $databases = $serviceManager['databases'];
+                    $result    = $statement->execute("SELECT AUTO_INCREMENT
+                                                        FROM information_schema.TABLES
+                                                       WHERE TABLE_NAME = '$tablename'
+                                                         AND TABLE_SCHEMA = '{$databases[$connname]['dbname']}'");
+                    $nexttid = (int)$result->fetchColumn();
+                } else {
+                    $nexttid++;
+                }
+                // store the object to save it after figure the pubfields
+                self::$idmap['objs'][$oid] = $obj;
+                self::$idmap['tids'][$oid] = $nexttid;
                 break;
 
             case 'pubfields':
-                if (!isset(self::$idmap['tids'][$args['pubfield']['tid']])) {
+                $tid = $args['pubfield']['tid'];
+                if (!isset(self::$idmap['tids'][$tid])) {
                     continue;
                 }
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubfield');
-                $obj = $tbl->getRecord();
-                $oid = $args['pubfield']['id'];
-                $tid = $args['pubfield']['tid'];
+                $obj = $tbl->getRecord()->copy();
+                $oid = (int)$args['pubfield']['id'];
                 unset($args['pubfield']['id']);
                 // null fields check
                 if (empty($args['pubfield']['fieldmaxlength'])) {
@@ -150,24 +192,16 @@ class Clip_Import_Batch
                 // process the record
                 $obj->fromArray($args['pubfield']);
                 $obj->save();
-                self::$idmap['fids'][$oid] = $obj['id'];
+                self::$idmap['fids'][$oid] = (int)$obj['id'];
                 break;
 
             case 'pubdata':
-                if (!self::$tablescreated) {
-                    // recreate models once the field has been added
-                    Clip_Generator::loadModelClasses(true);
-                    // create the new tables
-                    foreach (self::$idmap['tids'] as $tid) {
-                        Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
-                    }
-                    self::$tablescreated = true;
-                }
+                $this->savePubtypes();
                 $tid = Clip_Util::getTidFromString($args['section']);
                 if (!isset(self::$idmap['tids'][$tid])) {
                     continue;
                 }
-                $oid = $args['pub']['id'];
+                $oid = (int)$args['pub']['id'];
                 unset($args['pub']['id']);
                 // null fields check
                 if (empty($args['pub']['core_publishdate'])) {
@@ -179,11 +213,11 @@ class Clip_Import_Batch
                 // get a record instance of the new pub
                 $newtid = self::$idmap['tids'][$tid];
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$newtid);
-                $obj = $tbl->getRecord();
+                $obj = $tbl->getRecord()->copy();
                 // process the record
                 $obj->fromArray($args['pub']);
                 $obj->save();
-                self::$idmap['pids'][$oid] = $obj['id'];
+                self::$idmap['pids'][$oid] = (int)$obj['id'];
                 break;
 
             case 'workflows':

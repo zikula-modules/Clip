@@ -66,6 +66,7 @@ class Clip_Import_Parser_XML
                 }
                 $section = $this->reader->name;
                 continue;
+
             } elseif ($this->reader->nodeType == 15) {
                 $section = '';
                 continue;

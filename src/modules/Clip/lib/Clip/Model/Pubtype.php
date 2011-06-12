@@ -235,18 +235,6 @@ class Clip_Model_Pubtype extends Doctrine_Record
     }
 
     /**
-     * Saving hook.
-     *
-     * @return void
-     */
-    public function preSave($event)
-    {
-        if (is_array($this->config)) {
-            $this->config = serialize($this->config);
-        }
-    }
-
-    /**
      * Hydrate hook.
      *
      * @return void
@@ -337,6 +325,18 @@ class Clip_Model_Pubtype extends Doctrine_Record
         // create the pubtype table
         Clip_Generator::loadModelClasses(true);
         Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubtype->tid)->createTable();
+    }
+
+    /**
+     * Saving hook.
+     *
+     * @return void
+     */
+    public function preSave($event)
+    {
+        if (is_array($this->config)) {
+            $this->config = serialize($this->config);
+        }
     }
 
     /**
