@@ -216,6 +216,16 @@ class Clip_Installer extends Zikula_AbstractInstaller
     {
         $lang = ZLanguage::getLanguageCode();
 
+        // Create the global Category Registry
+        $c = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
+
+        $args = array(
+            'prop' => 'Global',
+            'cid'  => $c['id']
+        );
+        $this->createCategoryRegistry($args);
+
+        // Create the Clip's category tree
         $c = CategoryUtil::getCategoryByPath($regpath.'/Clip');
         if (!$c) {
             $c = CategoryUtil::getCategoryByPath($regpath);
@@ -246,15 +256,6 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 return false;
             }
         }
-
-        // create the global Category Registry
-        $c = CategoryUtil::getCategoryByPath('/__SYSTEM__/Modules/Global');
-
-        $args = array(
-            'prop' => 'Global',
-            'cid'  => $c['id']
-        );
-        $this->createCategoryRegistry($args);
 
         // create some example subcategories
         $c = CategoryUtil::getCategoryByPath($regpath.'/Clip/Topics');
@@ -296,6 +297,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 'cid'  => $c['id']
             );
             $this->createCategoryRegistry($args);
+
         } else {
             LogUtil::registerError($this->__f('Error! Could not create the [%s] Category Registry for Clip.', 'Topics'));
         }
@@ -373,8 +375,15 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // upload dir creation
         $uploaddir = FileUtil::getDataDirectory().'/Clip/uploads';
 
-        if (!mkdir($uploaddir, System::getVar('system.chmod_dir', 0777), true)) {
-            LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $tmpdir));
+        if (!file_exists($uploaddir) && !mkdir($uploaddir, System::getVar('system.chmod_dir', 0777), true)) {
+            LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $uploaddir));
+
+        } elseif (file_exists($uploaddir)) {
+            if (!is_writable($uploaddir)) {
+                LogUtil::registerStatus($this->__f('Clip detected that the upload directory is already created at [%s] but it\'s not writable. Be sure to correct that and that it\'s accessible via web.', $uploaddir));
+            } else {
+                LogUtil::registerStatus($this->__f('Clip detected that the upload directory is already created at [%s]. Be sure that it\'s accessible via web.', $uploaddir));
+            }
         }
 
         return $uploaddir;
