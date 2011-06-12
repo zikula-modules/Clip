@@ -10,7 +10,7 @@
 
 /*** Admin GUI ***/
 .z-module-clip div.z-admincontainer .z-menu {
-  margin-top: -15px;
+  margin-top: -5px;
 }
 .z-module-clip div.z-admincontainer #clip_cols_maincol .z-menu {
   margin-top: 0;
