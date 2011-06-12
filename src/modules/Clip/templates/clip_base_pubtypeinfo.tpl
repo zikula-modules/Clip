@@ -1,5 +1,5 @@
 
-<h2>{$pubtype.title}</h2>
+<h3>{$pubtype.title}</h3>
 
 {clip_adminmenu tid=$pubtype.tid}
 

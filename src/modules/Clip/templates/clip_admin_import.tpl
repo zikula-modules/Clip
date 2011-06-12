@@ -2,9 +2,9 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='db_comit.png' set='icons/large' __alt='Import' }</div>
+    <div class="z-adminpageicon">{img modname='core' src='db_comit.png' set='icons/small' __alt='Import' }</div>
 
-    <h2>{gt text='Import'}</h2>
+    <h3>{gt text='Import'}</h3>
 
     {form cssClass='z-form' enctype='multipart/form-data'}
     <div>

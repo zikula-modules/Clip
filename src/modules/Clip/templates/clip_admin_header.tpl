@@ -11,8 +11,8 @@
         </a>
     </div>
 
-    {img modname='Clip' src='admin.gif'}
-    <h1>{$modinfo.displayname}</h1>
+    {img modname='Clip' src='admin.gif' height='36'}
+    <h2>{$modinfo.displayname}</h2>
 
     {modulelinks modname='Clip' type='admin'}
 </div>

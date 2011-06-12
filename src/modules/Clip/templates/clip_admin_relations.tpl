@@ -2,13 +2,13 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='attach.png' set='icons/large' __alt='Manage Relations'}</div>
+    <div class="z-adminpageicon">{img modname='core' src='attach.png' set='icons/small' __alt='Manage Relations'}</div>
 
     {if $tid}
-        <h2>{$pubtypes[$tid].title} &raquo; {gt text='Relations'}</h2>
+        <h3>{$pubtypes[$tid].title} &raquo; {gt text='Relations'}</h3>
         {clip_adminmenu tid=$tid}
     {else}
-        <h2>{gt text='Manage Relations'}</h2>
+        <h3>{gt text='Manage Relations'}</h3>
     {/if}
 
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}

@@ -4,7 +4,7 @@
 <div class="z-admincontainer">
     <div class="z-adminpageicon">{img modname='core' src='folder_sent_mail.png' set='icons/large' __alt='Export' }</div>
 
-    <h2>{gt text='Import pagesetter publications'}</h2>
+    <h3>{gt text='Import pagesetter publications'}</h3>
 
     {if $alreadyexists}
     <p class="z-warningmsg">{gt text='Be sure to know what you are doing on this process.'}</p>

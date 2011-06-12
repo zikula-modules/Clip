@@ -1,5 +1,5 @@
 
-<h2>{gt text='Publications list'}</h2>
+<h3>{gt text='Publications list'}</h3>
 
 {clip_adminmenu tid=$pubtype.tid}
 

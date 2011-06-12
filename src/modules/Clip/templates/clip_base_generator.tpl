@@ -1,6 +1,6 @@
 {ajaxheader module='Clip' filename='clip_admin_generator.js' ui=true}
 
-<h2>{$pubtype.title} &raquo; {gt text='Template code'}</h2>
+<h3>{$pubtype.title} &raquo; {gt text='Template code'}</h3>
 
 {clip_adminmenu tid=$pubtype.tid code=$code}
 
@@ -10,27 +10,27 @@
 
 {switch expr=$code}
     {case expr='list'}
-        <h3>{gt text='List template'}</h3>
+        <h4>{gt text='List template'}</h4>
         {assign var='cliptplname' value='list.tpl'}
         {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
     {case expr='display'}
-        <h3>{gt text='Display template'}</h3>
+        <h4>{gt text='Display template'}</h4>
         {assign var='cliptplname' value='display.tpl'}
         {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
     {case expr='form'}
-        <h3>{gt text='Form template'}</h3>
+        <h4>{gt text='Form template'}</h4>
         {assign var='cliptplname' value='form_all.tpl'}
         {assign var='clipfolder' value=$pubtype.inputset}
     {/case}
     {case expr='blocklist'}
-        <h3>{gt text='List block template'}</h3>
+        <h4>{gt text='List block template'}</h4>
         {assign var='cliptplname' value='list_block_XYZ.tpl'}
         {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
     {case expr='blockpub'}
-        <h3>{gt text='Pub block template'}</h3>
+        <h4>{gt text='Pub block template'}</h4>
         {assign var='cliptplname' value='display_block_XYZ.tpl'}
         {assign var='clipfolder' value=$pubtype.outputset}
     {/case}

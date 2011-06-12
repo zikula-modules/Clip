@@ -3,9 +3,9 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='db_update.png' set='icons/large' __alt='Export' }</div>
+    <div class="z-adminpageicon">{img modname='core' src='db_update.png' set='icons/small' __alt='Export'}</div>
 
-    <h2>{gt text='Export'}</h2>
+    <h3>{gt text='Export'}</h3>
 
     {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
     <div>

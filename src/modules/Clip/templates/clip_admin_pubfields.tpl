@@ -4,9 +4,9 @@
 {ajaxheader module='Clip' filename='clip_admin_pubfields.js' ui=true}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='db_update.png' set='icons/large' __alt='Manage Publication fields' }</div>
+    <div class="z-adminpageicon">{img modname='core' src='db_update.png' set='icons/small' __alt='Manage Publication fields' }</div>
 
-    <h2>{$pubtype.title} &raquo; {gt text='Manage Publication fields'}</h2>
+    <h3>{$pubtype.title} &raquo; {gt text='Manage Publication fields'}</h3>
 
     {clip_adminmenu tid=$tid field=$field.id}
 
