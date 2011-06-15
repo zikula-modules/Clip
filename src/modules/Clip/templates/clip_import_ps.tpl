@@ -2,7 +2,7 @@
 {include file='clip_admin_header.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='folder_sent_mail.png' set='icons/large' __alt='Export' }</div>
+    <div class="z-adminpageicon">{img modname='core' src='folder_sent_mail.png' set='icons/small' __alt='Export' }</div>
 
     <h3>{gt text='Import pagesetter publications'}</h3>
 
