@@ -458,11 +458,11 @@ class Clip_Controller_User extends Zikula_AbstractController
                 'loadworkflow'  => false
             ));
 
-            // validate the pudblication
+            // validate the publication
             if (!$pubdata) {
                 LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($args['tid'], $args['id'])));
 
-                return $view->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid'])));
+                return $this->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid'])));
             }
         } else {
             // initial values
