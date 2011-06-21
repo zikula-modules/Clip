@@ -55,6 +55,8 @@ function Clip_operation_clone(&$pub, $params)
         // register the new workflow
         $copy->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
 
+        $pubtype = Clip_Util::getPubType($pub['core_tid']);
+
         $workflow = new Clip_Workflow($pubtype, $copy);
 
         // be sure that the state is valid

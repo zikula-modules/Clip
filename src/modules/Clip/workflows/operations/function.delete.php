@@ -29,6 +29,8 @@ function Clip_operation_delete(&$pub, $params)
     // process the deletion
     $result = false;
 
+    $pubtype = Clip_Util::getPubType($pub['core_tid']);
+
     $workflow = new Clip_Workflow($pubtype, $pub);
 
     if ($workflow->deleteWorkflow()) {
