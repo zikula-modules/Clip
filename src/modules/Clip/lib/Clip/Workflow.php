@@ -225,7 +225,7 @@ class Clip_Workflow extends Zikula_AbstractBase
      *
      * @return boolean
      */
-    private function deleteWorkflow()
+    public function deleteWorkflow()
     {
         $wid = $this->obj['__WORKFLOW__']['id'];
 
