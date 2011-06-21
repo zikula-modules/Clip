@@ -15,6 +15,16 @@
 class Clip_Doctrine_Pubdata extends Doctrine_Record
 {
     /**
+     * String output of a publication.
+     *
+     * @return string Empty string to not interfer calls from templates.
+     */
+    public function  __toString()
+    {
+        return '';
+    }
+
+    /**
      * Record load post process.
      *
      * @param boolean $args['handleplugins']        Whether to parse the plugin fields.
