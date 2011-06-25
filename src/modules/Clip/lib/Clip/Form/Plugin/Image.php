@@ -60,13 +60,16 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
     function saveValue(Zikula_Form_View $view, &$pub)
     {
-        // check for additional checkboxes
-        // delete image
-        $checkid = $this->dataField.'_delete';
-        $this->result['delete'] = $this->group ? (bool)isset($pub[$this->group][$checkid]) : (bool)isset($pub[$checkid]);
-        // regen thumbnails
-        $checkid = $this->dataField.'_thumbs';
-        $this->result['thumbs'] = $this->group ? (bool)isset($pub[$this->group][$checkid]) : (bool)isset($pub[$checkid]);
+        // check for additional checkboxes (delete image, regen thumbnails)
+        $checkboxes = array('delete', 'thumbs');
+        foreach ($checkboxes as $checkbox) {
+            $cid = $this->dataField.'_'.$checkbox;
+            if ($this->group == null) {
+                $this->result[$checkbox] = isset($pub[$cid]) ? $pub[$cid] : false;
+            } else {
+                $this->result[$checkbox] = isset($pub[$this->group][$cid]) ? $pub[$this->group][$cid] : false;
+            }
+        }
 
         // store the result in the data array
         if ($this->dataBased) {
@@ -84,10 +87,9 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     function render($view)
     {
         $input_html = parent::render($view);
-        // TODO get the current value from the $view
-        //$note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
+        $note_html  = $this->upl_arr && $this->upl_arr['orig_name'] ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
 
-        return $input_html/*.$note_html*/;
+        return $input_html.$note_html;
     }
 
     function renderBegin($view)
@@ -157,19 +159,20 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
             // evaluate if preSave is triggered by the Pub Record without changes
             if ($newData == $oldData) {
+                // $newData is serialized too
                 return $oldData;
             }
 
             // unserialize the old data
-            $oldData = unserialize($oldData);
+            $oldData = $data = unserialize($oldData);
         } else {
             $oldData = false;
+            $data = array();
         }
 
         // check if there's a new upload
         $newUpload = !empty($newData['name']) && $newData['error'] == 0;
 
-        $data = array();
         if ($newUpload || $oldData) {
             $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
             $extension  = strtolower(FileUtil::getExtension($newData['name'] ? $newData['name'] : $oldData['file_name']));
@@ -185,14 +188,13 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 $toDelete[] = 'file_name';
                 $data['orig_name'] = '';
             }
+
             foreach ($toDelete as $k) {
                 if ($oldData[$k] && file_exists($uploadpath.'/'.$oldData[$k])) {
-                    unlink($uploadpath.'/'.$oldData[$k]);
+                    //unlink($uploadpath.'/'.$oldData[$k]);
                 }
                 $data[$k] = '';
             }
-        } elseif ($oldData) {
-            $data = $oldData;
         }
 
         // process the upload if there's one
@@ -204,7 +206,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         }
 
         // thumbnail regenration
-        if ($newData['thumbs'] || $newUpload) {
+        if ($newUpload || !$newData['delete'] && $newData['thumbs']) {
             $tmbargs  = array();
             $preargs  = array();
             $fullargs = array();
@@ -235,7 +237,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 $tmbargs['filename']    = "{$uploadpath}/{$data['file_name']}";
                 $tmbargs['dstFilename'] = "{$uploadpath}/{$data['tmb_name']}";
                 $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $tmbargs);
-            } elseif (empty($tmbargs)) {
+
+            } elseif ($newUpload) {
                 // no thumbnail needed
                 $data['tmb_name'] = '';
             }
@@ -245,7 +248,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 $preargs['filename']    = "{$uploadpath}/{$data['file_name']}";
                 $preargs['dstFilename'] = "{$uploadpath}/{$data['pre_name']}";
                 $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $preargs);
-            } elseif (empty($tmpargs)) {
+
+            } elseif ($newUpload) {
                 // no thumbnail needed
                 $data['pre_name'] = '';
             }
@@ -255,7 +259,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 $fullargs['filename']    = "{$uploadpath}/{$data['file_name']}";
                 $fullargs['dstFilename'] = "{$uploadpath}/{$data['full_name']}";
                 $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $fullargs);
-            } elseif (empty($tmpargs)) {
+
+            } elseif ($newUpload) {
                 // no thumbnail needed
                 $data['full_name'] = '';
             }
