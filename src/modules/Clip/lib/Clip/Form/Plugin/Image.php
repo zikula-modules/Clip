@@ -305,7 +305,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
-                                 $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\');
+                                 $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+$F(\'clipplugin_preservename\');
 
                                  closeTypeData();
                              }';
@@ -320,6 +320,10 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         if (ModUtil::available('Thumbnail')) {
             // TODO Fieldsets and help text explaining how they work
             $html = '<div class="z-formrow">
+                         <label for="clipplugin_preservename">'.$this->__('Preserve filename').':</label>
+                         <input type="checkbox" value="1" id="clipplugin_preservename" name="clipplugin_preservename" '.($this->config[6] ? ' checked="checked"' : '').' />
+                     </div>
+                     <div class="z-formrow">
                          <label for="clipplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
                          <input type="text" value="'.$this->config[0].'" id="clipplugin_tmpx_px" name="clipplugin_tmpx_px" />
                      </div>
@@ -370,7 +374,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             3 => isset($this->config[3]) ? (int)$this->config[3] : 0,
             4 => isset($this->config[4]) ? (int)$this->config[4] : 0,
             5 => isset($this->config[5]) ? (int)$this->config[5] : 0,
-            6 => isset($this->config[6]) ? (bool)$this->config[6] : true
+            6 => isset($this->config[6]) ? (bool)$this->config[6] : false
         );
     }
 }
