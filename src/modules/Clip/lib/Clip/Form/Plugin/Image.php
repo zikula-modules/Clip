@@ -58,22 +58,62 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         }
     }
 
+    function saveValue(Zikula_Form_View $view, &$pub)
+    {
+        // check for additional checkboxes
+        // delete image
+        $checkid = $this->dataField.'_delete';
+        $this->result['delete'] = $this->group ? (bool)isset($pub[$this->group][$checkid]) : (bool)isset($pub[$checkid]);
+        // regen thumbnails
+        $checkid = $this->dataField.'_thumbs';
+        $this->result['thumbs'] = $this->group ? (bool)isset($pub[$this->group][$checkid]) : (bool)isset($pub[$checkid]);
+
+        // store the result in the data array
+        if ($this->dataBased) {
+            if ($this->group == null) {
+                $pub[$this->dataField] = $this->result;
+            } else {
+                if (!array_key_exists($this->group, $pub)) {
+                    $pub[$this->group] = array();
+                }
+                $pub[$this->group][$this->dataField] = $this->result;
+            }
+        }
+    }
+
     function render($view)
     {
         $input_html = parent::render($view);
-        $note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
+        // TODO get the current value from the $view
+        //$note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
 
-        return $input_html.$note_html;
+        return $input_html/*.$note_html*/;
+    }
+
+    function renderBegin($view)
+    {
+        return $this->render($view);
+    }
+
+    function renderContent($view, $content)
+    {
+        return $content;
+    }
+
+    function renderEnd($view)
+    {
+        return '';
     }
 
     /**
      * Clip processing methods.
      */
-    function postRead($data, $field)
+    function postRead($pub, $field)
     {
         // this plugin return an array by default
         $upl_arr = array(
                        'orig_name'    => '',
+                       'full_name'    => '',
                        'preUrl'       => '',
                        'fullUrl'      => '',
                        'thumbnailUrl' => '',
@@ -82,8 +122,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                    );
 
         // if the data is not empty, process it
-        if (!empty($data)) {
-            $arrTypeData = @unserialize($data);
+        if (!empty($pub)) {
+            $arrTypeData = @unserialize($pub);
 
             if (!is_array($arrTypeData)) {
                 return LogUtil::registerError('Plugin_Image: '.$this->__('Stored data is invalid.'));
@@ -93,6 +133,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             if (!empty($arrTypeData['orig_name'])) {
                 $upl_arr =  array(
                                 'orig_name'    => $arrTypeData['orig_name'],
+                                'file_name'    => $arrTypeData['file_name'],
                                 'preUrl'       => !empty($arrTypeData['pre_name']) ? $url.'/'.$arrTypeData['pre_name'] : '',
                                 'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
                                 'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
@@ -105,146 +146,131 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return $upl_arr;
     }
 
-    function preSave($data, $field)
+    function preSave($pub, $field)
     {
-        $postData = $data[$field['name']];
-        // FIXME validate a supported image format uploaded
+        $newData = $pub[$field['name']];
 
-        // ugly to get old image from DB
-        if ($data['id'] != NULL) {
-            $old_image = (string)Doctrine_Core::getTable('Clip_Model_Pubdata'.$data['core_tid'])
-                                 ->selectFieldBy($field['name'], $data['id'], 'id');
+        // get old image from DB if the pub exists
+        if ($pub['id']) {
+            $oldData = (string)Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid'])
+                               ->selectFieldBy($field['name'], $pub['id'], 'id');
+
+            // evaluate if preSave is triggered by the Pub Record without changes
+            if ($newData == $oldData) {
+                return $oldData;
+            }
+
+            // unserialize the old data
+            $oldData = unserialize($oldData);
+        } else {
+            $oldData = false;
         }
 
-        if ($postData != $old_image && !empty($postData['name'])) {
+        // check if there's a new upload
+        $newUpload = !empty($newData['name']) && $newData['error'] == 0;
+
+        $data = array();
+        if ($newUpload || $oldData) {
             $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
+            $extension  = strtolower(FileUtil::getExtension($newData['name'] ? $newData['name'] : $oldData['file_name']));
+            // FIXME validate a supported image format uploaded
+        }
 
-            // delete the old file
-            if ($data['id'] != NULL) {
-                $old_image_arr = unserialize($old_image);
-                unlink($uploadpath.'/'.$old_image_arr['tmb_name']);
-                unlink($uploadpath.'/'.$old_image_arr['pre_name']);
-                unlink($uploadpath.'/'.$old_image_arr['full_name']);
-                unlink($uploadpath.'/'.$old_image_arr['file_name']);
+        $this->parseConfig($field['typedata']);
+
+        // delete the files if requested to or if there's a new upload
+        if ($oldData && ($newUpload || $newData['delete'] || $newData['thumbs'])) {
+            $toDelete = array('tmb_name', 'pre_name', 'full_name');
+            if ($newData['delete']) {
+                $toDelete[] = 'file_name';
+                $data['orig_name'] = '';
             }
+            foreach ($toDelete as $k) {
+                if ($oldData[$k] && file_exists($uploadpath.'/'.$oldData[$k])) {
+                    unlink($uploadpath.'/'.$oldData[$k]);
+                }
+                $data[$k] = '';
+            }
+        } elseif ($oldData) {
+            $data = $oldData;
+        }
 
-            $srcFilename     = $postData['tmp_name'];
-            $ext             = strtolower(FileUtil::getExtension($postData['name']));
-            $randName        = Clip_Util::getNewFileReference();
-            $newFileNameOrig = $randName.'.'.$ext;
-            $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
-            copy($srcFilename, $newDestOrig);
+        // process the upload if there's one
+        if ($newUpload) {
+            $data['orig_name'] = $newData['name'];
+            $filename  = $this->config[6] ? DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])) : Clip_Util::getNewFileReference();
+            $data['file_name'] = "$filename.$extension";
+            move_uploaded_file($newData['tmp_name'], "{$uploadpath}/{$data['file_name']}");
+        }
 
-            $tmpargs  = array();
+        // thumbnail regenration
+        if ($newData['thumbs'] || $newUpload) {
+            $tmbargs  = array();
             $preargs  = array();
             $fullargs = array();
-            if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
-                $this->parseConfig($field['typedata']);
-                list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = $this->config;
-                if ($tmpx > 0) {
-                    $tmpargs['w'] = $tmpx;
-                }
-                if ($tmpy > 0) {
-                    $tmpargs['h'] = $tmpy;
-                }
-                if ($prex > 0) {
-                    $preargs['w'] = $prex;
-                }
-                if ($prey > 0) {
-                    $preargs['h'] = $prey;
-                }
-                if ($fullx > 0) {
-                    $fullargs['w'] = $fullx;
-                }
-                if ($fully > 0) {
-                    $fullargs['h'] = $fully;
-                }
+
+            list($tmbx, $tmby ,$prex, $prey, $fullx, $fully) = $this->config;
+            if ($tmbx > 0) {
+                $tmbargs['w'] = $tmbx;
             }
-
-            $srcFilename =   $postData['tmp_name'];
-            $ext             = strtolower(FileUtil::getExtension($postData['name']));
-            $randName        = Clip_Util::getNewFileReference();
-            $newFileNameOrig = $randName.'.'.$ext;
-            $newDestOrig     = "{$uploadpath}/{$newFileNameOrig}";
-            copy($srcFilename, $newDestOrig);
-
-            $tmpargs = array();
-            $preargs = array();
-            $fullargs = array();
-            if (!empty($field['typedata']) && strpos($field['typedata'], ':')) {
-                $this->parseConfig($field['typedata']);
-                list($tmpx, $tmpy ,$prex, $prey, $fullx, $fully) = $this->config;
-                if ($tmpx > 0) {
-                    $tmpargs['w'] = $tmpx;
-                }
-                if ($tmpy > 0) {
-                    $tmpargs['h'] = $tmpy;
-                }
-                if ($prex > 0) {
-                    $preargs['w'] = $prex;
-                }
-                if ($prey > 0) {
-                    $preargs['h'] = $prey;
-                }
-                if ($fullx > 0) {
-                    $fullargs['w'] = $fullx;
-                }
-                if ($fully > 0) {
-                    $fullargs['h'] = $fully;
-                }
+            if ($tmby > 0) {
+                $tmbargs['h'] = $tmby;
+            }
+            if ($prex > 0) {
+                $preargs['w'] = $prex;
+            }
+            if ($prey > 0) {
+                $preargs['h'] = $prey;
+            }
+            if ($fullx > 0) {
+                $fullargs['w'] = $fullx;
+            }
+            if ($fully > 0) {
+                $fullargs['h'] = $fully;
             }
 
             // Check for the Thumbnails module and if we need it
-            if (!empty($tmpargs) && ModUtil::available('Thumbnail')) {
-                $newFilenameTmp = "{$randName}-tmb.{$ext}";
-                $newDestTmp  = "{$uploadpath}/{$newFilenameTmp}";
-                $tmpargs['filename'] = $newDestOrig;
-                $tmpargs['dstFilename'] = $newDestTmp;
-                $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $tmpargs);
-            } elseif (empty($tmpargs)) {
+            if (!empty($tmbargs) && ModUtil::available('Thumbnail')) {
+                $data['tmb_name'] = str_replace(".$extension", "-tmb.$extension", $data['file_name']);
+                $tmbargs['filename']    = "{$uploadpath}/{$data['file_name']}";
+                $tmbargs['dstFilename'] = "{$uploadpath}/{$data['tmb_name']}";
+                $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $tmbargs);
+            } elseif (empty($tmbargs)) {
                 // no thumbnail needed
-                $newFilenameTmp = $newFileNameOrig;
+                $data['tmb_name'] = '';
             }
 
             if (!empty($preargs) && ModUtil::available('Thumbnail')) {
-                $newFilenamePre = "{$randName}-pre.{$ext}";
-                $newDestPre  = "{$uploadpath}/{$newFilenamePre}";
-                $preargs['filename'] = $newDestOrig;
-                $preargs['dstFilename'] = $newDestPre;
+                $data['pre_name'] = str_replace(".$extension", "-pre.$extension", $data['file_name']);
+                $preargs['filename']    = "{$uploadpath}/{$data['file_name']}";
+                $preargs['dstFilename'] = "{$uploadpath}/{$data['pre_name']}";
                 $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $preargs);
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed
-                $newFilenamePre = $newFileNameOrig;
+                $data['pre_name'] = '';
             }
 
             if (!empty($fullargs) && ModUtil::available('Thumbnail')) {
-                $newFilenameFull = "{$randName}-full.{$ext}";
-                $newDestFull  = "{$uploadpath}/{$newFilenameFull}";
-                $fullargs['filename'] = $newDestOrig;
-                $fullargs['dstFilename'] = $newDestFull;
+                $data['full_name'] = str_replace(".$extension", "-full.$extension", $data['file_name']);
+                $fullargs['filename']    = "{$uploadpath}/{$data['file_name']}";
+                $fullargs['dstFilename'] = "{$uploadpath}/{$data['full_name']}";
                 $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $fullargs);
             } elseif (empty($tmpargs)) {
                 // no thumbnail needed
-                $newFilenameFull = $newFileNameOrig;
+                $data['full_name'] = '';
             }
-
-            $arrTypeData = array(
-                'orig_name' => $postData['name'],
-                'tmb_name'  => $newFilenameTmp,
-                'pre_name'  => $newFilenamePre,
-                'full_name' => $newFilenameFull,
-                'file_name' => $newFileNameOrig
-            );
-
-            return serialize($arrTypeData);
-
-        } elseif ($data['id'] != NULL) {
-            // if it's not a new pub
-            // return the old image if no new is selected
-            return $old_image;
         }
 
-        return NULL;
+        if ($data) {
+            return serialize($data);
+
+        } elseif ($pub['id']) {
+            // if it's not a new pub and no changes
+            // return the old image information
+            return $oldData;
+        }
+
+        return null;
     }
 
     static function getOutputDisplay($field)
@@ -338,7 +364,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             2 => isset($this->config[2]) ? (int)$this->config[2] : 0,
             3 => isset($this->config[3]) ? (int)$this->config[3] : 0,
             4 => isset($this->config[4]) ? (int)$this->config[4] : 0,
-            5 => isset($this->config[5]) ? (int)$this->config[5] : 0
+            5 => isset($this->config[5]) ? (int)$this->config[5] : 0,
+            6 => isset($this->config[6]) ? (bool)$this->config[6] : true
         );
     }
 }
