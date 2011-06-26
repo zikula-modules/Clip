@@ -164,9 +164,9 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             }
 
             // unserialize the old data
-            $oldData = $data = unserialize($oldData);
+            $oldData = $data = ($oldData ? unserialize($oldData) : '');
         } else {
-            $oldData = false;
+            $oldData = null;
             $data = array();
         }
 
@@ -205,8 +205,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             move_uploaded_file($newData['tmp_name'], "{$uploadpath}/{$data['file_name']}");
         }
 
-        // thumbnail regenration
-        if ($newUpload || !$newData['delete'] && $newData['thumbs']) {
+        // thumbnail regeneration
+        if ($newUpload || $oldData && !$newData['delete'] && $newData['thumbs']) {
             $tmbargs  = array();
             $preargs  = array();
             $fullargs = array();
@@ -268,14 +268,9 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
         if ($data) {
             return serialize($data);
-
-        } elseif ($pub['id']) {
-            // if it's not a new pub and no changes
-            // return the old image information
-            return $oldData;
         }
 
-        return null;
+        return $oldData;
     }
 
     static function getOutputDisplay($field)
