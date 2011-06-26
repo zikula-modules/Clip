@@ -107,7 +107,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     /**
      * Clip processing methods.
      */
-    static function postRead($data, $field)
+    public function postRead($data, $field)
     {
         // this plugin return an array
         $cat = array('id' => 0);

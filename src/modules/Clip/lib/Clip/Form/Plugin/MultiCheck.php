@@ -59,7 +59,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
     /**
      * Clip processing methods.
      */
-    static function postRead($data, $field)
+    public function postRead($data, $field)
     {
         // this plugin return an array by default
         $cat_arr = array();
