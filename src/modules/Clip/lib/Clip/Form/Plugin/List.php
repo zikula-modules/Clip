@@ -50,7 +50,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
     static function postRead($data, $field)
     {
         // this plugin return an array
-        $cat = array();
+        $cat = array('id' => 0);
 
         // if there's a value extract the category
         if (!empty($data) && is_numeric($data)) {
@@ -64,7 +64,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
 
             // compatible mode to pagesetter
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
-            $cat['value']     = $cat['name'];
+            $cat['value']     = $cat['name']; // FIXME do not override category value, where this is used??
             $cat['title']     = $cat['name'];
         }
 
