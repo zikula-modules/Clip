@@ -194,9 +194,14 @@ class Clip_Api_User extends Zikula_AbstractApi
         // fill $args.filter with the final filter used
         $args['filter'] = array();
         foreach ($filter['obj']->getObject() as $f1) {
-            foreach ($f1 as $farray) {
-                $args['filter'][$farray['field']]['ops'][] = $farray['op'];
-                $args['filter'][$farray['field']][$farray['op']][] = $farray['value'];
+            if (isset($f1['field'])) {
+                $args['filter'][$f1['field']]['ops'][] = $f1['op'];
+                $args['filter'][$f1['field']][$f1['op']][] = $f1['value'];
+            } else {
+                foreach ($f1 as $farray) {
+                    $args['filter'][$farray['field']]['ops'][] = $farray['op'];
+                    $args['filter'][$farray['field']][$farray['op']][] = $farray['value'];
+                }
             }
         }
 
