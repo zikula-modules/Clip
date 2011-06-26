@@ -57,15 +57,14 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
             $cat = CategoryUtil::getCategoryByID($data);
 
             if (!$cat) {
-                return array();
+                return array('id' => 0);
             }
 
-            $lang = ZLanguage::getLanguageCode();
+            CategoryUtil::buildRelativePathsForCategory($this->getRootCategoryID($field['typedata']), $cat);
 
-            // compatible mode to pagesetter
+            // map the local display name
+            $lang = ZLanguage::getLanguageCode();
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
-            $cat['value']     = $cat['name']; // FIXME do not override category value, where this is used??
-            $cat['title']     = $cat['name'];
         }
 
         return $cat;

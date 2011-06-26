@@ -80,7 +80,6 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
                 ModUtil::dbInfoLoad('Categories');
 
                 $tables = DBUtil::getTables();
-
                 $category_column = $tables['categories_category_column'];
 
                 $where = array();
@@ -89,9 +88,13 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
                 }
 
                 $cat_arr = CategoryUtil::getCategories(implode(' OR ', $where), '', 'id');
+                $rootCat = $this->getRootCategoryID($field['typedata']);
 
-                foreach ($catIds as $catId) {
-                    $cat_arr[$catId]['fullTitle'] = (isset($cat_arr[$catId]['display_name'][$lang]) ? $cat_arr[$catId]['display_name'][$lang] : $cat_arr[$catId]['name']);
+                foreach ($cat_arr as &$cat) {
+                    CategoryUtil::buildRelativePathsForCategory($rootCat, $cat);
+
+                    // map the local display name
+                    $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
                 }
             }
         }

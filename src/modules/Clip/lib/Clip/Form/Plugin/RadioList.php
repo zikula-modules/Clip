@@ -110,22 +110,21 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     static function postRead($data, $field)
     {
         // this plugin return an array
-        $cat = array();
+        $cat = array('id' => 0);
 
         // if there's a value extract the category
         if (!empty($data) && is_numeric($data)) {
             $cat = CategoryUtil::getCategoryByID($data);
 
             if (empty($cat)) {
-                return $cat;
+                return array('id' => 0);
             }
 
-            $lang = ZLanguage::getLanguageCode();
+            CategoryUtil::buildRelativePathsForCategory($this->getRootCategoryID($field['typedata']), $cat);
 
-            // compatible mode to pagesetter
+            // map the local display name
+            $lang = ZLanguage::getLanguageCode();
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
-            $cat['value']     = $cat['name'];
-            $cat['title']     = $cat['name'];
         }
 
         return $cat;
