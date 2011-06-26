@@ -87,6 +87,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             }
         }
 
+        // post process the pub before include it in the edit template
+        $this->pub->clipPostRead();
+
         // fills the render
         $view->assign('pubdata',   $data)
              ->assign('pubobj',    $this->pub)
