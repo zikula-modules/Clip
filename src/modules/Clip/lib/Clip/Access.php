@@ -90,7 +90,7 @@ class Clip_Access
                 break;
 
             case 'editor': // panel
-                // TODO consider edit.own
+                // TODO consider edit.own and not for guests pubs #285
                 $workflow = new Clip_Workflow($pubtype);
                 // assumes level 1 as the first moderator permission
                 $permlvl = $workflow->getPermissionLevel(1, 'initial');
