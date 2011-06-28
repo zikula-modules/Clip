@@ -42,7 +42,7 @@ function Clip_operation_create(&$pub, $params)
     }
 
     // assign the author
-    $pub['core_author'] = UserUtil::getVar('uid');
+    $pub['core_author'] = (int)UserUtil::getVar('uid');
 
     // fills the publish date automatically
     if (empty($pub['core_publishdate'])) {

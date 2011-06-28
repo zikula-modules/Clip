@@ -291,7 +291,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     protected function setPub(&$pubdata)
     {
         if (!$this->id) {
-            $pubdata['core_author']   = UserUtil::getVar('uid');
+            $pubdata['core_author']   = (int)UserUtil::getVar('uid');
             $pubdata['core_language'] = '';
         }
 
