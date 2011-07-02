@@ -19,7 +19,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
     /**
      * Initialize function.
      */
-    function initialize(Zikula_Form_View $view)
+    public function initialize(Zikula_Form_View $view)
     {
         // stores the return URL
         if (!$view->getStateData('returnurl')) {
@@ -52,7 +52,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
     /**
      * Command handler.
      */
-    function handleCommand(Zikula_Form_View $view, &$args)
+    public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->returnurl = $view->getStateData('returnurl');
 

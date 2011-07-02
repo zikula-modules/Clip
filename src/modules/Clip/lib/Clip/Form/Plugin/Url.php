@@ -14,7 +14,7 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
     public $pluginTitle;
     public $columnDef = 'C(512)';
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -22,7 +22,7 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
         $this->pluginTitle = $this->__('URL');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -30,7 +30,7 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
     /**
      * Form Framework methods.
      */
-    function readParameters($view, &$params)
+    public function readParameters($view, &$params)
     {
         parent::readParameters($view, $params);
 
@@ -42,7 +42,7 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
      * Overrides the validation check to allow
      * {modname:func&param=value:type}
      */
-    function validate($view)
+    public function validate($view)
     {
         parent::validate($view);
 
@@ -62,7 +62,7 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
-    function postRead($data, $field)
+    public function postRead($data, $field)
     {
         // if there's an URL, process it
         if (!empty($data)) {
@@ -75,7 +75,7 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
     /**
      * Method to parse an internal URL 
      */
-    static function parseURL($url)
+    public static function parseURL($url)
     {
         // parse the URL
         // {modname:function&param=value:type}

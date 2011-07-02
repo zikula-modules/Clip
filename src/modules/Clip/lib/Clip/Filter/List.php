@@ -38,7 +38,7 @@ class Clip_Filter_List extends FilterUtil_Filter_Category
      *
      * @return array Doctrine Query where clause and parameters.
      */
-    function getDql($field, $op, $value)
+    public function getDql($field, $op, $value)
     {
         if (array_search($op, $this->availableOperators()) === false || array_search($field, $this->getFields()) === false) {
             return '';

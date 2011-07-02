@@ -14,7 +14,7 @@ class Clip_Form_Plugin_String extends Zikula_Form_Plugin_TextInput
     public $pluginTitle;
     public $columnDef = 'C(255)';
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -22,7 +22,7 @@ class Clip_Form_Plugin_String extends Zikula_Form_Plugin_TextInput
         $this->pluginTitle = $this->__('String');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -30,7 +30,7 @@ class Clip_Form_Plugin_String extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
-    static function processQuery(&$query, $field, $args)
+    public static function processQuery(&$query, $field, $args)
     {
         if (!$field['isuid']) {
             return;
@@ -43,7 +43,7 @@ class Clip_Form_Plugin_String extends Zikula_Form_Plugin_TextInput
         }
     }
 
-    static function getOutputDisplay($field)
+    public static function getOutputDisplay($field)
     {
         $body = "\n".
             '        <span class="z-formnote">{$pubdata.'.$field['name'].'|safehtml}</span>';

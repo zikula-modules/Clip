@@ -16,7 +16,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
 
     public $config = array();
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -24,7 +24,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
         $this->pluginTitle = $this->__('Float');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -32,7 +32,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
     /**
      * Form Framework methods.
      */
-    function readParameters($view, &$params)
+    public function readParameters($view, &$params)
     {
         $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
@@ -45,7 +45,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
     /**
      * Clip admin methods.
      */
-    static function getSaveTypeDataFunc($field)
+    public static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -63,7 +63,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $view)
+    public function getTypeHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
@@ -82,7 +82,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='', $args=array())
+    public function parseConfig($typedata='', $args=array())
     {
         $typedata = explode('|', $typedata);
 

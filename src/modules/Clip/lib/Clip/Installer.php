@@ -66,7 +66,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
     }
 
     /**
-     * Clip upgrade
+     * Clip upgrade.
      */
     public function upgrade($oldversion)
     {

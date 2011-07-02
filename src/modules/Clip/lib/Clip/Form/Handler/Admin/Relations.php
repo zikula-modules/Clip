@@ -21,7 +21,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
     /**
      * Initialize function.
      */
-    function initialize(Zikula_Form_View $view)
+    public function initialize(Zikula_Form_View $view)
     {
         $pubtypes = Clip_Util::getPubType(-1);
 
@@ -146,7 +146,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
     /**
      * Command handler.
      */
-    function handleCommand(Zikula_Form_View $view, &$args)
+    public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $tid = $view->getStateData('tid');
         $this->filter = $view->getStateData('filter');

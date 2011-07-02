@@ -14,7 +14,7 @@ class Clip_Form_Plugin_Email extends Zikula_Form_Plugin_EmailInput
     public $pluginTitle;
     public $columnDef = 'C(100)';
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -22,7 +22,7 @@ class Clip_Form_Plugin_Email extends Zikula_Form_Plugin_EmailInput
         $this->pluginTitle = $this->__('Email');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }

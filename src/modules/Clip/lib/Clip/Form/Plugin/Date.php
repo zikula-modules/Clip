@@ -17,7 +17,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
 
     public $config = array();
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -25,7 +25,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
         $this->pluginTitle = $this->__('Date');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -33,7 +33,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     /**
      * Form Framework methods.
      */
-    function readParameters($view, &$params)
+    public function readParameters($view, &$params)
     {
         $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
@@ -45,7 +45,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     /**
      * Clip processing methods.
      */
-    function getOutputDisplay($field)
+    public function getOutputDisplay($field)
     {
         $this->parseConfig($field['typedata']);
         $format = $this->config['includeTime'] ? 'datetimelong' : 'datelong';
@@ -59,7 +59,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     /**
      * Clip admin methods.
      */
-    static function getSaveTypeDataFunc($field)
+    public static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -75,7 +75,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $view)
+    public function getTypeHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
         $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
@@ -91,7 +91,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='', $args=array())
+    public function parseConfig($typedata='', $args=array())
     {
         // config string: "(bool)includeTime"
         $this->config['includeTime'] = (bool)$typedata;

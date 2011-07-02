@@ -17,7 +17,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
 
     public $config = array();
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -25,7 +25,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
         $this->pluginTitle = $this->__('Multiple Selector');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -33,7 +33,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
     /**
      * Form Framework methods.
      */
-    function readParameters($view, &$params)
+    public function readParameters($view, &$params)
     {
         $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
@@ -47,7 +47,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
         $this->selectionMode = 'multiple';
     }
 
-    function load($view, &$params)
+    public function load($view, &$params)
     {
         parent::load($view, $params);
 
@@ -109,7 +109,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
         return $this->config[0];
     }
 
-    static function getOutputDisplay($field)
+    public static function getOutputDisplay($field)
     {
         $full = '    <div class="z-formrow">'."\n".
                 '        <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
@@ -131,7 +131,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
     /**
      * Clip admin methods.
      */
-    static function getSaveTypeDataFunc($field)
+    public static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -156,7 +156,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $view)
+    public function getTypeHtml($field, $view)
     {
         // parse the configuration
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
@@ -200,7 +200,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='', $args=array())
+    public function parseConfig($typedata='', $args=array())
     {
         // config string: "(int)categoryID|(int)size"
         $typedata = explode('|', $typedata);
@@ -218,12 +218,12 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
      * To be able to switch form multilsit to checkbox
      * it is important that both act the same way.
      */
-    function getSelectedValue()
+    public function getSelectedValue()
     {
         return ':'.parent::getSelectedValue().':';
     }
 
-    function setSelectedValue($value)
+    public function setSelectedValue($value)
     {
         if (is_string($value)) {
             $value = explode(':', $value);

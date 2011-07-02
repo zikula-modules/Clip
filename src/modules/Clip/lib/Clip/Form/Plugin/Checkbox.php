@@ -14,7 +14,7 @@ class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
     public $pluginTitle;
     public $columnDef = 'L';
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -22,7 +22,7 @@ class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
         $this->pluginTitle = $this->__('Checkbox');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -30,7 +30,7 @@ class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
     /**
      * Clip processing methods.
      */
-    static function getOutputDisplay($field)
+    public static function getOutputDisplay($field)
     {
         $body = "\n".
             '        <span class="z-formnote">{$pubdata.'.$field['name'].'|yesno}</span>';

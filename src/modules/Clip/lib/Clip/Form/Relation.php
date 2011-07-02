@@ -27,7 +27,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
      * @internal
      * @return string
      */
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -38,7 +38,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
      * @param Zikula_Form_View $view    Reference to Zikula_Form_View object.
      * @param array     &$params Parameters passed from the Smarty plugin function.
      */
-    function __construct($view, &$params)
+    public function __construct($view, &$params)
     {
         // input relation data
         if (isset($params['relation'])) {
@@ -76,7 +76,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
      * @see    Zikula_Form_Plugin
      * @return void
      */
-    function create($view, &$params)
+    public function create($view, &$params)
     {
         parent::create($view, $params);
 
@@ -103,7 +103,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
      *
      * @return string The rendered output
      */
-    function render($view)
+    public function render($view)
     {
         $result = parent::render($view);
 
@@ -166,7 +166,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
      *
      * @return void
      */
-    function saveValue($view, &$data)
+    public function saveValue($view, &$data)
     {
         if ($this->dataBased) {
             $value = $this->parseValue($view, $this->text);

@@ -11,12 +11,12 @@
 
 class Clip_Form_PluginType extends Zikula_Form_Plugin_DropdownList
 {
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
 
-    function __construct($view, &$params)
+    public function __construct($view, &$params)
     {
         $this->autoPostBack = true;
 
@@ -25,12 +25,12 @@ class Clip_Form_PluginType extends Zikula_Form_Plugin_DropdownList
         parent::__construct($view, $params);
     }
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
     }
 
-    function render($render)
+    public function render($render)
     {
         $this->cssClass = strpos($this->cssClass, 'clip-plugintypeselector') === false ? $this->cssClass.' clip-plugintypeselector' : $this->cssClass;
         $result = parent::render($render);

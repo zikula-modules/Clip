@@ -20,7 +20,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
     /**
      * Initialize function.
      */
-    function initialize($view)
+    public function initialize($view)
     {
         $this->tid = FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
 
@@ -64,7 +64,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
     /**
      * Command handler.
      */
-    function handleCommand(Zikula_Form_View $view, &$args)
+    public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->returnurl = $view->getStateData('returnurl');
 

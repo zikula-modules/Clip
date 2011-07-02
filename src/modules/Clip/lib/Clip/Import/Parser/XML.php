@@ -95,7 +95,7 @@ class Clip_Import_Parser_XML
      *
      * @return array
      */
-    static public function DOMtoArray(DOMNode $DomNode = null)
+    public static function DOMtoArray(DOMNode $DomNode = null)
     {
         $array = array();
 

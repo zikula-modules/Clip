@@ -36,25 +36,25 @@ class Clip_ContentType_ClipPub extends Content_AbstractContentType
         $this->tpl = $tpl;
     }
 
-    function getTitle()
+    public function getTitle()
     {
         return $this->__('Clip publication');
     }
-    function getDescription()
+    public function getDescription()
     {
         return $this->__('Display a Clip publication.');
     }
-    function isTranslatable()
+    public function isTranslatable()
     {
         return false;
     }
-    function loadData(&$data)
+    public function loadData(&$data)
     {
         $this->tid = $data['tid'];
         $this->pid = $data['pid'];
         $this->tpl = $data['tpl'];
     }
-    function display()
+    public function display()
     {
         $tid = DataUtil::formatForDisplayHTML($this->tid);
         $pid = DataUtil::formatForDisplayHTML($this->pid);
@@ -79,7 +79,7 @@ class Clip_ContentType_ClipPub extends Content_AbstractContentType
 
         return $this->view->fetch($this->getTemplate());
     }
-    function displayEditing()
+    public function displayEditing()
     {
         $tid = DataUtil::formatForDisplayHTML($this->tid);
         $pid = DataUtil::formatForDisplayHTML($this->pid);
@@ -103,7 +103,7 @@ class Clip_ContentType_ClipPub extends Content_AbstractContentType
 
         return $this->view->fetch($this->getTemplate()); // not getEditTemplate??
     }
-    function getDefaultData()
+    public function getDefaultData()
     {
         // deault values
         return array('tid' => ModUtil::getVar('clip', 'frontpagePubType'), 'pid' => '', 'tpl' => 'full');

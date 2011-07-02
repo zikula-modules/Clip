@@ -22,7 +22,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     public $minchars;
     public $autotip;
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
 
@@ -30,7 +30,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $this->pluginTitle = $this->__('User');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -38,7 +38,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     /**
      * Form Framework methods.
      */
-    function create($view, &$params)
+    public function create($view, &$params)
     {
         parent::create($view, $params);
 
@@ -47,14 +47,14 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $this->minchars = (isset($params['minchars']) && is_int($params['minchars'])) ? abs($params['minchars']) : 3;
     }
 
-    function readParameters($view, &$params)
+    public function readParameters($view, &$params)
     {
         $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
         parent::readParameters($view, $params);
     }
 
-    function render($view)
+    public function render($view)
     {
         $this->textMode = 'hidden';
 
@@ -105,7 +105,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     }
 
 
-    function saveValue($view, &$data)
+    public function saveValue($view, &$data)
     {
         if ($this->dataBased) {
             $value = $this->parseValue($view, $this->text);
@@ -124,7 +124,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
-    static function postRead($data, $field)
+    public static function postRead($data, $field)
     {
         // this plugin return an array
         $uids = array();
@@ -153,7 +153,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         return $uids;
     }
 
-    static function processQuery(&$query, $field, $args)
+    public static function processQuery(&$query, $field, $args)
     {
         if (!$field['isuid']) {
             return;
@@ -172,7 +172,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         }
     }
 
-    function getOutputDisplay($field)
+    public function getOutputDisplay($field)
     {
         $this->parseConfig($field['typedata']);
 
@@ -187,7 +187,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         return array('body' => $body);
     }
 
-    static function getOutputEdit($field)
+    public static function getOutputEdit($field)
     {
         return " minchars='3' numitems='30'";
     }
@@ -195,7 +195,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     /**
      * Clip admin methods.
      */
-    static function getSaveTypeDataFunc($field)
+    public static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -217,7 +217,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $view)
+    public function getTypeHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
@@ -252,7 +252,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='')
+    public function parseConfig($typedata='')
     {
         // config: "{(bool)usescribite, (string)editor}"
         $typedata = explode('|', $typedata);

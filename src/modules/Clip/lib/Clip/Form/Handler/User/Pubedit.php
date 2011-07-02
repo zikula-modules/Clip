@@ -29,7 +29,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     /**
      * Initialize function.
      */
-    function initialize(Zikula_Form_View $view)
+    public function initialize(Zikula_Form_View $view)
     {
         //// Parameters
         // process the input parameters
@@ -106,7 +106,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     /**
      * Command handler.
      */
-    function handleCommand(Zikula_Form_View $view, &$args)
+    public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->returnurl = $view->getStateData('returnurl');
 

@@ -17,7 +17,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
 
     public $config = array();
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -25,7 +25,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
         $this->pluginTitle = $this->__('List');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -33,7 +33,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
     /**
      * Form Framework methods.
      */
-    function readParameters($view, &$params)
+    public function readParameters($view, &$params)
     {
         $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
@@ -77,7 +77,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
         return $this->config[0];
     }
 
-    static function getOutputDisplay($field)
+    public static function getOutputDisplay($field)
     {
         $full = '    <div class="z-formrow">'."\n".
                 '        <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
@@ -93,7 +93,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
     /**
      * Clip admin methods.
      */
-    static function getSaveTypeDataFunc($field)
+    public static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -121,7 +121,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $view)
+    public function getTypeHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
@@ -165,7 +165,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='')
+    public function parseConfig($typedata='')
     {
         // config string: "(int)categoryID,(bool)includeEmpty,(bool)editLink"
         $typedata = explode(',', $typedata);

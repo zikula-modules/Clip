@@ -77,19 +77,19 @@ class Clip_ContentType_ClipPublist extends Content_AbstractContentType
         $this->tpl = $tpl;
     }
 
-    function getTitle()
+    public function getTitle()
     {
         return $this->__('Clip publication list');
     }
-    function getDescription()
+    public function getDescription()
     {
         return $this->__('Clip list of filtered, ordered, and/or formatted publications.');
     }
-    function isTranslatable()
+    public function isTranslatable()
     {
         return false;
     }
-    function loadData(&$data)
+    public function loadData(&$data)
     {
         $this->tid = $data['tid'];
         $this->numpubs = $data['numpubs'];
@@ -98,7 +98,7 @@ class Clip_ContentType_ClipPublist extends Content_AbstractContentType
         $this->order = $data['order'];
         $this->tpl = $data['tpl'];
     }
-    function display()
+    public function display()
     {
         // retrieve filtered and ordered publication list
         $plargs = array(
@@ -133,7 +133,7 @@ class Clip_ContentType_ClipPublist extends Content_AbstractContentType
 
         return $this->view->fetch($this->getTemplate());
     }
-    function displayEditing()
+    public function displayEditing()
     {
         $tid = DataUtil::formatForDisplayHTML($this->tid);
         $numpubs = DataUtil::formatForDisplayHTML($this->numpubs);
@@ -142,7 +142,7 @@ class Clip_ContentType_ClipPublist extends Content_AbstractContentType
         $order = DataUtil::formatForDisplayHTML($this->order);
         $tpl = DataUtil::formatForDisplayHTML($this->tpl);
     }
-    function getDefaultData()
+    public function getDefaultData()
     {
         // deault values
         return array(

@@ -16,7 +16,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
 
     public $config = array();
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
 
@@ -24,7 +24,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
         $this->pluginTitle = $this->__('Text');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -32,14 +32,14 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     /**
      * Form Framework methods.
      */
-    function readParameters($view, &$params)
+    public function readParameters($view, &$params)
     {
         $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
         parent::readParameters($view, $params);
     }
 
-    function render($view)
+    public function render($view)
     {
         $this->textMode = 'multiline';
 
@@ -49,7 +49,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
-    static function getOutputDisplay($field)
+    public static function getOutputDisplay($field)
     {
         $body = "\n".
             '         <span class="z-formnote">{$pubdata.'.$field['name'].'|safehtml|notifyfilters:"clip.hook.`$pubtype.tid`.ui.filter"}</span>';
@@ -57,7 +57,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
         return array('body' => $body);
     }
 
-    static function getOutputEdit($field)
+    public static function getOutputEdit($field)
     {
         return " rows='15' cols='70'";
     }
@@ -65,7 +65,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     /**
      * Clip admin methods.
      */
-    static function getSaveTypeDataFunc($field)
+    public static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -81,7 +81,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $view)
+    public function getTypeHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
@@ -104,7 +104,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='')
+    public function parseConfig($typedata='')
     {
         // config: "{(bool)usescribite, (string)editor}"
         $typedata = explode('|', $typedata);

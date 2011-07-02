@@ -17,7 +17,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
     public $config = array();
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -25,7 +25,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         $this->pluginTitle = $this->__('Image Upload');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -33,19 +33,19 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     /**
      * Form Framework methods.
      */
-    function readParameters($view, &$params)
+    public function readParameters($view, &$params)
     {
         $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
 
         parent::readParameters($view, $params);
     }
 
-    function load($view, &$params)
+    public function load($view, &$params)
     {
         $this->loadValue($view, $view->get_template_vars());
     }
 
-    function loadValue($view, $values)
+    public function loadValue($view, $values)
     {
         if ($this->group == null) {
             if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
@@ -58,7 +58,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         }
     }
 
-    function saveValue(Zikula_Form_View $view, &$pub)
+    public function saveValue(Zikula_Form_View $view, &$pub)
     {
         // check for additional checkboxes (delete image, regen thumbnails)
         $checkboxes = array('delete', 'thumbs');
@@ -84,7 +84,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         }
     }
 
-    function render($view)
+    public function render($view)
     {
         $input_html = parent::render($view);
         $note_html  = $this->upl_arr && $this->upl_arr['orig_name'] ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
@@ -92,17 +92,17 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return $input_html.$note_html;
     }
 
-    function renderBegin($view)
+    public function renderBegin($view)
     {
         return $this->render($view);
     }
 
-    function renderContent($view, $content)
+    public function renderContent($view, $content)
     {
         return $content;
     }
 
-    function renderEnd($view)
+    public function renderEnd($view)
     {
         return '';
     }
@@ -110,7 +110,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     /**
      * Clip processing methods.
      */
-    function postRead($pub, $field)
+    public function postRead($pub, $field)
     {
         // this plugin return an array by default
         $upl_arr = array(
@@ -148,7 +148,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return $upl_arr;
     }
 
-    function preSave($pub, $field)
+    public function preSave($pub, $field)
     {
         $newData = $pub[$field['name']];
 
@@ -273,7 +273,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return $oldData;
     }
 
-    static function getOutputDisplay($field)
+    public static function getOutputDisplay($field)
     {
         $full = '    <div class="z-formrow">'."\n".
                 '        <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
@@ -296,7 +296,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     /**
      * Clip admin methods.
      */
-    static function getSaveTypeDataFunc($field)
+    public static function getSaveTypeDataFunc($field)
     {
         $saveTypeDataFunc = 'function saveTypeData()
                              {
@@ -308,7 +308,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return $saveTypeDataFunc;
     }
 
-    function getTypeHtml($field, $view)
+    public function getTypeHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
@@ -356,7 +356,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     /**
      * Parse configuration
      */
-    function parseConfig($typedata='', $args=array())
+    public function parseConfig($typedata='', $args=array())
     {
         // config string: "$tmpx:$tmpy:$prex:$prey:$fullx:$fully"
         $this->config = explode(':', $typedata);

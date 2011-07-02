@@ -16,7 +16,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
     public $upl_arr;
 
-    function setup()
+    public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
         
@@ -24,7 +24,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         $this->pluginTitle = $this->__('File Upload');
     }
 
-    function getFilename()
+    public function getFilename()
     {
         return __FILE__;
     }
@@ -32,12 +32,12 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     /**
      * Form Framework methods.
      */
-    function load($view, &$params)
+    public function load($view, &$params)
     {
         $this->loadValue($view, $view->get_template_vars());
     }
 
-    function loadValue($view, &$values)
+    public function loadValue($view, &$values)
     {
         if ($this->group == null) {
             if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
@@ -50,7 +50,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         }
     }
 
-    function render($view)
+    public function render($view)
     {
         $input_html = parent::render($view);
         $note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
@@ -61,7 +61,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     /**
      * Clip processing methods.
      */
-    function postRead($data, $field)
+    public function postRead($data, $field)
     {
         $upl_arr = array(
                  'orig_name' => '',
@@ -93,7 +93,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         return $upl_arr;
     }
 
-    static function preSave($data, $field)
+    public static function preSave($data, $field)
     {
         $postData = $data[$field['name']];
 

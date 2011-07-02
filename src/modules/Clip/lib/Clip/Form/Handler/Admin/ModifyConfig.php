@@ -19,7 +19,7 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
     /**
      * Initialize function.
      */
-    function initialize(Zikula_Form_View $view)
+    public function initialize(Zikula_Form_View $view)
     {
         $modvars = ModUtil::getVar('Clip');
 
@@ -53,7 +53,7 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
     /**
      * Command handler.
      */
-    function handleCommand(Zikula_Form_View $view, &$args)
+    public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $data = $view->getValues();
 
