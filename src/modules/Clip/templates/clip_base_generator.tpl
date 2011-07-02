@@ -1,8 +1,10 @@
 {ajaxheader module='Clip' filename='clip_admin_generator.js' ui=true}
 
-<h3>{$pubtype.title} &raquo; {gt text='Template code'}</h3>
-
-{clip_adminmenu tid=$pubtype.tid code=$code}
+<div class="z-admin-content-pagetitle">
+    {img modname='core' src='exec.png' set='icons/small' __title='Show code' alt=''}
+    <h3>{$pubtype.title} &raquo; {gt text='Template code'}</h3>
+    {clip_adminmenu tid=$pubtype.tid code=$code}
+</div>
 
 <hr />
 

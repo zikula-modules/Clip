@@ -1,7 +1,7 @@
 
 {admincategorymenu}
 
-<div class="z-adminbox">
+<div class="z-admin-content z-clearfix">
     <div id="clip_admin_buttons" class="z-floatright z-buttons">
         <a class="z-bt-preview" title="{gt text='Switch to the editor context'}" href="{modurl modname='Clip' type='editor' func='main'}">
             {gt text='Editor Panel'}
@@ -11,8 +11,9 @@
         </a>
     </div>
 
-    {img modname='Clip' src='admin.gif' height='36'}
-    <h2>{$modinfo.displayname}</h2>
+    <div class="z-admin-content-modtitle">
+        {img modname='Clip' src='admin.png' height='36'}
+        <h2>{modgetinfo modname='Clip' info='displayname'}</h2>
+    </div>
 
     {modulelinks modname='Clip' type='admin'}
-</div>

@@ -8,14 +8,12 @@
  * @subpackage CSS
  */
 
+
 /*** Admin GUI ***/
-.z-module-clip div.z-admincontainer .z-menu {
-  margin-top: -5px;
+.z-module-clip .z-admin-content-pagetitle .z-menu {
+  margin-bottom: 0;
 }
-.z-module-clip div.z-admincontainer #clip_cols_maincol .z-menu {
-  margin-top: 0;
-}
-.z-module-clip div.z-admincontainer .clip-breadcrumbs {
+.z-module-clip .z-admin-content .clip-breadcrumbs {
   border: none;
   line-height: 1.5em;
 }
@@ -23,10 +21,10 @@
   margin-left: 4px;
 }
 #clip_admin_buttons {
-  padding-top: 3px;
+  padding-top: 10px;
 }
 #groupControls {
-  color: #999999;
+  color: #999;
   margin-bottom: 5px;
 }
 #clip_cols_container {
@@ -39,13 +37,19 @@
   padding: 0 0 0 15px;
   position: relative;
 }
-  #z-maincontent div.z-admincontainer #clip_cols_maincol h2 {
-    margin: 0;
-    padding: 0;
+  #z-maincontent div.z-admin-content #clip_cols_maincol {
+    position: relative;
+  }
+  #z-maincontent div.z-admin-content #clip_cols_maincol h3 {
+    margin-top: 0;
+    padding-top: 0;
+  }
+  #z-maincontent #clip_cols_maincol div.z-admin-content-pagetitle {
+    padding: 7px 0;
   }
 
 #clip_cols_sidecol {
-  border-right: 1px solid #CCCCCC;
+  border-right: 1px solid #ccc;
   float: left;
   overflow-x: scroll;
   overflow-y: hidden;
@@ -209,7 +213,7 @@
 .z-module-clip .clip-breadcrumbs {
   background: none;
   border: none;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
   padding: 0;
 }
 .clip-breadcrumbs span {
@@ -221,7 +225,7 @@
 }
 
 .z-module-clip .z-pagerabc {
-  border-top: 1px solid #CCCCCC;
+  border-top: 1px solid #ccc;
 }
 
 table.z-admintable {
@@ -232,7 +236,7 @@ table.z-admintable {
   padding: 0 !important;
 }
 table.z-admintable thead tr th {
-  background-color: #CFCFCF;
+  background-color: #cfcfcf;
   border-width: 0px;
   font-size: 11px;
   padding: 7px 7px 8px;
@@ -280,9 +284,10 @@ pre.clip-generatorcode {
   color: #fff;
   letter-spacing: -0.04em;
   line-height: 1.1em;
-  margin: 1em;
-  overflow: hidden;
+  margin: 1em 0;
+  overflow-x: scroll;
   padding: 0 1em;
+  white-space: pre-wrap;
 }
 #clippy_clip_generatorcode {
   float: left;
@@ -633,7 +638,7 @@ ul.z-auto-holder li.z-auto-bit-box {
   -webkit-border-radius: 2px;
   border-radius: 2px;
   border: 1px solid #ddd;
-  background: #F2F2F2;
+  background: #f2f2f2;
   padding: 1px 15px 2px 5px;
   position: relative;
 }
@@ -751,10 +756,10 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 }
 .clip-post-title a:active,
 .clip-post-title a:hover {
-  color: #FF4B33;
+  color: #ff4b33;
 }
 .clip-post-meta {
-  color: #888888;
+  color: #888;
   font-size: 0.95em;
 }
 .clip-post-content {
@@ -769,13 +774,13 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   vertical-align: top;
 }
 .clip-post-utility {
-  color: #888888;
+  color: #888;
   font-size: 0.95em;
   line-height: 18px;
 }
 .clip-post-utility a:link,
 .clip-post-utility a:visited {
-  color: #888888;
+  color: #888;
   text-decoration: underline;
 }
 
@@ -796,6 +801,6 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 }
 .clip-page-info a:link,
 .clip-page-info a:visited {
-  color: #888888;
+  color: #888;
   text-decoration: underline;
 }

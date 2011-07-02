@@ -33,7 +33,7 @@ class Clip_EventHandler_Listeners
                 if (in_array($func[1], array('pubtypeinfo', 'generator'))) {
                     $view->assign('maincontent', $event->getData());
 
-                    $output = $view->fetch("clip_admin_{$func[1]}.tpl");
+                    $output = $view->fetch("clip_admin_decorator.tpl");
 
                     $event->setData($output);
                 }

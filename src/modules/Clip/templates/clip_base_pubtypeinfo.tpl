@@ -1,7 +1,9 @@
 
-<h3>{$pubtype.title}</h3>
-
-{clip_adminmenu tid=$pubtype.tid}
+<div class="z-admin-content-pagetitle">
+    {img modname='core' src='folder_documents.png' set='icons/small' __title='Publication type information' alt=''}
+    <h3>{$pubtype.title}</h3>
+    {clip_adminmenu tid=$pubtype.tid}
+</div>
 
 <ul id="pubtype{$pubtype.tid}_info">
     <li class="tab"><a href="#p{$pubtype.tid}manage">{gt text='Manage'}</a></li>
