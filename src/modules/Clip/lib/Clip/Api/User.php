@@ -504,7 +504,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         $pubtypeTitle = '';
-        if (!isset($args['args']['tid'])) {
+        if (!isset($args['args']['tid']) || !Clip_Util::validateTid($args['args']['tid'])) {
             return false;
         } else {
             $tid          = (int)$args['args']['tid'];
