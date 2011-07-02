@@ -38,7 +38,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 
     // build the output
     $output  = '<div class="z-menu"><span class="z-menuitem-title clip-breadcrumbs">';
-    $output .= '<span class="clip-option">';
+    $output .= '<span>';
     $args = array('func' => 'pubtypeinfo', 'args' => array('tid' => $tid));
     $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Info').'</a>';
     $output .= '</span> | ';
@@ -73,7 +73,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
     $args = array('func' => 'generator', 'args' => array('tid' => $tid, 'code' => 'form'));
     if ($func == 'generator') {
         $output .= '<br />';
-        $output .= '<span class="clip-option">'.$view->__('Generate templates').'</span><span class="clip-option">&raquo;</span>';
+        $output .= '<span>'.$view->__('Generate templates').'</span><span>&raquo;</span>';
 
         $links = array();
 

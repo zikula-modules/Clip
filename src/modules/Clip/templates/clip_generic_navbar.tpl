@@ -1,14 +1,16 @@
 
 <div class="z-menu">
     <span class="z-menuitem-title clip-breadcrumbs">
-        <a href="{$baseurl}">{gt text='Home'}</a>
+        {strip}
+        <span class="clip-breadtext">
+            <a href="{$baseurl}">{gt text='Home'}</a>
+        </span>
 
         {if $type eq 'editor'}
-            <em class="text_separator">&raquo;</em>
+            <span class="text_separator">&raquo;</span>
 
-            {strip}
             {if $func neq 'main'}
-                <span>
+                <span class="clip-breadtext">
                     <a href="{modurl modname='Clip' type='editor' func='main'}">
                         {gt text="Editor's Panel"}
                     </a>
@@ -18,18 +20,16 @@
                     {gt text="Editor's Panel"}
                 </span>
             {/if}
-            {/strip}
         {/if}
 
         {if $func neq 'main'}
             {clip_access tid=$pubtype.tid assign='auth_admin'}
 
-            <em class="text_separator">&raquo;</em>
+            <span class="text_separator">&raquo;</span>
 
-            {strip}
             {if $func neq 'list'}
-                <span>
-                    <a href="{modurl modname='Clip' tid=$pubtype.tid}">
+                <span class="clip-breadtext">
+                    <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid}">
                         {$pubtype.title}
                     </a>
                 </span>
@@ -41,7 +41,7 @@
 
             {* action icons *}
             {if $auth_admin}
-            <span>
+            <span class="clip-breadlink">
                 <a href="{modurl modname='Clip' type='admin' func='main' fragment="`$pubtype.tid`/pubtypeinfo"}">
                     {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
                 </a>
@@ -49,7 +49,7 @@
             {/if}
             {if $type neq 'editor'}
             {clip_accessblock tid=$pubtype.tid context='editor'}
-            <span>
+            <span class="clip-breadlink">
                 <a href="{modurl modname='Clip' type='editor' func='list' tid=$pubtype.tid}">
                     {img width='12' height='12' modname='core' src='lists.png' set='icons/extrasmall' alt='' __title='Editor panel'}
                 </a>
@@ -57,7 +57,7 @@
             {/clip_accessblock}
             {/if}
             {clip_accessblock tid=$pubtype.tid context='submit'}
-            <span>
+            <span class="clip-breadlink">
                 <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
                     {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Submit a publication'}
                 </a>
@@ -65,12 +65,12 @@
             {/clip_accessblock}
 
             {if $func neq 'list' and !isset($clip_simple_tpl)}
-                <em class="text_separator">&raquo;</em>
+                <span class="text_separator">&raquo;</span>
 
                 {if $func neq 'display'}
                     {* edit check *}
                     {if isset($pubdata.id)}
-                    <span>
+                    <span class="clip-breadtext">
                         <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}" title="{$pubdata.core_title}">
                             {$pubdata.core_title|truncate:40}
                         </a>
@@ -81,7 +81,7 @@
                         {$pubdata.core_title|truncate:40}
                     </span>
                     {clip_accessblock tid=$pubtype.tid pid=$pubdata.core_pid context='edit'}
-                    <span>
+                    <span class="clip-breadlink">
                         <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubdata.core_tid id=$pubdata.id}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit this publication' __alt='Edit'}
                         </a>
@@ -91,7 +91,7 @@
 
                 {if $func neq 'display'}
                     {if isset($pubdata.id)}
-                    <em class="text_separator">&raquo;</em>
+                    <span class="text_separator">&raquo;</span>
                     {/if}
 
                     <span class="clip-breadtext">
@@ -103,8 +103,8 @@
                     </span>
                 {/if}
             {/if}
-            {/strip}
         {/if}
+        {/strip}
     </span>
 </div>
 

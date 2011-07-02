@@ -212,17 +212,11 @@
   border-bottom: 1px solid #ddd;
   padding: 0;
 }
-.clip-option,
 .clip-breadcrumbs span {
   color: #444;
-  padding: 0 3px;
+  padding: 3px;
 }
-.clip-option a,
 .clip-breadcrumbs span a {
-  padding: 3px 0;
-}
-.clip-breadcrumbs em {
-  font-style: normal;
   padding: 0;
 }
 
