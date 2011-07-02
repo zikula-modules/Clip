@@ -208,7 +208,7 @@
 
 /*** User GUI ***/
 .z-module-clip .z-menu {
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
 }
 .z-module-clip .clip-breadcrumbs {
   background: none;
