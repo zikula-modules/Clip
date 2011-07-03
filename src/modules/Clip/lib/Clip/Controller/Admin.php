@@ -193,8 +193,9 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         // get the required output code
         switch ($args['code'])
         {
-            case 'form':
-                $output = Clip_Generator::pubedit($args['tid']);
+            case 'main':
+                $path = $this->view->get_template_path('clip_generic_main.tpl');
+                $output = file_get_contents($path.'/clip_generic_main.tpl');
                 break;
 
             case 'list':
@@ -204,6 +205,10 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
             case 'display':
                 $output = Clip_Generator::pubdisplay($args['tid'], false);
+                break;
+
+            case 'form':
+                $output = Clip_Generator::pubedit($args['tid']);
                 break;
 
             case 'blocklist':
@@ -224,7 +229,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                    ->assign('output',  $output)
                    ->assign('pubtype', Clip_Util::getPubType($args['tid']));
 
-        return $this->view->fetch("clip_base_generator.tpl");
+        return $this->view->fetch('clip_base_generator.tpl');
     }
 
     /**

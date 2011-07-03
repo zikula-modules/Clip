@@ -11,6 +11,11 @@
 {clip_copytoclipboard id='clip_generatorcode' class='tooltips'}
 
 {switch expr=$code}
+    {case expr='form'}
+        <h4>{gt text='Form template'}</h4>
+        {assign var='cliptplname' value='form_all.tpl'}
+        {assign var='clipfolder' value=$pubtype.inputset}
+    {/case}
     {case expr='list'}
         <h4>{gt text='List template'}</h4>
         {assign var='cliptplname' value='list.tpl'}
@@ -21,10 +26,10 @@
         {assign var='cliptplname' value='display.tpl'}
         {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
-    {case expr='form'}
-        <h4>{gt text='Form template'}</h4>
-        {assign var='cliptplname' value='form_all.tpl'}
-        {assign var='clipfolder' value=$pubtype.inputset}
+    {case expr='main'}
+        <h4>{gt text='Index template'}</h4>
+        {assign var='cliptplname' value='main.tpl'}
+        {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
     {case expr='blocklist'}
         <h4>{gt text='List block template'}</h4>
@@ -45,6 +50,13 @@
 {/if}
 
 {switch expr=$code}
+    {case expr='main'}
+        {assign var='tag1' value='index.php?module=Clip&type=user&func=main&tid=1&template=welcome'|safehtml}
+        {capture assign='tag2'}{ldelim}modfunc modname='Clip' type='user' func='display' tid=1 pid=1 template='categories'{rdelim}{/capture}
+        <p class="z-informationmsg">
+            {gt text='You can also have custom templates like <strong>main_TEMPLATE.tpl</strong> depending of the <var>template</var> parameter passed. . For instance, <code>%1$s</code> will use <strong>main_welcome.tpl</strong>, and <code>%2$s</code> will use <strong>main_categories.tpl</strong>.' tag1=$tag1 tag2=$tag2|safehtml}
+        </p>
+    {/case}
     {case expr='list'}
         {assign var='tag1' value='index.php?module=Clip&type=user&func=list&tid=1&template=categories'|safehtml}
         {capture assign='tag2'}{ldelim}modfunc modname='Clip' type='user' func='list' tid=1 template='snippet'{rdelim}{/capture}

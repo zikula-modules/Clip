@@ -122,7 +122,7 @@
 
     {if $func eq 'display'}{zdebug}{/if}
 
-    {if $auth_admin and ($func eq 'list' or $func eq 'display' or $func eq 'edit')}
+    {if $auth_admin and ($func eq 'main' or $func eq 'list' or $func eq 'display' or $func eq 'edit')}
     <div class="z-warningmsg">
             {modurl modname='Clip' type='admin' func='modifyconfig' fragment='devmode' assign='urlconfig'}
             {modurl modname='Clip' type='admin' func='generator' code=$func tid=$pubtype.tid assign='urlcode'}
