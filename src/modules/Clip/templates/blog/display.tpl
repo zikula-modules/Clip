@@ -1,5 +1,5 @@
 
-{if !$homepage}{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
+{if !$homepage}{pagesetvar name='title' value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 {clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}
 
 {* Open Graph tags
@@ -13,14 +13,14 @@
 <div class="clip-display clip-display-{$pubtype.urltitle}">
     {include file='clip_generic_navbar.tpl'}
 
-    <div class="clip-post clip-post-{$pubdata.core_pid}">
+    <div class="clip-post clip-post-{$pubdata.core_pid} z-floatbox">
         {*
         <div class="clip-post-socialise">
             {twitter url=$returnurl title=$pubdata.core_title count='vertical'}
             {fblike url=$returnurl layout='vertical' tpl='xfbml' rel='display'}
         </div>
         *}
-        <h2>{$pubdata.core_title|safetext}</h2>
+        <h2 class="clip-post-title">{$pubdata.core_title|safetext}</h2>
 
         <div class="clip-post-meta">
             {capture assign='author'}<span class="author vcard">{$pubdata.core_author|profilelinkbyuid}</span>{/capture}

@@ -746,13 +746,14 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 }
 
 /* blog */
-.clip-listitems .clip-listpost {
+.clip-list-items .clip-listpost {
   border-top: 1px solid #eee;
-  margin-top: 0.5em;
+  margin-top: 1em;
   padding-top: 0.5em;
 }
-.clip-listitems .clip-listpost:first-child {
+.clip-list-items .clip-listpost:first-child {
   border-top: none;
+  margin-top: 0.5em;
   padding-top: 0;
 }
 .clip-post-title {
