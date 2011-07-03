@@ -4,7 +4,7 @@
 {if $pubdata.id}
     {gt text='Edit a page' assign='pagetitle'}
 {else}
-    {gt text='New a page' assign='pagetitle'}
+    {gt text='New page' assign='pagetitle'}
 {/if}
 {if !$homepage}{pagesetvar name="title" value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
