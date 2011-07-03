@@ -110,6 +110,21 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     /**
      * Clip processing methods.
      */
+    protected function hasThumbnails($field)
+    {
+        $this->parseConfig($field['typedata']);
+
+        $has = false;
+        for ($i = 0; $i <= 5; $i++) {
+            if ($this->config[$i] > 0) {
+                $has = false;
+                break;
+            }
+        }
+
+        return $has;
+    }
+
     public function postRead($pub, $field)
     {
         // this plugin return an array by default
@@ -120,7 +135,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                        'fullUrl'      => '',
                        'thumbnailUrl' => '',
                        'url'          => '',
-                       'extension'    => ''
+                       'extension'    => '',
+                       'thumbnails'   => $this->hasThumbnails($field)
                    );
 
         // if the data is not empty, process it
@@ -140,7 +156,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                                 'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
                                 'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
                                 'url'          => $url.'/'.$arrTypeData['file_name'],
-                                'extension'    => FileUtil::getExtension($arrTypeData['orig_name'])
+                                'extension'    => FileUtil::getExtension($arrTypeData['orig_name']),
+                                'thumbnails'   => $upl_arr['thumbnails']
                             );
             }
         }
@@ -289,6 +306,34 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 '            <span class="z-formnote">{gt text=\''.no__('No image uploaded.').'\'}</span>'."\n".
                 '        {/if}'."\n".
                 '    </div>';
+
+        return array('full' => $full);
+    }
+
+
+    public static function getOutputEdit($field)
+    {
+        $gtdelete = no__('Delete the image');
+        $gtregen  = no__('Regenerate thumbnails');
+
+        $full .= "\n".
+                '            <div class="z-formrow">'."\n".
+                '                {formlabel for=\''.$field['name'].'\' text=$pubfields.'.$field['name'].'.title|clip_translate'.((bool)$field['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                '                {clip_form_block id=\''.$field['name'].'\' group=\'pubdata\'}'."\n".
+                '                {if $pubfields.'.$field['name'].'.description|clip_translate}'."\n".
+                '                    <span class="z-formnote z-sub">{$pubfields.'.$field['name'].'.description|clip_translate}</span>'."\n".
+                '                {/if}'."\n".
+                '                {if $pubdata.id and $pubdata.'.$field['name'].'.file_name}'."\n".
+                '                    <div class="z-formlist clip-edit-suboptions">'."\n".
+                '                        {formcheckbox id=\''.$field['name'].'_delete\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_delete\' __text=\''.$gtdelete.'\'}'."\n".
+                '                        {if $pubdata.'.$field['name'].'.thumbnails}'."\n".
+                '                        <br />'."\n".
+                '                        {formcheckbox id=\''.$field['name'].'_thumbs\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_thumbs\' __text=\''.$gtregen.'\'}'."\n".
+                '                        {/if}'."\n".
+                '                    </div>'."\n".
+                '                {/if}'."\n".
+                '                {/clip_form_block}'."\n".
+                '            </div>'."\n";
 
         return array('full' => $full);
     }

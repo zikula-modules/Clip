@@ -215,23 +215,30 @@ class Clip_Generator
             // process the getPluginEdit of the plugin
             $plugin = Clip_Util_Plugins::get($formplugin);
 
+            $plugadd = '';
+            $plugres = null;
             if (method_exists($plugin, 'getOutputEdit')) {
-                $plugadd = $plugin->getOutputEdit($pubfields[$name]);
-            } elseif ($formplugin == 'String' && $pubfields[$name]['istitle']) {
-                $plugadd = ' cssClass="z-form-text-big"';
-            } else {
-                $plugadd = '';
+                $plugres = $plugin->getOutputEdit($pubfields[$name]);
+                if (is_array($plugres)) {
+                    if (isset($plugres['full'])) {
+                        $code .= $plugres['full'];
+                    } elseif (isset($plugres['args'])) {
+                        $plugadd = $plugres['args'];
+                    }
+                }
             }
 
             // build the field's row output
-            $code .= "\n".
-                    '            <div class="z-formrow">'."\n".
-                    '                {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfields[$name]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                    '                {clip_form_genericplugin id=\''.$name.'\''.$maxlength.$plugadd.' group=\'pubdata\'}'."\n".
-                    '                {if $pubfields.'.$name.'.description|clip_translate}'."\n".
-                    '                    <span class="z-formnote z-sub">{$pubfields.'.$name.'.description|clip_translate}</span>'."\n".
-                    '                {/if}'."\n".
-                    '            </div>'."\n";
+            if (!isset($plugres['full'])) {
+                $code .= "\n".
+                        '            <div class="z-formrow">'."\n".
+                        '                {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfields[$name]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                        '                {clip_form_genericplugin id=\''.$name.'\' group=\'pubdata\''.$maxlength.$plugadd.'}'."\n".
+                        '                {if $pubfields.'.$name.'.description|clip_translate}'."\n".
+                        '                    <span class="z-formnote z-sub">{$pubfields.'.$name.'.description|clip_translate}</span>'."\n".
+                        '                {/if}'."\n".
+                        '            </div>'."\n";
+            }
         }
 
         // build the output

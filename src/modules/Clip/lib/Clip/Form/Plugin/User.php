@@ -189,7 +189,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 
     public static function getOutputEdit($field)
     {
-        return " minchars='3' numitems='30'";
+        return array('args' => " minchars='3' numitems='30'");
     }
 
     /**

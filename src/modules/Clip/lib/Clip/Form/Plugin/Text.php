@@ -59,7 +59,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
 
     public static function getOutputEdit($field)
     {
-        return " rows='15' cols='70'";
+        return array('args' => " rows='15' cols='70'");
     }
 
     /**
