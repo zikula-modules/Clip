@@ -64,7 +64,9 @@
                 </span>
             {else}
                 <span class="clip-breadtext">
-                    {$pubtype.title}
+                    <a href="{modurl modname='Clip' type='user' func='main' tid=$pubtype.tid}">
+                        {$pubtype.title}
+                    </a>
                 </span>
             {/if}
 
