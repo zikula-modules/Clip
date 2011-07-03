@@ -54,4 +54,4 @@ function pubfieldlistsortinit()
     Zikula.UI.Tooltips($$('.tooltips'));
 }
 
-Event.observe(window, 'load', pubfieldlistsortinit, false);
+document.observe('dom:loaded', pubfieldlistsortinit, false);

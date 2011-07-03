@@ -80,7 +80,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
                                                   maxItems: '.($this->config['multiple'] ? $this->maxitems : 1).'
                                                  });
             }
-            Event.observe(window, \'load\', clip_enable_'.$this->id.', false);
+            document.observe(\'dom:loaded\', clip_enable_'.$this->id.', false);
         '."\n// ]]>\n</script>";
         PageUtil::addVar('header', $script);
 

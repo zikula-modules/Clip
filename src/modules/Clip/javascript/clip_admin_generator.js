@@ -8,7 +8,7 @@
  * @subpackage Javascript
  */
 
-Event.observe(window, 'load', clip_generator_init);
+document.observe('dom:loaded', clip_generator_init);
 
 function clip_generator_init()
 {

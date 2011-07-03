@@ -129,7 +129,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
                                                   maxItems: '.($this->relinfo['single'] ? 1 : $this->maxitems).'
                                                  });
             }
-            Event.observe(window, \'load\', clip_enable_'.$this->id.', false);
+            document.observe(\'dom:loaded\', clip_enable_'.$this->id.', false);
         '."\n// ]]>\n</script>";
         PageUtil::addVar('header', $script);
 

@@ -8,7 +8,7 @@
  * @subpackage Javascript
  */
 
-Event.observe(window, 'load', clip_export_init);
+document.observe('dom:loaded', clip_export_init);
 
 function clip_export_init()
 {

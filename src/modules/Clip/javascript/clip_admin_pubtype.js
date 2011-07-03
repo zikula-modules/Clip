@@ -8,7 +8,7 @@
  * @subpackage Javascript
  */
 
-Event.observe(window, 'load', clip_pubtype_init);
+document.observe('dom:loaded', clip_pubtype_init);
 
 function clip_pubtype_init()
 {

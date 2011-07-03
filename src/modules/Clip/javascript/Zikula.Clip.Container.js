@@ -3,7 +3,7 @@
 /* Clip load */
 Zikula.define('Clip');
 
-Event.observe(window, 'load', function()
+document.observe('dom:loaded', function()
 {
     Zikula.Clip.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence;
 
