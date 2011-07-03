@@ -14,7 +14,7 @@
  */
 class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
 {
-    protected $returnurl;
+    protected $referer;
 
     /**
      * Initialize function.
@@ -22,9 +22,9 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
     public function initialize(Zikula_Form_View $view)
     {
         // stores the return URL
-        if (!$view->getStateData('returnurl')) {
+        if (!$view->getStateData('referer')) {
             $adminurl = ModUtil::url('Clip', 'admin', 'main');
-            $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
+            $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $adminurl));
             // default values
             $view->assign('outputto', 1);
             $view->assign('exportdata', 1);
@@ -54,11 +54,11 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
      */
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
-        $this->returnurl = $view->getStateData('returnurl');
+        $this->referer = $view->getStateData('referer');
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
-            return $view->redirect($this->returnurl);
+            return $view->redirect($this->referer);
         }
 
         // validates the input
@@ -156,6 +156,6 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                 break;
         }
 
-        return $view->redirect($this->returnurl);
+        return $view->redirect($this->referer);
     }
 }

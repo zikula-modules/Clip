@@ -16,7 +16,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 {
     protected $tid;
     protected $id;
-    protected $returnurl;
+    protected $referer;
 
     /**
      * Initialize function.
@@ -63,9 +63,9 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
              ->assign('tid', $this->tid);
 
         // stores the return URL
-        if (!$view->getStateData('returnurl')) {
+        if (!$view->getStateData('referer')) {
             $adminurl = ModUtil::url('Clip', 'admin', 'main');
-            $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
+            $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $adminurl));
         }
 
         return true;
@@ -76,11 +76,11 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
      */
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
-        $this->returnurl = $view->getStateData('returnurl');
+        $this->referer = $view->getStateData('referer');
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
-            return $view->redirect($this->returnurl);
+            return $view->redirect($this->referer);
         }
 
         // get the data set in the form
@@ -101,7 +101,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $pubfield->tid       = $this->tid;
         $pubfield->fieldtype = $plugin->columnDef;
 
-        $this->returnurl = ModUtil::url('Clip', 'admin', 'pubfields',
+        $this->referer = ModUtil::url('Clip', 'admin', 'pubfields',
                                         array('tid' => $pubfield->tid));
 
         // handle the commands
@@ -183,6 +183,6 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                 break;
         }
 
-        return $view->redirect($this->returnurl);
+        return $view->redirect($this->referer);
     }
 }

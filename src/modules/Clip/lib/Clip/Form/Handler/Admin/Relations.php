@@ -16,7 +16,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 {
     protected $id;
     protected $filter;
-    protected $returnurl;
+    protected $referer;
 
     /**
      * Initialize function.
@@ -132,9 +132,9 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
              ->assign('filter', $this->filter);
 
         // stores the return URL and filter
-        if (!$view->getStateData('returnurl')) {
-            $returnurl = ModUtil::url('Clip', 'admin', 'relations', $this->filter);
-            $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $returnurl));
+        if (!$view->getStateData('referer')) {
+            $referer = ModUtil::url('Clip', 'admin', 'relations', $this->filter);
+            $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $referer));
         }
 
         $view->setStateData('filter', $this->filter)
@@ -149,13 +149,13 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $tid = $view->getStateData('tid');
-        $this->filter = $view->getStateData('filter');
-        $this->filter = array_merge(array('tid' => $tid), $this->filter);
-        $this->returnurl = $view->getStateData('returnurl');
+        $this->filter  = $view->getStateData('filter');
+        $this->filter  = array_merge(array('tid' => $tid), $this->filter);
+        $this->referer = $view->getStateData('referer');
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
-            return $view->redirect($this->returnurl);
+            return $view->redirect($this->referer);
         }
 
         // get the data set in the form
@@ -219,7 +219,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                     // setup the return url as the edit form
                     // to update the corresponding tables
                     $params = array_merge($this->filter, array('update' => $relation->tid1.','.$relation->tid2));
-                    $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $params);
+                    $this->referer = ModUtil::url('Clip', 'admin', 'relations', $params);
 
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
                 } else {
@@ -233,7 +233,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
                 if ($relation->delete()) {
                     $params = array_merge($this->filter, array('update' => $relation->tid1.','.$relation->tid2));
-                    $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $params);
+                    $this->referer = ModUtil::url('Clip', 'admin', 'relations', $params);
 
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));
                 } else {
@@ -244,15 +244,15 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
             // filter relation list
             case 'filter':
                 $params = array_merge(array('tid' => $tid), $data['filter']);
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', $params);
+                $this->referer = ModUtil::url('Clip', 'admin', 'relations', $params);
                 break;
 
             // clear any filter
             case 'clear':
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'relations', array('tid' => $tid));
+                $this->referer = ModUtil::url('Clip', 'admin', 'relations', array('tid' => $tid));
                 break;
         }
 
-        return $view->redirect($this->returnurl);
+        return $view->redirect($this->referer);
     }
 }

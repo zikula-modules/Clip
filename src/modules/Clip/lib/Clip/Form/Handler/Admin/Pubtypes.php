@@ -15,7 +15,7 @@
 class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 {
     protected $tid;
-    protected $returnurl;
+    protected $referer;
 
     /**
      * Initialize function.
@@ -43,6 +43,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
             // assigns the pubfuelds for the sort configuration
             $view->assign('pubfields', $pubfields)
                  ->assign('config', $this->configPreProcess($pubtype['config']));
+
         } else {
             $pubtype = new Clip_Model_Pubtype();
 
@@ -53,9 +54,9 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
              ->assign('pubtype', $pubtype->toArray());
 
         // stores the return URL
-        if (!$view->getStateData('returnurl')) {
+        if (!$view->getStateData('referer')) {
             $adminurl = ModUtil::url('Clip', 'admin', 'main');
-            $view->setStateData('returnurl', System::serverGetVar('HTTP_REFERER', $adminurl));
+            $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $adminurl));
         }
 
         return true;
@@ -66,11 +67,11 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
      */
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
-        $this->returnurl = $view->getStateData('returnurl');
+        $this->referer = $view->getStateData('referer');
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
-            return $view->redirect($this->returnurl);
+            return $view->redirect($this->referer);
         }
 
         // get the table object for utility purposes
@@ -135,7 +136,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 // create/update status messages
                 if (empty($this->tid)) {
                     LogUtil::registerStatus($this->__('Done! Publication type created. Now you can proceed to define its fields.'));
-                    $this->returnurl = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $pubtype->tid));
+                    $this->referer = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $pubtype->tid));
                 } else {
                     LogUtil::registerStatus($this->__('Done! Publication type updated.'));
                 }
@@ -174,7 +175,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 LogUtil::registerStatus($this->__('Done! Publication type cloned.'));
 
                 // redirect to pubfields to update the table
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $newpubtype->tid));
+                $this->referer = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $newpubtype->tid));
                 break;
 
             // delete this pubtype
@@ -186,11 +187,11 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 // status message
                 LogUtil::registerStatus($this->__('Done! Publication type deleted.'));
 
-                $this->returnurl = ModUtil::url('Clip', 'admin', 'main');
+                $this->referer = ModUtil::url('Clip', 'admin', 'main');
                 break;
         }
 
-        return $view->redirect($this->returnurl);
+        return $view->redirect($this->referer);
     }
 
     /**
