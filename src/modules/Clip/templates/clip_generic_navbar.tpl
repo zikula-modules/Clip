@@ -6,6 +6,31 @@
             <a href="{$baseurl}">{gt text='Home'}</a>
         </span>
 
+        {* action icons *}
+        {if $auth_admin}
+        <span class="clip-breadlink">
+            <a href="{modurl modname='Clip' type='admin' func='main' fragment="`$pubtype.tid`/pubtypeinfo"}">
+                {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
+            </a>
+        </span>
+        {/if}
+        {if $type neq 'editor'}
+        {clip_accessblock tid=$pubtype.tid context='editor'}
+        <span class="clip-breadlink">
+            <a href="{modurl modname='Clip' type='editor' func='list' tid=$pubtype.tid}">
+                {img width='12' height='12' modname='core' src='lists.png' set='icons/extrasmall' alt='' __title='Editor panel'}
+            </a>
+        </span>
+        {/clip_accessblock}
+        {/if}
+        {clip_accessblock tid=$pubtype.tid context='submit'}
+        <span class="clip-breadlink">
+            <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
+                {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Submit a publication'}
+            </a>
+        </span>
+        {/clip_accessblock}
+
         {if $type eq 'editor'}
             <span class="text_separator">&raquo;</span>
 
@@ -22,10 +47,14 @@
             {/if}
         {/if}
 
-        {if $func neq 'main'}
-            {clip_access tid=$pubtype.tid assign='auth_admin'}
+        <span class="text_separator">&raquo;</span>
 
-            <span class="text_separator">&raquo;</span>
+        {if $func eq 'main'}
+            <span class="clip-breadtext">
+                {$pubtype.title}
+            </span>
+        {else}
+            {clip_access tid=$pubtype.tid assign='auth_admin'}
 
             {if $func neq 'list'}
                 <span class="clip-breadtext">
@@ -38,31 +67,6 @@
                     {$pubtype.title}
                 </span>
             {/if}
-
-            {* action icons *}
-            {if $auth_admin}
-            <span class="clip-breadlink">
-                <a href="{modurl modname='Clip' type='admin' func='main' fragment="`$pubtype.tid`/pubtypeinfo"}">
-                    {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
-                </a>
-            </span>
-            {/if}
-            {if $type neq 'editor'}
-            {clip_accessblock tid=$pubtype.tid context='editor'}
-            <span class="clip-breadlink">
-                <a href="{modurl modname='Clip' type='editor' func='list' tid=$pubtype.tid}">
-                    {img width='12' height='12' modname='core' src='lists.png' set='icons/extrasmall' alt='' __title='Editor panel'}
-                </a>
-            </span>
-            {/clip_accessblock}
-            {/if}
-            {clip_accessblock tid=$pubtype.tid context='submit'}
-            <span class="clip-breadlink">
-                <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
-                    {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Submit a publication'}
-                </a>
-            </span>
-            {/clip_accessblock}
 
             {if $func neq 'list' and !isset($clip_simple_tpl)}
                 <span class="text_separator">&raquo;</span>

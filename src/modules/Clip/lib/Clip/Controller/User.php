@@ -34,10 +34,112 @@ class Clip_Controller_User extends Zikula_AbstractController
 
     /**
      * Main user function.
+     *
+     * @param integer $args['tid']           ID of the publication type.
+     * @param string  $args['template']      Custom publication type template to use.
+     * @param integer $args['cachelifetime'] Cache lifetime (empty for default config).
+     *
+     * @return string Publication main output.
      */
     public function main($args)
     {
-        return $this->view($args);
+        //// Pubtype
+        // validate and get the publication type first
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+        }
+
+        $pubtype = Clip_Util::getPubType($args['tid']);
+
+        //// Parameters
+        // define the arguments
+        $args = array(
+            'tid'           => $args['tid'],
+            'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
+            'cachelifetime' => isset($args['cachelifetime']) ? (int)$args['cachelifetime'] : $pubtype['cachelifetime'],
+        );
+
+        // sets the function parameter (navbar)
+        $this->view->assign('func', 'main');
+
+        //// Template
+        // checks for the input template value
+        $args['template'] = DataUtil::formatForOS($args['template']);
+        // cleans it of not desired parameters
+        $args['template'] = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
+        if (empty($args['template'])) {
+            $args['templateid'] = '';
+            $args['template']   = $pubtype['outputset'].'/main.tpl';
+        } else {
+            $args['templateid'] = "{$args['template']}";
+            $args['template']   = $pubtype['outputset']."/main_{$args['template']}.tpl";
+        }
+
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
+
+        //// Cache
+        // check if cache is enabled and this view is cached
+        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
+            $this->view->setCacheLifetime($args['cachelifetime']);
+
+            Clip_Util::register_nocache_plugins($this->view);
+
+            $cacheid = 'tid_'.$args['tid'].'/main'
+                       .'/'.UserUtil::getGidCacheString()
+                       .'/tpl_'.(!empty($args['templateid']) ? $args['templateid'] : 'clipdefault');
+            // FIXME PLUGINS Add plugin specific cache sections
+            // $cacheid .= '|field'.id.'|'.output
+
+            // set the output info
+            $this->view->setCaching(Zikula_View::CACHE_INDIVIDUAL)
+                       ->setCacheId($cacheid);
+
+            if ($this->view->is_cached($args['template'])) {
+                return $this->view->fetch($args['template']);
+            }
+        } else {
+            $cacheid = null;
+            $this->view->setCaching(Zikula_View::CACHE_DISABLED);
+        }
+
+        // stored the used arguments
+        Clip_Util::setArgs('main', $args);
+
+        // resolve the permalink
+        $returnurl = ModUtil::url('Clip', 'user', 'main',
+                                  array('tid' => $pubtype['tid']),
+                                  null, null, true, true);
+
+        //// Output
+        // assign the data to the output
+        $this->view->assign('pubtype',   $pubtype)
+                   ->assign('clipargs',  Clip_Util::getArgs())
+                   ->assign('returnurl', $returnurl);
+
+        // check if the template is available to render it
+        if (!$this->view->template_exists($args['template'])) {
+            // auto-generate it only on development mode
+            if (!ModUtil::getVar('Clip', 'devmode', false)) {
+                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
+            }
+
+            $isadmin = Clip_Access::toPubtype($pubtype);
+
+            if ($isadmin) {
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
+            }
+
+            $args['template'] = 'clip_generic_main.tpl';
+
+            $this->view->setForceCompile(true)
+                       ->setCaching(Zikula_View::CACHE_DISABLED)
+                       ->assign('clip_generic_tpl', true);
+        }
+
+        return $this->view->fetch($args['template'], $cacheid);
     }
 
     /**
@@ -102,9 +204,9 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Template
         // checks for the input template value
-        $args['template']   = DataUtil::formatForOS($args['template']);
+        $args['template'] = DataUtil::formatForOS($args['template']);
         // cleans it of not desired parameters
-        $args['template']   = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
+        $args['template'] = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
             $args['template']   = $pubtype['outputset'].'/list.tpl';
@@ -183,7 +285,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         if (!$this->view->template_exists($args['template'])) {
             // auto-generate it only on development mode
             if (!ModUtil::getVar('Clip', 'devmode', false)) {
-                return LogUtil::registerError($this->__('The list cannot be displayed. Please contact the administrator.'));
+                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
             }
 
             $isadmin = Clip_Access::toPubtype($pubtype);
@@ -369,7 +471,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         if (!$this->view->template_exists($args['template'])) {
             // auto-generate it only on development mode
             if (!ModUtil::getVar('Clip', 'devmode', false)) {
-                return LogUtil::registerError($this->__('The publication cannot be displayed. Please contact the administrator.'));
+                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
             }
 
             if ($isadmin) {
@@ -519,7 +621,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         if (!$render->template_exists($template)) {
             // auto-generate it only on development mode
             if (!ModUtil::getVar('Clip', 'devmode', false)) {
-                return LogUtil::registerError($this->__('The form cannot be displayed. Please contact the administrator.'));
+                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
             }
 
             $alert = Clip_Access::toPubtype($pubtype);
