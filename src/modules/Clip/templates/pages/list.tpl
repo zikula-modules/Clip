@@ -1,6 +1,8 @@
 
 {* resolve the title depending of any existing filter *}
-{if 'null'|in_array:$clipargs.getallapi.filter.category.ops}
+{if !isset($clipargs.getallapi.filter.category.ops)}
+    {assign var='op' value=''}
+{elseif 'null'|in_array:$clipargs.getallapi.filter.category.ops}
     {assign var='op' value='null'}
 {elseif 'sub'|in_array:$clipargs.getallapi.filter.category.ops}
     {assign var='op' value='sub'}
