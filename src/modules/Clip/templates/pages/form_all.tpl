@@ -89,6 +89,7 @@
             {foreach item='action' from=$actions}
                 {formbutton commandName=$action.id text=$action.title zparameters=$action.parameters.button|default:''}
             {/foreach}
+            <input class="clip-bt-reload" type="reset" value="{gt text='Reset'}" title="{gt text='Reset the form to its initial state'}" />
             {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
         </div>
     </div>

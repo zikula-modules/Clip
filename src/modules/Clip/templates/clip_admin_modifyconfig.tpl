@@ -59,6 +59,7 @@
 
     <div class="z-buttons z-formbuttons">
         {formbutton id='update' commandName='update' __text='Save' class='z-bt-ok'}
+        <input class="clip-bt-reload" type="reset" value="{gt text='Reset'}" title="{gt text='Reset the form to its initial state'}" />
         {formbutton id='cancel' commandName='cancel' __text='Cancel' class='z-bt-cancel'}
     </div>
 </div>
