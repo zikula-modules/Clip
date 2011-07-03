@@ -738,14 +738,23 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 /* Default pubtypes generic styles */
 
 /* generic */
-.clip-pub-details .z-formrow {
+.clip-pagedetails .z-formrow {
   overflow: hidden;
 }
-.clip-display-hooks {
+.clip-hooks-display div {
   margin-top: 1.5em;
 }
 
 /* blog */
+.clip-listitems .clip-listpost {
+  border-top: 1px solid #eee;
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+}
+.clip-listitems .clip-listpost:first-child {
+  border-top: none;
+  padding-top: 0;
+}
 .clip-post-title {
   line-height: 1.3em;
   margin-bottom: 0;
@@ -754,17 +763,16 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 .clip-post-title a:visited {
   text-decoration: none;
 }
-.clip-post-title a:active,
-.clip-post-title a:hover {
-  color: #ff4b33;
-}
 .clip-post-meta {
   color: #888;
   font-size: 0.95em;
 }
 .clip-post-content {
-  padding: 12px 0 0;
-  margin-bottom: 1em;
+  padding: 12px 0;
+}
+.clip-post-content *:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 .clip-post-socialise {
   float: right;
@@ -782,6 +790,13 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 .clip-post-utility a:visited {
   color: #888;
   text-decoration: underline;
+}
+.clip-edit-blog h2 {
+  background: url('../../../images/icons/extrasmall/edit.png') 0 50% no-repeat;
+  padding-left: 25px;
+}
+.clip-edit-blog-initial h2 {
+  background: url('../../../images/icons/extrasmall/filenew.png') 0 50% no-repeat;
 }
 
 /* pages */

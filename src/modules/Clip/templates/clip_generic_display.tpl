@@ -1,5 +1,5 @@
 
-{if !$homepage}{pagesetvar name="title" value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
+{if !$homepage}{pagesetvar name='title' value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 {clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}
 
 <div class="clip-display clip-display-{$pubtype.urltitle}">
