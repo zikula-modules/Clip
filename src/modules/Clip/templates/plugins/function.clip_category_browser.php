@@ -72,7 +72,7 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
     if (isset($params['tpl']) && $params['tpl'] && $view->template_exists($params['tpl'])) {
         $template = $params['tpl'];
     } else {
-        $template = 'clip_category_browser.tpl';
+        $template = 'clip_browser_category.tpl';
     }
 
     // left any additional parameters
@@ -219,6 +219,7 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
         // assign the plugin options
         $options = array(
             'tid'       => $tid,
+            'urltitle'  => Clip_Util::getPubType($tid, 'urltitle'),
             'field'     => $field,
             'count'     => $count,
             'togglediv' => $togglediv,

@@ -18,6 +18,4 @@
 </p>
 {/if}
 
-<div class="clip-pages-categories">
-    {clip_category_browser tid=$pubtype.tid field='category'}
-</div>
+{clip_category_browser tid=$pubtype.tid field='category'}

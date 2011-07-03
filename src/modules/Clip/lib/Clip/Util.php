@@ -294,7 +294,7 @@ class Clip_Util
      *
      * @return Clip_Model_Pubtype Information of one or all the pubtypes.
      */
-    public static function getPubType($tid = -1)
+    public static function getPubType($tid = -1, $field = null)
     {
         static $pubtypes;
 
@@ -310,6 +310,10 @@ class Clip_Util
         foreach ($keys as $key) {
             $pubtype = self::getPubTypeSub($pubtypes[$key], $tid);
             if ($pubtype != null) {
+                if ($field) {
+                    // TODO get() for unloaded properties?
+                    return isset($pubtype[$field]) ? $pubtype[$field] : $field;
+                }
                 return $pubtype;
             }
         }
