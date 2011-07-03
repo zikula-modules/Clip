@@ -8,7 +8,7 @@
 
     {if $pubtype.description}
     <p class="clip-pagedescription">
-        {$pubtype.description|safetext}
+        {$pubtype.description|safehtml}
     </p>
     {/if}
 
