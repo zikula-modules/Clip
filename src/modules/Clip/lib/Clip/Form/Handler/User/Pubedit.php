@@ -40,7 +40,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // if there are no actions the user is not allowed to execute anything.
         // we will redirect the user to the list page
         if (!count($actions)) {
-            LogUtil::registerError($this->__('You have no permissions to execute any action on this publication.'));
+            if ($this->id) {
+                LogUtil::registerError($this->__('You have no permissions to execute any action on this publication.'));
+            } else {
+                LogUtil::registerError($this->__('You have no authorization to submit publications.'));
+            }
 
             return $view->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $this->tid)));
         }
@@ -118,11 +122,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // validated the input
         if (!$view->isValid()) {
             return false;
-        }
-
-        if (!empty($this->id)) {
-            $params = array('tid' => $this->tid, 'pid' => $this->pub['core_pid'], 'title' => DataUtil::formatPermalink($this->pub['core_title']));
-            $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params);
         }
 
         // get the data set in the form
@@ -305,19 +304,27 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
      */
     protected function processGoto($data)
     {
+        if ($this->id) {
+            $params = array('tid' => $this->tid, 'pid' => $this->pub['core_pid'], 'title' => DataUtil::formatPermalink($this->pub['core_title']));
+            $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params);
+        }
+
         $goto = null;
-        $pid  = $data['core_pid'];
+        $uniqueid = $data['core_uniqueid'];
 
         $ops  = isset($data['core_operations']) ? $data['core_operations'] : array();
 
-        if (isset($ops['delete'][$pid])) {
+        if (isset($ops['delete'][$uniqueid])) {
             // if the item was deleted
-            // FIXME perm check here?
-            $urltid = ModUtil::url('Clip', 'user', 'list', array('tid' => $data['core_tid']));
+            if (Clip_Access::toPubtype($data['core_tid'], 'list')) {
+                $url = ModUtil::url('Clip', 'user', 'list', array('tid' => $data['core_tid']));
+            } else {
+                $url = System::getHomepageUrl();
+            }
             // check if the user comes of the display screen or not
-            $goto = (strpos($this->itemurl, $this->referer) !== 0) ? $this->referer : $urltid;
+            $goto = (strpos($this->referer, $this->itemurl) === false) ? $this->referer : $url;
 
-        } elseif (isset($ops['create']) && $ops['create']) {
+        } elseif (isset($ops['create'][$uniqueid]) && $ops['create'][$uniqueid]) {
             // the publication was created
             if ($data['core_online'] == 1) {
                 $goto = ModUtil::url('Clip', 'user', 'display',

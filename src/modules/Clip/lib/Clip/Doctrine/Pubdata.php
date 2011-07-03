@@ -90,14 +90,17 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      */
     public function clipValues($handleplugins=false)
     {
-        $tablename = $this->_table->getInternalTableName();
-        $tid = Clip_Util::getTidFromString($tablename);
+        if (!$this->hasMappedValue('core_tid') || !$this->hasMappedValue('core_title')) {
+            $tablename = $this->_table->getInternalTableName();
+            $tid = Clip_Util::getTidFromString($tablename);
 
-        $core_title = Clip_Util::getTitleField($tid);
+            $core_title = Clip_Util::getTitleField($tid);
 
-        $this->mapValue('core_tid',      $tid);
-        $this->mapValue('core_uniqueid', $tid.'-'.$this['core_pid']);
-        $this->mapValue('core_title',    $this[$core_title]);
+            $this->mapValue('core_tid',      $tid);
+            $this->mapValue('core_title',    $this[$core_title]);
+        }
+
+        $this->mapValue('core_uniqueid', $this['core_tid'].'-'.$this['core_pid']);
         $this->mapValue('core_creator',  ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
 
         if ($handleplugins) {
