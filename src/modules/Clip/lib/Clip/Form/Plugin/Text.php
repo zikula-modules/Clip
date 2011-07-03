@@ -52,7 +52,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     public static function getOutputDisplay($field)
     {
         $body = "\n".
-            '         <span class="z-formnote">{$pubdata.'.$field['name'].'|safehtml|notifyfilters:"clip.hook.`$pubtype.tid`.ui.filter"}</span>';
+            '             <div class="z-formnote">{$pubdata.'.$field['name'].'|safehtml|notifyfilters:"clip.hook.`$pubtype.tid`.ui.filter"}</div>';
 
         return array('body' => $body);
     }

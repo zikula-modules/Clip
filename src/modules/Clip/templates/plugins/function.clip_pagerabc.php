@@ -16,7 +16,7 @@
  *  - field       Name of the field to use in the filter (default: core_title).
  *  - forwardvars Comma- semicolon- or space-delimited list of POST and GET variables to forward in the pager links. If unset, all vars are forwarded.
  *  - addvars     Comma- semicolon- or space-delimited list of additional variable and value pairs to forward in the links. eg "foo=2,bar=4".
- *  - class       Class for the pager.
+ *  - class       Class for the pager (default: z-pager z-pagerabc).
  *  - class_num   Class for the pager links (<a> tags).
  *  - class_numon Class for the active page.
  *  - separator   String to put between the letters, eg "|" makes " A | B | C | D | ...".

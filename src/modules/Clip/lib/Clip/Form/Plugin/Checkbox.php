@@ -33,7 +33,7 @@ class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
     public static function getOutputDisplay($field)
     {
         $body = "\n".
-            '        <span class="z-formnote">{$pubdata.'.$field['name'].'|yesno}</span>';
+            '            <span class="z-formnote">{$pubdata.'.$field['name'].'|yesno}</span>';
 
         return array('body' => $body);
     }

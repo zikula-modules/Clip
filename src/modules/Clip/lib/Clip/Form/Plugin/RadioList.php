@@ -139,13 +139,13 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
 
     public static function getOutputDisplay($field)
     {
-        $full = '    <div class="z-formrow">'."\n".
-                '        <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
-                '        {if $pubdata.'.$field['name'].'.id}'."\n".
-                '            <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
-                '        {/if}'."\n".
-                '        <pre class="z-formnote">{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
-                '    </div>';
+        $full = '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
+                '            {if $pubdata.'.$field['name'].'.id}'."\n".
+                '                <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
+                '            {/if}'."\n".
+                '            <pre class="z-formnote">{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '        </div>';
 
         return array('full' => $full);
     }

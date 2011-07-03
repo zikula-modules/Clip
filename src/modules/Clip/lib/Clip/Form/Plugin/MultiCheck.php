@@ -107,19 +107,19 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
 
     public static function getOutputDisplay($field)
     {
-        $full = '    <div class="z-formrow">'."\n".
-                '        <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
-                '        {if $pubdata.'.$field['name'].'}'."\n".
-                '            {*clip_multilistdecode value=$pubdata.'.$field['name'].'*}'."\n".
-                '            <ul class="z-formnote">'."\n".
-                '                {foreach from=$pubdata.'.$field['name'].' item=\'item\'}'."\n".
-                '                    <li>{$item.fullTitle}</li>'."\n".
-                '                {/foreach}'."\n".
-                '            </ul>'."\n".
-                '        {else}'."\n".
-                '            <span class="z-formnote z-sub">{gt text=\''.no__('(empty)').'\'}</span>'."\n".
-                '        {/if}'."\n".
-                '    </div>';
+        $full = '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
+                '            {if $pubdata.'.$field['name'].'}'."\n".
+                '                {*clip_multilistdecode value=$pubdata.'.$field['name'].'*}'."\n".
+                '                <ul class="z-formnote">'."\n".
+                '                    {foreach from=$pubdata.'.$field['name'].' item=\'item\'}'."\n".
+                '                        <li>{$item.fullTitle}</li>'."\n".
+                '                    {/foreach}'."\n".
+                '                </ul>'."\n".
+                '            {else}'."\n".
+                '                <span class="z-formnote z-sub">{gt text=\''.no__('(empty)').'\'}</span>'."\n".
+                '            {/if}'."\n".
+                '        </div>';
 
         return array('full' => $full);
     }

@@ -292,20 +292,20 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
     public static function getOutputDisplay($field)
     {
-        $full = '    <div class="z-formrow">'."\n".
-                '        <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
-                '        {if $pubdata.'.$field['name'].'.url}'."\n".
-                '            <span class="z-formnote">'."\n".
-                '                {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
-              //'                <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
-              //'                <br />'."\n".
-                '                <img width="250" src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
-                '                <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
-                '            </span>'."\n".
-                '        {else}'."\n".
-                '            <span class="z-formnote">{gt text=\''.no__('No image uploaded.').'\'}</span>'."\n".
-                '        {/if}'."\n".
-                '    </div>';
+        $full = '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
+                '            {if $pubdata.'.$field['name'].'.url}'."\n".
+                '                <div class="z-formnote">'."\n".
+                '                    {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
+              //'                    <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
+              //'                    <br />'."\n".
+                '                    <img width="250" src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
+                '                    <pre>{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '                </div>'."\n".
+                '            {else}'."\n".
+                '                <span class="z-formnote">{gt text=\''.no__('No image uploaded.').'\'}</span>'."\n".
+                '            {/if}'."\n".
+                '        </div>';
 
         return array('full' => $full);
     }
@@ -317,23 +317,23 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         $gtregen  = no__('Regenerate thumbnails');
 
         $full .= "\n".
-                '            <div class="z-formrow">'."\n".
-                '                {formlabel for=\''.$field['name'].'\' text=$pubfields.'.$field['name'].'.title|clip_translate'.((bool)$field['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                '                {clip_form_block id=\''.$field['name'].'\' group=\'pubdata\'}'."\n".
-                '                {if $pubfields.'.$field['name'].'.description|clip_translate}'."\n".
-                '                    <span class="z-formnote z-sub">{$pubfields.'.$field['name'].'.description|clip_translate}</span>'."\n".
-                '                {/if}'."\n".
-                '                {if $pubdata.id and $pubdata.'.$field['name'].'.file_name}'."\n".
-                '                    <div class="z-formlist clip-edit-suboptions">'."\n".
-                '                        {formcheckbox id=\''.$field['name'].'_delete\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_delete\' __text=\''.$gtdelete.'\'}'."\n".
-                '                        {if $pubdata.'.$field['name'].'.thumbnails}'."\n".
-                '                        <br />'."\n".
-                '                        {formcheckbox id=\''.$field['name'].'_thumbs\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_thumbs\' __text=\''.$gtregen.'\'}'."\n".
-                '                        {/if}'."\n".
-                '                    </div>'."\n".
-                '                {/if}'."\n".
-                '                {/clip_form_block}'."\n".
-                '            </div>'."\n";
+                '                <div class="z-formrow">'."\n".
+                '                    {formlabel for=\''.$field['name'].'\' text=$pubfields.'.$field['name'].'.title|clip_translate'.((bool)$field['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                '                    {clip_form_block id=\''.$field['name'].'\' group=\'pubdata\'}'."\n".
+                '                    {if $pubfields.'.$field['name'].'.description|clip_translate}'."\n".
+                '                        <span class="z-formnote z-sub">{$pubfields.'.$field['name'].'.description|clip_translate}</span>'."\n".
+                '                    {/if}'."\n".
+                '                    {if $pubdata.id and $pubdata.'.$field['name'].'.file_name}'."\n".
+                '                        <span class="z-formlist clip-edit-suboptions">'."\n".
+                '                            {formcheckbox id=\''.$field['name'].'_delete\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_delete\' __text=\''.$gtdelete.'\'}'."\n".
+                '                            {if $pubdata.'.$field['name'].'.thumbnails}'."\n".
+                '                            <br />'."\n".
+                '                            {formcheckbox id=\''.$field['name'].'_thumbs\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_thumbs\' __text=\''.$gtregen.'\'}'."\n".
+                '                            {/if}'."\n".
+                '                        </span>'."\n".
+                '                    {/if}'."\n".
+                '                    {/clip_form_block}'."\n".
+                '                </div>'."\n";
 
         return array('full' => $full);
     }

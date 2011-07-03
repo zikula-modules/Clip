@@ -1,6 +1,6 @@
 {assign var='depth' value=0}
 
-<ul class="clip-browser-category clip-bc-{$options.urltitle|safetext}-{$options.field|safetext}">
+<ul class="clip-browser-category clip-bc-{$options.urltitle}-{$options.field|safetext}">
     {foreach from=$cats item='cat' name='clipcb'}
     {if $smarty.foreach.clipcb.first neq true}
         {if $depth gt $cat.depth}

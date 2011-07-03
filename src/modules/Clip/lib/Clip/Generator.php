@@ -40,14 +40,14 @@ class Clip_Generator
             // check for relation fields
             if ($recfield == 'relation') {
                 $rowcode['full'] =
-                    '    <div class="z-formrow">'."\n".
-                    '        <span class="z-label">{$relations.'.$name.'|clip_translate}:</span>'."\n".
-                    '        {if $pubdata.'.$name.'|clip_exists}'."\n".
-                    '            <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'->toArray()}</pre>'."\n".
-                    '        {else}'."\n".
-                    '            <span class="z-formnote z-sub">{gt text=\''.no__('(empty)').'\'}</span>'."\n".
-                    '        {/if}'."\n".
-                    '    </div>';
+                    '        <div class="z-formrow">'."\n".
+                    '            <span class="z-label">{$relations.'.$name.'|clip_translate}:</span>'."\n".
+                    '            {if $pubdata.'.$name.'|clip_exists}'."\n".
+                    '                <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'->toArray()}</pre>'."\n".
+                    '            {else}'."\n".
+                    '                <span class="z-formnote z-sub">{gt text=\''.no__('(empty)').'\'}</span>'."\n".
+                    '            {/if}'."\n".
+                    '        </div>';
             }
 
             // check if field is to handle special
@@ -84,27 +84,27 @@ class Clip_Generator
                     switch ($name) {
                         // title
                         case 'core_title':
-                            $rowcode['full'] = !$forblock ? false : '    <h5>$pubdata.'.$name.'</h5>';
+                            $rowcode['full'] = !$forblock ? false : '        <h5>$pubdata.'.$name.'</h5>';
                             break;
 
                         // reads
                         case 'core_hitcount':
                             $rowcode['body'] = "\n".
-                                '        <span class="z-formnote">{gt text=\'%s read\' plural=\'%s reads\' count=$pubdata.'.$name.' tag1=$pubdata.'.$name.'}</span>';
+                                '            <span class="z-formnote">{gt text=\'%s read\' plural=\'%s reads\' count=$pubdata.'.$name.' tag1=$pubdata.'.$name.'}</span>';
                             break;
 
                         // language
                         case 'core_language':
                             $rowcode['full'] =
-                                '    <div class="z-formrow">'."\n".
-                                '        <span class="z-label">'.$rowcode['label'].'</span>'."\n".
-                                '            {if !empty($pubdata.'.$name.')}'."\n".
-                                '                <span class="z-formnote">{$pubdata.'.$name.'|getlanguagename}</span>'."\n".
-                                '            {else}'."\n".
-                                '                <span class="z-formnote">{gt text=\''.no__('Available for all languages.').'\'}</span>'."\n".
-                                '            {/if}'."\n".
-                                '        </span>'."\n".
-                                '    </div>';
+                                '        <div class="z-formrow">'."\n".
+                                '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
+                                '                {if !empty($pubdata.'.$name.')}'."\n".
+                                '                    <span class="z-formnote">{$pubdata.'.$name.'|getlanguagename}</span>'."\n".
+                                '                {else}'."\n".
+                                '                    <span class="z-formnote">{gt text=\''.no__('Available for all languages.').'\'}</span>'."\n".
+                                '                {/if}'."\n".
+                                '            </span>'."\n".
+                                '        </div>';
                             break;
 
                         // flags
@@ -114,7 +114,7 @@ class Clip_Generator
                         case 'core_showinmenu':
                         case 'core_showinlist':
                             $rowcode['body'] = "\n".
-                                '        <span class="z-formnote">{$pubdata.'.$name.'|yesno}</span>';
+                                '            <span class="z-formnote">{$pubdata.'.$name.'|yesno}</span>';
                             break;
 
                         // user ids
@@ -122,10 +122,10 @@ class Clip_Generator
                         case 'cr_uid':
                         case 'lu_uid':
                             $rowcode['body'] = "\n".
-                                '        <span class="z-formnote">'."\n".
-                                '            {$pubdata.'.$name.'|profilelinkbyuid}'."\n".
-                                '            <span class="z-sub">[{$pubdata.'.$name.'|safehtml}]</span>'."\n".
-                                '        </span>';
+                                '            <span class="z-formnote">'."\n".
+                                '                {$pubdata.'.$name.'|profilelinkbyuid}'."\n".
+                                '                <span class="z-sub">[{$pubdata.'.$name.'|safehtml}]</span>'."\n".
+                                '            </span>';
                             break;
 
                         // dates
@@ -133,30 +133,30 @@ class Clip_Generator
                         case 'cr_date':
                         case 'lu_date':
                             $rowcode['body'] = "\n".
-                                '        <span class="z-formnote">{$pubdata.'.$name.'|dateformat:\'datetimelong\'}</span>';
+                                '            <span class="z-formnote">{$pubdata.'.$name.'|dateformat:\'datetimelong\'}</span>';
                             break;
 
                         case 'core_expiredate':
                             $rowcode['body'] = "\n".
-                                '        {gt text=\''.no__('No expire date specified.').'\' assign=\'defexpire\'}'."\n".
-                                '        <span class="z-formnote">{$pubdata.'.$name.'|dateformat:\'datetimelong\'|default:$defexpire}</span>';
+                                '            {gt text=\''.no__('No expire date specified.').'\' assign=\'defexpire\'}'."\n".
+                                '            <span class="z-formnote">{$pubdata.'.$name.'|dateformat:\'datetimelong\'|default:$defexpire}</span>';
                             break;
 
                         default:
                             if (is_array($pubdata[$name])) {
                                 // generic arrays
                                 $rowcode['body'] = "\n".
-                                    '        <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'}</pre>';
+                                    '            <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'}</pre>';
 
                             } elseif (is_bool($pubdata[$name])) {
                                 // generic booleans
                                 $rowcode['body'] = "\n".
-                                    '        <span class="z-formnote">{$pubdata.'.$name.'|yesno}</span>';
+                                    '            <span class="z-formnote">{$pubdata.'.$name.'|yesno}</span>';
 
                             } else {
                                 // generic strings
                                 $rowcode['body'] = "\n".
-                                    '        <span class="z-formnote">{$pubdata.'.$name.'|safetext}</span>';
+                                    '            <span class="z-formnote">{$pubdata.'.$name.'|safetext}</span>';
                             }
                     }
                 }
@@ -164,9 +164,9 @@ class Clip_Generator
                 // build the final row if not filled
                 if ($rowcode['full'] !== false && empty($rowcode['full'])) {
                     $rowcode['full'] =
-                        '    <div class="z-formrow">'."\n".
-                        '        <span class="z-label">'.$rowcode['label'].'</span>'.$rowcode['body']."\n".
-                        '    </div>';
+                        '        <div class="z-formrow">'."\n".
+                        '            <span class="z-label">'.$rowcode['label'].'</span>'.$rowcode['body']."\n".
+                        '        </div>';
                 }
             }
 
@@ -231,13 +231,13 @@ class Clip_Generator
             // build the field's row output
             if (!isset($plugres['full'])) {
                 $code .= "\n".
-                        '            <div class="z-formrow">'."\n".
-                        '                {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfields[$name]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                        '                {clip_form_genericplugin id=\''.$name.'\' group=\'pubdata\''.$maxlength.$plugadd.'}'."\n".
-                        '                {if $pubfields.'.$name.'.description|clip_translate}'."\n".
-                        '                    <span class="z-formnote z-sub">{$pubfields.'.$name.'.description|clip_translate}</span>'."\n".
-                        '                {/if}'."\n".
-                        '            </div>'."\n";
+                        '                <div class="z-formrow">'."\n".
+                        '                    {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfields[$name]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                        '                    {clip_form_genericplugin id=\''.$name.'\' group=\'pubdata\''.$maxlength.$plugadd.'}'."\n".
+                        '                    {if $pubfields.'.$name.'.description|clip_translate}'."\n".
+                        '                        <span class="z-formnote z-sub">{$pubfields.'.$name.'.description|clip_translate}</span>'."\n".
+                        '                    {/if}'."\n".
+                        '                </div>'."\n";
             }
         }
 
