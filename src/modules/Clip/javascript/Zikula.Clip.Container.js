@@ -157,6 +157,10 @@ Zikula.Clip.Container = Class.create(
                     match[1] = match[1].replace(Zikula.Config.baseURL, '');
                     return 'href="'+match[1]+'"';
                 });
+                $('clip_generatorcode').innerHTML = $('clip_generatorcode').innerHTML.gsub(/src="(.*?)"/, function (match) {
+                    match[1] = match[1].replace(Zikula.Config.baseURL, '');
+                    return 'src="'+match[1]+'"';
+                });
             }
 
             // update the loaded tooltips on the ajax content
