@@ -49,7 +49,8 @@ class Clip_Controller_Editor extends Zikula_AbstractController
     public function main()
     {
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT));
+        // TODO be sure that the tree handle only the ones with Edit access
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT/*, 'ANY'*/));
 
         $grouptypes = Clip_Util_Grouptypes::getTree(ACCESS_OVERVIEW, false);
 
@@ -75,7 +76,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype));
+        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'editor'));
 
         // define the arguments
         $apiargs = array(
