@@ -37,7 +37,7 @@ class Clip_Controller_User extends Zikula_AbstractController
      *
      * @param integer $args['tid']           ID of the publication type.
      * @param string  $args['template']      Custom publication type template to use.
-     * @param integer $args['cachelifetime'] Cache lifetime (empty for default config).
+     * @param integer $args['cachelifetime'] Cache lifetime (empty for default pubtype config).
      *
      * @return string Publication main output.
      */
@@ -149,11 +149,12 @@ class Clip_Controller_User extends Zikula_AbstractController
      * @param string  $args['template']      Custom publication type template to use.
      * @param string  $args['filter']        Filter string.
      * @param string  $args['orderby']       OrderBy string.
-     * @param integer $args['startnum']      Offset to start from.
+     * @param integer $args['startnum']      Offset item to start from.
+     * @param integer $args['page']          Offset page to start from.
      * @param integer $args['itemsperpage']  Number of items to retrieve.
      * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']  Whether to add the workflow information.
-     * @param integer $args['cachelifetime'] Cache lifetime (empty for default config).
+     * @param integer $args['cachelifetime'] Cache lifetime (empty for default pubtype config).
      *
      * @return string Publication list output.
      */
@@ -316,7 +317,7 @@ class Clip_Controller_User extends Zikula_AbstractController
      * @param integer $args['pid']           ID of the publication.
      * @param integer $args['id']            ID of the publication revision (optional if pid is used).
      * @param string  $args['template']      Custom publication type template to use.
-     * @param integer $args['cachelifetime'] Cache lifetime (empty for default config).
+     * @param integer $args['cachelifetime'] Cache lifetime (empty for default pubtype config).
      *
      * @return Publication output.
      */
@@ -345,7 +346,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         );
         $args = array(
             'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
-            'cachelifetime' => isset($args['cachelifetime']) ? $args['cachelifetime'] : FormUtil::getPassedValue('cachelifetime', $pubtype['cachelifetime'])
+            'cachelifetime' => isset($args['cachelifetime']) ? (int)$args['cachelifetime'] : $pubtype['cachelifetime']
         );
 
         // sets the function parameter (navbar)
