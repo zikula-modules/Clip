@@ -55,6 +55,11 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
      */
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
+        // validates the input
+        if (!$view->isValid()) {
+            return false;
+        }
+
         $data = $view->getValues();
 
         // handle the commands

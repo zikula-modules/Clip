@@ -21,8 +21,8 @@
     <fieldset>
         <legend>{gt text='General settings'}</legend>
         <div class="z-formrow">
-            {formlabel for='uploadpath' __text='Upload path'}
-            {formtextinput id='uploadpath' maxLength='200'}
+            {formlabel for='uploadpath' __text='Upload path' mandatorysym=true}
+            {formtextinput id='uploadpath' maxLength='200' mandatory=true}
             {if $updirstatus lt 3}
                 {assign var='updir_msgcolor' value='#ff0000'}
                 {if $updirstatus eq 0}
