@@ -48,7 +48,7 @@ function pubfieldlistsortinit()
 
     // also add the anchor to the form
     var form = $$('form.z-form')[0];
-    form.action = form.action + '#FormForm'
+    form.action = form.action + '#newpubfield'
 
     // enable the tooltips
     Zikula.UI.Tooltips($$('.tooltips'));
