@@ -258,7 +258,6 @@ class Clip_Controller_User extends Zikula_AbstractController
         $apiargs['where'][] = array('core_indepot = ?', 0);
         $apiargs['where'][] = array('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
         $apiargs['where'][] = array('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
-        $apiargs['where'][] = array('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
 
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
