@@ -122,13 +122,12 @@ class Clip_Controller_User extends Zikula_AbstractController
         // check if the template is available to render it
         if (!$this->view->template_exists($args['template'])) {
             // auto-generate it only on development mode
-            if (!ModUtil::getVar('Clip', 'devmode', false)) {
+            if (!$this->getVar('devmode', false)) {
                 return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
             }
 
-            $isadmin = Clip_Access::toPubtype($pubtype);
-
-            if ($isadmin) {
+            if (Clip_Access::toPubtype($pubtype)) {
+                // pubtype admins only
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
 
@@ -282,13 +281,12 @@ class Clip_Controller_User extends Zikula_AbstractController
         // check if the template is not available
         if (!$this->view->template_exists($args['template'])) {
             // auto-generate it only on development mode
-            if (!ModUtil::getVar('Clip', 'devmode', false)) {
+            if (!$this->getVar('devmode', false)) {
                 return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
             }
 
-            $isadmin = Clip_Access::toPubtype($pubtype);
-
-            if ($isadmin) {
+            if (Clip_Access::toPubtype($pubtype)) {
+                // pubtype admins only
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
 
@@ -468,7 +466,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // check if template is not available
         if (!$this->view->template_exists($args['template'])) {
             // auto-generate it only on development mode
-            if (!ModUtil::getVar('Clip', 'devmode', false)) {
+            if (!$this->getVar('devmode', false)) {
                 return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
             }
 
@@ -597,12 +595,17 @@ class Clip_Controller_User extends Zikula_AbstractController
                ->assign('pubtype', $pubtype);
 
         // resolve the template to use
+        $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+
         // 1. custom template
         if (!empty($args['template'])) {
             $template = $pubtype['inputset']."/form_template_{$args['template']}.tpl";
 
             if ($render->template_exists($template)) {
                 return $render->execute($template, $handler);
+
+            } elseif ($alert) {
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
         }
 
@@ -611,6 +614,9 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         if ($render->template_exists($template)) {
             return $render->execute($template, $handler);
+
+        } elseif ($alert) {
+            LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
         }
 
         // 3. generic edit
@@ -618,17 +624,11 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         if (!$render->template_exists($template)) {
             // auto-generate it only on development mode
-            if (!ModUtil::getVar('Clip', 'devmode', false)) {
+            if (!$this->getVar('devmode', false)) {
                 return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
             }
 
-            $alert = Clip_Access::toPubtype($pubtype);
-
             if ($alert) {
-                if (!empty($args['template'])) {
-                    LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['inputset']."/form_template_{$args['template']}.tpl"));
-                }
-                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['inputset']."/form_{$args['state']}.tpl"));
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $template));
             }
 

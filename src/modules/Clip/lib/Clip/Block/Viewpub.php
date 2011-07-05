@@ -43,7 +43,7 @@ class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
      */
     public function display($blockinfo)
     {
-        $alert = Clip_Access::toClip(ACCESS_ADMIN) && ModUtil::getVar('Clip', 'devmode', false);
+        $alert = $this->getVar('devmode', false) && Clip_Access::toClip(ACCESS_ADMIN);
 
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);

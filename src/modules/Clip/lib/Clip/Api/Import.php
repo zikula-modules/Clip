@@ -314,7 +314,7 @@ class Clip_Api_Import extends Zikula_AbstractApi
         $tables = DBUtil::getTables();
         $pubheader_table = $tables['pagesetter_pubheader'];
 
-        $DirPM = ModUtil::getVar('Clip', 'uploadpath');
+        $DirPM = $this->getVar('uploadpath');
         $DirPS = ModUtil::getVar('pagesetter', 'uploadDirDocs');
 
         $pubtypes = DBUtil::selectObjectArray('pagesetter_pubtypes'); //, 'pg_id=11'
