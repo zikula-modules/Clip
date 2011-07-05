@@ -110,8 +110,8 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 }
 
                 // purge the folder names of undesired chars
-                $pubtype->outputset = preg_replace('#[^a-zA-Z0-9_/]+#', '', $pubtype->outputset);
-                $pubtype->inputset  = preg_replace('#[^a-zA-Z0-9_/]+#', '', $pubtype->inputset);
+                $pubtype->outputset = preg_replace(Clip_Util::REGEX_FOLDER, '', $pubtype->outputset);
+                $pubtype->inputset  = preg_replace(Clip_Util::REGEX_FOLDER, '', $pubtype->inputset);
 
                 // reserved words check
                 if (Clip_Util::validateReservedWord($pubtype->title)) {

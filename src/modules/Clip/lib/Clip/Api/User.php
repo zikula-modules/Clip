@@ -522,7 +522,8 @@ class Clip_Api_User extends Zikula_AbstractApi
         // template parameter
         $template = '';
         if (isset($_['template'])) {
-            if (preg_match('#[^a-zA-Z0-9_]+#', $_['template'])) {
+            $template = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $_['template']);
+            if ($template != $_['template']) {
                 // do not build shortURLs for faulty templates
                 return false;
             }
@@ -644,7 +645,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         // reset the function to main
         System::queryStringSetVar('func', 'main');
 
-        if (!preg_match('/^([a-z0-9_\-\.]+?)(\.([a-z0-9_]+))?$/i', end($_), $matches)) {
+        if (!preg_match('/^([a-z0-9_\-]+?)(\.([a-z0-9_\.\-]+))?$/i', end($_), $matches)) {
             // there must be a valid filename
             return true;
         }
@@ -740,13 +741,17 @@ class Clip_Api_User extends Zikula_AbstractApi
                 $pubtitle = reset($_);
 
             case 'display':
+                $s = preg_quote(System::getVar('shorturlsseparator'), '~');
                 if (!isset($pubtitle)) {
                     // by now, the pub still has the pid/id as suffix
-                    $pubtitle = $filename.(is_numeric($template) ? $template : '');
+                    $fullstr  = "$filename.$template";
+                    preg_match('/^([a-z0-9_\-'.$s.']+?\.[\d]+?(\.[\d]+)?)(\.([a-z0-9_\.\-]+))?$/i', $fullstr, $matches);
+                    $pubtitle = $matches[1];
+                    $template = $matches[4];
                 }
+
                 // extract the pid/id
-                $s = preg_quote(System::getVar('shorturlsseparator'), '~');
-                if (preg_match('~^[a-z0-9_'.$s.']+\.(\d+?)(\.(\d+))?$~i', $pubtitle, $matches)) {
+                if (preg_match('~^[a-z0-9_\-'.$s.']+\.(\d+?)(\.(\d+))?$~i', $pubtitle, $matches)) {
                     System::queryStringSetVar('pid', $matches[1]);
                     if (isset($matches[3])) {
                         System::queryStringSetVar('id', $matches[3]);

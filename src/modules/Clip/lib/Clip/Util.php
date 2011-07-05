@@ -14,6 +14,10 @@
  */
 class Clip_Util
 {
+    const REGEX_FOLDER   = '#[^a-z0-9_/]+#i';
+    const REGEX_TEMPLATE = '/[^a-z0-9_\.\-]+/i';
+    const REGEX_URLTITLE = '/[^a-z0-9_\-]+/i';
+
     /**
      * Arguments store.
      *

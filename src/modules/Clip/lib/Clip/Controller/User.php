@@ -68,7 +68,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // checks for the input template value
         $args['template'] = DataUtil::formatForOS($args['template']);
         // cleans it of not desired parameters
-        $args['template'] = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
+        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $args['templateid'] = '';
             $args['template']   = $pubtype['outputset'].'/main.tpl';
@@ -204,7 +204,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // checks for the input template value
         $args['template'] = DataUtil::formatForOS($args['template']);
         // cleans it of not desired parameters
-        $args['template'] = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
+        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
             $args['template']   = $pubtype['outputset'].'/list.tpl';
@@ -362,7 +362,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // checks for the input template value
         $args['template'] = DataUtil::formatForOS($args['template']);
         // cleans it of not desired parameters
-        $args['template'] = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
+        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
             $args['template']   = $pubtype['outputset'].'/display.tpl';
@@ -584,7 +584,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // checks for the input template value
         // and cleans it of not desired parameters
         $args['template'] = DataUtil::formatForOS($args['template']);
-        $args['template'] = preg_replace('#[^a-zA-Z0-9_]+#', '', $args['template']);
+        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
 
         // create the output object
         $render = Clip_Util::newUserForm($this);
