@@ -63,6 +63,10 @@
     </div>
 
     {if $pager.itemsperpage neq $modvars.Clip.maxperpage}
-        {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=7}
+        {if $clipargs.list.startnum eq 0}
+            {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=7}
+        {else}
+            {pager display='startnum' posvar='startnum' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=7}
+        {/if}
     {/if}
 </div>

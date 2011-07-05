@@ -199,9 +199,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             $apiargs['itemsperpage'] = $this->getVar('maxperpage', 100);
         }
 
-        if ($args['page'] > 1) {
-            $apiargs['startnum'] = ($args['page']-1)*$apiargs['itemsperpage']+1;
-        }
+        $apiargs['startnum'] = ($args['page'] > 1) ? ($args['page']-1)*$apiargs['itemsperpage']+1 : $args['startnum'];
 
         //// Template
         // checks for the input template value
