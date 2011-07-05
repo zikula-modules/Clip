@@ -70,6 +70,10 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
                 }
                 ModUtil::setVar('Clip', 'uploadpath', $data['uploadpath']);
 
+                // shorturls default template
+                $data['shorturls'] = preg_replace('#[^a-zA-Z0-9_]+#', '', $data['shorturls']);
+                ModUtil::setVar('Clip', 'shorturls', $data['shorturls']);
+
                 // development mode
                 ModUtil::setVar('Clip', 'devmode', $data['devmode']);
 

@@ -57,6 +57,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // modvars
         $modvars = array(
             'uploadpath' => $uploadDir,
+            'shorturls'  => 'htm',
             'maxperpage' => 100,
             'devmode'    => true
         );
@@ -131,6 +132,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 $this->version->setupPubtypeBundles();
                 HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
             case '0.4.16':
+                $this->setVar('shorturls', 'htm');
+            case '0.4.17':
                 // rename 'preview' state to 'accepted' (?)
                 // rename Clip:input: to Clip:edit:, and GTs?
                 // if homepage module = 'Clip' => func: list/display

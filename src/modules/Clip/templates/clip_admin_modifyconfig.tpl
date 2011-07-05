@@ -42,6 +42,13 @@
             </span>
         </div>
         <div class="z-formrow">
+            {formlabel for='shorturls' __text='Default template'}
+            {formtextinput id='shorturls' maxLength='40'}
+            <span class="z-formnote">
+                {gt text="Default template used in short URLs. Only 'htm' and 'html' are omitted of special processing."}
+            </span>
+        </div>
+        <div class="z-formrow">
             {formlabel for='maxperpage' __text='Max. items per page'}
             {formintinput id='maxperpage' maxLength=4 minValue=0 maxValue=9999}
             <span class="z-formnote">

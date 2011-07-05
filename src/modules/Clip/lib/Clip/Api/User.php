@@ -487,107 +487,141 @@ class Clip_Api_User extends Zikula_AbstractApi
      */
     public function encodeurl($args)
     {
-        if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
-            return LogUtil::registerArgsError();
+        if (!isset($args['args']['tid']) || !Clip_Util::validateTid($args['args']['tid'])) {
+            return false;
         }
-
-        static $cache = array();
 
         $supportedfunctions = array('main', 'list', 'display', 'edit', 'view', 'publist', 'viewpub', 'pubedit');
         if (!in_array($args['func'], $supportedfunctions)) {
             return false;
         }
 
-        // shortURLs scheme
-        //  main:    /pubtype[/template]
-        //  list:    /pubtype[/list[/template[/param/value]]]
-        //  display: /pubtype[/pub[/template]]
-        //  edit:    /pubtype[/submit:/pub/edit[/template[/param/value]]]
-
-        // deprecated function transition
-        if ($args['func'] == 'pubedit') {
-            $args['func'] = 'edit';
+        // deprecated functions transition
+        // @deprecated 0.9
+        switch ($args['func'])
+        {
+            case 'pubedit':
+                $args['func'] = 'edit';
+                break;
+            case 'view':
+            case 'publist':
+                $args['func'] = 'list';
+                break;
+            case 'viewpub':
+                $args['func'] = 'display';
+                break;
         }
 
-        $title = '';
-        if (!isset($args['args']['tid']) || !Clip_Util::validateTid($args['args']['tid'])) {
-            return false;
-        } else {
-            $tid     = (int)$args['args']['tid'];
-            $pubtype = Clip_Util::getPubType($tid);
-            $title   = $pubtype['urltitle'];
+        // utility assign
+        $_ = $args['args'];
 
-            unset($args['args']['tid']);
-        }
+        // pubtype id
+        $tid      = (int)$_['tid'];
+        $tidtitle = Clip_Util::getPubType($tid, 'urltitle');
 
-        $func = '';
-        if ($args['func'] == 'list') {
-            $func = '/' . $args['func'];
-        }
-
-        $pub = '';
-        if (isset($args['args']['pid']) || isset($args['args']['id'])) {
-            if (!isset($args['args']['pid']) && !isset($args['args']['id'])) {
+        // template parameter
+        $template = '';
+        if (isset($_['template'])) {
+            if (preg_match('#[^a-zA-Z0-9_]+#', $_['template'])) {
+                // do not build shortURLs for faulty templates
                 return false;
             }
-            if (isset($args['args']['pid'])) {
-                $pid = (int)$args['args']['pid'];
-                unset($args['args']['pid']);
-            }
-            if (isset($args['args']['id'])) {
-                $id = (int)$args['args']['id'];
-                unset($args['args']['id']);
-                if (!isset($pid)) {
-                    if (!isset($cache['id'][$tid][$id])) {
-                        $pid = $cache['id'][$tid][$id] = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
-                                                         ->selectFieldBy('core_pid', $id, 'id');
-                    } else {
-                        $pid = $cache['id'][$tid][$id];
+            $tpl = $template = $_['template'];
+        } else {
+            $tpl = $this->getVar('shorturls');
+        }
+        $tplhtml = (in_array($tpl, array('htm', 'html')) ? $tpl : 'htm');
+
+        unset($_['tid'], $_['template']);
+
+        // shortURLs scheme
+        // template defaults to modvar - htm
+        //  main:    /pubtype[.template]
+        //  list:    /pubtype[/filter[/orderby]]/list.template]
+        //  display: /pubtype/pubtitle[.template]
+        //  edit:    /pubtype[/template]/submit.htm[l]
+        //  edit:    /pubtype/pubtitle[/template]/edit.htm[l]
+
+        static $cache = array();
+
+        $shorturl = '';
+
+        switch ($args['func'])
+        {
+            case 'main':
+                $shorturl = $tpl ? ".$tpl" : '';
+                break;
+
+            case 'list':
+                if (isset($_['startnum'])) {
+                    $filename = 'start'.(int)$_['startnum'];
+                } else {
+                    $filename = 'page'.(isset($_['page']) ? (int)$_['page'] : 1);
+                }
+                unset($_['startnum'], $_['page']);
+
+                if (!empty($_)) {
+                    foreach ($_ as $k => $v) {
+                        $shorturl .= '/'.urlencode($k).'/'.urlencode($v);
                     }
                 }
-            }
 
-            if (isset($cache['title'][$tid][$pid])) {
-                $pub = $cache['title'][$tid][$pid];
-            } elseif (isset($args['args']['title']) && !empty($args['args']['title'])) {
-                $pub = $args['args']['title'];
-            } else {
-                $pub = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
-                       ->selectFieldBy(Clip_Util::getTitleField($tid), $pid, 'core_pid');
-                $pub = DataUtil::formatPermalink($pub);
-            }
-            if (isset($args['args']['title'])) {
-                unset($args['args']['title']);
-            }
-            $cache['title'][$tid][$pid] = $pub;
+                $shorturl .= "/$filename" . ($tpl ? ".$tpl" : '');
+                break;
 
-            $pub = "/$pub.$pid";
+            case 'edit':
+                // set pid if not set to get into the display logic
+                if (!isset($_['pid']) && !isset($_['id'])) {
+                    $_['pid'] = 0;
+                }
 
-            if (isset($id)) {
-                $pub .= ".$id";
-            }
+            case 'display':
+                if (!isset($_['urltitle']) && !isset($_['pid']) && !isset($_['id'])) {
+                    return false;
+                }
+
+                if (isset($_['pid'])) {
+                    $pid = (int)$_['pid'];
+                }
+                if (isset($_['id'])) {
+                    $id = (int)$_['id'];
+                    if (!isset($pid)) {
+                        if (!isset($cache['id'][$tid][$id])) {
+                            $pid = $cache['id'][$tid][$id] = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
+                                                             ->selectFieldBy('core_pid', $id, 'id');
+                        } else {
+                            $pid = $cache['id'][$tid][$id];
+                        }
+                    }
+                }
+
+                if (!$pid) {
+                    // submit: continue
+                } elseif (isset($cache['title'][$tid][$pid])) {
+                    $urltitle = $cache['title'][$tid][$pid];
+                } elseif (isset($_['title']) && !empty($_['title'])) {
+                    $urltitle = $_['title'];
+                } else {
+                    $urltitle = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
+                                ->selectFieldBy(Clip_Util::getTitleField($tid), $pid, 'core_pid');
+                    $urltitle = DataUtil::formatPermalink($urltitle);
+                }
+                $cache['title'][$tid][$pid] = $urltitle;
+
+                $urltitle = "/$urltitle.$pid" . (isset($id) ? ".$id" : '');
+
+                if ($args['func'] == 'edit') {
+                    $shorturl  = ($pid ? $urltitle : '');
+                    $shorturl .= ($template ? "/$template" : '');
+                    $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ".$tplhtml";
+                    break;
+                }
+
+                $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
+                break;
         }
 
-        $params = '';
-        // special function indicator for pubs
-        if ($args['func'] == 'edit') {
-            $params .= '/' . ($pub ? $this->__('edit') : $this->__('submit'));
-        }
-        // add the template parameter if available
-        if (isset($args['args']['template']) && $args['args']['template']) {
-            $params .= '/' . $args['args']['template'];
-            unset($args['args']['template']);
-        }
-        // additional parameters
-        if (count($args['args']) > 0) {
-            $a = array();
-            foreach ($args['args'] as $k => $v) {
-                $a[] = urlencode($k).'/'.urlencode($v);
-            }
-            $params .= '/' . implode('/', $a);
-        }
-
-        return $args['modname'].'/'.$title.$func.$pub.$params;
+        return $args['modname'].'/'.$tidtitle.$shorturl;
     }
 
     /**
@@ -599,76 +633,135 @@ class Clip_Api_User extends Zikula_AbstractApi
      */
     public function decodeurl($args)
     {
-        $_ = $args['vars'];
+        // utility assign
+        $_ = array_slice($args['vars'], 2);
 
-        $nextvar = 2;
-
-        $functions = array('exec', 'executecommand');
-        if (in_array($_[$nextvar], $functions)) {
-            return false;
+        if (empty($_)) {
+            // no pubtype passed, let the module to process the error
+            return true;
         }
 
+        // reset the function to main
         System::queryStringSetVar('func', 'main');
 
-        if (!isset($_[$nextvar]) || empty($_[$nextvar])) {
+        if (!preg_match('/^([a-z0-9_\-\.]+?)(\.([a-z0-9_]+))?$/i', end($_), $matches)) {
+            // there must be a valid filename
             return true;
+        }
+
+        $urltitle = reset($_);
+        $filename = $matches[1];
+        $template = isset($matches[3]) ? $matches[3] : '';
+
+        // direct detection of edit mode
+        if (in_array($filename, array('submit', 'edit'))) {
+            $func = 'edit';
+            $pid  = ($filename == 'submit') ? 0 : null;
+
+            unset($_[0], $_[count($_)]);
+
+        } else {
+            // process the possibilities and resolve the pubtype urltitle
+            switch (count($_))
+            {
+                case 1: // main
+                    $urltitle = $filename;
+                    $func = 'main';
+                    break;
+
+                case 2: // list / display
+                    if (preg_match('/^(page|start)/', $filename)) {
+                        $func = 'list';
+                    } else {
+                        $func = 'display';
+                    }
+
+                    $_ = array();
+                    break;
+
+                default: // list
+                    $func = 'list';
+
+                    unset($_[0], $_[count($_)]);
+            }
         }
 
         // pubtype urltitle check
         $tid = Doctrine_Core::getTable('Clip_Model_Pubtype')
-               ->selectFieldBy('tid', $_[$nextvar], 'urltitle');
+               ->selectFieldBy('tid', $urltitle, 'urltitle');
 
         if (!$tid) {
-            return false;
-        } else {
-            System::queryStringSetVar('tid', $tid);
-            $nextvar++;
+            // no pubtype match
+            return true;
         }
 
-        // function check
-        if (isset($_[$nextvar])) {
-            if ($_[$nextvar] == 'list') {
-                System::queryStringSetVar('func', 'list');
-                $nextvar++;
-            }
-            if ($_[$nextvar] == $this->__('submit')) {
-                System::queryStringSetVar('func', 'edit');
-                $nextvar++;
-            }
-        }
+        // process the arguments of each function
+        switch ($func)
+        {
+            case 'list':
+                // parse the pager
+                if (preg_match('/^page([\d]+)$/', $filename, $matches)) {
+                    System::queryStringSetVar('page', $matches[1]);
 
-        // check for publication title format: "title.pid[.id]"
-        if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
-            $permalinksseparator = System::getVar('shorturlsseparator');
-            $match = '';
-            $isPub = (bool) preg_match('~^[a-z0-9_'.$permalinksseparator.']+\.(\d+)+(\.(\d+))?+$~i', $_[$nextvar], $match);
-            if ($isPub) {
-                System::queryStringSetVar('func', 'display');
-                System::queryStringSetVar('pid', $match[1]);
-                if (isset($match[3])) {
-                    System::queryStringSetVar('id', $match[3]);
+                } elseif (preg_match('/^start([\d]+)$/', $filename, $matches)) {
+                    System::queryStringSetVar('startnum', $matches[1]);
+
+                } else {
+                    // no valid number given
+                    return true;
                 }
-                $nextvar++;
-            }
+                // additional args
+                for ($i = 1; $i <= floor(count($_)/2); $i++) {
+                    System::queryStringSetVar($_[$i*2-1], $_[$i*2]);
+                }
+                break;
+
+            case 'edit':
+                if (isset($pid)) {
+                    // submit
+                    if (count($_) == 1) {
+                        // there's a custom submit template
+                        $template = current($_);
+                    }
+                    break;
+                }
+
+                if (empty($_)) {
+                    // should not be empty at this stage
+                    return true;
+                }
+
+                // edit
+                if (count($_) == 2) {
+                    // there's a custom edit template
+                    $template = end($_);
+                }
+
+                $pubtitle = reset($_);
+
+            case 'display':
+                if (!isset($pubtitle)) {
+                    // by now, the pub still has the pid/id as suffix
+                    $pubtitle = $filename.(is_numeric($template) ? $template : '');
+                }
+                // extract the pid/id
+                $s = preg_quote(System::getVar('shorturlsseparator'), '~');
+                if (preg_match('~^[a-z0-9_'.$s.']+\.(\d+?)(\.(\d+))?$~i', $pubtitle, $matches)) {
+                    System::queryStringSetVar('pid', $matches[1]);
+                    if (isset($matches[3])) {
+                        System::queryStringSetVar('id', $matches[3]);
+                    }
+                }
+                break;
         }
 
-        // special function indicator check
-        if (isset($_[$nextvar]) && in_array($_[$nextvar], array($this->__('edit'), $this->__('submit')))) {
-            System::queryStringSetVar('func', 'edit');
-            $nextvar++;
-        }
+        // set the arguments
+        System::queryStringSetVar('tid',  $tid);
+        System::queryStringSetVar('func', $func);
 
-        $argsnum = count($_);
-        // template check
-        if (($argsnum - $nextvar) % 2) {
-            System::queryStringSetVar('template', $_[$nextvar]);
-            $nextvar++;
-        }
-        // additional args
-        if (isset($_[$nextvar]) && !empty($_[$nextvar])) {
-            for ($i = $nextvar; $i < $argsnum; $i+=2) {
-                System::queryStringSetVar($_[$i], $_[$i+1]);
-            }
+        // if template is set and is not the html output
+        if ($template && !in_array($template, array('htm', 'html'))) {
+            System::queryStringSetVar('template', $template);
         }
 
         return true;
