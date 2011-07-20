@@ -596,20 +596,21 @@ class Clip_Api_User extends Zikula_AbstractApi
                     }
                 }
 
-                if (!$pid) {
-                    // submit: continue
-                } elseif (isset($cache['title'][$tid][$pid])) {
-                    $urltitle = $cache['title'][$tid][$pid];
-                } elseif (isset($_['title']) && !empty($_['title'])) {
-                    $urltitle = $_['title'];
-                } else {
-                    $urltitle = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
-                                ->selectFieldBy(Clip_Util::getTitleField($tid), $pid, 'core_pid');
-                    $urltitle = DataUtil::formatPermalink($urltitle);
-                }
-                $cache['title'][$tid][$pid] = $urltitle;
+                if ($pid) {
+                    // not submit (pid: 0)
+                    if (isset($cache['title'][$tid][$pid])) {
+                        $urltitle = $cache['title'][$tid][$pid];
+                    } elseif (isset($_['title']) && !empty($_['title'])) {
+                        $urltitle = $_['title'];
+                    } else {
+                        $urltitle = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
+                                    ->selectFieldBy(Clip_Util::getTitleField($tid), $pid, 'core_pid');
+                        $urltitle = DataUtil::formatPermalink($urltitle);
+                    }
+                    $cache['title'][$tid][$pid] = $urltitle;
 
-                $urltitle = "/$urltitle.$pid" . (isset($id) ? ".$id" : '');
+                    $urltitle = "/$urltitle.$pid" . (isset($id) ? ".$id" : '');
+                }
 
                 if ($args['func'] == 'edit') {
                     $shorturl  = ($pid ? $urltitle : '');
