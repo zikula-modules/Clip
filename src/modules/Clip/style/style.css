@@ -105,6 +105,15 @@
   line-height: 1.4em;
 }
 
+/* forms */
+.z-form.clip-form .z-formrow div input[type="checkbox"] {
+  margin: 0.2em 0;
+  vertical-align: top;
+}
+.z-form.z-form div.z-formrow div label {
+  padding: 0 0.2em;
+}
+
 
 /*** Editor GUI ***/
 #clip_editor_buttons {

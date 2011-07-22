@@ -31,7 +31,12 @@ function clip_pubtype_init()
     clip_display_load_onclick();
     clip_display_process_onclick();
     clip_edit_load_onclick();
-    clip_urltitle_init();
+
+    new Zikula.UI.Panels('clip-pubtype-form', {
+                                               headerSelector: '.pubtype-panel-header',
+                                               headerClassName: 'z-panel-indicator',
+                                               active: [0]
+                                              });
 }
 
 function clip_view_load_onclick()
@@ -57,23 +62,4 @@ function clip_display_process_onclick()
 function clip_edit_load_onclick()
 {
     Zikula.checkboxswitchdisplaystate('edit_load', 'edit_advancedprocess', true);
-}
-
-function clip_urltitle_init()
-{
-    $('clip_pubtype_collapse').observe('click', clip_urltitle_click);
-    $('clip_pubtype_collapse').addClassName('z-toggle-link');
-    if (!$('urltitle').hasClassName('z-form-error')) {
-        clip_urltitle_click();
-    }
-}
-
-function clip_urltitle_click()
-{
-    if ($('clip_pubtype_urltitle').style.display != 'none') {
-        Element.removeClassName.delay(0.9, $('clip_pubtype_collapse'), 'z-toggle-link-open');
-    } else {
-        $('clip_pubtype_collapse').addClassName('z-toggle-link-open');
-    }
-    Zikula.switchdisplaystate('clip_pubtype_urltitle');
 }
