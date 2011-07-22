@@ -56,8 +56,15 @@
                 </div>
 
                 <div class="z-formrow">
-                    {formlabel for='core_showinlist' __text='Show in list'}
-                    {formcheckbox id='core_showinlist' group='pubdata' checked='checked'}
+                    {formlabel for='core_visible' __text='Visible'}
+                    {formcheckbox id='core_visible' group='pubdata' checked='checked'}
+                    <em class="z-formnote z-sub">{gt text='If not visible, will be excluded from lists and search results'}</em>
+                </div>
+
+                <div class="z-formrow">
+                    {formlabel for='core_locked' __text='Locked'}
+                    {formcheckbox id='core_locked' group='pubdata' checked='checked'}
+                    <em class="z-formnote z-sub">{gt text='If enabled, the publication will be closed for changes'}</em>
                 </div>
             </fieldset>
 

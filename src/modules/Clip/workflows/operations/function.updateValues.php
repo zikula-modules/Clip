@@ -88,8 +88,8 @@ function Clip_operation_updateValues(&$pub, $params)
                     LogUtil::registerStatus(__("Publication status set to 'unpublished'.", $dom));
                 }
             }
-            if (isset($update['core_indepot'])) {
-                if ($update['core_indepot'] == 1) {
+            if (isset($update['core_intrash'])) {
+                if ($update['core_intrash'] == 1) {
                     LogUtil::registerStatus(__("Publication moved to the recycle bin.", $dom));
                 } else {
                     LogUtil::registerStatus(__("Publication was recovered from the recycle bin.", $dom));

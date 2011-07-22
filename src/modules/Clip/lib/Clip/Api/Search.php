@@ -58,9 +58,9 @@ class Clip_Api_Search extends Zikula_AbstractApi
                              ->selectFieldArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
 
                 $where  = Search_Api_User::construct_where($args, $where_arr, 'core_language');
-                $where .= " AND core_showinlist = '1'
+                $where .= " AND core_visible = '1'
                             AND core_online = '1'
-                            AND core_indepot = '0'
+                            AND core_intrash = '0'
                             AND (core_publishdate <= NOW() OR core_publishdate IS NULL)
                             AND (core_expiredate >= NOW() OR core_expiredate IS NULL)";
 

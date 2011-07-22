@@ -135,9 +135,9 @@
    <core_language></core_language>
    <core_revision>3</core_revision>
    <core_online>1</core_online>
-   <core_indepot></core_indepot>
-   <core_showinmenu></core_showinmenu>
-   <core_showinlist>1</core_showinlist>
+   <core_intrash></core_intrash>
+   <core_visible>1</core_visible>
+   <core_locked></core_locked>
    <core_publishdate>2011-01-01 00:00:00</core_publishdate>
    <core_expiredate/>
    <obj_status>A</obj_status>

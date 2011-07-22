@@ -44,8 +44,12 @@
                         <dt>{gt text='Max. length'}</dt>
                         <dd>{$pubfield.fieldmaxlength}</dd>
                         {/if}
-                        <dt>{gt text='Pageable'}</dt>
-                        <dd>{$pubfield.ispageable|yesno}</dd>
+                        <dt>{gt text='Filterable'}</dt>
+                        <dd>{$pubfield.isfilterable|yesno}</dd>
+                        <dt>{gt text='Counter'}</dt>
+                        <dd>{$pubfield.iscounter|yesno}</dd>
+                        {*<dt>{gt text='Pageable'}</dt>
+                        <dd>{$pubfield.ispageable|yesno}</dd>*}
                         <dt>{gt text='Creation date'}</dt>
                         <dd>{$pubfield.cr_date|dateformat:'datetimebrief'}</dd>
                         <dt>{gt text='Update date'}</dt>
@@ -86,7 +90,7 @@
     </fieldset>
 </div>
 
-{form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
+{form cssClass='z-form clip-form' enctype='application/x-www-form-urlencoded'}
 <div id="newpubfield">
     {formvalidationsummary}
     <fieldset>
@@ -130,13 +134,6 @@
             {formcheckbox id='istitle' group='field'}
             <div class="z-formnote">{gt text='The content of this field will be used as the title?'}</div>
         </div>
-        {*if $field.fieldplugin eq 'Text'}
-        <div class="z-formrow">
-            {formlabel for='ispageable' __text='Pageable'}
-            {formcheckbox id='ispageable' group='field'}
-            <div class="z-formnote">{gt text='The content of this field is pageable?'}</div>
-        </div>
-        {/if*}
         <div class="z-formrow">
             {formlabel for='ismandatory' __text='Mandatory'}
             {formcheckbox id='ismandatory' group='field'}
@@ -147,11 +144,16 @@
             {formcheckbox id='issearchable' group='field'}
             <div class="z-formnote">{gt text='The content of this field can be searched?'}</div>
         </div>
-        {if !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Email', 'Float', 'Image', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Text', 'Upload', 'Url'))}
         <div class="z-formrow">
-            {formlabel for='isuid' __text='Is a User ID'}
-            {formcheckbox id='isuid' group='field'}
-            <div class="z-formnote">{gt text='This field contains a User ID? If enabled it will be filtered only with the user operator.'}</div>
+            {formlabel for='isfilterable' __text='Filterable'}
+            {formcheckbox id='isfilterable' group='field'}
+            <div class="z-formnote">{gt text='This field can be used to filter a list?'}</div>
+        </div>
+        {if in_array($field.fieldplugin, array('Float', 'Int'))}
+        <div class="z-formrow">
+            {formlabel for='iscounter' __text='Counter'}
+            {formcheckbox id='iscounter' group='field'}
+            <div class="z-formnote">{gt text='This field acts as a counter?'}</div>
         </div>
         {/if}
         {if !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Float', 'Image', 'Int', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Upload', 'User'))}
@@ -161,6 +163,13 @@
             <div class="z-formnote">{gt text='The maximum length for the content of this field.'}</div>
         </div>
         {/if}
+        {*if $field.fieldplugin eq 'Text'}
+        <div class="z-formrow">
+            {formlabel for='ispageable' __text='Pageable'}
+            {formcheckbox id='ispageable' group='field'}
+            <div class="z-formnote">{gt text='The content of this field is pageable?'}</div>
+        </div>
+        {/if*}
     </fieldset>
 
     <div class="z-buttons z-formbuttons">

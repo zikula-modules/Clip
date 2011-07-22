@@ -95,9 +95,9 @@
       <state>waiting</state>
       <permission>moderator</permission>
 
-      <operation allrev="1" core_indepot="1">updateValues</operation>
+      <operation allrev="1" core_intrash="1">updateValues</operation>
 
-      <parameter core_indepot="0">condition</parameter>
+      <parameter core_intrash="0">condition</parameter>
       <parameter massive="1">action</parameter>
       <parameter class="clip-bt-trash">button</parameter>
       <parameter class="clip-iconlink clip-op-trash">link</parameter>
@@ -109,9 +109,9 @@
       <state>waiting</state>
       <permission>moderator</permission>
 
-      <operation allrev="1" core_indepot="0">updateValues</operation>
+      <operation allrev="1" core_intrash="0">updateValues</operation>
 
-      <parameter core_indepot="1">condition</parameter>
+      <parameter core_intrash="1">condition</parameter>
       <parameter massive="1">action</parameter>
       <parameter class="clip-bt-recover">button</parameter>
       <parameter class="clip-iconlink clip-op-recover">link</parameter>
@@ -178,9 +178,9 @@
       <state>approved</state>
       <permission>editor</permission>
 
-      <operation allrev="1" core_indepot="1">updateValues</operation>
+      <operation allrev="1" core_intrash="1">updateValues</operation>
 
-      <parameter core_indepot="0">condition</parameter>
+      <parameter core_intrash="0">condition</parameter>
       <parameter massive="1">action</parameter>
       <parameter class="clip-bt-trash">button</parameter>
       <parameter class="clip-iconlink clip-op-trash">link</parameter>
@@ -192,9 +192,9 @@
       <state>approved</state>
       <permission>editor</permission>
 
-      <operation allrev="1" core_indepot="0">updateValues</operation>
+      <operation allrev="1" core_intrash="0">updateValues</operation>
 
-      <parameter core_indepot="1">condition</parameter>
+      <parameter core_intrash="1">condition</parameter>
       <parameter massive="1">action</parameter>
       <parameter class="clip-bt-recover">button</parameter>
       <parameter class="clip-iconlink clip-op-recover">link</parameter>

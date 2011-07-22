@@ -39,7 +39,7 @@
                 {$pubitem.core_online|yesno}
             </td>
             <td>
-                {$pubitem.core_indepot|yesno}
+                {$pubitem.core_intrash|yesno}
             </td>
             <td class="z-sub">
                 {$pubitem.lu_date|dateformat:'datetimebrief'}

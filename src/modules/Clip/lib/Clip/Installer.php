@@ -940,7 +940,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                             $newcname = 'hits';
                             break;
                         case 'indepot':
-                            $newcname = 'trash';
+                            $newcname = 'intrash';
                             break;
                         case 'showinlist':
                             $newcname = 'visible';

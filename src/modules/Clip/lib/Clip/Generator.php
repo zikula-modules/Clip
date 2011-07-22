@@ -110,9 +110,9 @@ class Clip_Generator
                         // flags
                         case 'core_creator':
                         case 'core_online':
-                        case 'core_indepot':
-                        case 'core_showinmenu':
-                        case 'core_showinlist':
+                        case 'core_intrash':
+                        case 'core_visible':
+                        case 'core_locked':
                             $rowcode['body'] = "\n".
                                 '            <span class="z-formnote">{$pubdata.'.$name.'|yesno}</span>';
                             break;
@@ -593,7 +593,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         // TODO indexes
         /*
         $tables[$tablename.'_column_idx'] = array (
-            'core_online' => 'core_online' //core_showinlist
+            'core_online' => 'core_online' //core_visible
         );
         */
     }
@@ -621,22 +621,22 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $old_tid = 0;
 
         $tableOrder = array(
-            'core_pid'         => 'pm_pid',
-            'id'               => 'pm_id'
+            'core_pid'         => 'pid',
+            'id'               => 'id'
         );
         $tableColumnCore = array(
-            'id'               => 'pm_id',
-            'core_pid'         => 'pm_pid',
-            'core_author'      => 'pm_author',
-            'core_hitcount'    => 'pm_hitcount',
-            'core_language'    => 'pm_language',
-            'core_revision'    => 'pm_revision',
-            'core_online'      => 'pm_online',
-            'core_indepot'     => 'pm_indepot',
-            'core_showinmenu'  => 'pm_showinmenu',
-            'core_showinlist'  => 'pm_showinlist',
-            'core_publishdate' => 'pm_publishdate',
-            'core_expiredate'  => 'pm_expiredate'
+            'id'               => 'id',
+            'core_pid'         => 'pid',
+            'core_author'      => 'author',
+            'core_hitcount'    => 'hits',
+            'core_language'    => 'language',
+            'core_revision'    => 'revision',
+            'core_online'      => 'online',
+            'core_intrash'     => 'intrash',
+            'core_visible'     => 'visible',
+            'core_locked'      => 'locked',
+            'core_publishdate' => 'publishdate',
+            'core_expiredate'  => 'expiredate'
         );
         $tableDefCore = array(
             'id'               => 'I4 PRIMARY AUTO',
@@ -646,9 +646,9 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             'core_language'    => "C(10) NOTNULL", //FIXME how many chars are needed for a gettext code?
             'core_revision'    => 'I4 NOTNULL DEFAULT 1',
             'core_online'      => 'L DEFAULT 0',
-            'core_indepot'     => 'L DEFAULT 0',
-            'core_showinmenu'  => 'L DEFAULT 0',
-            'core_showinlist'  => 'L DEFAULT 1',
+            'core_intrash'     => 'L DEFAULT 0',
+            'core_visible'     => 'L DEFAULT 0',
+            'core_locked'      => 'L DEFAULT 1',
             'core_publishdate' => 'T',
             'core_expiredate'  => 'T'
         );
@@ -669,7 +669,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             }
 
             // add the column and definition for this field
-            $tableColumn[$pubfield['name']] = "pm_{$pubfield['id']}";
+            $tableColumn[$pubfield['name']] = "field{$pubfield['id']}";
             $tableDef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
 
             // set the actual tid to check a pubtype change in the next cycle
