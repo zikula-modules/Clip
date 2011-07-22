@@ -7,9 +7,6 @@
     User methods renamed from main/viewpub/pubedit to view/display/edit
     User Api methods renamed from pubList/getPub/editPub to getall/get/edit
     Template paths changed to a folder per pubtype, and with filenames: list.tpl, display.tpl and form_all.tpl
-    Template permission check altered:
-        clip:list: | tid::outputset_templateArg
-        clip:full: | tid:pid:outputset_templateArg
     Rework of the available variables in the list and display templates.
         list:
             $tid => $pubtype.tid

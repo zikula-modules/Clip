@@ -112,8 +112,7 @@ class Clip_Api_Import extends Zikula_AbstractApi
         {
             $datatype['tid']             = $pubtype['id'];
             $datatype['title']           = $pubtype['title'];
-            $datatype['outputset']       = $pubtype['filename'];
-            $datatype['inputset']        = $pubtype['formname'];
+            $datatype['folder']          = $pubtype['filename'];
             $datatype['description']     = $pubtype['description'];
             $datatype['itemsperpage']    = $pubtype['listCount'];
             $datatype['sortfield1']      = '';

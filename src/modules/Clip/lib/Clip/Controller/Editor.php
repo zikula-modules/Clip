@@ -130,7 +130,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
                                            'itemsperpage' => $apiargs['itemsperpage']));
 
         // custom pubtype template check
-        $customtpl = $pubtype['outputset'].'/editorlist.tpl';
+        $customtpl = $pubtype['folder'].'/editorlist.tpl';
 
         if ($this->view->template_exists($customtpl)) {
             return $this->view->fetch($customtpl);

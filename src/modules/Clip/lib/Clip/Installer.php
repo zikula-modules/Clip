@@ -612,7 +612,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
             return false;
         }
 
-        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('inputset', null, '', false, 'tid');
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('outputset', null, '', false, 'tid');
 
         $fields = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection("fieldplugin = 'Pub'", 'tid');
 
@@ -821,9 +821,9 @@ class Clip_Installer extends Zikula_AbstractInstaller
     private function upgradeDBpre09()
     {
         // last db changes before Clip 0.9
+
         // table structure
         // pubtypes
-        /*
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_tid', 'tid');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_title', 'title');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_urltitle', 'urltitle');
@@ -950,7 +950,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 }
             }
         }
-         */
+
         // table data
         $tables = DBUtil::getTables();
         $sql = array();

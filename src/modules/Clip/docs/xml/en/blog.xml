@@ -5,8 +5,7 @@
    <tid>1</tid>
    <title>Blog</title>
    <urltitle>blog</urltitle>
-   <outputset>blog</outputset>
-   <inputset>blog</inputset>
+   <folder>blog</folder>
    <description>Express yourself!</description>
    <itemsperpage>10</itemsperpage>
    <sortfield1/>

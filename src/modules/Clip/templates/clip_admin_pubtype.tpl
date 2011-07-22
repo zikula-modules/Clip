@@ -101,14 +101,9 @@
     <fieldset>
         <legend>{gt text='Output options'}</legend>
         <div class="z-formrow">
-            {formlabel for='outputset' __text='Output template set' mandatorysym=true}
-            {formtextinput id='outputset' group='pubtype' maxLength='255' mandatory=true}
-            <div class="z-formnote">{gt text='Folder where the list and display template are.'}</div>
-        </div>
-        <div class="z-formrow">
-            {formlabel for='inputset' __text='Input template set' mandatorysym=true}
-            {formtextinput id='inputset' group='pubtype' maxLength='255' mandatory=true}
-            <div class="z-formnote">{gt text='Folder where the edit form template is.'}</div>
+            {formlabel for='folder' __text='Folder' mandatorysym=true}
+            {formtextinput id='folder' group='pubtype' maxLength='255' mandatory=true}
+            <div class="z-formnote">{gt text='Folder where publication type template are.'}</div>
         </div>
         <div class="z-formrow">
             {formlabel for='cachelifetime' __text='Caching time'}

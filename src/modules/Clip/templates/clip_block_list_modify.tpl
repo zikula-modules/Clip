@@ -28,7 +28,7 @@
     <label for="viewpub_template">{gt text='Template'}</label>
     <input id="viewpub_template" name="template" type="text" size="30" maxlength="255" value="{$vars.template|safetext}" />
     {gt text='Template' assign='tpl'}
-    {gt text='OUTPUTSET' assign='set'}
+    {gt text='FOLDER' assign='set'}
     {assign var='tpl' value=$tpl|strtoupper}
     {assign var='tpl' value="$set/list_block_$tpl.tpl"}
     <em class="z-formnote">

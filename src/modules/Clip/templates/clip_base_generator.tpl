@@ -14,38 +14,32 @@
     {case expr='form'}
         <h4>{gt text='Form template'}</h4>
         {assign var='cliptplname' value='form_all.tpl'}
-        {assign var='clipfolder' value=$pubtype.inputset}
     {/case}
     {case expr='list'}
         <h4>{gt text='List template'}</h4>
         {assign var='cliptplname' value='list.tpl'}
-        {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
     {case expr='display'}
         <h4>{gt text='Display template'}</h4>
         {assign var='cliptplname' value='display.tpl'}
-        {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
     {case expr='main'}
         <h4>{gt text='Index template'}</h4>
         {assign var='cliptplname' value='main.tpl'}
-        {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
     {case expr='blocklist'}
         <h4>{gt text='List block template'}</h4>
         {assign var='cliptplname' value='list_block_XYZ.tpl'}
-        {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
     {case expr='blockpub'}
         <h4>{gt text='Pub block template'}</h4>
         {assign var='cliptplname' value='display_block_XYZ.tpl'}
-        {assign var='clipfolder' value=$pubtype.outputset}
     {/case}
 {/switch}
 
-{if isset($cliptplname) AND isset($clipfolder)}
+{if isset($cliptplname)}
 <p class="z-informationmsg">
-    {gt text='Create a template file named <strong>%1$s</strong> with this code, and store it in the the config directory: <strong>/config/templates/Clip/%2$s/%1$s</strong>, or within your theme in the <strong>/themes/YourTheme/templates/modules/Clip/%2$s/%1$s</strong>.' tag1=$cliptplname tag2=$clipfolder}
+    {gt text='Create a template file named <strong>%1$s</strong> with this code, and store it in the the config directory: <strong>/config/templates/Clip/%2$s/%1$s</strong>, or within your theme in the <strong>/themes/YourTheme/templates/modules/Clip/%2$s/%1$s</strong>.' tag1=$cliptplname tag2=$pubtype.folder}
 </p>
 {/if}
 

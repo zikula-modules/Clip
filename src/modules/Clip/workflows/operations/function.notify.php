@@ -35,7 +35,7 @@ function Clip_operation_notify(&$pub, $params)
     $view = Zikula_View::getInstance('Clip');
 
     // locate the notification template to use
-    $tplpath = $pubtype['outputset'].'/notify_'.$template;
+    $tplpath = $pubtype['folder'].'/notify_'.$template;
 
     if ($view->template_exists($tplpath)) {
         $view->assign('pub', $pub);

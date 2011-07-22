@@ -65,7 +65,7 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         }
 
         // default values
-        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['outputset'];
+        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['folder'];
         $listCount     = (isset($vars['listCount']) && (int)$vars['listCount'] > 0) ? $vars['listCount'] : 5;
         $listOffset    = (isset($vars['listOffset'])) ? $vars['listOffset'] : 0;
         $filterStr     = (isset($vars['listfilter'])) ? $vars['listfilter'] : '';

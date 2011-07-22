@@ -5,8 +5,7 @@
    <tid>2</tid>
    <title>Pages</title>
    <urltitle>staticpages</urltitle>
-   <outputset>pages</outputset>
-   <inputset>pages</inputset>
+   <folder>pages</folder>
    <description>Static pages of the site</description>
    <itemsperpage>25</itemsperpage>
    <sortfield1></sortfield1>

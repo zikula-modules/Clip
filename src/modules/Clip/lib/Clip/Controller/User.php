@@ -71,10 +71,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $args['templateid'] = '';
-            $args['template']   = $pubtype['outputset'].'/main.tpl';
+            $args['template']   = $pubtype['folder'].'/main.tpl';
         } else {
             $args['templateid'] = "{$args['template']}";
-            $args['template']   = $pubtype['outputset']."/main_{$args['template']}.tpl";
+            $args['template']   = $pubtype['folder']."/main_{$args['template']}.tpl";
         }
 
         //// Security
@@ -207,10 +207,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
-            $args['template']   = $pubtype['outputset'].'/list.tpl';
+            $args['template']   = $pubtype['folder'].'/list.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
-            $args['template']   = $pubtype['outputset']."/list_{$args['template']}.tpl";
+            $args['template']   = $pubtype['folder']."/list_{$args['template']}.tpl";
         }
 
         //// Security
@@ -365,14 +365,14 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
-            $args['template']   = $pubtype['outputset'].'/display.tpl';
+            $args['template']   = $pubtype['folder'].'/display.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
             // check for simple-templates request
             if (Clip_Util::isSimpleTemplate($args['template'])) {
-                $args['templatesimple'] = $pubtype['outputset']."/displaysimple_{$args['template']}.tpl";
+                $args['templatesimple'] = $pubtype['folder']."/displaysimple_{$args['template']}.tpl";
             } else {
-                $args['template'] = $pubtype['outputset']."/display_{$args['template']}.tpl";
+                $args['template'] = $pubtype['folder']."/display_{$args['template']}.tpl";
             }
         }
 
@@ -599,7 +599,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // 1. custom template
         if (!empty($args['template'])) {
-            $template = $pubtype['inputset']."/form_template_{$args['template']}.tpl";
+            $template = $pubtype['folder']."/form_template_{$args['template']}.tpl";
 
             if ($render->template_exists($template)) {
                 return $render->execute($template, $handler);
@@ -610,7 +610,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         // 2. individual state
-        $template = $pubtype['inputset']."/form_{$args['state']}.tpl";
+        $template = $pubtype['folder']."/form_{$args['state']}.tpl";
 
         if ($render->template_exists($template)) {
             return $render->execute($template, $handler);
@@ -620,7 +620,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         // 3. generic edit
-        $template = $pubtype['inputset'].'/form_all.tpl';
+        $template = $pubtype['folder'].'/form_all.tpl';
 
         if (!$render->template_exists($template)) {
             // auto-generate it only on development mode
