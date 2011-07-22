@@ -44,7 +44,7 @@ class Clip_Version extends Zikula_AbstractVersion
         $meta['oldnames']       = array('PageMaster');
         //! module name that appears in URL
         $meta['url']            = $this->__('clip');
-        $meta['version']        = '0.4.17';
+        $meta['version']        = '0.4.18';
         $meta['core_min']       = '1.3.0';
         $meta['core_max']       = '1.4.0';
 
@@ -55,11 +55,12 @@ class Clip_Version extends Zikula_AbstractVersion
 
         // Permissions schema
         $meta['securityschema'] = array(
-                'Clip::'        => '::',
-                'Clip:list:'    => 'tid::templateid',
-                'Clip:display:' => 'tid:pid:templateid',
-                'Clip:input:'   => 'tid::',
-                'Clip:input:'   => 'tid:pid:workflowstate'
+                'Clip::'                   => '::',
+                'Clip:grouptypeid:main'    => 'tid::templateid',
+                'Clip:grouptypeid:list'    => 'tid::templateid',
+                'Clip:grouptypeid:display' => 'tid:pid:templateid',
+                'Clip:grouptypeid:edit'    => 'tid::',
+                'Clip:grouptypeid:edit'    => 'tid:pid:workflowstate'
         );
 
         // Module depedencies

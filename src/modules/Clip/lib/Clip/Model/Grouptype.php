@@ -23,22 +23,22 @@ class Clip_Model_Grouptype extends Doctrine_Record
     {
         $this->setTableName('clip_grouptypes');
 
-        $this->hasColumn('c_gid as gid', 'integer', 4, array(
+        $this->hasColumn('gid as gid', 'integer', 4, array(
             'primary' => true,
             'autoincrement' => true
         ));
 
-        $this->hasColumn('c_name as name', 'string', 65535, array(
+        $this->hasColumn('name as name', 'string', 65535, array(
             'notnull' => true,
             'default' => ''
         ));
 
-        $this->hasColumn('c_description as description', 'string', 65535, array(
+        $this->hasColumn('description as description', 'string', 65535, array(
             'notnull' => true,
             'default' => ''
         ));
 
-        $this->hasColumn('c_order as order', 'string', 65535, array(
+        $this->hasColumn('sortorder as order', 'string', 65535, array(
             'notnull' => true,
             'default' => ''
         ));

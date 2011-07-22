@@ -23,73 +23,74 @@ class Clip_Model_Pubfield extends Doctrine_Record
     {
         $this->setTableName('clip_pubfields');
 
-        $this->hasColumn('pm_id as id', 'integer', 4, array(
+        $this->hasColumn('id as id', 'integer', 4, array(
             'primary' => true,
             'autoincrement' => true
         ));
 
-        $this->hasColumn('pm_tid as tid', 'integer', 4, array(
-            'notnull' => true
-        ));
+        $this->hasColumn('tid as tid', 'integer', 4);
 
-        $this->hasColumn('pm_name as name', 'string', 255, array(
+        $this->hasColumn('name as name', 'string', 255, array(
             'notnull' => true,
             'default' => ''
         ));
 
-        $this->hasColumn('pm_title as title', 'string', 255, array(
+        $this->hasColumn('title as title', 'string', 255, array(
             'notnull' => true,
             'default' => ''
         ));
 
-        $this->hasColumn('pm_description as description', 'string', 255, array(
+        $this->hasColumn('description as description', 'string', 255, array(
             'notnull' => true,
             'default' => ''
         ));
 
-        $this->hasColumn('pm_fieldtype as fieldtype', 'string', 50, array(
+        $this->hasColumn('plugin as fieldplugin', 'string', 50, array(
             'notnull' => true,
             'default' => ''
         ));
 
-        $this->hasColumn('pm_fieldplugin as fieldplugin', 'string', 50, array(
+        $this->hasColumn('config as typedata', 'string', 4000);
+
+        $this->hasColumn('fielddbtype as fieldtype', 'string', 50, array(
             'notnull' => true,
             'default' => ''
         ));
 
-        $this->hasColumn('pm_fieldmaxlength as fieldmaxlength', 'integer', 4, array(
+        $this->hasColumn('fieldmaxlength as fieldmaxlength', 'integer', 4, array(
             'default' => null
         ));
 
-        $this->hasColumn('pm_typedata as typedata', 'string', 4000);
+        $this->hasColumn('weight as lineno', 'integer', 4);
 
-        $this->hasColumn('pm_istitle as istitle', 'boolean', null, array(
+        $this->hasColumn('is_title as istitle', 'boolean', null, array(
             'notnull' => true,
             'default' => 0
         ));
 
-        $this->hasColumn('pm_ispageable as ispageable', 'boolean', null, array(
+        $this->hasColumn('is_mandatory as ismandatory', 'boolean', null, array(
             'notnull' => true,
             'default' => 0
         ));
 
-        $this->hasColumn('pm_issearchable as issearchable', 'boolean', null, array(
+        $this->hasColumn('is_searchable as issearchable', 'boolean', null, array(
             'notnull' => true,
             'default' => 0
         ));
 
-        $this->hasColumn('pm_ismandatory as ismandatory', 'boolean', null, array(
+        $this->hasColumn('is_filterable as isfilterable', 'boolean', null, array(
             'notnull' => true,
             'default' => 0
         ));
 
-        $this->hasColumn('pm_isuid as isuid', 'boolean', null, array(
+        $this->hasColumn('is_pageable as ispageable', 'boolean', null, array(
             'notnull' => true,
             'default' => 0
         ));
 
-        $this->hasColumn('pm_lineno as lineno', 'integer', 4, array(
-            'notnull' => true
+        $this->hasColumn('is_counter as iscounter', 'boolean', null, array(
+            'notnull' => true,
+            'default' => 0
         ));
     }
 
@@ -100,7 +101,7 @@ class Clip_Model_Pubfield extends Doctrine_Record
      */
     public function setUp()
     {
-        $this->actAs('Zikula_Doctrine_Template_StandardFields', array('oldColumnPrefix' => 'pm_'));
+        $this->actAs('Zikula_Doctrine_Template_StandardFields');
     }
 
     /**

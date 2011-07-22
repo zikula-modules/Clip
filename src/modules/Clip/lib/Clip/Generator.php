@@ -466,7 +466,7 @@ class Clip_Model_Pubdata{$tid} extends Clip_Doctrine_Pubdata
      */
     public function setUp()
     {
-        \$this->actAs('Zikula_Doctrine_Template_StandardFields', array('oldColumnPrefix' => 'pm_'));
+        \$this->actAs('Zikula_Doctrine_Template_StandardFields');
         $hasRelations
     }
 }
@@ -587,7 +587,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $tables[$tablename.'_column']     = $tableColumn;
         $tables[$tablename.'_column_def'] = $tableDef;
 
-        //ObjectUtil::addStandardFieldsToTableDefinition($tables[$tablename.'_column'], 'pm_');
+        //ObjectUtil::addStandardFieldsToTableDefinition($tables[$tablename.'_column'], '');
         //ObjectUtil::addStandardFieldsToTableDataDefinition($tables[$tablename.'_column_def']);
 
         // TODO indexes

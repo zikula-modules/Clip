@@ -134,11 +134,14 @@ class Clip_Installer extends Zikula_AbstractInstaller
             case '0.4.16':
                 $this->setVar('shorturls', 'htm');
             case '0.4.17':
-                // rename 'preview' state to 'accepted' (?)
-                // rename Clip:input: to Clip:edit:, and GTs?
-                // if homepage module = 'Clip' => func: list/display
+                if (!Doctrine_Core::getTable('Clip_Model_WorkflowVars')->createTable()) {
+                    return '0.4.17';
+                }
+                if (!$this->upgradeDBpre09()) {
+                    return '0.4.17';
+                }
+            case '0.4.18':
                 // further upgrade handling
-                // * rename the columns to drop the pm_ prefix
                 // * contenttype stuff
                 //   Content_Installer::updateContentType('Clip');
                 //   EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
@@ -148,7 +151,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
     }
 
     /**
-     * Clip deinstallation
+     * Clip deinstallation.
      */
     public function uninstall()
     {
@@ -811,7 +814,171 @@ class Clip_Installer extends Zikula_AbstractInstaller
     }
 
     /**
-     * map old ContentType names to new
+     * Upgrade Database by last time before 0.9 release.
+     *
+     * @return boolean
+     */
+    private function upgradeDBpre09()
+    {
+        // last db changes before Clip 0.9
+        // table structure
+        // pubtypes
+        /*
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_tid', 'tid');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_title', 'title');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_urltitle', 'urltitle');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_description', 'description');
+        DoctrineUtil::createColumn('clip_pubtypes', 'fixedfilter', array('type' => 'string', 'length' => 255));
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_defaultfilter', 'defaultfilter');
+        DoctrineUtil::alterColumn('clip_pubtypes', 'pm_itemsperpage', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => true, 'default' => 15)));
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_itemsperpage', 'itemsperpage');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_cachelifetime', 'cachelifetime');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_sortfield1', 'sortfield1');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_sortdesc1', 'sortdesc1');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_sortfield2', 'sortfield2');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_sortdesc2', 'sortdesc2');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_sortfield3', 'sortfield3');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_sortdesc3', 'sortdesc3');
+        DoctrineUtil::alterColumn('clip_pubtypes', 'pm_enableeditown', array('type' => 'boolean', 'options' => array('length' => null, 'notnull' => true, 'default' => 0)));
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_enableeditown', 'enableeditown');
+        DoctrineUtil::alterColumn('clip_pubtypes', 'pm_enablerevisions', array('type' => 'boolean', 'options' => array('length' => null, 'notnull' => true, 'default' => 0)));
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_enablerevisions', 'enablerevisions');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_outputset', 'folder');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_workflow', 'workflow');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_group', 'grouptype');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_config', 'config');
+        DoctrineUtil::dropColumn('clip_pubtypes', 'pm_inputset');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_obj_status', 'obj_status');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_cr_date', 'cr_date');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_cr_uid', 'cr_uid');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_lu_date', 'lu_date');
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_lu_uid', 'lu_uid');
+        // pubfields
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_id', 'id');
+        DoctrineUtil::alterColumn('clip_pubfields', 'pm_tid', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_tid', 'tid');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_name', 'name');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_title', 'title');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_description', 'description');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_fieldplugin', 'plugin');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_typedata', 'config');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_fieldtype', 'fielddbtype');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_fieldmaxlength', 'fieldmaxlength');
+        DoctrineUtil::alterColumn('clip_pubfields', 'pm_lineno', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_lineno', 'weight');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_istitle', 'is_title');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_ismandatory', 'is_mandatory');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_issearchable', 'is_searchable');
+        DoctrineUtil::createColumn('clip_pubfields', 'is_filterable', array('type' => 'boolean', 'length' => null, 'notnull' => true, 'default' => 0));
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_ispageable', 'is_pageable');
+        DoctrineUtil::createColumn('clip_pubfields', 'is_counter', array('type' => 'boolean', 'length' => null, 'notnull' => true, 'default' => 0));
+        DoctrineUtil::dropColumn('clip_pubfields', 'pm_isuid');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_obj_status', 'obj_status');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_cr_date', 'cr_date');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_cr_uid', 'cr_uid');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_lu_date', 'lu_date');
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_lu_uid', 'lu_uid');
+        // grouptypes
+        DoctrineUtil::renameColumn('clip_grouptypes', 'c_gid', 'gid');
+        DoctrineUtil::renameColumn('clip_grouptypes', 'c_name', 'name');
+        DoctrineUtil::renameColumn('clip_grouptypes', 'c_description', 'description');
+        DoctrineUtil::renameColumn('clip_grouptypes', 'c_order', 'sortorder');
+        // relations
+        DoctrineUtil::renameColumn('clip_relations', 'pm_id', 'id');
+        DoctrineUtil::alterColumn('clip_relations', 'pm_type', array('type' => 'integer', 'options' => array('length' => 2, 'notnull' => true, 'default' => 1)));
+        DoctrineUtil::renameColumn('clip_relations', 'pm_type', 'type');
+        DoctrineUtil::alterColumn('clip_relations', 'pm_tid1', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
+        DoctrineUtil::renameColumn('clip_relations', 'pm_tid1', 'tid1');
+        DoctrineUtil::alterColumn('clip_relations', 'pm_alias1', array('type' => 'string', 'options' => array('length' => 100, 'notnull' => false)));
+        DoctrineUtil::renameColumn('clip_relations', 'pm_alias1', 'alias1');
+        DoctrineUtil::renameColumn('clip_relations', 'pm_title1', 'title1');
+        DoctrineUtil::renameColumn('clip_relations', 'pm_desc1', 'desc1');
+        DoctrineUtil::alterColumn('clip_relations', 'pm_tid2', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
+        DoctrineUtil::renameColumn('clip_relations', 'pm_tid2', 'tid2');
+        DoctrineUtil::alterColumn('clip_relations', 'pm_alias2', array('type' => 'string', 'options' => array('length' => 100, 'notnull' => false)));
+        DoctrineUtil::renameColumn('clip_relations', 'pm_alias2', 'alias2');
+        DoctrineUtil::renameColumn('clip_relations', 'pm_title2', 'title2');
+        DoctrineUtil::renameColumn('clip_relations', 'pm_desc2', 'desc2');
+        // pubdatas
+        $tables  = Doctrine_Manager::connection()->import->listTables();
+        $pubdata = DBUtil::getLimitedTablename('clip_pubdata');
+        foreach ($tables as $k => $table) {
+            if (strpos($table, $pubdata) !== 0) {
+                unset($tables[$k]);
+            } else {
+                $tables[$k] = array('name' => $table, 'tid' => Clip_Util::getTidFromString($table));
+            }
+        }
+        foreach ($tables as $table) {
+            $pubdata = 'clip_pubdata'.$table['tid'];
+            $columns = Doctrine_Manager::connection()->import->listTableColumns($table['name']);
+
+            DoctrineUtil::createColumn($pubdata, 'locked', array('type' => 'boolean', 'length' => null, 'notnull' => true, 'default' => 0));
+
+            foreach ($columns as $cname => $cdef) {
+                if ($cname == 'pm_showinmenu') {
+                    DoctrineUtil::dropColumn($pubdata, $cname);
+
+                } elseif (strpos($cname, 'pm_') === 0) {
+                    if (!$cdef['autoincrement'] && $cdef['notnull'] && $cdef['default'] === null) {
+                        switch ($cdef['type']) {
+                            case 'integer':
+                                $cdef['default'] = 0;
+                                break;
+                            case 'string':
+                                $cdef['default'] = '';
+                                break;
+                        }
+                        DoctrineUtil::alterColumn($pubdata, $cname, array('type' => $cdef['type'], 'options' => $cdef));
+                    }
+                    $newcname = substr($cname, 3);
+                    if (is_numeric($newcname)) {
+                        $newcname = "field$newcname";
+                    }
+                    switch ($newcname) {
+                        case 'hitcount':
+                            $newcname = 'hits';
+                            break;
+                        case 'indepot':
+                            $newcname = 'trash';
+                            break;
+                        case 'showinlist':
+                            $newcname = 'visible';
+                            break;
+                    }
+                    DoctrineUtil::renameColumn($pubdata, $cname, $newcname);
+                }
+            }
+        }
+         */
+        // table data
+        $tables = DBUtil::getTables();
+        $sql = array();
+        // update workflow state: 'preview' state to 'accepted' (?)
+        $sql[] = "UPDATE {$tables['workflows']} SET state = 'accepted' WHERE module = 'Clip' AND schemaname = 'enterprise' AND state = 'preview'";
+        // update permissions: Clip:input: to Clip:.*?:edit, and GTs?
+        $sql[] = "UPDATE {$tables['group_perms']} SET component = 'Clip:.*?:edit' WHERE component = 'Clip:input:'";
+        // execute
+        foreach ($sql as $q) {
+            if (!DBUtil::executeSQL($q)) {
+                return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $sql");
+            }
+        }
+        // homepage function check module = 'Clip' => func: list/display
+        if (System::getVar('startpage') == 'Clip') {
+            switch (System::getVar('startfunc')) {
+                case 'view':
+                    System::setVar('startfunc', 'list');
+                    break;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Map old ContentType names to new.
+     *
      * @return array
      */
     public static function LegacyContentTypeMap()
