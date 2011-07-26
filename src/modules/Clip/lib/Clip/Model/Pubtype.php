@@ -91,7 +91,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
         $this->hasColumn('grouptype as grouptype', 'integer', 4);
 
-        $this->hasColumn('config as config', 'clob');
+        $this->hasColumn('config as config', 'clob', 65532);
     }
 
     /**

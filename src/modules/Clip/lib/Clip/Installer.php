@@ -846,6 +846,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_outputset', 'folder');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_workflow', 'workflow');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_group', 'grouptype');
+        DoctrineUtil::alterColumn('clip_pubtypes', 'pm_config', array('type' => 'clob', 'options' => array('length' => 65532)));
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_config', 'config');
         DoctrineUtil::dropColumn('clip_pubtypes', 'pm_inputset');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_obj_status', 'obj_status');
