@@ -93,7 +93,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // fills the render
         $view->assign('pubdata',   $data)
-             ->assign('pubobj',    $this->pub)
+             ->assign('pubobj',    $this->pub->clipPostRead())
              ->assign('pubfields', $this->pubfields->toArray())
              ->assign('relations', $this->relations)
              ->assign('actions',   $actions);

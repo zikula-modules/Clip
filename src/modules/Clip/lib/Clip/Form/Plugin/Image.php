@@ -208,7 +208,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
             foreach ($toDelete as $k) {
                 if ($oldData[$k] && file_exists($uploadpath.'/'.$oldData[$k])) {
-                    //unlink($uploadpath.'/'.$oldData[$k]);
+                    unlink($uploadpath.'/'.$oldData[$k]);
                 }
                 $data[$k] = '';
             }
@@ -294,7 +294,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     {
         $full = '        <div class="z-formrow">'."\n".
                 '            <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
-                '            {if $pubdata.'.$field['name'].'.url}'."\n".
+                '            {if $pubdata.'.$field['name'].'.file_name}'."\n".
                 '                <div class="z-formnote">'."\n".
                 '                    {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
               //'                    <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
@@ -322,7 +322,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 '                    {if $pubfields.'.$field['name'].'.description|clip_translate}'."\n".
                 '                        <span class="z-formnote z-sub">{$pubfields.'.$field['name'].'.description|clip_translate}</span>'."\n".
                 '                    {/if}'."\n".
-                '                    {if $pubdata.id and $pubdata.'.$field['name'].'.file_name}'."\n".
+                '                    {if isset($pubdata.id) and $pubobj.'.$field['name'].'.file_name}'."\n".
                 '                        <span class="z-formlist clip-edit-suboptions">'."\n".
                 '                            {formcheckbox id=\''.$field['name'].'_delete\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_delete\' __text=\''.$gtdelete.'\'}'."\n".
                 '                            {if $pubdata.'.$field['name'].'.thumbnails}'."\n".
