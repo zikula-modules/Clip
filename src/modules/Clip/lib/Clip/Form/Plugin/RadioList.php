@@ -107,6 +107,12 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     /**
      * Clip processing methods.
      */
+    public static function enrichFilterArgs(&$filterArgs, $field, $args)
+    {
+        $fieldname = $field['name'];
+        $filterArgs['plugins'][$this->filterClass]['fields'][] = $fieldname;
+    }
+
     public function postRead($data, $field)
     {
         // this plugin return an array

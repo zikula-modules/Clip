@@ -42,7 +42,7 @@
    <ispageable></ispageable>
    <issearchable>1</issearchable>
    <ismandatory>1</ismandatory>
-   <isuid></isuid>
+   <isfilterable>1</isfilterable>
    <lineno>1</lineno>
    <obj_status>A</obj_status>
    <cr_date>2011-01-01 00:00:00</cr_date>
@@ -64,7 +64,7 @@
    <ispageable></ispageable>
    <issearchable>1</issearchable>
    <ismandatory></ismandatory>
-   <isuid></isuid>
+   <isfilterable></isfilterable>
    <lineno>2</lineno>
    <obj_status>A</obj_status>
    <cr_date>2011-01-01 00:00:00</cr_date>
@@ -86,7 +86,7 @@
    <ispageable></ispageable>
    <issearchable></issearchable>
    <ismandatory></ismandatory>
-   <isuid></isuid>
+   <isfilterable></isfilterable>
    <lineno>3</lineno>
    <obj_status>A</obj_status>
    <cr_date>2011-01-01 00:00:00</cr_date>
@@ -108,7 +108,7 @@
    <ispageable></ispageable>
    <issearchable></issearchable>
    <ismandatory></ismandatory>
-   <isuid></isuid>
+   <isfilterable>1</isfilterable>
    <lineno>4</lineno>
    <obj_status>A</obj_status>
    <cr_date>2011-01-01 00:00:00</cr_date>

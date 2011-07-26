@@ -124,6 +124,16 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
+    public static function enrichFilterArgs(&$filterArgs, $field, $args)
+    {
+        $fieldname = $field['name'];
+        $filterArgs['plugins'][$this->filterClass]['fields'][] = $fieldname;
+
+        // includes the user operator restriction
+        $filterArgs['restrictions'][$fieldname][] = 'user';
+        $filterArgs['plugins']['clipuser']['fields'][] = $fieldname;
+    }
+
     public static function postRead($data, $field)
     {
         // this plugin return an array
@@ -151,25 +161,6 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         }
 
         return $uids;
-    }
-
-    public static function processQuery(&$query, $field, $args)
-    {
-        if (!$field['isuid']) {
-            return;
-        }
-
-        $this->parseConfig($field['typedata']);
-
-        // restrict the query for normal users
-        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
-            $uid = UserUtil::getVar('uid');
-            if ($this->config['multiple']) {
-                $query->andWhere("$fieldname = ? OR $fieldname LIKE ?", array(":$uid:", "%:$uid:%"));
-            } else {
-                $query->andWhere("$fieldname = ?", $uid);
-            }
-        }
     }
 
     public function getOutputDisplay($field)

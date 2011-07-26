@@ -127,20 +127,14 @@ class Clip_Api_User extends Zikula_AbstractApi
         {
             $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
-            // includes any filter default class
-            if (isset($plugin->filterClass)) {
-                $filter['args']['plugins'][$plugin->filterClass]['fields'][] = $fieldname;
+            // process the filter args
+            if (method_exists($plugin, 'enrichFilterArgs')) {
+                $plugin->enrichFilterArgs($filter['args'], $field, $args);
             }
 
-            // includes the user operator restriction if it's an UID
-            if ($field['isuid']) {
-                $filter['args']['restrictions'][$fieldname][] = 'user';
-                $filter['args']['plugins']['clipuser']['fields'][] = $fieldname;
-            }
-
-            // process the query
-            if (method_exists($plugin, 'processQuery')) {
-                $plugin->processQuery($query, $field, $args);
+            // enrich the query
+            if (method_exists($plugin, 'enrichQuery')) {
+                $plugin->enrichQuery($query, $field, $args);
             }
         }
 

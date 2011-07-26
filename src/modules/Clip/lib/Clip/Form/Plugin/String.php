@@ -30,19 +30,6 @@ class Clip_Form_Plugin_String extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
-    public static function processQuery(&$query, $field, $args)
-    {
-        if (!$field['isuid']) {
-            return;
-        }
-
-        // restrict the query for normal users
-        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
-            $uid = UserUtil::getVar('uid');
-            $query->andWhere("$fieldname = ?", $uid);
-        }
-    }
-
     public static function getOutputDisplay($field)
     {
         $body = "\n".
