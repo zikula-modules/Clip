@@ -310,13 +310,12 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return array('full' => $full);
     }
 
-
     public static function getOutputEdit($field)
     {
         $gtdelete = no__('Delete the image');
         $gtregen  = no__('Regenerate thumbnails');
 
-        $full .= "\n".
+        $full = "\n".
                 '                <div class="z-formrow">'."\n".
                 '                    {formlabel for=\''.$field['name'].'\' text=$pubfields.'.$field['name'].'.title|clip_translate'.((bool)$field['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
                 '                    {clip_form_block id=\''.$field['name'].'\' group=\'pubdata\'}'."\n".
