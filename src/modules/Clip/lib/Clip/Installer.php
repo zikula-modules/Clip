@@ -958,8 +958,13 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $sql = array();
         // update workflow state: 'preview' state to 'accepted' (?)
         $sql[] = "UPDATE {$tables['workflows']} SET state = 'accepted' WHERE module = 'Clip' AND schemaname = 'enterprise' AND state = 'preview'";
-        // update permissions: Clip:input: to Clip:.*?:edit, and GTs?
+        // update permissions:
+        // Clip:input: to Clip:.*?:edit
         $sql[] = "UPDATE {$tables['group_perms']} SET component = 'Clip:.*?:edit' WHERE component = 'Clip:input:'";
+        // Clip:display: to Clip:.*?:display
+        $sql[] = "UPDATE {$tables['group_perms']} SET component = 'Clip:.*?:display' WHERE component = 'Clip:display:'";
+        // Clip:list: to Clip:.*?:list
+        $sql[] = "UPDATE {$tables['group_perms']} SET component = 'Clip:.*?:list' WHERE component = 'Clip:list:'";
         // execute
         foreach ($sql as $q) {
             if (!DBUtil::executeSQL($q)) {
