@@ -121,7 +121,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
             case '0.4.15':
                 // update the permission schema
                 $table = DBUtil::getLimitedTablename('group_perms');
-                DBUtil::executeSQL("UPDATE $table SET z_component = 'Clip:display:' WHERE z_component = 'Clip:full:'");
+                DBUtil::executeSQL("UPDATE $table SET component = 'Clip:display:' WHERE component = 'Clip:full:'");
                 // regenerate the hook information
                 $regtables = array('hook_runtime' => 'sowner', 'hook_binding' => 'sowner', 'hook_subscriber' => 'owner');
                 foreach ($regtables as $rtable => $rfield) {
@@ -417,9 +417,6 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $existingtables = DBUtil::metaTables();
 
         // detects and update the relations table
-        if (in_array(DBUtil::getLimitedTablename('pagemaster_relations'), $existingtables)) {
-            DBUtil::renameTable('pagemaster_relations', 'clip_relations');
-        }
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
         if (in_array(DBUtil::getLimitedTablename('pagemaster_relations'), $existingtables)) {
             $tableObj->dropTable();
@@ -451,6 +448,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $tables['clip_pubfields'] = DBUtil::getLimitedTablename('clip_pubfields');
         $tables['clip_pubtypes']  = DBUtil::getLimitedTablename('clip_pubtypes');
 
+        $serviceManager = ServiceUtil::getManager();
+        $dbtables = $serviceManager['dbtables'];
+        $serviceManager['dbtables'] = array_merge($dbtables, (array)$tables);
+
         $sql = array();
 
         // fieldplugin class names
@@ -463,10 +464,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $sql[] = "UPDATE {$tables['workflows']} SET module = 'Clip', obj_table = REPLACE(obj_table, 'pagemaster_', 'clip_') WHERE module = 'PageMaster' OR module = 'pagemaster'";
 
         // rename the category registries
-        $sql[] = "UPDATE {$tables['categories_registry']} SET crg_modname = 'Clip', crg_table  = REPLACE(crg_table , 'pagemaster_', 'clip_') WHERE crg_modname = 'PageMaster' OR crg_modname = 'pagemaster'";
+        $sql[] = "UPDATE {$tables['categories_registry']} SET modname = 'Clip', tablename  = REPLACE(tablename , 'pagemaster_', 'clip_') WHERE modname = 'PageMaster' OR modname = 'pagemaster'";
 
         // rename the permissions component
-        $sql[] = "UPDATE {$tables['group_perms']} SET z_component  = REPLACE(z_component , 'pagemaster', 'clip')";
+        $sql[] = "UPDATE {$tables['group_perms']} SET component  = REPLACE(component , 'pagemaster', 'Clip')";
 
         // replace any pm_* in the pubtype sortfields
         $sql[] = "UPDATE {$tables['clip_pubtypes']} SET pm_sortfield1 = REPLACE(pm_sortfield1, 'pm_', 'core_'), pm_sortfield2 = REPLACE(pm_sortfield2, 'pm_', 'core_'), pm_sortfield3 = REPLACE(pm_sortfield3, 'pm_', 'core_')";
@@ -990,5 +991,4 @@ class Clip_Installer extends Zikula_AbstractInstaller
         );
         return $oldToNew;
     }
-
 }
