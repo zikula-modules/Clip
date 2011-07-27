@@ -69,7 +69,7 @@
                     {/if}
                     &nbsp;
                     <br />
-                    <span class="z-sub">{$pubtypes[$item.tid2].title|safetext}.{$item.alias2|safetext}</span>
+                    <span class="z-sub">$pubdata.{$item.alias1|safetext}</span>
                     &nbsp;&nbsp;
                 </span>
                 <span class="z-itemcell z-w40">
@@ -79,7 +79,7 @@
                         {gt text='has Many <strong>%s</strong>' tag1=$pubtypes[$item.tid2].title|safetext}
                     {/if}
                     <br />&nbsp;
-                    <span class="z-sub">{$pubtypes[$item.tid1].title|safetext}.{$item.alias1|safetext}</span>
+                    <span class="z-sub">$pubdata.{$item.alias2|safetext}</span>
                 </span>
                 <span class="z-itemcell z-w10">
                     <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid tid1=$filter.withtid1 op=$filter.op tid2=$filter.withtid2 fragment='relform'}">
@@ -109,16 +109,21 @@
             <legend>{gt text='Add a relation'}</legend>
         {/if}
         <div class="z-formrow">
-            {formlabel for='type1' __text='Definition' mandatorysym=true}
+        {if isset($relation)}
+            <span class="z-label">{gt text='Definition'}:</span>
+            <span class="z-formnote">
+                {if $relation.type1 eq 0}{gt text='One'}{else}{gt text='Many'}{/if}
+                <strong>{$pubtypes[$item.tid1].title}</strong> ({$item.tid1})
+                {if $relation.type2 eq 0}{gt text='has One'}{else}{gt text='has Many'}{/if}
+                <strong>{$pubtypes[$item.tid2].title}</strong> ({$item.tid2})
+            </span>
+        {else}
+            {formlabel for='type1' __text='Definition' mandatorysym=true}:
             {formdropdownlist items=$reltypes.0 id='type1' group='relation'}
             {formdropdownlist items=$typeselector id='tid1' group='relation'}
             {formdropdownlist items=$reltypes.1 id='type2' group='relation'}
             {formdropdownlist items=$typeselector id='tid2' group='relation'}
-            {if isset($relation)}
-            <div class="z-warningmsg">
-                {gt text='Changing the definition may lead to lose existing data.'}
-            </div>
-            {/if}
+        {/if}
         </div>
         <div class="z-informationmsg">
             {gettext}
