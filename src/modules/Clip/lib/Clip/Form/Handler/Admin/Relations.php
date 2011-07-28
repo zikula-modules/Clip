@@ -184,8 +184,40 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                 }
 
                 $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
+                $previous = $this->id ? $tableObj->find($this->id) : null;
 
-                // TODO verify unique alias too
+                // verify unique alias1
+                if (!$this->id || $relation->alias1 != $previous->alias1) {
+                    if (!Clip_Util::validateTid($relation->tid1)) {
+                        $plugin = $view->getPluginById('tid1');
+                        $plugin->setError($this->__('Invalid owning publication type passed.'));
+                        return false;
+                    } else {
+                        $pub = Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation->tid1)->getRecord();
+                        if (array_key_exists($relation->alias1, $pub->pubFields())) {
+                            $plugin = $view->getPluginById('alias1');
+                            $plugin->setError($this->__f("The alias '%s' is already in use.", $relation->alias1));
+                            return false;
+                        }
+                    }
+                }
+
+                // verify unique alias2
+                if (!$this->id || $relation->alias2 != $previous->alias2) {
+                    if (!Clip_Util::validateTid($relation->tid2)) {
+                        $plugin = $view->getPluginById('tid2');
+                        $plugin->setError($this->__('Invalid related publication type passed.'));
+                        return false;
+                    } else {
+                        $pub = Doctrine_Core::getTable('Clip_Model_Pubdata'.$relation->tid2)->getRecord();
+                        if (array_key_exists($relation->alias2, $pub->pubFields())) {
+                            $plugin = $view->getPluginById('alias2');
+                            $plugin->setError($this->__f("The alias '%s' is already in use.", $relation->alias2));
+                            return false;
+                        }
+                    }
+                }
+
                 // check it's unique
                 $where = array(
                     array('type = ?', $relation->type),
@@ -203,14 +235,15 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                     return false;
                 }
 
-                // detect a type change for m2m before save
+                /*
                 if (!empty($this->id)) {
                     // TODO support relation definition transitions
-                    $previous = $tableObj->find($this->id);
+                    // detect a type change for m2m before save
                     if ($previous->type != $relation->type && $previous->type == 3) {
                         Doctrine_Core::getTable('Clip_Model_Relation'.$this->id)->dropTable();
                     }
                 }
+                */
 
                 $relation->save();
 
