@@ -110,7 +110,7 @@
         {/if}
         <div class="z-formrow">
         {if isset($relation)}
-            <span class="z-label">{gt text='Definition'}:</span>
+            <span class="z-label">{gt text='Definition:'}</span>
             <span class="z-formnote">
                 {if $relation.type1 eq 0}{gt text='One'}{else}{gt text='Many'}{/if}
                 <strong>{$pubtypes[$item.tid1].title}</strong> ({$item.tid1})
@@ -118,54 +118,58 @@
                 <strong>{$pubtypes[$item.tid2].title}</strong> ({$item.tid2})
             </span>
         {else}
-            {formlabel for='type1' __text='Definition' mandatorysym=true}:
+            {formlabel for='type1' __text='Definition:' mandatorysym=true}
             {formdropdownlist items=$reltypes.0 id='type1' group='relation'}
             {formdropdownlist items=$typeselector id='tid1' group='relation'}
             {formdropdownlist items=$reltypes.1 id='type2' group='relation'}
             {formdropdownlist items=$typeselector id='tid2' group='relation'}
         {/if}
         </div>
-        <div class="z-informationmsg">
+        <div class="z-linear" style="padding-top: 0.5em">
+            <div class="z-floatleft z-w49">
+                <fieldset>
+                    <legend>{gt text='Owning side'}</legend>
+                    <div class="z-formrow">
+                        {formlabel for='alias1' __text='Alias' mandatorysym=true}
+                        {formtextinput id='alias1' group='relation' maxLength='100' mandatory=true regexValidationPattern='/^[a-zA-Z0-9_]+$/' __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
+                    </div>
+                    <div class="z-formrow">
+                        {formlabel for='title1' __text='Title' mandatorysym=true}
+                        {formtextinput id='title1' group='relation' maxLength='100' mandatory=true}
+                    </div>
+                    <div class="z-formrow">
+                        {formlabel for='descr1' __text='Description'}
+                        {formtextinput id='descr1' maxLength='4000' group='relation'}
+                    </div>
+                </fieldset>
+            </div>
+            <div class="z-floatright z-w49">
+                <fieldset>
+                    <legend>{gt text='Related side'}</legend>
+                    <div class="z-formrow">
+                        {formlabel for='alias2' __text='Alias' mandatorysym=true}
+                        {formtextinput id='alias2' group='relation' maxLength='100' mandatory=true regexValidationPattern='/^[a-zA-Z0-9_]+$/' __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
+                    </div>
+                    <div class="z-formrow">
+                        {formlabel for='title2' __text='Title' mandatorysym=true}
+                        {formtextinput id='title2' group='relation' maxLength='100' mandatory=true}
+                    </div>
+                    <div class="z-formrow">
+                        {formlabel for='descr2' __text='Description'}
+                        {formtextinput id='descr2' maxLength='4000' group='relation'}
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <div class="z-informationmsg z-clearer">
             {gettext}
             Explanation of the side details:
-            <ul>
+            <ul style="margin-bottom: 0">
                 <li><strong>Alias</strong>: Used as a field name on the publication code. i.e. $pubdata.Alias1</li>
                 <li><strong>Title</strong>: Used in the user side forms as the public name of the relation.</li>
                 <li><strong>Description</strong>: Also used in the forms as the autocompleter tooltip.</li>
             </ul>
             {/gettext}
-        </div>
-        <div class="z-linear" style="padding-top: 1em">
-            <fieldset class="z-floatleft z-w45">
-                <legend>{gt text='Owning side'}</legend>
-                <div class="z-formrow">
-                    {formlabel for='alias1' __text='Alias' mandatorysym=true}
-                    {formtextinput id='alias1' group='relation' maxLength='100' mandatory=true regexValidationPattern='/^[a-zA-Z0-9_]+$/' __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='title1' __text='Title' mandatorysym=true}
-                    {formtextinput id='title1' group='relation' maxLength='100' mandatory=true}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='descr1' __text='Description'}
-                    {formtextinput id='descr1' maxLength='4000' group='relation'}
-                </div>
-            </fieldset>
-            <fieldset class="z-floatright z-w45">
-                <legend>{gt text='Related side'}</legend>
-                <div class="z-formrow">
-                    {formlabel for='alias2' __text='Alias' mandatorysym=true}
-                    {formtextinput id='alias2' group='relation' maxLength='100' mandatory=true regexValidationPattern='/^[a-zA-Z0-9_]+$/' __regexValidationMessage='Alias cannot contain special characters, only a-z, A-Z, 0-9 and _'}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='title2' __text='Title' mandatorysym=true}
-                    {formtextinput id='title2' group='relation' maxLength='100' mandatory=true}
-                </div>
-                <div class="z-formrow">
-                    {formlabel for='descr2' __text='Description'}
-                    {formtextinput id='descr2' maxLength='4000' group='relation'}
-                </div>
-            </fieldset>
         </div>
     </fieldset>
 
