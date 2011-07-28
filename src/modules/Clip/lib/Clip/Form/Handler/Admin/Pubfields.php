@@ -114,6 +114,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                 }
 
                 $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
+                $previous = $this->id ? $tableObj->find($this->id) : null;
 
                 // name restrictions
                 $pubfield->name = str_replace("'", '', $pubfield->name);
@@ -125,15 +126,20 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                 }
 
                 // check that the name is unique
-                if (empty($this->id)) {
-                    $where = "name = '{$pubfield->name}' AND tid = '{$pubfield->tid}'";
-                } else {
-                    $where = "id <> '{$this->id}' AND name = '{$pubfield->name}' AND tid = '{$pubfield->tid}'";
-                }
-
+                $where = "name = '{$pubfield->name}' AND tid = '{$pubfield->tid}'".($this->id ? " AND id <> '{$this->id}'" : '');
                 $nameUnique = (int)$tableObj->selectFieldFunction('id', 'COUNT', $where);
                 if ($nameUnique > 0) {
                     return $view->setPluginErrorMsg('name', $this->__('Another field already has this name.'));
+                }
+
+                // check that the alias is not in use
+                if (!$this->id || $pubfield->name != $previous->name) {
+                    $pub = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubfield->tid)->getRecord();
+                    if (array_key_exists($pubfield->name, $pub->pubFields())) {
+                        $plugin = $view->getPluginById('name');
+                        $plugin->setError($this->__f("The alias '%s' is already in use.", $pubfield->name));
+                        return false;
+                    }
                 }
 
                 // check that the new name is not another publication property
