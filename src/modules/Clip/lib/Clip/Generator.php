@@ -647,8 +647,8 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             'core_revision'    => 'I4 NOTNULL DEFAULT 1',
             'core_online'      => 'L DEFAULT 0',
             'core_intrash'     => 'L DEFAULT 0',
-            'core_visible'     => 'L DEFAULT 0',
-            'core_locked'      => 'L DEFAULT 1',
+            'core_visible'     => 'L DEFAULT 1',
+            'core_locked'      => 'L DEFAULT 0',
             'core_publishdate' => 'T',
             'core_expiredate'  => 'T'
         );
