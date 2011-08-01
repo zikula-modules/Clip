@@ -47,7 +47,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
     /**
      * Clip processing methods.
      */
-    public static function enrichFilterArgs(&$filterArgs, $field, $args)
+    public function enrichFilterArgs(&$filterArgs, $field, $args)
     {
         $fieldname = $field['name'];
         $filterArgs['plugins'][$this->filterClass]['fields'][] = $fieldname;

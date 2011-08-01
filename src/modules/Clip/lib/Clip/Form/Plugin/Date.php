@@ -45,7 +45,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     /**
      * Clip processing methods.
      */
-    public static function enrichFilterArgs(&$filterArgs, $field, $args)
+    public function enrichFilterArgs(&$filterArgs, $field, $args)
     {
         $fieldname = $field['name'];
         $filterArgs['plugins'][$this->filterClass]['fields'][] = $fieldname;
