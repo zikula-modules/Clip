@@ -535,7 +535,11 @@ class Clip_Api_User extends Zikula_AbstractApi
         //  list:    /pubtype[/filter[/orderby]]/list.template]
         //  display: /pubtype/pubtitle[.template]
         //  edit:    /pubtype[/template]/submit.htm[l]
+        //  edit:    /pubtype[/goto/somewhere]/edit.htm[l]
+        //  edit:    /pubtype[/template/goto/somewhere]/edit.htm[l]
         //  edit:    /pubtype/pubtitle[/template]/edit.htm[l]
+        //  edit:    /pubtype/pubtitle[/goto/somewhere]/edit.htm[l]
+        //  edit:    /pubtype/pubtitle[/template/goto/somewhere]/edit.htm[l]
 
         static $cache = array();
 
@@ -606,14 +610,15 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $urltitle = "/$urltitle.$pid" . (isset($id) ? ".$id" : '');
                 }
 
+                $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
+
                 if ($args['func'] == 'edit') {
+                    // edit case: override the display shortURL
                     $shorturl  = ($pid ? $urltitle : '');
                     $shorturl .= ($template ? "/$template" : '');
-                    $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ".$tplhtml";
-                    break;
+                    $shorturl .= (isset($_['goto']) && $_['goto'] ? "/goto/{$_['goto']}" : '');
+                    $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ($tpl ? ".$tplhtml" : '');
                 }
-
-                $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
                 break;
         }
 
@@ -631,6 +636,11 @@ class Clip_Api_User extends Zikula_AbstractApi
     {
         // utility assign
         $_ = array_slice($args['vars'], 2);
+
+        if ($args[2] == 'exec') {
+            // unsupported function, process it with default shortURLs
+            return false;
+        }
 
         if (empty($_)) {
             // no pubtype passed, let the module to process the error
@@ -652,7 +662,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         // direct detection of edit mode
         if (in_array($filename, array('submit', 'edit'))) {
             $func = 'edit';
-            $pid  = ($filename == 'submit') ? 0 : null;
+            $pid  = ($filename == 'submit') ? null : 0;
 
             unset($_[0], $_[count($_)]);
 
@@ -714,26 +724,24 @@ class Clip_Api_User extends Zikula_AbstractApi
 
             case 'edit':
                 if (isset($pid)) {
-                    // submit
-                    if (count($_) == 1) {
-                        // there's a custom submit template
-                        $template = current($_);
-                    }
-                    break;
+                    // edit: capture and remove the pub title
+                    $pubtitle = reset($_);
+                    unset($_[0]);
                 }
 
-                if (empty($_)) {
-                    // should not be empty at this stage
-                    return true;
+                switch (count($_)) {
+                    case 3:
+                    case 2:
+                        // there's a goto parameter
+                        System::queryStringSetVar('goto',  end($_));
+                        // continue for 3 parameters only
+                        if (count($_) == 2) {
+                            break;
+                        }
+                    case 1:
+                        // there's a custom edit template
+                        $template = reset($_);
                 }
-
-                // edit
-                if (count($_) == 2) {
-                    // there's a custom edit template
-                    $template = end($_);
-                }
-
-                $pubtitle = reset($_);
 
             case 'display':
                 $s = preg_quote(System::getVar('shorturlsseparator'), '~');
@@ -742,7 +750,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $fullstr  = "$filename.$template";
                     preg_match('/^([a-z0-9_\-'.$s.']+?\.[\d]+?(\.[\d]+)?)(\.([a-z0-9_\.\-]+))?$/i', $fullstr, $matches);
                     $pubtitle = $matches[1];
-                    $template = $matches[4];
+                    $template = isset($matches[4]) ? $matches[4] : null;
                 }
 
                 // extract the pid/id
