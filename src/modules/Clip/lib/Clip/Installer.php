@@ -24,7 +24,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
             'Clip_Model_Pubfield',
             'Clip_Model_Pubtype',
             'Clip_Model_Grouptype',
-            'Clip_Model_Pubrelation'
+            'Clip_Model_Pubrelation',
+            'Clip_Model_WorkflowVars'
         );
 
         foreach ($tables as $table) {
