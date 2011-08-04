@@ -113,9 +113,9 @@
             <span class="z-label">{gt text='Definition:'}</span>
             <span class="z-formnote">
                 {if $relation.type1 eq 0}{gt text='One'}{else}{gt text='Many'}{/if}
-                <strong>{$pubtypes[$item.tid1].title}</strong> ({$item.tid1})
+                <strong>{$pubtypes[$relation.tid1].title}</strong> ({$relation.tid1})
                 {if $relation.type2 eq 0}{gt text='has One'}{else}{gt text='has Many'}{/if}
-                <strong>{$pubtypes[$item.tid2].title}</strong> ({$item.tid2})
+                <strong>{$pubtypes[$relation.tid2].title}</strong> ({$relation.tid2})
             </span>
         {else}
             {formlabel for='type1' __text='Definition:' mandatorysym=true}
