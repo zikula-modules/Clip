@@ -150,6 +150,11 @@ class Clip_Model_Pubtype extends Doctrine_Record
         return $result;
     }
 
+    public function getFields()
+    {
+        return $this->tid ? Clip_Util::getPubFields($this->tid) : array();
+    }
+
     public function getRelations($onlyown = true, $field = null)
     {
         // TODO listen (own/all)relations get attempt
@@ -165,15 +170,15 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $records = Clip_Util::getRelations($this->tid, true);
         foreach ($records as $relation) {
             $relations[$relation['alias1']] = array(
-                'id'     => $relation['id'],
-                'tid'    => $relation['tid2'],
-                'type'   => $relation['type'],
-                'alias'  => $relation['alias2'],
-                'title'  => $relation['title1'],
-                'descr'  => $relation['descr1'],
-                'owned'  => $relation['alias1'],
-                'single' => $relation['type']%2 == 0 ? true : false,
-                'own'    => true
+                'id'       => $relation['id'],
+                'tid'      => $relation['tid2'],
+                'type'     => $relation['type'],
+                'alias'    => $relation['alias1'],
+                'title'    => $relation['title1'],
+                'descr'    => $relation['descr1'],
+                'opposite' => $relation['alias2'],
+                'single'   => $relation['type']%2 == 0 ? true : false,
+                'own'      => true
             );
         }
 
@@ -184,15 +189,15 @@ class Clip_Model_Pubtype extends Doctrine_Record
             foreach ($records as $relation) {
                 if (!isset($relations[$relation['alias2']])) {
                     $relations[$relation['alias2']] = array(
-                        'id'     => $relation['id'],
-                        'tid'    => $relation['tid1'],
-                        'type'   => $relation['type'],
-                        'alias'  => $relation['alias1'],
-                        'title'  => $relation['title2'],
-                        'descr'  => $relation['descr2'],
-                        'owned'  => $relation['alias2'],
-                        'single' => $relation['type'] <= 1 ? true : false,
-                        'own'    => false
+                        'id'       => $relation['id'],
+                        'tid'      => $relation['tid1'],
+                        'type'     => $relation['type'],
+                        'alias'    => $relation['alias2'],
+                        'title'    => $relation['title2'],
+                        'descr'    => $relation['descr2'],
+                        'opposite' => $relation['alias1'],
+                        'single'   => $relation['type'] <= 1 ? true : false,
+                        'own'      => false
                     );
                 }
             }

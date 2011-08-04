@@ -8,6 +8,7 @@
 <ul id="pubtype{$pubtype.tid}_info">
     <li class="tab"><a href="#p{$pubtype.tid}manage">{gt text='Manage'}</a></li>
     <li class="tab"><a href="#p{$pubtype.tid}code">{gt text='Get the code'}</a></li>
+    <li class="tab"><a href="#p{$pubtype.tid}fields">{gt text='Fields'}</a></li>
     {*<li class="tab"><a href="#p{$pubtype.tid}perms">{gt text='Permissions'}</a></li>*}
 </ul>
 
@@ -61,21 +62,21 @@
 
             {if $pubtype->allrelations}
                 <ul>
-                {foreach from=$pubtype->allrelations key='ralias' item='rinfo'}
+                {foreach from=$pubtype->allrelations key='ralias' item='item'}
                     <li>
-                    {if $rinfo.single}
-                        {gt text='Has one %s' tag1=$rinfo.title}
+                    {if $item.single}
+                        {gt text='Has one %s' tag1=$item.title}
                     {else}
-                        {gt text='Has many %s' tag1=$rinfo.title}
+                        {gt text='Has many %s' tag1=$item.title}
                     {/if}
-                    <span class="z-sub">({$rinfo.owned})</span>
+                    <span class="z-sub">({$item.alias})</span>
 
-                    {if $rinfo.own}
-                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$rinfo.id withtid1=$pubtype.tid op='and' withtid2=$rinfo.tid}">
+                    {if $item.own}
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$pubtype.tid withtid1=$pubtype.tid op='and' withtid2=$item.tid}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     {else}
-                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$rinfo.id withtid1=$rinfo.tid op='and' withtid2=$pubtype.tid}">
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$pubtype.tid withtid1=$item.tid op='and' withtid2=$pubtype.tid}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                         </a>
                     {/if}
@@ -130,6 +131,54 @@
             </p>
         </li>
     </ul>
+</div>
+
+<div id="p{$pubtype.tid}fields" class="clip-infotab">
+    <h4>{gt text='Fields'}</h4>
+
+    <table class="z-datatable">
+        <thead>
+            <th class="z-w10">{gt text='Alias'}</th>
+            <th>{gt text='Title'}</th>
+            <th>{gt text='Description'}</th>
+            <th class="z-w10">{gt text='Plugin'}</th>
+        </thead>
+        <tbody>
+            {foreach from=$pubtype->getFields() item='item'}
+            <tr>
+                <td>{$item.name|safetext}</td>
+                <td>{$item.title|safetext}</td>
+                <td>{$item.description|safetext}</td>
+                <td>{$item.fieldplugin|safetext}</td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+
+    {if $pubtype->allrelations}
+    <h4>{gt text='Relations'}</h4>
+
+    <table class="z-datatable">
+        <thead>
+            <tr>
+                <th class="z-w10">{gt text='Alias'}</th>
+                <th>{gt text='Title'}</th>
+                <th>{gt text='Description'}</th>
+                <th class="z-w10">{gt text='Opposite'}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$pubtype->allrelations item='item'}
+            <tr>
+                <td>{$item.alias|safetext}</td>
+                <td>{$item.title|safetext}</td>
+                <td>{$item.description|safetext}</td>
+                <td>{$item.opposite|safetext}</td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    {/if}
 </div>
 
 {*<div id="p{$pubtype.tid}perms" class="clip-infotab">

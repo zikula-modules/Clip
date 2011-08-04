@@ -58,6 +58,9 @@
 }
 
 /* pubtype info */
+.clip-infotab {
+  padding: 18px;
+}
 .clip-infotab ul.z-buttons {
   background: #fff;
   border-left: 1px solid #ccc;
@@ -71,7 +74,7 @@
 .clip-infotab ul {
   list-style: none outside none;
   margin: 0;
-  padding: 1em 1em 0.5em;
+  padding: 0;
 }
 .clip-infotab li {
   border-bottom: 1px solid #eee;
