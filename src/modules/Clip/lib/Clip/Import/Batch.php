@@ -224,7 +224,7 @@ class Clip_Import_Batch
                 $tid = Clip_Util::getTidFromString($args['section']);
                 $newtid = self::$idmap['tids'][$tid];
                 // update the new id refs
-                $args['workflow']['obj_id'] = self::$idmap['pids'][$args['workflow']['obj_id']];;
+                $args['workflow']['obj_id'] = self::$idmap['pids'][$args['workflow']['obj_id']];
                 $args['workflow']['obj_table'] = 'clip_pubdata'.$newtid;
                 // handled with DBUtil
                 DBUtil::insertObject($args['workflow'], 'workflows');

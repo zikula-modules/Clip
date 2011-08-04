@@ -62,7 +62,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     {
         //// Pubtype
         // validate and get the publication type first
-        $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);;
+        $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
 
         if (!Clip_Util::validateTid($tid)) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
@@ -85,7 +85,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     {
         //// Pubtype
         // validate and get the publication type first
-        $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);;
+        $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
 
         $pubtypeadmin = (Clip_Util::validateTid($tid) && Clip_Access::toPubtype($tid)) ? true : false;
 
@@ -105,7 +105,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     {
         //// Pubtype
         // validate and get the publication type first
-        $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);;
+        $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
 
         if (!Clip_Util::validateTid($tid)) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
