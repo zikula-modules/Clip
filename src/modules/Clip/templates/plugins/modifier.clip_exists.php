@@ -20,16 +20,29 @@
  *
  * @return boolean True if exists and not empty, false otherwise.
  */
-function smarty_modifier_clip_exists($data, $lang=null)
+function smarty_modifier_clip_exists($data, $q=null)
 {
     if (!is_object($data)) {
-        return $data;
+        return false;
     }
+
+    $exists = false;
 
     if ($data instanceof Doctrine_Collection) {
-        return count($data);
+        $exists = (bool)count($data);
 
     } elseif ($data instanceof Doctrine_Record) {
-        return $data->exists();
+        $exists = $data->exists();
     }
+
+    if ($exists && $q && in_array($q, array('one', 'many'))) {
+        switch ($q) {
+            case 'many':
+                return $data instanceof Doctrine_Collection;
+            case 'one':
+                return $data instanceof Doctrine_Record;
+        }
+    }
+
+    return $exists;
 }
