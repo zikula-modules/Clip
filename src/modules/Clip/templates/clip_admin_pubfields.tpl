@@ -26,7 +26,7 @@
                 <span class="z-itemcell z-w10">{gt text='Actions'}</span>
             </li>
             {foreach from=$pubfields item='pubfield' name='pubfields'}
-            <li id="pubfield_{$pubfield.id}" class="{cycle name='pubfieldlist' values='z-odd,z-even'} z-sortable z-clearfix z-itemsort">
+            <li id="pubfield_{$pubfield.id}" class="{cycle name='pubfieldlist' values='z-even,z-odd'} z-sortable z-clearfix z-itemsort">
                 <span class="z-itemcell z-w20" id="pubfielddrag_{$pubfield.id}">
                     <strong>{$pubfield.name}</strong>
                 </span>

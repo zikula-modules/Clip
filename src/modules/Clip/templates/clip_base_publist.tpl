@@ -49,7 +49,7 @@
     </thead>
     <tbody>
         {foreach from=$publist item='pubitem'}
-        <tr class="{cycle values='z-odd,z-even'}">
+        <tr class="{cycle values='z-even,z-odd'}">
             <td>
                 {$pubitem.core_pid|safetext}
             </td>

@@ -57,7 +57,7 @@
                 <span class="z-itemcell z-w10">{gt text='Actions'}</span>
             </li>
             {foreach from=$relations item='item' name='relation'}
-            <li id="relations_{$item.id}" class="{cycle name='relationslist' values='z-odd,z-even'} z-clearfix">
+            <li id="relations_{$item.id}" class="{cycle name='relationslist' values='z-even,z-odd'} z-clearfix">
                 <span class="z-itemcell z-w10">
                    {$item.id}
                 </span>

@@ -179,7 +179,7 @@ class Clip_Generator
         // if the template is a public output
         if ($public && !$forblock) {
             // add the row cycles
-            $code = str_replace('z-formrow', 'z-formrow {cycle values=\'z-odd,z-even\'}', $code);
+            $code = str_replace('z-formrow', 'z-formrow {cycle values=\'z-even,z-odd\'}', $code);
         }
 
         // build the output
