@@ -31,15 +31,33 @@
         </li>
     </ul>
     <ul>
-        <li>
+        <li class="z-clearfix">
             <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
                 {gt text="Edit '%s'" tag1=$pubtype.title|safetext}
             </a>
             <p>
-                {gt text='Edit the basic information of the publication type, the output/input settings, relations settings, etc.'}
+                {gt text='Edit the basic information of the publication type, the admin, user and relations settings.'}
             </p>
+
+            {gt text='None' assign='none'}
+            <dl class="z-floatleft z-w30">
+                <dt>{gt text='URL title'}</dt>
+                    <dd>{$pubtype.urltitle|default:$none}</dd>
+                <dt>{gt text='Folder'}</dt>
+                    <dd>{$pubtype.folder|default:$none}</dd>
+                <dt>{gt text='Workflow'}</dt>
+                    <dd>{$pubtype.workflow}</dd>
+            </dl>
+            <dl class="z-floatleft z-w30">
+                <dt>{gt text='Fixed filter'}</dt>
+                    <dd>{$pubtype.fixedfilter|default:$none}</dd>
+                <dt>{gt text='Default filter'}</dt>
+                    <dd>{$pubtype.defaultfilter|default:$none}</dd>
+                <dt>{gt text='Items per page'}</dt>
+                    <dd>{$pubtype.itemsperpage|default:0}</dd>
+            </dl>
         </li>
-        <li>
+        <li class="z-clearfix">
             <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
                 {gt text='Manage its fields'}
             </a>
@@ -47,43 +65,13 @@
                 {gt text='Sort, edit and configure the fields of this publication type.'}
             </p>
         </li>
-        <li>
-            <a href="{modurl modname='Clip' type='admin' func='relations' withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Edit the relations of this publication type'}">
+        <li class="z-clearfix">
+            <a href="{modurl modname='Clip' type='admin' func='relations' tid=$pubtype.tid withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Edit the relations of this publication type'}">
                 {gt text='Manage its relations'}
             </a>
             <p>
                 {gt text='Edit and configure the relations.'}<br /><br />
-                {if $pubtype->getRelations(false)}
-                    {gt text='Currently they are as follows:'}
-                {else}
-                    {gt text='There are no relations defined for this publication type.'}
-                {/if}
             </p>
-
-            {if $pubtype->allrelations}
-                <ul>
-                {foreach from=$pubtype->allrelations key='ralias' item='item'}
-                    <li>
-                    {if $item.single}
-                        {gt text='Has one %s' tag1=$item.title}
-                    {else}
-                        {gt text='Has many %s' tag1=$item.title}
-                    {/if}
-                    <span class="z-sub">({$item.alias})</span>
-
-                    {if $item.own}
-                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$pubtype.tid withtid1=$pubtype.tid op='and' withtid2=$item.tid}">
-                            {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
-                        </a>
-                    {else}
-                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$pubtype.tid withtid1=$item.tid op='and' withtid2=$pubtype.tid}">
-                            {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
-                        </a>
-                    {/if}
-                    </li>
-                {/foreach}
-                </ul>
-            {/if}
         </li>
     </ul>
 </div>
@@ -142,20 +130,26 @@
             <th>{gt text='Title'}</th>
             <th>{gt text='Description'}</th>
             <th class="z-w10">{gt text='Plugin'}</th>
+            <th class="z-w05">{gt text='Edit'}</th>
         </thead>
         <tbody>
             {foreach from=$pubtype->getFields() item='item'}
-            <tr>
-                <td>{$item.name|safetext}</td>
+            <tr class="{cycle name='pfieldlist' values='z-even,z-odd'}">
+                <td><code>{$item.name|safetext}</code></td>
                 <td>{$item.title|safetext}</td>
                 <td>{$item.description|safetext}</td>
-                <td>{$item.fieldplugin|safetext}</td>
+                <td>{$item.fieldplugin|clip_plugintitle|safetext}</td>
+                <td>
+                    <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$item.tid id=$item.id fragment='newpubfield'}">
+                        {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                    </a>
+                </td>
             </tr>
             {/foreach}
         </tbody>
     </table>
 
-    {if $pubtype->allrelations}
+    {if $pubtype->getRelations(false)}
     <h4>{gt text='Relations'}</h4>
 
     <table class="z-datatable">
@@ -165,15 +159,33 @@
                 <th>{gt text='Title'}</th>
                 <th>{gt text='Description'}</th>
                 <th class="z-w10">{gt text='Opposite'}</th>
+                <th class="z-w05">{gt text='Edit'}</th>
             </tr>
         </thead>
         <tbody>
             {foreach from=$pubtype->allrelations item='item'}
-            <tr>
-                <td>{$item.alias|safetext}</td>
-                <td>{$item.title|safetext}</td>
+            <tr class="{cycle name='prelationlist' values='z-even,z-odd'}">
+                <td><code>{$item.alias|safetext}</code></td>
+                <td>
+                    {if $item.single}
+                        <span class="z-sub">{gt text='Has one %s' tag1="</span>`$item.title`"}
+                    {else}
+                        <span class="z-sub">{gt text='Has many %s' tag1="</span>`$item.title`"}
+                    {/if}
+                </td>
                 <td>{$item.description|safetext}</td>
                 <td>{$item.opposite|safetext}</td>
+                <td>
+                    {if $item.own}
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$pubtype.tid withtid1=$pubtype.tid op='and' withtid2=$item.tid}">
+                            {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                        </a>
+                    {else}
+                        <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$pubtype.tid withtid1=$item.tid op='and' withtid2=$pubtype.tid}">
+                            {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
+                        </a>
+                    {/if}
+                </td>
             </tr>
             {/foreach}
         </tbody>
