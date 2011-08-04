@@ -320,7 +320,7 @@ class Clip_Api_Import extends Zikula_AbstractApi
 
         foreach ($pubtypes as $pubtype)
         {
-            $pubfields = DBUtil::selectObjectArray('clip_pubfields', "pm_tid = '$pubtype[id]'");
+            $pubfields = DBUtil::selectObjectArray('clip_pubfields', "tid = '$pubtype[id]'");
 
             foreach ($pubfields as $pubfield)
             {
@@ -348,7 +348,7 @@ class Clip_Api_Import extends Zikula_AbstractApi
             }
 
             for (; !$result->EOF; $result->MoveNext()) {
-                $sql = 'INSERT INTO '. $tablenamePM .' (pm_id, pm_pid, pm_online, pm_indepot, pm_revision, pm_showinmenu, pm_showinlist, pm_publishdate, pm_expiredate, pm_language, pm_hitcount ';
+                $sql = 'INSERT INTO '. $tablenamePM .' (id, pid, online, intrash, revision, PM_showinmenu, visible, publishdate, expiredate, language, hits';
                 $item = $result->GetRowAssoc(2);
 
                 $data = array ();
@@ -369,7 +369,7 @@ class Clip_Api_Import extends Zikula_AbstractApi
                 {
                     $i++;
                     if ($i > 17) {
-                        $fieldname = str_replace('pg_field', 'pm_', $key);
+                        $fieldname = str_replace('pg_field', '', $key);
                         $DBid      = str_replace('pg_field', '', $key);
 
                         if (isset($imagefields[$DBid])) {
@@ -423,7 +423,7 @@ class Clip_Api_Import extends Zikula_AbstractApi
                 $data[] = $item['pg_lastUpdatedDate'];
                 $data[] = $item['pg_creator'];
 
-                $sql .= ', pm_cr_date, pm_cr_uid, pm_author, pm_lu_date, pm_lu_uid ';
+                $sql .= ', cr_date, cr_uid, author, lu_date, lu_uid ';
                 $sql .= ') VALUES ( '.$data[1];
                 unset($data[1]);
 
@@ -454,10 +454,10 @@ class Clip_Api_Import extends Zikula_AbstractApi
                     //}
                 }
 
-                $sql = "UPDATE $tablenamePM SET pm_publishdate = null WHERE pm_publishdate = '0000-00-00';";
+                $sql = "UPDATE $tablenamePM SET publishdate = null WHERE publishdate = '0000-00-00';";
                 DBUtil::executeSQL($sql);
 
-                $sql = "UPDATE $tablenamePM SET pm_expiredate = null WHERE pm_expiredate = '0000-00-00';";
+                $sql = "UPDATE $tablenamePM SET expiredate = null WHERE expiredate = '0000-00-00';";
                 DBUtil::executeSQL($sql);
         }
 

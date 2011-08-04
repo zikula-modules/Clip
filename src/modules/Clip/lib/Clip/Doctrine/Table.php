@@ -29,8 +29,8 @@ class Clip_Doctrine_Table extends Doctrine_Table
 
         foreach ($this->getRelations() as $alias => $relation) {
             // checks if this relation is not owned
-            if ($relation['local'] != 'pm_id') {
-                $columns[$alias] = str_replace('pm_', '', $relation['local']);
+            if ($relation['local'] != 'id') {
+                $columns[$alias] = $relation['local'];
             } else {
                 // when owned the foreign field is in the other table
                 $v = isset($dynaMap[$relation['class']]) ? $dynaMap[$relation['class']].'.' : $relation['class'].':';

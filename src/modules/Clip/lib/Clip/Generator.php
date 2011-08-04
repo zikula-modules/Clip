@@ -306,8 +306,8 @@ class Clip_Generator
                             'foreign' => 'id'
                         );
                         // add the relation column definition
-                        $columns["pm_rel_{$relation['id']}"] = "rel_{$relation['id']}";
-                        $def["pm_rel_{$relation['id']}"] = array(
+                        $columns["rel_{$relation['id']}"] = "rel_{$relation['id']}";
+                        $def["rel_{$relation['id']}"] = array(
                             'type'     => 'integer',
                             'length'   => 4,
                             'unsigned' => false
@@ -357,8 +357,8 @@ class Clip_Generator
                             'foreign' => 'id'
                         );
                         // add the relation column definition
-                        $columns["pm_rel_{$relation['id']}"] = "rel_{$relation['id']}";
-                        $def["pm_rel_{$relation['id']}"] = array(
+                        $columns["rel_{$relation['id']}"] = "rel_{$relation['id']}";
+                        $def["rel_{$relation['id']}"] = array(
                             'type' => 'integer',
                             'length' => 4,
                             'unsigned' => false
