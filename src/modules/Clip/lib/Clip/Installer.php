@@ -134,12 +134,12 @@ class Clip_Installer extends Zikula_AbstractInstaller
             case '0.4.16':
                 $this->setVar('shorturls', 'htm');
             case '0.4.17':
-                /*if (!Doctrine_Core::getTable('Clip_Model_WorkflowVars')->createTable()) {
+                if (!Doctrine_Core::getTable('Clip_Model_WorkflowVars')->createTable()) {
                     return '0.4.17';
                 }
                 if (!$this->upgradeDBpre09()) {
                     return '0.4.17';
-                }*/
+                }
             case '0.4.18':
                 // further upgrade handling
                 // * contenttype stuff
