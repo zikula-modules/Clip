@@ -2,7 +2,7 @@
 {pagesetvar name='title' value="`$pagetitle` - `$modvars.ZConfig.sitename`"}
 
 <div class="clip-editorpanel">
-    {include file='clip_editor_header.tpl'}
+    {include file='editor_header.tpl'}
 
     {clip_editorpanel data=$grouptypes}
 </div>

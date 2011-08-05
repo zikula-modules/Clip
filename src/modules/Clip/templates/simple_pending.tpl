@@ -1,5 +1,5 @@
 
-{include file='clip_generic_navbar.tpl'}
+{include file='generic_navbar.tpl'}
 
 <h2>{$pubtype.title}</h2>
 

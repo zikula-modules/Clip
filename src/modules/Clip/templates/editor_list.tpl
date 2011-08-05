@@ -4,7 +4,7 @@
 {assign var='pagetitle' value="`$pubtype.title` &raquo; `$pagetitle`"}
 
 <div class="clip-editorpanel">
-    {include file='clip_editor_header.tpl'}
+    {include file='editor_header.tpl'}
 
     <table class="z-datatable">
         <thead>
@@ -74,5 +74,5 @@
         </tbody>
     </table>
 
-    {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=9 owner='Clip' template='clip_pager.tpl' processUrls=false}
+    {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=9 owner='Clip' template='pager_default.tpl' processUrls=false}
 </div>

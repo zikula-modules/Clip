@@ -37,7 +37,7 @@
         {modurl modname='Clip' type='admin' func='showcode' tid=$vars.tid mode='blocklist' assign='codeurl'}
         <br />{gt text='You can customize the generic code <a href="%s">available here</a>.' tag1=$codeurl|safetext}
         {/if}
-        <br />{gt text='If the template is not found, clip_generic_blocklist.tpl will be used.'}
+        <br />{gt text='If the template is not found, generic_blocklist.tpl will be used.'}
     </em>
 </div>
 

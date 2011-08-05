@@ -185,7 +185,7 @@ class Clip_Generator
         // build the output
         $view = Zikula_View::getInstance('Clip');
 
-        $template = 'clip_generic_'.($forblock ? 'blockpub' : 'display').'.tpl';
+        $template = 'generic_'.($forblock ? 'blockpub' : 'display').'.tpl';
         $tplpath  = $view->get_template_path($template);
         $output   = file_get_contents($tplpath.'/'.$template);
 
@@ -244,8 +244,8 @@ class Clip_Generator
         // build the output
         $view = Zikula_View::getInstance('Clip');
 
-        $tplpath  = $view->get_template_path('clip_generic_edit.tpl');
-        $output   = file_get_contents($tplpath.'/clip_generic_edit.tpl');
+        $tplpath  = $view->get_template_path('generic_edit.tpl');
+        $output   = file_get_contents($tplpath.'/generic_edit.tpl');
         $output   = str_replace('{$code}', $code, $output);
 
         return $output;

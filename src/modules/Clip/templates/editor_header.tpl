@@ -17,4 +17,4 @@
 *}
     <h2>{$pagetitle}</h2>
 
-    {include file='clip_generic_navbar.tpl'}
+    {include file='generic_navbar.tpl'}

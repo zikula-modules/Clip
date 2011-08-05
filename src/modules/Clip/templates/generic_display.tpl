@@ -3,7 +3,7 @@
 {clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}
 
 <div class="clip-display clip-display-{$pubtype.urltitle}">
-    {include file='clip_generic_navbar.tpl'}
+    {include file='generic_navbar.tpl'}
 
     <h2>{$pubdata.core_title|safetext}</h2>
 

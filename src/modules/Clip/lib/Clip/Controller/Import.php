@@ -58,6 +58,6 @@ class Clip_Controller_Import extends Zikula_AbstractController
         // build and return the output
         $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false);
 
-        return $this->view->fetch('clip_import_ps.tpl');
+        return $this->view->fetch('import_pagesetter.tpl');
     }
 }

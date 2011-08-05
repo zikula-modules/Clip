@@ -11,7 +11,7 @@
 {/if}
 
 <div class="clip-list clip-list-{$pubtype.urltitle}">
-    {include file='clip_generic_navbar.tpl'}
+    {include file='generic_navbar.tpl'}
 
     {if $op eq 'null'}
         {* title for uncategorized list *}

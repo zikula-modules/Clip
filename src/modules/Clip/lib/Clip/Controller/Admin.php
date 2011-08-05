@@ -194,13 +194,13 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         switch ($args['code'])
         {
             case 'main':
-                $path = $this->view->get_template_path('clip_generic_main.tpl');
-                $output = file_get_contents($path.'/clip_generic_main.tpl');
+                $path = $this->view->get_template_path('generic_main.tpl');
+                $output = file_get_contents($path.'/generic_main.tpl');
                 break;
 
             case 'list':
-                $path = $this->view->get_template_path('clip_generic_list.tpl');
-                $output = file_get_contents($path.'/clip_generic_list.tpl');
+                $path = $this->view->get_template_path('generic_list.tpl');
+                $output = file_get_contents($path.'/generic_list.tpl');
                 break;
 
             case 'display':
@@ -212,8 +212,8 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                 break;
 
             case 'blocklist':
-                $path = $this->view->get_template_path('clip_generic_blocklist.tpl');
-                $output = file_get_contents($path.'/clip_generic_blocklist.tpl');
+                $path = $this->view->get_template_path('generic_blocklist.tpl');
+                $output = file_get_contents($path.'/generic_blocklist.tpl');
                 break;
 
             case 'blockpub':

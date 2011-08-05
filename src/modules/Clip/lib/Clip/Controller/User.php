@@ -131,7 +131,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
             }
 
-            $args['template'] = 'clip_generic_main.tpl';
+            $args['template'] = 'generic_main.tpl';
 
             $this->view->setForceCompile(true)
                        ->setCaching(Zikula_View::CACHE_DISABLED)
@@ -292,9 +292,9 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             // check the generic template to use
             if (strpos($apiargs['templateid'], 'block_') === 0) {
-                $args['template'] = 'clip_generic_blocklist.tpl';
+                $args['template'] = 'generic_blocklist.tpl';
             } else {
-                $args['template'] = 'clip_generic_list.tpl';
+                $args['template'] = 'generic_list.tpl';
             }
 
             $this->view->setForceCompile(true)
@@ -379,7 +379,8 @@ class Clip_Controller_User extends Zikula_AbstractController
         // fetch simple templates
         if (isset($args['templatesimple'])) {
             if (!$this->view->template_exists($args['templatesimple'])) {
-                $args['templatesimple'] = "clip_general_{$args['template']}.tpl";
+                $args['templatesimple'] = "simple_{$args['template']}.tpl";
+                // TODO simple template per pubtype too
                 if (!$this->view->template_exists($args['templatesimple'])) {
                     $args['templatesimple'] = '';
                 }

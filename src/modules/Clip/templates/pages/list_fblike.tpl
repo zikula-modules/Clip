@@ -2,7 +2,7 @@
 {if !$homepage}{pagesetvar name='title' value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
 <div class="clip-list clip-list-{$pubtype.urltitle}">
-    {include file='clip_generic_navbar.tpl'}
+    {include file='generic_navbar.tpl'}
 
     <div class="z-floatright">{fblike url=$returnurl layout='horizontal' width=150 addmetatags=1 metatitle=$pubtype.title rel='list_title'}</div>
 

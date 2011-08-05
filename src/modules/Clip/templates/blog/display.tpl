@@ -11,7 +11,7 @@
 *}
 
 <div class="clip-display clip-display-{$pubtype.urltitle}">
-    {include file='clip_generic_navbar.tpl'}
+    {include file='generic_navbar.tpl'}
 
     <div class="clip-post clip-post-{$pubdata.core_pid} z-floatbox">
         {*

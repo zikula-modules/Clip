@@ -57,7 +57,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         //// Output
         $this->view->assign('grouptypes', $grouptypes);
 
-        return $this->view->fetch('clip_editor_main.tpl');
+        return $this->view->fetch('editor_main.tpl');
     }
 
     /**
@@ -130,13 +130,13 @@ class Clip_Controller_Editor extends Zikula_AbstractController
                                            'itemsperpage' => $apiargs['itemsperpage']));
 
         // custom pubtype template check
-        $customtpl = $pubtype['folder'].'/editorlist.tpl';
+        $customtpl = $pubtype['folder'].'/editor_list.tpl';
 
         if ($this->view->template_exists($customtpl)) {
             return $this->view->fetch($customtpl);
         }
 
-        return $this->view->fetch('clip_editor_list.tpl');
+        return $this->view->fetch('editor_list.tpl');
     }
 
     /**

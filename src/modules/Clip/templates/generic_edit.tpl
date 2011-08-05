@@ -8,7 +8,7 @@
 {if !$homepage}{pagesetvar name='title' value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
 <div class="clip-edit clip-edit-{$pubtype.urltitle} clip-edit-{$pubtype.urltitle}-{$clipargs.edit.state}">
-    {include file='clip_generic_navbar.tpl'}
+    {include file='generic_navbar.tpl'}
 
     <h2>{$pagetitle}</h2>
 
