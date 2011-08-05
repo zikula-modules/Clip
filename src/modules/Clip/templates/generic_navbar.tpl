@@ -1,5 +1,6 @@
 {clip_access tid=$pubtype.tid assign='auth_admin'}
 
+{* breadcrumbs *}
 <div class="z-menu">
     <span class="z-menuitem-title clip-breadcrumbs">
         {strip}
@@ -113,6 +114,38 @@
     </span>
 </div>
 
+{* resolves the page title *}
+{if !$homepage}
+    {assign var='pageseparator' value=' - '}
+    {assign var='pagetitle' value=''}
+
+    {switch expr=$func}
+        {case expr='edit'}
+            {if $pubdata.id}
+                {assign_concat name='pagetitle' __1='Edit' 2=$pageseparator 3=$pubdata.core_title 4=$pageseparator 5=$pubtype.title 6=$pageseparator}
+            {else}
+                {assign_concat name='pagetitle' __1='Submit' 2=$pageseparator 3=$pubtype.title 4=$pageseparator}
+            {/if}
+        {/case}
+        {case expr='display'}
+            {if $pubdata.id}
+                {assign_concat name='pagetitle' 1=$pubdata.core_title 2=$pageseparator 3=$pubtype.title 4=$pageseparator}
+            {/if}
+        {/case}
+        {case expr='list'}
+            {* here can be a filter title *}
+            {assign_concat name='pagetitle' 1=$pubtype.title 2=$pageseparator}
+        {/case}
+        {case expr='main'}
+            {assign_concat name='pagetitle' 1=$pubtype.title 2=$pageseparator}
+        {/case}
+    {/switch}
+    {assign_concat name='pagetitle' 1=$pagetitle 2=$modvars.ZConfig.defaultpagetitle}
+
+    {pagesetvar name='title' value=$pagetitle}
+{/if}
+
+{* status messages *}
 {insert name='getstatusmsg'}
 
 {* Clip developer notices *}

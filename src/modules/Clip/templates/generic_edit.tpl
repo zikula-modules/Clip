@@ -1,16 +1,14 @@
 
-{* process the title according the publication status *}
-{if $pubdata.id}
-    {gt text="Edit '%s'" tag1=$pubdata.core_title|truncate:50 assign='pagetitle'}
-{else}
-    {gt text='Submit a publication' assign='pagetitle'}
-{/if}
-{if !$homepage}{pagesetvar name='title' value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
-
 <div class="clip-edit clip-edit-{$pubtype.urltitle} clip-edit-{$pubtype.urltitle}-{$clipargs.edit.state}">
     {include file='generic_navbar.tpl'}
 
-    <h2>{$pagetitle}</h2>
+    <h2>
+        {if $pubdata.id}
+            {gt text="Edit '%s'" tag1=$pubdata.core_title|truncate:50}
+        {else}
+            {gt text='Submit a publication'}
+        {/if}
+    </h2>
 
     {form cssClass='z-form' enctype='multipart/form-data'}
         <div>

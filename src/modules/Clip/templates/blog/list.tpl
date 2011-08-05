@@ -1,11 +1,10 @@
-{if !$homepage}{pagesetvar name="title" value="`$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 
 {* Open Graph tags
 {ogtag prop='title' content=$pubtype.title}
 {ogtag prop='type' content='site_section'}
 {ogtag prop='image' content=''}
 {ogtag prop='url' content=$returnurl}
-{ogtag prop='site_name' content=$modvars.ZConfig.sitename}
+{ogtag prop='site_name' content=$modvars.ZConfig.defaultpagetitle}
 *}
 
 <div class="clip-list clip-list-{$pubtype.urltitle}">

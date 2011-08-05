@@ -1,5 +1,4 @@
 
-{if !$homepage}{pagesetvar name='title' value="`$pubdata.core_title` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
 {clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}
 
 {* Open Graph tags
@@ -7,7 +6,7 @@
 {ogtag prop='type' content='article'}
 {ogtag prop='image' content=''}
 {ogtag prop='url' content=$returnurl}
-{ogtag prop='site_name' content=$modvars.ZConfig.sitename}
+{ogtag prop='site_name' content=$modvars.ZConfig.defaultpagetitle}
 *}
 
 <div class="clip-display clip-display-{$pubtype.urltitle}">

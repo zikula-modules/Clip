@@ -1,16 +1,14 @@
 
-{* process the title according the publication status *}
-{if $pubdata.id}
-    {gt text='Edit post' assign='pagetitle'}
-{else}
-    {gt text='New post' assign='pagetitle'}
-{/if}
-{if !$homepage}{pagesetvar name='title' value="`$pagetitle` - `$pubtype.title` - `$modvars.ZConfig.sitename`"}{/if}
-
 <div class="clip-edit clip-edit-{$pubtype.urltitle} clip-edit-{$pubtype.urltitle}-{$clipargs.edit.state}">
     {include file='generic_navbar.tpl'}
 
-    <h2>{$pagetitle}</h2>
+    <h2>
+        {if $pubdata.id}
+            {gt text='Edit post'}
+        {else}
+            {gt text='New post'}
+        {/if}
+    </h2>
 
     {form cssClass='z-form z-form-light' enctype='multipart/form-data'}
         <div>

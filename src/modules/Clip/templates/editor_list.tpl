@@ -1,6 +1,6 @@
 {pageaddvar name='stylesheet' value='system/Theme/style/pagercss.css'}
 {gt text="Editor's List" assign='pagetitle'}
-{pagesetvar name='title' value="`$pagetitle` - `$modvars.ZConfig.sitename`"}
+{pagesetvar name='title' value="`$pagetitle` - `$modvars.ZConfig.defaultpagetitle`"}
 {assign var='pagetitle' value="`$pubtype.title` &raquo; `$pagetitle`"}
 
 <div class="clip-editorpanel">
