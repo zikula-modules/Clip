@@ -80,6 +80,11 @@ class Clip_Controller_User extends Zikula_AbstractController
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
 
+        // skip main if there's no template
+        if (!$args['templateid'] && !$this->view->template_exists($args['template'])) {
+            return $this->view();
+        }
+
         //// Cache
         // check if cache is enabled and this view is cached
         if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
