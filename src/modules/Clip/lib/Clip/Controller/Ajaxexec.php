@@ -168,8 +168,8 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
         $diffs  = array();
         $udiffs = array();
         foreach (array_keys($original) as $gid) {
-            $diffs[$gid]  = array_diff($map[$gid], $original[$gid]);
-            $udiffs[$gid] = array_diff_assoc($map[$gid], $original[$gid]);
+            $diffs[$gid]  = array_diff($gids[$gid], $original[$gid]);
+            $udiffs[$gid] = array_diff_assoc($gids[$gid], $original[$gid]);
         }
 
         $result = true;
@@ -184,7 +184,7 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
 
                 foreach ($diffs as $gid => $diff) {
                     $newpos = key($diff);
-                    $maxpos = count($map[$gid]) - 1;
+                    $maxpos = count($gids[$gid]) - 1;
                     switch ($newpos) {
                         case 0:
                             $method = 'moveAsFirstChildOf';
@@ -193,7 +193,7 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
                             $method = 'moveAsLastChildOf';
                             break;
                         default:
-                            $gid = $map[$gid][$newpos-1];
+                            $gid = $gids[$gid][$newpos-1];
                             $method = 'moveAsNextSiblingOf';
                     }
                     $refer = $tbl->find($gid);
@@ -245,6 +245,7 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
         $result = array(
             'response' => $result
         );
+
         return new Zikula_Response_Ajax($result);
     }
 }
