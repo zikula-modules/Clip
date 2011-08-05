@@ -723,12 +723,13 @@ class Clip_Api_User extends Zikula_AbstractApi
                 break;
 
             case 'edit':
+var_dump($_, $pid);
                 if (isset($pid)) {
                     // edit: capture and remove the pub title
                     $pubtitle = reset($_);
-                    unset($_[0]);
+                    unset($_[key($_)]);
                 }
-
+var_dump($_);
                 switch (count($_)) {
                     case 3:
                     case 2:
