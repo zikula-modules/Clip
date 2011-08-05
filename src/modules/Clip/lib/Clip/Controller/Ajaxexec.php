@@ -128,14 +128,14 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
         $data = json_decode($this->request->getPost()->get('data'), true);
 
         $tids = array();
-        $map  = array(1 => array());
+        $gids = array(1 => array());
         foreach ($data as $id => $item) {
             $id = explode('-', $id);
             $item['parent'] = $item['parent'] == 0 ? 1 : $item['parent'];
             if (!isset($id[1])) {
                 // grouptype
-                $map[$item['parent']][] = $id[0];
-                $map[$id[0]] = array();
+                $gids[$item['parent']][] = $id[0];
+                $gids[$id[0]] = array();
             } else {
                 // pubtype
                 $tids[$item['parent']][] = $id[1];
@@ -157,10 +157,10 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
                 // assign and link its pubtypes
                 $item->order = $tids[$item['gid']];
                 $item->link('pubtypes', $tids[$item['gid']]);
+                $item->save();
             }
             $parents[$item['level']] = $item['gid'];
         }
-        $grouptypes->save();
         unset($grouptypes);
         unset($tids);
 
