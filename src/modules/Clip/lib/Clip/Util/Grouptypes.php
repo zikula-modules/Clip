@@ -227,7 +227,9 @@ class Clip_Util_Grouptypes
     public static function sortPubtypes($grouptype)
     {
         $pubtypes = array();
-        $last = sizeof($grouptype['order']) - 1;
+
+        $last = sizeof($grouptype['order']);
+
         foreach ($grouptype['pubtypes'] as $pubtype) {
             $pos = array_search($pubtype['tid'], $grouptype['order']);
             if ($pos === false) {
