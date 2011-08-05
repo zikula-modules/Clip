@@ -1,7 +1,7 @@
 
 {if !$homepage}{pagesetvar name='title' value="`$pubtype.title` - `$modvars.ZConfig.defaultpagetitle`"}{/if}
 
-<div class="clip-list clip-list-{$pubtype.urltitle}">
+<div class="clip-wrapper clip-list clip-list-{$pubtype.urltitle}">
     {include file='generic_navbar.tpl'}
 
     <h2>{$pubtype.title}</h2>
