@@ -379,17 +379,22 @@ class Clip_Controller_User extends Zikula_AbstractController
         // fetch simple templates
         if (isset($args['templatesimple'])) {
             if (!$this->view->template_exists($args['templatesimple'])) {
-                $args['templatesimple'] = "simple_{$args['template']}.tpl";
-                // TODO simple template per pubtype too
+                // make sure the simple template exists
                 if (!$this->view->template_exists($args['templatesimple'])) {
-                    $args['templatesimple'] = '';
+                    $args['templatesimple'] = "displaysimple_{$args['template']}.tpl";
+                    if (!$this->view->template_exists($args['templatesimple'])) {
+                        $args['templatesimple'] = '';
+                    }
                 }
             }
-            if ($args['templatesimple'] != '') {
-                $this->view->assign('clip_simple_tpl', true)
-                           ->assign('pubtype', $pubtype);
-                return $this->view->fetch($args['templatesimple']);
+
+            if (!$args['templatesimple']) {
+                return LogUtil::registerError($this->__('The requested page cannot be displayed. Please contact the administrador.'));
             }
+
+            return $this->view->assign('clip_simple_tpl', true)
+                              ->assign('pubtype', $pubtype)
+                              ->fetch($args['templatesimple']);
         }
 
         //// Security
