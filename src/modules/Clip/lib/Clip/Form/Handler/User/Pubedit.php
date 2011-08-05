@@ -168,8 +168,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                                              'goto' => 'stepmode'));
                 break;
 
-            case 'submit':
-                $this->goto = ModUtil::url('Clip', 'user', 'edit', array('tid' => $data['core_tid']));
+            case 'form':
+                $this->goto = ModUtil::url('Clip', 'user', 'edit', array('tid' => $data['core_tid'], 'goto' => 'form'));
                 break;
 
             case 'list':
