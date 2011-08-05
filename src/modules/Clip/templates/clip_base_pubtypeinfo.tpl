@@ -122,6 +122,8 @@
 </div>
 
 <div id="p{$pubtype.tid}fields" class="clip-infotab">
+    <a class="z-floatright" href="{modurl modname='Clip' type='dmin' func='pubfields' tid=$pubtype.tid fragment='newpubfield'}">{gt text='Add a new field'}</a>
+
     <h4>{gt text='Fields'}</h4>
 
     <table class="z-datatable">
@@ -145,11 +147,16 @@
                     </a>
                 </td>
             </tr>
+            {foreachelse}
+            <tr>
+                <td colspan="5">{gt text='There are no field defined yet.'}</td>
+            </tr>
             {/foreach}
         </tbody>
     </table>
 
-    {if $pubtype->getRelations(false)}
+    <a class="z-floatright" href="{modurl modname='Clip' type='admin' func='relations' tid=$pubtype.tid withtid1=$item.tid op='and' withtid2=$pubtype.tid fragment='relform'}">{gt text='Add a new relation'}</a>
+
     <h4>{gt text='Relations'}</h4>
 
     <table class="z-datatable">
@@ -163,7 +170,7 @@
             </tr>
         </thead>
         <tbody>
-            {foreach from=$pubtype->allrelations item='item'}
+            {foreach from=$pubtype->getRelations(false) item='item'}
             <tr class="{cycle name='prelationlist' values='z-even,z-odd'}">
                 <td><code>{$item.alias|safetext}</code></td>
                 <td>
@@ -187,10 +194,13 @@
                     {/if}
                 </td>
             </tr>
+            {foreachelse}
+            <tr>
+                <td colspan="5">{gt text='There are no relations defined.'}</td>
+            </tr>
             {/foreach}
         </tbody>
     </table>
-    {/if}
 </div>
 
 {*<div id="p{$pubtype.tid}perms" class="clip-infotab">
