@@ -51,7 +51,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         //// Processing
         // handle the Doctrine_Record data as an array from here
-        $data = $this->pub->toArray();
+        $data = $this->pub->clipValues()->toArray();
 
         // process the relations
         $relconfig = $this->pubtype['config']['edit'];
