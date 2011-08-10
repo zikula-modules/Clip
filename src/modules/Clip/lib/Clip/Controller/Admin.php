@@ -94,7 +94,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
         //// Output
         return FormUtil::newForm('Clip', $this)
-               ->execute('clip_admin_pubtype.tpl',
+               ->execute('clip_base_pubtype.tpl',
                          new Clip_Form_Handler_Admin_Pubtypes());
     }
 
@@ -116,7 +116,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
         //// Output
         return FormUtil::newForm('Clip', $this)
-               ->execute('clip_admin_pubfields.tpl',
+               ->execute('clip_base_pubfields.tpl',
                          new Clip_Form_Handler_Admin_Pubfields());
     }
 
@@ -130,36 +130,8 @@ class Clip_Controller_Admin extends Zikula_AbstractController
 
         //// Output
         return FormUtil::newForm('Clip', $this)
-               ->execute('clip_admin_relations.tpl',
+               ->execute('clip_base_relations.tpl',
                          new Clip_Form_Handler_Admin_Relations());
-    }
-
-    /**
-     * Export process.
-     */
-    public function clipexport()
-    {
-        //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
-
-        //// Output
-        return FormUtil::newForm('Clip', $this)
-               ->execute('clip_admin_export.tpl',
-                         new Clip_Form_Handler_Admin_Export());
-    }
-
-    /**
-     * Import process.
-     */
-    public function clipimport()
-    {
-        //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
-
-        //// Output
-        return FormUtil::newForm('Clip', $this)
-               ->execute('clip_admin_import.tpl',
-                         new Clip_Form_Handler_Admin_Import());
     }
 
     /**
@@ -230,6 +202,34 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                    ->assign('pubtype', Clip_Util::getPubType($args['tid']));
 
         return $this->view->fetch('clip_base_generator.tpl');
+    }
+
+    /**
+     * Export process.
+     */
+    public function clipexport()
+    {
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+
+        //// Output
+        return FormUtil::newForm('Clip', $this)
+               ->execute('clip_admin_export.tpl',
+                         new Clip_Form_Handler_Admin_Export());
+    }
+
+    /**
+     * Import process.
+     */
+    public function clipimport()
+    {
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+
+        //// Output
+        return FormUtil::newForm('Clip', $this)
+               ->execute('clip_admin_import.tpl',
+                         new Clip_Form_Handler_Admin_Import());
     }
 
     /**

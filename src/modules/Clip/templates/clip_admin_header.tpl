@@ -17,3 +17,5 @@
     </div>
 
     {modulelinks modname='Clip' type='admin'}
+
+{* must be used with the adminfooter *}

@@ -1,6 +1,4 @@
 
-{include file='clip_admin_header.tpl'}
-
 <div class="z-admin-content-pagetitle">
     {icon type='hook' size='small'}
     {if $tid}
@@ -186,4 +184,3 @@
     </div>
 </div>
 {/form}
-{adminfooter}

@@ -1,5 +1,4 @@
-{pageaddvar name='javascript' value='zikula.ui'}
 
-{adminheader}
+{include file='clip_admin_header.tpl'}
 {$maincontent}
 {adminfooter}

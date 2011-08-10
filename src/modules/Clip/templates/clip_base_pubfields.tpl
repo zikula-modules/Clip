@@ -1,6 +1,9 @@
 {ajaxheader module='Clip' filename='clip_admin_pubfields.js' ui=true}
-
-{include file='clip_admin_header.tpl'}
+{pageaddvarblock name='header'}
+<script type="text/javascript">
+    document.observe('dom:loaded', pubfieldlistsortinit);
+</script>
+{/pageaddvarblock}
 
 <div class="z-admin-content-pagetitle">
     {img modname='core' src='db_update.png' set='icons/small' alt=''}
@@ -185,4 +188,3 @@
     </div>
 </div>
 {/form}
-{adminfooter}

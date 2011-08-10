@@ -8,8 +8,6 @@
  * @subpackage Javascript
  */
 
-document.observe('dom:loaded', clip_pubtype_init);
-
 function clip_pubtype_init()
 {
     var i = 0;

@@ -1,5 +1,7 @@
-{pageaddvar name='stylesheet' value='system/Theme/style/pagercss.css'}
 {ajaxheader filename='Zikula.Clip.Container.js' ui=true}
+{pageaddvar name='javascript' value='modules/Clip/javascript/clip_admin_pubtype.js'}
+{pageaddvar name='javascript' value='modules/Clip/javascript/clip_admin_pubfields.js'}
+{pageaddvar name='stylesheet' value='system/Theme/style/pagercss.css'}
 
 {include file='clip_admin_header.tpl'}
 

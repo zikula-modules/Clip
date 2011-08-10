@@ -53,5 +53,3 @@ function pubfieldlistsortinit()
     // enable the tooltips
     Zikula.UI.Tooltips($$('.tooltips'));
 }
-
-document.observe('dom:loaded', pubfieldlistsortinit, false);

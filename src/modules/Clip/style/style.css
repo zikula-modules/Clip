@@ -10,10 +10,11 @@
 
 
 /*** Admin GUI ***/
-.z-module-clip .z-admin-content-pagetitle .z-menu {
+#clip-adminmenu {
   margin-bottom: 0;
 }
-.z-module-clip .z-admin-content .clip-breadcrumbs {
+#clip-adminmenu .z-menuitem-title {
+  background: none;
   border: none;
   line-height: 1.5em;
 }
