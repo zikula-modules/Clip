@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula component\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-28 20:20-0500\n"
+"POT-Creation-Date: 2011-08-10 18:49-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,8 +24,8 @@ msgstr ""
 #: lib/Clip/Api/User.php:275 lib/Clip/Api/User.php:384
 #: lib/Clip/Api/User.php:387 lib/Clip/Api/User.php:422
 #: lib/Clip/Api/User.php:425 lib/Clip/Api/User.php:446
-#: lib/Clip/Api/User.php:449 lib/Clip/Controller/User.php:683
-#: lib/Clip/Controller/Editor.php:167 lib/Clip/Controller/Admin.php:189
+#: lib/Clip/Api/User.php:449 lib/Clip/Controller/User.php:694
+#: lib/Clip/Controller/Editor.php:167 lib/Clip/Controller/Admin.php:161
 #, php-format
 msgid "Error! Missing argument [%s]."
 msgstr ""
@@ -65,28 +65,32 @@ msgid "Error! No such category found for the ID passed [%s]."
 msgstr ""
 
 #: templates/plugins/function.clip_category_browser.php:208
-#: templates/pages/list.tpl:18 templates/pages/display.tpl:58
-#: templates/blog/list.tpl:39 templates/blog/display.tpl:45
+#: templates/pages/list.tpl:18 templates/pages/display.tpl:57
+#: templates/blog/list.tpl:38 templates/blog/display.tpl:44
 msgid "Uncategorized"
 msgstr ""
 
 #: templates/plugins/function.clip_editoractions.php:55
-#: templates/clip_generic_navbar.tpl:91
+#: templates/generic_navbar.tpl:92
 msgid "Edit this publication"
 msgstr ""
 
 #: templates/plugins/function.clip_editoractions.php:55
-#: templates/plugins/function.clip_adminmenu.php:51
-#: templates/plugins/function.clip_adminmenu.php:53
-#: lib/Clip/Form/Plugin/RadioList.php:101
-#: templates/clip_admin_relations.tpl:86 templates/clip_base_publist.tpl:80
-#: templates/clip_generic_blocklist.tpl:13 templates/pages/list.tpl:55
-#: templates/pages/display.tpl:35 templates/pages/list_fblike.tpl:29
-#: templates/clip_admin_pubfields.tpl:82 templates/clip_base_history.tpl:48
-#: templates/blog/list.tpl:52 templates/blog/display.tpl:64
-#: templates/clip_base_pubtypeinfo.tpl:75
-#: templates/clip_base_pubtypeinfo.tpl:79 templates/clip_generic_navbar.tpl:91
-#: templates/clip_generic_navbar.tpl:104 templates/clip_generic_list.tpl:27
+#: templates/plugins/function.clip_adminmenu.php:54
+#: templates/plugins/function.clip_adminmenu.php:56
+#: lib/Clip/Form/Plugin/RadioList.php:101 templates/clip_base_publist.tpl:80
+#: templates/clip_base_pubfields.tpl:85 templates/generic_blocklist.tpl:13
+#: templates/pages/list.tpl:55 templates/pages/display.tpl:34
+#: templates/pages/list_fblike.tpl:27 templates/clip_base_history.tpl:48
+#: templates/blog/list.tpl:51 templates/blog/display.tpl:63
+#: templates/clip_base_relations.tpl:84
+#: templates/clip_base_pubtypeinfo.tpl:135
+#: templates/clip_base_pubtypeinfo.tpl:146
+#: templates/clip_base_pubtypeinfo.tpl:169
+#: templates/clip_base_pubtypeinfo.tpl:188
+#: templates/clip_base_pubtypeinfo.tpl:192 templates/generic_list.tpl:25
+#: templates/generic_navbar.tpl:92 templates/generic_navbar.tpl:105
+#: templates/generic_navbar.tpl:125
 msgid "Edit"
 msgstr ""
 
@@ -96,77 +100,80 @@ msgstr ""
 msgid "%1$s: Invalid publication type ID passed [%2$s]."
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:43
+#: templates/plugins/function.clip_adminmenu.php:44
 msgid "Info"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:60
-#: templates/plugins/function.clip_adminmenu.php:62
-#: templates/plugins/function.clip_adminmenu.php:64
+#: templates/plugins/function.clip_adminmenu.php:65
+#: templates/plugins/function.clip_adminmenu.php:67
+#: templates/plugins/function.clip_adminmenu.php:69
+#: templates/clip_base_pubtypeinfo.tpl:11
+#: templates/clip_base_pubtypeinfo.tpl:127
 msgid "Fields"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:70 lib/Clip/Api/Admin.php:36
-#: templates/clip_admin_relations.tpl:7 templates/clip_admin_relations.tpl:17
+#: templates/plugins/function.clip_adminmenu.php:78 lib/Clip/Api/Admin.php:36
+#: templates/clip_base_relations.tpl:5 templates/clip_base_relations.tpl:15
+#: templates/clip_base_pubtypeinfo.tpl:160
 msgid "Relations"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:76
-#: templates/plugins/function.clip_adminmenu.php:101
+#: templates/plugins/function.clip_adminmenu.php:86
+#: templates/plugins/function.clip_adminmenu.php:111
 msgid "Generate templates"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:81 lib/Clip/Api/Admin.php:29
+#: templates/plugins/function.clip_adminmenu.php:91 lib/Clip/Api/Admin.php:29
 msgid "Index"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:81
+#: templates/plugins/function.clip_adminmenu.php:91
 msgid "Publication type main template"
 msgstr ""
 
 #. ! field type name
-#: templates/plugins/function.clip_adminmenu.php:84
-#: lib/Clip/Form/Plugin/List.php:25 templates/clip_base_pubtypeinfo.tpl:102
+#: templates/plugins/function.clip_adminmenu.php:94
+#: lib/Clip/Form/Plugin/List.php:25 templates/clip_base_pubtypeinfo.tpl:91
 msgid "List"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:84
+#: templates/plugins/function.clip_adminmenu.php:94
 msgid "Publications list template"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:87
-#: templates/clip_base_pubtypeinfo.tpl:110
+#: templates/plugins/function.clip_adminmenu.php:97
+#: templates/clip_base_pubtypeinfo.tpl:99
 msgid "Display"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:87
+#: templates/plugins/function.clip_adminmenu.php:97
 msgid "Publication display template"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:90
-#: templates/clip_base_pubtypeinfo.tpl:94
+#: templates/plugins/function.clip_adminmenu.php:100
+#: templates/clip_base_pubtypeinfo.tpl:83
 msgid "Form"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:90
+#: templates/plugins/function.clip_adminmenu.php:100
 msgid "Publication input form template"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:93
-#: templates/clip_base_pubtypeinfo.tpl:118
+#: templates/plugins/function.clip_adminmenu.php:103
+#: templates/clip_base_pubtypeinfo.tpl:107
 msgid "List block"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:93
+#: templates/plugins/function.clip_adminmenu.php:103
 #: templates/clip_base_generator.tpl:31
 msgid "List block template"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:96
+#: templates/plugins/function.clip_adminmenu.php:106
 msgid "Pub block"
 msgstr ""
 
-#: templates/plugins/function.clip_adminmenu.php:96
+#: templates/plugins/function.clip_adminmenu.php:106
 msgid "Publication block template"
 msgstr ""
 
@@ -235,7 +242,7 @@ msgstr ""
 #: workflows/function.enterprise_permissioncheck.php:56
 #: workflows/function.none_permissioncheck.php:50
 #: workflows/function.standard_permissioncheck.php:54
-#: templates/clip_generic_navbar.tpl:106
+#: templates/generic_navbar.tpl:107 templates/generic_navbar.tpl:127
 msgid "Submit"
 msgstr ""
 
@@ -338,8 +345,8 @@ msgstr ""
 #: workflows/function.none_permissioncheck.php:56
 #: workflows/function.standard_permissioncheck.php:62
 #: workflows/function.standard_permissioncheck.php:70
-#: templates/clip_admin_relations.tpl:180
-#: templates/clip_admin_pubfields.tpl:179 templates/clip_admin_pubtype.tpl:234
+#: templates/clip_base_pubfields.tpl:182 templates/clip_base_pubtype.tpl:237
+#: templates/clip_base_relations.tpl:178
 msgid "Delete"
 msgstr ""
 
@@ -380,6 +387,7 @@ msgid "Hide the publication"
 msgstr ""
 
 #: workflows/function.none_permissioncheck.php:39
+#: templates/clip_base_pubtypeinfo.tpl:42
 msgid "None"
 msgstr ""
 
@@ -395,8 +403,8 @@ msgid "Content has been approved and is available online"
 msgstr ""
 
 #: workflows/function.none_permissioncheck.php:50
-#: templates/clip_generic_main.tpl:21 templates/blog/main.tpl:21
-#: templates/clip_generic_edit.tpl:6 templates/clip_generic_navbar.tpl:30
+#: templates/generic_main.tpl:19 templates/blog/main.tpl:19
+#: templates/generic_edit.tpl:9 templates/generic_navbar.tpl:31
 msgid "Submit a publication"
 msgstr ""
 
@@ -500,16 +508,16 @@ msgstr ""
 msgid "Clip list of filtered, ordered, and/or formatted publications."
 msgstr ""
 
-#: lib/Clip/Form/PluginType.php:67 templates/clip_admin_relations.tpl:178
-#: templates/clip_admin_pubfields.tpl:177 templates/clip_admin_pubtype.tpl:231
+#: lib/Clip/Form/PluginType.php:67 templates/clip_base_pubfields.tpl:180
+#: templates/clip_base_pubtype.tpl:234 templates/clip_base_relations.tpl:176
 #: templates/clip_admin_modifyconfig.tpl:68
 msgid "Save"
 msgstr ""
 
-#: lib/Clip/Form/PluginType.php:68 templates/clip_admin_relations.tpl:185
-#: templates/pages/form_all.tpl:102 templates/clip_admin_pubfields.tpl:184
-#: templates/blog/form_all.tpl:97 templates/clip_generic_edit.tpl:80
-#: templates/clip_admin_pubtype.tpl:239 templates/clip_admin_import.tpl:30
+#: lib/Clip/Form/PluginType.php:68 templates/clip_base_pubfields.tpl:187
+#: templates/pages/form_all.tpl:100 templates/clip_base_pubtype.tpl:242
+#: templates/blog/form_all.tpl:95 templates/clip_base_relations.tpl:183
+#: templates/clip_admin_import.tpl:30 templates/generic_edit.tpl:78
 #: templates/clip_admin_export.tpl:66 templates/clip_admin_modifyconfig.tpl:70
 msgid "Cancel"
 msgstr ""
@@ -536,22 +544,22 @@ msgid "No such relation found [%s]."
 msgstr ""
 
 #: lib/Clip/Form/Handler/Admin/Relations.php:96
-#: templates/clip_admin_relations.tpl:115
+#: templates/clip_base_relations.tpl:113
 msgid "One"
 msgstr ""
 
 #: lib/Clip/Form/Handler/Admin/Relations.php:100
-#: templates/clip_admin_relations.tpl:115
+#: templates/clip_base_relations.tpl:113
 msgid "Many"
 msgstr ""
 
 #: lib/Clip/Form/Handler/Admin/Relations.php:106
-#: templates/clip_admin_relations.tpl:117
+#: templates/clip_base_relations.tpl:115
 msgid "has One"
 msgstr ""
 
 #: lib/Clip/Form/Handler/Admin/Relations.php:110
-#: templates/clip_admin_relations.tpl:117
+#: templates/clip_base_relations.tpl:115
 msgid "has Many"
 msgstr ""
 
@@ -602,11 +610,11 @@ msgstr ""
 #: lib/Clip/Form/Handler/Admin/Pubtypes.php:29
 #: lib/Clip/Form/Handler/Admin/Pubfields.php:31 lib/Clip/Api/User.php:40
 #: lib/Clip/Api/User.php:272 lib/Clip/Controller/User.php:51
-#: lib/Clip/Controller/User.php:167 lib/Clip/Controller/User.php:326
-#: lib/Clip/Controller/User.php:513 lib/Clip/Controller/User.php:664
+#: lib/Clip/Controller/User.php:172 lib/Clip/Controller/User.php:331
+#: lib/Clip/Controller/User.php:524 lib/Clip/Controller/User.php:675
 #: lib/Clip/Controller/Ajaxdata.php:45 lib/Clip/Controller/Editor.php:73
 #: lib/Clip/Controller/Editor.php:152 lib/Clip/Controller/Admin.php:68
-#: lib/Clip/Controller/Admin.php:111 lib/Clip/Controller/Admin.php:178
+#: lib/Clip/Controller/Admin.php:111 lib/Clip/Controller/Admin.php:150
 #, php-format
 msgid "Error! Invalid publication type ID passed [%s]."
 msgstr ""
@@ -768,8 +776,8 @@ msgstr ""
 
 #: lib/Clip/Form/Plugin/MultiList.php:174
 #: lib/Clip/Form/Plugin/RadioList.php:192 lib/Clip/Form/Plugin/List.php:138
-#: lib/Clip/Form/Plugin/MultiCheck.php:162 templates/pages/form_all.tpl:27
-#: templates/blog/form_all.tpl:36
+#: lib/Clip/Form/Plugin/MultiCheck.php:162 templates/pages/form_all.tpl:25
+#: templates/blog/form_all.tpl:34
 msgid "Category"
 msgstr ""
 
@@ -969,7 +977,7 @@ msgstr ""
 msgid "Data import succeded!"
 msgstr ""
 
-#: lib/Clip/Api/User.php:46 lib/Clip/Controller/User.php:536
+#: lib/Clip/Api/User.php:46 lib/Clip/Controller/User.php:547
 msgid "Error! No publication fields found."
 msgstr ""
 
@@ -977,7 +985,7 @@ msgstr ""
 msgid "commandName has to be a valid workflow action for the current state."
 msgstr ""
 
-#: lib/Clip/Api/User.php:402 lib/Clip/Controller/User.php:711
+#: lib/Clip/Api/User.php:402 lib/Clip/Controller/User.php:722
 msgid "Unknown workflow action error. Operation failed."
 msgstr ""
 
@@ -985,7 +993,7 @@ msgstr ""
 msgid "Error! Could not save the search results."
 msgstr ""
 
-#: lib/Clip/Api/Admin.php:40 templates/clip_import_ps.tpl:5
+#: lib/Clip/Api/Admin.php:40 templates/import_pagesetter.tpl:5
 #: templates/clip_admin_export.tpl:7 templates/clip_admin_export.tpl:65
 msgid "Export"
 msgstr ""
@@ -1057,92 +1065,92 @@ msgstr ""
 msgid "Workflow operation function [%s] is not defined"
 msgstr ""
 
-#: lib/Clip/Installer.php:242 lib/Clip/Version.php:42
+#: lib/Clip/Installer.php:243 lib/Clip/Version.php:42
 msgid "Clip"
 msgstr ""
 
-#: lib/Clip/Installer.php:243
+#: lib/Clip/Installer.php:244
 msgid "Clip root category"
 msgstr ""
 
 #. ! this is the 'Topics' category name to registry
-#: lib/Clip/Installer.php:258
+#: lib/Clip/Installer.php:259
 msgid "Topics"
 msgstr ""
 
-#: lib/Clip/Installer.php:259
+#: lib/Clip/Installer.php:260
 msgid "Clip topics for its publications"
 msgstr ""
 
-#: lib/Clip/Installer.php:274
+#: lib/Clip/Installer.php:275
 msgid "Zikula related publications"
 msgstr ""
 
 #. ! this is the 'Free Software' example category name
-#: lib/Clip/Installer.php:283
+#: lib/Clip/Installer.php:284
 msgid "Free Software"
 msgstr ""
 
-#: lib/Clip/Installer.php:284
+#: lib/Clip/Installer.php:285
 msgid "Free software related publications"
 msgstr ""
 
 #. ! this is the 'Community' example category name
-#: lib/Clip/Installer.php:293
+#: lib/Clip/Installer.php:294
 msgid "Community"
 msgstr ""
 
-#: lib/Clip/Installer.php:294
+#: lib/Clip/Installer.php:295
 msgid "Community related publications"
 msgstr ""
 
-#: lib/Clip/Installer.php:308
+#: lib/Clip/Installer.php:309
 #, php-format
 msgid "Error! Could not create the [%s] Category Registry for Clip."
 msgstr ""
 
-#: lib/Clip/Installer.php:325
+#: lib/Clip/Installer.php:326
 #, php-format
 msgid "Category %s must be unique under parent"
 msgstr ""
 
-#: lib/Clip/Installer.php:328
+#: lib/Clip/Installer.php:329
 #, php-format
 msgid "Error! Could not create the [%s] category."
 msgstr ""
 
 #. ! name of the Default group of pubtypes
-#: lib/Clip/Installer.php:370
+#: lib/Clip/Installer.php:371
 msgid "Contents"
 msgstr ""
 
-#: lib/Clip/Installer.php:371
+#: lib/Clip/Installer.php:372
 msgid "Publication contents of this site."
 msgstr ""
 
-#: lib/Clip/Installer.php:385
+#: lib/Clip/Installer.php:386
 #, php-format
 msgid ""
 "Clip created the upload directory successfully at [%s]. Be sure that this "
 "directory is accessible via web and writable by the webserver."
 msgstr ""
 
-#: lib/Clip/Installer.php:389
+#: lib/Clip/Installer.php:390
 #, php-format
 msgid ""
 "Clip detected that the upload directory is already created at [%s] but it's "
 "not writable. Be sure to correct that and that it's accessible via web."
 msgstr ""
 
-#: lib/Clip/Installer.php:391
+#: lib/Clip/Installer.php:392
 #, php-format
 msgid ""
 "Clip detected that the upload directory is already created at [%s]. Be sure "
 "that it's accessible via web."
 msgstr ""
 
-#: lib/Clip/Installer.php:556 lib/Clip/Installer.php:598
-#: lib/Clip/Installer.php:971 lib/Clip/Controller/Ajaxexec.php:41
+#: lib/Clip/Installer.php:557 lib/Clip/Installer.php:599
+#: lib/Clip/Installer.php:972 lib/Clip/Controller/Ajaxexec.php:41
 msgid "Error! Update attempt failed."
 msgstr ""
 
@@ -1152,13 +1160,13 @@ msgid "The parameter %s must not be empty"
 msgstr ""
 
 #: lib/Clip/Util/Selectors.php:160 lib/Clip/Block/List.php:148
-#: templates/clip_base_publist.tpl:37 templates/clip_admin_pubfields.tpl:53
-#: templates/clip_editor_list.tpl:32
+#: templates/clip_base_publist.tpl:37 templates/clip_base_pubfields.tpl:56
+#: templates/editor_list.tpl:32
 msgid "Creation date"
 msgstr ""
 
 #: lib/Clip/Util/Selectors.php:164 lib/Clip/Block/List.php:152
-#: templates/clip_base_publist.tpl:42 templates/clip_admin_pubfields.tpl:55
+#: templates/clip_base_publist.tpl:42 templates/clip_base_pubfields.tpl:58
 #: templates/clip_base_history.tpl:16
 msgid "Update date"
 msgstr ""
@@ -1172,20 +1180,20 @@ msgid "Updater"
 msgstr ""
 
 #: lib/Clip/Util/Selectors.php:176 lib/Clip/Block/List.php:164
-#: templates/pages/form_all.tpl:66 templates/blog/form_all.tpl:64
-#: templates/clip_generic_edit.tpl:47
+#: templates/pages/form_all.tpl:64 templates/blog/form_all.tpl:62
+#: templates/generic_edit.tpl:45
 msgid "Publish date"
 msgstr ""
 
 #: lib/Clip/Util/Selectors.php:180 lib/Clip/Block/List.php:168
-#: templates/pages/form_all.tpl:72 templates/blog/form_all.tpl:70
-#: templates/clip_generic_edit.tpl:53
+#: templates/pages/form_all.tpl:70 templates/blog/form_all.tpl:68
+#: templates/generic_edit.tpl:51
 msgid "Expire date"
 msgstr ""
 
 #: lib/Clip/Util/Selectors.php:184 lib/Clip/Block/List.php:172
-#: templates/pages/form_all.tpl:32 templates/blog/form_all.tpl:59
-#: templates/clip_generic_edit.tpl:42
+#: templates/pages/form_all.tpl:30 templates/blog/form_all.tpl:57
+#: templates/generic_edit.tpl:40
 msgid "Language"
 msgstr ""
 
@@ -1202,14 +1210,15 @@ msgstr ""
 msgid "Group ID [%s]"
 msgstr ""
 
-#: lib/Clip/Util/Grouptypes.php:195 templates/clip_admin_relations.tpl:54
+#: lib/Clip/Util/Grouptypes.php:195 templates/clip_base_relations.tpl:52
 msgid "ID"
 msgstr ""
 
 #: lib/Clip/Util/Grouptypes.php:196 templates/clip_ajax_groupedit.tpl:27
-#: templates/clip_admin_relations.tpl:141
-#: templates/clip_admin_relations.tpl:158
-#: templates/clip_admin_pubfields.tpl:40 templates/clip_admin_pubtype.tpl:32
+#: templates/clip_base_pubfields.tpl:43 templates/clip_base_pubtype.tpl:35
+#: templates/clip_base_relations.tpl:139 templates/clip_base_relations.tpl:156
+#: templates/clip_base_pubtypeinfo.tpl:133
+#: templates/clip_base_pubtypeinfo.tpl:167
 msgid "Description"
 msgstr ""
 
@@ -1241,52 +1250,57 @@ msgstr ""
 msgid "Sorry! No such group found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:126 lib/Clip/Controller/User.php:285
-#: lib/Clip/Controller/User.php:470 lib/Clip/Controller/User.php:628
+#: lib/Clip/Controller/User.php:131 lib/Clip/Controller/User.php:290
+#: lib/Clip/Controller/User.php:481 lib/Clip/Controller/User.php:639
 msgid "This page cannot be displayed. Please contact the administrator."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:131 lib/Clip/Controller/User.php:290
-#: lib/Clip/Controller/User.php:474 lib/Clip/Controller/User.php:608
-#: lib/Clip/Controller/User.php:619 lib/Clip/Controller/User.php:632
+#: lib/Clip/Controller/User.php:136 lib/Clip/Controller/User.php:295
+#: lib/Clip/Controller/User.php:485 lib/Clip/Controller/User.php:619
+#: lib/Clip/Controller/User.php:630 lib/Clip/Controller/User.php:643
 #, php-format
 msgid "Notice: Template [%s] not found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:353
+#: lib/Clip/Controller/User.php:358
 #, php-format
 msgid "Error! Missing or wrong argument [%s]."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:441
+#: lib/Clip/Controller/User.php:397
+msgid ""
+"The requested page cannot be displayed. Please contact the administrador."
+msgstr ""
+
+#: lib/Clip/Controller/User.php:452
 #, php-format
 msgid "No such publication [tid: %1$s - pid: %2$s; id: %3$s] found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:443
+#: lib/Clip/Controller/User.php:454
 msgid "No such publication found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:544 lib/Clip/Controller/User.php:561
+#: lib/Clip/Controller/User.php:555 lib/Clip/Controller/User.php:572
 #, php-format
 msgid "Error! No such publication [%s - %s] found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:691
+#: lib/Clip/Controller/User.php:702
 #, php-format
 msgid "Error! No such publication [%s] found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:703
+#: lib/Clip/Controller/User.php:714
 msgid "Error! Invalid action passed."
 msgstr ""
 
-#: lib/Clip/Model/Pubtype.php:276
+#: lib/Clip/Model/Pubtype.php:281
 #, php-format
 msgid "%s Item Hooks"
 msgstr ""
 
-#: lib/Clip/Model/Pubtype.php:287
+#: lib/Clip/Model/Pubtype.php:292
 #, php-format
 msgid "%s Filter"
 msgstr ""
@@ -1395,155 +1409,13 @@ msgstr ""
 msgid "Create new group"
 msgstr ""
 
-#: templates/clip_ajax_groupedit.tpl:18 templates/clip_admin_pubfields.tpl:20
-#: templates/clip_admin_pubfields.tpl:106
+#: templates/clip_ajax_groupedit.tpl:18 templates/clip_base_pubfields.tpl:23
+#: templates/clip_base_pubfields.tpl:109
 msgid "Name"
 msgstr ""
 
-#: templates/clip_admin_relations.tpl:10
-msgid "Manage Relations"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:20
-msgid "Filter by owner"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:27
-msgid "related"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:31
-msgid "Filter"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:32
-msgid "Clear"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:43
-#, php-format
-msgid "List filtered by [%1$s] as Owner %2$s [%3$s] as Related"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:45
-#, php-format
-msgid "List filtered by [%s] as Owner"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:47
-#, php-format
-msgid "List filtered by [%s] as Related"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:55
-#: templates/clip_admin_relations.tpl:131
-msgid "Owning side"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:56
-#: templates/clip_admin_relations.tpl:148
-msgid "Related side"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:57 templates/clip_admin_pubfields.tpl:26
-msgid "Actions"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:66
-#, php-format
-msgid "One <strong>%s</strong>"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:68
-#, php-format
-msgid "Many <strong>%s</strong>"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:77
-#, php-format
-msgid "has One <strong>%s</strong>"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:79
-#, php-format
-msgid "has Many <strong>%s</strong>"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:93
-msgid "No relations matches the current filter."
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:95
-msgid "There are no relations specified yet."
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:107
-msgid "Edit relation"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:109
-msgid "Add a relation"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:113
-#: templates/clip_admin_relations.tpl:121
-msgid "Definition:"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:133
-#: templates/clip_admin_relations.tpl:150
-msgid "Alias"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:134
-#: templates/clip_admin_relations.tpl:151
-msgid "Alias cannot contain special characters, only a-z, A-Z, 0-9 and _"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:137
-#: templates/clip_admin_relations.tpl:154 templates/clip_base_publist.tpl:18
-#: templates/pages/form_all.tpl:22 templates/clip_admin_pubfields.tpl:21
-#: templates/clip_base_history.tpl:10 templates/clip_admin_pubtype.tpl:22
-#: templates/clip_editor_list.tpl:19
-msgid "Title"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:165
-msgid ""
-"\n"
-"            Explanation of the side details:\n"
-"            <ul style=\"margin-bottom: 0\">\n"
-"                <li><strong>Alias</strong>: Used as a field name on the "
-"publication code. i.e. $pubdata.Alias1</li>\n"
-"                <li><strong>Title</strong>: Used in the user side forms as "
-"the public name of the relation.</li>\n"
-"                <li><strong>Description</strong>: Also used in the forms as "
-"the autocompleter tooltip.</li>\n"
-"            </ul>\n"
-"            "
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:179
-msgid "Are you sure you want to delete this relation?"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:182
-#: templates/clip_admin_pubfields.tpl:181 templates/clip_admin_pubtype.tpl:236
-msgid "Create"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:184 templates/pages/form_all.tpl:101
-#: templates/clip_admin_pubfields.tpl:183 templates/blog/form_all.tpl:96
-#: templates/clip_generic_edit.tpl:79 templates/clip_admin_pubtype.tpl:238
-#: templates/clip_admin_modifyconfig.tpl:69
-msgid "Reset"
-msgstr ""
-
-#: templates/clip_admin_relations.tpl:184 templates/pages/form_all.tpl:101
-#: templates/clip_admin_pubfields.tpl:183 templates/blog/form_all.tpl:96
-#: templates/clip_generic_edit.tpl:79 templates/clip_admin_pubtype.tpl:238
-#: templates/clip_admin_modifyconfig.tpl:69
-msgid "Reset the form to its initial state"
+#: templates/generic_main.tpl:15 templates/blog/main.tpl:15
+msgid "Go to the list"
 msgstr ""
 
 #: templates/clip_block_list_modify.tpl:3
@@ -1594,7 +1466,7 @@ msgid "You can customize the generic code <a href=\"%s\">available here</a>."
 msgstr ""
 
 #: templates/clip_block_list_modify.tpl:40
-msgid "If the template is not found, clip_generic_blocklist.tpl will be used."
+msgid "If the template is not found, generic_blocklist.tpl will be used."
 msgstr ""
 
 #: templates/clip_block_list_modify.tpl:45
@@ -1602,23 +1474,23 @@ msgstr ""
 msgid "Cache lifetime"
 msgstr ""
 
-#: templates/clip_admin_main.tpl:9
+#: templates/clip_admin_main.tpl:11
 msgid "Add group"
 msgstr ""
 
-#: templates/clip_admin_main.tpl:11
+#: templates/clip_admin_main.tpl:13
 msgid "Expand"
 msgstr ""
 
-#: templates/clip_admin_main.tpl:13
+#: templates/clip_admin_main.tpl:15
 msgid "Collapse"
 msgstr ""
 
-#: templates/clip_admin_main.tpl:21
+#: templates/clip_admin_main.tpl:23
 msgid "About Clip"
 msgstr ""
 
-#: templates/clip_admin_main.tpl:22
+#: templates/clip_admin_main.tpl:24
 msgid ""
 "\n"
 "            <p>Clip is one of the <strong>must have</strong> Zikula modules. "
@@ -1656,11 +1528,11 @@ msgid ""
 "            "
 msgstr ""
 
-#: templates/clip_admin_main.tpl:38
+#: templates/clip_admin_main.tpl:40
 msgid "About this Index"
 msgstr ""
 
-#: templates/clip_admin_main.tpl:39
+#: templates/clip_admin_main.tpl:41
 msgid ""
 "\n"
 "            <p>Clip let you organize your Publication Types through Groups. "
@@ -1677,12 +1549,21 @@ msgid "Publications list"
 msgstr ""
 
 #: templates/clip_base_publist.tpl:13 templates/clip_base_history.tpl:9
-#: templates/clip_editor_list.tpl:14
+#: templates/editor_list.tpl:14
 msgid "PID"
 msgstr ""
 
-#: templates/clip_base_publist.tpl:22 templates/clip_base_history.tpl:11
-#: templates/clip_admin_pubtype.tpl:114
+#: templates/clip_base_publist.tpl:18 templates/clip_base_pubfields.tpl:24
+#: templates/pages/form_all.tpl:20 templates/clip_base_pubtype.tpl:25
+#: templates/clip_base_history.tpl:10 templates/clip_base_relations.tpl:135
+#: templates/clip_base_relations.tpl:152
+#: templates/clip_base_pubtypeinfo.tpl:132
+#: templates/clip_base_pubtypeinfo.tpl:166 templates/editor_list.tpl:19
+msgid "Title"
+msgstr ""
+
+#: templates/clip_base_publist.tpl:22 templates/clip_base_pubtype.tpl:117
+#: templates/clip_base_history.tpl:11
 msgid "Revision"
 msgstr ""
 
@@ -1691,12 +1572,12 @@ msgid "State"
 msgstr ""
 
 #: templates/clip_base_publist.tpl:29 templates/clip_base_history.tpl:13
-#: templates/clip_editor_list.tpl:24
+#: templates/editor_list.tpl:24
 msgid "Author"
 msgstr ""
 
 #: templates/clip_base_publist.tpl:33 templates/clip_base_history.tpl:14
-#: templates/clip_editor_list.tpl:28
+#: templates/editor_list.tpl:28
 msgid "Online"
 msgstr ""
 
@@ -1705,7 +1586,7 @@ msgid "Options"
 msgstr ""
 
 #: templates/clip_base_publist.tpl:81 templates/pages/list.tpl:50
-#: templates/pages/list_fblike.tpl:24 templates/clip_generic_list.tpl:22
+#: templates/pages/list_fblike.tpl:22 templates/generic_list.tpl:20
 msgid "View"
 msgstr ""
 
@@ -1713,9 +1594,9 @@ msgstr ""
 msgid "History"
 msgstr ""
 
-#: templates/clip_base_publist.tpl:87 templates/clip_generic_blocklist.tpl:20
-#: templates/clip_base_history.tpl:53 templates/clip_generic_list.tpl:35
-#: templates/clip_editor_list.tpl:71
+#: templates/clip_base_publist.tpl:87 templates/generic_blocklist.tpl:20
+#: templates/clip_base_history.tpl:53 templates/editor_list.tpl:71
+#: templates/generic_list.tpl:33
 msgid "No publications found."
 msgstr ""
 
@@ -1751,8 +1632,172 @@ msgstr ""
 msgid "Template format for displaying list items"
 msgstr ""
 
-#: templates/clip_generic_main.tpl:17 templates/blog/main.tpl:17
-msgid "Go to the list"
+#: templates/clip_base_pubfields.tpl:10
+msgid "Manage Publication fields"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:14
+msgid "You can order the fields using Drag and Drop on the following list."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:18
+msgid "Existing publication fields"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:25
+msgid "Type"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:26 templates/clip_base_pubfields.tpl:136
+msgid "Title field"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:27 templates/clip_base_pubfields.tpl:141
+msgid "Mandatory"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:28 templates/clip_base_pubfields.tpl:146
+msgid "Searchable"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:29 templates/clip_base_relations.tpl:55
+msgid "Actions"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:47 templates/clip_base_pubfields.tpl:164
+msgid "Max. length"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:50 templates/clip_base_pubfields.tpl:151
+msgid "Filterable"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:52 templates/clip_base_pubfields.tpl:157
+msgid "Counter"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:90
+msgid "This publication type doesn't have fields yet."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:101
+msgid "Edit publication field"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:103
+msgid "Add a publication field"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:106
+msgid ""
+"Warning: When publication fields are changed or deleted, the database table "
+"of the publication type is updated automatically, and you could loss data of "
+"this publication type permanently. Be careful!"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:112
+msgid ""
+"This value is used as the form field ID, so be sure to choose a unique one."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:114
+msgid "Name of this field (is used e.g. in the template variables)."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:117
+msgid "Display name"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:119
+msgid ""
+"Title (is shown e.g. in the automatically generated templates) and can be a "
+"custom gettext string."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:122
+msgid "Note"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:124
+msgid ""
+"Optional tooltip of this field used on the input form, and can be a custom "
+"gettext string."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:127
+msgid "Fieldtype (Plugin)"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:129
+msgid ""
+"Which kind of fieldtype is used (can be extended by plugins). Detailed "
+"informations about the individual plugins can be found in the documentation."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:131
+msgid "Edit this field only if you know what you are doing."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:132
+msgid ""
+"This is the configuration data of the field, if you edit it manually you can "
+"get unexpected results. Please use the configuration icon next to the "
+"selector to configure the field with ease."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:138
+msgid "The content of this field will be used as the title?"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:143
+msgid "Is this field mandatory?"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:148
+msgid "The content of this field can be searched?"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:153
+msgid "This field can be used to filter a list?"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:159
+msgid "This field acts as a counter?"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:166
+msgid "The maximum length for the content of this field."
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:171
+msgid "Pageable"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:173
+msgid "The content of this field is pageable?"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:181
+msgid "Are you sure you want to delete this field?"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:184 templates/clip_base_pubtype.tpl:239
+#: templates/clip_base_relations.tpl:180
+msgid "Create"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:186 templates/pages/form_all.tpl:99
+#: templates/clip_base_pubtype.tpl:241 templates/blog/form_all.tpl:94
+#: templates/clip_base_relations.tpl:182 templates/generic_edit.tpl:77
+#: templates/clip_admin_modifyconfig.tpl:69
+msgid "Reset"
+msgstr ""
+
+#: templates/clip_base_pubfields.tpl:186 templates/pages/form_all.tpl:99
+#: templates/clip_base_pubtype.tpl:241 templates/blog/form_all.tpl:94
+#: templates/clip_base_relations.tpl:182 templates/generic_edit.tpl:77
+#: templates/clip_admin_modifyconfig.tpl:69
+msgid "Reset the form to its initial state"
 msgstr ""
 
 #: templates/clip_base_generator.tpl:4
@@ -1837,7 +1882,7 @@ msgstr ""
 msgid "Uncategorized pages published:"
 msgstr ""
 
-#: templates/pages/list.tpl:31 templates/pages/display.tpl:55
+#: templates/pages/list.tpl:31 templates/pages/display.tpl:54
 #, php-format
 msgid "Category: %s"
 msgstr ""
@@ -1846,315 +1891,489 @@ msgstr ""
 msgid "Pages published under this category:"
 msgstr ""
 
-#: templates/pages/list.tpl:45 templates/pages/display.tpl:43
-#: templates/pages/list_fblike.tpl:19 templates/blog/display.tpl:28
-#: templates/clip_generic_list.tpl:17
+#: templates/pages/list.tpl:45 templates/pages/display.tpl:42
+#: templates/pages/list_fblike.tpl:17 templates/blog/display.tpl:27
+#: templates/generic_list.tpl:15
 #, php-format
 msgid "%s read"
 msgid_plural "%s reads"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/pages/list.tpl:63 templates/pages/list_fblike.tpl:40
+#: templates/pages/list.tpl:63 templates/pages/list_fblike.tpl:38
 msgid "No pages found."
 msgstr ""
 
-#: templates/pages/display.tpl:28
+#: templates/pages/display.tpl:27
 #, php-format
 msgid "Posted by %1$s on %2$s"
 msgstr ""
 
-#: templates/pages/display.tpl:51 templates/blog/list.tpl:32
-#: templates/blog/display.tpl:38
+#: templates/pages/display.tpl:50 templates/blog/list.tpl:31
+#: templates/blog/display.tpl:37
 #, php-format
 msgid "View all posts in %s"
 msgstr ""
 
-#: templates/pages/display.tpl:57
+#: templates/pages/display.tpl:56
 msgid "View all uncategorized pages"
 msgstr ""
 
-#: templates/pages/display.tpl:65 templates/blog/display.tpl:70
+#: templates/pages/display.tpl:64 templates/blog/display.tpl:69
 msgid "Share"
 msgstr ""
 
-#: templates/pages/form_all.tpl:4
+#: templates/pages/form_all.tpl:7
 msgid "Edit page"
 msgstr ""
 
-#: templates/pages/form_all.tpl:6
+#: templates/pages/form_all.tpl:9
 msgid "New page"
 msgstr ""
 
-#: templates/pages/form_all.tpl:19 templates/pages/form_all.tpl:37
-#: templates/blog/form_all.tpl:25
+#: templates/pages/form_all.tpl:17 templates/pages/form_all.tpl:35
+#: templates/blog/form_all.tpl:23
 msgid "Content"
 msgstr ""
 
-#: templates/pages/form_all.tpl:44
+#: templates/pages/form_all.tpl:42
 msgid "Page settings"
 msgstr ""
 
-#: templates/pages/form_all.tpl:49
+#: templates/pages/form_all.tpl:47
 msgid "Display page information"
 msgstr ""
 
-#: templates/pages/form_all.tpl:54 templates/blog/form_all.tpl:76
-#: templates/clip_generic_edit.tpl:59
+#: templates/pages/form_all.tpl:52 templates/blog/form_all.tpl:74
+#: templates/generic_edit.tpl:57
 msgid "Visible"
 msgstr ""
 
-#: templates/pages/form_all.tpl:56 templates/blog/form_all.tpl:78
-#: templates/clip_generic_edit.tpl:61
+#: templates/pages/form_all.tpl:54 templates/blog/form_all.tpl:76
+#: templates/generic_edit.tpl:59
 msgid "If not visible, will be excluded from lists and search results"
 msgstr ""
 
-#: templates/pages/form_all.tpl:60 templates/blog/form_all.tpl:82
-#: templates/clip_generic_edit.tpl:65
+#: templates/pages/form_all.tpl:58 templates/blog/form_all.tpl:80
+#: templates/generic_edit.tpl:63
 msgid "Locked"
 msgstr ""
 
-#: templates/pages/form_all.tpl:62 templates/blog/form_all.tpl:84
-#: templates/clip_generic_edit.tpl:67
+#: templates/pages/form_all.tpl:60 templates/blog/form_all.tpl:82
+#: templates/generic_edit.tpl:65
 msgid "If enabled, the publication will be closed for changes"
 msgstr ""
 
-#: templates/pages/form_all.tpl:68 templates/blog/form_all.tpl:66
+#: templates/pages/form_all.tpl:66 templates/blog/form_all.tpl:64
 msgid "leave blank if you do not want to schedule the publication"
 msgstr ""
 
-#: templates/pages/form_all.tpl:74 templates/blog/form_all.tpl:72
+#: templates/pages/form_all.tpl:72 templates/blog/form_all.tpl:70
 msgid "leave blank if you do not want the plublication expires"
 msgstr ""
 
-#: templates/pages/form_all.tpl:81
+#: templates/pages/form_all.tpl:79
 msgid "Related pages"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:7
-msgid "Manage Publication fields"
+#: templates/displaysimple_pending.tpl:6
+msgid "Publication accepted, pending moderation."
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:11
-msgid "You can order the fields using Drag and Drop on the following list."
+#: templates/displaysimple_pending.tpl:9
+msgid "Thanks for your submission!"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:15
-msgid "Existing publication fields"
+#: templates/displaysimple_pending.tpl:12
+msgid "Go back to the index"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:22
-msgid "Type"
+#: templates/clip_base_pubtype.tpl:11
+msgid "Edit publication type"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:23
-#: templates/clip_admin_pubfields.tpl:133
-msgid "Title field"
+#: templates/clip_base_pubtype.tpl:14
+msgid "Create publication type"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:24
-#: templates/clip_admin_pubfields.tpl:138
-msgid "Mandatory"
+#: templates/clip_base_pubtype.tpl:22
+msgid "General options"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:25
-#: templates/clip_admin_pubfields.tpl:143
-msgid "Searchable"
+#: templates/clip_base_pubtype.tpl:27
+msgid "Title of the publication type."
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:44
-#: templates/clip_admin_pubfields.tpl:161
-msgid "Max. length"
+#: templates/clip_base_pubtype.tpl:30 templates/clip_base_pubtypeinfo.tpl:44
+msgid "URL title"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:47
-#: templates/clip_admin_pubfields.tpl:148
-msgid "Filterable"
+#: templates/clip_base_pubtype.tpl:32
+msgid "Leave blank to autogenerate from the title."
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:49
-#: templates/clip_admin_pubfields.tpl:154
-msgid "Counter"
+#: templates/clip_base_pubtype.tpl:37
+msgid "Description of the publication type."
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:87
-msgid "This publication type doesn't have fields yet."
+#: templates/clip_base_pubtype.tpl:43
+msgid "User settings"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:98
-msgid "Edit publication field"
+#: templates/clip_base_pubtype.tpl:46
+msgid "Output cache"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:100
-msgid "Add a publication field"
+#: templates/clip_base_pubtype.tpl:49
+msgid "Caching lifetime"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:103
+#: templates/clip_base_pubtype.tpl:51
+msgid "seconds"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:52
+msgid "How long should the publications be cached. 0 for no cache."
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:58
+msgid "Listing options"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:61 templates/clip_base_pubtypeinfo.tpl:52
+msgid "Fixed filter"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:63
+msgid "The filter used always on listings."
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:66 templates/clip_base_pubtypeinfo.tpl:54
+msgid "Default filter"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:68
+msgid "The filter which is used by default if none specified."
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:71 templates/clip_base_pubtypeinfo.tpl:56
+msgid "Items per page"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:73
+msgid "publications"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:74
+msgid "After how many publications the list will be paged. 0 for no paging."
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:79
+msgid "First sort field"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:83 templates/clip_base_pubtype.tpl:91
+#: templates/clip_base_pubtype.tpl:99
+msgid "Sort descending"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:87
+msgid "Second sort field"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:95
+msgid "Third sort field"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:109
+msgid "Admin settings"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:112
+msgid "Edit own"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:114
+msgid "Allow editing of own publications."
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:119
 msgid ""
-"Warning: When publication fields are changed or deleted, the database table "
-"of the publication type is updated automatically, and you could loss data of "
-"this publication type permanently. Be careful!"
+"Enable revisioning. Currently, the relations does not work properly with "
+"revisioning."
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:109
+#: templates/clip_base_pubtype.tpl:122 templates/clip_base_pubtypeinfo.tpl:46
+msgid "Folder"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:124
+msgid "Folder where publication type template are."
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:127 templates/clip_base_pubtypeinfo.tpl:48
+msgid "Workflow"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:129
+msgid "You can choose a special workflow for the publications."
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:136
+msgid "Relations options"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:139
 msgid ""
-"This value is used as the form field ID, so be sure to choose a unique one."
+"Note that for performance reasons, only single records are loaded (if "
+"enabled). The rest are loaded on-demand from the templates."
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:111
-msgid "Name of this field (is used e.g. in the template variables)."
+#: templates/clip_base_pubtype.tpl:143
+msgid "List view"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:114
-msgid "Display name"
+#: templates/clip_base_pubtype.tpl:145 templates/clip_base_pubtype.tpl:182
+msgid "Load related records?"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:116
+#: templates/clip_base_pubtype.tpl:148 templates/clip_base_pubtype.tpl:185
+#: templates/clip_admin_import.tpl:21 templates/clip_admin_export.tpl:39
+msgid "Yes"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:150 templates/clip_base_pubtype.tpl:187
+#: templates/clip_admin_import.tpl:22 templates/clip_admin_export.tpl:40
+msgid "No"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:156 templates/clip_base_pubtype.tpl:193
+msgid "Only own relations?"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:160 templates/clip_base_pubtype.tpl:197
+msgid "Process relations data"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:165 templates/clip_base_pubtype.tpl:202
+msgid "Check permissions?"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:169 templates/clip_base_pubtype.tpl:206
+msgid "Handle plugins data?"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:173 templates/clip_base_pubtype.tpl:210
+msgid "Load workflow state?"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:180
+msgid "Display view"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:217
+msgid "Edit form"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:220
+msgid "Load relations autocompleters?"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:225
+msgid "Edit only own relations?"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:235
+msgid "Clone"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:236
 msgid ""
-"Title (is shown e.g. in the automatically generated templates) and can be a "
-"custom gettext string."
+"Are you sure you want to delete this publication type and all its fields and "
+"publications?"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:119
-msgid "Note"
+#: templates/editor_header.tpl:13
+msgid "Switch to the admin panel"
 msgstr ""
 
-#: templates/clip_admin_pubfields.tpl:121
-msgid ""
-"Optional tooltip of this field used on the input form, and can be a custom "
-"gettext string."
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:124
-msgid "Fieldtype (Plugin)"
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:126
-msgid ""
-"Which kind of fieldtype is used (can be extended by plugins). Detailed "
-"informations about the individual plugins can be found in the documentation."
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:128
-msgid "Edit this field only if you know what you are doing."
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:129
-msgid ""
-"This is the configuration data of the field, if you edit it manually you can "
-"get unexpected results. Please use the configuration icon next to the "
-"selector to configure the field with ease."
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:135
-msgid "The content of this field will be used as the title?"
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:140
-msgid "Is this field mandatory?"
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:145
-msgid "The content of this field can be searched?"
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:150
-msgid "This field can be used to filter a list?"
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:156
-msgid "This field acts as a counter?"
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:163
-msgid "The maximum length for the content of this field."
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:168
-msgid "Pageable"
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:170
-msgid "The content of this field is pageable?"
-msgstr ""
-
-#: templates/clip_admin_pubfields.tpl:178
-msgid "Are you sure you want to delete this field?"
+#: templates/editor_header.tpl:14
+msgid "Admin Panel"
 msgstr ""
 
 #: templates/clip_base_history.tpl:15
 msgid "In depot"
 msgstr ""
 
-#: templates/blog/list.tpl:22 templates/blog/display.tpl:27
+#: templates/blog/list.tpl:21 templates/blog/display.tpl:26
 #, php-format
 msgid "Posted on %1$s by %2$s"
 msgstr ""
 
-#: templates/blog/list.tpl:36 templates/blog/display.tpl:42
+#: templates/blog/list.tpl:35 templates/blog/display.tpl:41
 #, php-format
 msgid "Posted in %s"
 msgstr ""
 
-#: templates/blog/list.tpl:38 templates/blog/display.tpl:44
+#: templates/blog/list.tpl:37 templates/blog/display.tpl:43
 msgid "View all uncategorized posts"
 msgstr ""
 
-#: templates/blog/list.tpl:60
+#: templates/blog/list.tpl:59
 msgid "No posts found."
 msgstr ""
 
-#: templates/blog/display.tpl:54
+#: templates/blog/display.tpl:53
 #, php-format
 msgid "Permalink to %s"
 msgstr ""
 
-#: templates/blog/display.tpl:56
+#: templates/blog/display.tpl:55
 #, php-format
 msgid ""
 "Bookmark the <a rel=\"bookmark\" title=\"%1$s\" href=\"%2$s\">permalink</a>"
 msgstr ""
 
-#: templates/blog/form_all.tpl:4
+#: templates/blog/form_all.tpl:7
 msgid "Edit post"
 msgstr ""
 
-#: templates/blog/form_all.tpl:6
+#: templates/blog/form_all.tpl:9
 msgid "New post"
 msgstr ""
 
-#: templates/blog/form_all.tpl:21
+#: templates/blog/form_all.tpl:19
 msgid "Enter title here"
 msgstr ""
 
-#: templates/blog/form_all.tpl:30
+#: templates/blog/form_all.tpl:28
 msgid "Summary"
 msgstr ""
 
-#: templates/blog/form_all.tpl:32
+#: templates/blog/form_all.tpl:30
 msgid ""
 "Optional hand-crafted summary of your content that can be used in your "
 "templates."
 msgstr ""
 
-#: templates/blog/form_all.tpl:43 templates/clip_generic_edit.tpl:26
+#: templates/blog/form_all.tpl:41 templates/generic_edit.tpl:24
 msgid "Related publications"
 msgstr ""
 
-#: templates/blog/form_all.tpl:56
+#: templates/blog/form_all.tpl:54
 msgid "Post options"
 msgstr ""
 
-#: templates/clip_general_pending.tpl:6
-msgid "Publication accepted, pending moderation."
+#: templates/clip_base_relations.tpl:8
+msgid "Manage Relations"
 msgstr ""
 
-#: templates/clip_general_pending.tpl:9
-msgid "Thanks for your submission!"
+#: templates/clip_base_relations.tpl:18
+msgid "Filter by owner"
 msgstr ""
 
-#: templates/clip_general_pending.tpl:12
-msgid "Go back to the index"
+#: templates/clip_base_relations.tpl:25
+msgid "related"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:29
+msgid "Filter"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:30
+msgid "Clear"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:41
+#, php-format
+msgid "List filtered by [%1$s] as Owner %2$s [%3$s] as Related"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:43
+#, php-format
+msgid "List filtered by [%s] as Owner"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:45
+#, php-format
+msgid "List filtered by [%s] as Related"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:53 templates/clip_base_relations.tpl:129
+msgid "Owning side"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:54 templates/clip_base_relations.tpl:146
+msgid "Related side"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:64
+#, php-format
+msgid "One <strong>%s</strong>"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:66
+#, php-format
+msgid "Many <strong>%s</strong>"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:75
+#, php-format
+msgid "has One <strong>%s</strong>"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:77
+#, php-format
+msgid "has Many <strong>%s</strong>"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:91
+msgid "No relations matches the current filter."
+msgstr ""
+
+#: templates/clip_base_relations.tpl:93
+msgid "There are no relations specified yet."
+msgstr ""
+
+#: templates/clip_base_relations.tpl:105
+msgid "Edit relation"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:107
+msgid "Add a relation"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:111 templates/clip_base_relations.tpl:119
+msgid "Definition:"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:131 templates/clip_base_relations.tpl:148
+#: templates/clip_base_pubtypeinfo.tpl:131
+#: templates/clip_base_pubtypeinfo.tpl:165
+msgid "Alias"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:132 templates/clip_base_relations.tpl:149
+msgid "Alias cannot contain special characters, only a-z, A-Z, 0-9 and _"
+msgstr ""
+
+#: templates/clip_base_relations.tpl:163
+msgid ""
+"\n"
+"            Explanation of the side details:\n"
+"            <ul style=\"margin-bottom: 0\">\n"
+"                <li><strong>Alias</strong>: Used as a field name on the "
+"publication code. i.e. $pubdata.Alias1</li>\n"
+"                <li><strong>Title</strong>: Used in the user side forms as "
+"the public name of the relation.</li>\n"
+"                <li><strong>Description</strong>: Also used in the forms as "
+"the autocompleter tooltip.</li>\n"
+"            </ul>\n"
+"            "
+msgstr ""
+
+#: templates/clip_base_relations.tpl:177
+msgid "Are you sure you want to delete this relation?"
 msgstr ""
 
 #: templates/clip_base_pubtypeinfo.tpl:3
@@ -2169,165 +2388,140 @@ msgstr ""
 msgid "Get the code"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:11
+#: templates/clip_base_pubtypeinfo.tpl:12
 msgid "Permissions"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:17
+#: templates/clip_base_pubtypeinfo.tpl:18
 msgid "Add new publications to this publication type"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:18
+#: templates/clip_base_pubtypeinfo.tpl:19
 msgid "New article"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:22
+#: templates/clip_base_pubtypeinfo.tpl:23
 msgid "Go to the Editor publication list"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:23
+#: templates/clip_base_pubtypeinfo.tpl:24
 msgid "Editor list"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:27
+#: templates/clip_base_pubtypeinfo.tpl:28
 msgid "Go to the public publication list"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:28
+#: templates/clip_base_pubtypeinfo.tpl:29
 msgid "Public list"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:34
+#: templates/clip_base_pubtypeinfo.tpl:35
 msgid "Edit this publication type"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:35 templates/clip_generic_edit.tpl:4
+#: templates/clip_base_pubtypeinfo.tpl:36 templates/generic_edit.tpl:7
 #, php-format
 msgid "Edit '%s'"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:38
+#: templates/clip_base_pubtypeinfo.tpl:39
 msgid ""
-"Edit the basic information of the publication type, the output/input "
-"settings, relations settings, etc."
+"Edit the basic information of the publication type, the admin, user and "
+"relations settings."
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:42
+#: templates/clip_base_pubtypeinfo.tpl:61
 msgid "Add, sort or modify the fields of this publication type"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:43
+#: templates/clip_base_pubtypeinfo.tpl:62
 msgid "Manage its fields"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:46
+#: templates/clip_base_pubtypeinfo.tpl:65
 msgid "Sort, edit and configure the fields of this publication type."
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:50
+#: templates/clip_base_pubtypeinfo.tpl:69
 msgid "Edit the relations of this publication type"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:51
+#: templates/clip_base_pubtypeinfo.tpl:70
 msgid "Manage its relations"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:54
+#: templates/clip_base_pubtypeinfo.tpl:73
 msgid "Edit and configure the relations."
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:56
-msgid "Currently they are as follows:"
+#: templates/clip_base_pubtypeinfo.tpl:86
+msgid "Get the input form code of this publication type."
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:58
-msgid "There are no relations defined for this publication type."
+#: templates/clip_base_pubtypeinfo.tpl:94
+msgid "Get the list code of this publication type."
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:67
+#: templates/clip_base_pubtypeinfo.tpl:102
+msgid "Get the display code of this publication type."
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:110
+msgid "Get the generic code for a publications List block."
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:115
+msgid "Publication block"
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:118
+msgid "Get the generic code for a Publication block."
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:125
+msgid "Add a new field"
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:134
+msgid "Plugin"
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:152
+msgid "There are no field defined yet."
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:158
+msgid "Add a new relation"
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:168
+msgid "Opposite"
+msgstr ""
+
+#: templates/clip_base_pubtypeinfo.tpl:178
 #, php-format
 msgid "Has one %s"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:69
+#: templates/clip_base_pubtypeinfo.tpl:180
 #, php-format
 msgid "Has many %s"
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:97
-msgid "Get the input form code of this publication type."
+#: templates/clip_base_pubtypeinfo.tpl:199
+msgid "There are no relations defined."
 msgstr ""
 
-#: templates/clip_base_pubtypeinfo.tpl:105
-msgid "Get the list code of this publication type."
-msgstr ""
-
-#: templates/clip_base_pubtypeinfo.tpl:113
-msgid "Get the display code of this publication type."
-msgstr ""
-
-#: templates/clip_base_pubtypeinfo.tpl:121
-msgid "Get the generic code for a publications List block."
-msgstr ""
-
-#: templates/clip_base_pubtypeinfo.tpl:126
-msgid "Publication block"
-msgstr ""
-
-#: templates/clip_base_pubtypeinfo.tpl:129
-msgid "Get the generic code for a Publication block."
-msgstr ""
-
-#: templates/clip_generic_edit.tpl:20
-msgid "Publication content"
-msgstr ""
-
-#: templates/clip_generic_edit.tpl:39
-msgid "Publication options"
-msgstr ""
-
-#: templates/clip_generic_edit.tpl:49
-msgid "Leave blank if you do not want to schedule the publication"
-msgstr ""
-
-#: templates/clip_generic_edit.tpl:55
-msgid "Leave blank if you do not want the plublication expires"
-msgstr ""
-
-#: templates/clip_generic_navbar.tpl:7
-msgid "Home"
-msgstr ""
-
-#: templates/clip_generic_navbar.tpl:14
-msgid "Administration panel"
-msgstr ""
-
-#: templates/clip_generic_navbar.tpl:22
-msgid "Editor panel"
-msgstr ""
-
-#: templates/clip_generic_navbar.tpl:41 templates/clip_generic_navbar.tpl:46
-#: templates/clip_editor_main.tpl:1
-msgid "Editor's Panel"
-msgstr ""
-
-#: templates/clip_generic_navbar.tpl:129
-#, php-format
-msgid ""
-"This is a generic template used when <a href=\"%s\">development mode</a> is "
-"enabled. You can build your template starting with <a href=\"%s\">the "
-"autogenerated code</a>, and reading instructions of where to place it."
-msgstr ""
-
-#: templates/clip_import_ps.tpl:7 templates/clip_admin_modifyconfig.tpl:14
+#: templates/import_pagesetter.tpl:7 templates/clip_admin_modifyconfig.tpl:14
 msgid "Import pagesetter publications"
 msgstr ""
 
-#: templates/clip_import_ps.tpl:10
+#: templates/import_pagesetter.tpl:10
 msgid "Be sure to know what you are doing on this process."
 msgstr ""
 
-#: templates/clip_import_ps.tpl:13
+#: templates/import_pagesetter.tpl:13
 msgid ""
 "On this page you can import publications from Pagesetter.<br />You can only "
 "import publications when no Clip publication exist.<br />Please configure "
@@ -2335,233 +2529,49 @@ msgid ""
 "changed due the import."
 msgstr ""
 
-#: templates/clip_import_ps.tpl:17
+#: templates/import_pagesetter.tpl:17
 msgid "Import lists,"
 msgstr ""
 
-#: templates/clip_import_ps.tpl:20
+#: templates/import_pagesetter.tpl:20
 msgid "Import publication types,"
 msgstr ""
 
-#: templates/clip_import_ps.tpl:23
+#: templates/import_pagesetter.tpl:23
 msgid "Create the database tables,"
 msgstr ""
 
-#: templates/clip_import_ps.tpl:26
+#: templates/import_pagesetter.tpl:26
 msgid "Import data."
 msgstr ""
 
-#: templates/clip_admin_pubtype.tpl:8
-msgid "Edit publication type"
+#: templates/pager_default.tpl:5 templates/pager_default.tpl:8
+msgid "First page"
 msgstr ""
 
-#: templates/clip_admin_pubtype.tpl:11
-msgid "Create publication type"
+#: templates/pager_default.tpl:6 templates/pager_default.tpl:9
+msgid "Previous page"
 msgstr ""
 
-#: templates/clip_admin_pubtype.tpl:19
-msgid "General options"
+#: templates/pager_default.tpl:21 templates/pager_default.tpl:24
+msgid "Next page"
 msgstr ""
 
-#: templates/clip_admin_pubtype.tpl:24
-msgid "Title of the publication type."
+#: templates/pager_default.tpl:22 templates/pager_default.tpl:25
+msgid "Last page"
 msgstr ""
 
-#: templates/clip_admin_pubtype.tpl:27
-msgid "URL title"
+#: templates/editor_list.tpl:2
+msgid "Editor's List"
 msgstr ""
 
-#: templates/clip_admin_pubtype.tpl:29
-msgid "Leave blank to autogenerate from the title."
+#: templates/editor_list.tpl:37
+msgid "Last modified"
 msgstr ""
 
-#: templates/clip_admin_pubtype.tpl:34
-msgid "Description of the publication type."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:40
-msgid "User settings"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:43
-msgid "Output cache"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:46
-msgid "Caching lifetime"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:48
-msgid "seconds"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:49
-msgid "How long should the publications be cached. 0 for no cache."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:55
-msgid "Listing options"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:58
-msgid "Fixed filter"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:60
-msgid "The filter used always on listings."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:63
-msgid "Default filter"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:65
-msgid "The filter which is used by default if none specified."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:68
-msgid "Items per page"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:70
-msgid "publications"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:71
-msgid "After how many publications the list will be paged. 0 for no paging."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:76
-msgid "First sort field"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:80 templates/clip_admin_pubtype.tpl:88
-#: templates/clip_admin_pubtype.tpl:96
-msgid "Sort descending"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:84
-msgid "Second sort field"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:92
-msgid "Third sort field"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:106
-msgid "Admin settings"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:109
-msgid "Edit own"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:111
-msgid "Allow editing of own publications."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:116
-msgid ""
-"Enable revisioning. Currently, the relations does not work properly with "
-"revisioning."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:119
-msgid "Folder"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:121
-msgid "Folder where publication type template are."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:124
-msgid "Workflow"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:126
-msgid "You can choose a special workflow for the publications."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:133
-msgid "Relations options"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:136
-msgid ""
-"Note that for performance reasons, only single records are loaded (if "
-"enabled). The rest are loaded on-demand from the templates."
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:140
-msgid "List view"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:142 templates/clip_admin_pubtype.tpl:179
-msgid "Load related records?"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:145 templates/clip_admin_pubtype.tpl:182
-#: templates/clip_admin_import.tpl:21 templates/clip_admin_export.tpl:39
-msgid "Yes"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:147 templates/clip_admin_pubtype.tpl:184
-#: templates/clip_admin_import.tpl:22 templates/clip_admin_export.tpl:40
-msgid "No"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:153 templates/clip_admin_pubtype.tpl:190
-msgid "Only own relations?"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:157 templates/clip_admin_pubtype.tpl:194
-msgid "Process relations data"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:162 templates/clip_admin_pubtype.tpl:199
-msgid "Check permissions?"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:166 templates/clip_admin_pubtype.tpl:203
-msgid "Handle plugins data?"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:170 templates/clip_admin_pubtype.tpl:207
-msgid "Load workflow state?"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:177
-msgid "Display view"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:214
-msgid "Edit form"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:217
-msgid "Load relations autocompleters?"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:222
-msgid "Edit only own relations?"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:232
-msgid "Clone"
-msgstr ""
-
-#: templates/clip_admin_pubtype.tpl:233
-msgid ""
-"Are you sure you want to delete this publication type and all its fields and "
-"publications?"
-msgstr ""
-
-#: templates/clip_editor_header.tpl:13
-msgid "Switch to the admin panel"
-msgstr ""
-
-#: templates/clip_editor_header.tpl:14
-msgid "Admin Panel"
+#: templates/editor_main.tpl:1 templates/generic_navbar.tpl:42
+#: templates/generic_navbar.tpl:47
+msgid "Editor's Panel"
 msgstr ""
 
 #: templates/clip_admin_import.tpl:16
@@ -2570,6 +2580,22 @@ msgstr ""
 
 #: templates/clip_admin_import.tpl:24
 msgid "Go to the newly created publication type after the import."
+msgstr ""
+
+#: templates/generic_edit.tpl:18
+msgid "Publication content"
+msgstr ""
+
+#: templates/generic_edit.tpl:37
+msgid "Publication options"
+msgstr ""
+
+#: templates/generic_edit.tpl:47
+msgid "Leave blank if you do not want to schedule the publication"
+msgstr ""
+
+#: templates/generic_edit.tpl:53
+msgid "Leave blank if you do not want the plublication expires"
 msgstr ""
 
 #: templates/clip_admin_header.tpl:6
@@ -2586,6 +2612,26 @@ msgstr ""
 
 #: templates/clip_admin_header.tpl:10
 msgid "New publication type"
+msgstr ""
+
+#: templates/generic_navbar.tpl:8
+msgid "Home"
+msgstr ""
+
+#: templates/generic_navbar.tpl:15
+msgid "Administration panel"
+msgstr ""
+
+#: templates/generic_navbar.tpl:23
+msgid "Editor panel"
+msgstr ""
+
+#: templates/generic_navbar.tpl:162
+#, php-format
+msgid ""
+"This is a generic template used when <a href=\"%s\">development mode</a> is "
+"enabled. You can build your template starting with <a href=\"%s\">the "
+"autogenerated code</a>, and reading instructions of where to place it."
 msgstr ""
 
 #: templates/clip_admin_export.tpl:17
@@ -2616,30 +2662,6 @@ msgstr ""
 msgid ""
 "If the template is not found, Clip will show an error if the development "
 "mode is enabled."
-msgstr ""
-
-#: templates/clip_editor_list.tpl:2
-msgid "Editor's List"
-msgstr ""
-
-#: templates/clip_editor_list.tpl:37
-msgid "Last modified"
-msgstr ""
-
-#: templates/clip_pager.tpl:5 templates/clip_pager.tpl:8
-msgid "First page"
-msgstr ""
-
-#: templates/clip_pager.tpl:6 templates/clip_pager.tpl:9
-msgid "Previous page"
-msgstr ""
-
-#: templates/clip_pager.tpl:21 templates/clip_pager.tpl:24
-msgid "Next page"
-msgstr ""
-
-#: templates/clip_pager.tpl:22 templates/clip_pager.tpl:25
-msgid "Last page"
 msgstr ""
 
 #: templates/clip_admin_modifyconfig.tpl:11
