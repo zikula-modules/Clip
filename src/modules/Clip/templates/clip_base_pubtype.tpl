@@ -15,6 +15,8 @@
     {/if}
 </div>
 
+{insert name='getstatusmsg'}
+
 {form cssClass='z-form clip-form' enctype='application/x-www-form-urlencoded'}
 <div id="clip-pubtype-form">
     {formvalidationsummary}

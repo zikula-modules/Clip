@@ -93,7 +93,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || $pubtypeadmin);
 
         //// Output
-        return FormUtil::newForm('Clip', $this)
+        return Clip_Util::newUserForm($this)
                ->execute('clip_base_pubtype.tpl',
                          new Clip_Form_Handler_Admin_Pubtypes());
     }

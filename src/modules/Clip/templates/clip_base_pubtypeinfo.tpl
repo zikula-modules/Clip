@@ -5,6 +5,8 @@
     {clip_adminmenu tid=$pubtype.tid}
 </div>
 
+{insert name='getstatusmsg'}
+
 <ul id="pubtype{$pubtype.tid}_info">
     <li class="tab"><a href="#p{$pubtype.tid}manage">{gt text='Manage'}</a></li>
     <li class="tab"><a href="#p{$pubtype.tid}code">{gt text='Get the code'}</a></li>

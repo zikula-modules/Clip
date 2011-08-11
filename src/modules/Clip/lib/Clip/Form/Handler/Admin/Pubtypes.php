@@ -68,9 +68,13 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->referer = $view->getStateData('referer');
+        $isAjax = $view->getTplVar('type') == 'ajax';
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
+            if ($isAjax) {
+                return new Zikula_Response_Ajax_Json(array('cancel' => true));
+            }
             return $view->redirect($this->referer);
         }
 
@@ -190,6 +194,30 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 break;
         }
 
+        // stop here if the request is ajax based
+        if ($isAjax) {
+            switch ($args['commandName'])
+            {
+                case 'save':
+                    if (empty($this->tid)) {
+                        $response = array('func' => 'pubfields', 'tid' => $pubtype->tid);
+                    } else {
+                        $response = array('func' => 'pubtypeinfo');
+                    }
+                    break;
+
+                case 'clone':
+                    $response = array('func' => 'pubfields', 'tid' => $newpubtype->tid);
+                    break;
+
+                default:
+                    $response = array('redirect' => $this->referer);
+            }
+
+            return new Zikula_Response_Ajax_Json($response);
+        }
+
+        // redirect to the determined url
         return $view->redirect($this->referer);
     }
 

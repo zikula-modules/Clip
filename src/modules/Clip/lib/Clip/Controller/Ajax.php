@@ -28,7 +28,11 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
 
         $this->throwNotFoundUnless($response);
 
-        return new Zikula_Response_Ajax_Plain($response);
+        if (!is_object($response) || !$response instanceof Zikula_Response_Ajax_AbstractBase) {
+            $response = new Zikula_Response_Ajax_Plain($response);
+        }
+
+        return $response;
     }
 
     public function editgroup()

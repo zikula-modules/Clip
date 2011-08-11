@@ -39,7 +39,7 @@ Event.observe(window, 'load', function()
 /* Hash manager */
 Zikula.Clip.Hash = function()
 {
-    if (Zikula.Clip.Container.ajax.busy || window.location.hash.empty() || window.location.hash == '#') {
+    if (Zikula.Clip.Container.busy || window.location.hash.empty() || window.location.hash == '#') {
         return;
     }
 
@@ -72,7 +72,7 @@ Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.Tr
         var a = node.down('a'), id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
         if (id != parseInt(id)) {
             id = id.split('-')[1];
-            a.writeAttribute('onClick', 'javascript:if (!Zikula.Clip.Container.ajax.busy) { this.insert({after: Zikula.Clip.Indicator()}); Zikula.Clip.AjaxRequest({tid:\''+id+'\'}, \'pubtypeinfo\'); } return false;');
+            a.writeAttribute('onClick', 'javascript:if (!Zikula.Clip.Container.busy) { this.insert({after: Zikula.Clip.Indicator()}); Zikula.Clip.AjaxRequest({tid:\''+id+'\'}, \'pubtypeinfo\'); } return false;');
         } else {
             a.writeAttribute('onClick', 'return false;');
         }
@@ -108,7 +108,8 @@ Object.extend(Zikula.Clip.TreeSortable,/** @lends Zikula.Clip.TreeSortable.proto
 
 Zikula.Clip.Container = Class.create(
 {
-    initialize: function(options) {
+    initialize: function(options)
+    {
         this.indicatorEffects = {
             fade: false,
             appear: false
@@ -126,13 +127,16 @@ Zikula.Clip.Container = Class.create(
         this.sidecol   = this.options.sidecol ? $(this.options.sidecol) : $('clip_cols_sidecol');
         this.content   = this.options.content ? $(this.options.content) : $('clip_cols_maincontent');
     },
-    updateHeights: function(){
+
+    updateHeights: function()
+    {
         this.content.removeAttribute('style');
         this.sidecol.removeAttribute('style');
         var max = Math.max(300, this.content.getHeight(), side = this.sidecol.getHeight());
         this.content.setAttribute('style', "min-height: "+max+"px");
         this.sidecol.setAttribute('style', "min-height: "+max+"px");
     },
+
     updateContent: function(content) {
         if (content) {
             // handle the content according the function
@@ -179,14 +183,92 @@ Zikula.Clip.Container = Class.create(
                 default:
                     this.content.update(content);
             }
-
+            // observe the forms submit buttons
+            switch (Zikula.Clip.Container.ajax.func)
+            {
+                case 'pubtype':
+                case 'pubfields':
+                case 'relations':
+                    this.content.select('form input[type=submit]').each(function(e) {
+                        e.observe('click', this.formSend.bind(this))
+                    }.bind(this));
+            }
             // update the loaded tooltips on the ajax content
             Zikula.UI.Tooltips(this.content.getElementsBySelector('.tooltips'));
         }
         this.updateHeights();
         this.hideIndicator();
     },
-    showIndicator: function(){
+
+    formSend: function(event)
+    {
+        event.stop();
+
+        Zikula.Clip.Container.busy = true;
+
+        this.showIndicator();
+
+        var submit = event.findElement();
+        var form   = event.findElement('form');
+
+        form.select('input[type=submit]').each(function(e) {
+            if (e != submit) {
+                e.disable();
+            }
+        });
+
+        new Zikula.Ajax.Request(
+            'ajax.php?tid='+Zikula.Clip.Container.ajax.tid+'&module=Clip&type=ajax&func=pubtype',
+            {
+                method: 'post',
+                parameters: form.serialize(),
+                onComplete: this.formProcess
+            });
+
+        form.select('input[type=submit]').each(function(e) {
+            e.enable();
+        });
+    },
+
+    formProcess: function(req)
+    {
+        Zikula.Clip.Container.busy = false;
+
+        if ($('ajax_indicator')) {
+            $('ajax_indicator').remove();
+        }
+
+        if (!req.isSuccess()) {
+            Zikula.showajaxerror(req.getMessage());
+            return false;
+        }
+
+        if (req.getData()) {
+            Zikula.Clip.Container.instance.updateContent(req.getData());
+        } else {
+            var pars = req.decodeResponse();
+            if (pars['cancel']) {
+                // cancel
+                Zikula.Clip.Container.ajax.func = 'pubtypeinfo';
+            } else if (pars['redirect']) {
+                // url redirect
+                window.location = pars['redirect'];
+            } else {
+                // specific parameters
+                if (pars['tid']) {
+                    Zikula.Clip.Container.ajax.tid = pars['tid'];
+                }
+                if (pars['func']) {
+                    Zikula.Clip.Container.ajax.func = pars['func'];
+                }
+            }
+            // redirect to the specified function
+            Zikula.Clip.AjaxRequest({'tid': Zikula.Clip.Container.ajax.tid}, Zikula.Clip.Container.ajax.func);
+        }
+    },
+
+    showIndicator: function()
+    {
         this.showIndicatorTimeout = window.setTimeout(function(){
             if (this.options.fade){
                 this.indicatorEffects.appear = new Effect.Appear(this.indicator, {
@@ -203,7 +285,9 @@ Zikula.Clip.Container = Class.create(
             }
         }.bind(this), 250);
     },
-    hideIndicator: function(){
+
+    hideIndicator: function()
+    {
         if (this.showIndicatorTimeout) {
             window.clearTimeout(this.showIndicatorTimeout);
         }
@@ -214,8 +298,8 @@ Zikula.Clip.Container = Class.create(
 Object.extend(Zikula.Clip.Container,
 {
     instance: null,
+    busy: false,
     ajax: {
-        busy: false,
         tid: 0,
         func: ''
     },
@@ -629,11 +713,11 @@ Zikula.Clip.ResequenceCallback = function(req)
 /* Ajax view functions */
 Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 {
-    if (Zikula.Clip.Container.ajax.busy || typeof pars != 'object' || typeof pars['tid'] == 'undefined') {
+    if (Zikula.Clip.Container.busy || typeof pars != 'object' || typeof pars['tid'] == 'undefined') {
         return;
     }
 
-    Zikula.Clip.Container.ajax.busy = true;
+    Zikula.Clip.Container.busy = true;
 
     Zikula.Clip.Container.instance.showIndicator();
 
@@ -670,6 +754,8 @@ Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 
 Zikula.Clip.AjaxRequestCallback = function(req)
 {
+    Zikula.Clip.Container.busy = false;
+
     if ($('ajax_indicator')) {
         $('ajax_indicator').remove();
     }
@@ -680,8 +766,6 @@ Zikula.Clip.AjaxRequestCallback = function(req)
     }
 
     Zikula.Clip.Container.instance.updateContent(req.getData());
-
-    Zikula.Clip.Container.ajax.busy = false;
 
     return true;
 };

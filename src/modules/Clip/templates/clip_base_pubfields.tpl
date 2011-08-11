@@ -11,6 +11,8 @@
     {clip_adminmenu tid=$tid field=$field.id}
 </div>
 
+{insert name='getstatusmsg'}
+
 <p class="z-informationmsg">{gt text='You can order the fields using Drag and Drop on the following list.'}</p>
 
 <div class="z-form">

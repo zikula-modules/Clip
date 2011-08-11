@@ -30,7 +30,7 @@
 function smarty_function_clip_url($params, Zikula_View &$view)
 {
     $params['modname'] = 'Clip';
-    $params['type']    = $view->getRequest()->getControllerName();
+    $params['type']    = isset($params['forceajax']) ? 'ajax' : $view->getRequest()->getControllerName();
 
     // dispatch any non-ajax request with modurl
     if ($params['type'] != 'ajax') {
@@ -47,7 +47,7 @@ function smarty_function_clip_url($params, Zikula_View &$view)
     $func = (isset($params['func']) && $params['func']) ? $params['func'] : 'pubtypeinfo';
     $args = (isset($params['args']) && $params['args']) ? $params['args'] : array();
 
-    unset($params['modname'], $params['type'], $params['func'], $params['args']);
+    unset($params['modname'], $params['type'], $params['func'], $params['args'], $params['forceajax']);
 
     $params = json_encode(array_merge($params, $args));
     $params = str_replace('"', "'", $params);

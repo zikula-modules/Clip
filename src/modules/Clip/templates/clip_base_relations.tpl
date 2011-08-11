@@ -9,6 +9,8 @@
     {/if}
 </div>
 
+{insert name='getstatusmsg'}
+
 {form cssClass='z-form' enctype='application/x-www-form-urlencoded'}
 <div class="z-list-relations">
     <fieldset>

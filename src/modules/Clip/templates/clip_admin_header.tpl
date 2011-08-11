@@ -6,9 +6,15 @@
         <a class="z-bt-preview" title="{gt text='Switch to the editor context'}" href="{modurl modname='Clip' type='editor' func='main'}">
             {gt text='Editor Panel'}
         </a>
+        {if $func eq 'main'}
+        <a class="z-bt-new" title="{gt text='Create a new publication type'}" href="{clip_url func='pubtype' tid=0 forceajax=true}">
+            {gt text='New publication type'}
+        </a>
+        {else}
         <a class="z-bt-new" title="{gt text='Create a new publication type'}" href="{modurl modname='Clip' type='admin' func='pubtype'}">
             {gt text='New publication type'}
         </a>
+        {/if}
     </div>
 
     <div class="z-admin-content-modtitle">

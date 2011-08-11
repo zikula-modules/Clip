@@ -6,6 +6,8 @@
     {clip_adminmenu tid=$pubtype.tid code=$code}
 </div>
 
+{insert name='getstatusmsg'}
+
 <hr />
 
 {clip_copytoclipboard id='clip_generatorcode' class='tooltips'}
