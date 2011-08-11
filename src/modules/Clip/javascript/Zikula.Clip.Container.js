@@ -130,11 +130,13 @@ Zikula.Clip.Container = Class.create(
 
     updateHeights: function()
     {
-        this.content.removeAttribute('style');
-        this.sidecol.removeAttribute('style');
-        var max = Math.max(300, this.content.getHeight(), side = this.sidecol.getHeight());
-        this.content.setAttribute('style', "min-height: "+max+"px");
-        this.sidecol.setAttribute('style', "min-height: "+max+"px");
+        window.setTimeout(function() {
+            this.content.removeAttribute('style');
+            this.sidecol.removeAttribute('style');
+            var max = Math.max(300, this.content.getHeight(), side = this.sidecol.getHeight());
+            this.content.setAttribute('style', "min-height: "+max+"px");
+            this.sidecol.setAttribute('style', "min-height: "+max+"px");
+        }.bind(this), 150);
     },
 
     updateContent: function(content) {
@@ -234,10 +236,6 @@ Zikula.Clip.Container = Class.create(
     {
         Zikula.Clip.Container.busy = false;
 
-        if ($('ajax_indicator')) {
-            $('ajax_indicator').remove();
-        }
-
         if (!req.isSuccess()) {
             Zikula.showajaxerror(req.getMessage());
             return false;
@@ -245,6 +243,7 @@ Zikula.Clip.Container = Class.create(
 
         if (req.getData()) {
             Zikula.Clip.Container.instance.updateContent(req.getData());
+
         } else {
             var pars = req.decodeResponse();
             if (pars['cancel']) {
@@ -283,7 +282,7 @@ Zikula.Clip.Container = Class.create(
             } else {
                 this.indicator.show();
             }
-        }.bind(this), 250);
+        }.bind(this), 50);
     },
 
     hideIndicator: function()
