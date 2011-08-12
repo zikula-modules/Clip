@@ -149,12 +149,16 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $tid = $view->getStateData('tid');
+        $isAjax = $view->getTplVar('type') == 'ajax';
         $this->filter  = $view->getStateData('filter');
         $this->filter  = array_merge(array('tid' => $tid), $this->filter);
         $this->referer = $view->getStateData('referer');
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
+            if ($isAjax) {
+                return new Zikula_Response_Ajax_Json(array('cancel' => true));
+            }
             return $view->redirect($this->referer);
         }
 
