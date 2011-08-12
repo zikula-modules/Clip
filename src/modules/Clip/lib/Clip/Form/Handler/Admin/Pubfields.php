@@ -77,9 +77,13 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
         $this->referer = $view->getStateData('referer');
+        $isAjax = $view->getTplVar('type') == 'ajax';
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
+            if ($isAjax) {
+                return new Zikula_Response_Ajax_Json(array('cancel' => true));
+            }
             return $view->redirect($this->referer);
         }
 
@@ -102,7 +106,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $pubfield->fieldtype = $plugin->columnDef;
 
         $this->referer = ModUtil::url('Clip', 'admin', 'pubfields',
-                                        array('tid' => $pubfield->tid));
+                                      array('tid' => $pubfield->tid));
 
         // handle the commands
         switch ($args['commandName'])
@@ -189,6 +193,12 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                 break;
         }
 
+        // stop here if the request is ajax based
+        if ($isAjax) {
+            return new Zikula_Response_Ajax_Json(array('func' => 'pubfields'));
+        }
+
+        // redirect to the determined url
         return $view->redirect($this->referer);
     }
 }

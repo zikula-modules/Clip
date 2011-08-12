@@ -220,7 +220,7 @@ Zikula.Clip.Container = Class.create(
         });
 
         new Zikula.Ajax.Request(
-            'ajax.php?tid='+Zikula.Clip.Container.ajax.tid+'&module=Clip&type=ajax&func=pubtype',
+            'ajax.php?tid='+Zikula.Clip.Container.ajax.tid+'&module=Clip&type=ajax&func='+Zikula.Clip.Container.ajax.func,
             {
                 method: 'post',
                 parameters: form.serialize(),
@@ -262,9 +262,13 @@ Zikula.Clip.Container = Class.create(
                 window.location = pars['redirect'];
 
             } else {
-                // redirect to the pubtypeinfo
-                Zikula.Clip.Container.ajax.func = 'pubtypeinfo';
-                Zikula.Clip.AjaxRequest({'tid': Zikula.Clip.Container.ajax.tid}, 'pubtypeinfo');
+                // redirect to a specified function or pubtypeinfo
+                if (pars['func']) {
+                    Zikula.Clip.Container.ajax.func = pars['func'];
+                } else {
+                    Zikula.Clip.Container.ajax.func = 'pubtypeinfo';
+                }
+                Zikula.Clip.AjaxRequest({'tid': Zikula.Clip.Container.ajax.tid}, Zikula.Clip.Container.ajax.func);
             }
 
             // TODO update the hash
