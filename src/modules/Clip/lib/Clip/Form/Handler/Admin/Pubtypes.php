@@ -200,14 +200,17 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
             {
                 case 'save':
                     if (empty($this->tid)) {
-                        $response = array('func' => 'pubfields', 'tid' => $pubtype->tid);
+                        $output = ModUtil::func('Clip', 'ajax', 'pubfields', array('tid' => $pubtype->tid));
+                        $response = array('tid' => $pubtype->tid, 'func' => 'pubfields', 'output' => $output->payload);
                     } else {
-                        $response = array('func' => 'pubtypeinfo');
+                        $output = ModUtil::func('Clip', 'ajax', 'pubtypeinfo', array('tid' => $this->tid));
+                        $response = array('func' => 'pubtypeinfo', 'output' => $output->payload);
                     }
                     break;
 
                 case 'clone':
-                    $response = array('func' => 'pubfields', 'tid' => $newpubtype->tid);
+                    $output = ModUtil::func('Clip', 'ajax', 'pubfields', array('tid' => $newpubtype->tid));
+                    $response = array('tid' => $newpubtype->tid, 'func' => 'pubfields', 'output' => $output->payload);
                     break;
 
                 default:

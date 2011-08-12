@@ -246,23 +246,34 @@ Zikula.Clip.Container = Class.create(
 
         } else {
             var pars = req.decodeResponse();
-            if (pars['cancel']) {
-                // cancel
-                Zikula.Clip.Container.ajax.func = 'pubtypeinfo';
-            } else if (pars['redirect']) {
-                // url redirect
-                window.location = pars['redirect'];
-            } else {
-                // specific parameters
+
+            if (pars['output']) {
+                // custom function output
                 if (pars['tid']) {
                     Zikula.Clip.Container.ajax.tid = pars['tid'];
                 }
                 if (pars['func']) {
                     Zikula.Clip.Container.ajax.func = pars['func'];
                 }
+                Zikula.Clip.Container.instance.updateContent(pars['output']);
+
+            } else if (pars['redirect']) {
+                // url redirect
+                window.location = pars['redirect'];
+
+            } else {
+                // redirect to the pubtypeinfo
+                Zikula.Clip.Container.ajax.func = 'pubtypeinfo';
+                Zikula.Clip.AjaxRequest({'tid': Zikula.Clip.Container.ajax.tid}, 'pubtypeinfo');
             }
-            // redirect to the specified function
-            Zikula.Clip.AjaxRequest({'tid': Zikula.Clip.Container.ajax.tid}, Zikula.Clip.Container.ajax.func);
+
+            // TODO update the hash
+            // busy enabled should change the hash without problem, but it's not, it's generating a new ajax request'
+            /*
+            Zikula.Clip.Container.busy = true;
+            window.location.hash = Zikula.Clip.Container.ajax.tid+'/'+Zikula.Clip.Container.ajax.func;
+            Zikula.Clip.Container.busy = false;
+            */
         }
     },
 
