@@ -204,6 +204,12 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             if ($newData['delete']) {
                 $toDelete[] = 'file_name';
                 $data['orig_name'] = '';
+            } else {
+                // rename the file_name if the preserve name is enabled now
+                if ($this->config[6] && file_exists($uploadpath.'/'.$oldData['file_name']) && $oldData['file_name'] != $oldData['orig_name']) {
+                    rename($uploadpath.'/'.$oldData['file_name'], $uploadpath.'/'.$oldData['orig_name']);
+                    $data['file_name'] = $oldData['orig_name'];
+                }
             }
 
             foreach ($toDelete as $k) {
