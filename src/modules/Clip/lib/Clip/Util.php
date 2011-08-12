@@ -467,32 +467,37 @@ class Clip_Util
     }
 
     /**
-     * User form instance builder.
+     * Form view instance builder.
      *
-     * @param Zikula_Controller $controller
+     * @param Zikula_Controller $controller Related controller.
+     * @param boolean           $force      Wheter to force the creation of a new instance or not.
      * @see FormUtil::newForm
      *
-     * @return Clip_Form_View User Form View instance.
+     * @return Clip_Form_View Form view instance.
      */
-    public static function newUserForm(&$controller=null)
+    public static function newForm($controller=null, $force=false)
     {
         $serviceManager = ServiceUtil::getManager();
         $serviceId      = 'zikula.view.form.clip';
 
-        if (!$serviceManager->hasService($serviceId)) {
-            $view = new Clip_Form_View($serviceManager, 'Clip');
-            $view->add_core_data();
-            $serviceManager->attachService($serviceId, $view);
+        if ($force && $serviceManager->hasService($serviceId)) {
+            $serviceManager->detachService($serviceId);
+        }
+
+        if ($force || !$serviceManager->hasService($serviceId)) {
+            $form = new Clip_Form_View($serviceManager, 'Clip');
+            $serviceManager->attachService($serviceId, $form);
         } else {
-            $view = $serviceManager->getService($serviceId);
+            $form = $serviceManager->getService($serviceId);
         }
 
         if ($controller) {
-            $view->setController($controller);
-            $view->assign('controller', $controller);
+            $form->setController($controller);
+            $form->assign('controller', $controller);
+            $form->setEntityManager($controller->getEntityManager());
         }
 
-        return $view;
+        return $form;
     }
 
     /**

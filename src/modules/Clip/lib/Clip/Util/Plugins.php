@@ -83,7 +83,7 @@ class Clip_Util_Plugins
         $sm = ServiceUtil::getManager();
 
         if (!$sm->hasService("clip.plugin.$pluginID")) {
-            $view = Clip_Util::newUserForm();
+            $view = Clip_Util::newForm();
 
             $pluginClass = self::getClasses($pluginID);
             if (!$pluginClass) {

@@ -598,7 +598,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
 
         // create the output object
-        $render = Clip_Util::newUserForm($this);
+        $render = Clip_Util::newForm($this, true);
 
         Clip_Util::setArgs('edit', $args);
 
