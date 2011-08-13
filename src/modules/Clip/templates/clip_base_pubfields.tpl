@@ -1,7 +1,7 @@
-{ajaxheader module='Clip' filename='clip_admin_pubfields.js' ui=true}
+{ajaxheader module='Clip' filename='Clip.Pubfields.js' ui=true}
 {pageaddvarblock name='header'}
 <script type="text/javascript">
-    document.observe('dom:loaded', pubfieldlistsortinit);
+    document.observe('dom:loaded', Zikula.Clip.Pubfields.Init);
 </script>
 {/pageaddvarblock}
 
@@ -83,7 +83,7 @@
                     &nbsp;
                 </span>
                 <span class="z-itemcell z-w10">
-                    <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubfield.tid id=$pubfield.id fragment='newpubfield'}">
+                    <a href="{clip_url func='pubfields' tid=$pubfield.tid id=$pubfield.id fragment='newpubfield'}">
                         {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                     </a>
                 </span>

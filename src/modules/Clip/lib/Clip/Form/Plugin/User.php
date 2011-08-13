@@ -186,29 +186,27 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     /**
      * Clip admin methods.
      */
-    public static function getSaveTypeDataFunc($field)
+    public static function getConfigSaveJSFunc($field)
     {
-        $saveTypeDataFunc = 'function saveTypeData()
-                             {
-                                 if ($(\'clipplugin_multiple\') && $F(\'clipplugin_multiple\') == \'on\') {
-                                     $(\'typedata\').value = 1;
-                                 } else {
-                                     $(\'typedata\').value = 0;
-                                 }
-                                 $(\'typedata\').value += \'|\';
-                                 if ($F(\'clipplugin_operator\') != null) {
-                                     $(\'typedata\').value += $F(\'clipplugin_operator\');
-                                 } else {
-                                     $(\'typedata\').value += \'likefirst\';
-                                 }
+        return 'function()
+                {
+                    if ($(\'clipplugin_multiple\') && $F(\'clipplugin_multiple\') == \'on\') {
+                        $(\'typedata\').value = 1;
+                    } else {
+                        $(\'typedata\').value = 0;
+                    }
+                    $(\'typedata\').value += \'|\';
+                    if ($F(\'clipplugin_operator\') != null) {
+                        $(\'typedata\').value += $F(\'clipplugin_operator\');
+                    } else {
+                        $(\'typedata\').value += \'likefirst\';
+                    }
 
-                                 closeTypeData();
-                             }';
-
-        return $saveTypeDataFunc;
+                    Zikula.Clip.Pubfields.ConfigClose();
+                }';
     }
 
-    public function getTypeHtml($field, $view)
+    public function getConfigHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 

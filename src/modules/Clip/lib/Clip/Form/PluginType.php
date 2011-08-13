@@ -35,55 +35,28 @@ class Clip_Form_PluginType extends Zikula_Form_Plugin_DropdownList
         $this->cssClass = strpos($this->cssClass, 'clip-plugintypeselector') === false ? $this->cssClass.' clip-plugintypeselector' : $this->cssClass;
         $result = parent::render($render);
 
-        $typeDataHtml = '';
+        $config = $script = '';
         if (!empty($this->selectedValue) && !empty($this->items)) {
-            PageUtil::addVar('javascript', 'zikula.ui');
-            $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
             $plugin = Clip_Util_Plugins::get($this->selectedValue);
-            if (method_exists($plugin, 'getTypeHtml')) {
-                if (method_exists($plugin, 'getSaveTypeDataFunc')) {
-                    $script .= $plugin->getSaveTypeDataFunc($this)."\n";
+            if (method_exists($plugin, 'getConfigHtml')) {
+                PageUtil::addVar('javascript', 'zikula.ui');
+                $script =  "<script type=\"text/javascript\">\n//<![CDATA[\n";
+                $script .= '    Zikula.Clip.Pubfields.ConfigSave = ';
+                if (method_exists($plugin, 'getConfigSaveJSFunc')) {
+                    $script .= $plugin->getConfigSaveJSFunc($this)."\n";
                 } else {
-                    $script .= 'function saveTypeData() { closeTypeData(); }'."\n";
+                    $script .= 'function() { Zikula.Clip.Pubfields.ConfigClose(); }'."\n";
                 }
-                // init functions for modalbox and unobtrusive buttons
-                $script .= '
-                var clip_pluginwindow = null;
-                var clip_plugincallback = function(button) {
-                    switch (button.name) {
-                        case \'save\':
-                            saveTypeData();
-                            break;
-                        case \'cancel\':
-                            closeTypeData();
-                    }
-                }
-                function closeTypeData() {
-                    clip_pluginwindow.closeHandler();
-                }
-                function clip_enablePluginConfig() {
-                    clip_pluginwindow = new Zikula.UI.Dialog($(\'showTypeButton\'),
-                                                             [
-                                                                 {name:\'save\', class:\'z-bt-ok z-btgreen\', label:\''.$this->__('Save').'\'},
-                                                                 {name:\'cancel\', class:\'z-bt-cancel z-btred\', label:\''.$this->__('Cancel').'\'}
-                                                             ],
-                                                             {callback: clip_plugincallback, modal:true, title:\''.$this->__('Plugin configuration').'\', width: 600, overlayOpacity: 0.6});
-                }
-                Event.observe( window, \'load\', clip_enablePluginConfig, false);
-                ';
+                $script .= "\n// ]]>\n</script>";
 
-                $typeDataHtml  = '
-                <a id="showTypeButton" class="tooltips" href="#typeDataDiv" title="'.$this->__('Open the plugin configuration popup').'"><img src="images/icons/extrasmall/configure.png" alt="'.$this->__('Configuration').'" /></a>
-                <div id="typeDataDiv" class="z-form" style="display: none">
-                    '.$plugin->getTypeHtml($this, $render).'
+                $config  = '
+                <a id="pluginConfigButton" class="tooltips" href="#pluginConfigDiv" title="'.$this->__('Open the plugin configuration popup').'"><img src="images/icons/extrasmall/configure.png" alt="'.$this->__('Configuration').'" /></a>
+                <div id="pluginConfigDiv" class="z-form" style="display: none">
+                    '.$plugin->getConfigHtml($this, $render).'
                 </div>';
-            } else {
-                $script .= 'Event.observe( window, \'load\', function() { $(\'typedata_wrapper\').hide(); }, false);';
             }
-            $script .= "\n// ]]>\n</script>";
-            PageUtil::addVar('header', $script);
         }
 
-        return $result . $typeDataHtml;
+        return $result . $config . $script;
     }
 }

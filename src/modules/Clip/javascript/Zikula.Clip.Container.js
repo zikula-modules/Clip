@@ -151,7 +151,8 @@ Zikula.Clip.Container = Class.create(
 
                 case 'pubfields':
                     this.content.update(content);
-                    pubfieldlistsortinit();
+                    this.content.innerHTML = this.content.innerHTML.replace('FormDoPostBack', 'Zikula.Clip.Container.instance.formPostBack');
+                    Zikula.Clip.Pubfields.Init();
                     break;
 
                 case 'generator':
@@ -191,9 +192,25 @@ Zikula.Clip.Container = Class.create(
                 case 'pubtype':
                 case 'pubfields':
                 case 'relations':
-                    this.content.select('form input[type=submit]').each(function(e) {
-                        e.observe('click', this.formSend.bind(this))
+                    var form = this.content.select('form').first();
+                    // observe the form buttons
+                    form.select('input[type=submit]').each(function(e) {
+                        // replace any onclick attribute
+                        if (e.onclick) {
+                            e.ajaxclick = e.onclick;
+                            e.removeAttribute('onclick');
+                            e.observe('click', function(event) {
+                                if (e.ajaxclick()) {
+                                    this.formSend(event)
+                                } else {
+                                    event.stop();
+                                }
+                            }.bind(this));
+                        } else {
+                            e.observe('click', this.formSend.bind(this));
+                        }
                     }.bind(this));
+                    Zikula.Clip.Container.formid = form.identify();
             }
             // update the loaded tooltips on the ajax content
             Zikula.UI.Tooltips(this.content.getElementsBySelector('.tooltips'));
@@ -219,17 +236,21 @@ Zikula.Clip.Container = Class.create(
             }
         });
 
+        var query = 'ajax.php?tid='+Zikula.Clip.Container.ajax.tid
+        if (Zikula.Clip.Container.ajax.id) {
+            query += '&id='+Zikula.Clip.Container.ajax.id
+        }
+        query += '&module=Clip&type=ajax&func='+Zikula.Clip.Container.ajax.func;
+
         new Zikula.Ajax.Request(
-            'ajax.php?tid='+Zikula.Clip.Container.ajax.tid+'&module=Clip&type=ajax&func='+Zikula.Clip.Container.ajax.func,
+            query,
             {
                 method: 'post',
                 parameters: form.serialize(),
                 onComplete: this.formProcess
             });
 
-        form.select('input[type=submit]').each(function(e) {
-            e.enable();
-        });
+        form.select('input[type=submit]').invoke('enable');
     },
 
     formProcess: function(req)
@@ -279,6 +300,30 @@ Zikula.Clip.Container = Class.create(
             Zikula.Clip.Container.busy = false;
             */
         }
+
+        return true;
+    },
+
+    formPostBack: function(eventTarget, eventArgument)
+    {
+        var form = $(Zikula.Clip.Container.formid);
+
+        if (!form.onsubmit || form.onsubmit()) {
+            form.FormEventTarget.value = eventTarget;
+            form.FormEventArgument.value = eventArgument;
+
+            form.select('input[type=submit]').invoke('disable');
+
+            new Zikula.Ajax.Request(
+                'ajax.php?tid='+Zikula.Clip.Container.ajax.tid+'&module=Clip&type=ajax&func='+Zikula.Clip.Container.ajax.func,
+                {
+                    method: 'post',
+                    parameters: form.serialize(),
+                    onComplete: Zikula.Clip.Container.instance.formProcess
+                });
+
+            form.select('input[type=submit]').invoke('enable');
+        }
     },
 
     showIndicator: function()
@@ -312,9 +357,11 @@ Zikula.Clip.Container = Class.create(
 Object.extend(Zikula.Clip.Container,
 {
     instance: null,
+    formid: null,
     busy: false,
     ajax: {
         tid: 0,
+        id: 0,
         func: ''
     },
     register: function(config) {
@@ -748,6 +795,11 @@ Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
 
     // backup the request basis in the class
     Zikula.Clip.Container.ajax.tid  = pars.tid;
+    if (pars.id) {
+        Zikula.Clip.Container.ajax.id = pars.tid;
+    } else {
+        Zikula.Clip.Container.ajax.id = 0;
+    }
     Zikula.Clip.Container.ajax.func = pars.func;
 
     // update the hash

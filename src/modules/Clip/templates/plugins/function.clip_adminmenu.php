@@ -59,7 +59,6 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 
     // edit fields link
     $args['func'] = 'pubfields';
-    $args['forcetype'] = 'admin';
 
     $output .= '<span>';
     if ($func != 'pubfields') {
@@ -74,6 +73,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
     // relations link
     $args['func'] = 'relations';
     $args['args'] = array('tid' => $tid, 'withtid1' => $tid, 'op' => 'or', 'withtid2' => $tid);
+    $args['forcetype'] = 'admin';
 
     $output .= '<span>';
     $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Relations').'</a>';

@@ -60,7 +60,7 @@
             </dl>
         </li>
         <li class="z-clearfix">
-            <a href="{modurl modname='Clip' type='admin' func='pubfields' tid=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
+            <a href="{clip_url func='pubfields' tid=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
                 {gt text='Manage its fields'}
             </a>
             <p>

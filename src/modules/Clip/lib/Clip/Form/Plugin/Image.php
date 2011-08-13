@@ -346,19 +346,17 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     /**
      * Clip admin methods.
      */
-    public static function getSaveTypeDataFunc($field)
+    public static function getConfigSaveJSFunc($field)
     {
-        $saveTypeDataFunc = 'function saveTypeData()
-                             {
-                                 $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+$F(\'clipplugin_preservename\');
+        return 'function()
+                {
+                    $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+$F(\'clipplugin_preservename\');
 
-                                 closeTypeData();
-                             }';
-
-        return $saveTypeDataFunc;
+                    Zikula.Clip.Pubfields.ConfigClose();
+                }';
     }
 
-    public function getTypeHtml($field, $view)
+    public function getConfigHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 

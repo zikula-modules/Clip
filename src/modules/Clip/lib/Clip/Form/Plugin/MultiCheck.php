@@ -133,25 +133,23 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
     /**
      * Clip admin methods.
      */
-    public static function getSaveTypeDataFunc($field)
+    public static function getConfigSaveJSFunc($field)
     {
-        $saveTypeDataFunc = 'function saveTypeData()
-                             {
-                                 $(\'typedata\').value = $F(\'clipplugin_checklist\') ;
-                                 $(\'typedata\').value += \'|\';
-                                 if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
-                                     $(\'typedata\').value += 1;
-                                 } else {
-                                     $(\'typedata\').value += 0;
-                                 }
+        return 'function()
+                {
+                    $(\'typedata\').value = $F(\'clipplugin_checklist\') ;
+                    $(\'typedata\').value += \'|\';
+                    if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
+                        $(\'typedata\').value += 1;
+                    } else {
+                        $(\'typedata\').value += 0;
+                    }
 
-                                 closeTypeData();
-                             }';
-
-        return $saveTypeDataFunc;
+                    Zikula.Clip.Pubfields.ConfigClose();
+                }';
     }
 
-    public function getTypeHtml($field, $view)
+    public function getConfigHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 

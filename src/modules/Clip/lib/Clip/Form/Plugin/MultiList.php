@@ -137,32 +137,30 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
     /**
      * Clip admin methods.
      */
-    public static function getSaveTypeDataFunc($field)
+    public static function getConfigSaveJSFunc($field)
     {
-        $saveTypeDataFunc = 'function saveTypeData()
-                             {
-                                 var config = new Array()
-                                 config.push($F(\'clipplugin_categorylist\'))
+        return 'function()
+                {
+                    var config = new Array()
+                    config.push($F(\'clipplugin_categorylist\'))
 
-                                 if (parseInt($F(\'clipplugin_multisize\')) != NaN && parseInt($F(\'clipplugin_multisize\')) > 0) {
-                                     config.push($F(\'clipplugin_multisize\'));
-                                 } else {
-                                     config.push(\'~\');
-                                 }
-                                 if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
-                                     config.push(\'1\');
-                                 } else {
-                                     config.push(\'0\');
-                                 }
-                                 $(\'typedata\').value = config.join(\'|\')
+                    if (parseInt($F(\'clipplugin_multisize\')) != NaN && parseInt($F(\'clipplugin_multisize\')) > 0) {
+                        config.push($F(\'clipplugin_multisize\'));
+                    } else {
+                        config.push(\'~\');
+                    }
+                    if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
+                        config.push(\'1\');
+                    } else {
+                        config.push(\'0\');
+                    }
+                    $(\'typedata\').value = config.join(\'|\')
 
-                                 closeTypeData();
-                             }';
-
-        return $saveTypeDataFunc;
+                    Zikula.Clip.Pubfields.ConfigClose();
+                }';
     }
 
-    public function getTypeHtml($field, $view)
+    public function getConfigHtml($field, $view)
     {
         // parse the configuration
         $this->parseConfig($view->_tpl_vars['field']['typedata']);

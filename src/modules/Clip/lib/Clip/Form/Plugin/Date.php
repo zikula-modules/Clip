@@ -65,23 +65,21 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     /**
      * Clip admin methods.
      */
-    public static function getSaveTypeDataFunc($field)
+    public static function getConfigSaveJSFunc($field)
     {
-        $saveTypeDataFunc = 'function saveTypeData()
-                             {
-                                 if ($F(\'clipplugin_usedatetime\') == \'on\') {
-                                     $(\'typedata\').value = 1;
-                                 } else {
-                                     $(\'typedata\').value = 0;
-                                 }
+        return 'function()
+                {
+                    if ($F(\'clipplugin_usedatetime\') == \'on\') {
+                        $(\'typedata\').value = 1;
+                    } else {
+                        $(\'typedata\').value = 0;
+                    }
 
-                                 closeTypeData();
-                             }';
-
-        return $saveTypeDataFunc;
+                    Zikula.Clip.Pubfields.ConfigClose();
+                }';
     }
 
-    public function getTypeHtml($field, $view)
+    public function getConfigHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
         $checked = $this->config['includeTime'] ? 'checked="checked"' : '';

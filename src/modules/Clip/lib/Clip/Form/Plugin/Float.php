@@ -45,25 +45,23 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
     /**
      * Clip admin methods.
      */
-    public static function getSaveTypeDataFunc($field)
+    public static function getConfigSaveJSFunc($field)
     {
-        $saveTypeDataFunc = 'function saveTypeData()
-                             {
-                                 if ($F(\'clipplugin_minvalue\') != null) {
-                                     $(\'typedata\').value = $F(\'clipplugin_minvalue\');
-                                 }
-                                 $(\'typedata\').value += \'|\';
-                                 if ($F(\'clipplugin_maxvalue\') != null) {
-                                     $(\'typedata\').value += $F(\'clipplugin_maxvalue\');
-                                 }
+        return 'function()
+                {
+                    if ($F(\'clipplugin_minvalue\') != null) {
+                        $(\'typedata\').value = $F(\'clipplugin_minvalue\');
+                    }
+                    $(\'typedata\').value += \'|\';
+                    if ($F(\'clipplugin_maxvalue\') != null) {
+                        $(\'typedata\').value += $F(\'clipplugin_maxvalue\');
+                    }
 
-                                 closeTypeData();
-                             }';
-
-        return $saveTypeDataFunc;
+                    Zikula.Clip.Pubfields.ConfigClose();
+                }';
     }
 
-    public function getTypeHtml($field, $view)
+    public function getConfigHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
