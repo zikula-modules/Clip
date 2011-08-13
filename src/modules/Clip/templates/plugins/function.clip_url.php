@@ -52,5 +52,5 @@ function smarty_function_clip_url($params, Zikula_View &$view)
     $params = json_encode(array_merge($params, $args));
     $params = str_replace('"', "'", $params);
 
-    return "javascript:Zikula.Clip.AjaxRequest($params, '$func', '$type')";
+    return "javascript:Zikula.Clip.Ajax.Request($params, '$func', '$type')";
 }

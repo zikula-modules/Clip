@@ -186,7 +186,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
             // delete the field
             case 'delete':
                 if ($pubfield->delete()) {
-                    LogUtil::registerStatus($this->__('Done! Field deleted.'));
+                    LogUtil::registerStatus($this->__f("Done! Field '%s' deleted.", $pubfield->name));
                 } else {
                     return LogUtil::registerError($this->__('Error! Deletion attempt failed.'));
                 }

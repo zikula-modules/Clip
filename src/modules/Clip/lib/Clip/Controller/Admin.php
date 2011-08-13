@@ -42,20 +42,6 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     }
 
     /**
-     * Module configuration.
-     */
-    public function modifyconfig()
-    {
-        //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
-
-        //// Output
-        return FormUtil::newForm('Clip', $this)
-               ->execute('clip_admin_modifyconfig.tpl',
-                         new Clip_Form_Handler_Admin_ModifyConfig());
-    }
-
-    /**
      * Publication types list.
      */
     public function pubtypeinfo()
@@ -129,7 +115,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
 
         //// Output
-        return FormUtil::newForm('Clip', $this)
+        return Clip_Util::newForm($this, true)
                ->execute('clip_base_relations.tpl',
                          new Clip_Form_Handler_Admin_Relations());
     }
@@ -230,6 +216,20 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         return FormUtil::newForm('Clip', $this)
                ->execute('clip_admin_import.tpl',
                          new Clip_Form_Handler_Admin_Import());
+    }
+
+    /**
+     * Module configuration.
+     */
+    public function modifyconfig()
+    {
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+
+        //// Output
+        return FormUtil::newForm('Clip', $this)
+               ->execute('clip_admin_modifyconfig.tpl',
+                         new Clip_Form_Handler_Admin_ModifyConfig());
     }
 
     /**

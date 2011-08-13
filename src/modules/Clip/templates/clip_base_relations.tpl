@@ -82,7 +82,7 @@
                     <span class="z-sub">$pubdata.{$item.alias2|safetext}</span>
                 </span>
                 <span class="z-itemcell z-w10">
-                    <a href="{modurl modname='Clip' type='admin' func='relations' id=$item.id tid=$tid withtid1=$filter.withtid1 op=$filter.op withtid2=$filter.withtid2 fragment='relform'}">
+                    <a href="{clip_url func='relations' id=$item.id tid=$tid withtid1=$filter.withtid1 op=$filter.op withtid2=$filter.withtid2 fragment='relform'}">
                         {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                     </a>
                 </span>

@@ -34,7 +34,7 @@
     </ul>
     <ul>
         <li class="z-clearfix">
-            <a href="{modurl modname='Clip' type='admin' func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
+            <a href="{clip_url func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
                 {gt text="Edit '%s'" tag1=$pubtype.title|safetext}
             </a>
             <p>
@@ -68,7 +68,7 @@
             </p>
         </li>
         <li class="z-clearfix">
-            <a href="{modurl modname='Clip' type='admin' func='relations' tid=$pubtype.tid withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Edit the relations of this publication type'}">
+            <a href="{clip_url func='relations' tid=$pubtype.tid withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Edit the relations of this publication type'}">
                 {gt text='Manage its relations'}
             </a>
             <p>

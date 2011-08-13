@@ -64,7 +64,9 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
     if ($func != 'pubfields') {
         $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Fields').'</a>';
     } elseif (isset($params['field']) && $params['field']) {
-        $output .= '<a href="'.smarty_function_clip_url($args, $view).'#newpubfield">'.$view->__('Fields').'</a>';
+        $args['fragment'] = 'newpubfield';
+        $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Fields').'</a>';
+        unset($args['fragment']);
     } else {
         $output .= '<a href="#newpubfield">'.$view->__('Fields').'</a>';
     }
@@ -73,12 +75,9 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
     // relations link
     $args['func'] = 'relations';
     $args['args'] = array('tid' => $tid, 'withtid1' => $tid, 'op' => 'or', 'withtid2' => $tid);
-    $args['forcetype'] = 'admin';
 
     $output .= '<span>';
     $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Relations').'</a>';
-
-    unset($args['forcetype']);
 
     // show code links
     $args['func'] = 'generator';

@@ -256,7 +256,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                     // setup the return url as the edit form
                     // to update the corresponding tables
                     $params = array_merge($this->filter, array('update' => $relation->tid1.','.$relation->tid2));
-                    $this->referer = ModUtil::url('Clip', 'admin', 'relations', $params);
+                    $this->referer = new Clip_Url('Clip', 'admin', 'relations', $params);
 
                     LogUtil::registerStatus($this->__('Done! Relation created.'));
                 } else {
@@ -270,7 +270,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
                 if ($relation->delete()) {
                     $params = array_merge($this->filter, array('update' => $relation->tid1.','.$relation->tid2));
-                    $this->referer = ModUtil::url('Clip', 'admin', 'relations', $params);
+                    $this->referer = new Clip_Url('Clip', 'admin', 'relations', $params);
 
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));
                 } else {
@@ -281,15 +281,25 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
             // filter relation list
             case 'filter':
                 $params = array_merge(array('tid' => $tid), $data['filter']);
-                $this->referer = ModUtil::url('Clip', 'admin', 'relations', $params);
+                $this->referer = new Clip_Url('Clip', 'admin', 'relations', $params);
                 break;
 
             // clear any filter
             case 'clear':
-                $this->referer = ModUtil::url('Clip', 'admin', 'relations', array('tid' => $tid));
+                $this->referer = new Clip_Url('Clip', 'admin', 'relations', array('tid' => $tid));
                 break;
         }
 
-        return $view->redirect($this->referer);
+        if ($isAjax) {
+            if ($this->referer instanceof Clip_Url) {
+                $response = array('func' => $this->referer->getAction(), 'pars' => $this->referer->getArgs());
+            } else {
+                $response = array('func' => 'relations');
+            }
+
+            return new Zikula_Response_Ajax_Json($response);
+        }
+
+        return $view->redirect($this->referer instanceof Clip_Url ? $this->referer->getUrl() : $this->referer);
     }
 }
