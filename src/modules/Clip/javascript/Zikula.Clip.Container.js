@@ -5,7 +5,7 @@ Zikula.define('Clip');
 
 Event.observe(window, 'load', function()
 {
-    Zikula.Clip.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence;
+    Zikula.Clip.TreeSortable.trees.grouptypesTree.config.onSave = Zikula.Clip.Resequence.Listener;
 
     Zikula.Clip.Container.register();
 
@@ -31,32 +31,51 @@ Event.observe(window, 'load', function()
     Zikula.Clip.AttachMenu();
 
     // hash behaviors
-    Event.observe(window, 'hashchange', Zikula.Clip.Hash)
+    Event.observe(window, 'hashchange', Zikula.Clip.Hash.Listener)
 
-    Zikula.Clip.Hash();
+    Zikula.Clip.Hash.Listener();
 });
 
 /* Hash manager */
-Zikula.Clip.Hash = function()
+Zikula.Clip.Hash = 
 {
-    if (Zikula.Clip.Container.busy || window.location.hash.empty() || window.location.hash == '#') {
-        return;
-    }
-
-    var hash = window.location.hash;
-    var args = hash.replace('#', '').split('/');
-    var pars = {'tid': args[0]};
-    var func = (typeof args[1] != 'undefined') ? args[1] : null;
-    // additional parameters
-    if (args.size() > 2 && args.size() % 2 == 0) {
-        for (var i = 2; i < args.size(); i = i+2) {
-            var key = args[i];
-            pars[key] = args[i+1];
+    Listener: function()
+    {
+        if (Zikula.Clip.Ajax.Busy || window.location.hash.empty() || window.location.hash == '#') {
+            return;
         }
-    }
 
-    Zikula.Clip.AjaxRequest(pars, func)
-}
+        var hash = window.location.hash;
+        var args = hash.replace('#', '').split('/');
+        var pars = {'tid': args[0]};
+        var func = (typeof args[1] != 'undefined') ? args[1] : null;
+        // additional parameters
+        if (args.size() > 2 && args.size() % 2 == 0) {
+            for (var i = 2; i < args.size(); i = i+2) {
+                var key = args[i];
+                pars[key] = args[i+1];
+            }
+        }
+
+        Zikula.Clip.Ajax.Request(pars, func)
+    },
+
+    Update: function(pars, func)
+    {
+        Zikula.Clip.Ajax.Busy = true;
+
+        var newhash = '';
+        for (var i in pars) {
+            if (i != 'tid') {
+                newhash += '/'+i+'/'+pars[i];
+            }
+        }
+
+        newhash = pars.tid+'/'+func+newhash;
+
+        window.location.hash = newhash;
+    }
+};
 
 /* Customization of TreeSortable */
 Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.TreeSortable.prototype */
@@ -73,7 +92,7 @@ Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.Tr
         var a = node.down('a'), id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
         if (id != parseInt(id)) {
             id = id.split('-')[1];
-            a.writeAttribute('onClick', 'javascript:if (!Zikula.Clip.Container.busy) { this.insert({after: Zikula.Clip.Indicator()}); Zikula.Clip.AjaxRequest({tid:\''+id+'\'}, \'pubtypeinfo\'); } return false;');
+            a.writeAttribute('onClick', 'javascript:if (!Zikula.Clip.Ajax.Busy) { this.insert({after: Zikula.Clip.Indicator()}); Zikula.Clip.Ajax.Request({tid:\''+id+'\'}, \'pubtypeinfo\'); } return false;');
         } else {
             a.writeAttribute('onClick', 'return false;');
         }
@@ -145,7 +164,7 @@ Zikula.Clip.Container = Class.create(
     {
         if (content) {
             // handle the content according the function
-            switch (Zikula.Clip.Container.ajax.func)
+            switch (Zikula.Clip.Container.func)
             {
                 case 'pubtype':
                     this.content.update(content);
@@ -190,7 +209,7 @@ Zikula.Clip.Container = Class.create(
                     this.content.update(content);
             }
             // observe the forms submit buttons
-            switch (Zikula.Clip.Container.ajax.func)
+            switch (Zikula.Clip.Container.func)
             {
                 case 'pubtype':
                 case 'pubfields':
@@ -226,7 +245,7 @@ Zikula.Clip.Container = Class.create(
     {
         event.stop();
 
-        Zikula.Clip.Container.busy = true;
+        Zikula.Clip.Ajax.Busy = true;
         this.showIndicator();
 
         var submit = event.findElement();
@@ -238,18 +257,18 @@ Zikula.Clip.Container = Class.create(
             }
         });
 
-        var query = 'ajax.php?tid='+Zikula.Clip.Container.ajax.tid
-        if (Zikula.Clip.Container.ajax.id) {
-            query += '&id='+Zikula.Clip.Container.ajax.id
+        var query = [];
+        for (var i in Zikula.Clip.Container.pars) {
+            query.push( i+'='+Zikula.Clip.Container.pars[i] );
         }
-        query += '&module=Clip&type=ajax&func='+Zikula.Clip.Container.ajax.func;
+        query = 'ajax.php?'+query.join('&')+'&module=Clip&type=ajax&func='+Zikula.Clip.Container.func;
 
         new Zikula.Ajax.Request(
             query,
             {
                 method: 'post',
                 parameters: form.serialize(),
-                onComplete: this.formProcess
+                onComplete: this.formProcess.bind(this)
             });
 
         form.select('input[type=submit]').invoke('enable');
@@ -257,51 +276,47 @@ Zikula.Clip.Container = Class.create(
 
     formProcess: function(req)
     {
-        Zikula.Clip.Container.busy = false;
-
         if (!req.isSuccess()) {
+            Zikula.Clip.Ajax.Busy = false;
             Zikula.showajaxerror(req.getMessage());
             return false;
         }
 
         if (req.getData()) {
-            Zikula.Clip.Container.instance.updateContent(req.getData());
+            this.updateContent(req.getData());
 
         } else {
-            var pars = req.decodeResponse();
+            var result = req.decodeResponse();
 
-            if (pars['output']) {
+            if (result.output) {
                 // custom function output
-                if (pars['tid']) {
-                    Zikula.Clip.Container.ajax.tid = pars['tid'];
+                if (result.func) {
+                    Zikula.Clip.Container.func = result.func;
                 }
-                if (pars['func']) {
-                    Zikula.Clip.Container.ajax.func = pars['func'];
+                if (result.pars) {
+                    Zikula.Clip.Container.pars = result.pars;
                 }
-                Zikula.Clip.Container.instance.updateContent(pars['output']);
+                Zikula.Clip.Container.instance.updateContent(result.output);
 
-            } else if (pars['redirect']) {
+            } else if (result.redirect) {
                 // url redirect
-                window.location = pars['redirect'];
+                window.location = result.redirect;
 
             } else {
-                // redirect to a specified function or pubtypeinfo
-                if (pars['func']) {
-                    Zikula.Clip.Container.ajax.func = pars['func'];
-                } else {
-                    Zikula.Clip.Container.ajax.func = 'pubtypeinfo';
+                // redirect to a specified function or pubtypeinfo (on cancel)
+                Zikula.Clip.Container.func = result.func ? result.func : 'pubtypeinfo';
+                if (result.pars) {
+                    Zikula.Clip.Container.pars = result.pars;
                 }
-                Zikula.Clip.AjaxRequest({'tid': Zikula.Clip.Container.ajax.tid}, Zikula.Clip.Container.ajax.func);
+                Zikula.Clip.Ajax.Request(Zikula.Clip.Container.pars, Zikula.Clip.Container.func);
             }
 
             // TODO update the hash
             // busy enabled should change the hash without problem, but it's not, it's generating a new ajax request'
-            /*
-            Zikula.Clip.Container.busy = true;
-            window.location.hash = Zikula.Clip.Container.ajax.tid+'/'+Zikula.Clip.Container.ajax.func;
-            Zikula.Clip.Container.busy = false;
-            */
+            Zikula.Clip.Hash.Update(Zikula.Clip.Container.pars, Zikula.Clip.Container.func);
         }
+
+        Zikula.Clip.Ajax.Busy = false;
 
         return true;
     },
@@ -311,7 +326,7 @@ Zikula.Clip.Container = Class.create(
         var form = $(Zikula.Clip.Container.formid);
 
         if (!form.onsubmit || form.onsubmit()) {
-            Zikula.Clip.Container.busy = true;
+            Zikula.Clip.Ajax.Busy = true;
             Zikula.Clip.Container.instance.showIndicator();
 
             form.FormEventTarget.value = eventTarget;
@@ -320,7 +335,7 @@ Zikula.Clip.Container = Class.create(
             form.select('input[type=submit]').invoke('disable');
 
             new Zikula.Ajax.Request(
-                'ajax.php?tid='+Zikula.Clip.Container.ajax.tid+'&module=Clip&type=ajax&func='+Zikula.Clip.Container.ajax.func,
+                'ajax.php?tid='+Zikula.Clip.Container.pars.tid+'&module=Clip&type=ajax&func='+Zikula.Clip.Container.func,
                 {
                     method: 'post',
                     parameters: form.serialize(),
@@ -364,10 +379,10 @@ Object.extend(Zikula.Clip.Container,
     instance: null,
     formid: null,
     busy: false,
-    ajax: {
+    func: '',
+    pars: {
         tid: 0,
-        id: 0,
-        func: ''
+        id: 0
     },
     register: function(config)
     {
@@ -440,7 +455,7 @@ Zikula.Clip.AttachMenu = function ()
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'tid':tid}, 'pubtype');
+            Zikula.Clip.Ajax.Request({'tid':tid}, 'pubtype');
         }
     });
     Zikula.Clip.ContextMenu.addItem({
@@ -451,10 +466,9 @@ Zikula.Clip.AttachMenu = function ()
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'tid':tid}, 'pubfields');
+            Zikula.Clip.Ajax.Request({'tid':tid}, 'pubfields');
         }
     });
-    /*
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Relations'),
         condition: function() {
@@ -463,10 +477,9 @@ Zikula.Clip.AttachMenu = function ()
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'withtid1':tid, 'op':'or', 'withtid2':tid}, 'relations');
+            Zikula.Clip.Ajax.Request({'tid':tid, 'withtid1':tid, 'op':'or', 'withtid2':tid}, 'relations');
         }
     });
-    */
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Code'),
         condition: function() {
@@ -475,7 +488,7 @@ Zikula.Clip.AttachMenu = function ()
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'tid':tid, 'code':'list'}, 'generator');
+            Zikula.Clip.Ajax.Request({'tid':tid, 'code':'list'}, 'generator');
         }
     });
     /*
@@ -487,7 +500,7 @@ Zikula.Clip.AttachMenu = function ()
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'tid':tid}, 'list');
+            Zikula.Clip.Ajax.Request({'tid':tid}, 'list');
         }
     });
     Zikula.Clip.ContextMenu.addItem({
@@ -498,7 +511,7 @@ Zikula.Clip.AttachMenu = function ()
         callback: function(node) {
             node.insert({after: Zikula.Clip.Indicator()});
             var tid = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node.up('li')).split('-')[1];
-            Zikula.Clip.AjaxRequest({'tid':tid}, 'edit');
+            Zikula.Clip.Ajax.Request({'tid':tid}, 'edit');
         }
     });
     */
@@ -607,7 +620,6 @@ Zikula.Clip.OpenForm = function(data, callback)
 
     return Zikula.Clip.Form.open();
 };
-
 
 Zikula.Clip.CloseForm = function()
 {
@@ -741,104 +753,102 @@ Zikula.Clip.ReinitTreeNode = function(node, data)
     Zikula.UI.Tooltips(node.select('a'));
 };
 
+
+
 /* Ajax Indicator */
 Zikula.Clip.Indicator = function() {
     return $('ajax_indicator') ? $('ajax_indicator') : new Element('img',{id: 'ajax_indicator', src: 'images/ajax/indicator_circle.gif'});
 };
 
+
+
 /* Reorder method */
-Zikula.Clip.Resequence = function(node, params, data)
+Zikula.Clip.Resequence =
 {
-    // only allow inserts of grouptypes on root level
-    var id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node)
-    if (node.up('li') === undefined && id != parseInt(id)) {
-        return false;
+    Listener: function(node, params, data)
+    {
+        // only allow inserts of grouptypes on root level
+        var id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node)
+        if (node.up('li') === undefined && id != parseInt(id)) {
+            return false;
+        }
+
+        node.insert({bottom: Zikula.Clip.Indicator()});
+
+        var request = new Zikula.Ajax.Request(
+            "ajax.php?module=Clip&type=ajaxexec&func=treeresequence",
+            {
+                parameters: {'data': data},
+                onComplete: Zikula.Clip.Resequence.Callback
+            });
+
+        return request.success();
+    },
+
+    Callback: function(req)
+    {
+        if (!req.isSuccess()) {
+            Zikula.showajaxerror(req.getMessage());
+            return Zikula.TreeSortable.grouptypesTree.revertInsertion();
+        }
+
+        return true;
     }
-
-    node.insert({bottom: Zikula.Clip.Indicator()});
-
-    var request = new Zikula.Ajax.Request(
-        "ajax.php?module=Clip&type=ajaxexec&func=treeresequence",
-        {
-            parameters: {'data': data},
-            onComplete: Zikula.Clip.ResequenceCallback
-        });
-
-    return request.success();
 };
 
-Zikula.Clip.ResequenceCallback = function(req)
-{
-    if (!req.isSuccess()) {
-        Zikula.showajaxerror(req.getMessage());
-        return Zikula.TreeSortable.grouptypesTree.revertInsertion();
-    }
-
-    return true;
-};
 
 
 /* Ajax view functions */
-Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
+Zikula.Clip.Ajax =
 {
-    if (Zikula.Clip.Container.busy || typeof pars != 'object' || typeof pars['tid'] == 'undefined') {
-        return;
-    }
+    Busy: false,
 
-    Zikula.Clip.Container.busy = true;
-
-    Zikula.Clip.Container.instance.showIndicator();
-
-    var newhash = '';
-    for (var i in pars) {
-        if (i != 'tid') {
-            newhash += '/'+i+'/'+pars[i];
+    Request: function(pars, func, type, callback)
+    {
+        if (Zikula.Clip.Ajax.Busy || typeof pars != 'object' || typeof pars['tid'] == 'undefined') {
+            return;
         }
+
+        Zikula.Clip.Container.instance.showIndicator();
+
+        // update the hash
+        func = func ? func : 'pubtypeinfo';
+        Zikula.Clip.Hash.Update(pars, func);
+
+        // backup the request basis in the class
+        Zikula.Clip.Container.func = func;
+        Zikula.Clip.Container.pars = Object.clone(pars);
+
+        pars.module = 'Clip';
+        pars.type   = type ? type : 'ajax';
+        pars.func   = func;
+
+        // perform the ajax request
+        new Zikula.Ajax.Request(
+            'ajax.php',
+            {
+                method: 'get',
+                parameters: pars,
+                onComplete: callback ? callback : Zikula.Clip.Ajax.Callback
+            });
+    },
+
+    Callback: function(req)
+    {
+        if ($('ajax_indicator')) {
+            $('ajax_indicator').remove();
+        }
+
+        if (!req.isSuccess()) {
+            Zikula.Clip.Ajax.Busy = false;
+            Zikula.showajaxerror(req.getMessage());
+            return false;
+        }
+
+        Zikula.Clip.Container.instance.updateContent(req.getData());
+
+        Zikula.Clip.Ajax.Busy = false;
+
+        return true;
     }
-
-    pars.module = 'Clip';
-    pars.type   = type ? type : 'ajax';
-    pars.func   = func ? func : 'pubtypeinfo';
-
-    // update the hash
-    newhash = pars.tid+'/'+func+newhash;
-
-    window.location.hash = newhash;
-
-    // perform the ajax request
-    new Zikula.Ajax.Request(
-        'ajax.php',
-        {
-            method: 'get',
-            parameters: pars,
-            onComplete: callback ? callback : Zikula.Clip.AjaxRequestCallback
-        });
-
-    // backup the request basis in the class
-    Zikula.Clip.Container.ajax.tid = pars.tid;
-    if (pars.id) {
-        Zikula.Clip.Container.ajax.id = pars.id;
-    } else {
-        Zikula.Clip.Container.ajax.id = 0;
-    }
-    Zikula.Clip.Container.ajax.func = pars.func;
-};
-
-
-Zikula.Clip.AjaxRequestCallback = function(req)
-{
-    Zikula.Clip.Container.busy = false;
-
-    if ($('ajax_indicator')) {
-        $('ajax_indicator').remove();
-    }
-
-    if (!req.isSuccess()) {
-        Zikula.showajaxerror(req.getMessage());
-        return false;
-    }
-
-    Zikula.Clip.Container.instance.updateContent(req.getData());
-
-    return true;
 };
