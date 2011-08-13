@@ -146,7 +146,7 @@ Zikula.Clip.Container = Class.create(
             {
                 case 'pubtype':
                     this.content.update(content);
-                    clip_pubtype_init();
+                    Zikula.Clip.Pubtype.Init();
                     break;
 
                 case 'pubfields':
@@ -224,7 +224,6 @@ Zikula.Clip.Container = Class.create(
         event.stop();
 
         Zikula.Clip.Container.busy = true;
-
         this.showIndicator();
 
         var submit = event.findElement();
@@ -309,6 +308,9 @@ Zikula.Clip.Container = Class.create(
         var form = $(Zikula.Clip.Container.formid);
 
         if (!form.onsubmit || form.onsubmit()) {
+            Zikula.Clip.Container.busy = true;
+            Zikula.Clip.Container.instance.showIndicator();
+
             form.FormEventTarget.value = eventTarget;
             form.FormEventArgument.value = eventArgument;
 

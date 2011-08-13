@@ -1,7 +1,7 @@
-{ajaxheader module='Clip' filename='clip_admin_pubtype.js' ui=true}
+{ajaxheader module='Clip' filename='Clip.Pubtype.js' ui=true}
 {pageaddvarblock name='header'}
 <script type="text/javascript">
-    document.observe('dom:loaded', clip_pubtype_init);
+    document.observe('dom:loaded', Zikula.Clip.Pubtype.Init);
 </script>
 {/pageaddvarblock}
 
