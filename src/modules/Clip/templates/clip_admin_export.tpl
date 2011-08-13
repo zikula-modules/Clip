@@ -1,4 +1,4 @@
-{*ajaxheader module='Clip' filename='clip_admin_export.js'*}
+{*ajaxheader module='Clip' filename='Clip.Export.js'*}
 
 {include file='clip_admin_header.tpl'}
 

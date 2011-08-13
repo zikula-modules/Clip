@@ -1,4 +1,4 @@
-{ajaxheader module='Clip' filename='clip_admin_generator.js' ui=true}
+{ajaxheader module='Clip' filename='Clip.Generator.js' ui=true}
 
 <div class="z-admin-content-pagetitle">
     {img modname='core' src='exec.png' set='icons/small' __title='Show code' alt=''}
