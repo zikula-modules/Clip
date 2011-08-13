@@ -67,7 +67,8 @@ Zikula.Clip.TreeSortable = Class.create(Zikula.TreeSortable,/** @lends Zikula.Tr
      * @param {HTMLElement} node Node to draw
      * @return void
      */
-    drawNode: function ($super, node) {
+    drawNode: function ($super, node)
+    {
         $super(node);
         var a = node.down('a'), id = Zikula.Clip.TreeSortable.trees.grouptypesTree.getNodeId(node);
         if (id != parseInt(id)) {
@@ -98,7 +99,8 @@ Object.extend(Zikula.Clip.TreeSortable,/** @lends Zikula.Clip.TreeSortable.proto
      * @param {Object} [config] Config object
      * @retun void
      */
-    add: function(element, config) {
+    add: function(element, config)
+    {
         if (!this.trees.hasOwnProperty(element)) {
             this.trees[element] = new Zikula.Clip.TreeSortable(element, config);
             this.trees[element].drawNodes();
@@ -139,7 +141,8 @@ Zikula.Clip.Container = Class.create(
         }.bind(this), 150);
     },
 
-    updateContent: function(content) {
+    updateContent: function(content)
+    {
         if (content) {
             // handle the content according the function
             switch (Zikula.Clip.Container.ajax.func)
@@ -366,7 +369,8 @@ Object.extend(Zikula.Clip.Container,
         id: 0,
         func: ''
     },
-    register: function(config) {
+    register: function(config)
+    {
         if (!this.instance) {
             this.instance = new Zikula.Clip.Container(config);
             this.instance.updateHeights();
@@ -389,6 +393,7 @@ Zikula.Clip.AttachMenu = function ()
             Zikula.Clip.ContextMenu.isGrouptype = (id != parseInt(id)) ? false : true;
         }
     });
+
     /* Grouptype links */
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Edit'),
@@ -427,7 +432,6 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     /* Pubtype links */
-    /*
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Edit'),
         condition: function() {
@@ -450,6 +454,7 @@ Zikula.Clip.AttachMenu = function ()
             Zikula.Clip.AjaxRequest({'tid':tid}, 'pubfields');
         }
     });
+    /*
     Zikula.Clip.ContextMenu.addItem({
         label: Zikula.__('Relations'),
         condition: function() {
@@ -795,15 +800,6 @@ Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
     pars.type   = type ? type : 'ajax';
     pars.func   = func ? func : 'pubtypeinfo';
 
-    // backup the request basis in the class
-    Zikula.Clip.Container.ajax.tid  = pars.tid;
-    if (pars.id) {
-        Zikula.Clip.Container.ajax.id = pars.tid;
-    } else {
-        Zikula.Clip.Container.ajax.id = 0;
-    }
-    Zikula.Clip.Container.ajax.func = pars.func;
-
     // update the hash
     newhash = pars.tid+'/'+func+newhash;
 
@@ -817,6 +813,15 @@ Zikula.Clip.AjaxRequest = function(pars, func, type, callback)
             parameters: pars,
             onComplete: callback ? callback : Zikula.Clip.AjaxRequestCallback
         });
+
+    // backup the request basis in the class
+    Zikula.Clip.Container.ajax.tid = pars.tid;
+    if (pars.id) {
+        Zikula.Clip.Container.ajax.id = pars.id;
+    } else {
+        Zikula.Clip.Container.ajax.id = 0;
+    }
+    Zikula.Clip.Container.ajax.func = pars.func;
 };
 
 
