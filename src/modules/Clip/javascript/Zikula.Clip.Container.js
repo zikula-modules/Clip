@@ -268,7 +268,7 @@ Zikula.Clip.Container = Class.create(
             {
                 method: 'post',
                 parameters: form.serialize(),
-                onComplete: this.formProcess.bind(this)
+                onComplete: this.formProcess
             });
 
         form.select('input[type=submit]').invoke('enable');
@@ -283,7 +283,7 @@ Zikula.Clip.Container = Class.create(
         }
 
         if (req.getData()) {
-            this.updateContent(req.getData());
+            Zikula.Clip.Container.instance.updateContent(req.getData());
 
         } else {
             var result = req.decodeResponse();
@@ -312,8 +312,8 @@ Zikula.Clip.Container = Class.create(
             }
 
             // TODO update the hash
-            // busy enabled should change the hash without problem, but it's not, it's generating a new ajax request'
-            Zikula.Clip.Hash.Update(Zikula.Clip.Container.pars, Zikula.Clip.Container.func);
+            // busy enabled should change the hash without problem, but it's not, it's generating a new ajax request
+            //Zikula.Clip.Hash.Update(Zikula.Clip.Container.pars, Zikula.Clip.Container.func);
         }
 
         Zikula.Clip.Ajax.Busy = false;

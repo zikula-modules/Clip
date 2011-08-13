@@ -139,9 +139,10 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 // create/update status messages
                 if (empty($this->tid)) {
                     LogUtil::registerStatus($this->__('Done! Publication type created. Now you can proceed to define its fields.'));
-                    $this->referer = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $pubtype->tid));
+                    $this->referer = new Clip_Url('Clip', 'admin', 'pubfields', array('tid' => $pubtype->tid));
                 } else {
                     LogUtil::registerStatus($this->__('Done! Publication type updated.'));
+                    $this->referer = new Clip_Url('Clip', 'admin', 'pubtypeinfo', array('tid' => $this->tid));
                 }
                 break;
 
@@ -178,7 +179,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 LogUtil::registerStatus($this->__('Done! Publication type cloned.'));
 
                 // redirect to pubfields to update the table
-                $this->referer = ModUtil::url('Clip', 'admin', 'pubfields', array('tid' => $newpubtype->tid));
+                $this->referer = new Clip_Url('Clip', 'admin', 'pubfields', array('tid' => $newpubtype->tid));
                 break;
 
             // delete this pubtype
@@ -196,25 +197,15 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 
         // stop here if the request is ajax based
         if ($isAjax) {
-            switch ($args['commandName'])
-            {
-                case 'save':
-                    if (empty($this->tid)) {
-                        $output = ModUtil::func('Clip', 'ajax', 'pubfields', array('tid' => $pubtype->tid));
-                        $response = array('tid' => $pubtype->tid, 'func' => 'pubfields', 'output' => $output->payload);
-                    } else {
-                        $output = ModUtil::func('Clip', 'ajax', 'pubtypeinfo', array('tid' => $this->tid));
-                        $response = array('func' => 'pubtypeinfo', 'output' => $output->payload);
-                    }
-                    break;
-
-                case 'clone':
-                    $output = ModUtil::func('Clip', 'ajax', 'pubfields', array('tid' => $newpubtype->tid));
-                    $response = array('tid' => $newpubtype->tid, 'func' => 'pubfields', 'output' => $output->payload);
-                    break;
-
-                default:
-                    $response = array('redirect' => $this->referer);
+            if ($this->referer instanceof Clip_Url) {
+                $output = $this->referer->setController('ajax')->modFunc();
+                $response = array(
+                                  'func' => $this->referer->getAction(),
+                                  'pars' => $this->referer->getArgs(),
+                                  'output' => $output->payload
+                                 );
+            } else {
+                $response = array('redirect' => $this->referer);
             }
 
             return new Zikula_Response_Ajax_Json($response);
