@@ -76,8 +76,8 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
      */
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
+        $isAjax = $view->getType() == 'ajax';
         $this->referer = $view->getStateData('referer');
-        $isAjax = $view->getTplVar('type') == 'ajax';
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {

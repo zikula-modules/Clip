@@ -112,10 +112,14 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
      */
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
+        $isAjax = $view->getType() == 'ajax';
         $this->referer = $view->getStateData('referer');
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
+            if ($isAjax) {
+                return new Zikula_Response_Ajax_Json(array('cancel' => true));
+            }
             return $view->redirect($this->referer);
         }
 
@@ -196,6 +200,22 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 $this->goto = $goto ? $goto : ($this->itemurl ? $this->itemurl : $this->referer);
         }
 
+        // stop here if the request is ajax based
+        if ($isAjax) {
+            if ($this->goto instanceof Clip_Url) {
+                if ($this->goto->getAction() != 'edit') {
+                    $response = array('output' => $this->goto->setController('ajax')->modFunc()->payload);
+                } else {
+                    $response = array('redirect' => $this->goto->getUrl());
+                }
+            } else {
+                $response = array('redirect' => $this->goto);
+            }
+
+            return new Zikula_Response_Ajax_Json($response);
+        }
+
+        // redirect to the determined url
         return $view->redirect($this->goto);
     }
 
