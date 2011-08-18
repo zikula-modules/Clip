@@ -198,6 +198,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         // stop here if the request is ajax based
         if ($isAjax) {
             if ($this->referer instanceof Clip_Url) {
+                // regen TIDs for recently created pubtype
                 $output = $this->referer->setController('ajax')->modFunc();
                 $response = array(
                                   'func' => $this->referer->getAction(),

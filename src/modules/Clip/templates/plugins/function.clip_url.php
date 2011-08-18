@@ -47,7 +47,7 @@ function smarty_function_clip_url($params, Zikula_View &$view)
     $func = (isset($params['func']) && $params['func']) ? $params['func'] : 'pubtypeinfo';
     $args = (isset($params['args']) && $params['args']) ? $params['args'] : array();
 
-    unset($params['modname'], $params['type'], $params['func'], $params['fragment'], $params['args'], $params['forceajax']);
+    unset($params['modname'], $params['type'], $params['func'], $params['fragment'], $params['args'], $params['forcetype']);
 
     $params = json_encode(array_merge($params, $args));
     $params = str_replace('"', "'", $params);

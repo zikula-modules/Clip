@@ -276,8 +276,9 @@ Zikula.Clip.Container = Class.create(
 
     formProcess: function(req)
     {
+        Zikula.Clip.Ajax.Busy = false;
+
         if (!req.isSuccess()) {
-            Zikula.Clip.Ajax.Busy = false;
             Zikula.showajaxerror(req.getMessage());
             return false;
         }
@@ -314,9 +315,8 @@ Zikula.Clip.Container = Class.create(
             // TODO update the hash
             // busy enabled should change the hash without problem, but it's not, it's generating a new ajax request
             //Zikula.Clip.Hash.Update(Zikula.Clip.Container.pars, Zikula.Clip.Container.func);
+            //Zikula.Clip.Ajax.Busy = false;
         }
-
-        Zikula.Clip.Ajax.Busy = false;
 
         return true;
     },
