@@ -20,10 +20,10 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
 
         // try to get a method checking both controllers
         $response = false;
-        if (method_exists('Clip_Controller_Admin', $func)) {
-            $response = ModUtil::func('Clip', 'admin', $func, $args);
+        if (in_array($func, array('pubtypeinfo', 'pubtype', 'pubfields', 'relations', 'generator'))) {
+            $response = ModUtil::func('Clip', 'admin', $func, $args[0]);
         } elseif (method_exists('Clip_Controller_User', $func)) {
-            $response = ModUtil::func('Clip', 'user', $func, $args);
+            $response = ModUtil::func('Clip', 'user', $func, $args[0]);
         }
 
         $this->throwNotFoundUnless($response);
