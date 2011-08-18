@@ -610,7 +610,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // 1. custom template
         if (!empty($args['template'])) {
-            $template = $pubtype['folder']."/form_template_{$args['template']}.tpl";
+            $template = $pubtype['folder']."/form_{$args['state']}_{$args['template']}.tpl";
 
             if ($render->template_exists($template)) {
                 return $render->execute($template, $handler);
