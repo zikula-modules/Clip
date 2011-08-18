@@ -74,7 +74,31 @@ class Clip_Controller_User extends Zikula_AbstractController
             $args['template']   = $pubtype['folder'].'/main.tpl';
         } else {
             $args['templateid'] = "{$args['template']}";
-            $args['template']   = $pubtype['folder']."/main_{$args['template']}.tpl";
+            if (Clip_Util::isSimpleTemplate($args['template'])) {
+                $args['template'] = Clip_Util::isSimpleTemplate($args['template']);
+                $args['templatesimple'] = $pubtype['folder']."/simple_{$args['template']}.tpl";
+            } else {
+                $args['template'] = $pubtype['folder']."/main_{$args['template']}.tpl";
+            }
+        }
+
+        // fetch simple templates
+        if (isset($args['templatesimple'])) {
+            if (!$this->view->template_exists($args['templatesimple'])) {
+                // make sure the simple template exists
+                $args['templatesimple'] = "simple_{$args['template']}.tpl";
+                if (!$this->view->template_exists($args['templatesimple'])) {
+                    $args['templatesimple'] = '';
+                }
+            }
+
+            if (!$args['templatesimple']) {
+                return LogUtil::registerError($this->__('The requested page cannot be displayed. Please contact the administrador.'));
+            }
+
+            return $this->view->assign('clip_simple_tpl', true)
+                              ->assign('pubtype', $pubtype)
+                              ->fetch($args['templatesimple']);
         }
 
         //// Security
@@ -373,33 +397,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             $args['template']   = $pubtype['folder'].'/display.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
-            // check for simple-templates request
-            if (Clip_Util::isSimpleTemplate($args['template'])) {
-                $args['templatesimple'] = $pubtype['folder']."/displaysimple_{$args['template']}.tpl";
-            } else {
-                $args['template'] = $pubtype['folder']."/display_{$args['template']}.tpl";
-            }
-        }
-
-        // fetch simple templates
-        if (isset($args['templatesimple'])) {
-            if (!$this->view->template_exists($args['templatesimple'])) {
-                // make sure the simple template exists
-                if (!$this->view->template_exists($args['templatesimple'])) {
-                    $args['templatesimple'] = "displaysimple_{$args['template']}.tpl";
-                    if (!$this->view->template_exists($args['templatesimple'])) {
-                        $args['templatesimple'] = '';
-                    }
-                }
-            }
-
-            if (!$args['templatesimple']) {
-                return LogUtil::registerError($this->__('The requested page cannot be displayed. Please contact the administrador.'));
-            }
-
-            return $this->view->assign('clip_simple_tpl', true)
-                              ->assign('pubtype', $pubtype)
-                              ->fetch($args['templatesimple']);
+            $args['template'] = $pubtype['folder']."/display_{$args['template']}.tpl";
         }
 
         //// Security

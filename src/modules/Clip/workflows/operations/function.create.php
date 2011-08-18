@@ -65,9 +65,8 @@ function Clip_operation_create(&$pub, $params)
                 LogUtil::registerStatus(__('Done! Publication created.', $dom));
             } else {
                 // setup a redirect to the pending template
-                $result['goto'] = ModUtil::url('Clip', 'user', 'display',
+                $result['goto'] = ModUtil::url('Clip', 'user', 'main',
                                                array('tid' => $pub['core_tid'],
-                                                     'pid' => $pub['core_pid'],
                                                      'template' => 'pending'));
             }
         } else {

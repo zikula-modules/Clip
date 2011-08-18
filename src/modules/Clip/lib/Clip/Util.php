@@ -166,7 +166,11 @@ class Clip_Util
     {
         $simpletemplates = array('pending');
 
-        return in_array($template, $simpletemplates);
+        if (!in_array($template, $simpletemplates)) {
+            $template = strpos($template, 'simple') === 0 ? substr($template, 6) : false;
+        }
+
+        return $template;
     }
 
     /**
