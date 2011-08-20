@@ -294,7 +294,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
             if ($this->referer instanceof Clip_Url) {
                 $response = array('func' => $this->referer->getAction(), 'pars' => $this->referer->getArgs());
             } else {
-                $response = array('func' => 'relations');
+                $response = array('func' => 'relations', 'pars' => array_merge(array('tid' => $tid), $data['filter']));
             }
 
             return new Zikula_Response_Ajax_Json($response);

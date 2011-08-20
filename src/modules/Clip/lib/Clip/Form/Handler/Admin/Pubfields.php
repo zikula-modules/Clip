@@ -195,7 +195,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 
         // stop here if the request is ajax based
         if ($isAjax) {
-            return new Zikula_Response_Ajax_Json(array('func' => 'pubfields'));
+            return new Zikula_Response_Ajax_Json(array('func' => 'pubfields', 'pars' => array('tid' => $this->tid)));
         }
 
         // redirect to the determined url
