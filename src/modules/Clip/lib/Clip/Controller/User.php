@@ -82,6 +82,14 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
         }
 
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
+
+        // skip main if there's no template
+        if (!$args['templateid'] && !$this->view->template_exists($args['template'])) {
+            return $this->view();
+        }
+
         // fetch simple templates
         if (isset($args['templatesimple'])) {
             if (!$this->view->template_exists($args['templatesimple'])) {
@@ -99,14 +107,6 @@ class Clip_Controller_User extends Zikula_AbstractController
             return $this->view->assign('clip_simple_tpl', true)
                               ->assign('pubtype', $pubtype)
                               ->fetch($args['templatesimple']);
-        }
-
-        //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
-
-        // skip main if there's no template
-        if (!$args['templateid'] && !$this->view->template_exists($args['template'])) {
-            return $this->view();
         }
 
         //// Cache

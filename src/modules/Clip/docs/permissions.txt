@@ -1,0 +1,14 @@
+
+  Pubtype for User
+    general
+      Clip:$gid: | $tid:: | OVERVIEW
+    main
+      Clip:[\d]*?:main | $tid::simple.* | OVERVIEW
+      Clip:[\d]*?:main | $tid:: | OVERVIEW
+    list
+      Clip:[\d]*?:list | $tid::$templateid | OVERVIEW
+    display
+      Clip:[\d]*?:display | $tid:$pid:$templateid | READ
+    edit
+    exec
+      Clip:[\d]*?:edit | $tid:$pid:$wfstate | EDIT

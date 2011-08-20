@@ -62,6 +62,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)abs($args['startnum']) : 1,
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)abs($args['itemsperpage']) : 0,
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
+            'limitdate'     => isset($args['limitdate']) ? (bool)$args['limitdate'] : !Clip_Access::toPubtype($args['tid'], 'editor'),
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : $args['getApprovalS'],
@@ -164,7 +165,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         // add the conditions to the query
         // restrictions for non-editors
-        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
+        if ($args['limitdate']) {
             $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
             $query->andWhere('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
         }

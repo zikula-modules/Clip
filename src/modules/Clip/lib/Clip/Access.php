@@ -72,6 +72,7 @@ class Clip_Access
         // fill default values if needed
         $context = $context ? strtolower($context) : 'admin';
         $tplid   = $tplid ? $tplid : '';
+        $uid     = $uid ? $uid : (int)UserUtil::getVar('uid');
 
         // be sure to have a Clip_Model_Pubtype instance
         if (!$pubtype instanceof Clip_Model_Pubtype) {
@@ -82,38 +83,53 @@ class Clip_Access
             $pubtype = Clip_Util::getPubType($pubtype);
         }
 
+        $component = "Clip:{$pubtype->grouptype}:";
+        $instance  = "{$pubtype->tid}::";
+        $permlvl   = ACCESS_ADMIN;
+
         // evaluate the access depending of the required context
         switch ($context)
         {
             case 'admin':
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:", "{$pubtype->tid}::", ACCESS_ADMIN, $uid);
                 break;
 
             case 'editor': // panel
-                // TODO consider edit.own and not for guests pubs #285
+                $component .= 'edit';
+                // TODO consider edit.own and not for pubs submitted by guests
                 $workflow = new Clip_Workflow($pubtype);
                 // assumes level 1 as the first moderator permission
                 $permlvl = $workflow->getPermissionLevel(1, 'initial');
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}::", $permlvl, $uid);
                 break;
 
             case 'submit': // submit new content
+                $component .= 'edit';
                 $workflow = new Clip_Workflow($pubtype);
                 // assumes level 0 as the basic submit permission
                 $permlvl = $workflow->getPermissionLevel(0, 'initial');
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}::", $permlvl, $uid);
                 break;
 
             case 'list':
             case 'main':
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:$context", "{$pubtype->tid}::$tplid", ACCESS_OVERVIEW, $uid);
+                $component .= $context;
+                $instance  .= $tplid;
+                $permlvl    = ACCESS_OVERVIEW;
+                break;
+
+            case 'access':
+                $permlvl = ACCESS_OVERVIEW;
                 break;
 
             default:
-                $allowed = false;
+                $context = 'admin';
         }
 
-        return $allowed;
+        static $cache = array();
+
+        if (!isset($cache[$context][$uid][$component][$instance])) {
+            $cache[$context][$uid][$component][$instance] = SecurityUtil::checkPermission($component, $instance, $permlvl, $uid);
+        }
+
+        return $cache[$context][$uid][$component][$instance];
     }
 
     /**
@@ -148,7 +164,7 @@ class Clip_Access
         }
 
         // needs at least overview permission for the pubtype
-        if (!self::toPubtype($pubtype, 'main', '', $uid)) {
+        if (!self::toPubtype($pubtype, 'access', null, $uid)) {
             return false;
         }
 
