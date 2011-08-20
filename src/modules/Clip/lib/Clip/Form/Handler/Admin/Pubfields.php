@@ -93,7 +93,8 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         // creates a Pubfield instance
         if (!empty($this->id)) {
             // object fetch due the use of default values
-            $pubfield = Doctrine_Core::getTable('Clip_Model_Pubfield')->find($this->id);
+            $pubfield = Doctrine_Core::getTable('Clip_Model_Pubfield')->find($this->id)->copy(true);
+            $pubfield->assignIdentifier($this->id);
         } else {
             $pubfield = new Clip_Model_Pubfield();
         }
