@@ -41,7 +41,11 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 
     $output  = '<div id="clip-adminmenu" class="z-menu"><span class="z-menuitem-title">';
     $output .= '<span>';
-    $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Info').'</a>';
+    if ($func != 'pubtypeinfo') {
+        $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Info').'</a>';
+    } else {
+        $output .= $view->__('Info');
+    }
     $output .= '</span> | ';
 
     $func = FormUtil::getPassedValue('func', 'main');
@@ -53,7 +57,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
     if ($func != 'pubtype') {
         $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Edit').'</a>';
     } else {
-        $output .= '<a href="#">'.$view->__('Edit').'</a>';
+        $output .= $view->__('Edit');
     }
     $output .= '</span> | ';
 
@@ -68,7 +72,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
         $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Fields').'</a>';
         unset($args['fragment']);
     } else {
-        $output .= '<a href="#newpubfield">'.$view->__('Fields').'</a>';
+        $output .= $view->__('Fields');
     }
     $output .= '</span> | ';
 
@@ -77,7 +81,12 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
     $args['args'] = array('tid' => $tid, 'withtid1' => $tid, 'op' => 'or', 'withtid2' => $tid);
 
     $output .= '<span>';
-    $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Relations').'</a>';
+    if ($func != 'relations') {
+        $output .= '<a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Relations').'</a>';
+    } else {
+        $output .= $view->__('Relations');
+    }
+    $output .= '</span>';
 
     // show code links
     $args['func'] = 'generator';
@@ -85,7 +94,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 
     if ($func == 'generator') {
         $output .= '<br />';
-        $output .= '<span>'.$view->__('Generate templates').'</span><span>&raquo;</span>';
+        $output .= '<span>'.$view->__('Generate templates').'</span> <span>&raquo;</span> ';
 
         $links = array();
 
@@ -109,7 +118,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 
         $output .= '<span>'.implode('</span> | <span>', $links).'</span>';
     } else {
-        $output .= '</span> | ';
+        $output .= ' | ';
         $output .= '<span><a href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Generate templates').'</a></span>';
     }
 
