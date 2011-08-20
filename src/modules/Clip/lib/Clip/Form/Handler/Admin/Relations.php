@@ -222,23 +222,6 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                     }
                 }
 
-                // check it's unique
-                $where = array(
-                    array('type = ?', $relation->type),
-                    array('tid1 = ?', $relation->tid1),
-                    array('tid2 = ?', $relation->tid2)
-                );
-                if (!empty($this->id)) {
-                    $where[] = array('id <> ?', $this->id);
-                }
-
-                $isUnique = (int)$tableObj->selectFieldFunction('id', 'COUNT', $where);
-                if ($isUnique > 0) {
-                    $plugin = $view->getPluginById('tid1');
-                    $plugin->setError($this->__('This relation already exists.'));
-                    return false;
-                }
-
                 /*
                 if (!empty($this->id)) {
                     // TODO support relation definition transitions
