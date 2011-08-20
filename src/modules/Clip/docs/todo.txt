@@ -1,19 +1,22 @@
 
   TODO
-    Maxlenght more clean solution. Exclude some default plugins?
-    rework the vars disposition in the templates (wrapped in proper arrays)
-    new admin screen to validate the data integrity (only one online revision, title field, etc)
-    integrate styles to workflow actions, like images and News buttons styles
 
-    text plugins configurable cols, nl2br if scribite is not enabled?
-    category based plugins should validate if their categories are not in the current plugin tree
+    EDITOR PANEL
+      Adjustments to review the own publications + revisions
 
-    dedicated screen (or parameter) to review the own publications + revisions
+    ADMIN PANEL
+      Update the pubtype title on the tree after update
 
-    check if the pagers are generated when no publications present
+    PLUGINS
+      General:
+        Maxlenght more clean solution. Exclude some default plugins?
+        Expand the support to multiple rows with the introduction of D2
+      Relations:
+        Exclude already linked pubs?
+      Text:
+        Configurable cols, nl2br if scribite is not enabled?
+      Category-based:
+        Should validate if their categories are not in the current plugin tree
 
-    check if it's needed to exclude already linked pubs on many to one
-
-    check if the Plugin's domain set is still needed
-
-    full OO JavaScript
+    DATA
+      New admin screen to validate the data integrity (only one online revision, title field, categories, etc)
