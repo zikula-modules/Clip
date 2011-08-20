@@ -171,11 +171,11 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
             $relation = new Clip_Model_Pubrelation();
             if (!empty($this->id)) {
                 $relation->assignIdentifier($this->id);
+            } else {
+                // build the decimal type value on creation only
+                $relation->type = bindec("{$data['relation']['type1']}{$data['relation']['type2']}");
             }
             $relation->fromArray($data['relation']);
-
-            // build the decimal type value
-            $relation->type = bindec("{$data['relation']['type1']}{$data['relation']['type2']}");
         }
 
         // handle the commands
