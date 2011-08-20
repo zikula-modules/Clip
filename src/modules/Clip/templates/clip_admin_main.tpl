@@ -20,7 +20,8 @@
     <div id="clip_cols_maincol">
         <div id="clip_cols_indicator" class="z-window-indicator" style="display: none"></div>
         <div id="clip_cols_maincontent">
-            <h3>{gt text='About Clip'}</h3>
+            <h3>{gt text='Admin Panel'}</h3>
+            <h4>{gt text='About Clip'}</h4>
             {gettext}
             <p>Clip is one of the <strong>must have</strong> Zikula modules. It let you manage any type of estructured content or media in your Zikula website.</p>
             <p>To use its potential, you just need to know what do you need in detail; let's suppose you need a News system. Then your Publication Type can be named "News" and its <em>Publications</em> will be Articles.
