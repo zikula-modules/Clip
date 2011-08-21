@@ -22,30 +22,51 @@
         <legend>{gt text='General settings'}</legend>
         <div class="z-formrow">
             {formlabel for='uploadpath' __text='Upload path' mandatorysym=true}
-            {formtextinput id='uploadpath' maxLength='200' mandatory=true}
-            {if $updirstatus lt 3}
-                {assign var='updir_msgcolor' value='#ff0000'}
-                {if $updirstatus eq 0}
-                    {assign var='updir_message' __value='The given path doesn\'t exists'}
-                {elseif $updirstatus eq 1}
-                    {assign var='updir_message' __value='The given path is not a directory'}
-                {elseif $updirstatus eq 2}
-                    {assign var='updir_message' __value='The given path is not writeable'}
+            {formtextinput id='uploadpath' maxLength='500' mandatory=true}
+            {if $status.upload lt 3}
+                {assign var='msgcolor' value='#ff0000'}
+                {if $status.upload eq 0}
+                    {assign var='message' __value="The given path doesn't exists"}
+                {elseif $status.upload eq 1}
+                    {assign var='message' __value='The given path is not a directory'}
+                {elseif $status.upload eq 2}
+                    {assign var='message' __value='The given path is not writeable'}
                 {/if}
             {else}
-                {assign var='updir_msgcolor' value='#00d900'}
-                {assign var='updir_message' __value='The given path is writeable'}
+                {assign var='msgcolor' value='#00d900'}
+                {assign var='message' __value='The given path is writeable'}
             {/if}
             <span class="z-formnote">
                 {gt text='Path where uploaded files will be stored, relative to the site root (%s)' tag1=$siteroot}<br />
-                <span style="color: {$updir_msgcolor};">{$updir_message}</span>
+                <span style="color: {$msgcolor};">{$message}</span>
+            </span>
+        </div>
+        <div class="z-formrow">
+            {formlabel for='modelspath' __text='Models path' mandatorysym=true}
+            {formtextinput id='modelspath' maxLength='500' mandatory=true}
+            {if $status.models lt 3}
+                {assign var='msgcolor' value='#ff0000'}
+                {if $status.models eq 0}
+                    {assign var='message' __value="The given path doesn't exists"}
+                {elseif $status.models eq 1}
+                    {assign var='message' __value='The given path is not a directory'}
+                {elseif $status.models eq 2}
+                    {assign var='message' __value='The given path is not writeable'}
+                {/if}
+            {else}
+                {assign var='msgcolor' value='#00d900'}
+                {assign var='message' __value='The given path is writeable'}
+            {/if}
+            <span class="z-formnote">
+                {gt text="Path where Clip stores temporary files. The folder must be named 'ClipModels'"}<br />
+                <span style="color: {$msgcolor};">{$message}</span>
             </span>
         </div>
         <div class="z-formrow">
             {formlabel for='shorturls' __text='Default template'}
             {formtextinput id='shorturls' maxLength='40'}
             <span class="z-formnote">
-                {gt text="Default template used in short URLs. Only 'htm' and 'html' are omitted of special processing."}
+                {gt text="Default template used in short URLs. Leave it empty to nor use extensions with short URls enabled. Only 'htm' and 'html' are omitted of special processing."}
             </span>
         </div>
         <div class="z-formrow">

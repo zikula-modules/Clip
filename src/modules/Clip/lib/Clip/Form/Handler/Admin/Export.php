@@ -118,7 +118,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                 // check if the data is needed
                 if ($data['exportdata'] == 1) {
                     // * pubdata
-                    $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$data['tid']);
+                    $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$data['tid']);
                     $query = $tbl->createQuery();
                     $params = array(
                         'idfield'  => 'id',

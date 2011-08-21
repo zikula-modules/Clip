@@ -36,7 +36,7 @@ function Clip_operation_clone(&$pub, $params)
     // initializes the result flag
     $result = false;
 
-    $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
+    $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid']);
 
     // finds the higher pid
     $copy['core_pid'] = $tbl->selectFieldFunction('core_pid', 'MAX') + 1;

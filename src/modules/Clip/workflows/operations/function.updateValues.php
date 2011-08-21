@@ -54,7 +54,7 @@ function Clip_operation_updateValues(&$pub, $params)
             }
         } else {
             // update all the revisions
-            $q = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid'])
+            $q = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid'])
                      ->createQuery()
                      ->update()
                      ->where('core_pid = ?', $pub->core_pid);

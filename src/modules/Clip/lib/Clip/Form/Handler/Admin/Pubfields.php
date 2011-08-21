@@ -36,7 +36,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $pubtype = Clip_Util::getPubType($this->tid);
 
         // update the pubtype table with previous changes
-        Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->changeTable(true);
+        Doctrine_Core::getTable('ClipModels_Pubdata'.$this->tid)->changeTable(true);
 
         // get the pubfields table
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
@@ -139,7 +139,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 
                 // check that the alias is not in use
                 if (!$this->id || $pubfield->name != $previous->name) {
-                    $pub = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubfield->tid)->getRecord();
+                    $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$pubfield->tid)->getRecord();
                     if (array_key_exists($pubfield->name, $pub->pubFields())) {
                         $plugin = $view->getPluginById('name');
                         $plugin->setError($this->__f("The alias '%s' is already in use.", $pubfield->name));
@@ -149,7 +149,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 
                 // check that the new name is not another publication property
                 if (empty($this->id)) {
-                    $pubClass = 'Clip_Model_Pubdata'.$this->tid;
+                    $pubClass = 'ClipModels_Pubdata'.$this->tid;
                     $pubObj   = new $pubClass();
                     if ($pubObj->contains($pubfield->name)) {
                         return $view->setPluginErrorMsg('name', $this->__('The provided name is reserved for the publication standard fields.'));

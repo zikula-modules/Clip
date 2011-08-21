@@ -99,7 +99,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
         if ($data['id'] != NULL) {
             // if it's not a new pub get the old upload
-            $old_upload = (string)Doctrine_Core::getTable('Clip_Model_Pubdata'.$data['core_tid'])
+            $old_upload = (string)Doctrine_Core::getTable('ClipModels_Pubdata'.$data['core_tid'])
                                   ->selectFieldBy($field['name'], $data['id'], 'id');
         }
 

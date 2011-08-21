@@ -30,21 +30,25 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
         }
         $this->siteroot .= System::getBaseUri().DIRECTORY_SEPARATOR;
 
+        // directory status on filesystems
+        $status = array('upload' => 0, 'models' => 0); // doesn't exists
+
         // fills the directory state
-        $updirstatus = 0;// doesn't exists
-        if (file_exists($modvars['uploadpath'].'/')) {
-            $updirstatus = 1; // exists
-            if (is_dir($modvars['uploadpath'].'/')) {
-                $updirstatus = 2; // is a directory
-                if (is_writable($modvars['uploadpath'].'/')) {
-                    $updirstatus = 3; // is writable
+        foreach (array_keys($status) as $name) {
+            if (file_exists($modvars[$name.'path'].'/')) {
+                $status[$name] = 1; // exists
+                if (is_dir($modvars[$name.'path'].'/')) {
+                    $status[$name] = 2; // is a directory
+                    if (is_writable($modvars[$name.'path'].'/')) {
+                        $status[$name] = 3; // is writable
+                    }
                 }
             }
         }
 
         // fill the output
         $view->assign('siteroot', DataUtil::formatForDisplay($this->siteroot))
-             ->assign('updirstatus', $updirstatus)
+             ->assign('status', $status)
              ->assign($modvars);
 
         return true;
@@ -67,11 +71,20 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
         {
             // update the modvars
             case 'update':
+                // models path
+                if (StringUtil::right($data['modelspath'], 1) == DIRECTORY_SEPARATOR) {
+                    $data['modelspath'] = StringUtil::left($data['modelspath'], -1);
+                }
+                if (StringUtil::right($data['modelspath'], 10) != 'ClipModels') {
+                    return $view->setPluginErrorMsg('modelspath', $this->__("The name of the temporary folder must be 'ClipModels'."));
+                }
+                ModUtil::setVar('Clip', 'modelspath', $data['modelspath']);
+
                 // upload path
                 // remove the siteroot if was included
                 $data['uploadpath'] = str_replace($this->siteroot, '', $data['uploadpath']);
                 if (StringUtil::right($data['uploadpath'], 1) == DIRECTORY_SEPARATOR) {
-                    $data['uploadpath'] = StringUtil::left($data['uploadpath'], strlen($data['uploadpath']) - 1);
+                    $data['uploadpath'] = StringUtil::left($data['uploadpath'], -1);
                 }
                 ModUtil::setVar('Clip', 'uploadpath', $data['uploadpath']);
 

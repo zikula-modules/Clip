@@ -14,12 +14,10 @@
  */
 class Clip_Generator
 {
-    protected static $tablesloaded = false;
-
     public static function pubdisplay($tid, $public=true, $forblock=false)
     {
         // build and process a dummy pubdata object
-        $className = "Clip_Model_Pubdata{$tid}";
+        $className = "ClipModels_Pubdata{$tid}";
         $pubdata   = new $className();
         $pubdata->clipProcess();
         $pubdata->clipWorkflow();
@@ -290,7 +288,7 @@ class Clip_Generator
             }
             if ($method) {
                 // build the relation code
-                $relDefinition = "Clip_Model_Pubdata{$relation['tid2']} as {$relation['alias1']}";
+                $relDefinition = "ClipModels_Pubdata{$relation['tid2']} as {$relation['alias1']}";
                 // set the relation arguments
                 switch ($relation['type']) {
                     case 0: // o2o
@@ -317,7 +315,7 @@ class Clip_Generator
                         $relArgs = array(
                             'local'    => "rel_{$relation['id']}_1",
                             'foreign'  => "rel_{$relation['id']}_2",
-                            'refClass' => "Clip_Model_Relation{$relation['id']}"
+                            'refClass' => "ClipModels_Relation{$relation['id']}"
                         );
                 }
                 $relArgs = var_export($relArgs, true);
@@ -347,7 +345,7 @@ class Clip_Generator
             }
             if ($method) {
                 // build the relation code
-                $relDefinition = "Clip_Model_Pubdata{$relation['tid1']} as {$relation['alias2']}";
+                $relDefinition = "ClipModels_Pubdata{$relation['tid1']} as {$relation['alias2']}";
                 // set the relation arguments
                 switch ($relation['type']) {
                     case 0: //o2o
@@ -374,7 +372,7 @@ class Clip_Generator
                         $relArgs = array(
                             'local'    => "rel_{$relation['id']}_2",
                             'foreign'  => "rel_{$relation['id']}_1",
-                            'refClass' => "Clip_Model_Relation{$relation['id']}"
+                            'refClass' => "ClipModels_Relation{$relation['id']}"
                         );
                 }
                 $relArgs = var_export($relArgs, true);
@@ -443,7 +441,7 @@ class Clip_Generator
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class Clip_Model_Pubdata{$tid} extends Clip_Doctrine_Pubdata
+class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
 {
     /**
      * Set table definition.
@@ -496,7 +494,7 @@ class Clip_Model_Pubdata{$tid} extends Clip_Doctrine_Pubdata
 /**
  * Doctrine_Table class used to implement own special entity methods.
  */
-class Clip_Model_Pubdata{$tid}Table extends Clip_Doctrine_Table
+class ClipModels_Pubdata{$tid}Table extends Clip_Doctrine_Table
 {
 
 }
@@ -509,15 +507,27 @@ class Clip_Model_Pubdata{$tid}Table extends Clip_Doctrine_Table
      *
      * @return string The relation classes code.
      */
-    public static function evalrelations()
+    public static function createRelationsModels()
     {
-        $ownedrelations = Clip_Util::getRelations(-1, false, true);
+        $path = ModUtil::getVar('Clip', 'modelspath');
+
+        // delete all the existing relation models first
+        $files = FileUtil::getFiles($path, false, true, 'php');
+
+        foreach ($files as $file) {
+            if (strpos($file, 'Relation') === 0) {
+                unlink("$path/$file");
+            }
+        }
+        unset($files);
+
+        $allrelations = Clip_Util::getRelations(-1, false, true);
 
         $code = '';
         $hasColumns = '';
-        foreach ($ownedrelations as $tid => $relations) {
+        foreach ($allrelations as $tid => $relations) {
             foreach ($relations as $relation) {
-                $classname = 'Clip_Model_Relation'.$relation['id'];
+                $classname = 'ClipModels_Relation'.$relation['id'];
                 if ($relation['type'] != 3 || class_exists($classname, false)) {
                     continue;
                 }
@@ -532,9 +542,9 @@ class Clip_Model_Pubdata{$tid}Table extends Clip_Doctrine_Table
                     $hasColumns .= "\$this->hasColumn('$columnName', 'integer', 4, {$array});";
                 }
 
-                // add the refClass
-                $code .= "
-class Clip_Model_Relation{$relation['id']} extends Doctrine_Record
+                // save the relation class
+                $code = "
+class ClipModels_Relation{$relation['id']} extends Doctrine_Record
 {
     public function setTableDefinition()
     {
@@ -543,39 +553,21 @@ class Clip_Model_Relation{$relation['id']} extends Doctrine_Record
         $hasColumns
     }
 }
-class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
+";
+                $file = "$path/Relation{$relation['id']}.php";
+                file_put_contents($file, '<?php'.$code);
+
+                // save the relation table class
+                $code = "
+class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 {
 
 }
 ";
+                $file = "$path/Relation{$relation['id']}Table.php";
+                file_put_contents($file, '<?php'.$code);
             }
         }
-
-        if (!empty($code)) {
-            eval($code);
-        }
-    }
-
-    public static function loadModelClasses($force = false)
-    {
-        static $loaded = array();
-
-        // refresh the pubtypes definitions
-        self::addtables($force);
-
-        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
-
-        foreach ($pubtypes as $tid) {
-            if (!isset($loaded[$tid])) {
-                $code = Clip_Generator::pubmodel($tid);
-                eval($code);
-                $code = Clip_Generator::pubtable($tid);
-                eval($code);
-                $loaded[$tid] = true;
-            }
-        }
-
-        self::evalrelations();
     }
 
     // dynamic pubdata tables
@@ -586,16 +578,6 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $tables[$tablename] = DBUtil::getLimitedTablename($tablename);
         $tables[$tablename.'_column']     = $tableColumn;
         $tables[$tablename.'_column_def'] = $tableDef;
-
-        //ObjectUtil::addStandardFieldsToTableDefinition($tables[$tablename.'_column'], '');
-        //ObjectUtil::addStandardFieldsToTableDataDefinition($tables[$tablename.'_column_def']);
-
-        // TODO indexes
-        /*
-        $tables[$tablename.'_column_idx'] = array (
-            'core_online' => 'core_online' //core_visible
-        );
-        */
     }
 
     public static function addtables($force = false)
@@ -605,10 +587,14 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         if ($modinfo['state'] == ModUtil::STATE_UNINITIALISED && !$force) {
             return;
         }
-        if (self::$tablesloaded && !$force) {
+
+        static $tablesloaded = false;
+
+        if ($tablesloaded && !$force) {
             return;
         }
-        self::$tablesloaded = true;
+
+        $tablesloaded = true;
 
         $tables  = array();
         $pubfields = Doctrine_Core::getTable('Clip_Model_Pubfield')
@@ -682,7 +668,7 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         }
 
         // validates the existence of all the pubdata tables
-        // to ensure the creation of all the dynamic classes
+        // to ensure the creation of all the pubdata model classes
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             if (!isset($tables["clip_pubdata{$tid}"])) {
@@ -693,5 +679,53 @@ class Clip_Model_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $serviceManager = ServiceUtil::getManager();
         $dbtables = $serviceManager['dbtables'];
         $serviceManager['dbtables'] = array_merge($dbtables, (array)$tables);
+    }
+
+    public static function createTempModel($tid = null)
+    {
+        // get file contents, rename the class and eval
+    }
+
+    public static function createModel($tid = null, $force = false)
+    {
+        $path = ModUtil::getVar('Clip', 'modelspath');
+
+        $file = "$path/Pubdata{$tid}.php";
+        $code = Clip_Generator::pubmodel($tid);
+        file_put_contents($file, '<?php'.$code);
+
+        $file = "$path/Pubdata{$tid}Table.php";
+        $code = Clip_Generator::pubtable($tid);
+        file_put_contents($file, '<?php'.$code);
+    }
+
+    public static function createModels($force = false)
+    {
+        // refresh the pubtypes definitions
+        self::addtables($force);
+
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+
+        foreach ($pubtypes as $tid) {
+            self::createModel($tid, $force);
+        }
+
+        self::createRelationsModels();
+    }
+
+    public static function checkModels()
+    {
+        static $checked;
+
+        if (!isset($checked)) {
+            $checked = true;
+
+            $tid  = Clip_Util::getPubType()->getFirst()->tid;
+            $file = ModUtil::getVar('Clip', 'modelspath')."/Pubdata$tid.php";
+
+            if (!file_exists($file)) {
+                self::createModels();
+            }
+        }
     }
 }

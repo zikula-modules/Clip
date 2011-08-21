@@ -173,7 +173,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
 
         //// Execution
         // get the collection of pubs
-        $publist = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])
+        $publist = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid'])
                        ->selectCollection("core_pid = '{$args['pid']}'", 'core_revision DESC');
 
         for ($i = 0; $i < count($publist); $i++) {

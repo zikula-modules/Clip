@@ -36,7 +36,7 @@ function Clip_operation_delete(&$pub, $params)
     if ($workflow->deleteWorkflow()) {
         $result = array($pub['core_uniqueid'] => true);
 
-        $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid']);
+        $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid']);
 
         // checks if there's any other revision of this publication
         $count = $tbl->selectFieldFunction('1', 'COUNT', array(array('core_pid = ?', $pub['core_pid']))) + 1;

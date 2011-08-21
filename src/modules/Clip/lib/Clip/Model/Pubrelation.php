@@ -70,9 +70,9 @@ class Clip_Model_Pubrelation extends Doctrine_Record
         $relation = $event->getInvoker();
 
         // create the relation table
-        Clip_Generator::evalrelations();
+        Clip_Generator::createRelationsModels();
         if ($relation->type == 3) {
-            Doctrine_Core::getTable('Clip_Model_Relation'.$relation->id)->createTable();
+            Doctrine_Core::getTable('ClipModels_Relation'.$relation->id)->createTable();
         }
     }
 }

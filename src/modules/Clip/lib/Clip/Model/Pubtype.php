@@ -329,8 +329,8 @@ class Clip_Model_Pubtype extends Doctrine_Record
         HookUtil::registerSubscriberBundles($clipVersion->getHookSubscriberBundles());
 
         // create the pubtype table
-        Clip_Generator::loadModelClasses(true);
-        Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubtype->tid)->createTable();
+        Clip_Generator::createModel($pubtype->tid);
+        Doctrine_Core::getTable('ClipModels_Pubdata'.$pubtype->tid)->createTable();
     }
 
     /**
@@ -361,7 +361,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
             foreach ($rels as $tid => $relations) {
                 foreach ($relations as $relation) {
                     if ($relation['type'] == 3) {
-                        $table = 'Clip_Model_Relation'.$relation['id'];
+                        $table = 'ClipModels_Relation'.$relation['id'];
                         Doctrine_Core::getTable($table)->dropTable();
                     }
                 }
@@ -373,7 +373,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         Doctrine_Core::getTable('Clip_Model_Pubrelation')->deleteWhere($where);
 
         // delete the data table
-        Doctrine_Core::getTable('Clip_Model_Pubdata'.$this->tid)->dropTable();
+        Doctrine_Core::getTable('ClipModels_Pubdata'.$this->tid)->dropTable();
 
         // delete workflows
         DBUtil::deleteWhere('workflows', "module = 'Clip' AND obj_table = 'clip_pubdata{$pubtype['tid']}'");

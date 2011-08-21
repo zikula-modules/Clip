@@ -44,8 +44,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // build the default category tree
         self::createCategoryTree();
 
-        // try to create the upload directory
-        $uploadDir = self::createUploadDir();
+        // try to create the Clip directories
+        $dirs = self::createDirectories(array('upload', 'models'));
 
         //  install: default pubtypes and grouptypes
         Clip_Util::installDefaultypes();
@@ -57,7 +57,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
 
         // modvars
         $modvars = array(
-            'uploadpath' => $uploadDir,
+            'uploadpath' => $dirs['upload'],
+            'modelspath' => $dirs['models'],
             'shorturls'  => 'htm',
             'maxperpage' => 100,
             'devmode'    => true
@@ -142,6 +143,9 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     return '0.4.17';
                 }
             case '0.4.18':
+                $dirs = self::createDirectories(array('models'));
+                $this->setVar('modelspath', $dirs['models']);
+            case '0.4.19':
                 // further upgrade handling
                 // * contenttype stuff
                 //   Content_Installer::updateContentType('Clip');
@@ -156,13 +160,11 @@ class Clip_Installer extends Zikula_AbstractInstaller
      */
     public function uninstall()
     {
-        Clip_Generator::loadModelClasses();
-
         // drop pubtype tables
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
 
         foreach ($pubtypes as $tid) {
-            $table = "Clip_Model_Pubdata$tid";
+            $table = "ClipModels_Pubdata$tid";
             if (!Doctrine_Core::getTable($table)->dropTable()) {
                 return false;
             }
@@ -173,7 +175,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         foreach ($rels as $tid => $relations) {
             foreach ($relations as $relation) {
                 if ($relation['type'] == 3) {
-                    $table = 'Clip_Model_Relation'.$relation['id'];
+                    $table = 'ClipModels_Relation'.$relation['id'];
                     if (!Doctrine_Core::getTable($table)->dropTable()) {
                         return false;
                     }
@@ -190,7 +192,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
             'Clip_Model_Pubfield',
             'Clip_Model_Pubtype',
             'Clip_Model_Grouptype',
-            'Clip_Model_Pubrelation'
+            'Clip_Model_Pubrelation',
+            'Clip_Model_WorkflowVars'
         );
 
         foreach ($tables as $table) {
@@ -205,6 +208,9 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // delete the category registry
         CategoryRegistryUtil::deleteEntry('Clip');
         //CategoryUtil::deleteCategoriesByPath('/__SYSTEM__/Modules/Clip', 'path');
+
+        // delete temporary folder
+        FileUtil::deldir($this->getVar('modelspath'), true);
 
         // delete the modvars
         $this->delVars();
@@ -375,25 +381,39 @@ class Clip_Installer extends Zikula_AbstractInstaller
     }
 
     /**
-     * Upload directory creation
+     * Upload and Models directories creation
      */
-    private function createUploadDir()
+    private function createDirectories($toCreate = array())
     {
-        // upload dir creation
-        $uploaddir = FileUtil::getDataDirectory().'/Clip/uploads';
+        $dirs = array();
+        $dirs['upload'] = FileUtil::getDataDirectory().'/Clip/uploads';
+        $dirs['models'] = CacheUtil::getLocalDir('ClipModels');
 
-        if (!file_exists($uploaddir) && !mkdir($uploaddir, System::getVar('system.chmod_dir', 0777), true)) {
-            LogUtil::registerStatus($this->__f('Clip created the upload directory successfully at [%s]. Be sure that this directory is accessible via web and writable by the webserver.', $uploaddir));
+        foreach ($toCreate as $name) {
+            $dir = $dirs[$name];
 
-        } elseif (file_exists($uploaddir)) {
-            if (!is_writable($uploaddir)) {
-                LogUtil::registerStatus($this->__f('Clip detected that the upload directory is already created at [%s] but it\'s not writable. Be sure to correct that and that it\'s accessible via web.', $uploaddir));
-            } else {
-                LogUtil::registerStatus($this->__f('Clip detected that the upload directory is already created at [%s]. Be sure that it\'s accessible via web.', $uploaddir));
+            if (!file_exists($dir) && mkdir($dir, System::getVar('system.chmod_dir', 0777), true)) {
+                $msg = $this->__f('Clip created the \'%1$s\' directory successfully at [%2$s]. Be sure that this directory is writable by the webserver', array($name, $dir));
+                if ($name == 'upload') {
+                    $msg = ' '.$this->__f('and is accessible via web');
+                }
+            } elseif (file_exists($dir)) {
+                if (!is_writable($dir)) {
+                    $msg = $this->__f('Clip detected that the \'%1$s\' directory is already created at [%2$s] but it\'s not writable. Be sure to correct that', array($name, $dir));
+                    if ($name == 'upload') {
+                        $msg = ' '.$this->__f('and that it\'s accessible via web');
+                    }
+                } else {
+                    $msg = $this->__f('Clip detected that the \'%1$s\' directory is already created at [%2$s]', array($name, $dir));
+                    if ($name == 'upload') {
+                        $msg = ' '.$this->__f('Be sure that it\'s accessible via web');
+                    }
+                }
             }
+            LogUtil::registerStatus($msg.'.');
         }
 
-        return $uploaddir;
+        return $dirs;
     }
 
     /**
@@ -674,13 +694,13 @@ class Clip_Installer extends Zikula_AbstractInstaller
         }
 
         // 3. migrate the data to the relations
-        Clip_Generator::loadModelClasses();
+        Clip_Generator::checkModels();
         // update the pubdata tables
         $existingtables = DBUtil::metaTables();
         foreach (array_keys($pubtypes) as $tid) {
             $table = DBUtil::getLimitedTablename('clip_pubdata'.$tid);
             if (!in_array($table, $existingtables)) {
-                Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->createTable();
+                Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->createTable();
             }
         }
         unset($existingtables);
@@ -693,13 +713,13 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     if (!isset($dbfields[$tid1])) {
                         $dbfields[$tid1] = array_keys(DBUtil::metaColumnNames('clip_pubdata'.$tid1));
                     }
-                    $tbl1 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid1);
-                    $tbl2 = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid2);
+                    $tbl1 = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid1);
+                    $tbl2 = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid2);
 
                     // process n:n relations
                     if (count($v['ids']) > 1) {
                         // create the n:n table
-                        $relclass = 'Clip_Model_Relation'.$v['relid'];
+                        $relclass = 'ClipModels_Relation'.$v['relid'];
                         Doctrine_Core::getTable($relclass)->createTable();
 
                         foreach ($v['ids'] as $fid => $name) {
@@ -808,10 +828,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $sql[] = "UPDATE $table SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
 
         // update the pubtypes table
-        Clip_Generator::loadModelClasses();
+        Clip_Generator::checkModels();
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
-            Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)->changeTable();
+            Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->changeTable();
         }
     }
 

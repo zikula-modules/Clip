@@ -80,7 +80,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Misc values
         // utility table object
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
+        $tableObj = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid']);
 
         // set the order
         // handling column names till the end
@@ -297,7 +297,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         //// Misc values
         $pubtype = Clip_Util::getPubType($args['tid']);
 
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
+        $tableObj = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid']);
 
         //// Query setup
         $args['queryalias'] = "pub_{$args['tid']}_"
@@ -427,7 +427,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         //// Result
-        return Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])
+        return Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid'])
                ->selectFieldBy('core_pid', $args['id'], 'id');
     }
 
@@ -452,7 +452,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $args['lastrev'] = isset($args['lastrev']) ? (bool)$args['lastrev'] : false;
 
         //// Execution
-        $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid']);
+        $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid']);
 
         // checks for a online pub first
         $where = array(
@@ -587,7 +587,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $id = (int)$_['id'];
                     if (!isset($pid)) {
                         if (!isset($cache['id'][$tid][$id])) {
-                            $pid = $cache['id'][$tid][$id] = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
+                            $pid = $cache['id'][$tid][$id] = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
                                                              ->selectFieldBy('core_pid', $id, 'id');
                         } else {
                             $pid = $cache['id'][$tid][$id];
@@ -602,7 +602,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                     } elseif (isset($_['title']) && !empty($_['title'])) {
                         $urltitle = $_['title'];
                     } else {
-                        $urltitle = Doctrine_Core::getTable('Clip_Model_Pubdata'.$tid)
+                        $urltitle = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
                                     ->selectFieldBy(Clip_Util::getTitleField($tid), $pid, 'core_pid');
                         $urltitle = DataUtil::formatPermalink($urltitle);
                     }

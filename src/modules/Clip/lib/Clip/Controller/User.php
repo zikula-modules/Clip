@@ -573,7 +573,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
         } else {
             // initial values
-            $classname = 'Clip_Model_Pubdata'.$args['tid'];
+            $classname = 'ClipModels_Pubdata'.$args['tid'];
             $pubdata = new $classname();
         }
 
@@ -694,7 +694,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Execution
         // get the publication
-        $pub = Doctrine_Core::getTable('Clip_Model_Pubdata'.$args['tid'])->find($args['id']);
+        $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid'])->find($args['id']);
 
         if (!$pub) {
             return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', $args['id']));

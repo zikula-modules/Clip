@@ -171,7 +171,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
         // get old image from DB if the pub exists
         if ($pub['id']) {
-            $oldData = (string)Doctrine_Core::getTable('Clip_Model_Pubdata'.$pub['core_tid'])
+            $oldData = (string)Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid'])
                                ->selectFieldBy($field['name'], $pub['id'], 'id');
 
             // evaluate if preSave is triggered by the Pub Record without changes

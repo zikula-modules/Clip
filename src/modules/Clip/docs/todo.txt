@@ -19,4 +19,5 @@
         Should validate if their categories are not in the current plugin tree
 
     DATA
+      Pubdata models indexes
       New admin screen to validate the data integrity (only one online revision, title field, categories, etc)

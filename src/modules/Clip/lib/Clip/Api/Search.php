@@ -64,7 +64,7 @@ class Clip_Api_Search extends Zikula_AbstractApi
                             AND (core_publishdate <= NOW() OR core_publishdate IS NULL)
                             AND (core_expiredate >= NOW() OR core_expiredate IS NULL)";
 
-                $publist = Doctrine_Core::getTable('Clip_Model_Pubdata'.$pubtype['tid'])
+                $publist = Doctrine_Core::getTable('ClipModels_Pubdata'.$pubtype['tid'])
                            ->selectCollection($where)
                            ->toArray();
 

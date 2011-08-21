@@ -9,12 +9,17 @@
  * @subpackage Bootstrap
  */
 
-// handler to decorate the some outputs
-EventUtil::getManager()->attach('module_dispatch.postexecute', array('Clip_EventHandler_Listeners', 'decorateOutput'));
-
 // load models check
 $modinfo = ModUtil::getInfoFromName('Clip');
 
 if ($modinfo['state'] == ModUtil::STATE_ACTIVE) {
-    Clip_Generator::loadModelClasses();
+    Clip_Generator::checkModels();
 }
+
+if (FormUtil::getPassedValue('type') == 'admin') {
+    // handler to decorate the some admin outputs
+    EventUtil::getManager()->attach('module_dispatch.postexecute', array('Clip_EventHandler_Listeners', 'decorateOutput'));
+}
+
+// add the dynamic models path
+ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));

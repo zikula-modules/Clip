@@ -196,7 +196,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         }
 
         foreach ($this->_table->getRelations() as $key => $relation) {
-            if (strpos($key, 'Clip_Model_Relation') !== 0) {
+            if (strpos($key, 'ClipModels_Relation') !== 0) {
                 $fields[$key] = 'relation';
             }
         }

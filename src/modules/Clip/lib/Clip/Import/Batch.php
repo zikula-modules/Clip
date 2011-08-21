@@ -212,7 +212,7 @@ class Clip_Import_Batch
                 }
                 // get a record instance of the new pub
                 $newtid = self::$idmap['tids'][$tid];
-                $tbl = Doctrine_Core::getTable('Clip_Model_Pubdata'.$newtid);
+                $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$newtid);
                 $obj = $tbl->getRecord()->copy();
                 // process the record
                 $obj->fromArray($args['pub']);
