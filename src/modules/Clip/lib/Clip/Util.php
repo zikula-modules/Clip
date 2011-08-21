@@ -314,9 +314,8 @@ class Clip_Util
             return $pubtypes;
         }
 
-        $keys = array_keys($pubtypes->toArray());
-        foreach ($keys as $key) {
-            $pubtype = self::getPubTypeSub($pubtypes[$key], $tid);
+        if (isset($pubtypes[$tid])) {
+            $pubtype = self::getPubTypeSub($pubtypes[$tid], $tid);
             if ($pubtype != null) {
                 if ($field) {
                     // TODO get() for unloaded properties?
