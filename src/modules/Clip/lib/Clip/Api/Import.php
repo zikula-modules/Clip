@@ -320,6 +320,7 @@ class Clip_Api_Import extends Zikula_AbstractApi
 
         foreach ($pubtypes as $pubtype)
         {
+            // replace to Doctrine
             $pubfields = DBUtil::selectObjectArray('clip_pubfields', "tid = '$pubtype[id]'");
 
             foreach ($pubfields as $pubfield)

@@ -40,5 +40,5 @@ function smarty_function_clip_hitcount($params, Zikula_View &$view)
         return false;
     }
 
-    DBUtil::incrementObjectFieldByID('clip_pubdata'.$params['tid'], 'core_hitcount', $params['pid'], 'core_pid');
+    Doctrine_Core::getTable('ClipModels_Pubdata'.$params['tid'])->incrementFieldBy('core_hitcount', $params['pid'], 'core_pid');
 }
