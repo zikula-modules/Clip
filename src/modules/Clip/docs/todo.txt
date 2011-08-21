@@ -1,6 +1,9 @@
 
   TODO
 
+    PAGEMASTER
+      Upgrade path possibly broken with the new file-based models, need to reorder it
+
     EDITOR PANEL
       Adjustments to review the own publications + revisions
 

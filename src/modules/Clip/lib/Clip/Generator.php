@@ -580,7 +580,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $tables[$tablename.'_column_def'] = $tableDef;
     }
 
-    public static function addtables($force = false)
+    public static function addtables($tid = false)
     {
         $modinfo = ModUtil::getInfoFromName('Clip');
 
@@ -588,17 +588,11 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             return;
         }
 
-        static $tablesloaded = false;
+        $tables = array();
+        $where  = $tid ? array(array('tid = ?', $tid)) : '' ;
 
-        if ($tablesloaded && !$force) {
-            return;
-        }
-
-        $tablesloaded = true;
-
-        $tables  = array();
         $pubfields = Doctrine_Core::getTable('Clip_Model_Pubfield')
-                     ->selectCollection('', 'tid ASC, id ASC');
+                     ->selectCollection($where, 'tid ASC, id ASC');
 
         if ($pubfields === false) {
             return LogUtil::registerError('Error! Failed to load the pubfields.');
@@ -667,12 +661,14 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             self::_addtable($tables, $old_tid, array_merge($tableOrder, $tableColumn, $tableColumnCore), array_merge($tableDefCore, $tableDef));
         }
 
-        // validates the existence of all the pubdata tables
-        // to ensure the creation of all the pubdata model classes
-        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
-        foreach ($pubtypes as $tid) {
-            if (!isset($tables["clip_pubdata{$tid}"])) {
-                self::_addtable($tables, $tid, $tableColumnCore, $tableDefCore);
+        if (!$tid) {
+            // validates the existence of all the pubdata tables
+            // to ensure the creation of all the pubdata model classes
+            $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+            foreach ($pubtypes as $tid) {
+                if (!isset($tables["clip_pubdata{$tid}"])) {
+                    self::_addtable($tables, $tid, $tableColumnCore, $tableDefCore);
+                }
             }
         }
 
@@ -681,13 +677,17 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $serviceManager['dbtables'] = array_merge($dbtables, (array)$tables);
     }
 
-    public static function createTempModel($tid = null)
+    public static function createTempModel($tid)
     {
         // get file contents, rename the class and eval
     }
 
-    public static function createModel($tid = null, $force = false)
+    public static function updateModel($tid, $loadtables = true)
     {
+        if ($loadtables) {
+            self::addtables($tid);
+        }
+
         $path = ModUtil::getVar('Clip', 'modelspath');
 
         $file = "$path/Pubdata{$tid}.php";
@@ -699,15 +699,15 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         file_put_contents($file, '<?php'.$code);
     }
 
-    public static function createModels($force = false)
+    public static function createModels()
     {
         // refresh the pubtypes definitions
-        self::addtables($force);
+        self::addtables();
 
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
 
         foreach ($pubtypes as $tid) {
-            self::createModel($tid, $force);
+            self::updateModel($tid, false);
         }
 
         self::createRelationsModels();

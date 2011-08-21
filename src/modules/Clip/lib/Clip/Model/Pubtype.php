@@ -329,7 +329,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         HookUtil::registerSubscriberBundles($clipVersion->getHookSubscriberBundles());
 
         // create the pubtype table
-        Clip_Generator::createModel($pubtype->tid);
+        Clip_Generator::updateModel($pubtype->tid);
         Doctrine_Core::getTable('ClipModels_Pubdata'.$pubtype->tid)->createTable();
     }
 
