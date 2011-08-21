@@ -35,14 +35,11 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         // get the pubtype object
         $pubtype = Clip_Util::getPubType($this->tid);
 
-        // update the pubtype table with previous changes
-        Doctrine_Core::getTable('ClipModels_Pubdata'.$this->tid)->changeTable(true);
-
         // get the pubfields table
         $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
 
         // set the field information
-        if (!empty($this->id)) {
+        if ($this->id) {
             $pubfield = $tableObj->find($this->id);
 
             if (!$pubfield) {
@@ -91,7 +88,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $data = $view->getValues();
 
         // creates a Pubfield instance
-        if (!empty($this->id)) {
+        if ($this->id) {
             // object fetch due the use of default values
             $pubfield = Doctrine_Core::getTable('Clip_Model_Pubfield')->find($this->id)->copy(true);
             $pubfield->assignIdentifier($this->id);
@@ -130,25 +127,16 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                     return $view->setPluginErrorMsg('name', $this->__('The submitted name is reserved. Please choose a different one.'));
                 }
 
-                // check that the name is unique
-                $where = "name = '{$pubfield->name}' AND tid = '{$pubfield->tid}'".($this->id ? " AND id <> '{$this->id}'" : '');
-                $nameUnique = (int)$tableObj->selectFieldFunction('id', 'COUNT', $where);
-                if ($nameUnique > 0) {
-                    return $view->setPluginErrorMsg('name', $this->__('Another field already has this name.'));
-                }
-
-                // check that the alias is not in use
+                // check that the name is not in use
                 if (!$this->id || $pubfield->name != $previous->name) {
                     $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$pubfield->tid)->getRecord();
                     if (array_key_exists($pubfield->name, $pub->pubFields())) {
-                        $plugin = $view->getPluginById('name');
-                        $plugin->setError($this->__f("The alias '%s' is already in use.", $pubfield->name));
-                        return false;
+                        return $view->setPluginErrorMsg('name', $this->__f("The name '%s' is already in use.", $pubfield->name));
                     }
                 }
 
                 // check that the new name is not another publication property
-                if (empty($this->id)) {
+                if (!$this->id) {
                     $pubClass = 'ClipModels_Pubdata'.$this->tid;
                     $pubObj   = new $pubClass();
                     if ($pubObj->contains($pubfield->name)) {
@@ -165,23 +153,14 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                              ->execute();
                 }
 
-                // force a titlefield
-                $where = array(
-                    array('tid = ?', $pubfield->tid)
-                );
-                $max_line = (int)$tableObj->selectFieldFunction('lineno', 'MAX', $where);
-                if ($max_line == 0) {
-                    $pubfield->istitle = true;
-                }
+                $pubfield->save();
 
                 // create/edit status messages
-                if (empty($this->id)) {
-                    $pubfield->lineno = $max_line + 1;
+                if (!$this->id) {
                     LogUtil::registerStatus($this->__('Done! Field created.'));
                 } else {
                     LogUtil::registerStatus($this->__('Done! Field updated.'));
                 }
-                $pubfield->save();
                 break;
 
             // delete the field
@@ -189,7 +168,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                 if ($pubfield->delete()) {
                     LogUtil::registerStatus($this->__f("Done! Field '%s' deleted.", $pubfield->name));
                 } else {
-                    return LogUtil::registerError($this->__('Error! Deletion attempt failed.'));
+                    LogUtil::registerError($this->__('Error! Deletion attempt failed.'));
                 }
                 break;
         }

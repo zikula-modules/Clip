@@ -42,7 +42,7 @@ Zikula.Clip.Pubtype =
             {
                 headerSelector: '.pubtype-panel-header',
                 headerClassName: 'z-panel-indicator',
-                active: [0]
+                active: [0,2]
             });
     },
 

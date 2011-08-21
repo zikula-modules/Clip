@@ -133,6 +133,16 @@ class Clip_Model_Pubtype extends Doctrine_Record
         return FileUtil::getFilebase($this->workflow);
     }
 
+    public function updateTable()
+    {
+        // update the pubtype's model file
+        Clip_Generator::updateModel($this->tid);
+
+        // update the pubtype's table
+        $classname = Clip_Generator::createTempModel($this->tid);
+        Doctrine_Core::getTable($classname)->changeTable(true);
+    }
+
     private function toKeyValueArray($key, $field = null)
     {
         if (!$field) {
@@ -302,15 +312,17 @@ class Clip_Model_Pubtype extends Doctrine_Record
     public function preInsert($event)
     {
         // make sure it belongs to a group (the first one after root)
-        // TODO make this select-able on the pubtype form
-        $gid = Doctrine_Core::getTable('Clip_Model_Grouptype')
-                   ->createQuery()
-                   ->select('gid')
-                   ->orderBy('gid')
-                   ->where('gid > ?', 1)
-                   ->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
+        if (!$this->grouptype) {
+            // TODO make this select-able on the pubtype form
+            $gid = Doctrine_Core::getTable('Clip_Model_Grouptype')
+                       ->createQuery()
+                       ->select('gid')
+                       ->orderBy('gid')
+                       ->where('gid > ?', 1)
+                       ->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
 
-        $this->grouptype = (int)$gid;
+            $this->grouptype = (int)$gid;
+        }
     }
 
     /**
@@ -340,6 +352,9 @@ class Clip_Model_Pubtype extends Doctrine_Record
      */
     public function preSave($event)
     {
+        // purge the folder names of undesired chars
+        $this->folder = preg_replace(Clip_Util::REGEX_FOLDER, '', $this->folder);
+
         if (is_array($this->config)) {
             $this->config = serialize($this->config);
         }
@@ -354,26 +369,18 @@ class Clip_Model_Pubtype extends Doctrine_Record
     {
         $pubtype = $event->getInvoker();
 
-        // delete m2m relation tables
-        $ownSides = array(true, false);
-        foreach ($ownSides as $ownSide) {
-            $rels = Clip_Util::getRelations($pubtype['tid'], $ownSide);
-            foreach ($rels as $tid => $relations) {
-                foreach ($relations as $relation) {
-                    if ($relation['type'] == 3) {
-                        $table = 'ClipModels_Relation'.$relation['id'];
-                        Doctrine_Core::getTable($table)->dropTable();
-                    }
-                }
-            }
-        }
+        // delete its pubfields
+        Clip_Util::getPubFields($this->tid)->delete();
 
         // delete any relation
         $where = array("tid1 = '{$pubtype['tid']}' OR tid2 = '{$pubtype['tid']}'");
         Doctrine_Core::getTable('Clip_Model_Pubrelation')->deleteWhere($where);
 
         // delete the data table
-        Doctrine_Core::getTable('ClipModels_Pubdata'.$this->tid)->dropTable();
+        Doctrine_Core::getTable('ClipModels_Pubdata'.$pubtype->tid)->dropTable();
+
+        // delete the model file
+        Clip_Generator::deleteModel($pubtype->tid);
 
         // delete workflows
         DBUtil::deleteWhere('workflows', "module = 'Clip' AND obj_table = 'clip_pubdata{$pubtype['tid']}'");
@@ -381,7 +388,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         $clipVersion = new Clip_Version_Hooks();
 
         // unregister hook bundles
-        $this->registerHookBundles($clipVersion, $pubtype['tid'], $pubtype['title']);
+        $pubtype->registerHookBundles($clipVersion, $pubtype['tid'], $pubtype['title']);
 
         HookUtil::unregisterSubscriberBundles($clipVersion);
     }

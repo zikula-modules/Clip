@@ -524,13 +524,13 @@ class ClipModels_Pubdata{$tid}Table extends Clip_Doctrine_Table
         $allrelations = Clip_Util::getRelations(-1, false, true);
 
         $code = '';
-        $hasColumns = '';
         foreach ($allrelations as $tid => $relations) {
             foreach ($relations as $relation) {
                 $classname = 'ClipModels_Relation'.$relation['id'];
                 if ($relation['type'] != 3 || class_exists($classname, false)) {
                     continue;
                 }
+                $hasColumns = '';
                 for ($i = 1; $i <= 2; $i++) {
                     $columnName = "rel_{$relation['id']}_$i";
                     $array = var_export(array('primary' => true), true);
@@ -598,8 +598,6 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             return LogUtil::registerError('Error! Failed to load the pubfields.');
         }
 
-        $old_tid = 0;
-
         $tableOrder = array(
             'core_pid'         => 'pid',
             'id'               => 'id'
@@ -638,6 +636,8 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $tableColumn = array();
         $tableDef    = array();
 
+        $old_tid = 0;
+
         foreach ($pubfields as $pubfield) {
             // if we change of publication type
             if ($pubfield['tid'] != $old_tid && $old_tid != 0) {
@@ -661,6 +661,10 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             self::_addtable($tables, $old_tid, array_merge($tableOrder, $tableColumn, $tableColumnCore), array_merge($tableDefCore, $tableDef));
         }
 
+        if ($tid && !count($pubfields)) {
+            self::_addtable($tables, $tid, array_merge($tableOrder, $tableColumn, $tableColumnCore), array_merge($tableDefCore, $tableDef));
+        }
+
         if (!$tid) {
             // validates the existence of all the pubdata tables
             // to ensure the creation of all the pubdata model classes
@@ -679,7 +683,43 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 
     public static function createTempModel($tid)
     {
-        // get file contents, rename the class and eval
+        static $tmpref = 0;
+        $tmpref++;
+
+        $tmpclass = "ClipModels_Pubdata{$tid}Tmp{$tmpref}";
+
+        $path = ModUtil::getVar('Clip', 'modelspath');
+
+        $files = array(
+            "$path/Pubdata{$tid}.php",
+            "$path/Pubdata{$tid}Table.php"
+        );
+
+        foreach ($files as $file) {
+            // get file contents, rename the class and eval
+            $code = file_get_contents($file);
+            $code = str_replace('<?php', '', $code);
+            $code = str_replace("class ClipModels_Pubdata{$tid}", "class $tmpclass", $code);
+            eval($code);
+        }
+
+        return $tmpclass;
+    }
+
+    public static function deleteModel($tid, $type = 'Pubdata')
+    {
+        $path = ModUtil::getVar('Clip', 'modelspath');
+
+        $files = array(
+            "$path/$type{$tid}.php",
+            "$path/$type{$tid}Table.php"
+        );
+
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
     }
 
     public static function updateModel($tid, $loadtables = true)

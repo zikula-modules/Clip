@@ -115,6 +115,65 @@ class Clip_Model_Pubfield extends Doctrine_Record
     }
 
     /**
-     * TODO hook detection of changes and data integrity checks (sortby)
+     * Insert hook.
+     *
+     * @return void
      */
+    public function preInsert($event)
+    {
+        $pubfield = $event->getInvoker();
+
+        $where = array(
+            array('tid = ?', $pubfield->tid)
+        );
+        $max_lineno = (int)Doctrine_Core::getTable('Clip_Model_Pubfield')
+                              ->selectFieldFunction('lineno', 'MAX', $where);
+
+        $pubfield->lineno = $max_lineno + 1;
+    }
+
+    /**
+     * Save hook.
+     *
+     * @return void
+     */
+    public function postSave($event)
+    {
+        $this->updatePubtype($event);
+    }
+
+    /**
+     * Delete hook.
+     *
+     * @return void
+     */
+    public function postDelete($event)
+    {
+        $this->updatePubtype($event);
+    }
+
+    /**
+     * Common method.
+     */
+    public function updatePubtype($event)
+    {
+        $pubfield = $event->getInvoker();
+
+        static $once = array();
+
+        // avoid massive regeneration on pubtype clone/deletion
+        if (!isset($once[$pubfield->tid])) {
+            // FIXME detect if the field was updated and is a sort field
+            // FIXME detect if the field was deleted and a sort field
+
+            // update the pubtype's model file
+            Clip_Generator::updateModel($pubfield->tid);
+
+            // update the pubtype's table
+            $classname = Clip_Generator::createTempModel($pubfield->tid);
+            Doctrine_Core::getTable($classname)->changeTable(true);
+
+            $once[$pubfield->tid] = true;
+        }
+    }
 }

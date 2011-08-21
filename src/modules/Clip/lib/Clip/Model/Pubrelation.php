@@ -65,14 +65,51 @@ class Clip_Model_Pubrelation extends Doctrine_Record
      *
      * @return void
      */
-    public function postInsert($event)
+    public function postSave($event)
     {
         $relation = $event->getInvoker();
 
-        // create the relation table
-        Clip_Generator::createRelationsModels();
+        // if m2m regenerate the models files
         if ($relation->type == 3) {
+            Clip_Generator::createRelationsModels();
+            // create the relation table
             Doctrine_Core::getTable('ClipModels_Relation'.$relation->id)->createTable();
+        }
+
+        // update the related pubtypes tables
+        $relation->updatePubtypes();
+    }
+
+    /**
+     * Delete hook.
+     *
+     * @return void
+     */
+    public function postDelete($event)
+    {
+        $relation = $event->getInvoker();
+
+        // delete the relation table if it's m2m
+        if ($relation->type == 3) {
+            Doctrine_Core::getTable('ClipModels_Relation'.$relation->id)->dropTable();
+        }
+
+        // delete the model file
+        Clip_Generator::deleteModel($relation->id, 'Relation');
+
+        // update the related pubtypes tables
+        $relation->updatePubtypes();
+    }
+
+    /**
+     * Common method.
+     */
+    public function updatePubtypes()
+    {
+        Clip_Util::getPubType($this->tid1)->updateTable();
+
+        if ($this->tid2 != $this->tid1) {
+            Clip_Util::getPubType($this->tid2)->updateTable();
         }
     }
 }

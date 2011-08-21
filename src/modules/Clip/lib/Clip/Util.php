@@ -237,11 +237,9 @@ class Clip_Util
      */
     public static function validateReservedWord($value)
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-
         $reservedwords = array(
             'module', 'func', 'type', 'tid', 'pid', '__WORKFLOW__',
-            'submit', 'edit', __('submit', $dom), __('edit', $dom)
+            'submit', 'edit'
         );
 
         return (in_array($value, $reservedwords) || strpos('core_', $value) === 0);

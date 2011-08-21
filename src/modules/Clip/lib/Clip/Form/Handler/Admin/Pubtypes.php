@@ -85,7 +85,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         $data = $view->getValues();
 
         // creates and fill a Pubtype instance
-        if (!empty($this->tid)) {
+        if ($this->tid) {
             // clone to avoid interferences of the Doctrine_Table cache
             $pubtype = $tbl->find($this->tid)->copy(true);
             $pubtype->assignIdentifier($this->tid);
@@ -113,9 +113,6 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                     $pubtype->urltitle = DataUtil::formatPermalink($pubtype->urltitle);
                 }
 
-                // purge the folder names of undesired chars
-                $pubtype->folder = preg_replace(Clip_Util::REGEX_FOLDER, '', $pubtype->folder);
-
                 // reserved words check
                 if (Clip_Util::validateReservedWord($pubtype->title)) {
                     return $view->setPluginErrorMsg('title', $this->__('The submitted value is a reserved word. Please choose a different one.'), array('text' => $pubtype->title));
@@ -125,7 +122,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 }
 
                 // verify a unique title and urltitle
-                $n = empty($this->tid) ? 0 : 1;
+                $n = !$this->tid ? 0 : 1;
                 if ($tbl->findBy('title', $pubtype->title)->count() > $n) {
                     return $view->setPluginErrorMsg('title', $this->__('The submitted value already exists. Please choose a different one.'), array('text' => $pubtype->title));
                 }
@@ -137,12 +134,14 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 $pubtype->save();
 
                 // create/update status messages
-                if (empty($this->tid)) {
+                if (!$this->tid) {
                     LogUtil::registerStatus($this->__('Done! Publication type created. Now you can proceed to define its fields.'));
+
                     $this->referer = new Clip_Url('Clip', 'admin', 'pubfields', array('tid' => $pubtype->tid));
                 } else {
                     LogUtil::registerStatus($this->__('Done! Publication type updated.'));
-                    $this->referer = new Clip_Url('Clip', 'admin', 'pubtypeinfo', array('tid' => $this->tid));
+
+                    $this->referer = new Clip_Url('Clip', 'admin', 'pubtypeinfo', array('tid' => $pubtype->tid));
                 }
                 break;
 
@@ -151,7 +150,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 // clone the pubtype info
                 $pubtype = Clip_Util::getPubType($this->tid);
 
-                $newpubtype = $pubtype->copy();
+                $newpubtype = $pubtype->copy(true);
                 $newpubtype->title = $this->__f('%s Clon', $pubtype->title);
                 // be sure that title is unique
                 while ($tbl->findBy('title', $newpubtype->title)->count() || Clip_Util::validateReservedWord($newpubtype->title)) {
@@ -175,6 +174,9 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                     }
                 }
 
+                // update the table with all the fields inserted
+                $newpubtype->updateTable();
+
                 // status message
                 LogUtil::registerStatus($this->__('Done! Publication type cloned.'));
 
@@ -184,9 +186,8 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 
             // delete this pubtype
             case 'delete':
-                // delete the pubtype data and fields
+                // delete the pubtype
                 Clip_Util::getPubType($this->tid)->delete();
-                Clip_Util::getPubFields($this->tid)->delete();
 
                 // status message
                 LogUtil::registerStatus($this->__('Done! Publication type deleted.'));
