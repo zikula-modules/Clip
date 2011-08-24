@@ -70,15 +70,15 @@ class Clip_Controller_User extends Zikula_AbstractController
         // cleans it of not desired parameters
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
-            $args['templateid'] = '';
-            $args['template']   = $pubtype['folder'].'/main.tpl';
+            $args['templateid']   = '';
+            $args['templatefile'] = $pubtype['folder'].'/main.tpl';
         } else {
             $args['templateid'] = "{$args['template']}";
             if (Clip_Util::isSimpleTemplate($args['template'])) {
-                $args['template'] = Clip_Util::isSimpleTemplate($args['template']);
-                $args['templatesimple'] = $pubtype['folder']."/simple_{$args['template']}.tpl";
+                $args['templatefile'] = Clip_Util::isSimpleTemplate($args['template']);
+                $args['templatesimple'] = $pubtype['folder']."/simple_{$args['templatefile']}.tpl";
             } else {
-                $args['template'] = $pubtype['folder']."/main_{$args['template']}.tpl";
+                $args['templatefile'] = $pubtype['folder']."/main_{$args['template']}.tpl";
             }
         }
 
@@ -86,7 +86,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
 
         // skip main if there's no template
-        if (!$args['templateid'] && !$this->view->template_exists($args['template'])) {
+        if (!$args['templateid'] && !$this->view->template_exists($args['templatefile'])) {
             return $this->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid'], 'template' => $args['templateid'])));
         }
 
@@ -94,7 +94,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         if (isset($args['templatesimple'])) {
             if (!$this->view->template_exists($args['templatesimple'])) {
                 // make sure the simple template exists
-                $args['templatesimple'] = "simple_{$args['template']}.tpl";
+                $args['templatesimple'] = "simple_{$args['templatefile']}.tpl";
                 if (!$this->view->template_exists($args['templatesimple'])) {
                     $args['templatesimple'] = '';
                 }
@@ -111,7 +111,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Cache
         // check if cache is enabled and this view is cached
-        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
+        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['templatefile'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
 
             Clip_Util::register_nocache_plugins($this->view);
@@ -126,8 +126,8 @@ class Clip_Controller_User extends Zikula_AbstractController
             $this->view->setCaching(Zikula_View::CACHE_INDIVIDUAL)
                        ->setCacheId($cacheid);
 
-            if ($this->view->is_cached($args['template'])) {
-                return $this->view->fetch($args['template']);
+            if ($this->view->is_cached($args['templatefile'])) {
+                return $this->view->fetch($args['templatefile']);
             }
         } else {
             $cacheid = null;
@@ -149,7 +149,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                    ->assign('returnurl', $returnurl);
 
         // check if the template is available to render it
-        if (!$this->view->template_exists($args['template'])) {
+        if (!$this->view->template_exists($args['templatefile'])) {
             // auto-generate it only on development mode
             if (!$this->getVar('devmode', false)) {
                 return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
@@ -157,17 +157,17 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             if (Clip_Access::toPubtype($pubtype)) {
                 // pubtype admins only
-                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['templatefile']));
             }
 
-            $args['template'] = 'generic_main.tpl';
+            $args['templatefile'] = 'generic_main.tpl';
 
             $this->view->setForceCompile(true)
                        ->setCaching(Zikula_View::CACHE_DISABLED)
                        ->assign('clip_generic_tpl', true);
         }
 
-        return $this->view->fetch($args['template'], $cacheid);
+        return $this->view->fetch($args['templatefile'], $cacheid);
     }
 
     /**
@@ -236,10 +236,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
-            $args['template']   = $pubtype['folder'].'/list.tpl';
+            $args['templatefile']  = $pubtype['folder'].'/list.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
-            $args['template']   = $pubtype['folder']."/list_{$args['template']}.tpl";
+            $args['templatefile']  = $pubtype['folder']."/list_{$args['template']}.tpl";
         }
 
         //// Security
@@ -247,7 +247,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Cache
         // check if cache is enabled and this view is cached
-        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
+        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['templatefile'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
 
             Clip_Util::register_nocache_plugins($this->view);
@@ -268,8 +268,8 @@ class Clip_Controller_User extends Zikula_AbstractController
             $this->view->setCaching(Zikula_View::CACHE_INDIVIDUAL)
                        ->setCacheId($cacheid);
 
-            if ($this->view->is_cached($args['template'])) {
-                return $this->view->fetch($args['template']);
+            if ($this->view->is_cached($args['templatefile'])) {
+                return $this->view->fetch($args['templatefile']);
             }
         } else {
             $cacheid = null;
@@ -308,7 +308,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                                            'itemsperpage' => $apiargs['itemsperpage']));
 
         // check if the template is not available
-        if (!$this->view->template_exists($args['template'])) {
+        if (!$this->view->template_exists($args['templatefile'])) {
             // auto-generate it only on development mode
             if (!$this->getVar('devmode', false)) {
                 return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
@@ -316,14 +316,14 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             if (Clip_Access::toPubtype($pubtype)) {
                 // pubtype admins only
-                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['templatefile']));
             }
 
             // check the generic template to use
             if (strpos($apiargs['templateid'], 'block_') === 0) {
-                $args['template'] = 'generic_blocklist.tpl';
+                $args['templatefile'] = 'generic_blocklist.tpl';
             } else {
-                $args['template'] = 'generic_list.tpl';
+                $args['templatefile'] = 'generic_list.tpl';
             }
 
             $this->view->setForceCompile(true)
@@ -331,7 +331,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                        ->assign('clip_generic_tpl', true);
         }
 
-        return $this->view->fetch($args['template'], $cacheid);
+        return $this->view->fetch($args['templatefile'], $cacheid);
     }
 
     /**
@@ -394,10 +394,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
-            $args['template']   = $pubtype['folder'].'/display.tpl';
+            $args['templatefile']  = $pubtype['folder'].'/display.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
-            $args['template'] = $pubtype['folder']."/display_{$args['template']}.tpl";
+            $args['templatefile']  = $pubtype['folder']."/display_{$args['template']}.tpl";
         }
 
         //// Security
@@ -405,7 +405,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Cache
         // check if cache is enabled and this view is cached
-        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['template'])) {
+        if (!empty($args['cachelifetime']) && $this->view->template_exists($args['templatefile'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
 
             Clip_Util::register_nocache_plugins($this->view);
@@ -422,8 +422,8 @@ class Clip_Controller_User extends Zikula_AbstractController
             $this->view->setCaching(Zikula_View::CACHE_INDIVIDUAL)
                        ->setCacheId($cacheid);
 
-            if ($this->view->is_cached($args['template'])) {
-                return $this->view->fetch($args['template']);
+            if ($this->view->is_cached($args['templatefile'])) {
+                return $this->view->fetch($args['templatefile']);
             }
         } else {
             $cacheid = null;
@@ -473,14 +473,14 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Output
         // check if template is not available
-        if (!$this->view->template_exists($args['template'])) {
+        if (!$this->view->template_exists($args['templatefile'])) {
             // auto-generate it only on development mode
             if (!$this->getVar('devmode', false)) {
                 return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
             }
 
             if ($isadmin) {
-                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['template']));
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['templatefile']));
             }
 
             // check the generic template to use
@@ -490,7 +490,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                 $isblock = false;
             }
 
-            $args['template'] = 'var:template_generic_code';
+            $args['templatefile'] = 'var:template_generic_code';
 
             // settings for the autogenerated display template
             $this->view->setForceCompile(true)
@@ -499,7 +499,7 @@ class Clip_Controller_User extends Zikula_AbstractController
                        ->assign('template_generic_code', Clip_Generator::pubdisplay($apiargs['tid'], true, $isblock));
         }
 
-        return $this->view->fetch($args['template'], $cacheid);
+        return $this->view->fetch($args['templatefile'], $cacheid);
     }
 
     /**
