@@ -35,7 +35,6 @@ Zikula.Clip.Pubfields =
             Zikula.Clip.Pubfields.InitPluginConfig();
         } else {
             $('typedata_wrapper').hide();
-            $('typedata').value = '';
         }
     },
 
@@ -68,8 +67,6 @@ Zikula.Clip.Pubfields =
                                   overlayOpacity: 0.6
                               }
                           );
-
-        Zikula.Clip.Pubfields.ConfigSave();
     },
 
     Dialog: null,
