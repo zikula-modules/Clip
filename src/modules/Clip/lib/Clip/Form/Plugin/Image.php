@@ -125,9 +125,12 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return $has;
     }
 
-    public function postRead($pub, $field)
+    public function postRead(&$pub, $field)
     {
-        // this plugin return an array by default
+        $fieldname = $field['name'];
+        $data = $pub[$fieldname];
+
+        // default
         $upl_arr = array(
                        'orig_name'    => '',
                        'full_name'    => '',
@@ -140,10 +143,11 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                    );
 
         // if the data is not empty, process it
-        if (!empty($pub)) {
-            $arrTypeData = @unserialize($pub);
+        if (!empty($data)) {
+            $arrTypeData = @unserialize($data);
 
             if (!is_array($arrTypeData)) {
+                $pub[$fieldname] = $upl_arr;
                 return LogUtil::registerError('Plugin_Image: '.$this->__('Stored data is invalid.'));
             }
 
@@ -162,7 +166,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             }
         }
 
-        return $upl_arr;
+        $pub[$fieldname] = $upl_arr;
     }
 
     public function preSave($pub, $field)

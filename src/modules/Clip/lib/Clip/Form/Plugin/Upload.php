@@ -61,8 +61,12 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     /**
      * Clip processing methods.
      */
-    public function postRead($data, $field)
+    public function postRead(&$pub, $field)
     {
+        $fieldname = $field['name'];
+        $data = $pub[$fieldname];
+
+        // default
         $upl_arr = array(
                  'orig_name' => '',
                  'file_name' => '',
@@ -75,6 +79,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
             $arrTypeData = @unserialize($data);
 
             if (!is_array($arrTypeData)) {
+                $pub[$fieldname] = $upl_arr;
                 return LogUtil::registerError('Plugin_Upload: '.$this->__('Stored data is invalid'));
             }
 
@@ -90,7 +95,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
             }
         }
 
-        return $upl_arr;
+        $pub[$fieldname] = $upl_arr;
     }
 
     public static function preSave($data, $field)

@@ -62,14 +62,17 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
-    public function postRead($data, $field)
+    public function postRead(&$pub, $field)
     {
+        $fieldname = $field['name'];
+        $data = $pub[$fieldname];
+
         // if there's an URL, process it
         if (!empty($data)) {
             $data = $this->parseURL($data);
         }
 
-        return $data;
+        $pub[$fieldname] = $data;
     }
 
     /**

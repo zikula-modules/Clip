@@ -150,10 +150,10 @@ class Clip_Util_Plugins
             if (method_exists($plugin, 'postRead')) {
                 if ($islist) {
                     foreach ($obj as &$pub) {
-                        $pub[$fieldname] = $plugin->postRead($pub[$fieldname], $field);
+                        $plugin->postRead($pub, $field);
                     }
                 } else {
-                    $obj[$fieldname] = $plugin->postRead($obj[$fieldname], $field);
+                    $plugin->postRead($obj, $field);
                 }
             }
         }

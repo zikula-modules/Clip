@@ -53,27 +53,28 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
         $filterArgs['plugins'][$this->filterClass]['fields'][] = $fieldname;
     }
 
-    public function postRead($data, $field)
+    public function postRead(&$pub, $field)
     {
-        // this plugin return an array
+        $fieldname = $field['name'];
+        $data = $pub[$fieldname];
+
+        // default
         $cat = array('id' => 0);
 
         // if there's a value extract the category
         if (!empty($data) && is_numeric($data)) {
             $cat = CategoryUtil::getCategoryByID($data);
 
-            if (!$cat) {
-                return array('id' => 0);
+            if ($cat) {
+                CategoryUtil::buildRelativePathsForCategory($this->getRootCategoryID($field['typedata']), $cat);
+
+                // map the local display name
+                $lang = ZLanguage::getLanguageCode();
+                $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
             }
-
-            CategoryUtil::buildRelativePathsForCategory($this->getRootCategoryID($field['typedata']), $cat);
-
-            // map the local display name
-            $lang = ZLanguage::getLanguageCode();
-            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
         }
 
-        return $cat;
+        $pub[$fieldname] = $cat;
     }
 
     public function getRootCategoryID($typedata)

@@ -58,7 +58,7 @@ class Clip_Generator
                 $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
                 if (method_exists($plugin, 'postRead')) {
-                    $pubdata[$name] = $plugin->postRead('', $name);
+                    $plugin->postRead($pubdata, $field);
                 } else {
                     $pubdata[$name] = '';
                 }

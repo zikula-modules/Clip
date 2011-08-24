@@ -30,27 +30,28 @@ class Clip_Form_Plugin_Ms extends Zikula_Form_Plugin_TextInput
     /**
      * Clip processing methods.
      */
-    public static function postRead($data, $field)
+    public static function postRead(&$pub, $field)
     {
-        // this plugin return an array
+        $fieldname = $field['name'];
+        $data = $pub[$fieldname];
+
+        // default
         $cat = array();
 
         // if there's a value extract the category
         if (!empty($data) && is_numeric($data)) {
             $cat  = CategoryUtil::getCategoryByID($data);
 
-            if (empty($cat)) {
-                return array();
+            if ($cat) {
+                $lang = ZLanguage::getLanguageCode();
+
+                // compatible mode to pagesetter
+                $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+                $cat['value']     = $cat['name'];
+                $cat['title']     = $cat['name'];
             }
-
-            $lang = ZLanguage::getLanguageCode();
-
-            // compatible mode to pagesetter
-            $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
-            $cat['value']     = $cat['name'];
-            $cat['title']     = $cat['name'];
         }
 
-        return $cat;
+        $pub[$fieldname] = $cat;
     }
 }

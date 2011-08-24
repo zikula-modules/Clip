@@ -66,22 +66,19 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
         $filterArgs['plugins'][$this->filterClass]['fields'][] = $fieldname;
     }
 
-    public function postRead($data, $field)
+    public function postRead(&$pub, $field)
     {
-        // this plugin return an array by default
+        $fieldname = $field['name'];
+        $data = $pub[$fieldname];
+
+        // default
         $cat_arr = array();
 
         // if the data is not empty, process it
         if (!empty($data) && $data <> '::') {
-            $lang = ZLanguage::getLanguageCode();
-
-            // the data is of the form:
+            // the data is on the format:
             // :cid1:cid2:cid3:cid4:
-            if (strpos($data, ':') === 0) {
-                $data = substr($data, 1, -1);
-            }
-
-            $catIds = explode(':', $data);
+            $catIds = array_filter(explode(':', $data));
             if (!empty($catIds)) {
                 ModUtil::dbInfoLoad('Categories');
 
@@ -96,6 +93,8 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
                 $cat_arr = CategoryUtil::getCategories(implode(' OR ', $where), '', 'id');
                 $rootCat = $this->getRootCategoryID($field['typedata']);
 
+                $lang = ZLanguage::getLanguageCode();
+
                 foreach ($cat_arr as &$cat) {
                     CategoryUtil::buildRelativePathsForCategory($rootCat, $cat);
 
@@ -105,7 +104,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
             }
         }
 
-        return $cat_arr;
+        $pub[$fieldname] = $cat_arr;
     }
 
     public function getRootCategoryID($typedata)

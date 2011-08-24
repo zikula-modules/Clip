@@ -65,19 +65,19 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         $filterArgs['plugins'][$this->filterClass]['fields'][] = $fieldname;
     }
 
-    public function postRead($data, $field)
+    public function postRead(&$pub, $field)
     {
-        // this plugin return an array by default
+        $fieldname = $field['name'];
+        $data = $pub[$fieldname];
+
+        // default
         $cat_arr = array();
 
+        // if the data is not empty, process it
         if (!empty($data) && $data <> '::') {
             $lang = ZLanguage::getLanguageCode();
 
-            if (strpos($data, ':') === 0) {
-                $data = substr($data, 1, -1);
-            }
-
-            $catIds = explode(':', $data);
+            $catIds = array_filter(explode(':', $data));;
             if (!empty($catIds)) {
                 ModUtil::dbInfoLoad('Categories');
 
@@ -101,7 +101,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
             }
         }
 
-        return $cat_arr;
+        $pub[$fieldname] = $cat_arr;
     }
 
     public function getRootCategoryID($typedata)

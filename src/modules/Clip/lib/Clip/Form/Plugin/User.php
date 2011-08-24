@@ -134,8 +134,11 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $filterArgs['plugins']['clipuser']['fields'][] = $fieldname;
     }
 
-    public static function postRead($data, $field)
+    public static function postRead(&$pub, $field)
     {
+        $fieldname = $field['name'];
+        $data = $pub[$fieldname];
+
         // this plugin return an array
         $uids = array();
 
@@ -151,16 +154,14 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
             $where = 'WHERE ' . $usersColumn['uid'] . ' IN (\'' . implode('\', \'', $data) . '\')';
             $results = DBUtil::selectFieldArray('users', 'uname', $where, $usersColumn['uname'], false, 'uid');
 
-            if (!$results) {
-                return $uids;
-            }
-
-            foreach ($results as $uid => $uname) {
-                $uids[$uid] = $uname;
+            if ($results) {
+                foreach ($results as $uid => $uname) {
+                    $uids[$uid] = $uname;
+                }
             }
         }
 
-        return $uids;
+        $pub[$fieldname] = $uids;
     }
 
     public function getOutputDisplay($field)
