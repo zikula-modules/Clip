@@ -96,12 +96,11 @@ class Clip_Generator
                             $rowcode['full'] =
                                 '        <div class="z-formrow">'."\n".
                                 '            <span class="z-label">'.$rowcode['label'].'</span>'."\n".
-                                '                {if !empty($pubdata.'.$name.')}'."\n".
-                                '                    <span class="z-formnote">{$pubdata.'.$name.'|getlanguagename}</span>'."\n".
-                                '                {else}'."\n".
-                                '                    <span class="z-formnote">{gt text=\''.no__('Available for all languages.').'\'}</span>'."\n".
-                                '                {/if}'."\n".
-                                '            </span>'."\n".
+                                '            {if !empty($pubdata.'.$name.')}'."\n".
+                                '                <span class="z-formnote">{$pubdata.'.$name.'|getlanguagename}</span>'."\n".
+                                '            {else}'."\n".
+                                '                <span class="z-formnote">{gt text=\''.no__('Available for all languages.').'\'}</span>'."\n".
+                                '            {/if}'."\n".
                                 '        </div>';
                             break;
 
