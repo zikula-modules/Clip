@@ -87,7 +87,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // skip main if there's no template
         if (!$args['templateid'] && !$this->view->template_exists($args['template'])) {
-            return $this->view();
+            return $this->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid'], 'template' => $args['templateid'])));
         }
 
         // fetch simple templates
