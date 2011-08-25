@@ -242,7 +242,7 @@ class Clip_Util
             'submit', 'edit'
         );
 
-        return (in_array($value, $reservedwords) || strpos('core_', $value) === 0);
+        return (in_array($value, $reservedwords) || strpos('core_', $value) === 0 || strpos('rel_', $value) === 0);
     }
 
     /**

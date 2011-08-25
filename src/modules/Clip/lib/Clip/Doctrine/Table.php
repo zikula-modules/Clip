@@ -24,17 +24,19 @@ class Clip_Doctrine_Table extends Doctrine_Table
     public function getFilterColumns($dynaMap = array())
     {
         $fields  = $this->getFieldNames();
-        // TODO remove the rel_X fields
         $columns = array_combine($fields, $fields);
 
         foreach ($this->getRelations() as $alias => $relation) {
+            if (strpos($alias, 'ClipModels_Relation') === 0) {
+                continue;
+            }
             // checks if this relation is not owned
-            if ($relation['local'] != 'id') {
+            if (preg_match('/^rel\_\d+$/', $relation['local'])) {
                 $columns[$alias] = $relation['local'];
             } else {
                 // when owned the foreign field is in the other table
                 $v = isset($dynaMap[$relation['class']]) ? $dynaMap[$relation['class']].'.' : $relation['class'].':';
-                $columns[$alias] = "{$v}id";
+                $columns[$alias] = "{$v}{$relation['local']}";
             }
         }
 
