@@ -241,6 +241,29 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Returns the parents for breadcrumbs.
+     *
+     * @return array List of parents.
+     */
+    public function getAncestors()
+    {
+        $parents = array();
+
+        if (!$this->hasRelation('parent')) {
+            return $parents;
+        }
+
+        $record = $this;
+
+        while ($record->parent) {
+            $record = $record->parent;
+            $parents[] = $record;
+        }
+
+        return array_reverse($parents);
+    }
+
+    /**
      * Returns the record relations as an indexed array.
      *
      * @param boolean $onlyown Retrieves owning relations only (default: false).
