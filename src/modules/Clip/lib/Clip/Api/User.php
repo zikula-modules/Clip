@@ -612,9 +612,8 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $cache['title'][$tid][$pid] = $urltitle;
 
                     $urltitle = "/$urltitle.$pid" . (isset($id) ? ".$id" : '');
+                    $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
                 }
-
-                $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
 
                 if ($args['func'] == 'edit') {
                     // edit case: override the display shortURL
@@ -641,7 +640,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         // utility assign
         $_ = array_slice($args['vars'], 2);
 
-        if ($args[2] == 'exec') {
+        if (isset($args[2]) && $args[2] == 'exec') {
             // unsupported function, process it with default shortURLs
             return false;
         }
