@@ -81,7 +81,7 @@
                 {foreach from=$relations key='alias' item='item' name='relations'}
                 <div class="z-formrow">
                     {formlabel for=$alias text=$item.title}
-                    {clip_form_relation id=$alias relation=$item minchars=2 op='likefirst' group='pubdata'}
+                    {clip_form_relation alias=$alias relation=$item minchars=2 op='likefirst'}
                 </div>
                 {/foreach}
 

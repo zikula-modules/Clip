@@ -25,7 +25,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
     // Clip data handling
     public $tid;
     public $pid;
-    public $field;
+    public $alias;
 
     /**
      * Get filename for this plugin.
@@ -42,30 +42,15 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
      * Constructor.
      *
      * @param Zikula_Form_View $view    Reference to Zikula_Form_View object.
-     * @param array     &$params Parameters passed from the Smarty plugin function.
+     * @param array            &$params Parameters passed from the Smarty plugin function.
      */
     public function __construct($view, &$params)
     {
-        // input relation data
-        if (isset($params['relation'])) {
-            $this->relinfo = $params['relation'];
-        }
-
-        if (!is_null($this->relinfo)) {
-            // assign existing data
-            $this->relinfo['data'] = array();
-            $data = $view->_tpl_vars['data'][$params['id']];
-            if ($data) {
-                if ($this->relinfo['single']) {
-                    $this->relinfo['data'][$data['id']] = $data['core_title'];
-                } else {
-                    foreach ($data as $rec) {
-                        $this->relinfo['data'][$rec['id']] = $rec['core_title'];
-                    }
-                }
+        if (!$view->isPostBack()) {
+            // input relation data
+            if (isset($params['relation'])) {
+                $this->relinfo = $params['relation'];
             }
-            // save the data in the state session
-            $view->setStateData('links_'.$params['id'], array_keys($this->relinfo['data']));
         }
 
         $params['textMode'] = 'hidden';
@@ -162,6 +147,47 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
     }
 
     /**
+     * Load values.
+     *
+     * Called internally by the plugin itself to load values from the render.
+     * Can also by called when some one is calling the render object's Zikula_Form_ViewetValues.
+     *
+     * @param Zikula_Form_View $view    Reference to Zikula_Form_View object.
+     * @param array            &$values Values to load.
+     *
+     * @return void
+     */
+    function loadValue(Zikula_Form_View $view, &$values)
+    {
+        if ($this->dataBased) {
+            $data = $values[$this->group][$this->tid][$this->pid][$this->alias];
+
+            if (!$view->isPostBack()) {
+                // assign existing data
+                $this->relinfo['data'] = array();
+                if ($data) {
+                    if ($this->relinfo['single']) {
+                        $this->relinfo['data'][$data['id']] = $data['core_title'];
+                    } else {
+                        foreach ($data as $rec) {
+                            $this->relinfo['data'][$rec['id']] = $rec['core_title'];
+                        }
+                    }
+                }
+
+                // save the data in the state session
+                $view->setStateData('links_'.$this->alias, array_keys($this->relinfo['data']));
+            } else {
+                // FIXME postForm method in the handler to fetch the core_titles again
+            }
+
+            if (isset($values[$this->group][$this->tid][$this->pid][$this->alias])) {
+                $this->text = $this->formatValue($view, $values[$this->group][$this->tid][$this->pid][$this->alias]);
+            }
+        }
+    }
+
+    /**
      * Saves value in data object.
      *
      * Called by the render when doing $view->getValues()
@@ -175,18 +201,12 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
     public function saveValue($view, &$data)
     {
         if ($this->dataBased) {
-            $value = $this->parseValue($view, $this->text);
+            $ref = $this->relinfo['single'] ? array($this->text) : explode(':', $this->text);
 
-            $ref = $this->relinfo['single'] ? array($value) : explode(':', $value);
-
-            if ($this->group == null) {
-                $data[$this->dataField] = $ref;
-            } else {
-                if (!array_key_exists($this->group, $data)) {
-                    $data[$this->group] = array();
-                }
-                $data[$this->group][$this->dataField] = $ref;
+            if (!array_key_exists($this->group, $data)) {
+                $data[$this->group] = array($this->tid => array($this->pid => array()));
             }
+            $data[$this->group][$this->tid][$this->pid][$this->alias] = $ref;
         }
     }
 }

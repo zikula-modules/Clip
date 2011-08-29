@@ -249,13 +249,13 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     {
         $parents = array();
 
-        if (!$this->hasRelation('parent')) {
+        if (!$this->hasReference('parent')) {
             return $parents;
         }
 
         $record = $this;
 
-        while ($record->parent) {
+        while ($record->parent && $record->parent->exists()) {
             $record = $record->parent;
             $parents[] = $record;
         }

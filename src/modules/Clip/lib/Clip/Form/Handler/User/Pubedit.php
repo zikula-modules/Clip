@@ -62,20 +62,20 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             foreach ($this->pub->getRelations($relconfig['onlyown']) as $key => $rel) {
                 // set the data object
                 if ($this->pub[$key] instanceof Doctrine_Collection) {
-                    foreach ($this->pub[$key] as $k => $v) {
+                    foreach ($this->pub[$key] as $k => &$v) {
                         // exclude null records
                         if ($v->exists()) {
-                            $this->pub[$key][$k]->clipProcess();
+                            $v->clipValues();
                         }
                     }
-                    $data[$key] = $this->pub[$key]->toArray();
+                    $data[$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
 
                 } elseif ($this->pub[$key] instanceof Doctrine_Record && $this->pub[$key]->exists()) {
-                    $this->pub[$key]->clipProcess();
-                    $data[$key] = $this->pub[$key]->toArray();
+                    $this->pub[$key]->clipValues();
+                    $data[$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
 
                 } else {
-                    $data[$key] = null;
+                    $data[$this->tid][$this->id][$key] = null;
                 }
                 // set the relation info
                 $this->relations[$key] = $rel;
@@ -86,7 +86,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         foreach (array_keys($this->pubfields->toArray()) as $fieldname) {
             $val = FormUtil::getPassedValue('set_'.$fieldname);
             if (!is_null($val)) {
-                $data[$fieldname] = $val;
+                $data[$this->tid][$this->id][$fieldname] = $val;
             }
         }
 
@@ -289,6 +289,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 $tolink = $tounlink = array();
                 // get the links present on the form before submit it
                 $links = $view->getStateData('links_'.$alias);
+
                 // check the removed ones
                 foreach ($links as $id) {
                     if ($id && !in_array((string)$id, $data[$alias])) {
