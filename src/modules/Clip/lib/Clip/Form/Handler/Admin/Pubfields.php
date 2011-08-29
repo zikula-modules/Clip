@@ -53,7 +53,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         }
 
         // assign all the existing fields
-        $pubfields = Clip_Util::getPubFields($this->tid);
+        $pubfields = Clip_Util::getPubFields($this->tid)->toArray();
 
         $view->assign('pubfields', $pubfields)
              ->assign('pubtype', $pubtype)

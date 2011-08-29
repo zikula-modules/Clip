@@ -103,9 +103,9 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
     }
 
     if (!isset($html)) {
-        $pubfields = Clip_Util::getPubFields($tid);
-        $plugin = Clip_Util_Plugins::get($pubfields[$field]['fieldplugin']);
-        $id = $plugin->getRootCategoryID($pubfields[$field]['typedata']);
+        $pubfield = Clip_Util::getPubFields($tid, $field);
+        $plugin = Clip_Util_Plugins::get($pubfield['fieldplugin']);
+        $id = $plugin->getRootCategoryID($pubfield['typedata']);
 
         $cats = CategoryUtil::getSubCategories($id);
 

@@ -181,7 +181,7 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
             foreach ($pubfields as $fieldname => $pubfield) {
                 $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
                 $pubarr[$index] = array(
-                    'text'  => $this->__($pubfield['title']),
+                    'text'  => $pubfield['title'],
                     'value' => $fieldname
                 );
             }

@@ -83,7 +83,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // check for set_* default values
-        foreach (array_keys($this->pubfields->toArray()) as $fieldname) {
+        foreach (array_keys($this->pubfields) as $fieldname) {
             $val = FormUtil::getPassedValue('set_'.$fieldname);
             if (!is_null($val)) {
                 $data[$this->tid][$this->id][$fieldname] = $val;
@@ -93,7 +93,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // fills the render
         $view->assign('data',      $data)
              ->assign('pubdata',   $this->pub->copy()->clipValues(true))
-             ->assign('pubfields', $this->pubfields->toArray())
+             ->assign('pubfields', $this->pubfields)
              ->assign('relations', $this->relations)
              ->assign('actions',   $actions);
 
@@ -241,7 +241,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if ($pubfields) {
             $this->pubfields = $pubfields;
         } else {
-            $this->pubfields = Clip_Util::getPubFields($tid);
+            $this->pubfields = Clip_Util::getPubFields($tid)->toArray();
         }
     }
 

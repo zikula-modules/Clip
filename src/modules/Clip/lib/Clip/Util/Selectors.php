@@ -141,8 +141,6 @@ class Clip_Util_Selectors
     {
         $dom = ZLanguage::getModuleDomain('Clip');
 
-        $pubfields = Clip_Util::getPubFields($tid);
-
         $arraysort = array(
             'core_empty' => array(),
             'core_title' => array(),
@@ -189,6 +187,8 @@ class Clip_Util_Selectors
                 'value' => 'core_hitcount'
             )
         );
+
+        $pubfields = Clip_Util::getPubFields($tid);
 
         foreach ($pubfields as $fieldname => $pubfield) {
             $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
