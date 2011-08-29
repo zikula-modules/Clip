@@ -40,7 +40,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
      */
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
+        $this->parseConfig($params['fieldconfig']);
 
         $params['category'] = isset($params['category']) ? $params['category'] : $this->config[0];
         $params['size']     = isset($params['size']) ? $params['size'] : $this->config[1];

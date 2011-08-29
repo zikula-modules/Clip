@@ -55,7 +55,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
+        $this->parseConfig($params['fieldconfig']);
 
         parent::readParameters($view, $params);
     }

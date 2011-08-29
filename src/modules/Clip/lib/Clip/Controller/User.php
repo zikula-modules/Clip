@@ -539,7 +539,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Validation
         // check for the pubfields
-        $pubfields = Clip_Util::getPubFields($args['tid'], 'lineno');
+        $pubfields = Clip_Util::getPubFields($args['tid']);
 
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));

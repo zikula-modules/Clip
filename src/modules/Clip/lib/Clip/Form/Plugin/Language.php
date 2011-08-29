@@ -39,7 +39,7 @@ class Clip_Form_Plugin_Language extends Zikula_Form_Plugin_LanguageSelector
      */
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
+        $this->parseConfig($params['fieldconfig']);
 
         $params['onlyInstalledLanguages'] = isset($params['onlyInstalledLanguages']) ? $params['onlyInstalledLanguages'] : $this->config[0];
         $params['addAllOption'] = isset($params['addAllOption']) ? $params['addAllOption'] : $this->config[1];

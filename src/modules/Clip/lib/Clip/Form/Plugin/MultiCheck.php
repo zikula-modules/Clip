@@ -40,7 +40,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
      */
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
+        $this->parseConfig($params['fieldconfig']);
 
         $params['category'] = isset($params['category']) ? $params['category'] : $this->config['cat'];
         $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config['edit'];

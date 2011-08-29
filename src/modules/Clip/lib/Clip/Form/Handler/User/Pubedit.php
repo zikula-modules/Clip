@@ -245,26 +245,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
     }
 
-    public function getPubFieldData($name, $field = null)
-    {
-        if (!$name) {
-            return false;
-        }
-
-        if (strpos($name, 'core_') === 0) {
-            return Clip_Util_Plugins::getCoreFieldData($name, $field);
-
-        } elseif (!isset($this->pubfields[$name])) {
-            return false;
-        }
-
-        if ($field) {
-            return isset($this->pubfields[$name][$field]) ? $this->pubfields[$name][$field] : null;
-        }
-
-        return $this->pubfields[$name];
-    }
-
     public function getId()
     {
         return $this->id;

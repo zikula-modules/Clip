@@ -367,11 +367,12 @@ class Clip_Util
      * PubFields getter.
      *
      * @param integer $tid     Pubtype ID.
+     * @param string  $name    Name of the field to get.
      * @param string  $orderBy Field name to sort by.
      *
      * @return array Array of fields of one or all the loaded pubtypes.
      */
-    public static function getPubFields($tid, $orderBy = 'lineno')
+    public static function getPubFields($tid, $name = null, $orderBy = 'lineno')
     {
         static $pubfields_arr;
 
@@ -381,7 +382,43 @@ class Clip_Util
                                    ->selectCollection("tid = '$tid'", $orderBy, -1, -1, 'name');
         }
 
+        if ($name) {
+            return isset($pubfields_arr[$tid][$name]) ? $pubfields_arr[$tid][$name] : array();
+        }
+
         return isset($pubfields_arr[$tid]) ? $pubfields_arr[$tid] : array();
+    }
+
+    /**
+     * PubField data getter.
+     *
+     * @param integer $tid      Pubtype ID.
+     * @param string  $name     Name of the field to get.
+     * @param string  $property Field to retrieve.
+     *
+     * @return mixed Field or one of its properties.
+     */
+    public static function getPubFieldData($tid, $name, $property = null)
+    {
+        if (!$name) {
+            return null;
+        }
+
+        if (strpos($name, 'core_') === 0) {
+            return Clip_Util_Plugins::getCoreFieldData($name, $field);
+        }
+
+        $pubfield = self::getPubFields($tid, $name);
+
+        if (!$pubfield) {
+            return null;
+        }
+
+        if ($property) {
+            return isset($pubfield[$property]) ? $pubfield[$property] : null;
+        }
+
+        return $pubfield;
     }
 
     /**

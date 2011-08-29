@@ -40,7 +40,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
      */
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
+        $this->parseConfig($params['fieldconfig']);
 
         parent::readParameters($view, $params);
     }

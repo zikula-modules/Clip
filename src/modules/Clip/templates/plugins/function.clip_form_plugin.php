@@ -42,7 +42,7 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
     $params['id'] = "clip{$params['tid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'data';
 
-    $field = $render->eventHandler->getPubFieldData($params['field']);
+    $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
 
     // read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])) {
@@ -52,7 +52,20 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
         $params['maxLength'] = $field['fieldmaxlength'];
     }
 
-    $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+    if (!isset($params['pluginclass'])) {
+        // setup the main class
+        $pluginclass = $field['fieldplugin'];
+        // setup the main field configuration
+        $params['pluginconfig'] = $field['typedata'];
+    } else {
+        // override the main class
+        $pluginclass = $params['pluginclass'];
+        unset($params['pluginclass']);
+        // be sure there's a config specified or reset to empty
+        $params['pluginconfig'] = isset($params['pluginconfig']) ? $params['pluginconfig'] : '';
+    }
+
+    $plugin = Clip_Util_Plugins::get($pluginclass);
 
     if (method_exists($plugin, 'pluginRegister')) {
         return $plugin->pluginRegister($params, $render);

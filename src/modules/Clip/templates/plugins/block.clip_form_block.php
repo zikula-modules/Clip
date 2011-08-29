@@ -44,7 +44,7 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
     $params['id'] = "clip{$params['tid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'data';
 
-    $field = $render->eventHandler->getPubFieldData($params['field']);
+    $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
 
     // read settings in pubfields, if set by template ignore settings in pubfields
     if (!isset($params['mandatory'])){
