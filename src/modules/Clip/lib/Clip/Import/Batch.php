@@ -15,7 +15,6 @@
 class Clip_Import_Batch
 {
     static $idmap;
-    static $tablescreated;
 
     protected $filename;
     protected $file;
@@ -72,34 +71,25 @@ class Clip_Import_Batch
      */
     protected function reset()
     {
-        // process any pubtype not saved
-        if (isset(self::$idmap['objs'])) {
-            $this->savePubtypes();
-        }
-
         // reset the old/new IDs map
         self::$idmap = array(
             'tids' => array(), // pubtypes map
-            'objs' => array(), // pubtypes instances
             'fids' => array(), // pubfields map
-            'pids' => array()  // publications map
+            'pids' => array(), // publications map
+            'updt' => array()
         );
-
-        self::$tablescreated = false;
     }
 
     /**
      * Internal pubtype saver.
      */
-    protected function savePubtypes()
+    protected function updateTables()
     {
-        if (!self::$tablescreated && !empty(self::$idmap['objs'])) {
-            foreach (self::$idmap['objs'] as $obj) {
-                $obj->save();
+        foreach (self::$idmap['tids'] as $tid) {
+            if (!isset(self::$idmap['updt'][$tid])) {
+                Doctrine_Core::getTable('Clip_Model_Pubtype')->find($tid)->updateTable();
+                self::$idmap['updt'][$tid] = true;
             }
-
-            self::$idmap['objs']  = array();
-            self::$tablescreated = true;
         }
     }
 
@@ -169,8 +159,8 @@ class Clip_Import_Batch
                 } else {
                     $nexttid++;
                 }
-                // store the object to save it after figure the pubfields
-                self::$idmap['objs'][$oid] = $obj;
+                // save the pubtype and create the table
+                $obj->save();
                 self::$idmap['tids'][$oid] = $nexttid;
                 break;
 
@@ -196,7 +186,7 @@ class Clip_Import_Batch
                 break;
 
             case 'pubdata':
-                $this->savePubtypes();
+                $this->updateTables();
                 $tid = Clip_Util::getTidFromString($args['section']);
                 if (!isset(self::$idmap['tids'][$tid])) {
                     continue;

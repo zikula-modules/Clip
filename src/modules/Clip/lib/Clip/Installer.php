@@ -47,14 +47,6 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // try to create the Clip directories
         $dirs = self::createDirectories(array('upload', 'models'));
 
-        //  install: default pubtypes and grouptypes
-        Clip_Util::installDefaultypes();
-        $this->createGrouptypesTree();
-
-        // register persistent event listeners (handlers)
-        EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
-        //EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
-
         // modvars
         $modvars = array(
             'uploadpath' => $dirs['upload'],
@@ -64,6 +56,14 @@ class Clip_Installer extends Zikula_AbstractInstaller
             'devmode'    => true
         );
         $this->setVars($modvars);
+
+        //  install: default grouptypes and pubtypes
+        $this->createGrouptypesTree();
+        Clip_Util::installDefaultypes();
+
+        // register persistent event listeners (handlers)
+        EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
+        //EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
 
         return true;
     }
@@ -395,18 +395,18 @@ class Clip_Installer extends Zikula_AbstractInstaller
             if (!file_exists($dir) && mkdir($dir, System::getVar('system.chmod_dir', 0777), true)) {
                 $msg = $this->__f('Clip created the \'%1$s\' directory successfully at [%2$s]. Be sure that this directory is writable by the webserver', array($name, $dir));
                 if ($name == 'upload') {
-                    $msg = ' '.$this->__f('and is accessible via web');
+                    $msg .= ' '.$this->__('and is accessible via web');
                 }
             } elseif (file_exists($dir)) {
                 if (!is_writable($dir)) {
                     $msg = $this->__f('Clip detected that the \'%1$s\' directory is already created at [%2$s] but it\'s not writable. Be sure to correct that', array($name, $dir));
                     if ($name == 'upload') {
-                        $msg = ' '.$this->__f('and that it\'s accessible via web');
+                        $msg .= ' '.$this->__('and that it\'s accessible via web');
                     }
                 } else {
                     $msg = $this->__f('Clip detected that the \'%1$s\' directory is already created at [%2$s]', array($name, $dir));
                     if ($name == 'upload') {
-                        $msg = ' '.$this->__f('Be sure that it\'s accessible via web');
+                        $msg .= ' '.$this->__('Be sure that it\'s accessible via web');
                     }
                 }
             }

@@ -342,7 +342,9 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
         // create the pubtype table
         Clip_Generator::updateModel($pubtype->tid);
-        Doctrine_Core::getTable('ClipModels_Pubdata'.$pubtype->tid)->createTable();
+
+        $classname = Clip_Generator::createTempModel($pubtype->tid);
+        Doctrine_Core::getTable($classname)->createTable();
     }
 
     /**
