@@ -182,7 +182,7 @@
                         <span class="z-sub">{gt text='Has many %s' tag1="</span>`$item.title`"}
                     {/if}
                 </td>
-                <td>{$item.description|safetext}</td>
+                <td>{$item.descr|safetext}</td>
                 <td>{$item.opposite|safetext}</td>
                 <td>
                     {if $item.own}
