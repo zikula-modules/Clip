@@ -11,16 +11,21 @@
 
 class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 {
+    // plugin definition
     public $pluginTitle;
     public $columnDef = 'C(1024)';
     public $upl_arr = array();
-
     public $config = array();
+
+    // Clip data handling
+    public $tid;
+    public $pid;
+    public $field;
 
     public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
-        
+
         //! field type name
         $this->pluginTitle = $this->__('Image Upload');
     }
@@ -35,7 +40,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
      */
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
+        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
 
         parent::readParameters($view, $params);
     }
@@ -45,42 +50,32 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         $this->loadValue($view, $view->get_template_vars());
     }
 
-    public function loadValue($view, $values)
+    public function loadValue(Zikula_Form_View $view, &$values)
     {
-        if ($this->group == null) {
-            if (isset($values[$this->dataField]) && !empty($values[$this->dataField])) {
-                $this->upl_arr = unserialize($values[$this->dataField]);
-            }
-        } else {
-            if (isset($values[$this->group][$this->dataField]) && !empty($values[$this->group][$this->dataField])) {
-                $this->upl_arr = unserialize($values[$this->group][$this->dataField]);
+        if ($this->dataBased) {
+            if (isset($values[$this->group][$this->tid][$this->pid][$this->field])) {
+                if ($values[$this->group][$this->tid][$this->pid][$this->field]) {
+                    $this->upl_arr = unserialize($values[$this->group][$this->tid][$this->pid][$this->field]);
+                }
             }
         }
     }
 
-    public function saveValue(Zikula_Form_View $view, &$pub)
+    public function saveValue(Zikula_Form_View $view, &$data)
     {
         // check for additional checkboxes (delete image, regen thumbnails)
         $checkboxes = array('delete', 'thumbs');
         foreach ($checkboxes as $checkbox) {
-            $cid = $this->dataField.'_'.$checkbox;
-            if ($this->group == null) {
-                $this->result[$checkbox] = isset($pub[$cid]) ? $pub[$cid] : false;
-            } else {
-                $this->result[$checkbox] = isset($pub[$this->group][$cid]) ? $pub[$this->group][$cid] : false;
-            }
+            $cid = $this->id.'_'.$checkbox;
+            $this->result[$checkbox] = isset($data[$cid]) ? $data[$cid] : false;
         }
 
         // store the result in the data array
         if ($this->dataBased) {
-            if ($this->group == null) {
-                $pub[$this->dataField] = $this->result;
-            } else {
-                if (!array_key_exists($this->group, $pub)) {
-                    $pub[$this->group] = array();
-                }
-                $pub[$this->group][$this->dataField] = $this->result;
+            if (!array_key_exists($this->group, $data)) {
+                $data[$this->group] = array($this->tid => array($this->pid => array()));
             }
+            $data[$this->group][$this->tid][$this->pid][$this->field] = $this->result;
         }
     }
 
@@ -94,6 +89,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
     public function renderBegin($view)
     {
+        $view->assign('fieldid', $this->id);
+
         return $this->render($view);
     }
 
@@ -328,17 +325,17 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         $full = "\n".
                 '                <div class="z-formrow">'."\n".
                 '                    {formlabel for=\''.$field['name'].'\' text=$pubfields.'.$field['name'].'.title|clip_translate'.((bool)$field['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                '                    {clip_form_block id=\''.$field['name'].'\' group=\'pubdata\'}'."\n".
+                '                    {clip_form_block field=\''.$field['name'].'\'}'."\n".
                 '                    {if $pubfields.'.$field['name'].'.description|clip_translate}'."\n".
                 '                        <span class="z-formnote z-sub">{$pubfields.'.$field['name'].'.description|clip_translate}</span>'."\n".
                 '                    {/if}'."\n".
-                '                    {if isset($pubdata.id) and $pubobj.'.$field['name'].'.file_name}'."\n".
+                '                    {if $pubdata.id and $pubdata.'.$field['name'].'.file_name}'."\n".
                 '                        <span class="z-formlist clip-edit-suboptions">'."\n".
-                '                            {formcheckbox id=\''.$field['name'].'_delete\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_delete\' __text=\''.$gtdelete.'\'}'."\n".
-                '                            {if $pubdata.'.$field['name'].'.thumbnails}'."\n".
+                '                            {formcheckbox id="`$fieldid`_delete"} {formlabel for="`$fieldid`_delete" __text=\''.$gtdelete.'\'}'."\n".
+                '                            {*if $pubdata.'.$field['name'].'.thumbnails}'."\n".
                 '                            <br />'."\n".
-                '                            {formcheckbox id=\''.$field['name'].'_thumbs\' group=\'pubdata\'} {formlabel for=\''.$field['name'].'_thumbs\' __text=\''.$gtregen.'\'}'."\n".
-                '                            {/if}'."\n".
+                '                            {formcheckbox id="`$fieldid`_thumbs"} {formlabel for="`$fieldid`_thumbs" __text=\''.$gtregen.'\'}'."\n".
+                '                            {/if*}'."\n".
                 '                        </span>'."\n".
                 '                    {/if}'."\n".
                 '                    {/clip_form_block}'."\n".

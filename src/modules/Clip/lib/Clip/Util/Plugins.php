@@ -39,6 +39,7 @@ class Clip_Util_Plugins
             'Float'      => 'Clip_Form_Plugin_Float',
             'Image'      => 'Clip_Form_Plugin_Image',
             'Int'        => 'Clip_Form_Plugin_Int',
+            'Language'   => 'Clip_Form_Plugin_Language',
             'List'       => 'Clip_Form_Plugin_List',
             'Ms'         => 'Clip_Form_Plugin_Ms',
             'MultiCheck' => 'Clip_Form_Plugin_MultiCheck',
@@ -206,5 +207,45 @@ class Clip_Util_Plugins
         }
 
         return $orderby;
+    }
+
+    public static function getCoreFieldData($name, $field = null)
+    {
+        $corefield = array();
+        $corefield['ismandatory'] = false;
+        $corefield['fieldmaxlength'] = null;
+        $corefield['typedata'] = '';
+
+        switch ($name)
+        {
+            case 'core_language':
+                $corefield['fieldplugin'] = 'Language';
+                break;
+
+            case 'core_hitcount':
+                $corefield['fieldplugin'] = 'Int';
+                break;
+
+            case 'core_creator':
+            case 'core_author':
+                $corefield['fieldplugin'] = 'User';
+                break;
+
+            case 'core_publishdate':
+            case 'core_expiredate':
+                $corefield['fieldplugin'] = 'Date';
+                break;
+
+            case 'core_visible':
+            case 'core_locked':
+                $corefield['fieldplugin'] = 'Checkbox';
+                break;
+        }
+
+        if ($field) {
+            return isset($corefield[$field]) ? $corefield[$field] : null;
+        }
+
+        return $corefield;
     }
 }

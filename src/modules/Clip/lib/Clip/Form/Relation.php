@@ -14,12 +14,18 @@
  */
 class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
 {
+    // custom plugin vars
     public $relinfo;
 
     public $numitems;
     public $maxitems;
     public $minchars;
     public $op;
+
+    // Clip data handling
+    public $tid;
+    public $pid;
+    public $field;
 
     /**
      * Get filename for this plugin.
@@ -48,7 +54,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
         if (!is_null($this->relinfo)) {
             // assign existing data
             $this->relinfo['data'] = array();
-            $data = $view->_tpl_vars['pubdata'][$params['id']];
+            $data = $view->_tpl_vars['data'][$params['id']];
             if ($data) {
                 if ($this->relinfo['single']) {
                     $this->relinfo['data'][$data['id']] = $data['core_title'];

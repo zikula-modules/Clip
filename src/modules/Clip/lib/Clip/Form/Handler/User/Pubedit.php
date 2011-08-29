@@ -51,7 +51,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         //// Processing
         // handle the Doctrine_Record data as an array from here
-        $data = $this->pub->clipValues()->toArray();
+        $this->pub->clipValues();
+        $data[$this->tid][$this->id] = $this->pub->clipValues()->toArray();
 
         // process the relations
         $relconfig = $this->pubtype['config']['edit'];
@@ -65,8 +66,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                         // exclude null records
                         if ($v->exists()) {
                             $this->pub[$key][$k]->clipProcess();
-                        } else {
-                            unset($this->pub[$key]);
                         }
                     }
                     $data[$key] = $this->pub[$key]->toArray();
@@ -92,8 +91,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // fills the render
-        $view->assign('pubdata',   $data)
-             ->assign('pubobj',    $this->pub->copy()->clipValues(true))
+        $view->assign('data',      $data)
+             ->assign('pubdata',   $this->pub->copy()->clipValues(true))
              ->assign('pubfields', $this->pubfields->toArray())
              ->assign('relations', $this->relations)
              ->assign('actions',   $actions);
@@ -132,7 +131,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $data = $view->getValues();
 
         // fill the new values
-        $this->getPub($data['pubdata'], $view);
+        $this->getPub($data['data'][$this->tid][$this->id], $view);
 
         // adds any extra data to the item
         if (isset($data['core_extra'])) {
@@ -222,10 +221,10 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     /**
      * Setters and getters.
      */
-    public function ClipSetUp(&$pubdata, &$workflow, $pubtype, $pubfields=null)
+    public function ClipSetUp(&$pubdata, &$workflow, $pubtype, $pubfields = null)
     {
-        $this->id  = $pubdata['id'];
-        $this->tid = $pubtype['tid'];
+        $this->id  = (int)$pubdata['id'];
+        $this->tid = (int)$pubtype['tid'];
 
         $this->workflow = $workflow;
 
@@ -246,17 +245,29 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
     }
 
-    public function getPubfieldData($name, $field=null)
+    public function getPubFieldData($name, $field = null)
     {
-        if (empty($name) || !isset($this->pubfields[$name])) {
+        if (!$name) {
             return false;
         }
 
-        if ($field && isset($this->pubfields[$name][$field])) {
-            return $this->pubfields[$name][$field];
+        if (strpos($name, 'core_') === 0) {
+            return Clip_Util_Plugins::getCoreFieldData($name, $field);
+
+        } elseif (!isset($this->pubfields[$name])) {
+            return false;
+        }
+
+        if ($field) {
+            return isset($this->pubfields[$name][$field]) ? $this->pubfields[$name][$field] : null;
         }
 
         return $this->pubfields[$name];
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     public function getTid()

@@ -18,12 +18,12 @@
 
                 <div class="z-formrow">
                     {formlabel for='title' __text='Title' mandatorysym=true}
-                    {clip_form_genericplugin id='title' group='pubdata'}
+                    {clip_form_plugin field='title' group='pubdata'}
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='category' __text='Category'}
-                    {clip_form_genericplugin id='category' group='pubdata'}
+                    {clip_form_plugin field='category' group='pubdata'}
                 </div>
 
                 <div class="z-formrow">
@@ -33,7 +33,7 @@
 
                 <div class="z-formrow">
                     {formlabel for='content' __text='Content'}
-                    {clip_form_genericplugin id='content' maxLength='65535' rows='25' cols='70' group='pubdata'}
+                    {clip_form_plugin field='content' maxLength='65535' rows='25' cols='70' group='pubdata'}
                 </div>
             </fieldset>
 
@@ -45,7 +45,7 @@
                 <div id="clip_page_settings">
                     <div class="z-formrow">
                         {formlabel for='displayinfo' __text='Display page information'}
-                        {clip_form_genericplugin id='displayinfo' group='pubdata'}
+                        {clip_form_plugin field='displayinfo' group='pubdata'}
                     </div>
 
                     <div class="z-formrow">
@@ -89,7 +89,7 @@
             {/if}
 
             <div class="clip-hooks-edit">
-                {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.form_edit" id=$pubobj.core_uniqueid}
+                {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.form_edit" id=$pubdata.core_uniqueid}
             </div>
 
             <div class="z-buttons z-formbuttons">

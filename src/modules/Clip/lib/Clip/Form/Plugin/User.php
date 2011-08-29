@@ -11,16 +11,22 @@
 
 class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 {
+    // plugin definition
     public $pluginTitle;
     public $columnDef   = 'I4';
     public $filterClass = 'clipuser';
-
     public $config = array();
 
+    // plugin custom vars
     public $numitems;
     public $maxitems;
     public $minchars;
     public $autotip;
+
+    // Clip data handling
+    public $tid;
+    public $pid;
+    public $field;
 
     public function setup()
     {
@@ -36,7 +42,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     }
 
     /**
-     * Form Framework methods.
+     * Form framework overrides.
      */
     public function create($view, &$params)
     {
@@ -49,9 +55,30 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
+        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
 
         parent::readParameters($view, $params);
+    }
+
+    public function loadValue(Zikula_Form_View $view, &$values)
+    {
+        if ($this->dataBased) {
+            if (isset($values[$this->group][$this->tid][$this->pid][$this->field])) {
+                $this->text = $this->formatValue($view, $values[$this->group][$this->tid][$this->pid][$this->field]);
+            }
+        }
+    }
+
+    public function saveValue(Zikula_Form_View $view, &$data)
+    {
+        if ($this->dataBased) {
+            $value = $this->parseValue($view, $this->text);
+
+            if (!array_key_exists($this->group, $data)) {
+                $data[$this->group] = array($this->tid => array($this->pid => array()));
+            }
+            $data[$this->group][$this->tid][$this->pid][$this->field] = $value;
+        }
     }
 
     public function render($view)
@@ -71,7 +98,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
                                                   fetchFile: Zikula.Config.baseURL+\'ajax.php\',
                                                   parameters: {
                                                     module: "Clip",
-                                                    type: "ajaxdata"
+                                                    type: "ajaxdata",
                                                     func: "getusers",
                                                     op: "'.$this->config['operator'].'"
                                                   },
@@ -92,9 +119,12 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
             '</div>
             <ul class="z-auto-feed">
                 ';
-        $data = self::postRead($view->_tpl_vars['pubdata'][$this->id], null);
 
-        foreach ($data as $uid => $uname) {
+        $pubdata = $view->_tpl_vars['data'][$this->tid][$this->pid];
+
+        self::postRead($pubdata, array('name' => $this->field));
+
+        foreach ($pubdata[$this->field] as $uid => $uname) {
             $typeDataHtml .= '<li value="'.$uid.'">'.$uname.'</li>';
         }
         $typeDataHtml .= '
@@ -102,23 +132,6 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         </div>';
 
         return $result . $typeDataHtml;
-    }
-
-
-    public function saveValue($view, &$data)
-    {
-        if ($this->dataBased) {
-            $value = $this->parseValue($view, $this->text);
-
-            if ($this->group == null) {
-                $data[$this->dataField] = $value;
-            } else {
-                if (!array_key_exists($this->group, $data)) {
-                    $data[$this->group] = array();
-                }
-                $data[$this->group][$this->dataField] = $value;
-            }
-        }
     }
 
     /**
@@ -137,12 +150,13 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     public static function postRead(&$pub, $field)
     {
         $fieldname = $field['name'];
-        $data = $pub[$fieldname];
 
         // this plugin return an array
         $uids = array();
 
         // if there's a value index the username(s)
+        $data = $pub[$fieldname];
+
         if (!empty($data)) {
             $data = array_filter(explode(':', $data));
 

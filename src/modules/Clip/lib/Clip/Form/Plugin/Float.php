@@ -11,15 +11,20 @@
 
 class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
 {
+    // plugin definition
     public $pluginTitle;
     public $columnDef = 'F';
-
     public $config = array();
+
+    // Clip data handling
+    public $tid;
+    public $pid;
+    public $field;
 
     public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
-        
+
         //! field type name
         $this->pluginTitle = $this->__('Float');
     }
@@ -30,16 +35,37 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
     }
 
     /**
-     * Form Framework methods.
+     * Form framework overrides.
      */
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
+        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
 
         $params['minValue'] = isset($params['minValue']) ? $params['minValue'] : $this->config['min'];
         $params['maxValue'] = isset($params['maxValue']) ? $params['maxValue'] : $this->config['max'];
 
         parent::readParameters($view, $params);
+    }
+
+    function loadValue(Zikula_Form_View $view, &$values)
+    {
+        if ($this->dataBased) {
+            if (isset($values[$this->group][$this->tid][$this->pid][$this->field])) {
+                $this->text = $this->formatValue($view, $values[$this->group][$this->tid][$this->pid][$this->field]);
+            }
+        }
+    }
+
+    function saveValue(Zikula_Form_View $view, &$data)
+    {
+        if ($this->dataBased) {
+            $value = $this->parseValue($view, $this->text);
+
+            if (!array_key_exists($this->group, $data)) {
+                $data[$this->group] = array($this->tid => array($this->pid => array()));
+            }
+            $data[$this->group][$this->tid][$this->pid][$this->field] = $value;
+        }
     }
 
     /**

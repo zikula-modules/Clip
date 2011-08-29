@@ -11,16 +11,21 @@
 
 class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxList
 {
+    // plugin definition
     public $pluginTitle;
     public $columnDef   = 'C(512)';
     public $filterClass = 'clipmlist';
-
     public $config = array();
+
+    // Clip data handling
+    public $tid;
+    public $pid;
+    public $field;
 
     public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
-        
+
         //! field type name
         $this->pluginTitle = $this->__('MultiCheckbox List');
     }
@@ -31,11 +36,11 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
     }
 
     /**
-     * Form Framework methods.
+     * Form framework overrides.
      */
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
+        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
 
         $params['category'] = isset($params['category']) ? $params['category'] : $this->config['cat'];
         $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config['edit'];
@@ -53,6 +58,39 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         if ($this->mandatory) {
             // CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
             array_shift($this->items);
+        }
+    }
+
+    public function loadValue(Zikula_Form_View $view, &$values)
+    {
+        if ($this->dataBased) {
+            $items = null;
+            $value = null;
+
+            $data = isset($values[$this->group][$this->tid][$this->pid]) ? $values[$this->group][$this->tid][$this->pid] : null;
+
+            if ($data && isset($data[$this->field])) {
+                $value = $data[$this->field];
+            }
+            if ($data && $this->itemsDataField && isset($data[$this->itemsDataField])) {
+                $items = $data[$this->itemsDataField];
+            }
+
+            if ($items !== null) {
+                $this->setItems($items);
+            }
+
+            $this->setSelectedValue($value);
+        }
+    }
+
+    public function saveValue(Zikula_Form_View $view, &$data)
+    {
+        if ($this->dataBased) {
+            if (!array_key_exists($this->group, $data)) {
+                $data[$this->group] = array($this->tid => array($this->pid => array()));
+            }
+            $data[$this->group][$this->tid][$this->pid][$this->field] = $this->getSelectedValue();
         }
     }
 

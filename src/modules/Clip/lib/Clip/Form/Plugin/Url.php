@@ -11,13 +11,19 @@
 
 class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
 {
+    // plugin definition
     public $pluginTitle;
     public $columnDef = 'C(512)';
+
+    // Clip data handling
+    public $tid;
+    public $pid;
+    public $field;
 
     public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
-        
+
         //! field type name
         $this->pluginTitle = $this->__('URL');
     }
@@ -28,14 +34,35 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
     }
 
     /**
-     * Form Framework methods.
+     * Form framework overrides.
      */
     public function readParameters($view, &$params)
     {
         parent::readParameters($view, $params);
 
         $this->maxLength = 2000;
-        $this->cssClass .= ' url';
+        $this->cssClass .= ' z-form-url';
+    }
+
+    public function loadValue(Zikula_Form_View $view, &$values)
+    {
+        if ($this->dataBased) {
+            if (isset($values[$this->group][$this->tid][$this->pid][$this->field])) {
+                $this->text = $this->formatValue($view, $values[$this->group][$this->tid][$this->pid][$this->field]);
+            }
+        }
+    }
+
+    public function saveValue(Zikula_Form_View $view, &$data)
+    {
+        if ($this->dataBased) {
+            $value = $this->parseValue($view, $this->text);
+
+            if (!array_key_exists($this->group, $data)) {
+                $data[$this->group] = array($this->tid => array($this->pid => array()));
+            }
+            $data[$this->group][$this->tid][$this->pid][$this->field] = $value;
+        }
     }
 
     /**

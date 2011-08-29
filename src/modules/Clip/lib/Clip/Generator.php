@@ -230,7 +230,7 @@ class Clip_Generator
                 $code .= "\n".
                         '                <div class="z-formrow">'."\n".
                         '                    {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfields[$name]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
-                        '                    {clip_form_genericplugin id=\''.$name.'\' group=\'pubdata\''.$maxlength.$plugadd.'}'."\n".
+                        '                    {clip_form_plugin field=\''.$name.'\''.$maxlength.$plugadd.'}'."\n".
                         '                    {if $pubfields.'.$name.'.description|clip_translate}'."\n".
                         '                        <span class="z-formnote z-sub">{$pubfields.'.$name.'.description|clip_translate}</span>'."\n".
                         '                    {/if}'."\n".
@@ -591,7 +591,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $where  = $tid ? array(array('tid = ?', $tid)) : '' ;
 
         $pubfields = Doctrine_Core::getTable('Clip_Model_Pubfield')
-                     ->selectCollection($where, 'tid ASC, id ASC');
+                     ->selectCollection($where, 'tid ASC, lineno ASC');
 
         if ($pubfields === false) {
             return LogUtil::registerError('Error! Failed to load the pubfields.');

@@ -11,11 +11,16 @@
 
 class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
 {
+    // plugin definition
     public $pluginTitle;
     public $columnDef   = 'I4';
     public $filterClass = 'cliplist';
-
     public $config = array();
+
+    // Clip data handling
+    public $tid;
+    public $pid;
+    public $field;
 
     public function setup()
     {
@@ -31,7 +36,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     }
 
     /**
-     * Form Framework methods.
+     * Form framework overrides.
      */
     public function pluginRegister(&$params, &$view)
     {
@@ -50,7 +55,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
 
     public function readParameters($view, &$params)
     {
-        $this->parseConfig($view->eventHandler->getPubfieldData($params['id'], 'typedata'));
+        $this->parseConfig($view->eventHandler->getPubFieldData($params['field'], 'typedata'));
 
         $params['category'] = isset($params['category']) ? $params['category'] : $this->config['cat'];
         $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config['edit'];
@@ -69,6 +74,39 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         }
     }
 
+    public function loadValue(Zikula_Form_View $view, &$values)
+    {
+        if ($this->dataBased) {
+            $items = null;
+            $value = null;
+
+            $data = isset($values[$this->group][$this->tid][$this->pid]) ? $values[$this->group][$this->tid][$this->pid] : null;
+
+            if ($data && isset($data[$this->field])) {
+                $value = $data[$this->field];
+            }
+            if ($data && $this->itemsDataField && isset($data[$this->itemsDataField])) {
+                $items = $data[$this->itemsDataField];
+            }
+
+            if ($items !== null) {
+                $this->setItems($items);
+            }
+
+            $this->setSelectedValue($value);
+        }
+    }
+
+    public function saveValue(Zikula_Form_View $view, &$data)
+    {
+        if ($this->dataBased) {
+            if (!array_key_exists($this->group, $data)) {
+                $data[$this->group] = array($this->tid => array($this->pid => array()));
+            }
+            $data[$this->group][$this->tid][$this->pid][$this->field] = $this->getSelectedValue();
+        }
+    }
+
     public function renderRadioList(&$view, $params)
     {
         $id = $params['id'];
@@ -79,12 +117,12 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         foreach ($this->items as $item) {
             $output .= '<div class="z-formlist">'."\n";
 
-            $params['id']        = 'clip_radio_'.$id.$item['value'];
+            $params['id']        = 'radio_'.$id.$item['value'];
             $params['dataField'] = $id;
             $params['groupName'] = $this->inputName;
             $params['value']     = $item['value'];
 
-            $output .= $view->registerPlugin('Zikula_Form_Plugin_RadioButton', $params);
+            $output .= $view->registerPlugin('Clip_Form_Plugin_RadioButton', $params);
 
             $args = array(
                 'for'  => $params['id'],
@@ -149,7 +187,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         $full = '        <div class="z-formrow">'."\n".
                 '            <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
                 '            {if $pubdata.'.$field['name'].'.id}'."\n".
-                '                <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}<span>'."\n".
+                '                <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}</span>'."\n".
                 '            {/if}'."\n".
                 '            <pre class="z-formnote">{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
                 '        </div>';

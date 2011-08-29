@@ -15,24 +15,24 @@
             {formvalidationsummary}
             <fieldset class="z-linear">
                 <div class="z-formrow">
-                    {clip_form_genericplugin id='title' cssClass='z-form-text-big' group='pubdata'}
+                    {clip_form_plugin field='title' cssClass='z-form-text-big' group='pubdata'}
                     <span class="z-formnote z-sub">{gt text='Enter title here'}</span>
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='content' __text='Content'}
-                    {clip_form_genericplugin id='content' maxLength='65535' rows='25' cols='70' group='pubdata'}
+                    {clip_form_plugin field='content' maxLength='65535' rows='25' cols='70' group='pubdata'}
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='summary' __text='Summary'}
-                    {clip_form_genericplugin id='summary' maxLength='65535' rows='4' cols='70' group='pubdata'}
+                    {clip_form_plugin field='summary' maxLength='65535' rows='4' cols='70' group='pubdata'}
                     <span class="z-formnote z-sub">{gt text='Optional hand-crafted summary of your content that can be used in your templates.'}</span>
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='category' __text='Category'}
-                    {clip_form_genericplugin id='category' group='pubdata'}
+                    {clip_form_plugin field='category' group='pubdata'}
                 </div>
             </fieldset>
 
@@ -84,7 +84,7 @@
             </fieldset>
 
             <div class="clip-hooks-edit">
-                {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.form_edit" id=$pubobj.core_uniqueid}
+                {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.form_edit" id=$pubdata.core_uniqueid}
             </div>
 
             <div class="z-buttons z-formbuttons">

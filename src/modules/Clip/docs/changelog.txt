@@ -29,7 +29,7 @@
         pmarray                 clip_array
         pmformplugintype        clip_form_plugintype
         category_browser        clip_category_browser
-        genericformplugin       clip_form_genericplugin
+        genericformplugin       clip_form_plugin
         get_workflow_state      clip_getstate
         hitcount                clip_hitcount
         multilistdecode         clip_multilistdecode

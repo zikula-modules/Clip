@@ -38,36 +38,36 @@
 
                 <div class="z-formrow">
                     {formlabel for='core_language' __text='Language'}
-                    {formlanguageselector id='core_language' group='pubdata' mandatory=false}
+                    {clip_form_plugin field='core_language' mandatory=false}
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='core_publishdate' __text='Publish date'}
-                    {formdateinput id='core_publishdate' group='pubdata' includeTime=true}
+                    {clip_form_plugin field='core_publishdate' includeTime=true}
                     <em class="z-formnote z-sub">{gt text='Leave blank if you do not want to schedule the publication'}</em>
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='core_expiredate' __text='Expire date'}
-                    {formdateinput id='core_expiredate' group='pubdata' includeTime=true}
+                    {clip_form_plugin field='core_expiredate' includeTime=true}
                     <em class="z-formnote z-sub">{gt text='Leave blank if you do not want the plublication expires'}</em>
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='core_visible' __text='Visible'}
-                    {formcheckbox id='core_visible' group='pubdata' checked='checked'}
+                    {clip_form_plugin field='core_visible'}
                     <em class="z-formnote z-sub">{gt text='If not visible, will be excluded from lists and search results'}</em>
                 </div>
 
                 <div class="z-formrow">
                     {formlabel for='core_locked' __text='Locked'}
-                    {formcheckbox id='core_locked' group='pubdata' checked='checked'}
+                    {clip_form_plugin field='core_locked'}
                     <em class="z-formnote z-sub">{gt text='If enabled, the publication will be closed for changes'}</em>
                 </div>
             </fieldset>
 
             <div class="clip-hooks-edit">
-                {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.form_edit" id=$pubobj.core_uniqueid}
+                {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.form_edit" id=$pubdata.core_uniqueid}
             </div>
 
             <div class="z-buttons z-formbuttons">
