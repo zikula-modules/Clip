@@ -38,7 +38,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     /**
      * Form framework overrides.
      */
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
 

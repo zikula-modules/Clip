@@ -37,7 +37,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
     /**
      * Form framework overrides.
      */
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
 

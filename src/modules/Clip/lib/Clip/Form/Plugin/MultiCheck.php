@@ -38,7 +38,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
     /**
      * Form framework overrides.
      */
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
 
@@ -51,7 +51,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         $this->saveAsString = 1;
     }
 
-    public function load($view, &$params)
+    public function load(Zikula_Form_View $view, &$params)
     {
         parent::load($view, $params);
 

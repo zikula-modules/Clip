@@ -38,14 +38,14 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     /**
      * Form Framework methods.
      */
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
 
         parent::readParameters($view, $params);
     }
 
-    public function load($view, &$params)
+    public function load(Zikula_Form_View $view, &$params)
     {
         $this->loadValue($view, $view->get_template_vars());
     }
@@ -79,7 +79,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         }
     }
 
-    public function render($view)
+    public function render(Zikula_Form_View $view)
     {
         $input_html = parent::render($view);
         $note_html  = $this->upl_arr && $this->upl_arr['orig_name'] ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
@@ -87,19 +87,19 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         return $input_html.$note_html;
     }
 
-    public function renderBegin($view)
+    public function renderBegin(Zikula_Form_View $view)
     {
         $view->assign('fieldid', $this->id);
 
         return $this->render($view);
     }
 
-    public function renderContent($view, $content)
+    public function renderContent(Zikula_Form_View $view, $content)
     {
         return $content;
     }
 
-    public function renderEnd($view)
+    public function renderEnd(Zikula_Form_View $view)
     {
         return '';
     }
@@ -130,7 +130,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         // default
         $upl_arr = array(
                        'orig_name'    => '',
-                       'full_name'    => '',
+                       'file_name'    => '',
                        'preUrl'       => '',
                        'fullUrl'      => '',
                        'thumbnailUrl' => '',

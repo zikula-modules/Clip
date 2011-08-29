@@ -405,7 +405,7 @@ class Clip_Util
         }
 
         if (strpos($name, 'core_') === 0) {
-            return Clip_Util_Plugins::getCoreFieldData($name, $field);
+            return Clip_Util_Plugins::getCoreFieldData($name, $property);
         }
 
         $pubfield = self::getPubFields($tid, $name);

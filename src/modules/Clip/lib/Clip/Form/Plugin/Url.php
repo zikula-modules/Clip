@@ -36,7 +36,7 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
     /**
      * Form framework overrides.
      */
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         parent::readParameters($view, $params);
 
@@ -69,7 +69,7 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
      * Overrides the validation check to allow
      * {modname:func&param=value:type}
      */
-    public function validate($view)
+    public function validate(Zikula_Form_View $view)
     {
         parent::validate($view);
 

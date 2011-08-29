@@ -38,6 +38,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 
     // build the output
     $args = array('func' => 'pubtypeinfo', 'args' => array('tid' => $tid));
+    $func = FormUtil::getPassedValue('func', 'main');
 
     $output  = '<div id="clip-adminmenu" class="z-menu"><span class="z-menuitem-title">';
     $output .= '<span>';
@@ -47,8 +48,6 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
         $output .= $view->__('Info');
     }
     $output .= '</span> | ';
-
-    $func = FormUtil::getPassedValue('func', 'main');
 
     // pubtype form link
     $args['func'] = 'pubtype';

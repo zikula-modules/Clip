@@ -53,7 +53,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         return $this->renderRadioList($view, $params);
     }
 
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
 
@@ -64,7 +64,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         parent::readParameters($view, $params);
     }
 
-    public function load($view, &$params)
+    public function load(Zikula_Form_View $view, &$params)
     {
         parent::load($view, $params);
 
@@ -179,7 +179,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     {
         $this->parseConfig($typedata);
 
-        return $this->config[0];
+        return $this->config['cat'];
     }
 
     public static function getOutputDisplay($field)

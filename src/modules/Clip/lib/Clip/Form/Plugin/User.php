@@ -44,7 +44,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     /**
      * Form framework overrides.
      */
-    public function create($view, &$params)
+    public function create(Zikula_Form_View $view, &$params)
     {
         parent::create($view, $params);
 
@@ -53,7 +53,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $this->minchars = (isset($params['minchars']) && is_int($params['minchars'])) ? abs($params['minchars']) : 3;
     }
 
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
 
@@ -79,7 +79,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         }
     }
 
-    public function render($view)
+    public function render(Zikula_Form_View $view)
     {
         $this->textMode = 'hidden';
 

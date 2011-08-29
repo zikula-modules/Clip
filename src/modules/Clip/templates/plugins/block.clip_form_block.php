@@ -54,6 +54,9 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
         $params['maxLength'] = $field['fieldmaxlength'];
     }
 
+    // setup the main field configuration
+    $params['fieldconfig'] = $field['typedata'];
+
     $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
     if (method_exists($plugin, 'blockRegister')) {

@@ -56,13 +56,13 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
         // setup the main class
         $pluginclass = $field['fieldplugin'];
         // setup the main field configuration
-        $params['pluginconfig'] = $field['typedata'];
+        $params['fieldconfig'] = $field['typedata'];
     } else {
         // override the main class
         $pluginclass = $params['pluginclass'];
         unset($params['pluginclass']);
         // be sure there's a config specified or reset to empty
-        $params['pluginconfig'] = isset($params['pluginconfig']) ? $params['pluginconfig'] : '';
+        $params['fieldconfig'] = isset($params['fieldconfig']) ? $params['fieldconfig'] : '';
     }
 
     $plugin = Clip_Util_Plugins::get($pluginclass);

@@ -38,12 +38,12 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     /**
      * Form Framework methods.
      */
-    public function load($view, &$params)
+    public function load(Zikula_Form_View $view, &$params)
     {
         $this->loadValue($view, $view->get_template_vars());
     }
 
-    public function loadValue($view, &$values)
+    public function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
             if (isset($values[$this->group][$this->tid][$this->pid][$this->field])) {
@@ -72,7 +72,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         }
     }
 
-    public function render($view)
+    public function render(Zikula_Form_View $view)
     {
         $input_html = parent::render($view);
         $note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';

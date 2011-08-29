@@ -37,7 +37,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     /**
      * Form framework overrides.
      */
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
 
@@ -65,7 +65,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
         }
     }
 
-    public function render($view)
+    public function render(Zikula_Form_View $view)
     {
         $this->textMode = 'multiline';
 

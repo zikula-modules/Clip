@@ -16,7 +16,7 @@ class Clip_Form_Pubtype extends Zikula_Form_Plugin_DropdownList
         return __FILE__;
     }
 
-    public function load($view, &$params)
+    public function load(Zikula_Form_View $view, &$params)
     {
         $this->addItem('', 0);
 

@@ -38,7 +38,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
     /**
      * Form framework overrides.
      */
-    public function readParameters($view, &$params)
+    public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
 
@@ -52,7 +52,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
         $this->selectionMode = 'multiple';
     }
 
-    public function load($view, &$params)
+    public function load(Zikula_Form_View $view, &$params)
     {
         parent::load($view, $params);
 
