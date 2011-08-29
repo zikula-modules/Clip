@@ -51,7 +51,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         //// Processing
         // handle the Doctrine_Record data as an array from here
-        $this->pub->clipValues();
         $data[$this->tid][$this->id] = $this->pub->clipValues()->toArray();
 
         // process the relations
@@ -90,9 +89,16 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             }
         }
 
+        // clone the pub to assign the pubdata and do not modify the pub data
+        $pubdata = $this->pub->copy(true);
+        if ($this->id) {
+            $pubdata->assignIdentifier($this->id);
+        }
+        $pubdata->clipValues(true);
+
         // fills the render
         $view->assign('data',      $data)
-             ->assign('pubdata',   $this->pub->copy()->clipValues(true))
+             ->assign('pubdata',   $pubdata)
              ->assign('pubfields', $this->pubfields)
              ->assign('relations', $this->relations)
              ->assign('actions',   $actions);
