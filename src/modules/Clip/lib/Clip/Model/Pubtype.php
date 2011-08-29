@@ -336,7 +336,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
         // register hook bundles
         $pubtype = $event->getInvoker();
-        $this->registerHookBundles($clipVersion, $pubtype['tid'], $pubtype['title']);
+        $this->registerHookBundles($clipVersion, $pubtype->tid, $pubtype->title);
 
         HookUtil::registerSubscriberBundles($clipVersion->getHookSubscriberBundles());
 
@@ -375,7 +375,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         Clip_Util::getPubFields($this->tid)->delete();
 
         // delete any relation
-        $where = array("tid1 = '{$pubtype['tid']}' OR tid2 = '{$pubtype['tid']}'");
+        $where = array("tid1 = '{$pubtype->tid}' OR tid2 = '{$pubtype->tid}'");
         Doctrine_Core::getTable('Clip_Model_Pubrelation')->deleteWhere($where);
 
         // delete the data table
@@ -385,12 +385,12 @@ class Clip_Model_Pubtype extends Doctrine_Record
         Clip_Generator::deleteModel($pubtype->tid);
 
         // delete workflows
-        DBUtil::deleteWhere('workflows', "module = 'Clip' AND obj_table = 'clip_pubdata{$pubtype['tid']}'");
+        DBUtil::deleteWhere('workflows', "module = 'Clip' AND obj_table = 'clip_pubdata{$pubtype->tid}'");
 
         $clipVersion = new Clip_Version_Hooks();
 
         // unregister hook bundles
-        $pubtype->registerHookBundles($clipVersion, $pubtype['tid'], $pubtype['title']);
+        $pubtype->registerHookBundles($clipVersion, $pubtype->tid, $pubtype->title);
 
         HookUtil::unregisterSubscriberBundles($clipVersion);
     }

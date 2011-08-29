@@ -581,12 +581,6 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 
     public static function addtables($tid = false)
     {
-        $modinfo = ModUtil::getInfoFromName('Clip');
-
-        if ($modinfo['state'] == ModUtil::STATE_UNINITIALISED && !$force) {
-            return;
-        }
-
         $tables = array();
         $where  = $tid ? array(array('tid = ?', $tid)) : '' ;
 

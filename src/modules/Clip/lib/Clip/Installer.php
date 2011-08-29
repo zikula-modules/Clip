@@ -57,6 +57,9 @@ class Clip_Installer extends Zikula_AbstractInstaller
         );
         $this->setVars($modvars);
 
+        // register the ClipModels in the created path
+        ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
+
         //  install: default grouptypes and pubtypes
         $this->createGrouptypesTree();
         Clip_Util::installDefaultypes();
@@ -161,11 +164,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
     public function uninstall()
     {
         // drop pubtype tables
-        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->findAll();
 
-        foreach ($pubtypes as $tid) {
-            $table = "ClipModels_Pubdata$tid";
-            if (!Doctrine_Core::getTable($table)->dropTable()) {
+        foreach ($pubtypes as $pubtype) {
+            if (!$pubtype->delete()) {
                 return false;
             }
         }
