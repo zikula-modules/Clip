@@ -53,15 +53,18 @@ Element.addMethods({
   },
 
   cacheData: function(element, key, value) {
-    if (Object.isUndefined(this[$(element).identify()]) || !Object.isHash(this[$(element).identify()])) {
-      this[$(element).identify()] = $H();
+    if (Object.isUndefined(this['zkautocompleter'])) {
+        this['zkautocompleter'] = {};
     }
-    this[$(element).identify()].set(key, value);
+    if (Object.isUndefined(this['zkautocompleter'][$(element).identify()]) || !Object.isHash(this['zkautocompleter'][$(element).identify()])) {
+      this['zkautocompleter'][$(element).identify()] = $H();
+    }
+    this['zkautocompleter'][$(element).identify()].set(key, value);
     return element;
   },
 
   retrieveData: function(element, key) {
-    return this[$(element).identify()].get(key);
+    return this['zkautocompleter'][$(element).identify()].get(key);
   }
 });
 
@@ -79,8 +82,8 @@ var ResizableTextbox = Class.create(
     var that = this;
     this.el = $(element);
     this.width = this.el.offsetWidth;
-    this.el.observe(
-      'keyup', function() {
+    this.el
+      .observe('keyup', function() {
         var newsize = that.options.get('step') * $F(this).length;
         if (newsize <= that.options.get('min')) {
           newsize = that.width;
@@ -88,10 +91,10 @@ var ResizableTextbox = Class.create(
         if (!($F(this).length == this.retrieveData('rt-value') || newsize <= that.options.min || newsize >= that.options.max)) {
           this.setStyle({'width': newsize});
         }
-      }).observe('keydown', function() {
+      })
+      .observe('keydown', function() {
         this.cacheData('rt-value', $F(this).length);
-      }
-    );
+      });
   }
 });
 
@@ -535,6 +538,7 @@ var FacebookList = Class.create(TextboxList,
                 method: this.options.get('fetchMethod'),
                 parameters: params,
                 onComplete: function(response) {
+                  Zikula.Autocompleter.Indicator().remove();
                   var data = response.getData();
                   data.each(function(t){this.autoFeed(t)}.bind(this));
                   this.autoShow(input.value);
