@@ -13,7 +13,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 {
     // plugin definition
     public $pluginTitle;
-    public $columnDef   = 'I4';
+    public $columnDef   = 'C(255)';
     public $filterClass = 'clipuser';
     public $config = array();
 
@@ -72,12 +72,10 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     public function saveValue(Zikula_Form_View $view, &$data)
     {
         if ($this->dataBased) {
-            $value = $this->parseValue($view, $this->text);
-
             if (!array_key_exists($this->group, $data)) {
                 $data[$this->group] = array($this->tid => array($this->pid => array()));
             }
-            $data[$this->group][$this->tid][$this->pid][$this->field] = $value;
+            $data[$this->group][$this->tid][$this->pid][$this->field] = ":{$this->text}:";
         }
     }
 
