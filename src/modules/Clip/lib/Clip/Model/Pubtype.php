@@ -392,6 +392,6 @@ class Clip_Model_Pubtype extends Doctrine_Record
         // unregister hook bundles
         $pubtype->registerHookBundles($clipVersion, $pubtype->tid, $pubtype->title);
 
-        HookUtil::unregisterSubscriberBundles($clipVersion);
+        HookUtil::unregisterSubscriberBundles($clipVersion->getHookSubscriberBundles());
     }
 }
