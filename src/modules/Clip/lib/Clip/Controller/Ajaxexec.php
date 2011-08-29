@@ -42,6 +42,9 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
             }
         }
 
+        // update the model with the sorted fields
+        Clip_Generator::updateModel($tid);
+
         return array('result' => true);
     }
 
