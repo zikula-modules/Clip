@@ -297,15 +297,12 @@ class Clip_Api_User extends Zikula_AbstractApi
             'rel'           => isset($args['rel']) ? $args['rel'] : null
         );
 
-        //// Misc values
-        $pubtype = Clip_Util::getPubType($args['tid']);
-
-        $tableObj = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid']);
-
         //// Query setup
         $args['queryalias'] = "pub_{$args['tid']}_"
                               .($args['pid'] ? $args['pid'] : '')
                               .($args['id'] ? '_'.$args['id'] : '');
+
+        $tableObj = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid']);
 
         $query = $tableObj->createQuery($args['queryalias']);
 
@@ -375,9 +372,8 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Saves a new or existing publication.
      *
-     * @param array               $args['data']        Publication data.
-     * @param string              $args['commandName'] Command name has to be a valid workflow action for the currenct state.
-     * @param Doctrine_Collection $args['pubfields']   Collection of pubfields (optional).
+     * @param array  $args['data']        Publication data.
+     * @param string $args['commandName'] Command name has to be a valid workflow action for the currenct state.
      *
      * @return boolean True on success, false otherwise.
      */

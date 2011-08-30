@@ -148,7 +148,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $data = ModUtil::apiFunc('Clip', 'user', 'edit',
                                  array('data'        => $this->pub,
                                        'commandName' => $args['commandName'],
-                                       'pubfields'   => $this->pubfields,
                                        'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
 
         // detect a workflow operation fail
@@ -237,17 +236,13 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $this->setPub($pubdata);
 
         // pubtype
-        if ($pubtype) {
-            $this->pubtype = $pubtype;
-        } else {
-            $this->pubtype = Clip_Util::getPubType($tid);
-        }
+        $this->pubtype = $pubtype;
 
         // pubfields
         if ($pubfields) {
             $this->pubfields = $pubfields;
         } else {
-            $this->pubfields = Clip_Util::getPubFields($tid)->toArray();
+            $this->pubfields = Clip_Util::getPubFields($this->tid)->toArray();
         }
     }
 
