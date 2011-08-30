@@ -58,7 +58,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $this->setVars($modvars);
 
         // register the ClipModels in the created path
-        ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
+        ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left($dirs['models'], -11)));
 
         //  install: default grouptypes and pubtypes
         $this->createGrouptypesTree();
