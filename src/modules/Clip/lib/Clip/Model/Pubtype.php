@@ -143,23 +143,6 @@ class Clip_Model_Pubtype extends Doctrine_Record
         Doctrine_Core::getTable($classname)->changeTable(true);
     }
 
-    private function toKeyValueArray($key, $field = null)
-    {
-        if (!$field) {
-            return $this->$key;
-        }
-
-        $result = array();
-        foreach ($this->$key as $k => $v) {
-            if (!isset($v[$field])) {
-                throw new Exception('Invalid field requested to Pubtype->getRelations().');
-            }
-            $result[$k] = $v[$field];
-        }
-
-        return $result;
-    }
-
     public function getFields()
     {
         return $this->tid ? Clip_Util::getPubFields($this->tid) : array();
@@ -167,55 +150,9 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
     public function getRelations($onlyown = true, $field = null)
     {
-        // TODO listen (own/all)relations get attempt
-        $key = ($onlyown ? 'own' : 'all').'relations';
-
-        if ($this->hasMappedValue($key)) {
-            return $this->toKeyValueArray($key, $field);
-        }
-
-        $relations = array();
-
-        // load own
-        $records = Clip_Util::getRelations($this->tid, true);
-        foreach ($records as $relation) {
-            $relations[$relation['alias1']] = array(
-                'id'       => $relation['id'],
-                'tid'      => $relation['tid2'],
-                'type'     => $relation['type'],
-                'alias'    => $relation['alias1'],
-                'title'    => $relation['title1'],
-                'descr'    => $relation['descr1'],
-                'opposite' => $relation['alias2'],
-                'single'   => $relation['type']%2 == 0 ? true : false,
-                'own'      => true
-            );
-        }
-
-        if (!$onlyown) {
-            // load foreign
-            $records = Clip_Util::getRelations($this->tid, false);
-
-            foreach ($records as $relation) {
-                if (!isset($relations[$relation['alias2']])) {
-                    $relations[$relation['alias2']] = array(
-                        'id'       => $relation['id'],
-                        'tid'      => $relation['tid1'],
-                        'type'     => $relation['type'],
-                        'alias'    => $relation['alias2'],
-                        'title'    => $relation['title2'],
-                        'descr'    => $relation['descr2'],
-                        'opposite' => $relation['alias1'],
-                        'single'   => $relation['type'] <= 1 ? true : false,
-                        'own'      => false
-                    );
-                }
-            }
-        }
-
-        $this->mapValue($key, $relations);
-
-        return $this->toKeyValueArray($key, $field);
+        return Doctrine_Core::getTable('ClipModels_Pubdata'.$this->tid)
+                   ->getRecord()
+                   ->clipRelations($onlyown, $field);
     }
 
     public function defaultConfig($config)

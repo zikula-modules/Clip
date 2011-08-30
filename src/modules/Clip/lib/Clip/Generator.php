@@ -271,8 +271,11 @@ class Clip_Generator
 
         // relations
         $hasRelations = '';
+        $ownRelations = '';
+        $allRelations = '';
+
         // owning side
-        $relations = Clip_Util::getRelations($tid);
+        $relations = Clip_Util::getRelations($tid, true);
         foreach ($relations as $relation) {
             // set the method to use
             switch ($relation['type']) {
@@ -322,12 +325,29 @@ class Clip_Generator
                 $relArgs = str_replace(",\n)", "\n)", $relArgs);
                 $relArgs = str_replace("\n", "\n            ", $relArgs);
                 $relArgs = str_replace("\n            )", "\n        )", $relArgs);
+
                 // add the code line
                 $hasRelations .= "
         \$this->$method('$relDefinition', $relArgs);
         ";
+
+                // add the relation array field
+                $ownRelations .= "
+        \$relations['".str_replace("'", "\'", $relation['alias1'])."'] = array(
+            'id'       => {$relation['id']},
+            'tid'      => {$relation['tid2']},
+            'type'     => {$relation['type']},
+            'alias'    => '".str_replace("'", "\'", $relation['alias1'])."',
+            'title'    => '".str_replace("'", "\'", $relation['title1'])."',
+            'descr'    => '".str_replace("'", "\'", $relation['descr1'])."',
+            'opposite' => '".str_replace("'", "\'", $relation['alias2'])."',
+            'single'   => ".($relation['type']%2 == 0 ? 'true' : 'false').",
+            'own'      => true
+        );
+";
             }
         }
+
         // owned side
         $relations = Clip_Util::getRelations($tid, false);
         foreach ($relations as $relation) {
@@ -379,10 +399,26 @@ class Clip_Generator
                 $relArgs = str_replace(",\n)", "\n)", $relArgs);
                 $relArgs = str_replace("\n", "\n            ", $relArgs);
                 $relArgs = str_replace("\n            )", "\n        )", $relArgs);
+
                 // add the code line
                 $hasRelations .= "
         \$this->$method('$relDefinition', $relArgs);
         ";
+
+                // add the relation array field
+                $allRelations .= "
+            \$relations['".str_replace("'", "\'", $relation['alias2'])."'] = array(
+                'id'       => {$relation['id']},
+                'tid'      => {$relation['tid1']},
+                'type'     => {$relation['type']},
+                'alias'    => '".str_replace("'", "\'", $relation['alias2'])."',
+                'title'    => '".str_replace("'", "\'", $relation['title2'])."',
+                'descr'    => '".str_replace("'", "\'", $relation['descr2'])."',
+                'opposite' => '".str_replace("'", "\'", $relation['alias1'])."',
+                'single'   => ".($relation['type'] <= 1 ? 'true' : 'false').",
+                'own'      => false
+            );
+";
             }
         }
 
@@ -465,6 +501,44 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
     {
         \$this->actAs('Zikula_Doctrine_Template_StandardFields');
         $hasRelations
+    }
+
+    /**
+     * Returns the record relations as an indexed array.
+     *
+     * @param boolean \$onlyown Retrieves owning relations only (default: false).
+     * @param strung  \$field   Retrieve a KeyValue array as alias => \$field (default: null).
+     *
+     * @return array List of available relations.
+     */
+    public function getRelations(\$onlyown = true, \$field = null)
+    {
+        \$relations = array();
+
+        // own relations
+        $ownRelations
+
+        if (!\$onlyown) {
+            // foreign relations
+            $allRelations
+        }
+
+        // return here if no relations or no specific field requested
+        if (!\$relations || !\$field) {
+            return \$relations;
+        }
+
+        \$v = reset(\$relations);
+        if (!isset(\$v[\$field])) {
+            throw new Exception(\"Invalid field [\$field] requested for the property [\$key] on \".get_class().\"->clipRelations\");
+        }
+
+        \$result = array();
+        foreach (\$relations as \$k => \$v) {
+            \$result[\$k] = \$v[\$field];
+        }
+
+        return \$result;
     }
 }
 ";

@@ -241,6 +241,35 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Returns an array of a publication property field.
+     *
+     * @param string $key   Name of the property to retrieve.
+     * @param string $field Field to retrieve (optional).
+     *
+     * @return mixed Array with the requested field or the property if not specified.
+     */
+    public function toKeyValueArray($key, $field = null)
+    {
+        if (!$this->contains($key)) {
+            throw new Exception("Invalid property [$key] requested on ".get_class()."->toKeyValueArray");
+        }
+
+        if (!$field) {
+            return $this->$key;
+        }
+
+        $result = array();
+        foreach ($this->$key as $k => $v) {
+            if (!isset($v[$field])) {
+                throw new Exception("Invalid field [$field] requested for the property [$key] on ".get_class()."->toKeyValueArray");
+            }
+            $result[$k] = $v[$field];
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns the parents for breadcrumbs.
      *
      * @return array List of parents.
@@ -261,22 +290,6 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         }
 
         return array_reverse($parents);
-    }
-
-    /**
-     * Returns the record relations as an indexed array.
-     *
-     * @param boolean $onlyown Retrieves owning relations only (default: false).
-     * @param strung  $field   Retrieve a KeyValue array as alias => $field (default: null).
-     *
-     * @return array List of available relations.
-     */
-    public function getRelations($onlyown = true, $field = null)
-    {
-        $tablename = $this->_table->getInternalTableName();
-        $tid = Clip_Util::getTidFromString($tablename);
-
-        return Clip_Util::getPubType($tid)->getRelations($onlyown, $field);
     }
 
     /**
