@@ -16,6 +16,7 @@ class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
     public $columnDef = 'L';
 
     // Clip data handling
+    public $alias;
     public $tid;
     public $pid;
     public $field;
@@ -39,8 +40,8 @@ class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
     function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
-            if (isset($values[$this->group][$this->tid][$this->pid][$this->field])) {
-                $this->checked = $values[$this->group][$this->tid][$this->pid][$this->field];
+            if (isset($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field])) {
+                $this->checked = $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field];
             }
         }
     }
@@ -49,9 +50,9 @@ class Clip_Form_Plugin_Checkbox extends Zikula_Form_Plugin_Checkbox
     {
         if ($this->dataBased) {
             if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->tid => array($this->pid => array()));
+                $data[$this->group] = array($this->alias => array($this->tid => array($this->pid => array())));
             }
-            $data[$this->group][$this->tid][$this->pid][$this->field] = $this->checked;
+            $data[$this->group][$this->alias][$this->tid][$this->pid][$this->field] = $this->checked;
         }
     }
 

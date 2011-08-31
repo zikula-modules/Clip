@@ -137,7 +137,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $data = $view->getValues();
 
         // fill the new values
-        $this->getPub($data['data'][$this->tid][$this->id], $view);
+        $this->getPub($data['data']['clipmain'][$this->tid][$this->id], $view);
 
         // adds any extra data to the item
         if (isset($data['core_extra'])) {

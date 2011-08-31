@@ -19,15 +19,16 @@
  */
 function smarty_function_clip_form_relation($params, Zikula_Form_View &$render)
 {
-    if (!isset($params['alias']) || !$params['alias']) {
-        return LogUtil::registerError($render->__f('Error! Missing argument [%s].', 'alias'));
+    if (!isset($params['field']) || !$params['field']) {
+        return LogUtil::registerError($render->__f('Error! Missing argument [%s].', 'field'));
     }
 
-    $params['tid'] = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->eventHandler->getTid();
-    $params['pid'] = isset($params['pid']) && $params['pid'] ? $params['pid'] : (int)$render->eventHandler->getId();
+    $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : 'clipmain';
+    $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->eventHandler->getTid();
+    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : (int)$render->eventHandler->getId();
 
     // form framework parameters adjustment
-    $params['id'] = "cliprel{$params['tid']}_{$params['pid']}_{$params['alias']}";
+    $params['id'] = "cliprel_{$params['alias']}_{$params['tid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'data';
 
     $classname = isset($params['classname']) && class_exists($params['classname']) ? $params['classname'] : 'Clip_Form_Relation';

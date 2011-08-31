@@ -18,6 +18,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     public $config = array();
 
     // Clip data handling
+    public $alias;
     public $tid;
     public $pid;
     public $field;
@@ -80,7 +81,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
             $items = null;
             $value = null;
 
-            $data = isset($values[$this->group][$this->tid][$this->pid]) ? $values[$this->group][$this->tid][$this->pid] : null;
+            $data = isset($values[$this->group][$this->alias][$this->tid][$this->pid]) ? $values[$this->group][$this->alias][$this->tid][$this->pid] : null;
 
             if ($data && isset($data[$this->field])) {
                 $value = $data[$this->field];
@@ -101,9 +102,9 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     {
         if ($this->dataBased) {
             if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->tid => array($this->pid => array()));
+                $data[$this->group] = array($this->alias => array($this->tid => array($this->pid => array())));
             }
-            $data[$this->group][$this->tid][$this->pid][$this->field] = $this->getSelectedValue();
+            $data[$this->group][$this->alias][$this->tid][$this->pid][$this->field] = $this->getSelectedValue();
         }
     }
 

@@ -152,7 +152,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
     {
         return Doctrine_Core::getTable('ClipModels_Pubdata'.$this->tid)
                    ->getRecord()
-                   ->clipRelations($onlyown, $field);
+                   ->getRelations($onlyown, $field);
     }
 
     public function defaultConfig($config)

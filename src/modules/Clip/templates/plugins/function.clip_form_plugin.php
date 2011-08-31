@@ -35,11 +35,12 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
         return LogUtil::registerError($render->__f('Error! Missing argument [%s].', 'field'));
     }
 
-    $params['tid'] = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->eventHandler->getTid();
-    $params['pid'] = isset($params['pid']) && $params['pid'] ? $params['pid'] : (int)$render->eventHandler->getId();
+    $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : 'clipmain';
+    $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->eventHandler->getTid();
+    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : (int)$render->eventHandler->getId();
 
     // form framework parameters adjustment
-    $params['id'] = "clip{$params['tid']}_{$params['pid']}_{$params['field']}";
+    $params['id'] = "clip_{$params['alias']}_{$params['tid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'data';
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);

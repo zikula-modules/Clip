@@ -23,10 +23,10 @@
             <fieldset>
                 <legend>{gt text='Related publications'}</legend>
 
-                {foreach from=$relations key='alias' item='item' name='relations'}
+                {foreach from=$relations key='field' item='item' name='relations'}
                 <div class="z-formrow">
-                    {formlabel for=$alias text=$item.title}
-                    {clip_form_relation alias=$alias relation=$item minchars=2 op='search'}
+                    {formlabel for=$field text=$item.title}
+                    {clip_form_relation field=$field relation=$item minchars=2 op='likefirst'}
                 </div>
                 {/foreach}
 

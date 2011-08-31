@@ -23,9 +23,10 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
     public $op;
 
     // Clip data handling
+    public $alias;
     public $tid;
     public $pid;
-    public $alias;
+    public $field;
 
     /**
      * Get filename for this plugin.
@@ -160,7 +161,7 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
     function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
-            $data = $values[$this->group][$this->tid][$this->pid][$this->alias];
+            $data = $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field];
 
             if (!$view->isPostBack()) {
                 // assign existing data
@@ -178,11 +179,11 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
                 // save the data in the state session
                 $view->setStateData('links_'.$this->alias, array_keys($this->relinfo['data']));
             } else {
-                // FIXME postForm method in the handler to fetch the core_titles again
+                // FIXME postForm method in the handler to fetch the core_titles again (if any was changed)
             }
 
-            if (isset($values[$this->group][$this->tid][$this->pid][$this->alias])) {
-                $this->text = $this->formatValue($view, $values[$this->group][$this->tid][$this->pid][$this->alias]);
+            if (isset($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field])) {
+                $this->text = $this->formatValue($view, $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field]);
             }
         }
     }
@@ -204,9 +205,9 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
             $ref = $this->relinfo['single'] ? array($this->text) : explode(':', $this->text);
 
             if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->tid => array($this->pid => array()));
+                $data[$this->group] = array($this->alias => array($this->tid => array($this->pid => array())));
             }
-            $data[$this->group][$this->tid][$this->pid][$this->alias] = $ref;
+            $data[$this->group][$this->alias][$this->tid][$this->pid][$this->field] = $ref;
         }
     }
 }
