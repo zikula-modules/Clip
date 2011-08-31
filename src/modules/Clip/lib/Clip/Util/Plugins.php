@@ -29,6 +29,7 @@ class Clip_Util_Plugins
             if (!is_null($id)) {
                 return isset($classNames[$id]) ? $classNames[$id] : '';
             }
+
             return $classNames;
         }
 

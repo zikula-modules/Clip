@@ -19,6 +19,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     protected $workflow;
     protected $relations;
 
+    protected $alias;
     protected $tid;
     protected $pubtype;
     protected $pubfields;
@@ -51,7 +52,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         //// Processing
         // handle the Doctrine_Record data as an array from here
-        $data[$this->tid][$this->id] = $this->pub->clipValues()->toArray();
+        $data[$this->alias][$this->tid][$this->id] = $this->pub->clipValues()->toArray();
 
         // process the relations
         $relconfig = $this->pubtype['config']['edit'];
@@ -67,14 +68,14 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                             $v->clipValues();
                         }
                     }
-                    $data[$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
+                    $data[$this->alias][$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
 
                 } elseif ($this->pub[$key] instanceof Doctrine_Record && $this->pub[$key]->exists()) {
                     $this->pub[$key]->clipValues();
-                    $data[$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
+                    $data[$this->alias][$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
 
                 } else {
-                    $data[$this->tid][$this->id][$key] = null;
+                    $data[$this->alias][$this->tid][$this->id][$key] = null;
                 }
                 // set the relation info
                 $this->relations[$key] = $rel;
@@ -85,7 +86,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         foreach (array_keys($this->pubfields) as $fieldname) {
             $val = FormUtil::getPassedValue('set_'.$fieldname);
             if (!is_null($val)) {
-                $data[$this->tid][$this->id][$fieldname] = $val;
+                $data[$this->alias][$this->tid][$this->id][$fieldname] = $val;
             }
         }
 
@@ -102,6 +103,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
              ->assign('pubfields', $this->pubfields)
              ->assign('relations', $this->relations)
              ->assign('actions',   $actions);
+
+        // create and registerthe form util instance
+        $clip_util = new Clip_Form_Util($this);
+
+        $view->register_object('clip_form', $clip_util, array('get', 'set', 'reset', 'newId'));
 
         // stores the first referer and the item URL
         if (!$view->getStateData('referer')) {
@@ -137,7 +143,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $data = $view->getValues();
 
         // fill the new values
-        $this->getPub($data['data']['clipmain'][$this->tid][$this->id], $view);
+        $this->getPub($data['data'][$this->alias][$this->tid][$this->id], $view);
 
         // adds any extra data to the item
         if (isset($data['core_extra'])) {
@@ -228,8 +234,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
      */
     public function ClipSetUp(&$pubdata, &$workflow, $pubtype, $pubfields = null)
     {
-        $this->id  = (int)$pubdata['id'];
-        $this->tid = (int)$pubtype['tid'];
+        $this->alias = 'clipmain';
+        $this->tid   = (int)$pubtype['tid'];
+        $this->id    = (int)$pubdata['id'];
 
         $this->workflow = $workflow;
 
@@ -246,14 +253,19 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
     }
 
-    public function getId()
+    public function getAlias()
     {
-        return $this->id;
+        return $this->alias;
     }
 
     public function getTid()
     {
         return $this->tid;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     protected function getPub($data, $view)

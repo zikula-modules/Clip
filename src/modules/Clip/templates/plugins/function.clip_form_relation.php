@@ -23,9 +23,9 @@ function smarty_function_clip_form_relation($params, Zikula_Form_View &$render)
         return LogUtil::registerError($render->__f('Error! Missing argument [%s].', 'field'));
     }
 
-    $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : 'clipmain';
-    $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->eventHandler->getTid();
-    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : (int)$render->eventHandler->getId();
+    $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
+    $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();
+    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getId();
 
     // form framework parameters adjustment
     $params['id'] = "cliprel_{$params['alias']}_{$params['tid']}_{$params['pid']}_{$params['field']}";
