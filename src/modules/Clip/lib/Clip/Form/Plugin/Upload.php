@@ -18,6 +18,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     public $config = array();
 
     // Clip data handling
+    public $alias;
     public $tid;
     public $pid;
     public $field;
@@ -46,9 +47,9 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     public function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
-            if (isset($values[$this->group][$this->tid][$this->pid][$this->field])) {
-                if ($values[$this->group][$this->tid][$this->pid][$this->field]) {
-                    $this->upl_arr = unserialize($values[$this->group][$this->tid][$this->pid][$this->field]);
+            if (isset($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field])) {
+                if ($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field]) {
+                    $this->upl_arr = unserialize($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field]);
                 }
             }
         }
@@ -66,9 +67,9 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         // store the result in the data array
         if ($this->dataBased) {
             if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->tid => array($this->pid => array()));
+                $data[$this->group] = array($this->alias => array($this->tid => array($this->pid => array())));
             }
-            $data[$this->group][$this->tid][$this->pid][$this->field] = $this->result;
+            $data[$this->group][$this->alias][$this->tid][$this->pid][$this->field] = $this->result;
         }
     }
 
