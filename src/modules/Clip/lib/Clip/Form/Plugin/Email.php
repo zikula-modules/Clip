@@ -37,6 +37,13 @@ class Clip_Form_Plugin_Email extends Zikula_Form_Plugin_EmailInput
     /**
      * Form framework overrides.
      */
+    public function readParameters(Zikula_Form_View $view, &$params)
+    {
+        unset($params['fieldconfig']);
+
+        parent::readParameters($view, $params);
+    }
+
     function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {

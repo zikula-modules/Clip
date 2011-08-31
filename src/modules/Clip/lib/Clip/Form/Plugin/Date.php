@@ -42,6 +42,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
+        unset($params['fieldconfig']);
 
         $params['includeTime'] = isset($params['includeTime']) ? $params['includeTime'] : $this->config['includeTime'];
 

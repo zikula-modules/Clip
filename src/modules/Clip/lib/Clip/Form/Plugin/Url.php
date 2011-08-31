@@ -39,6 +39,8 @@ class Clip_Form_Plugin_Url extends Zikula_Form_Plugin_TextInput
      */
     public function readParameters(Zikula_Form_View $view, &$params)
     {
+        unset($params['fieldconfig']);
+
         parent::readParameters($view, $params);
 
         $this->maxLength = 2000;

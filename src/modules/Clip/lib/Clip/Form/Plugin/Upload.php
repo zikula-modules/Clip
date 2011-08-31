@@ -39,6 +39,13 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     /**
      * Form Framework methods.
      */
+    public function readParameters(Zikula_Form_View $view, &$params)
+    {
+        unset($params['fieldconfig']);
+
+        parent::readParameters($view, $params);
+    }
+
     public function load(Zikula_Form_View $view, &$params)
     {
         $this->loadValue($view, $view->get_template_vars());

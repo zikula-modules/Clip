@@ -41,6 +41,7 @@ class Clip_Form_Plugin_Float extends Zikula_Form_Plugin_FloatInput
     public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
+        unset($params['fieldconfig']);
 
         $params['minValue'] = isset($params['minValue']) ? $params['minValue'] : $this->config['min'];
         $params['maxValue'] = isset($params['maxValue']) ? $params['maxValue'] : $this->config['max'];
