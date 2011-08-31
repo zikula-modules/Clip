@@ -32,9 +32,10 @@
 function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
 {
     if (!isset($params['field']) || !$params['field']) {
-        return LogUtil::registerError($render->__f('Error! Missing argument [%s].', 'field'));
+        $render->trigger_error($render->__f('Error! Missing argument [%s].', 'field'));
     }
 
+    // clip data handling
     $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
     $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();
     $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getId();
@@ -45,7 +46,7 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
 
-    // read settings in pubfields, if set by template ignore settings in pubfields
+    // use the main settings if not explicitly declared on the template
     if (!isset($params['mandatory'])) {
         $params['mandatory'] = $field['ismandatory'];
     }
@@ -53,21 +54,37 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
         $params['maxLength'] = $field['fieldmaxlength'];
     }
 
-    if (!isset($params['pluginclass'])) {
+    // plugin class and configuration customization
+    if (isset($params['fieldplugin'])) {
+        // override the main class
+        $pluginclass = $params['fieldplugin'];
+        // be sure there's a config specified or reset to empty
+        $params['fieldconfig'] = isset($params['fieldconfig']) ? $params['fieldconfig'] : '';
+        // unset them
+        unset($params['fieldplugin'], $params['fieldconfig']);
+    } else {
         // setup the main class
         $pluginclass = $field['fieldplugin'];
         // setup the main field configuration
         $params['fieldconfig'] = $field['typedata'];
-    } else {
-        // override the main class
-        $pluginclass = $params['pluginclass'];
-        unset($params['pluginclass']);
-        // be sure there's a config specified or reset to empty
-        $params['fieldconfig'] = isset($params['fieldconfig']) ? $params['fieldconfig'] : '';
     }
 
-    $plugin = Clip_Util_Plugins::get($pluginclass);
+    // plugin instance
+    if (isset($params['pluginclass'])) {
+        // treat the single-word classes as Clip's ones
+        if (strpos($params['pluginclass'], '_') === false) {
+            $params['pluginclass'] = 'Clip_Form_Plugin_'.$params['pluginclass'];
+        }
+        // validate that the class exists
+        if (!class_exists($params['pluginclass'])) {
+            $render->trigger_error($render->__f('Error! The specified plugin class [%s] does not exists.', $params['pluginclass']));
+        }
+        $plugin = new $params['pluginclass']($render, $params);
+    } else {
+        $plugin = Clip_Util_Plugins::get($pluginclass);
+    }
 
+    // register plugin
     if (method_exists($plugin, 'pluginRegister')) {
         return $plugin->pluginRegister($params, $render);
     } else {

@@ -155,6 +155,13 @@ class Clip_Model_Pubtype extends Doctrine_Record
                    ->getRelations($onlyown, $field);
     }
 
+    public function getRelation($alias)
+    {
+        $relations = $this->getRelations(false);
+
+        return isset($relations[$alias]) ? $relations[$alias] : null;
+    }
+
     public function defaultConfig($config)
     {
         $default = array(

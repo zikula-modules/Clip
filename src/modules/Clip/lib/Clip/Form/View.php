@@ -171,4 +171,15 @@ class Clip_Form_View extends Zikula_Form_View
 
         return true;
     }
+
+    /**
+     * Trigger error.
+     *
+     * @param string $error_msg
+     * @param integer $error_type
+     */
+    function trigger_error($error_msg, $error_type = E_USER_WARNING)
+    {
+        throw new Exception($error_msg);
+    }
 }

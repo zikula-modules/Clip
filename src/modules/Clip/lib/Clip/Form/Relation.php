@@ -40,23 +40,17 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
     }
 
     /**
-     * Constructor.
+     * Data loading.
      *
      * @param Zikula_Form_View $view    Reference to Zikula_Form_View object.
      * @param array            &$params Parameters passed from the Smarty plugin function.
      */
-    public function __construct($view, &$params)
+    public function load($view, &$params)
     {
-        if (!$view->isPostBack()) {
-            // input relation data
-            if (isset($params['relation'])) {
-                $this->relinfo = $params['relation'];
-            }
-        }
+        $this->relinfo = isset($params['relation']) ? $params['relation'] : Clip_Util::getPubType($this->tid)->getRelation($this->field);
+        $this->relinfo['data'] = array();
 
-        $params['textMode'] = 'hidden';
-
-        parent::__construct($view, $params);
+        parent::load($view, $params);
     }
 
     /**
@@ -70,6 +64,8 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
      */
     public function create($view, &$params)
     {
+        $params['textMode'] = 'hidden';
+
         parent::create($view, $params);
 
         $this->numitems = (isset($params['numitems']) && is_int($params['numitems'])) ? abs($params['numitems']) : 30;
@@ -163,24 +159,19 @@ class Clip_Form_Relation extends Zikula_Form_Plugin_TextInput
         if ($this->dataBased) {
             $data = $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field];
 
-            if (!$view->isPostBack()) {
-                // assign existing data
-                $this->relinfo['data'] = array();
-                if ($data) {
-                    if ($this->relinfo['single']) {
-                        $this->relinfo['data'][$data['id']] = $data['core_title'];
-                    } else {
-                        foreach ($data as $rec) {
-                            $this->relinfo['data'][$rec['id']] = $rec['core_title'];
-                        }
+            // assign existing data
+            if ($data) {
+                if ($this->relinfo['single']) {
+                    $this->relinfo['data'][$data['id']] = $data['core_title'];
+                } else {
+                    foreach ($data as $rec) {
+                        $this->relinfo['data'][$rec['id']] = $rec['core_title'];
                     }
                 }
-
-                // save the data in the state session
-                $view->setStateData('links_'.$this->alias, array_keys($this->relinfo['data']));
-            } else {
-                // FIXME postForm method in the handler to fetch the core_titles again (if any was changed)
             }
+
+            // save the data in the state session
+            $view->setStateData('links_'.$this->alias, array_keys($this->relinfo['data']));
 
             if (isset($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field])) {
                 $this->text = $this->formatValue($view, $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field]);

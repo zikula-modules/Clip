@@ -34,9 +34,10 @@
 function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$render)
 {
     if (!isset($params['field']) || !$params['field']) {
-        return LogUtil::registerError($render->__f('Error! Missing argument [%s].', 'field'));
+        $render->trigger_error($render->__f('Error! Missing argument [%s].', 'field'));
     }
 
+    // clip data handling
     $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
     $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();
     $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getId();
@@ -47,7 +48,7 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
 
-    // read settings in pubfields, if set by template ignore settings in pubfields
+    // use the main settings if not explicitly declared on the template
     if (!isset($params['mandatory'])){
         $params['mandatory'] = $field['ismandatory'];
     }
@@ -58,8 +59,10 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
     // setup the main field configuration
     $params['fieldconfig'] = $field['typedata'];
 
+    // plugin instance
     $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
+    // register block
     if (method_exists($plugin, 'blockRegister')) {
         return $plugin->blockRegister($params, $render, $content);
     } else {
