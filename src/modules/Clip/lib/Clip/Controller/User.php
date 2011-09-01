@@ -140,7 +140,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // resolve the permalink
         $returnurl = ModUtil::url('Clip', 'user', 'main',
                                   array('tid' => $pubtype['tid']),
-                                  null, null, true, true);
+                                  null, null, true);
 
         //// Output
         // assign the data to the output
@@ -294,7 +294,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // resolve the permalink
         $returnurl = ModUtil::url('Clip', 'user', 'list',
                                   array('tid' => $pubtype['tid']),
-                                  null, null, true, true);
+                                  null, null, true);
 
         //// Output
         // assign the data to the output
@@ -461,7 +461,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $returnurl = ModUtil::url('Clip', 'user', 'display',
                                   array('tid' => $apiargs['tid'],
                                         'pid' => $apiargs['pid']),
-                                  null, null, true, true);
+                                  null, null, true);
 
         // assign the pubdata and pubtype to the output
         $this->view->assign('pubdata',   $pubdata)
