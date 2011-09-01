@@ -185,6 +185,74 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Form post processing.
+     *
+     * @return boolean Existing relation flag.
+     */
+    public function clipFormFill($pubdata, $links)
+    {
+        // allow specify fixed PIDs for new pubs
+        if (!$this->core_pid && isset($pubdata['core_pid'])) {
+            $this->core_pid = $pubdata['core_pid'];
+        }
+
+        foreach (array_keys($this->getRelations(false)) as $alias) {
+            // stores the relations data if present
+            // for later DB update
+            if (isset($pubdata[$alias])) {
+                // be sure it's an existing form relation
+                if (isset($links[$alias])) {
+                    $tolink = $tounlink = array();
+
+                    // check the removed ones
+                    foreach ($links as $id) {
+                        if ($id && !in_array((string)$id, $pubdata[$alias])) {
+                            $tounlink[] = (int)$id;
+                        }
+                    }
+                    // check the added ones
+                    foreach ($pubdata[$alias] as $id) {
+                        if ($id && !in_array((int)$id, $links)) {
+                            $tolink[] = (int)$id;
+                        }
+                    }
+
+                    // perform the operations
+                    if ($tolink) {
+                        $this->link($alias, $tolink);
+                    }
+                    if ($tounlink) {
+                        $this->unlink($alias, $tounlink);
+                    }
+                }
+
+                // unset this data field
+                unset($pubdata[$alias]);
+            }
+        }
+
+        // fill any other data and map any "outer" value
+        foreach ($pubdata as $key => $value) {
+            if ($this->getTable()->hasField($key) || array_key_exists($key, $this->_values)) {
+                $this->set($key, $value);
+            } else {
+                $method = 'set'.Doctrine_Inflector::classify($key);
+                try {
+                    if (is_callable(array($this, $method))) {
+                        $this->$method($value);
+                    } else {
+                        $this->mapValue($key, $value);
+                    }
+                } catch (Doctrine_Record_Exception $e) {
+                    $this->mapValue($key, $value);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Returns the record fields as keys of a result array.
      *
      * @return array List of available fields as keys.

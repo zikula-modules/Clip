@@ -110,7 +110,9 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
             }
 
             // save the data in the state session
-            $view->setStateData("links.{$this->alias}.{$this->tid}.{$this->pid}.{$this->field}", $ids);
+            $links = $view->getStateData('links');
+            $links[$this->alias][$this->tid][$this->pid][$this->field] = $ids;
+            $view->setStateData('links', $links);
         }
     }
 

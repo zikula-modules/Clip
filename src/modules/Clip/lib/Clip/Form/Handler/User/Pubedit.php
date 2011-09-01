@@ -51,43 +51,53 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         //// Processing
-        // handle the Doctrine_Record data as an array from here
-        $data[$this->alias][$this->tid][$this->id] = $this->pub->clipValues()->toArray();
+        // initialize the session vars
+        if (!$view->isPostBack()) {
+            $view->setStateData('pubs', array());
+            $view->setStateData('links', array());
 
-        // process the relations
-        $relconfig = $this->pubtype['config']['edit'];
+            // handle the Doctrine_Record data as an array from here
+            $data[$this->alias][$this->tid][$this->id] = $this->pub->clipValues()->toArray();
 
-        $this->relations = array();
-        if ($relconfig['load']) {
-            foreach ($this->pub->getRelations($relconfig['onlyown']) as $key => $rel) {
-                // set the data object
-                if ($this->pub[$key] instanceof Doctrine_Collection) {
-                    foreach ($this->pub[$key] as $k => &$v) {
-                        // exclude null records
-                        if ($v->exists()) {
-                            $v->clipValues();
+            // process the relations
+            $relconfig = $this->pubtype['config']['edit'];
+
+            $this->relations = array();
+            if ($relconfig['load']) {
+                foreach ($this->pub->getRelations($relconfig['onlyown']) as $key => $rel) {
+                    // set the data object
+                    if ($this->pub[$key] instanceof Doctrine_Collection) {
+                        foreach ($this->pub[$key] as $k => &$v) {
+                            // exclude null records
+                            if ($v->exists()) {
+                                $v->clipValues();
+                            }
                         }
+                        $data[$this->alias][$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
+
+                    } elseif ($this->pub[$key] instanceof Doctrine_Record && $this->pub[$key]->exists()) {
+                        $this->pub[$key]->clipValues();
+                        $data[$this->alias][$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
+
+                    } else {
+                        $data[$this->alias][$this->tid][$this->id][$key] = null;
                     }
-                    $data[$this->alias][$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
-
-                } elseif ($this->pub[$key] instanceof Doctrine_Record && $this->pub[$key]->exists()) {
-                    $this->pub[$key]->clipValues();
-                    $data[$this->alias][$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
-
-                } else {
-                    $data[$this->alias][$this->tid][$this->id][$key] = null;
+                    // set the relation info
+                    $this->relations[$key] = $rel;
                 }
-                // set the relation info
-                $this->relations[$key] = $rel;
             }
-        }
 
-        // check for set_* default values
-        foreach (array_keys($this->pubfields) as $fieldname) {
-            $val = FormUtil::getPassedValue('set_'.$fieldname);
-            if (!is_null($val)) {
-                $data[$this->alias][$this->tid][$this->id][$fieldname] = $val;
+            // check for set_* default values
+            foreach (array_keys($this->pubfields) as $fieldname) {
+                $val = FormUtil::getPassedValue('set_'.$fieldname);
+                if (!is_null($val)) {
+                    $data[$this->alias][$this->tid][$this->id][$fieldname] = $val;
+                }
             }
+        } else {
+            // assign the incoming data
+            $data = $view->getValues();
+            $data = $data['data'];
         }
 
         // clone the pub to assign the pubdata and do not modify the pub data
@@ -141,24 +151,47 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // get the data set in the form
         $data = $view->getValues();
+        // get the initial relations links
+        $links = $view->getStateData('links');
 
-        // fill the new values
-        $this->getPub($data['data'][$this->alias][$this->tid][$this->id], $view);
+        // loop the values and create/update the passed values
+        foreach ($data['data'] as $alias => $a) {
+            foreach ($a as $tid => $b) {
+                $pubtype = Clip_Util::getPubType($tid);
 
-        // adds any extra data to the item
-        if (isset($data['core_extra'])) {
-            $this->pub->mapValue('core_extra', $data['core_extra']);
-        }
+                foreach ($b as $pid => $pubdata) {
+                    $commandName = $args['commandName'];
+                    $className = "ClipModels_Pubdata{$tid}";
 
-        // perform the command
-        $data = ModUtil::apiFunc('Clip', 'user', 'edit',
-                                 array('data'        => $this->pub,
-                                       'commandName' => $args['commandName'],
-                                       'schema'      => str_replace('.xml', '', $this->pubtype['workflow'])));
+                    // publication instance
+                    $pub = new $className;
 
-        // detect a workflow operation fail
-        if (!$data) {
-            return false;
+                    if (is_numeric($pid)) {
+                        // FIXME verify it's on the 'pubs' state data
+                        $pub->assignIdentifier($pid);
+                        // FIXME verify update permissions on the other pubtype?
+                    } else {
+                        // FIXME get the higher command permission for initial state
+                        $commandName = 'submit';
+                    }
+
+                    // fill the publication data
+                    $l = isset($links[$alias][$tid][$pid]) ? $links[$alias][$tid][$pid] : array();
+                    $pub->clipFormFill($pubdata, $l)
+                        ->clipValues();
+
+                    // perform the command
+                    $res = ModUtil::apiFunc('Clip', 'user', 'edit',
+                                            array('data'        => $pub,
+                                                  'commandName' => $commandName,
+                                                  'schema'      => str_replace('.xml', '', $pubtype['workflow'])));
+
+                    // detect a workflow operation fail
+                    if (!$res) {
+                        return false;
+                    }
+                }
+            }
         }
 
         // clear the cached templates
@@ -169,7 +202,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $view->clear_cache(null, 'tid_'.$this->tid.'/list');
 
         // core operations processing
-        $goto = $this->processGoto($data);
+        // FIXME update this
+        //$goto = $this->processGoto($data);
 
         // check the goto parameter
         switch ($this->goto)
@@ -177,17 +211,17 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
                 $this->goto = ModUtil::url('Clip', 'user', 'edit',
-                                       array('tid'  => $data['core_tid'],
-                                             'id'   => $data['id'],
+                                       array('tid'  => $this->tid,
+                                             'id'   => $this->id,
                                              'goto' => 'stepmode'));
                 break;
 
             case 'form':
-                $this->goto = ModUtil::url('Clip', 'user', 'edit', array('tid' => $data['core_tid'], 'goto' => 'form'));
+                $this->goto = ModUtil::url('Clip', 'user', 'edit', array('tid' => $this->tid, 'goto' => 'form'));
                 break;
 
             case 'list':
-                $this->goto = ModUtil::url('Clip', 'user', 'list', array('tid' => $data['core_tid']));
+                $this->goto = ModUtil::url('Clip', 'user', 'list', array('tid' => $this->tid));
                 break;
 
             case 'display':
@@ -195,7 +229,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             case 'admin':
-                $this->goto = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => $data['core_tid']));
+                $this->goto = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => $this->tid));
                 break;
 
             case 'home':
@@ -240,8 +274,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         $this->workflow = $workflow;
 
-        $this->setPub($pubdata);
-
         // pubtype
         $this->pubtype = $pubtype;
 
@@ -251,6 +283,16 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         } else {
             $this->pubfields = Clip_Util::getPubFields($this->tid)->toArray();
         }
+
+        // publication assignment
+        if (!$this->id) {
+            $pubdata['core_author']   = (int)UserUtil::getVar('uid');
+            $pubdata['core_language'] = '';
+        }
+
+        $pubdata->clipValues();
+
+        $this->pub = $pubdata;
     }
 
     public function getAlias()
@@ -266,66 +308,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     public function getId()
     {
         return $this->id;
-    }
-
-    protected function getPub($data, $view)
-    {
-        // allow specify fixed PIDs for new pubs
-        if (!$this->pub['core_pid'] && isset($data['core_pid'])) {
-            $this->pub['core_pid'] = $data['core_pid'];
-        }
-
-        foreach (array_keys($this->relations) as $alias) {
-            // stores the relations data if present
-            // for later DB update
-            if (array_key_exists($alias, $data)) {
-                $tolink = $tounlink = array();
-                // get the links present on the form before submit it
-                $links = $view->getStateData('links_'.$alias);
-
-                // check the removed ones
-                foreach ($links as $id) {
-                    if ($id && !in_array((string)$id, $data[$alias])) {
-                        $tounlink[] = (int)$id;
-                    }
-                }
-                // check the added ones
-                foreach ($data[$alias] as $id) {
-                    if ($id && !in_array((int)$id, $links)) {
-                        $tolink[] = (int)$id;
-                    }
-                }
-
-                // unset this data field
-                unset($data[$alias]);
-
-                // perform the operations
-                if ($tolink) {
-                    $this->pub->link($alias, $tolink);
-                }
-                if ($tounlink) {
-                    $this->pub->unlink($alias, $tounlink);
-                }
-            }
-        }
-
-        // fill any other data
-        $this->pub->fromArray($data);
-    }
-
-    /**
-     * Publication data handlers
-     */
-    protected function setPub(&$pubdata)
-    {
-        if (!$this->id) {
-            $pubdata['core_author']   = (int)UserUtil::getVar('uid');
-            $pubdata['core_language'] = '';
-        }
-
-        $pubdata->clipProcess();
-
-        $this->pub = $pubdata;
     }
 
     /**
