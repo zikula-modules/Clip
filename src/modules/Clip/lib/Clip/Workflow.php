@@ -515,7 +515,7 @@ class Clip_Workflow extends Zikula_AbstractBase
      */
     public function getHighestAction($field = null, $mode = self::ACTIONS_ALL, $state = null)
     {
-        if ($field && !in_array($field, array('title', 'description', 'permission', 'state', 'nextState'))) {
+        if ($field && !in_array($field, array('id', 'title', 'description', 'permission', 'state', 'nextState'))) {
             return false;
         }
 

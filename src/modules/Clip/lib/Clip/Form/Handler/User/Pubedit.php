@@ -160,24 +160,27 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 $pubtype = Clip_Util::getPubType($tid);
 
                 foreach ($b as $pid => $pubdata) {
-                    $commandName = $args['commandName'];
-
                     // publication instance
                     $pub = $pubtype->getPubInstance();
 
                     if (is_numeric($pid)) {
                         // FIXME verify it's on the 'pubs' state data
                         $pub->assignIdentifier($pid);
-                        // FIXME verify update permissions on the other pubtype?
-                    } else {
-                        // FIXME get the higher command permission for initial state
-                        $commandName = 'submit';
                     }
 
                     // fill the publication data
                     $l = isset($links[$alias][$tid][$pid]) ? $links[$alias][$tid][$pid] : array();
                     $pub->clipFormFill($pubdata, $l)
                         ->clipValues();
+
+                    // figure out the action to take
+                    if ($alias == $this->alias) {
+                        $commandName = $args['commandName'];
+                    } else {
+                        $this->workflow->setup($pubtype, $pub);
+                        // get the first higher command permission for initial state
+                        $commandName = $this->workflow->getHighestAction('id');
+                    }
 
                     // perform the command
                     $res = ModUtil::apiFunc('Clip', 'user', 'edit',
