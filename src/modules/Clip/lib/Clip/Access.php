@@ -126,7 +126,7 @@ class Clip_Access
         static $cache = array();
 
         if (!isset($cache[$context][$uid][$component][$instance])) {
-            $cache[$context][$uid][$component][$instance] = SecurityUtil::checkPermission($component, $instance, $permlvl, $uid);
+            $cache[$context][$uid][$component][$instance] = $permlvl ? SecurityUtil::checkPermission($component, $instance, $permlvl, $uid) : false;
         }
 
         return $cache[$context][$uid][$component][$instance];
@@ -204,6 +204,8 @@ class Clip_Access
         }
 
         // evaluate the access depending of the required context
+        $allowed = false;
+
         switch ($context)
         {
             case 'edit':
@@ -215,16 +217,16 @@ class Clip_Access
                     $mode    = $context == 'editinline' ? Clip_Workflow::ACTIONS_ALL : Clip_Workflow::ACTIONS_FORM;
                     $permlvl = $workflow->getPermissionLevel(0, $state, $mode);
                 }
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}:$pid:$state", $permlvl, $uid);
+                if ($permlvl) {
+                    $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}:$pid:$state", $permlvl, $uid);
+                }
                 break;
 
             case 'display':
+                $permlvl = ACCESS_READ;
                 // TODO check core_online + normal user = false (relations check, etc)
                 $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:$context", "{$pubtype->tid}:$pid:$tplid", $permlvl, $uid);
                 break;
-
-            default:
-                $allowed = false;
         }
 
         return $allowed;
