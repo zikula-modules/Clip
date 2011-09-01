@@ -27,22 +27,27 @@ function Clip_operation_create(&$pub, $params)
     $silent             = isset($params['silent']) ? (bool)$params['silent'] : false;
 
     // utility vars
-    $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid']);
+    $tablename = 'ClipModels_Pubdata'.$pub['core_tid'];
 
     // initializes the result flag
     $result = false;
 
     // validate or find a new pid
     if (isset($pub['core_pid']) && !empty($pub['core_pid'])) {
-        if (count($tbl->findBy('core_pid', $pub['core_pid']))) {
+        if (count(Doctrine_Core::getTable($tablename)->findBy('core_pid', $pub['core_pid']))) {
             return LogUtil::registerError(__('Error! The fixed publication id already exists on the database. Please contact the administrator.', $dom));
         }
     } else {
-        $pub['core_pid'] = $tbl->selectFieldFunction('core_pid', 'MAX') + 1;
+        $pub['core_pid'] = Doctrine_Core::getTable($tablename)->selectFieldFunction('core_pid', 'MAX') + 1;
     }
 
     // assign the author
     $pub['core_author'] = (int)UserUtil::getVar('uid');
+
+    // assign the language
+    if (is_null($pub['core_language'])) {
+        $pub['core_language'] = '';
+    }
 
     // fills the publish date automatically
     if (empty($pub['core_publishdate'])) {
@@ -71,6 +76,9 @@ function Clip_operation_create(&$pub, $params)
             }
         } else {
             LogUtil::registerError(__('Error! Failed to create the publication.', $dom));
+            if (ModUtil::getVar('Clip', 'devmode', false)) {
+                LogUtil::registerError($pub->getErrorStackAsString());
+            }
         }
     }
 

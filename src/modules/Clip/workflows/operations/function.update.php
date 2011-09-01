@@ -107,6 +107,9 @@ function Clip_operation_update(&$pub, &$params)
             LogUtil::registerStatus(__('Done! Publication updated.', $dom));
         } else {
             LogUtil::registerError(__('Error! Failed to update the publication.', $dom));
+            if (ModUtil::getVar('Clip', 'devmode', false)) {
+                LogUtil::registerError($pub->getErrorStackAsString());
+            }
         }
     }
 
