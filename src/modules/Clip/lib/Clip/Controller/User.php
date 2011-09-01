@@ -598,6 +598,9 @@ class Clip_Controller_User extends Zikula_AbstractController
         // create the output object
         $render = Clip_Util::newForm($this, true);
 
+        // compatibility prefilter for the 0.9 series only
+        $render->load_filter('pre', 'clip_form_compat');
+
         Clip_Util::setArgs('edit', $args);
 
         $render->assign('clipargs', Clip_Util::getArgs())
