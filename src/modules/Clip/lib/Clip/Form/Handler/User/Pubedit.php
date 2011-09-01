@@ -17,7 +17,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     protected $id;
     protected $pub;
     protected $workflow;
-    protected $relations;
 
     protected $alias;
     protected $tid;
@@ -51,47 +50,38 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         //// Processing
-        // initialize the session vars
+        // GET values set on the first screen only
+        $clipvalues = array();
+
+        // assign the configured relations
+        $relconfig = $this->pubtype['config']['edit'];
+        $relations = array();
+        if ($relconfig['load']) {
+            $relations = $this->pub->getRelations($relconfig['onlyown']);
+        }
+
+        // initialize the data depending on the form state
         if (!$view->isPostBack()) {
+            // initialize the session vars
             $view->setStateData('pubs', array());
             $view->setStateData('links', array());
 
-            // handle the Doctrine_Record data as an array from here
-            $data[$this->alias][$this->tid][$this->id] = $this->pub->clipValues()->toArray();
+            // handle the Doctrine_Record data as an array
+            $data[$this->alias][$this->tid][$this->id] = $this->pub->clipFormGet($relconfig['load'], $relconfig['onlyown']);
 
-            // process the relations
-            $relconfig = $this->pubtype['config']['edit'];
+            // check for set_* and clip_* parameters from $_GET
+            $fieldnames = $this->pub->pubFields();
 
-            $this->relations = array();
-            if ($relconfig['load']) {
-                foreach ($this->pub->getRelations($relconfig['onlyown']) as $key => $rel) {
-                    // set the data object
-                    if ($this->pub[$key] instanceof Doctrine_Collection) {
-                        foreach ($this->pub[$key] as $k => &$v) {
-                            // exclude null records
-                            if ($v->exists()) {
-                                $v->clipValues();
-                            }
-                        }
-                        $data[$this->alias][$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
+            $get = $this->request->getGet();
+            foreach (array_keys($get->getCollection()) as $param) {
+                if (strpos($param, 'set_') === 0 || strpos($param, 'clip_') === 0) {
+                    $fieldname = preg_replace(array('/^set_/', '/^clip_/'), '', $param);
 
-                    } elseif ($this->pub[$key] instanceof Doctrine_Record && $this->pub[$key]->exists()) {
-                        $this->pub[$key]->clipValues();
-                        $data[$this->alias][$this->tid][$this->id][$key] = $this->pub[$key]->toArray();
-
+                    if ($this->pub->contains($fieldname)) {
+                        $data[$this->alias][$this->tid][$this->id][$fieldname] = $get->filter($param);
                     } else {
-                        $data[$this->alias][$this->tid][$this->id][$key] = null;
+                        $clipvalues[$fieldname] = $get->filter($param);
                     }
-                    // set the relation info
-                    $this->relations[$key] = $rel;
-                }
-            }
-
-            // check for set_* default values
-            foreach (array_keys($this->pubfields) as $fieldname) {
-                $val = FormUtil::getPassedValue('set_'.$fieldname);
-                if (!is_null($val)) {
-                    $data[$this->alias][$this->tid][$this->id][$fieldname] = $val;
                 }
             }
         } else {
@@ -108,11 +98,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $pubdata->clipValues(true);
 
         // fills the render
-        $view->assign('data',      $data)
-             ->assign('pubdata',   $pubdata)
-             ->assign('pubfields', $this->pubfields)
-             ->assign('relations', $this->relations)
-             ->assign('actions',   $actions);
+        $view->assign('data',       $data)
+             ->assign('pubdata',    $pubdata)
+             ->assign('pubfields',  $this->pubfields)
+             ->assign('relations',  $relations)
+             ->assign('actions',    $actions)
+             ->assign('clipvalues', $clipvalues);
 
         // create and registerthe form util instance
         $clip_util = new Clip_Form_Util($this);

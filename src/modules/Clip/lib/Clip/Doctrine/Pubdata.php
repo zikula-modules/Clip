@@ -195,9 +195,44 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Form initial processing.
+     *
+     * @param boolean $loadrels Whether to load the related publications or not (default: false).
+     * @param boolean $onlyown  Whether to load only own relations or all (default: true).
+     *
+     * @return array Requested publication data as an array.
+     */
+    public function clipFormGet($loadrels = false, $onlyown = true)
+    {
+        $data = $this->clipValues()->toArray();
+
+        foreach (array_keys($this->getRelations($relconfig['onlyown'])) as $key) {
+            // set the data object
+            if ($this->$key instanceof Doctrine_Collection) {
+                foreach ($this->$key as $k => &$v) {
+                    // exclude null records
+                    if ($v->exists()) {
+                        $v->clipValues();
+                    }
+                }
+                $data[$key] = $this->$key->toArray();
+
+            } elseif ($this->$key instanceof Doctrine_Record && $this->$key->exists()) {
+                $this->$key->clipValues();
+                $data[$key] = $this->$key->toArray();
+
+            } else {
+                $data[$key] = null;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Form post processing.
      *
-     * @return boolean Existing relation flag.
+     * @return $this
      */
     public function clipFormFill($pubdata, $links)
     {

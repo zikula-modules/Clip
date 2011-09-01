@@ -223,7 +223,7 @@ class Clip_Access
                 break;
 
             case 'display':
-                $permlvl = ACCESS_READ;
+                $permlvl = $permlvl ? $permlvl : ACCESS_READ;
                 // TODO check core_online + normal user = false (relations check, etc)
                 $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:$context", "{$pubtype->tid}:$pid:$tplid", $permlvl, $uid);
                 break;
