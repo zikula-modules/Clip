@@ -30,7 +30,7 @@ function Clip_workflow_none_permissioncheck($obj, $permLevel, $currentUser, $act
         }
     }
 
-    return Clip_Access::toPub($obj['core_tid'], $obj, null, $permLevel, $currentUser);
+    return Clip_Access::toPub($pubtype, $obj, null, $permLevel, $currentUser);
 }
 
 function Clip_workflow_none_gettextstrings()

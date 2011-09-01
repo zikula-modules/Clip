@@ -161,10 +161,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
                 foreach ($b as $pid => $pubdata) {
                     $commandName = $args['commandName'];
-                    $className = "ClipModels_Pubdata{$tid}";
 
                     // publication instance
-                    $pub = new $className;
+                    $pub = $pubtype->getPubInstance();
 
                     if (is_numeric($pid)) {
                         // FIXME verify it's on the 'pubs' state data

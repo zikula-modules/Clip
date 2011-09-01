@@ -114,7 +114,7 @@ class Clip_Workflow extends Zikula_AbstractBase
         $this->table    = $pubtype->getTableName();
         $this->idcolumn = 'id';
 
-        $this->obj = $obj;
+        $this->obj = $obj ? $obj : $pubtype->getPubInstance();
     }
 
     /**
@@ -126,10 +126,6 @@ class Clip_Workflow extends Zikula_AbstractBase
      */
     public function getWorkflow($field = null)
     {
-        if (!isset($this->obj) || !is_object($this->obj)) {
-            return LogUtil::registerError($this->__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getWorkflow'));
-        }
-
         if (isset($this->obj['__WORKFLOW__'])) {
             $workflow = $this->obj['__WORKFLOW__'];
 
@@ -246,10 +242,6 @@ class Clip_Workflow extends Zikula_AbstractBase
      */
     public function executeAction($actionID)
     {
-        if (!isset($this->obj) || !is_object($this->obj)) {
-            return LogUtil::registerError($this->__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getWorkflow'));
-        }
-
         $stateID = $this->getWorkflow('state');
 
         $actionMap = Clip_Workflow_Util::getActionsMap($this->module, $this->schema, $stateID);
@@ -422,10 +414,6 @@ class Clip_Workflow extends Zikula_AbstractBase
     public function getActions($mode = self::ACTIONS_ALL, $state = null)
     {
         if (!$state) {
-            if (!isset($this->obj) || !is_object($this->obj)) {
-                return LogUtil::registerError($this->__f('%1$s: There is no object specified to work with.', 'Clip_Workflow_Util::getActions'));
-            }
-
             $state = $this->getWorkflow('state');
         }
 
@@ -514,6 +502,44 @@ class Clip_Workflow extends Zikula_AbstractBase
         }
 
         return $statelevels[$level];
+    }
+
+    /**
+     * Get the highest allowed action for a given state.
+     *
+     * @param string  $field Optional field to retrieve (title, description, permission, state, nextState).
+     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param string  $state State actions to retrieve, default = object's state.
+     *
+     * @return mixed Highest allowed actions or false on failure.
+     */
+    public function getHighestAction($field = null, $mode = self::ACTIONS_ALL, $state = null)
+    {
+        if ($field && !in_array($field, array('title', 'description', 'permission', 'state', 'nextState'))) {
+            return false;
+        }
+
+        $statelevels = $this->getActionsField('permission', $mode, $state);
+
+        // checks an invalid state
+        if (!$statelevels) {
+            return false;
+        }
+
+        $statelevels = array_unique($statelevels);
+        rsort($statelevels);
+        $higherlevel = reset($statelevels);
+
+        // eval what's the FIRST action allowed with the highest level
+        $actions = $this->getActions($mode, $state);
+
+        foreach ($actions as $id => $action) {
+            if ($action['permission'] == $higherlevel) {
+                break;
+            }
+        }
+
+        return $field ? $action[$field] : $action;
     }
 
     /**

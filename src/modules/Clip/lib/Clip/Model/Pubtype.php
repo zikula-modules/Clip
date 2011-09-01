@@ -162,6 +162,13 @@ class Clip_Model_Pubtype extends Doctrine_Record
         return isset($relations[$alias]) ? $relations[$alias] : null;
     }
 
+    public function getPubInstance()
+    {
+        $className = 'ClipModels_Pubdata'.$this->tid;
+
+        return new $className;
+    }
+
     public function defaultConfig($config)
     {
         $default = array(
