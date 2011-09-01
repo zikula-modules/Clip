@@ -532,7 +532,8 @@ class Clip_Api_User extends Zikula_AbstractApi
         // shortURLs scheme
         // template defaults to modvar - htm
         //  main:    /pubtype[.template]
-        //  list:    /pubtype[/filter[/orderby]]/list.template]
+        //  list:    /pubtype[/filter[/orderby]]/pageX.template]
+        //  list:    /pubtype[/filter[/orderby]]/startY.template]
         //  display: /pubtype/pubtitle[.template]
         //  edit:    /pubtype[/template]/submit.htm[l]
         //  edit:    /pubtype[/goto/somewhere]/edit.htm[l]
@@ -540,6 +541,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         //  edit:    /pubtype/pubtitle[/template]/edit.htm[l]
         //  edit:    /pubtype/pubtitle[/goto/somewhere]/edit.htm[l]
         //  edit:    /pubtype/pubtitle[/template/goto/somewhere]/edit.htm[l]
+        //  edit:    /pubtype/pubtitle[/param1/value1/param2/value2]/edit.htm[l]
 
         static $cache = array();
 
@@ -559,13 +561,12 @@ class Clip_Api_User extends Zikula_AbstractApi
                 }
                 unset($_['startnum'], $_['page']);
 
+                // adds the parameters
                 if (!empty($_)) {
                     foreach ($_ as $k => $v) {
                         $shorturl .= '/'.urlencode($k).'/'.urlencode($v);
                     }
                 }
-
-                $shorturl .= "/$filename" . ($tpl ? ".$tpl" : '');
                 break;
 
             case 'edit':
@@ -611,11 +612,18 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
                 }
 
+                unset($_['urltitle'], $_['title'], $_['pid'], $_['id']);
+
                 if ($args['func'] == 'edit') {
                     // edit case: override the display shortURL
                     $shorturl  = ($pid ? $urltitle : '');
                     $shorturl .= ($template ? "/$template" : '');
-                    $shorturl .= (isset($_['goto']) && $_['goto'] ? "/goto/{$_['goto']}" : '');
+                    // adds the parameters
+                    if (!empty($_)) {
+                        foreach ($_ as $k => $v) {
+                            $shorturl .= '/'.urlencode($k).'/'.urlencode($v);
+                        }
+                    }
                     $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ($tpl ? ".$tplhtml" : '');
                 }
                 break;
@@ -728,18 +736,18 @@ class Clip_Api_User extends Zikula_AbstractApi
                     unset($_[key($_)]);
                 }
 
-                switch (count($_)) {
-                    case 3:
-                    case 2:
-                        // there's a goto parameter
-                        System::queryStringSetVar('goto',  end($_));
-                        // continue for 3 parameters only
-                        if (count($_) == 2) {
-                            break;
-                        }
-                    case 1:
-                        // there's a custom edit template
-                        $template = reset($_);
+                if (count($_) % 2) {
+                    // there's a custom edit template
+                    $template = reset($_);
+                    unset($_[key($_)]);
+                }
+
+                if (!empty($_)) {
+                    $_ = array_values($_);
+                    // there are more parameters
+                    for ($i = 0; $i < count($_); $i += 2) {
+                        System::queryStringSetVar($_[$i], $_[$i+1]);
+                    }
                 }
 
             case 'display':
