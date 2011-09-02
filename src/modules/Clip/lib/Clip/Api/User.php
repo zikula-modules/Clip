@@ -567,6 +567,8 @@ class Clip_Api_User extends Zikula_AbstractApi
                         $shorturl .= '/'.urlencode($k).'/'.urlencode($v);
                     }
                 }
+
+                $shorturl .= "/$filename" . ($tpl ? ".$tpl" : '');
                 break;
 
             case 'edit':
