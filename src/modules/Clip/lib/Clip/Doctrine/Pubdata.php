@@ -86,34 +86,15 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
-     * Utility method to figure out the TID.
-     *
-     * @return integer Publication type ID.
-     */
-    public function clipTid()
-    {
-        if (!$this->hasMappedValue('core_tid')) {
-            $this->mapValue('core_tid', Clip_Util::getTidFromString(get_class($this)));
-        }
-
-        return $this->core_tid;
-    }
-
-    /**
      * Basic values loader for the Record.
      *
      * @return $this
      */
     public function clipValues($handleplugins=false)
     {
-        if (!$this->hasMappedValue('core_tid') || !$this->hasMappedValue('core_title')) {
-            $core_title = Clip_Util::getTitleField($this->clipTid());
-
-            $this->mapValue('core_title', $this[$core_title]);
-        }
-
-        $this->mapValue('core_uniqueid', $this['core_tid'].'-'.$this['core_pid']);
-        $this->mapValue('core_creator',  ($this['core_author'] == UserUtil::getVar('uid')) ? true : false);
+        $this->mapValue('core_title',    $this[$this->core_titlefield]);
+        $this->mapValue('core_uniqueid', $this->core_tid.'-'.$this->core_pid);
+        $this->mapValue('core_creator',  ($this->core_author == UserUtil::getVar('uid')) ? true : false);
 
         if ($handleplugins) {
             $this->clipPostRead();

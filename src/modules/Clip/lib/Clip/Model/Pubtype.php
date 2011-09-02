@@ -150,9 +150,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
 
     public function getRelations($onlyown = true, $field = null)
     {
-        return Doctrine_Core::getTable('ClipModels_Pubdata'.$this->tid)
-                   ->getRecord()
-                   ->getRelations($onlyown, $field);
+        return call_user_func_array(array('ClipModels_Pubdata'.$this->tid.'Table', 'clipRelations'), array($onlyown, $field));
     }
 
     public function getRelation($alias)

@@ -20,11 +20,11 @@
  */
 function Clip_workflow_standard_permissioncheck($obj, $permLevel, $currentUser, $actionId)
 {
-    $pubtype = Clip_Util::getPubType($obj->clipTid());
+    $pubtype = Clip_Util::getPubType($obj->core_tid);
 
     if ($obj->exists()) {
         // check existing publication author and granular permission access check
-        if ($pubtype['enableeditown'] == 1 && $obj['core_author'] == $currentUser) {
+        if ($pubtype->enableeditown == 1 && $obj->core_author == $currentUser) {
             // FIXME allow this only on update operations on not online publication (actionId standard)
             return true;
         }

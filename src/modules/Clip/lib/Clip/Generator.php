@@ -271,8 +271,6 @@ class Clip_Generator
 
         // relations
         $hasRelations = '';
-        $ownRelations = '';
-        $allRelations = '';
 
         // owning side
         $relations = Clip_Util::getRelations($tid, true);
@@ -330,21 +328,6 @@ class Clip_Generator
                 $hasRelations .= "
         \$this->$method('$relDefinition', $relArgs);
         ";
-
-                // add the relation array field
-                $ownRelations .= "
-        \$relations['".str_replace("'", "\'", $relation['alias1'])."'] = array(
-            'id'       => {$relation['id']},
-            'tid'      => {$relation['tid2']},
-            'type'     => {$relation['type']},
-            'alias'    => '".str_replace("'", "\'", $relation['alias1'])."',
-            'title'    => '".str_replace("'", "\'", $relation['title1'])."',
-            'descr'    => '".str_replace("'", "\'", $relation['descr1'])."',
-            'opposite' => '".str_replace("'", "\'", $relation['alias2'])."',
-            'single'   => ".($relation['type']%2 == 0 ? 'true' : 'false').",
-            'own'      => true
-        );
-";
             }
         }
 
@@ -404,21 +387,6 @@ class Clip_Generator
                 $hasRelations .= "
         \$this->$method('$relDefinition', $relArgs);
         ";
-
-                // add the relation array field
-                $allRelations .= "
-            \$relations['".str_replace("'", "\'", $relation['alias2'])."'] = array(
-                'id'       => {$relation['id']},
-                'tid'      => {$relation['tid1']},
-                'type'     => {$relation['type']},
-                'alias'    => '".str_replace("'", "\'", $relation['alias2'])."',
-                'title'    => '".str_replace("'", "\'", $relation['title2'])."',
-                'descr'    => '".str_replace("'", "\'", $relation['descr2'])."',
-                'opposite' => '".str_replace("'", "\'", $relation['alias1'])."',
-                'single'   => ".($relation['type'] <= 1 ? 'true' : 'false').",
-                'own'      => false
-            );
-";
             }
         }
 
@@ -464,6 +432,9 @@ class Clip_Generator
             $options .= (!empty($options) ? "\n        " : '')."\$this->option('$k', '$v');";
         }
 
+        // title field
+        $titlefield = Clip_Util::getTitleField($tid);
+
         // generate the model code
         $code = "
 /**
@@ -504,7 +475,7 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
     }
 
     /**
-     * Returns the record relations as an indexed array.
+     * Returns the relations as an indexed array.
      *
      * @param boolean \$onlyown Retrieves owning relations only (default: false).
      * @param strung  \$field   Retrieve a KeyValue array as alias => \$field (default: null).
@@ -512,6 +483,127 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
      * @return array List of available relations.
      */
     public function getRelations(\$onlyown = true, \$field = null)
+    {
+        return call_user_func_array(array('ClipModels_Pubdata{$tid}Table', 'clipRelations'), array(\$onlyown, \$field));
+    }
+
+    /**
+     * Utility methods to assign Clip Values
+     */
+    public function assignDefaultValues(\$overwrite = false)
+    {
+        \$this->assignClipValues(\$this);
+
+        parent::assignDefaultValues(\$overwrite);
+    }
+
+    public function assignClipValues(&\$obj)
+    {
+        if (is_object(\$obj)) {
+            \$obj->mapValue('core_tid', $tid);
+            \$obj->mapValue('core_title', '');
+            \$obj->mapValue('core_titlefield', '$titlefield');
+            \$obj->mapValue('core_title',    \$obj[\$obj->core_titlefield]);
+            \$obj->mapValue('core_uniqueid', \$obj->core_tid.'-'.\$obj->core_pid);
+            \$obj->mapValue('core_creator',  (\$obj->core_author == UserUtil::getVar('uid')) ? true : false);
+        } else {
+            \$obj['core_tid']   = $tid;
+            \$obj['core_title'] = '';
+            \$obj['core_titlefield'] = '$titlefield';
+            \$obj['core_title']    = \$obj[\$obj['core_titlefield']];
+            \$obj['core_uniqueid'] = \$obj['core_tid'].'-'.\$obj['core_pid'];
+            \$obj['core_creator']  = (\$obj['core_author'] == UserUtil::getVar('uid')) ? true : false;
+        }
+    }
+
+    /**
+     * Hydration hook.
+     *
+     * @return void
+     */
+    public function postHydrate(\$event)
+    {
+        \$this->assignClipValues(\$event->data);
+    }
+}
+";
+
+        return $code;
+    }
+
+    /**
+     * Build the Doctrine Table code dynamically.
+     *
+     * @param integer $tid Publication type ID.
+     *
+     * @return string The table class code.
+     */
+    public static function pubtable($tid)
+    {
+        $ownRelations = '';
+        $allRelations = '';
+
+        // owning side
+        $relations = Clip_Util::getRelations($tid, true);
+        foreach ($relations as $relation) {
+            // add the relation array field
+            $ownRelations .= "
+        \$relations['".str_replace("'", "\'", $relation['alias1'])."'] = array(
+            'id'       => {$relation['id']},
+            'tid'      => {$relation['tid2']},
+            'type'     => {$relation['type']},
+            'alias'    => '".str_replace("'", "\'", $relation['alias1'])."',
+            'title'    => '".str_replace("'", "\'", $relation['title1'])."',
+            'descr'    => '".str_replace("'", "\'", $relation['descr1'])."',
+            'opposite' => '".str_replace("'", "\'", $relation['alias2'])."',
+            'single'   => ".($relation['type']%2 == 0 ? 'true' : 'false').",
+            'own'      => true
+        );
+";
+        }
+
+        // owned side
+        $relations = Clip_Util::getRelations($tid, false);
+        foreach ($relations as $relation) {
+            // add the relation array field
+            $allRelations .= "
+            \$relations['".str_replace("'", "\'", $relation['alias2'])."'] = array(
+                'id'       => {$relation['id']},
+                'tid'      => {$relation['tid1']},
+                'type'     => {$relation['type']},
+                'alias'    => '".str_replace("'", "\'", $relation['alias2'])."',
+                'title'    => '".str_replace("'", "\'", $relation['title2'])."',
+                'descr'    => '".str_replace("'", "\'", $relation['descr2'])."',
+                'opposite' => '".str_replace("'", "\'", $relation['alias1'])."',
+                'single'   => ".($relation['type'] <= 1 ? 'true' : 'false').",
+                'own'      => false
+            );
+";
+        }
+
+        // generate the model code
+        $code = "
+/**
+ * Clip
+ * Generated Model Class
+ *
+ * @link http://code.zikula.org/clip/
+ */
+
+/**
+ * Doctrine_Table class used to implement own special entity methods.
+ */
+class ClipModels_Pubdata{$tid}Table extends Clip_Doctrine_Table
+{
+    /**
+     * Returns the relations as an indexed array.
+     *
+     * @param boolean \$onlyown Retrieves owning relations only (default: false).
+     * @param strung  \$field   Retrieve a KeyValue array as alias => \$field (default: null).
+     *
+     * @return array List of available relations.
+     */
+    static public function clipRelations(\$onlyown = true, \$field = null)
     {
         \$relations = array();
 
@@ -530,7 +622,7 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
 
         \$v = reset(\$relations);
         if (!isset(\$v[\$field])) {
-            throw new Exception(\"Invalid field [\$field] requested for the property [\$key] on \".get_class().\"->clipRelations\");
+            throw new Exception(\"Invalid field [\$field] requested for the property [\$key] on \".get_class().\"::getRelations\");
         }
 
         \$result = array();
@@ -540,36 +632,6 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
 
         return \$result;
     }
-}
-";
-
-        return $code;
-    }
-
-    /**
-     * Build the Doctrine Table code dynamically.
-     *
-     * @param integer $tid Publication type ID.
-     *
-     * @return string The table class code.
-     */
-    public static function pubtable($tid)
-    {
-        // generate the model code
-        $code = "
-/**
- * Clip
- * Generated Model Class
- *
- * @link http://code.zikula.org/clip/
- */
-
-/**
- * Doctrine_Table class used to implement own special entity methods.
- */
-class ClipModels_Pubdata{$tid}Table extends Clip_Doctrine_Table
-{
-
 }
 ";
         return $code;
