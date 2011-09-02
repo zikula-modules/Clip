@@ -231,14 +231,14 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
                     $tolink = $tounlink = array();
 
                     // check the removed ones
-                    foreach ($links as $id) {
+                    foreach ($links[$alias] as $id) {
                         if ($id && !in_array((string)$id, $pubdata[$alias])) {
                             $tounlink[] = (int)$id;
                         }
                     }
                     // check the added ones
                     foreach ($pubdata[$alias] as $id) {
-                        if ($id && !in_array((int)$id, $links)) {
+                        if ($id && !in_array((int)$id, $links[$alias])) {
                             $tolink[] = (int)$id;
                         }
                     }
