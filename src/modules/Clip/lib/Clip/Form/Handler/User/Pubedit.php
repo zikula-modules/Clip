@@ -106,7 +106,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
              ->assign('clipvalues', $clipvalues);
 
         // create and registerthe form util instance
-        $clip_util = new Clip_Form_Util($this);
+        $clip_util = new Clip_Util_Form($this);
 
         $view->register_object('clip_form', $clip_util, array('get', 'set', 'reset', 'newId'));
 

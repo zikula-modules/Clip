@@ -14,7 +14,7 @@
  *
  * The methods of this class behaves as Smarty plugins.
  */
-class Clip_Form_Util
+class Clip_Util_Form
 {
     // state vars
     protected $alias;
