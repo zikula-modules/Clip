@@ -54,6 +54,9 @@ class Clip_Controller_Editor extends Zikula_AbstractController
 
         $grouptypes = Clip_Util_Grouptypes::getTree(ACCESS_OVERVIEW, false);
 
+        // register clip_util
+        Clip_Util::register_utilities($this->view);
+
         //// Output
         $this->view->assign('grouptypes', $grouptypes);
 
@@ -106,8 +109,6 @@ class Clip_Controller_Editor extends Zikula_AbstractController
             $apiargs['startnum'] = ($args['page']-1)*$apiargs['itemsperpage']+1;
         }
 
-        Clip_Util::setArgs('adminlist', $args);
-
         //// Execution
         // fill the conditions of the list to get
         $apiargs['where'] = array();
@@ -118,6 +119,12 @@ class Clip_Controller_Editor extends Zikula_AbstractController
 
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
+
+        // store the arguments used
+        Clip_Util::setArgs('editorlist', $args);
+
+        // register clip_util
+        Clip_Util::register_utilities($this->view);
 
         //// Output
         // assign the output variables
@@ -179,6 +186,9 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         for ($i = 0; $i < count($publist); $i++) {
             $publist[$i]->clipProcess(array('handleplugins' => true, 'loadworkflow' => true));
         }
+
+        // register clip_util
+        Clip_Util::register_utilities($this->view);
 
         //// Output
         $this->view->assign('pubtype', $pubtype)

@@ -18,6 +18,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      * Returns a Publication List.
      *
      * @param integer $args['tid']           ID of the publication type.
+     * @param array   $args['where']         Direct where conditions to the query.
      * @param string  $args['filter']        Filter string.
      * @param string  $args['orderby']       OrderBy string.
      * @param integer $args['startnum']      Offset to start from.
@@ -241,12 +242,12 @@ class Clip_Api_User extends Zikula_AbstractApi
                 // FIXME SECURITY individual permission check here and fetch additional ones?
                 $publist[$i]->clipProcess($args);
             }
+
+            // store the arguments used
+            Clip_Util::setArgs('getallapi', $args);
         }
 
         //// Result
-        // store the arguments used
-        Clip_Util::setArgs('getallapi', $args);
-
         return array (
             'publist'  => isset($publist) ? $publist : null,
             'pubcount' => isset($pubcount) ? $pubcount : null

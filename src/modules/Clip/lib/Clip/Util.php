@@ -238,8 +238,8 @@ class Clip_Util
     public static function validateReservedWord($value)
     {
         $reservedwords = array(
-            'module', 'func', 'type', 'tid', 'pid', '__WORKFLOW__',
-            'submit', 'edit'
+            'module', 'modname', 'func', 'type', 'tid', 'pid', 'id',
+            'submit', 'edit', '__WORKFLOW__'
         );
 
         return (in_array($value, $reservedwords) || strpos('core_', $value) === 0 || strpos('rel_', $value) === 0);
@@ -543,7 +543,7 @@ class Clip_Util
      *
      * @return void
      */
-    public static function register_nocache_plugins(&$view)
+    public static function register_nocache_plugins(Zikula_View &$view)
     {
         // disables the cache for them and do not load them yet
         // that happens later when required
@@ -559,5 +559,33 @@ class Clip_Util
         Zikula_View_Resource::register($view, 'function', 'clip_access', $delayed_load, $cacheable, array('gid', 'pid', 'tid', 'context', 'permlvl', 'tplid', 'assign'));
         // clip_hitcount
         Zikula_View_Resource::register($view, 'function', 'clip_hitcount', $delayed_load, $cacheable, array('pid', 'tid'));
+    }
+
+    /**
+     * Process of Clip's view for its controllers.
+     *
+     * @return void
+     */
+    public static function register_utilities(Zikula_View &$view)
+    {
+        static $tids;
+
+        if (!isset($tids)) {
+            $pubtypes = self::getPubType();
+            // index the IDs with the urltitle
+            $tids = array();
+            foreach ($pubtypes as $tid => $pubtype) {
+                $tids[$pubtype->urltitle] = $tid;
+            }
+        }
+
+        // clip pubtype IDs array
+        $view->assign('tids', $tids);
+
+        // clip_util
+        if (!isset($view->_reg_objects['clip_util'])) {
+            $clip_util = new Clip_Util_View();
+            $view->register_object('clip_util', $clip_util);
+        }
     }
 }

@@ -134,8 +134,11 @@ class Clip_Controller_User extends Zikula_AbstractController
             $this->view->setCaching(Zikula_View::CACHE_DISABLED);
         }
 
-        // stored the used arguments
+        // store the arguments used
         Clip_Util::setArgs('main', $args);
+
+        // register clip_util
+        Clip_Util::register_utilities($this->view);
 
         // resolve the permalink
         $returnurl = ModUtil::url('Clip', 'user', 'main',
@@ -288,8 +291,11 @@ class Clip_Controller_User extends Zikula_AbstractController
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
 
-        // stored the used arguments
+        // store the arguments used
         Clip_Util::setArgs('list', $args);
+
+        // register clip_util
+        Clip_Util::register_utilities($this->view);
 
         // resolve the permalink
         $returnurl = ModUtil::url('Clip', 'user', 'list',
@@ -453,8 +459,11 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
         }
 
-        // stored the used arguments
+        // store the arguments used
         Clip_Util::setArgs('display', $args);
+
+        // register clip_util
+        Clip_Util::register_utilities($this->view);
 
         // resolve the permalink
         $apiargs = Clip_Util::getArgs('getapi');
@@ -601,7 +610,11 @@ class Clip_Controller_User extends Zikula_AbstractController
         // compatibility prefilter for the 0.9 series only
         $render->load_filter('pre', 'clip_form_compat');
 
+        // store the arguments used
         Clip_Util::setArgs('edit', $args);
+
+        // register clip_util
+        Clip_Util::register_utilities($render);
 
         $render->assign('clipargs', Clip_Util::getArgs())
                ->assign('pubtype', $pubtype);

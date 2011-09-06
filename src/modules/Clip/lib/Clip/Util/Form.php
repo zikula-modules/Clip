@@ -6,7 +6,7 @@
  * @link       http://code.zikula.org/clip/
  * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package    Clip
- * @subpackage Form_Plugin
+ * @subpackage Util
  */
 
 /**
