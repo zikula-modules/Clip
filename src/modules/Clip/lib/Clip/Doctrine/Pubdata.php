@@ -41,9 +41,6 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      */
     public function clipProcess($args = array())
     {
-        // map basic values
-        $this->clipValues();
-
         // handle the plugins data if needed
         if (isset($args['handleplugins']) && $args['handleplugins']) {
             $this->clipPostRead();
@@ -130,10 +127,6 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
             return ($field && array_key_exists($field, $this['__WORKFLOW__'])) ? $this['__WORKFLOW__'][$field] : $this;
         }
 
-        if (!isset($this['core_tid'])) {
-            $this->clipValues();
-        }
-
         $pubtype  = Clip_Util::getPubType($this['core_tid']);
         $workflow = new Clip_Workflow($pubtype, $this);
         $workflow->getWorkflow();
@@ -185,21 +178,20 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      */
     public function clipFormGet($loadrels = false, $onlyown = true)
     {
-        $data = $this->clipValues()->toArray(false);
+        $data = $this->toArray(false);
 
         foreach (array_keys($this->getRelations($onlyown)) as $key) {
             // set the data object
             if ($this->$key instanceof Doctrine_Collection) {
                 foreach ($this->$key as $k => &$v) {
                     // exclude null records
-                    if ($v->exists()) {
-                        $v->clipValues();
+                    if (!$v->exists()) {
+                        unset($this->$key[$k]);
                     }
                 }
                 $data[$key] = $this->$key->toArray(false);
 
             } elseif ($this->$key instanceof Doctrine_Record && $this->$key->exists()) {
-                $this->$key->clipValues();
                 $data[$key] = $this->$key->toArray(false);
 
             } else {

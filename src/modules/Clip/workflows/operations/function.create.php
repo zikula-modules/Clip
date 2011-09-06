@@ -57,7 +57,6 @@ function Clip_operation_create(&$pub, $params)
     // save the object
     if ($pub->isValid()) {
         $pub->trySave();
-        $pub->clipValues();
         $result = array($pub['core_uniqueid'] => true);
 
         // TODO HOOKS let know that a publication was created

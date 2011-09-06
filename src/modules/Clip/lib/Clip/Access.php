@@ -172,9 +172,6 @@ class Clip_Access
         if ($pub instanceof Clip_Doctrine_Pubdata) {
             // check an already stored record
             if ($pub->exists()) {
-                if (!isset($pub['core_pid'])) {
-                    $pub->clipValues();
-                }
                 $pid = $pub['core_pid'];
 
                 $state = $pub->clipWorkflow('state');

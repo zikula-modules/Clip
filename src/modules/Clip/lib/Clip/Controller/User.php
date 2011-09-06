@@ -717,7 +717,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         // load the publication values and workflow
-        $pub->clipValues(true)
+        $pub->clipPostRead()
             ->clipWorkflow();
 
         // create the workflow object and execute the action
