@@ -196,11 +196,11 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
                         $v->clipValues();
                     }
                 }
-                $data[$key] = $this->$key->toArray();
+                $data[$key] = $this->$key->toArray(false);
 
             } elseif ($this->$key instanceof Doctrine_Record && $this->$key->exists()) {
                 $this->$key->clipValues();
-                $data[$key] = $this->$key->toArray();
+                $data[$key] = $this->$key->toArray(false);
 
             } else {
                 $data[$key] = null;

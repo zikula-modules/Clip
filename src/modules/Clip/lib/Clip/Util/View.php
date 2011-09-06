@@ -166,6 +166,51 @@ class Clip_Util_View
     }
 
     /**
+     * Get a common field of a list.
+     *
+     * Available attributes:
+     *  - list   (mixed)  The collection/array to process.
+     *  - field  (string) The field to retrieve.
+     *  - assign (string) The name of a template variable to assign the output to.
+     *
+     * Example:
+     *
+     *  Get the tid of a given collection and assign it to the template variable $tid:
+     *
+     *  <samp>{clip_util->getfield list=$publist field='core_tid' assign='tid'}</samp>
+     *
+     * @param array       $params All parameters passed to this plugin from the template.
+     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     *
+     * @return mixed Value of the field
+     */
+    function getvalue($params, Zikula_View $view)
+    {
+        $list  = isset($params['list'])  ? $params['list']  : array();
+        $field = isset($params['field']) ? (string)$params['field'] : '';
+
+        if (!$field) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->getvalue', 'field')));
+        }
+
+        if (!$list) {
+            return;
+        } else if ($list instanceof Doctrine_Collection) {
+            $record = $list->getFirst();
+        } else if (is_array($list)) {
+            $record = reset($list);
+        } else {
+            $view->trigger_error(__f('Error! in %1$s: the passed list is not a Doctrine_Collection nor an array.', 'clip_util->getvalue'));
+        }
+
+        if (!isset($record[$field])) {
+            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] does not exist on a list record.', array('clip_util->getvalue', 'field')));
+        }
+
+        return $record[$field];
+    }
+
+    /**
      * Retrieve a list of categories.
      *
      * Available attributes:
@@ -185,12 +230,12 @@ class Clip_Util_View
      */
     function getsubcategories($params, Zikula_View $view)
     {
-        $assign      = isset($params['assign'])      ? $params['assign']          : null;
         $cid         = isset($params['cid'])         ? (int)$params['cid']        : 0;
         $recurse     = isset($params['recurse'])     ? $params['recurse']         : true;
         $relative    = isset($params['relative'])    ? $params['relative']        : false;
         $includeRoot = isset($params['includeRoot']) ? $params['includeRoot']     : false;
         $includeLeaf = isset($params['includeLeaf']) ? $params['includeLeaf']     : true;
+        $onlyLeafs   = isset($params['onlyLeafs'])   ? $params['onlyLeafs']       : false;
         $all         = isset($params['all'])         ? $params['all']             : false;
         $excludeCid  = isset($params['excludeCid'])  ? (int)$params['excludeCid'] : '';
         $assocKey    = isset($params['assocKey'])    ? $params['assocKey']        : 'id';
@@ -200,15 +245,15 @@ class Clip_Util_View
             $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->getsubcategories', 'cid')));
         }
 
-        if (!$assign) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->getsubcategories', 'assign')));
-        }
-
         $cats = CategoryUtil::getSubCategories($cid, $recurse, $relative, $includeRoot, $includeLeaf, $all, $excludeCid, $assocKey, null, $sortField, null);
 
         $lang = ZLanguage::getLanguageCode();
 
-        foreach ($cats as &$cat) {
+        foreach ($cats as $k => &$cat) {
+            if ($onlyLeafs && !(bool)$cat['is_leaf']) {
+                unset($cats[$k]);
+                continue;
+            }
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
         }
 

@@ -96,6 +96,44 @@ class Clip_Util_Form
     }
 
     /**
+     * Get a common field of a data set.
+     *
+     * Available attributes:
+     *  - assign (string)  The name of a template variable to assign the output to.
+     *  - alias  (string)  Context of the value to set.
+     *  - tid    (integer) ID of the publication type.
+     *  - pid    (integer) ID of the publication.
+     *  - field  (string)  The field to retrieve.
+     *
+     * Example:
+     *
+     *  Get the category of a filtered loaded collection and assign it to the template variable $cid:
+     *
+     *  <samp>{clip_form->getfield field='category' assign='cid'}</samp>
+     *
+     * @param array       $args All parameters passed to this plugin from the template.
+     * @param Zikula_View $view Reference to the {@link Zikula_View} object.
+     *
+     * @return mixed Value of the field
+     */
+    function getvalue($args, Zikula_View $view)
+    {
+        $alias = isset($args['alias']) ? $args['alias'] : $this->alias;
+        $tid   = isset($args['tid']) ? $args['tid'] : $this->tid;
+        $field = isset($args['field']) ? (string)$args['field'] : null;
+
+        if (!$field) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_form->getvalue', 'field')));
+        }
+
+        $data = $view->getTplVar('data');
+
+        $record = isset($data[$alias][$tid]) ? reset($data[$alias][$tid]) : array();
+
+        return isset($record[$field]) ? $record[$field] : null;
+    }
+
+    /**
      * Load one publication.
      *
      * Available attributes:
@@ -125,7 +163,7 @@ class Clip_Util_Form
         $args['loadworkflow']  = false;
 
         $args['rel'] = array(
-            'load' => isset($args['loadrels']) ? (bool)$args['loadrels'] : false,
+            'load'    => isset($args['loadrels']) ? (bool)$args['loadrels'] : false,
             'onlyown' => isset($args['onlyown']) ? (bool)$args['onlyown'] : false
         );
         $args['rel'] = Clip_Util::getPubtypeConfig('edit', $args['rel']);
@@ -184,7 +222,7 @@ class Clip_Util_Form
         $args['loadworkflow']  = false;
 
         $args['rel'] = array(
-            'load' => isset($args['loadrels']) ? (bool)$args['loadrels'] : false,
+            'load'    => isset($args['loadrels']) ? (bool)$args['loadrels'] : false,
             'onlyown' => isset($args['onlyown']) ? (bool)$args['onlyown'] : false
         );
         $args['rel'] = Clip_Util::getPubtypeConfig('edit', $args['rel']);
@@ -218,6 +256,52 @@ class Clip_Util_Form
 
         $view->assign('data', $data);
     }
+
+    /**
+     * Load a value in the form data.
+     *
+     * Available attributes:
+     *  - alias (string)  Context of the value to set.
+     *  - tid   (integer) ID of the publication type.
+     *  - pid   (integer) ID of the publication.
+     *  - field (string) The field to retrieve.
+     *  - value (mixed)   Value to set.
+     *
+     * Example:
+     *
+     *  Load a single value on the form data:
+     *
+     *  <samp>{clip_form->loadvalue field='dummy' value=$pubdata.id}</samp>
+     *
+     * @param array       $params All parameters passed to this plugin from the template.
+     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     *
+     * @return void
+     */
+    public function loadvalue($args, Zikula_View &$view)
+    {
+        $alias = isset($args['alias']) ? $args['alias'] : $this->alias;
+        $tid   = isset($args['tid']) ? $args['tid'] : $this->tid;
+        $pid   = isset($args['pid']) ? $args['pid'] : $this->id;
+        $field = isset($args['field']) ? (string)$args['field'] : null;
+        $value = isset($args['value']) ? $args['value'] : null;
+
+        if (!$field) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->loadvalue', 'field')));
+        }
+
+        if (!$value) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->loadvalue', 'value')));
+        }
+
+        // processing
+        $data = $view->getTplVar('data');
+
+        $data[$alias][$tid][$pid][$field] = $value;
+
+        $view->assign('data', $data);
+    }
+
 
     /**
      * Set the ID of a loaded publication.
