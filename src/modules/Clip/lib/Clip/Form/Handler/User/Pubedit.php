@@ -274,7 +274,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if ($pubfields) {
             $this->pubfields = $pubfields;
         } else {
-            $this->pubfields = Clip_Util::getPubFields($this->tid)->toArray();
+            $this->pubfields = Clip_Util::getPubFields($this->tid)->toArray(false);
         }
 
         // publication assignment

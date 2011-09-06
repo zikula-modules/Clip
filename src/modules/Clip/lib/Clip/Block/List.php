@@ -121,16 +121,10 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         }
 
         // builds the pubtypes selector
-        $pubtypes = Clip_Util::getPubType(-1)->toArray();
-
-        foreach (array_keys($pubtypes) as $tid) {
-            $pubtypes[$tid] = $pubtypes[$tid]['title'];
-        }
+        $pubtypes = Clip_Util::getPubType(-1)->toKeyValueArray('tid', 'title');
 
         $pubfields = array();
         if (!empty($vars['tid'])) {
-            $pubfields = Clip_Util::getPubFields($vars['tid'])->toArray();
-
             $arraysort = array(
                 'core_empty' => array(),
                 'core_title' => array(),
@@ -177,6 +171,8 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
                     'value' => 'core_hitcount'
                 )
             );
+
+            $pubfields = Clip_Util::getPubFields($vars['tid']);
 
             foreach ($pubfields as $fieldname => $pubfield) {
                 $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;

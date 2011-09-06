@@ -456,13 +456,9 @@ class Clip_Util
     {
         $core_title = 'id';
 
-        if ($pubfields instanceof Doctrine_Collection) {
-            $pubfields = $pubfields->toArray();
-        }
-
-        foreach (array_keys($pubfields) as $i) {
-            if ($pubfields[$i]['istitle'] == 1) {
-                $core_title = $pubfields[$i]['name'];
+        foreach ($pubfields as $i => $pubfield) {
+            if ($pubfield['istitle'] == 1) {
+                $core_title = $pubfield['name'];
                 break;
             }
         }

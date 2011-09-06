@@ -116,18 +116,18 @@ class Clip_Api_Search extends Zikula_AbstractApi
     public static function get_searchable()
     {
         // Looking for pubtype with at least one searchable field
-        $pubtypes = Clip_Util::getPubType(-1)->toArray();
+        $pubtypes = Clip_Util::getPubType(-1);
 
         $searchable = Doctrine_Core::getTable('Clip_Model_Pubfield')
                       ->selectFieldArray('tid', "issearchable = '1'", '', true);
 
-        foreach ($pubtypes as $key => $pubtype)
+        foreach ($pubtypes as $tid => $pubtype)
         {
-            if (!in_array($key, $searchable)) {
+            if (!in_array($tid, $searchable)) {
                 unset($pubtypes[$key]);
             }
         }
 
-        return $pubtypes;
+        return $pubtypes->toArray(false);
     }
 }

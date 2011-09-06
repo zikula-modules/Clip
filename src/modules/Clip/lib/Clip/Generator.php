@@ -24,7 +24,7 @@ class Clip_Generator
         // get the record fields
         $recfields = $pubdata->pubFields();
 
-        $pubfields = Clip_Util::getPubFields($tid)->toArray();
+        $pubfields = Clip_Util::getPubFields($tid);
 
         $code = '';
         foreach ($recfields as $name => $recfield)
@@ -192,16 +192,16 @@ class Clip_Generator
     public static function pubedit($tid)
     {
         // publication fields
-        $pubfields = Clip_Util::getPubFields($tid)->toArray();
+        $pubfields = Clip_Util::getPubFields($tid);
 
         $code = '';
-        foreach (array_keys($pubfields) as $name) {
+        foreach ($pubfields as $name => $pubfield) {
             // get the formplugin name
-            $formplugin = $pubfields[$name]['fieldplugin'];
+            $formplugin = $pubfield['fieldplugin'];
 
             // FIXME lenghts
-            if (!empty($pubfields[$name]['fieldmaxlength'])) {
-                $maxlength = " maxLength='{$pubfields[$name]['fieldmaxlength']}'";
+            if (!empty($pubfield['fieldmaxlength'])) {
+                $maxlength = " maxLength='{$pubfield['fieldmaxlength']}'";
             } elseif ($formplugin == 'Text') {
                 $maxlength = " maxLength='65535'";
             } else {
@@ -215,7 +215,7 @@ class Clip_Generator
             $plugadd = '';
             $plugres = null;
             if (method_exists($plugin, 'getOutputEdit')) {
-                $plugres = $plugin->getOutputEdit($pubfields[$name]);
+                $plugres = $plugin->getOutputEdit($pubfield);
                 if (is_array($plugres)) {
                     if (isset($plugres['full'])) {
                         $code .= $plugres['full'];
@@ -229,7 +229,7 @@ class Clip_Generator
             if (!isset($plugres['full'])) {
                 $code .= "\n".
                         '                <div class="z-formrow">'."\n".
-                        '                    {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfields[$name]['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                        '                    {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfield['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
                         '                    {clip_form_plugin field=\''.$name.'\''.$maxlength.$plugadd.'}'."\n".
                         '                    {if $pubfields.'.$name.'.description|clip_translate}'."\n".
                         '                        <span class="z-formnote z-sub">{$pubfields.'.$name.'.description|clip_translate}</span>'."\n".
