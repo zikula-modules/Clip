@@ -213,6 +213,7 @@ class Clip_Util
                 'loadworkflow' => false
             ),
             'edit' => array(
+                'load' => true,
                 'onlyown' => true
             )
         );

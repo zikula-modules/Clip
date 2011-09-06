@@ -185,9 +185,9 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      */
     public function clipFormGet($loadrels = false, $onlyown = true)
     {
-        $data = $this->clipValues()->toArray();
+        $data = $this->clipValues()->toArray(false);
 
-        foreach (array_keys($this->getRelations($relconfig['onlyown'])) as $key) {
+        foreach (array_keys($this->getRelations($onlyown)) as $key) {
             // set the data object
             if ($this->$key instanceof Doctrine_Collection) {
                 foreach ($this->$key as $k => &$v) {
@@ -329,7 +329,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         $fields = $this->pubFields();
 
         $a = parent::toArray($deep, $prefixKey);
-        $a = array_intersect_key($a, $fields);
+        $a = $a ? array_intersect_key($a, $fields) : $fields;
 
         return $a;
     }
