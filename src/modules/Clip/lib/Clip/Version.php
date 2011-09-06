@@ -70,7 +70,7 @@ class Clip_Version extends Zikula_AbstractVersion
                       'maxversion' => '',
                       'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
                 array('modname'    => 'Thumbnail',
-                      'minversion' => '1.1',
+                      'minversion' => '1.4.0',
                       'maxversion' => '',
                       'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
         );
