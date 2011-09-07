@@ -326,7 +326,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
         $full = "\n".
                 '                <div class="z-formrow">'."\n".
-                '                    {formlabel for=\''.$field['name'].'\' text=$pubfields.'.$field['name'].'.title|clip_translate'.((bool)$field['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                '                    {clip_form_label for=\''.$field['name'].'\' text=$pubfields.'.$field['name'].'.title|clip_translate'.((bool)$field['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
                 '                    {clip_form_block field=\''.$field['name'].'\'}'."\n".
                 '                    {if $pubfields.'.$field['name'].'.description|clip_translate}'."\n".
                 '                        <span class="z-formnote z-sub">{$pubfields.'.$field['name'].'.description|clip_translate}</span>'."\n".

@@ -229,7 +229,7 @@ class Clip_Generator
             if (!isset($plugres['full'])) {
                 $code .= "\n".
                         '                <div class="z-formrow">'."\n".
-                        '                    {formlabel for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfield['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                        '                    {clip_form_label for=\''.$name.'\' text=$pubfields.'.$name.'.title|clip_translate'.((bool)$pubfield['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
                         '                    {clip_form_plugin field=\''.$name.'\''.$maxlength.$plugadd.'}'."\n".
                         '                    {if $pubfields.'.$name.'.description|clip_translate}'."\n".
                         '                        <span class="z-formnote z-sub">{$pubfields.'.$name.'.description|clip_translate}</span>'."\n".

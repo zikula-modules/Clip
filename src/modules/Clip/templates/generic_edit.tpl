@@ -25,7 +25,7 @@
 
                 {foreach from=$relations key='field' item='item' name='relations'}
                 <div class="z-formrow">
-                    {formlabel for=$field text=$item.title}
+                    {clip_form_label for=$field text=$item.title|clip_translate}
                     {clip_form_relation field=$field relation=$item minchars=2 op='likefirst'}
                 </div>
                 {/foreach}
@@ -37,30 +37,30 @@
                 <legend>{gt text='Publication options'}</legend>
 
                 <div class="z-formrow">
-                    {formlabel for='core_language' __text='Language'}
+                    {clip_form_label for='core_language' __text='Language'}
                     {clip_form_plugin field='core_language' mandatory=false}
                 </div>
 
                 <div class="z-formrow">
-                    {formlabel for='core_publishdate' __text='Publish date'}
+                    {clip_form_label for='core_publishdate' __text='Publish date'}
                     {clip_form_plugin field='core_publishdate' includeTime=true}
                     <em class="z-formnote z-sub">{gt text='Leave blank if you do not want to schedule the publication'}</em>
                 </div>
 
                 <div class="z-formrow">
-                    {formlabel for='core_expiredate' __text='Expire date'}
+                    {clip_form_label for='core_expiredate' __text='Expire date'}
                     {clip_form_plugin field='core_expiredate' includeTime=true}
                     <em class="z-formnote z-sub">{gt text='Leave blank if you do not want the plublication expires'}</em>
                 </div>
 
                 <div class="z-formrow">
-                    {formlabel for='core_visible' __text='Visible'}
+                    {clip_form_label for='core_visible' __text='Visible'}
                     {clip_form_plugin field='core_visible'}
                     <em class="z-formnote z-sub">{gt text='If not visible, will be excluded from lists and search results'}</em>
                 </div>
 
                 <div class="z-formrow">
-                    {formlabel for='core_locked' __text='Locked'}
+                    {clip_form_label for='core_locked' __text='Locked'}
                     {clip_form_plugin field='core_locked'}
                     <em class="z-formnote z-sub">{gt text='If enabled, the publication will be closed for changes'}</em>
                 </div>

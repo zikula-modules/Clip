@@ -17,23 +17,23 @@
                 <legend>{gt text='Content'}</legend>
 
                 <div class="z-formrow">
-                    {formlabel for='title' __text='Title' mandatorysym=true}
-                    {clip_form_plugin field='title' group='pubdata'}
+                    {clip_form_label for='title' __text='Title' mandatorysym=true}
+                    {clip_form_plugin field='title'}
                 </div>
 
                 <div class="z-formrow">
-                    {formlabel for='category' __text='Category'}
-                    {clip_form_plugin field='category' group='pubdata'}
+                    {clip_form_label for='category' __text='Category'}
+                    {clip_form_plugin field='category'}
                 </div>
 
                 <div class="z-formrow">
-                    {formlabel for='core_language' __text='Language'}
-                    {formlanguageselector id='core_language' group='pubdata' mandatory=false}
+                    {clip_form_label for='core_language' __text='Language'}
+                    {clip_form_plugin field='core_language' mandatory=false}
                 </div>
 
                 <div class="z-formrow">
-                    {formlabel for='content' __text='Content'}
-                    {clip_form_plugin field='content' maxLength='65535' rows='25' cols='70' group='pubdata'}
+                    {clip_form_label for='content' __text='Content'}
+                    {clip_form_plugin field='content' maxLength='65535' rows='25' cols='70'}
                 </div>
             </fieldset>
 
@@ -44,32 +44,32 @@
 
                 <div id="clip_page_settings">
                     <div class="z-formrow">
-                        {formlabel for='displayinfo' __text='Display page information'}
-                        {clip_form_plugin field='displayinfo' group='pubdata'}
+                        {clip_form_label for='displayinfo' __text='Display page information'}
+                        {clip_form_plugin field='displayinfo'}
                     </div>
 
                     <div class="z-formrow">
-                        {formlabel for='core_visible' __text='Visible'}
-                        {formcheckbox id='core_visible' group='pubdata' checked='checked'}
+                        {clip_form_label for='core_publishdate' __text='Publish date'}
+                        {clip_form_plugin field='core_publishdate' includeTime=true}
+                        <em class="z-formnote z-sub">{gt text='Leave blank if you do not want to schedule the publication'}</em>
+                    </div>
+
+                    <div class="z-formrow">
+                        {clip_form_label for='core_expiredate' __text='Expire date'}
+                        {clip_form_plugin field='core_expiredate' includeTime=true}
+                        <em class="z-formnote z-sub">{gt text='Leave blank if you do not want the plublication expires'}</em>
+                    </div>
+
+                    <div class="z-formrow">
+                        {clip_form_label for='core_visible' __text='Visible'}
+                        {clip_form_plugin field='core_visible'}
                         <em class="z-formnote z-sub">{gt text='If not visible, will be excluded from lists and search results'}</em>
                     </div>
 
                     <div class="z-formrow">
-                        {formlabel for='core_locked' __text='Locked'}
-                        {formcheckbox id='core_locked' group='pubdata' checked='checked'}
+                        {clip_form_label for='core_locked' __text='Locked'}
+                        {clip_form_plugin field='core_locked'}
                         <em class="z-formnote z-sub">{gt text='If enabled, the publication will be closed for changes'}</em>
-                    </div>
-
-                    <div class="z-formrow">
-                        {formlabel for='core_publishdate' __text='Publish date'}
-                        {formdateinput id='core_publishdate' group='pubdata' includeTime=true}
-                        <em class="z-formnote z-sub">{gt text='leave blank if you do not want to schedule the publication'}</em>
-                    </div>
-
-                    <div class="z-formrow">
-                        {formlabel for='core_expiredate' __text='Expire date'}
-                        {formdateinput id='core_expiredate' group='pubdata' includeTime=true}
-                        <em class="z-formnote z-sub">{gt text='leave blank if you do not want the plublication expires'}</em>
                     </div>
                 </div>
             </fieldset>
@@ -80,7 +80,7 @@
 
                 {foreach from=$relations key='field' item='item' name='relations'}
                 <div class="z-formrow">
-                    {formlabel for=$field text=$item.title}
+                    {clip_form_label for=$field text=$item.title|clip_translate}
                     {clip_form_relation field=$field relation=$item minchars=2 op='likefirst'}
                 </div>
                 {/foreach}
