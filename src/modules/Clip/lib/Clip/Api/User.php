@@ -20,6 +20,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param integer $args['tid']           ID of the publication type.
      * @param array   $args['where']         Direct where conditions to the query.
      * @param string  $args['filter']        Filter string.
+     * @param string  $args['distinct']      Distinct field to select.
      * @param string  $args['orderby']       OrderBy string.
      * @param integer $args['startnum']      Offset to start from.
      * @param integer $args['itemsperpage']  Number of items to retrieve.
@@ -59,6 +60,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'tid'           => (int)$args['tid'],
             'where'         => isset($args['where']) ? $args['where'] : array(),
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
+            'distinct'      => isset($args['distinct']) ? $args['distinct'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : null,
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)abs($args['startnum']) : 1,
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)abs($args['itemsperpage']) : 0,
@@ -118,6 +120,10 @@ class Clip_Api_User extends Zikula_AbstractApi
         //// Query setup
         $args['queryalias'] = "pub_{$args['tid']}";
         $query = $tableObj->createQuery($args['queryalias']);
+
+        if ($args['distinct']) {
+            $query->select("DISTINCT {$args['distinct']} as {$args['distinct']}");
+        }
 
         //// Filter
         // resolve the FilterUtil arguments
@@ -236,15 +242,26 @@ class Clip_Api_User extends Zikula_AbstractApi
             }
 
             //// execution and postprocess
-            $publist = $query->execute();
+            if ($args['distinct']) {
+                // distinct field
+                $publist = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-            for ($i = 0; $i < count($publist); $i++) {
-                // FIXME SECURITY individual permission check here and fetch additional ones?
-                $publist[$i]->clipProcess($args);
+                foreach ($publist as $k => $v) {
+                    $publist[$k] = $v[$args['distinct']];
+                }
+
+            } else {
+                // normal list
+                $publist = $query->execute();
+
+                for ($i = 0; $i < count($publist); $i++) {
+                    // FIXME SECURITY individual permission check here and fetch additional ones?
+                    $publist[$i]->clipProcess($args);
+                }
+
+                // store the arguments used
+                Clip_Util::setArgs('getallapi', $args);
             }
-
-            // store the arguments used
-            Clip_Util::setArgs('getallapi', $args);
         }
 
         //// Result
