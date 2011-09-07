@@ -10,10 +10,10 @@
     Rework of the available variables in the list and display templates.
         list:
             $tid => $pubtype.tid
-            $core_titlefield => $pubtype.titlefield
+            $core_titlefield => $pubdata.core_titlefield
         display:
             Publication data embeded in the $pubdata array
-            $core_titlefield => $pubtype.tittlefield
+            $core_titlefield => $pubdata.core_titlefield
             $core_tid => $pubdata.core_tid or $pubtype.tid
             $core_approvalstate => $pubdata.core_approvalstate
             $core_uniqueid => $pubdata.core_uniqueid
@@ -26,7 +26,7 @@
         getApprovalState        loadworkflow
     Plugins were renamed to have the clip_ prefix:
         pmadminsubmenu          clip_admin_submenu
-        pmarray                 clip_array
+        pmarray                 clip_dump
         pmformplugintype        clip_form_plugintype
         category_browser        clip_category_browser
         genericformplugin       clip_form_plugin

@@ -41,7 +41,7 @@ class Clip_Generator
                     '        <div class="z-formrow">'."\n".
                     '            <span class="z-label">{$relations.'.$name.'|clip_translate}:</span>'."\n".
                     '            {if $pubdata.'.$name.'|clip_exists}'."\n".
-                    '                <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'->toArray()}</pre>'."\n".
+                    '                <pre class="z-formnote">{clip_dump var=$pubdata.'.$name.'->toArray()}</pre>'."\n".
                     '            {else}'."\n".
                     '                <span class="z-formnote z-sub">{gt text=\''.no__('(empty)').'\'}</span>'."\n".
                     '            {/if}'."\n".
@@ -143,7 +143,7 @@ class Clip_Generator
                             if (is_array($pubdata[$name])) {
                                 // generic arrays
                                 $rowcode['body'] = "\n".
-                                    '            <pre class="z-formnote">{clip_array array=$pubdata.'.$name.'}</pre>';
+                                    '            <pre class="z-formnote">{clip_dump var=$pubdata.'.$name.'}</pre>';
 
                             } elseif (is_bool($pubdata[$name])) {
                                 // generic booleans

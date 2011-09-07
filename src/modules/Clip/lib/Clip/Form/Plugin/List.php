@@ -131,7 +131,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
                 '            {if $pubdata.'.$field['name'].'.id}'."\n".
                 '                <span class="z-formnote">{$pubdata.'.$field['name'].'.fullTitle}</span>'."\n".
                 '            {/if}'."\n".
-                '            <pre class="z-formnote">{clip_array array=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '            <pre class="z-formnote">{clip_dump var=$pubdata.'.$field['name'].'}</pre>'."\n".
                 '        </div>';
 
         return array('full' => $full);
