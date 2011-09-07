@@ -1,4 +1,3 @@
-
 {admincategorymenu}
 
 <div class="z-admin-content z-clearfix">
