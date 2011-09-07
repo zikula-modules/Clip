@@ -146,11 +146,16 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 
                 // reset any other title field if this one is enabled
                 if ($pubfield->istitle == true) {
-                    $tableObj->createQuery()
-                             ->update()
-                             ->set('istitle', '0')
-                             ->where('tid = ?', $pubfield->tid)
-                             ->execute();
+                    $q = $tableObj->createQuery()
+                                  ->update()
+                                  ->set('istitle', '0')
+                                  ->where('tid = ?', $pubfield->tid);
+
+                    if ($this->id) {
+                        $q->andWhere('id <> ?', $this->id);
+                    }
+
+                    $q->execute();
                 }
 
                 $pubfield->save();
