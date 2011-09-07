@@ -240,7 +240,7 @@ class Clip_Util
     {
         $reservedwords = array(
             'module', 'modname', 'func', 'type', 'tid', 'pid', 'id',
-            'submit', 'edit', '__WORKFLOW__'
+            'submit', 'edit', 'commandName', '__WORKFLOW__'
         );
 
         return (in_array($value, $reservedwords) || strpos('core_', $value) === 0 || strpos('rel_', $value) === 0);

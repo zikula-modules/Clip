@@ -167,10 +167,18 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     // figure out the action to take
                     if ($alias == $this->alias) {
                         $commandName = $args['commandName'];
-                    } else {
+
+                    } elseif (isset($pub->commandName)) {
+                        $commandName = $pub->commandName;
+
+                    } elseif (!is_numeric($pid) || !$pid) {
                         $this->workflow->setup($pubtype, $pub);
                         // get the first higher command permission for initial state
                         $commandName = $this->workflow->getHighestAction('id');
+
+                    } else {
+                        // assumes an update
+                        $commandName = 'update';
                     }
 
                     // perform the command
