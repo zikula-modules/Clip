@@ -95,7 +95,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if ($this->id) {
             $pubdata->assignIdentifier($this->id);
         }
-        $pubdata->clipPostRead();
+        $pubdata->clipValues(true);
 
         // fills the render
         $view->assign('data',       $data)

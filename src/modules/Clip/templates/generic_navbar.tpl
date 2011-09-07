@@ -75,7 +75,7 @@
 
                 {if $func neq 'display'}
                     {* edit check *}
-                    {if isset($pubdata.id)}
+                    {if $pubdata.id}
                     <span class="clip-breadtext">
                         <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}" title="{$pubdata.core_title}">
                             {$pubdata.core_title|truncate:40}
@@ -96,12 +96,12 @@
                 {/if}
 
                 {if $func neq 'display'}
-                    {if isset($pubdata.id)}
+                    {if $pubdata.id}
                     <span class="text_separator">&raquo;</span>
                     {/if}
 
                     <span class="clip-breadtext">
-                        {if isset($pubdata.id)}
+                        {if $pubdata.id}
                             {gt text='Edit'}
                         {else}
                             {gt text='Submit'}
