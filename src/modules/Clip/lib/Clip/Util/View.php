@@ -168,6 +168,74 @@ class Clip_Util_View
     }
 
     /**
+     * Tabulate a collection.
+     *
+     * Available attributes:
+     *  - assign (string) The name of a template variable to assign the output to (optional).
+     *  - var    (string) Name of the template variable to process.
+     *  - x      (string) Field name of the first axis.
+     *  - y      (string) Field name of the second axis.
+     *  - z      (string) Field name of the value.
+     *
+     * Example:
+     *
+     *  Get an array of values ready to tabulate:
+     *
+     *  <samp>{clip_util->tabulate var='collection' x='date' y='list' z='value' assign='table'}</samp>
+     *
+     * @param array       $args All parameters passed to this plugin from the template.
+     * @param Zikula_View $view Reference to the {@link Zikula_View} object.
+     *
+     * @return void
+     */
+    public function tabulate($args, Zikula_View &$view)
+    {
+        $var = isset($args['var']) ? $args['var'] : null;
+        $x   = isset($args['x']) ? $args['x'] : null;
+        $y   = isset($args['y']) ? $args['y'] : null;
+        $z   = isset($args['z']) ? $args['z'] : null;
+
+        if (!$var) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tabulate', 'var')));
+        }
+
+        $list = $view->getTplVar($var);
+
+        if ($list instanceof Doctrine_Collection) {
+            $record = $list->getFirst();
+        } else if (is_array($list)) {
+            $record = reset($list);
+        } else {
+            $view->trigger_error(__f('Error! in %1$s: the variable [%2$s] is not a collection or array.', array('clip_util->tabulate', $var)));
+        }
+
+        if (!$x || !isset($record[$x])) {
+            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] is not valid.', array('clip_util->tabulate', $x)));
+        }
+
+        if (!$y || !isset($record[$y])) {
+            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] is not valid.', array('clip_util->tabulate', $y)));
+        }
+
+        if (!$z || !isset($record[$z])) {
+            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] is not valid.', array('clip_util->tabulate', $z)));
+        }
+
+        $table = array();
+
+        foreach ($list as $record) {
+            $field1 = $record[$x];
+            $field2 = $record[$y];
+            if (!isset($table[$field1])) {
+                $table[$field1] = array();
+            }
+            $table[$field1][$field2] = $record[$z];
+        }
+
+        return $table;
+    }
+
+    /**
      * Get a common field of a list.
      *
      * Available attributes:
