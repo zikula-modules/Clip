@@ -35,6 +35,10 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
         $render->trigger_error($render->__f('Error! Missing argument [%s].', 'field'));
     }
 
+    if ($params['field'] == 'id') {
+        $render->trigger_error($render->__f("Error! '%1\$s' parameter cannot be '%2\$s'.", array('field', 'id')));
+    }
+
     // clip data handling
     $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
     $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();

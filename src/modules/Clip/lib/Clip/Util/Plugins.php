@@ -223,7 +223,9 @@ class Clip_Util_Plugins
                 $corefield['fieldplugin'] = 'Language';
                 break;
 
+            case 'core_pid':
             case 'core_hitcount':
+            case 'core_revision':
                 $corefield['fieldplugin'] = 'Int';
                 break;
 
