@@ -34,7 +34,7 @@
             <span class="z-formnote z-sub">{gt text='Any filter string to use in the export.'}</span>
         </div>
         <div class="z-formrow">
-            {formlabel text='Export data'}
+            {formlabel text='Export data' for='exportdata_options'}
             <div id="exportdata_options">
                 {formradiobutton id='exportdata1' dataField='exportdata' value=1} {formlabel for='exportdata1' __text='Yes'}
                 {formradiobutton id='exportdata0' dataField='exportdata' value=0} {formlabel for='exportdata0' __text='No'}
