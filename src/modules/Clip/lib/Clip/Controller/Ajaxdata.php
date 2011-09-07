@@ -45,7 +45,7 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
-        $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
+        $pubtype = Clip_Util::getPubType($args['tid']);
 
         // Security check
         $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'list'));

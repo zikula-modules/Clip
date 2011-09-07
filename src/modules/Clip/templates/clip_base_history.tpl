@@ -24,7 +24,7 @@
                 {$pubitem.core_pid}
             </td>
             <td>
-                {$pubitem[$pubtype.titlefield]}
+                {$pubitem.core_title|safetext}
             </td>
             <td>
                 {$pubitem.core_revision}

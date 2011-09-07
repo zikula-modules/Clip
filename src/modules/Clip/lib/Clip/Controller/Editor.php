@@ -76,7 +76,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
-        $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
+        $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'editor'));
@@ -159,7 +159,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
-        $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
+        $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
         // define the arguments

@@ -112,15 +112,9 @@ class Clip_Model_Pubtype extends Doctrine_Record
     /**
      * Clip utility methods
      */
-    public function mapTitleField()
+    public function getTitleField()
     {
-        if ($this->contains('titlefield')) {
-            return $this;
-        }
-
-        $this->mapValue('titlefield', Clip_Util::getTitleField($this->tid));
-
-        return $this;
+        return Doctrine_Core::getTable('ClipModels_Pubdata'.$this->tid)->getRecord()->core_titlefield;
     }
 
     public function getTableName()

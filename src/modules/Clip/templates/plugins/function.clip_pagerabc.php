@@ -49,7 +49,7 @@ function smarty_function_clip_pagerabc($params, Zikula_View &$view)
     }
 
     if ($params['field'] == 'core_title') {
-        $params['field'] = $pubtype['titlefield'];
+        $params['field'] = $pubtype->getTitleField();
     }
 
     if (!isset($params['varname'])) {

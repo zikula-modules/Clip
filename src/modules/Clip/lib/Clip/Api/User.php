@@ -48,7 +48,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype = Clip_Util::getPubType($args['tid'])->mapTitleField();
+        $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
@@ -218,11 +218,9 @@ class Clip_Api_User extends Zikula_AbstractApi
         //// Collection
         if ($args['countmode'] != 'just') {
             //// Order by
-            // map the unprocessed orderby to the pubtype
-            $pubtype->mapValue('orderby', $args['orderby']);
             // replaces the core_title alias by the original field name
             if (strpos($args['orderby'], 'core_title') !== false) {
-                $args['orderby'] = str_replace('core_title', $pubtype['titlefield'], $args['orderby']);
+                $args['orderby'] = str_replace('core_title', $pubtype->getTitleField(), $args['orderby']);
             }
             // check if some plugin specific orderby has to be done
             $args['orderby'] = Clip_Util_Plugins::handleOrderBy($args['orderby'], $pubfields, $args['queryalias'].'.');
