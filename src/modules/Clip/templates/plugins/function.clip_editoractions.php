@@ -62,8 +62,9 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
         //$class = isset($action['parameters']['link']['class']) ? $action['parameters']['link']['class'] : '';
         $args['action'] = $aid;
         $args['csrftoken'] = $token;
+        $onclick = isset($action['parameters']['button']['confirmMessage']) ? 'onclick="return confirm(\''.$action['parameters']['button']['confirmMessage'].'\')" ' : '';
         $links[] = '<span class="clip-ac-'.$aid.'">'.
-                   '  <a href="'.ModUtil::url('Clip', 'user', 'exec', $args).'" title="'.$action['description'].'">'.$action['title'].'</a>'.
+                   '  <a '.$onclick.'href="#'.ModUtil::url('Clip', 'user', 'exec', $args).'" title="'.$action['description'].'">'.$action['title'].'</a>'.
                    '</span>';
     }
     $output .= implode(' <span class="text_separator">|</span> ', $links);
