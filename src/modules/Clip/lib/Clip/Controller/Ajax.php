@@ -50,7 +50,7 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         if ($mode == 'edit') {
             // edit mode of an existing item
             if (!$gid) {
-                return new Zikula_Response_Ajax_BadData($this->__f("Error! Cannot determine valid '%s' for edit in '%s'.", array('gid', 'editgroup')));
+                return new Zikula_Response_Ajax_BadData($this->__f("Error! Cannot determine valid '%1$s' for edit in '%2$s'.", array('gid', 'editgroup')));
             }
             $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
             $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));

@@ -559,7 +559,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             $args['id'] = (int)ModUtil::apiFunc('Clip', 'user', 'getId', $args);
 
             if (!$args['id']) {
-                return LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($args['tid'], $args['pid'])));
+                return LogUtil::registerError($this->__f('Error! No such publication [%1$s - %2$s] found.', array($args['tid'], $args['pid'])));
             }
         }
 
@@ -576,7 +576,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             // validate the publication
             if (!$pubdata) {
-                LogUtil::registerError($this->__f('Error! No such publication [%s - %s] found.', array($args['tid'], $args['id'])));
+                LogUtil::registerError($this->__f('Error! No such publication [%1$s - %2$s] found.', array($args['tid'], $args['id'])));
 
                 return $this->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid'])));
             }
