@@ -36,7 +36,7 @@
                 {assign var='msgcolor' value='#00d900'}
                 {assign var='message' __value='The given path is writeable'}
             {/if}
-            <span class="z-formnote">
+            <span class="z-formnote z-sub">
                 {gt text='Path where uploaded files will be stored, relative to the site root (%s)' tag1=$siteroot}<br />
                 <span style="color: {$msgcolor};">{$message}</span>
             </span>
@@ -57,7 +57,7 @@
                 {assign var='msgcolor' value='#00d900'}
                 {assign var='message' __value='The given path is writeable'}
             {/if}
-            <span class="z-formnote">
+            <span class="z-formnote z-sub">
                 {gt text="Path where Clip stores temporary files. The folder must be named 'ClipModels'"}<br />
                 <span style="color: {$msgcolor};">{$message}</span>
             </span>
@@ -65,14 +65,14 @@
         <div class="z-formrow">
             {formlabel for='shorturls' __text='Default template'}
             {formtextinput id='shorturls' maxLength='40'}
-            <span class="z-formnote">
+            <span class="z-formnote z-sub">
                 {gt text="Default template used in short URLs. Leave it empty to nor use extensions with short URls enabled. Only 'htm' and 'html' are omitted of special processing."}
             </span>
         </div>
         <div class="z-formrow">
             {formlabel for='maxperpage' __text='Max. items per page'}
             {formintinput id='maxperpage' maxLength=4 minValue=0 maxValue=9999}
-            <span class="z-formnote">
+            <span class="z-formnote z-sub">
                 {gt text='Maximum number of items to display when a pubtype does not have a limit.'}
             </span>
         </div>
