@@ -53,9 +53,9 @@ class Clip_Api_Search extends Zikula_AbstractApi
 
         foreach ($pubtypes as $pubtype)
         {
-            if ($search_tid == '' || isset($search_tid[$pubtype['tid']])) {
+            if ($search_tid == '' || isset($search_tid[$pubtype->tid])) {
                 $where_arr = Doctrine_Core::getTable('Clip_Model_Pubfield')
-                             ->selectFieldArray('name', "issearchable = '1' AND tid = '$pubtype[tid]'");
+                             ->selectFieldArray('name', "issearchable = '1' AND tid = '$pubtype->tid'");
 
                 $where  = Search_Api_User::construct_where($args, $where_arr, 'core_language');
                 $where .= " AND core_visible = '1'
@@ -64,18 +64,18 @@ class Clip_Api_Search extends Zikula_AbstractApi
                             AND (core_publishdate <= NOW() OR core_publishdate IS NULL)
                             AND (core_expiredate >= NOW() OR core_expiredate IS NULL)";
 
-                $publist = Doctrine_Core::getTable('ClipModels_Pubdata'.$pubtype['tid'])
+                $publist = Doctrine_Core::getTable('ClipModels_Pubdata'.$pubtype->tid)
                            ->selectCollection($where)
                            ->toArray();
 
-                $core_title = Clip_Util::getTitleField($pubtype['tid']);
+                $core_title = $pubtype->getTitleField();
 
                 foreach ($publist as $pub)
                 {
                     $record = array(
                         'title'   => $pub[$core_title],
                         'text'    => '',
-                        'extra'   => serialize(array('tid' => $pubtype['tid'], 'pid' => $pub['core_pid'])),
+                        'extra'   => serialize(array('tid' => $pubtype->tid, 'pid' => $pub['core_pid'])),
                         'created' => $pub['cr_date'],
                         'module'  => 'Clip',
                         'session' => $sessionId
@@ -128,6 +128,6 @@ class Clip_Api_Search extends Zikula_AbstractApi
             }
         }
 
-        return $pubtypes->toArray(false);
+        return $pubtypes;
     }
 }

@@ -42,7 +42,7 @@ class Clip_Doctrine_Table extends Doctrine_Table
 
         // add the core_title as another filter field
         $tid = Clip_Util::getTidFromString($this->getTableName());
-        $columns['core_title'] = Clip_Util::getTitleField($tid);
+        $columns['core_title'] = Clip_Util::getPubType($tid)->getTitleField();
 
         return $columns;
     }
@@ -64,9 +64,9 @@ class Clip_Doctrine_Table extends Doctrine_Table
     /**
      * Select and return a field value.
      *
-     * @param string $field The name of the field we wish to marshall.
-     * @param arry   $where The where clause (optional) (default=array()).
-     * @param string  $orderBy  The orderby clause (optional) (default='').
+     * @param string $field   The name of the field we wish to marshall.
+     * @param arry   $where   The where clause (optional) (default=array()).
+     * @param string $orderBy The orderby clause (optional) (default='').
      *
      * @return string The resulting field value.
      */

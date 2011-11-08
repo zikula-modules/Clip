@@ -429,20 +429,12 @@ class Clip_Util
      *
      * @return array One or all the pubtype titles.
      */
-    public static function getTitleField($tid = -1)
+    public static function getTitleField($tid)
     {
-        static $pubtitles_arr;
+        $titlefield = Doctrine_Core::getTable('Clip_Model_Pubfield')
+                          ->selectField('name', "tid = '$tid' AND istitle = '1'");
 
-        if (!isset($pubtitles_arr)) {
-            $pubtitles_arr = Doctrine_Core::getTable('Clip_Model_Pubfield')
-                             ->selectFieldArray('name', "istitle = '1'", '', false, 'tid');
-        }
-
-        if ($tid == -1) {
-            return $pubtitles_arr;
-        }
-
-        return isset($pubtitles_arr[(int)$tid]) ? $pubtitles_arr[(int)$tid] : 'id';
+        return $titlefield ? $titlefield : 'id';
     }
 
     /**

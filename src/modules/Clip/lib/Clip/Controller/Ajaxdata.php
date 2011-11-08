@@ -71,7 +71,7 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
         }
 
         //// Misc values
-        $titlefield = Clip_Util::getTitleField($args['tid']);
+        $titlefield = $pubtype->getTitleField();
 
         // piece needed by the autocompleter
         if (!empty($args['keyword'])) {

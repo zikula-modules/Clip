@@ -621,7 +621,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                         $urltitle = $_['title'];
                     } else {
                         $urltitle = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
-                                    ->selectFieldBy(Clip_Util::getTitleField($tid), $pid, 'core_pid');
+                                    ->selectFieldBy(Clip_Util::getPubType($tid)->getTitleField(), $pid, 'core_pid');
                         $urltitle = DataUtil::formatPermalink($urltitle);
                     }
                     $cache['title'][$tid][$pid] = $urltitle;
