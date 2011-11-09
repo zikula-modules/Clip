@@ -163,6 +163,9 @@ class Clip_Installer extends Zikula_AbstractInstaller
      */
     public function uninstall()
     {
+        // loads the pubdata models
+        ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
+
         // drop pubtype tables
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->findAll();
 
