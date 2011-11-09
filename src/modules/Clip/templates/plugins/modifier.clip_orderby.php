@@ -21,10 +21,10 @@
  *  <samp>{'core_pid'|clip_orderby:'core_title'}</samp>
  *  returns 'core_title'.
  *
- *  <samp>{'core_title'|clip_orderby:'core_title':'css'} </samp>
+ *  <samp>{'core_title'|clip_orderby:'core_title':'class'} </samp>
  *  returns 'z-order-desc'.
  *
- *  <samp>{'core_pid'|clip_orderby:'core_title':'css'} </samp>
+ *  <samp>{'core_pid'|clip_orderby:'core_title':'class'} </samp>
  *  returns 'z-order-asc'.
  *
  * @param string $orderby The orderby to process.

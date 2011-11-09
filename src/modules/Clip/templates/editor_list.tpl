@@ -10,17 +10,17 @@
         <thead>
             <tr>
                 <th class="z-w05 z-center">
-                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_pid'}" class="{$pubtype.orderby|clip_orderby:'core_pid':'class'}">
+                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$clipargs.getallapi.orderby|clip_orderby:'core_pid'}" class="{$clipargs.getallapi.orderby|clip_orderby:'core_pid':'class'}">
                         {gt text='PID'}
                     </a>
                 </th>
                 <th>
-                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_title'}" class="{$pubtype.orderby|clip_orderby:'core_title':'class'}">
+                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$clipargs.getallapi.orderby|clip_orderby:'core_title'}" class="{$clipargs.getallapi.orderby|clip_orderby:'core_title':'class'}">
                         {gt text='Title'}
                     </a>
                 </th>
                 <th>
-                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'core_author'}" class="{$pubtype.orderby|clip_orderby:'core_author':'class'}">
+                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$clipargs.getallapi.orderby|clip_orderby:'core_author'}" class="{$clipargs.getallapi.orderby|clip_orderby:'core_author':'class'}">
                         {gt text='Author'}
                     </a>
                 </th>
@@ -28,12 +28,12 @@
                     {gt text='Online'}
                 </th>
                 <th class="z-w15 z-right">
-                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'cr_date'}" class="{$pubtype.orderby|clip_orderby:'cr_date':'class'}">
+                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$clipargs.getallapi.orderby|clip_orderby:'cr_date'}" class="{$clipargs.getallapi.orderby|clip_orderby:'cr_date':'class'}">
                         {gt text='Creation date'}
                     </a>
                 </th>
                 <th class="z-w15 z-right">
-                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$pubtype.orderby|clip_orderby:'lu_date'}" class="{$pubtype.orderby|clip_orderby:'lu_date':'class'}">
+                    <a href="{clip_url func='list' tid=$pubtype.tid orderby=$clipargs.getallapi.orderby|clip_orderby:'lu_date'}" class="{$clipargs.getallapi.orderby|clip_orderby:'lu_date':'class'}">
                         {gt text='Last modified'}
                     </a>
                 </th>
