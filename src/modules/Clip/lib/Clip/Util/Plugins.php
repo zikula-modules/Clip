@@ -237,6 +237,7 @@ class Clip_Util_Plugins
             case 'core_publishdate':
             case 'core_expiredate':
                 $corefield['fieldplugin'] = 'Date';
+                $corefield['typedata'] = '1';
                 break;
 
             case 'core_visible':

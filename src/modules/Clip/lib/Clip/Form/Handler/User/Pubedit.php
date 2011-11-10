@@ -84,10 +84,13 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     }
                 }
             }
-        } else {
+        } elseif (!$view->isValid()) {
             // assign the incoming data
             $data = $view->getValues();
             $data = $data['data'];
+        } else {
+            // let the handleCommand to work
+            $data = array();
         }
 
         // clone the pub to assign the pubdata and do not modify the pub data

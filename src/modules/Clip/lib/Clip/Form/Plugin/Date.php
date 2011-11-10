@@ -15,7 +15,6 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     public $pluginTitle;
     public $columnDef = 'T';
     public $filterClass = 'date';
-    public $config = array();
 
     // Clip data handling
     public $alias;
@@ -44,7 +43,8 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
         $this->parseConfig($params['fieldconfig']);
         unset($params['fieldconfig']);
 
-        $params['includeTime'] = isset($params['includeTime']) ? $params['includeTime'] : $this->config['includeTime'];
+        $params['includeTime'] = isset($params['includeTime']) ? $params['includeTime'] : $this->includeTime;
+        $params['ifFormat']    = $params['includeTime'] ? '%Y-%m-%d %H:%M' : '%Y-%m-%d';
 
         parent::readParameters($view, $params);
     }
@@ -82,7 +82,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     public function getOutputDisplay($field)
     {
         $this->parseConfig($field['typedata']);
-        $format = $this->config['includeTime'] ? 'datetimelong' : 'datelong';
+        $format = $this->includeTime ? 'datetimelong' : 'datelong';
 
         $body = "\n".
             '            <span class="z-formnote">{$pubdata.'.$field['name']."|dateformat:'$format'}</span>";
@@ -110,7 +110,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     public function getConfigHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
-        $checked = $this->config['includeTime'] ? 'checked="checked"' : '';
+        $checked = $this->includeTime ? 'checked="checked"' : '';
 
         $html = '<div class="z-formrow">
                      <label for="clipplugin_usedatetime">'.$this->__('Include time').':</label>
@@ -126,6 +126,6 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     public function parseConfig($typedata='', $args=array())
     {
         // config string: "(bool)includeTime"
-        $this->config['includeTime'] = (bool)$typedata;
+        $this->includeTime = (bool)$typedata;
     }
 }

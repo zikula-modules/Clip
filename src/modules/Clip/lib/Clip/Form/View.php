@@ -182,4 +182,20 @@ class Clip_Form_View extends Zikula_Form_View
     {
         throw new Exception($error_msg);
     }
+
+    /**
+     * Read all values from the form.
+     *
+     * @return mixed
+     */
+    public function getValues()
+    {
+        static $result = array();
+
+        if (empty($result)) {
+            $this->getValues_rec($this->plugins, $result);
+        }
+
+        return $result;
+    }
 }
