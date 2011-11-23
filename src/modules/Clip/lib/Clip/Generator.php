@@ -890,7 +890,12 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             $checked = true;
 
             $tid  = Clip_Util::getPubType()->getFirst()->tid;
-            $file = ModUtil::getVar('Clip', 'modelspath')."/Pubdata$tid.php";
+            $path = ModUtil::getVar('Clip', 'modelspath');
+            $file = $path."/Pubdata$tid.php";
+
+            if (!is_dir($path)) {
+                mkdir($path, System::getVar('system.chmod_dir', 0777), true);
+            }
 
             if (!file_exists($file)) {
                 self::createModels();
