@@ -173,8 +173,8 @@ class Clip_Api_User extends Zikula_AbstractApi
         // add the conditions to the query
         // restrictions for non-editors
         if ($args['limitdate']) {
-            $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
-            $query->andWhere('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
+            $query->andWhere('(core_publishdate IS NULL OR core_publishdate <= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
+            $query->andWhere('(core_expiredate IS NULL OR core_expiredate >= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
         }
         // query for the current user language
         $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
@@ -333,8 +333,8 @@ class Clip_Api_User extends Zikula_AbstractApi
         $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
         // restrictions for non-editors
         if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
-            $query->andWhere('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
-            $query->andWhere('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
+            $query->andWhere('(core_publishdate IS NULL OR core_publishdate <= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
+            $query->andWhere('(core_expiredate IS NULL OR core_expiredate >= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
         }
         // additional call specifications
         foreach ($args['where'] as $method => $condition) {

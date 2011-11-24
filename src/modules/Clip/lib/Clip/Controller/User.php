@@ -285,8 +285,8 @@ class Clip_Controller_User extends Zikula_AbstractController
         $apiargs['where'][] = array('core_online = ?', 1);
         $apiargs['where'][] = array('core_visible = ?', 1);
         $apiargs['where'][] = array('core_intrash = ?', 0);
-        $apiargs['where'][] = array('(core_publishdate <= ? OR core_publishdate IS NULL)', new Doctrine_Expression('NOW()'));
-        $apiargs['where'][] = array('(core_expiredate >= ? OR core_expiredate IS NULL)', new Doctrine_Expression('NOW()'));
+        $apiargs['where'][] = array('(core_publishdate IS NULL OR core_publishdate <= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
+        $apiargs['where'][] = array('(core_expiredate IS NULL OR core_expiredate >= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
 
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
