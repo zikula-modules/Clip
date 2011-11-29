@@ -13,10 +13,10 @@
  * Returns a url depending on the context.
  *
  * Available parameters:
- *  - type    (string) Target function type (default: current type).
- *  - func    (string) Target function name.
- *  - args    (array)  URL arguments.
- *  - *       Remaining parameters goes as url arguments.
+ *  - forcetype (string) Target function type (default: current type).
+ *  - func      (string) Target function name.
+ *  - args      (array)  URL arguments.
+ *  - *         Remaining parameters goes as url arguments.
  *
  * Example:
  *
