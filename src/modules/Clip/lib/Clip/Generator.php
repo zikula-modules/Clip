@@ -500,6 +500,7 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
     public function assignClipValues(&\$obj)
     {
         if (is_object(\$obj)) {
+            \$obj->clip_state = false;
             \$obj->mapValue('core_tid', $tid);
             \$obj->mapValue('core_title', '');
             \$obj->mapValue('core_titlefield', '$titlefield');

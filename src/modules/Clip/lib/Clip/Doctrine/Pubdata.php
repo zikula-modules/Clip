@@ -14,7 +14,7 @@
  */
 class Clip_Doctrine_Pubdata extends Doctrine_Record
 {
-    protected $state;
+    public $clip_state;
 
     /**
      * String output of a publication.
@@ -107,8 +107,8 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      */
     public function clipPostRead()
     {
-        if (!$this->state) {
-            $this->state = true;
+        if (!$this->clip_state) {
+            $this->clip_state = true;
 
             Clip_Util_Plugins::postRead($this);
         }
