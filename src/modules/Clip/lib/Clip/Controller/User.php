@@ -28,7 +28,9 @@ class Clip_Controller_User extends Zikula_AbstractController
         {
             case 'list':
                 return $this->view(isset($args[0])? $args[0]: array());
-                break;
+
+            default:
+                return parent::__call($func, $args);
         }
     }
 
