@@ -330,7 +330,7 @@ Zikula.Clip.Container = Class.create(
             form.select('input[type=submit]').invoke('disable');
 
             new Zikula.Ajax.Request(
-                'ajax.php?tid='+Zikula.Clip.Container.pars.tid+'&module=Clip&type=ajax&func='+Zikula.Clip.Container.func,
+                'ajax.php?module=Clip&type=ajax&func='+Zikula.Clip.Container.func+'&tid='+Zikula.Clip.Container.pars.tid+'&lang='+Zikula.Config.lang,
                 {
                     method: 'post',
                     parameters: form.serialize(),
@@ -553,7 +553,7 @@ Zikula.Clip.MenuAction = function(node, action)
     }
 
     new Zikula.Ajax.Request(
-        'ajax.php', {
+        'ajax.php?lang='+Zikula.Config.lang, {
             parameters: pars,
             onComplete: Zikula.Clip.MenuActionCallback
         });
@@ -675,7 +675,7 @@ Zikula.Clip.EditNode = function(res)
     var pars = Zikula.Clip.Form.serialize(true);
     pars.mode = 'edit';
 
-    new Zikula.Ajax.Request('ajax.php?module=Clip&type=ajaxexec&func=savegroup', {
+    new Zikula.Ajax.Request('ajax.php?module=Clip&type=ajaxexec&func=savegroup&lang='+Zikula.Config.lang, {
         parameters: pars,
         onComplete: function(req) {
             var data = req.getData();
@@ -709,7 +709,7 @@ Zikula.Clip.AddNode = function(res)
     var pars = Zikula.Clip.Form.serialize(true);
     pars.mode = 'add';
 
-    new Zikula.Ajax.Request('ajax.php?module=Clip&type=ajaxexec&func=savegroup', {
+    new Zikula.Ajax.Request('ajax.php?module=Clip&type=ajaxexec&func=savegroup&lang='+Zikula.Config.lang, {
         parameters: pars,
         onComplete: function(req) {
             var data = req.getData();
@@ -772,7 +772,7 @@ Zikula.Clip.Resequence =
         node.insert({bottom: Zikula.Clip.Indicator()});
 
         var request = new Zikula.Ajax.Request(
-            "ajax.php?module=Clip&type=ajaxexec&func=treeresequence",
+            'ajax.php?module=Clip&type=ajaxexec&func=treeresequence',
             {
                 parameters: {'data': data},
                 onComplete: Zikula.Clip.Resequence.Callback
@@ -821,7 +821,7 @@ Zikula.Clip.Ajax =
 
         // perform the ajax request
         new Zikula.Ajax.Request(
-            'ajax.php',
+            'ajax.php?lang='+Zikula.Config.lang,
             {
                 method: 'get',
                 parameters: pars,

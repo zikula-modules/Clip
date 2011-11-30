@@ -73,7 +73,7 @@ class Clip_Form_Plugin_Relations_Autocompleter extends Clip_Form_Plugin_Relation
             function clip_enable_'.$this->id.'() {
                 var_auto_'.$this->id.' = new Zikula.Autocompleter(\''.$this->id.'\', \''.$this->id.'_div\',
                                                  {
-                                                  fetchFile: Zikula.Config.baseURL+\'ajax.php\',
+                                                  fetchFile: Zikula.Config.baseURL+\'ajax.php?lang=\'+Zikula.Config.lang,
                                                   parameters: {
                                                     module: "Clip",
                                                     type: "ajaxdata",
