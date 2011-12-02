@@ -102,8 +102,8 @@ class Clip_Util_View
         $args['filter'] = isset($args['filter']) ? $args['filter'] : '()';
         // search for additional filters like FilterUtil
         $i = 1;
-        while (isset($args["filter$i"])) {
-            $args['filter'] .= '*' . !empty($args["filter$i"]) ? $args["filter$i"] : '()';
+        while (isset($args["filter$i"]) && $args["filter$i"]) {
+            $args['filter'] .= '*' . $args["filter$i"];
             $i++;
         }
 
