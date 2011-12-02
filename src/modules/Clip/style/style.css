@@ -796,7 +796,7 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 .clip-post-content {
   padding: 12px 0;
 }
-.clip-post-content *:last-child {
+.clip-post-content > *:last-child {
   padding-bottom: 0;
   margin-bottom: 0;
 }

@@ -116,7 +116,7 @@ class Clip_Util_Form
      *
      * @return mixed Value of the field
      */
-    function getvalue($args, Zikula_View $view)
+    public function getvalue($args, Zikula_View $view)
     {
         $alias = isset($args['alias']) ? $args['alias'] : $this->alias;
         $tid   = isset($args['tid']) ? $args['tid'] : $this->tid;
@@ -164,7 +164,7 @@ class Clip_Util_Form
 
         $args['rel'] = array(
             'load'    => isset($args['loadrels']) ? (bool)$args['loadrels'] : false,
-            'onlyown' => isset($args['onlyown']) ? (bool)$args['onlyown'] : false
+            'onlyown' => isset($args['onlyown']) ? (bool)$args['onlyown'] : true
         );
         $args['rel'] = Clip_Util::getPubtypeConfig('edit', $args['rel']);
 
@@ -182,7 +182,7 @@ class Clip_Util_Form
         // processing
         $data = $view->getTplVar('data');
 
-        $data[$this->alias][$this->tid][$pub->id] = $pub->clipFormGet($args['rel']['load'], $args['rel']['onlyown']);
+        $data[$this->alias][$args['tid']][$pub->id] = $pub->clipFormGet($args['rel']['load'], $args['rel']['onlyown']);
 
         $view->assign('data', $data);
     }
@@ -223,7 +223,7 @@ class Clip_Util_Form
 
         $args['rel'] = array(
             'load'    => isset($args['loadrels']) ? (bool)$args['loadrels'] : false,
-            'onlyown' => isset($args['onlyown']) ? (bool)$args['onlyown'] : false
+            'onlyown' => isset($args['onlyown']) ? (bool)$args['onlyown'] : true
         );
         $args['rel'] = Clip_Util::getPubtypeConfig('edit', $args['rel']);
 
@@ -251,7 +251,7 @@ class Clip_Util_Form
         $data = $view->getTplVar('data');
 
         foreach ($pubs['publist'] as $pub) {
-            $data[$this->alias][$this->tid][$pub->id] = $pub->clipFormGet($args['rel']['load'], $args['rel']['onlyown']);
+            $data[$this->alias][$args['tid']][$pub->id] = $pub->clipFormGet($args['rel']['load'], $args['rel']['onlyown']);
         }
 
         $view->assign('data', $data);
@@ -332,30 +332,28 @@ class Clip_Util_Form
         }
 
         $data = $data[$this->alias][$this->tid];
+        
+        // validate the parameters existance
+        $pub = reset($data);
+        foreach (array_keys($params) as $field) {
+            if (!array_key_exists($field, $pub)) {
+                return $view->trigger_error(__('The passed parameters does not match with the publications to search.', ZLanguage::getModuleDomain('Clip')));
+            }
+        }
 
         foreach ($data as $id => $pub) {
             $found = true;
-            foreach ($params as $alias => $value) {
-                if (!array_key_exists($alias, $pub)) {
-                    $found = false;
-                    break;
-                }
-                if (is_null($value) && is_null($pub[$alias])) {
-                    // handle null values
+            // test the different parameters
+            foreach ($params as $field => $value) {
+                
+                // handle equal null values
+                if (is_null($value) && is_null($pub[$field])) {
                     continue;
                 }
-                if (isset($pub[$alias]['id'])) {
-                    // it's a loaded relation
-                    if ($pub[$alias]['id'] != $value) {
-                        $found = false;
-                        break;
-                    }
-                } else {
-                    // it's a field value
-                    if ($pub[$alias] != $value) {
-                        $found = false;
-                        break;
-                    }
+                // test a loaded relation or the field value
+                if (is_array($pub[$field]) && $pub[$field]['id'] != $value || $pub[$field] != $value) {
+                    $found = false;
+                    break;
                 }
             }
 

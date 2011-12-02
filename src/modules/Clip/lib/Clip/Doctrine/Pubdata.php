@@ -180,22 +180,24 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     {
         $data = $this->toArray(false);
 
-        foreach (array_keys($this->getRelations($onlyown)) as $key) {
-            // set the data object
-            if ($this->$key instanceof Doctrine_Collection) {
-                foreach ($this->$key as $k => &$v) {
-                    // exclude null records
-                    if (!$v->exists()) {
-                        unset($this->$key[$k]);
+        if ($loadrels) {
+            foreach (array_keys($this->getRelations($onlyown)) as $key) {
+                // set the data object
+                if ($this->$key instanceof Doctrine_Collection) {
+                    foreach ($this->$key as $k => &$v) {
+                        // exclude null records
+                        if (!$v->exists()) {
+                            unset($this->$key[$k]);
+                        }
                     }
+                    $data[$key] = $this->$key->toArray(false);
+
+                } elseif ($this->$key instanceof Doctrine_Record && $this->$key->exists()) {
+                    $data[$key] = $this->$key->toArray(false);
+
+                } else {
+                    $data[$key] = null;
                 }
-                $data[$key] = $this->$key->toArray(false);
-
-            } elseif ($this->$key instanceof Doctrine_Record && $this->$key->exists()) {
-                $data[$key] = $this->$key->toArray(false);
-
-            } else {
-                $data[$key] = null;
             }
         }
 
