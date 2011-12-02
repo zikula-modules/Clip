@@ -173,15 +173,13 @@ class Clip_Util_View
      * Available attributes:
      *  - assign (string) The name of a template variable to assign the output to (optional).
      *  - var    (string) Name of the template variable to process.
-     *  - x      (string) Field name of the first axis.
-     *  - y      (string) Field name of the second axis.
-     *  - z      (string) Field name of the value.
+     *  - a,b,c  (string) Field names to nest. The last is the value.
      *
      * Example:
      *
      *  Get an array of values ready to tabulate:
      *
-     *  <samp>{clip_util->tabulate var='collection' x='date' y='list' z='value' assign='table'}</samp>
+     *  <samp>{clip_util->tabulate var='collection' a='date' b='category' c='value' assign='table'}</samp>
      *
      * @param array       $args All parameters passed to this plugin from the template.
      * @param Zikula_View $view Reference to the {@link Zikula_View} object.
@@ -191,14 +189,16 @@ class Clip_Util_View
     public function tabulate($args, Zikula_View &$view)
     {
         $var = isset($args['var']) ? $args['var'] : null;
-        $x   = isset($args['x']) ? $args['x'] : null;
-        $y   = isset($args['y']) ? $args['y'] : null;
-        $z   = isset($args['z']) ? $args['z'] : null;
 
         if (!$var) {
             $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tabulate', 'var')));
         }
 
+        if (!isset($args['a'])) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tabulate', '"a"')));
+        }
+
+        // gets and validates the data to tabulate
         $list = $view->getTplVar($var);
 
         if ($list instanceof Doctrine_Collection) {
@@ -209,30 +209,40 @@ class Clip_Util_View
             $view->trigger_error(__f('Error! in %1$s: the variable [%2$s] is not a collection or array.', array('clip_util->tabulate', $var)));
         }
 
-        if (!$x || !isset($record[$x])) {
-            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] is not valid.', array('clip_util->tabulate', $x)));
-        }
+        // collects and validates the required fields
+        $columns = array();
 
-        if (!$y || !isset($record[$y])) {
-            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] is not valid.', array('clip_util->tabulate', $y)));
-        }
-
-        if (!$z || !isset($record[$z])) {
-            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] is not valid.', array('clip_util->tabulate', $z)));
-        }
+        $name = 'a';
+        do {
+            if (!isset($record[$args[$name]])) {
+                return $view->trigger_error(__f('Error! in %1$s: the parameter [%2$s] specifies a non existing field in the data to tabulate.', array('clip_util->tabulate', $name)));
+            }
+            $columns[] = $args[$name];
+            $name++;
+        } while (isset($args[$name]));
 
         $table = array();
 
         foreach ($list as $record) {
-            $field1 = $record[$x];
-            $field2 = $record[$y];
-            if (!isset($table[$field1])) {
-                $table[$field1] = array();
-            }
-            $table[$field1][$field2] = $record[$z];
+            $this->tabulate_rec($table, $record, $columns);
         }
 
         return $table;
+    }
+    
+    private function tabulate_rec(&$table, $record, $columns, $level = 0)
+    {
+        $col = $columns[$level];
+        $val = $record[$col];
+
+        if (count($columns)-1 == $level) {
+            $table = $val;
+        } else {
+            if (!isset($table[$val])) {
+                $table[$val] = array();
+            }
+            $this->tabulate_rec($table[$val], $record, $columns, $level + 1);
+        }
     }
 
     /**
