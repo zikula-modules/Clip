@@ -557,19 +557,21 @@ class Clip_Util
      */
     public static function register_utilities(Zikula_View &$view)
     {
-        static $tids;
+        static $tids, $dirs;
 
-        if (!isset($tids)) {
+        if (!isset($tids) || !isset($dirs)) {
             $pubtypes = self::getPubType();
             // index the IDs with the urltitle
-            $tids = array();
+            $tids = $dirs = array();
             foreach ($pubtypes as $tid => $pubtype) {
                 $tids[$pubtype->urltitle] = $tid;
+                $dirs[$pubtype->urltitle] = $pubtype->folder;
             }
         }
 
         // clip pubtype IDs array
-        $view->assign('tids', $tids);
+        $view->assign('cliptids', $tids)
+             ->assign('clipdirs', $dirs);
 
         // clip_util
         if (!isset($view->_reg_objects['clip_util'])) {
