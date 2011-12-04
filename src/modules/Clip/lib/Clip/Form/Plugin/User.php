@@ -120,7 +120,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
             <ul class="z-auto-feed">
                 ';
 
-        $pubdata = $view->_tpl_vars['data'][$this->tid][$this->pid];
+        $pubdata = $view->_tpl_vars['clipdata'][$this->tid][$this->pid];
 
         self::postRead($pubdata, array('name' => $this->field));
 

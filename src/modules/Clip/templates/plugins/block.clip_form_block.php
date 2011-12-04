@@ -44,7 +44,7 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
 
     // form framework parameters adjustment
     $params['id'] = "clip_{$params['alias']}_{$params['tid']}_{$params['pid']}_{$params['field']}";
-    $params['group'] = 'data';
+    $params['group'] = 'clipdata';
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
 

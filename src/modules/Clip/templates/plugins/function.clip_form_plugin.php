@@ -46,7 +46,7 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
 
     // form framework parameters adjustment
     $params['id'] = "clip_{$params['alias']}_{$params['tid']}_{$params['pid']}_{$params['field']}";
-    $params['group'] = 'data';
+    $params['group'] = 'clipdata';
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
 

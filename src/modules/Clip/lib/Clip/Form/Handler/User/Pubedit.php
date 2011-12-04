@@ -87,7 +87,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         } elseif (!$view->isValid()) {
             // assign the incoming data
             $data = $view->getValues();
-            $data = $data['data'];
+            $data = $data['clipdata'];
         } else {
             // let the handleCommand to work
             $data = array();
@@ -101,7 +101,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $pubdata->clipValues(true);
 
         // fills the render
-        $view->assign('data',       $data)
+        $view->assign('clipdata',   $data)
              ->assign('pubdata',    $pubdata)
              ->assign('pubfields',  $this->pubfields)
              ->assign('relations',  $relations)
@@ -149,7 +149,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $links = $view->getStateData('links');
 
         // loop the values and create/update the passed values
-        foreach ($data['data'] as $alias => $a) {
+        foreach ($data['clipdata'] as $alias => $a) {
             foreach ($a as $tid => $b) {
                 $pubtype = Clip_Util::getPubType($tid);
 

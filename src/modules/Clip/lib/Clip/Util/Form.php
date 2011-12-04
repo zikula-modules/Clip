@@ -126,7 +126,7 @@ class Clip_Util_Form
             $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_form->getvalue', 'field')));
         }
 
-        $data = $view->getTplVar('data');
+        $data = $view->getTplVar('clipdata');
 
         $record = isset($data[$alias][$tid]) ? reset($data[$alias][$tid]) : array();
 
@@ -180,11 +180,11 @@ class Clip_Util_Form
         }
 
         // processing
-        $data = $view->getTplVar('data');
+        $data = $view->getTplVar('clipdata');
 
         $data[$this->alias][$args['tid']][$pub->id] = $pub->clipFormGet($args['rel']['load'], $args['rel']['onlyown']);
 
-        $view->assign('data', $data);
+        $view->assign('clipdata', $data);
     }
 
     /**
@@ -248,13 +248,13 @@ class Clip_Util_Form
         }
 
         // processing
-        $data = $view->getTplVar('data');
+        $data = $view->getTplVar('clipdata');
 
         foreach ($pubs['publist'] as $pub) {
             $data[$this->alias][$args['tid']][$pub->id] = $pub->clipFormGet($args['rel']['load'], $args['rel']['onlyown']);
         }
 
-        $view->assign('data', $data);
+        $view->assign('clipdata', $data);
     }
 
     /**
@@ -295,11 +295,11 @@ class Clip_Util_Form
         }
 
         // processing
-        $data = $view->getTplVar('data');
+        $data = $view->getTplVar('clipdata');
 
         $data[$alias][$tid][$pid][$field] = $value;
 
-        $view->assign('data', $data);
+        $view->assign('clipdata', $data);
     }
 
 
@@ -325,7 +325,7 @@ class Clip_Util_Form
             return $view->trigger_error(__('Condition parameters must be passed to clip_form->resolveId.', ZLanguage::getModuleDomain('Clip')));
         }
 
-        $data = $view->getTplVar('data');
+        $data = $view->getTplVar('clipdata');
 
         if (!isset($data[$this->alias][$this->tid])) {
             return $this->newId($params, $view);

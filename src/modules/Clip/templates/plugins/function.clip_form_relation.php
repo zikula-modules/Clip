@@ -30,7 +30,7 @@ function smarty_function_clip_form_relation($params, Zikula_Form_View &$render)
 
     // form framework parameters adjustment
     $params['id'] = "cliprel_{$params['alias']}_{$params['tid']}_{$params['pid']}_{$params['field']}";
-    $params['group'] = 'data';
+    $params['group'] = 'clipdata';
 
     // resolve classname
     $classname = isset($params['pluginclass']) ? $params['pluginclass'] : 'Autocompleter';
