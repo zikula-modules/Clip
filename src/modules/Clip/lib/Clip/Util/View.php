@@ -168,6 +168,53 @@ class Clip_Util_View
     }
 
     /**
+     * Matches two collections.
+     * 
+     * The non existing values are filled with zero.
+     *
+     * Available attributes:
+     *  - assign (string) The name of a template variable to assign the output to (optional).
+     *  - keys   (mixed)  Array of the required data indexes.
+     *  - values (mixed)  Data to organize and validate against the provided keys.
+     *  - index  (bool)   Whether to index the result with the keys or not (default: false).
+     *
+     * Example:
+     *
+     *  Get an array of values ready to tabulate:
+     *
+     *  <samp>{clip_util->match keys=$list values=$data assign='listdata'}</samp>
+     *
+     * @param array       $args All parameters passed to this plugin from the template.
+     * @param Zikula_View $view Reference to the {@link Zikula_View} object.
+     *
+     * @return void
+     */
+    public function match($args, Zikula_View &$view)
+    {
+        if (!isset($args['keys'])) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->match', 'keys')));
+        }
+
+        if (!isset($args['values'])) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->match', 'values')));
+        }
+
+        $index = isset($args['index']) ? $args['index'] : false;
+
+        $data = array();
+
+        foreach ($args['keys'] as $key) {
+            if ($index) {
+                $data[$key] = isset($args['values'][$key]) ? $args['values'][$key] : 0;
+            } else {
+                $data[] = isset($args['values'][$key]) ? $args['values'][$key] : 0;
+            }
+        }
+
+        return $data;
+    }
+    
+    /**
      * Tabulate a collection.
      *
      * Available attributes:
@@ -179,23 +226,23 @@ class Clip_Util_View
      *
      *  Get an array of values ready to tabulate:
      *
-     *  <samp>{clip_util->tabulate var='collection' a='date' b='category' c='value' assign='table'}</samp>
+     *  <samp>{clip_util->tab var='collection' a='date' b='category' c='value' assign='table'}</samp>
      *
      * @param array       $args All parameters passed to this plugin from the template.
      * @param Zikula_View $view Reference to the {@link Zikula_View} object.
      *
      * @return void
      */
-    public function tabulate($args, Zikula_View &$view)
+    public function tab($args, Zikula_View &$view)
     {
         $var = isset($args['var']) ? $args['var'] : null;
 
         if (!$var) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tabulate', 'var')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tab', 'var')));
         }
 
         if (!isset($args['a'])) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tabulate', '"a"')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tab', '"a"')));
         }
 
         // gets and validates the data to tabulate
@@ -206,7 +253,7 @@ class Clip_Util_View
         } else if (is_array($list)) {
             $record = reset($list);
         } else {
-            $view->trigger_error(__f('Error! in %1$s: the variable [%2$s] is not a collection or array.', array('clip_util->tabulate', $var)));
+            $view->trigger_error(__f('Error! in %1$s: the variable [%2$s] is not a collection or array.', array('clip_util->tab', $var)));
         }
 
         // collects and validates the required fields
@@ -224,24 +271,30 @@ class Clip_Util_View
         $table = array();
 
         foreach ($list as $record) {
-            $this->tabulate_rec($table, $record, $columns);
+            $this->tab_rec($table, $record, $columns);
         }
 
         return $table;
     }
     
-    private function tabulate_rec(&$table, $record, $columns, $level = 0)
+    private function tab_rec(&$table, $record, $columns, $level = 0)
     {
         $col = $columns[$level];
         $val = $record[$col];
 
         if (count($columns)-1 == $level) {
-            $table = $val;
+            // reached the end
+            if (!$level) {
+                // special treatment for unidimensional array
+                $table[] = $val;
+            } else {
+                $table = $val;
+            }
         } else {
             if (!isset($table[$val])) {
                 $table[$val] = array();
             }
-            $this->tabulate_rec($table[$val], $record, $columns, $level + 1);
+            $this->tab_rec($table[$val], $record, $columns, $level + 1);
         }
     }
 
