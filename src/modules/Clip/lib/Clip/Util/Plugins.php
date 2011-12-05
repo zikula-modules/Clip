@@ -88,6 +88,7 @@ class Clip_Util_Plugins
             $view = Clip_Util::newForm();
 
             $pluginClass = self::getClasses($pluginID);
+
             if (!$pluginClass) {
                 throw new InvalidArgumentException(__f('Plugin ID [%s] not found in the available plugins.', $pluginID, $dom));
             }

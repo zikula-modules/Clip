@@ -50,6 +50,10 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
 
+    if (!$field) {
+        $render->trigger_error($render->__f("Error! The publication field '%s' does not exist.", DataUtil::formatForDisplay($params['field'])));
+    }
+
     // use the main settings if not explicitly declared on the template
     if (!isset($params['mandatory'])) {
         $params['mandatory'] = $field['ismandatory'];

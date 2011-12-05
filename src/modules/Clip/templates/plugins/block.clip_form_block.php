@@ -37,6 +37,10 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
         $render->trigger_error($render->__f('Error! Missing argument [%s].', 'field'));
     }
 
+    if ($params['field'] == 'id') {
+        $render->trigger_error($render->__f("Error! '%1\$s' parameter cannot be '%2\$s'.", array('field', 'id')));
+    }
+
     // clip data handling
     $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
     $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();
@@ -47,6 +51,10 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
     $params['group'] = 'clipdata';
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
+
+    if (!$field) {
+        $render->trigger_error($render->__f("Error! The publication field '%s' does not exist.", DataUtil::formatForDisplay($params['field'])));
+    }
 
     // use the main settings if not explicitly declared on the template
     if (!isset($params['mandatory'])){

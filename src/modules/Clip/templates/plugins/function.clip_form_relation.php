@@ -20,7 +20,7 @@
 function smarty_function_clip_form_relation($params, Zikula_Form_View &$render)
 {
     if (!isset($params['field']) || !$params['field']) {
-        return LogUtil::registerError($render->__f('Error! Missing argument [%s].', 'field'));
+        $render->trigger_error($render->__f('Error! Missing argument [%s].', 'field'));
     }
 
     // clip data handling
@@ -34,10 +34,12 @@ function smarty_function_clip_form_relation($params, Zikula_Form_View &$render)
 
     // resolve classname
     $classname = isset($params['pluginclass']) ? $params['pluginclass'] : 'Autocompleter';
+
     // treat the single-word classes as Clip's ones
     if (strpos($classname, '_') === false) {
         $classname = 'Clip_Form_Plugin_Relations_'.$classname;
     }
+
     // validate that the class exists
     if (!class_exists($classname)) {
         $render->trigger_error($render->__f('Error! The specified plugin class [%s] does not exists.', $classname));
