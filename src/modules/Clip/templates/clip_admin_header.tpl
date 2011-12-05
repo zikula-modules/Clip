@@ -6,7 +6,7 @@
             {gt text='Editor Panel'}
         </a>
         {if $func eq 'main'}
-        <a class="z-bt-new" title="{gt text='Create a new publication type'}" href="{clip_url func='pubtype' tid=0 forcetype='ajax'}">
+        <a class="z-bt-new" title="{gt text='Create a new publication type'}" href="{clip_url type='ajax' func='pubtype' tid=0}">
             {gt text='New publication type'}
         </a>
         {else}
