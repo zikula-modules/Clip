@@ -366,7 +366,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     {
         $parents = array();
 
-        if (!$this->hasReference('parent')) {
+        if (!$this->hasRelation('parent')) {
             return $parents;
         }
 
