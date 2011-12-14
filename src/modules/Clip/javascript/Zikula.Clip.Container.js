@@ -424,7 +424,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Add group (after selected)'),
+        label: Zikula.__('Add group after selected'),
         condition: function() {
             return Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -433,7 +433,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Add subgroup (into selected)'),
+        label: Zikula.__('Add subgroup into selected'),
         condition: function() {
             return Zikula.Clip.ContextMenu.isGrouptype;
         },
