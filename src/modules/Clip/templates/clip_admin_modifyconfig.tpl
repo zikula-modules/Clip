@@ -8,6 +8,9 @@
 
 <ul class="z-menulinks clip-menu">
     <li>
+        <a href="{modurl modname='Clip' type='admin' func='clipreset'}">{gt text='Reset models'}</a>
+    </li>
+    <li>
         <a href="{modurl modname='Clip' type='import' func='defaultypes'}">{gt text="Install 'Blog' and 'Pages' publication types"}</a>
     </li>
     <li>

@@ -219,6 +219,25 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     }
 
     /**
+     * Reset models.
+     */
+    public function clipreset()
+    {
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+
+        //// Cleanup
+        if (Clip_Generator::resetModels()) {
+            LogUtil::registerStatus($this->__('The models were cleaned.'));
+        } else {
+            LogUtil::registerError($this->__('Error! The models could not be cleaned.'));
+        }
+
+        //// Redirect
+        return System::redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
+    }
+
+    /**
      * Module configuration.
      */
     public function modifyconfig()

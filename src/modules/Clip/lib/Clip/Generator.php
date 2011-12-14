@@ -903,4 +903,20 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             }
         }
     }
+
+    public static function resetModels()
+    {
+        $path   = ModUtil::getVar('Clip', 'modelspath');
+        $models = FileUtil::getFiles($path, false, false);
+
+        foreach ($models as $model) {
+            if (is_file($model)) {
+                if (!unlink($model)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
