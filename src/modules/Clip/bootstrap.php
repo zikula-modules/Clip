@@ -13,11 +13,7 @@
 $modinfo = ModUtil::getInfoFromName('Clip');
 
 if ($modinfo['state'] == ModUtil::STATE_ACTIVE) {
-    // add the dynamic models path
-    ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
-
-    // check if the models are already created
-    Clip_Generator::checkModels();
+    Clip_Util::boot();
 }
 
 if (FormUtil::getPassedValue('type') == 'admin') {

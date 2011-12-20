@@ -298,6 +298,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         // reorder the fields conveniently
         $reorder = array(
             'core_title' => 'map',
+            'core_urltitle' => 'value',
             'core_uniqueid' => 'map',
             'core_tid' => 'map',
             'core_pid' => 'value',

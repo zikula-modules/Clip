@@ -46,6 +46,20 @@ class Clip_Util
     }
 
     /**
+     * Clip boot
+     * 
+     * @return void
+     */
+    public static function boot()
+    {
+        // add the dynamic models path
+        ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
+
+        // check if the models are already created
+        Clip_Generator::checkModels();
+    }
+
+    /**
      * Extract the TID from a string end.
      *
      * @param string $tablename

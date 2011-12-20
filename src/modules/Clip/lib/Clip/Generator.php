@@ -502,14 +502,12 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
         if (is_object(\$obj)) {
             \$obj->clip_state = false;
             \$obj->mapValue('core_tid', $tid);
-            \$obj->mapValue('core_title', '');
             \$obj->mapValue('core_titlefield', '$titlefield');
             \$obj->mapValue('core_title',    \$obj[\$obj->core_titlefield]);
             \$obj->mapValue('core_uniqueid', \$obj->core_tid.'-'.\$obj->core_pid);
             \$obj->mapValue('core_creator',  (\$obj->core_author == UserUtil::getVar('uid')) ? true : false);
         } else {
             \$obj['core_tid']   = $tid;
-            \$obj['core_title'] = '';
             \$obj['core_titlefield'] = '$titlefield';
             \$obj['core_title']    = \$obj[\$obj['core_titlefield']];
             \$obj['core_uniqueid'] = \$obj['core_tid'].'-'.\$obj['core_pid'];
@@ -735,6 +733,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $tableColumnCore = array(
             'id'               => 'id',
             'core_pid'         => 'pid',
+            'core_urltitle'    => 'urltitle',
             'core_author'      => 'author',
             'core_hitcount'    => 'hits',
             'core_language'    => 'language',
@@ -749,6 +748,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $tableDefCore = array(
             'id'               => 'I4 PRIMARY AUTO',
             'core_pid'         => 'I4 NOTNULL',
+            'core_urltitle'    => "C(255) NOTNULL",
             'core_author'      => 'I4 NOTNULL',
             'core_hitcount'    => 'I8 DEFAULT 0',
             'core_language'    => "C(10) NOTNULL", //FIXME how many chars are needed for a gettext code?
@@ -883,11 +883,11 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         self::createRelationsModels();
     }
 
-    public static function checkModels()
+    public static function checkModels($force = false)
     {
         static $checked;
 
-        if (!isset($checked)) {
+        if (!isset($checked) || $force) {
             $checked = true;
 
             $tid  = Clip_Util::getPubType()->getFirst()->tid;

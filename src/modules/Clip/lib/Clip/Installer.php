@@ -76,6 +76,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
      */
     public function upgrade($oldversion)
     {
+        Clip_Util::boot();
+
         switch ($oldversion)
         {
             case '0.4.0':
@@ -149,6 +151,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 $dirs = self::createDirectories(array('models'));
                 $this->setVar('modelspath', $dirs['models']);
             case '0.4.19':
+                if (!self::introduceUrltitle()) {
+                    return false;
+                }
+            case '0.4.20':
                 // further upgrade handling
                 // * contenttype stuff
                 //   Content_Installer::updateContentType('Clip');
@@ -832,8 +838,11 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $table = DBUtil::getLimitedTablename('clip_pubfields');
         $sql[] = "UPDATE $table SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
 
-        // update the pubtypes table
-        Clip_Generator::checkModels();
+        // update the pubdata models files
+        Clip_Generator::resetModels();
+        Clip_Generator::checkModels(true);
+
+        // update the database
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->changeTable();
@@ -1007,6 +1016,43 @@ class Clip_Installer extends Zikula_AbstractInstaller
         }
 
         return true;
+    }
+
+    /**
+     * Upgrade models and databases to introduce the urltitle field.
+     *
+     * @return boolean
+     */
+    private static function introduceUrltitle()
+    {
+        // regen models
+        Clip_Generator::resetModels();
+        Clip_Generator::checkModels(true);
+
+        // update the database
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+        foreach ($pubtypes as $tid) {
+            //DoctrineUtil::createColumn('clip_pubdata'.$tid, 'urltitle', array('type' => 'string', 'length' => 255));
+
+            // fill the urltitles
+            $sql = array();
+
+            $tablename  = DBUtil::getLimitedTablename('clip_pubdata'.$tid);
+            $titlefield = Clip_Util::getTitleField($tid);
+            $records    = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->selectFieldArray($titlefield, array(), '', false, 'id');
+
+            foreach ($records as $id => $title) {
+                $urltitle = substr(DataUtil::formatPermalink($title), 0, 255);
+
+                $sql[] = "UPDATE {$tablename} SET urltitle = '{$urltitle}' WHERE id = {$id}";
+            }
+
+            foreach ($sql as $q) {
+                if (!DBUtil::executeSQL($q)) {
+                    return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $sql");
+                }
+            }
+        }
     }
 
     /**
