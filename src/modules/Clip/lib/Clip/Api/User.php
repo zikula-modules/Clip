@@ -605,28 +605,34 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $id = (int)$_['id'];
                     if (!isset($pid)) {
                         if (!isset($cache['id'][$tid][$id])) {
-                            $pid = $cache['id'][$tid][$id] = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
-                                                             ->selectFieldBy('core_pid', $id, 'id');
+                            $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->findOneBy('id', $id);
+                            $pid = $cache['id'][$tid][$id] = $pub['core_pid'];
+                            $cache['urltitle'][$tid][$pid] = $pub['core_urltitle'];
                         } else {
                             $pid = $cache['id'][$tid][$id];
                         }
+                    }
+                } elseif (isset($_['urltitle']) && !isset($pid)) {
+                    $pid = $cache['id'][$tid][$id] = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
+                                                     ->selectFieldBy('core_pid', $_['urltitle'], 'core_urltitle', 'core_online DESC');
+                    if (!$pid) {
+                        return false;
                     }
                 }
 
                 if ($pid) {
                     // not submit (pid: 0)
-                    if (isset($cache['title'][$tid][$pid])) {
-                        $urltitle = $cache['title'][$tid][$pid];
-                    } elseif (isset($_['title']) && !empty($_['title'])) {
-                        $urltitle = $_['title'];
+                    if (isset($cache['urltitle'][$tid][$pid])) {
+                        $urltitle = $cache['urltitle'][$tid][$pid];
+                    } elseif (isset($_['urltitle']) && !empty($_['urltitle'])) {
+                        $urltitle = $_['urltitle'];
                     } else {
                         $urltitle = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
-                                    ->selectFieldBy(Clip_Util::getPubType($tid)->getTitleField(), $pid, 'core_pid');
-                        $urltitle = DataUtil::formatPermalink($urltitle);
+                                    ->selectFieldBy('core_urltitle', $pid, 'core_pid');
                     }
-                    $cache['title'][$tid][$pid] = $urltitle;
+                    $cache['urltitle'][$tid][$pid] = $urltitle;
 
-                    $urltitle = "/$urltitle.$pid" . (isset($id) ? ".$id" : '');
+                    $urltitle = "/$urltitle" . (isset($id) ? "~$id" : '');
                     $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
                 }
 
@@ -675,7 +681,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         // reset the function to main
         System::queryStringSetVar('func', 'main');
 
-        if (!preg_match('/^([a-z0-9_\-]+?)(\.([a-z0-9_\.\-]+))?$/i', end($_), $matches)) {
+        if (!preg_match('/^([a-z0-9_\-\~]+?)(\.([a-z0-9_\.\-]+))?$/i', end($_), $matches)) {
             // there must be a valid filename
             return true;
         }
@@ -770,20 +776,35 @@ class Clip_Api_User extends Zikula_AbstractApi
 
             case 'display':
                 $s = preg_quote(System::getVar('shorturlsseparator'), '~');
+
                 if (!isset($pubtitle)) {
-                    // by now, the pub still has the pid/id as suffix
-                    $fullstr  = "$filename.$template";
-                    preg_match('/^([a-z0-9_\-'.$s.']+?\.[\d]+?(\.[\d]+)?)(\.([a-z0-9_\.\-]+))?$/i', $fullstr, $matches);
+                    // by now, the pub still has the id as suffix
+                    preg_match('/^([a-z0-9_\-'.$s.']+?(\~[\d]+)?)$/i', $filename, $matches);
+
                     $pubtitle = $matches[1];
-                    $template = isset($matches[4]) ? $matches[4] : null;
                 }
 
-                // extract the pid/id
-                if (preg_match('~^[a-z0-9_\-'.$s.']+\.(\d+?)(\.(\d+))?$~i', $pubtitle, $matches)) {
-                    System::queryStringSetVar('pid', $matches[1]);
+                // extract the urltitle[~id]
+                if (preg_match('~^([a-z0-9_\-'.$s.']+?)(\~(\d+))?$~i', $pubtitle, $matches)) {
+                    $where = array();
+
                     if (isset($matches[3])) {
+                        $where[] = array('id = ?', $matches[3]);
+
                         System::queryStringSetVar('id', $matches[3]);
                     }
+
+                    $where[] = array('core_urltitle = ?', $matches[1]);
+
+                    $pid = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
+                           ->selectField('core_pid', $where);
+
+                    // invalid urltitle~id combination
+                    if (!$pid) {
+                        return false;
+                    }
+
+                    System::queryStringSetVar('pid', $pid);
                 }
                 break;
         }

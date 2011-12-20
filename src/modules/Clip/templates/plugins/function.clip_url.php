@@ -42,6 +42,11 @@ function smarty_function_clip_url($params, Zikula_View &$view)
         return false;
     }
 
+    if (isset($params['pub']) && !$params['pub'] instanceof Clip_Doctrine_Pubdata && !is_array($params['pub'])) {
+        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter is not valid.', array('clip_url', 'pub')));
+        return false;
+    }
+
     $assign = isset($params['assign']) ? $params['assign'] : null;
     unset($params['assign']);
 
@@ -56,7 +61,7 @@ function smarty_function_clip_url($params, Zikula_View &$view)
             if ($params['func'] == 'edit') {
                 $params['id'] = $params['pub']['id'];
             }
-            $params['title'] = DataUtil::formatPermalink($params['pub']['core_title']);
+            $params['urltitle'] = $params['pub']['core_urltitle'];
         }
         unset($params['pub']);
     }
