@@ -149,6 +149,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $links = $view->getStateData('links');
 
         // loop the values and create/update the passed values
+        $mainres = array();
+
         foreach ($data['clipdata'] as $alias => $a) {
             foreach ($a as $tid => $b) {
                 $pubtype = Clip_Util::getPubType($tid);
@@ -194,6 +196,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     if (!$res) {
                         return false;
                     }
+
+                    // store the main result to process the goto
+                    if ($alias == $this->alias) {
+                        $mainres = $res;
+                    }
                 }
             }
         }
@@ -206,8 +213,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $view->clear_cache(null, 'tid_'.$this->tid.'/list');
 
         // core operations processing
-        // FIXME update this
-        //$goto = $this->processGoto($data);
+        $goto = $this->processGoto($mainres);
 
         // check the goto parameter
         switch ($this->goto)
@@ -320,8 +326,10 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     protected function processGoto($data)
     {
         if ($this->id) {
-            $params = array('tid' => $this->tid, 'pid' => $this->pub['core_pid'], 'title' => DataUtil::formatPermalink($this->pub['core_title']));
-            $this->itemurl = ModUtil::url('Clip', 'user', 'display', $params);
+            $this->itemurl = ModUtil::url('Clip', 'user', 'display',
+                             array('tid' => $this->pub['core_tid'],
+                                   'pid' => $this->pub['core_pid'],
+                                   'urltitle' => $this->pub['core_urltitle']));
         }
 
         $goto = null;
@@ -344,7 +352,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             if ($data['core_online'] == 1) {
                 $goto = ModUtil::url('Clip', 'user', 'display',
                                      array('tid' => $data['core_tid'],
-                                           'pid' => $data['core_pid']));
+                                           'pid' => $data['core_pid'],
+                                           'urltitle' => $data['core_urltitle']));
             } else {
                 // back to the pubtype pending template or referer page if it is not approved yet
                 $goto = isset($ops['create']['goto']) ? $ops['create']['goto'] : $this->referer;
