@@ -784,8 +784,8 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $pubtitle = $matches[1];
                 }
 
-                // extract the urltitle[~id]
-                if (preg_match('~^([a-z0-9_\-'.$s.']+?)(\~(\d+))?$~i', $pubtitle, $matches)) {
+                // extract the urltitle[~id] when not submitting
+                if (!($func == 'edit' && !isset($pid)) && preg_match('~^([a-z0-9_\-'.$s.']+?)(\~(\d+))?$~i', $pubtitle, $matches)) {
                     $where = array();
 
                     if (isset($matches[3])) {
@@ -799,7 +799,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $pid = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
                            ->selectField('core_pid', $where);
 
-                    // invalid urltitle~id combination
+                    // invalid urltitle~pid combination
                     if (!$pid) {
                         return false;
                     }

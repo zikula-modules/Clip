@@ -585,7 +585,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
 
         foreach ($sql as $q) {
             if (!DBUtil::executeSQL($q)) {
-                return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $sql");
+                return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $q");
             }
         }
 
@@ -1003,7 +1003,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // execute
         foreach ($sql as $q) {
             if (!DBUtil::executeSQL($q)) {
-                return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $sql");
+                return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $q");
             }
         }
         // homepage function check module = 'Clip' => func: list/display
@@ -1032,24 +1032,31 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // update the database
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
-            //DoctrineUtil::createColumn('clip_pubdata'.$tid, 'urltitle', array('type' => 'string', 'length' => 255));
+            DoctrineUtil::createColumn('clip_pubdata'.$tid, 'urltitle', array('type' => 'string', 'length' => 255));
 
             // fill the urltitles
-            $sql = array();
+            $urltitles  = array();
 
-            $tablename  = DBUtil::getLimitedTablename('clip_pubdata'.$tid);
             $titlefield = Clip_Util::getTitleField($tid);
-            $records    = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->selectFieldArray($titlefield, array(), '', false, 'id');
+            $titles     = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->selectFieldArray($titlefield, array(), '', false, 'id');
 
-            foreach ($records as $id => $title) {
+            foreach ($titles as $id => $title) {
                 $urltitle = substr(DataUtil::formatPermalink($title), 0, 255);
 
-                $sql[] = "UPDATE {$tablename} SET urltitle = '{$urltitle}' WHERE id = {$id}";
+                while (in_array($urltitle, $urltitles)) {
+                    $urltitle++;
+                }
+
+                $urltitles[$id] = $urltitle;
             }
 
-            foreach ($sql as $q) {
+            $tablename = DBUtil::getLimitedTablename('clip_pubdata'.$tid);
+
+            foreach ($urltitles as $id => $urltitle) {
+                $q = "UPDATE {$tablename} SET urltitle = '{$urltitle}' WHERE id = {$id}";
+
                 if (!DBUtil::executeSQL($q)) {
-                    return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $sql");
+                    return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $q");
                 }
             }
         }
