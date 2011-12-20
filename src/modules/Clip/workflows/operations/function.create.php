@@ -26,32 +26,17 @@ function Clip_operation_create(&$pub, $params)
     $pub['core_online'] = isset($params['online']) ? (int)(bool)$params['online'] : 0;
     $silent             = isset($params['silent']) ? (bool)$params['silent'] : false;
 
-    // utility vars
-    $tablename = 'ClipModels_Pubdata'.$pub['core_tid'];
-
     // initializes the result flag
     $result = false;
 
+    // utility vars
+    $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid']);
+
     // validate or find a new pid
     if (isset($pub['core_pid']) && !empty($pub['core_pid'])) {
-        if (count(Doctrine_Core::getTable($tablename)->findBy('core_pid', $pub['core_pid']))) {
+        if (count($tbl->findBy('core_pid', $pub['core_pid']))) {
             return LogUtil::registerError(__('Error! The fixed publication id already exists on the database. Please contact the administrator.', $dom));
         }
-    } else {
-        $pub['core_pid'] = Doctrine_Core::getTable($tablename)->selectFieldFunction('core_pid', 'MAX') + 1;
-    }
-
-    // assign the author
-    $pub['core_author'] = (int)UserUtil::getVar('uid');
-
-    // assign the language
-    if (is_null($pub['core_language'])) {
-        $pub['core_language'] = '';
-    }
-
-    // fills the publish date automatically
-    if (empty($pub['core_publishdate'])) {
-        $pub['core_publishdate'] = DateUtil::getDatetime();
     }
 
     // save the object

@@ -29,6 +29,7 @@ function Clip_operation_notify(&$pub, $params)
     $type     = isset($params['type']) ? $params['type'] : 'update';
     $template = isset($params['template']) ? $params['template'] : "{$group}_{$type}";
 
+    // utility vars
     $pubtype = Clip_Util::getPubType($pub['core_tid']);
 
     // create the View object

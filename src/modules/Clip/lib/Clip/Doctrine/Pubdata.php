@@ -396,16 +396,59 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
-     * Save hooks.
+     * preInsert hook.
+     *
+     * @return void
+     */
+    public function preInsert($event)
+    {
+        $pub = $event->getInvoker();
+
+        // figures out a publication id
+        if (!$pub['core_pid']) {
+            $pub['core_pid'] = $this->getTable()->selectFieldFunction('core_pid', 'MAX') + 1;
+        }
+
+        // assign the author
+        $pub['core_author'] = (int)UserUtil::getVar('uid');
+
+        // assign the language
+        if (is_null($pub['core_language'])) {
+            $pub['core_language'] = '';
+        }
+
+        // fills the publish date automatically
+        if (empty($pub['core_publishdate'])) {
+            $pub['core_publishdate'] = DateUtil::getDatetime();
+        }
+    }
+
+    /**
+     * preSave hook.
      *
      * @return void
      */
     public function preSave($event)
     {
-        $obj = $event->getInvoker();
+        $pub = $event->getInvoker();
 
-        if (isset($obj['core_tid'])) {
-            $pubfields = Clip_Util::getPubFields($obj['core_tid']);
+        // fills the urltitle
+        if (!$pub['core_urltitle']) {
+            $pub['core_urltitle'] = substr(DataUtil::formatPermalink($pub[$pub['core_titlefield']]), 0, 255);
+        }
+
+        // validate the unique urltitle
+        $pid = $this->getTable()->selectFieldBy('core_pid', $pub['core_urltitle'], 'core_urltitle');
+
+        while ($pid && $pid != $pub['core_pid']) {
+            ++$pub->core_urltitle;
+
+            $pid = $this->getTable()->selectFieldBy('core_pid', $pub['core_urltitle'], 'core_urltitle');
+        }
+
+        // invoke the preSave hook on pubfields
+        if (isset($pub['core_tid'])) {
+            $pubfields = Clip_Util::getPubFields($pub['core_tid']);
 
             // TODO only modified fields check?
             // FIXME move to a non-util method
@@ -414,9 +457,22 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
                 $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
                 if (method_exists($plugin, 'preSave')) {
-                    $obj[$fieldname] = $plugin->preSave($obj, $field);
+                    $pub[$fieldname] = $plugin->preSave($pub, $field);
                 }
             }
         }
+    }
+
+    /**
+     * postSave hook.
+     *
+     * @return void
+     */
+    public function postSave($event)
+    {
+        $pub = $event->getInvoker();
+
+        // update the meta values
+        $pub->clipValues();
     }
 }

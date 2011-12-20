@@ -38,16 +38,6 @@ function Clip_operation_update(&$pub, &$params)
     // e.g. when the revision is pending (waiting state) and will be updated
     $pubtype = Clip_Util::getPubType($pub['core_tid']);
 
-    if ($pubtype['enablerevisions'] && $pub['core_online'] == 1) {
-        // set all other to offline
-        $tbl->createQuery()
-            ->update()
-            ->set('core_online', 0)
-            ->where('core_online = ?', 1)
-            ->andWhere('core_pid = ?', $pub['core_pid'])
-            ->execute();
-    }
-
     // checks if there are fixed operation values to update
     $update = array();
     foreach ($params as $key => $val) {
@@ -69,6 +59,16 @@ function Clip_operation_update(&$pub, &$params)
         $rev['core_revision'] = $maxrev + 1;
 
         if ($rev->isValid()) {
+            if ($pub['core_online'] == 1) {
+                // set all other to offline
+                $tbl->createQuery()
+                    ->update()
+                    ->set('core_online', 0)
+                    ->where('core_online = ?', 1)
+                    ->andWhere('core_pid = ?', $pub['core_pid'])
+                    ->execute();
+            }
+
             $rev->trySave();
             $result = true;
 
