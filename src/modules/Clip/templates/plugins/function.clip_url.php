@@ -47,6 +47,7 @@ function smarty_function_clip_url($params, Zikula_View &$view)
 
     $params['modname'] = 'Clip';
     $params['type']    = isset($params['type']) ? $params['type'] : $view->getRequest()->getControllerName();
+    $params['type']    = $params['type'] ? $params['type'] : 'user';
 
     if (isset($params['pub'])) {
         $params['tid'] = $params['pub']['core_tid'];
