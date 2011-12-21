@@ -70,11 +70,8 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
             // process the loaded related records
             foreach ($this->getRelations($args['rel']['onlyown']) as $alias => $relation) {
                 if ($this->hasReference($alias)) {
-                    if ($this->clipRelation($alias, $args['rel']['checkperm'])) {
-                        if ($this[$alias] instanceof Doctrine_Record) {
-                            // TODO process??
-                        }
-                    }
+                    // process the relation permissions
+                    $this->clipRelation($alias, $args['rel']['checkperm']);
                 }
             }
         }
@@ -147,23 +144,30 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
             return false;
         }
 
+        // process a record
         if ($this[$alias] instanceof Doctrine_Record) {
             // check the list and individual permission if needed
             if ($checkperm && (!Clip_Access::toPubtype($relation['tid'], 'list') || !Clip_Access::toPub($relation['tid'], $this[$alias], null, ACCESS_READ, null, 'display'))) {
                 $this[$alias] = false;
             }
+
             return (bool)$this[$alias];
 
+        // process a collection
         } elseif ($this[$alias] instanceof Doctrine_Collection) {
+            // check the list permission if needed
             if ($checkperm && !Clip_Access::toPubtype($relation['tid'], 'list')) {
                 $this[$alias] = false;
+
             } else {
+                // process each related publication permission
                 foreach ($this[$alias] as $k => $v) {
                     if ($checkperm && !Clip_Access::toPub($relation['tid'], $this[$alias][$k], null, ACCESS_READ, null, 'display')) {
                         unset($this[$alias][$k]);
                     }
                 }
             }
+
             return (bool)count($this[$alias]);
         }
     }
