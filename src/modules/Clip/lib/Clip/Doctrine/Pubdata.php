@@ -448,12 +448,17 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
 
         // invoke the preSave hook on pubfields
         if (isset($pub['core_tid'])) {
+            // FIXME move to a non-util method? internal recognition
             $pubfields = Clip_Util::getPubFields($pub['core_tid']);
 
-            // TODO only modified fields check?
-            // FIXME move to a non-util method
+            $modified = array_keys($pub->getModified());
+
             foreach ($pubfields as $fieldname => $field)
             {
+                if (!in_array($fieldname, $modified)) {
+                    continue;
+                }
+
                 $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
                 if (method_exists($plugin, 'preSave')) {
