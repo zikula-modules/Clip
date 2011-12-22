@@ -29,44 +29,30 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     /**
      * Record load post process.
      *
-     * @param boolean $args['handleplugins']        Whether to parse the plugin fields.
-     * @param boolean $args['loadworkflow']         Whether to add the workflow information.
-     * @param boolean $args['rel']['processrefs']   Whether to process the related records.
-     * @param boolean $args['rel']['onlyown']       Whether to check the permissions.
-     * @param boolean $args['rel']['checkperm']     Whether to check the permissions.
-     * @param boolean $args['rel']['handleplugins'] Whether to parse the plugin fields.
-     * @param boolean $args['rel']['loadworkflow']  Whether to add the workflow information.
+     * @param boolean $args['handleplugins']      Whether to parse the plugin fields.
+     * @param boolean $args['loadworkflow']       Whether to add the workflow information.
+     * @param boolean $args['rel']['load']        Whether to load the relations or not.
+     * @param boolean $args['rel']['onlyown']     Whether to load onlyown relations.
+     * @param boolean $args['rel']['checkperm']   Whether to check the permissions.
      *
      * @return $this
      */
     public function clipProcess($args = array())
     {
         // handle the plugins data if needed
-        if (isset($args['handleplugins']) && $args['handleplugins']) {
+        if ($args['handleplugins']) {
             $this->clipPostRead();
         }
 
         // load the workflow data if needed
-        if (isset($args['loadworkflow']) && $args['loadworkflow']) {
+        if ($args['loadworkflow']) {
             $this->clipWorkflow();
         }
 
-        $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']) ? $this['__WORKFLOW__']['state'] : null);
+        $this->clipValues();
 
         // post process related records
-        if (isset($args['rel']['processrefs']) && $args['rel']['processrefs']) {
-            // new default values
-            $args = array(
-                'handleplugins' => isset($args['rel']['handleplugins']) ? $args['rel']['handleplugins'] : false,
-                'loadworkflow'  => isset($args['rel']['loadworkflow']) ? $args['rel']['loadworkflow'] : false,
-                'rel' => array(
-                    'processrefs'   => false,
-                    'onlyown'       => isset($args['rel']['onlyown']) ? $args['rel']['onlyown'] : true,
-                    'checkperm'     => isset($args['rel']['checkperm']) ? $args['rel']['checkperm'] : false,
-                    'handleplugins' => isset($args['rel']['handleplugins']) ? $args['rel']['handleplugins'] : false,
-                    'loadworkflow'  => isset($args['rel']['loadworkflow']) ? $args['rel']['loadworkflow'] : false
-                )
-            );
+        if ($args['rel']['load'] && $args['rel']['checkperm']) {
             // process the loaded related records
             foreach ($this->getRelations($args['rel']['onlyown']) as $alias => $relation) {
                 if ($this->hasReference($alias)) {
@@ -82,6 +68,8 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     /**
      * Basic values loader for the Record.
      *
+     * @param boolean $handleplugins Whether to parse the plugin fields.
+     *
      * @return $this
      */
     public function clipValues($handleplugins=false)
@@ -89,6 +77,8 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         $this->mapValue('core_title',    $this[$this->core_titlefield]);
         $this->mapValue('core_uniqueid', $this->core_tid.'-'.$this->core_pid);
         $this->mapValue('core_creator',  ($this->core_author == UserUtil::getVar('uid')) ? true : false);
+
+        $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']) ? $this['__WORKFLOW__']['state'] : null);
 
         if ($handleplugins) {
             $this->clipPostRead();
@@ -116,6 +106,8 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     /**
      * Workflow loader for the Record.
      *
+     * @param boolean $field Field of the workflow information to retrieve (optional).
+     *
      * @return $this
      */
     public function clipWorkflow($field = null)
@@ -135,6 +127,9 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
 
     /**
      * Relations permission filter.
+     *
+     * @param boolean $alias     Relation alias to process.
+     * @param boolean $checkperm Whether to check or not the related publications permissions (default: true).
      *
      * @return boolean Existing relation flag.
      */
@@ -210,6 +205,9 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
 
     /**
      * Form post processing.
+     *
+     * @param boolean $pubdata Publication data to fill into this record.
+     * @param boolean $links   Relations to be filled into this record.
      *
      * @return $this
      */
