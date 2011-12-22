@@ -99,10 +99,7 @@ class Clip_Api_Search extends Zikula_AbstractApi
     {
         $datarow = &$args['datarow'];
         $extra   = unserialize($datarow['extra']);
-        $datarow['url'] = ModUtil::url('Clip', 'user', 'display',
-                                       array('tid'   => $extra['tid'],
-                                             'pid'   => $extra['pid'],
-                                             'title' => DataUtil::formatPermalink($datarow['title'])));
+        $datarow['url'] = Clip_Util::url($extra['tid'], 'display', array('pid' => $extra['pid']));
         return true;
     }
 

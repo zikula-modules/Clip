@@ -89,7 +89,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // skip main if there's no template
         if (!$args['templateid'] && !$this->view->template_exists($args['templatefile'])) {
-            return $this->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid'], 'template' => $args['templateid'])));
+            return $this->redirect(Clip_Util::url($args['tid'], 'list', array('template' => $args['templateid'])));
         }
 
         // fetch simple templates
@@ -143,9 +143,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         Clip_Util::register_utilities($this->view);
 
         // resolve the permalink
-        $returnurl = ModUtil::url('Clip', 'user', 'main',
-                                  array('tid' => $pubtype['tid']),
-                                  null, null, true);
+        $returnurl = Clip_Util::url($pubtype['tid'], 'main', array(), null, null, true);
 
         //// Output
         // assign the data to the output
@@ -300,9 +298,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         Clip_Util::register_utilities($this->view);
 
         // resolve the permalink
-        $returnurl = ModUtil::url('Clip', 'user', 'list',
-                                  array('tid' => $pubtype['tid']),
-                                  null, null, true);
+        $returnurl = Clip_Util::url($pubtype['tid'], 'list', array(), null, null, true);
 
         //// Output
         // assign the data to the output
@@ -468,11 +464,8 @@ class Clip_Controller_User extends Zikula_AbstractController
         Clip_Util::register_utilities($this->view);
 
         // resolve the permalink
-        $apiargs = Clip_Util::getArgs('getapi');
-        $returnurl = ModUtil::url('Clip', 'user', 'display',
-                                  array('tid' => $apiargs['tid'],
-                                        'pid' => $apiargs['pid']),
-                                  null, null, true);
+        $apiargs   = Clip_Util::getArgs('getapi');
+        $returnurl = Clip_Util::url($pubdata, 'display', array(), null, null, true);
 
         // assign the pubdata and pubtype to the output
         $this->view->assign('pubdata',   $pubdata)
@@ -580,7 +573,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             if (!$pubdata) {
                 LogUtil::registerError($this->__f('Error! No such publication [%1$s - %2$s] found.', array($args['tid'], $args['id'])));
 
-                return $this->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid'])));
+                return $this->redirect(Clip_Util::url($args['tid'], 'list'));
             }
         } else {
             // initial values
@@ -740,29 +733,22 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Redirect
         // figure out the redirect
-        $displayUrl = ModUtil::url('Clip', 'user', 'display',
-                                   array('tid' => $args['tid'],
-                                         'id'  => $args['id']));
+        $displayUrl = Clip_Util::url($pub, 'display');
 
         $returnurl = System::serverGetVar('HTTP_REFERER', $displayUrl);
 
         switch ($args['goto'])
         {
             case 'stepmode':
-                $goto = ModUtil::url('Clip', 'user', 'edit',
-                                      array('tid'  => $args['tid'],
-                                            'id'   => $args['id'],
-                                            'goto' => 'stepmode'));
+                $goto = Clip_Util::url($pub, 'edit', array('goto' => 'stepmode'));
                 break;
 
             case 'edit':
-                $goto = ModUtil::url('Clip', 'user', 'edit',
-                                     array('tid' => $args['tid'],
-                                           'id'  => $args['id']));
+                $goto = Clip_Util::url($pub, 'edit');
                 break;
 
             case 'list':
-                $goto = ModUtil::url('Clip', 'user', 'list', array('tid' => $args['tid']));
+                $goto = Clip_Util::url($args['tid'], 'list');
                 break;
 
             case 'display':

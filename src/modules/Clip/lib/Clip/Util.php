@@ -589,4 +589,41 @@ class Clip_Util
             $view->register_object('clip_util', $clip_util);
         }
     }
+
+    /**
+     * Process of Clip's view for its controllers.
+     *
+     * @param mixed          $obj          A pubtype, a publication or a tid.
+     * @param string         $func         The specific function to run.
+     * @param array          $args         The array of arguments to put on the URL.
+     * @param boolean|null   $ssl          Set to constant null,true,false $ssl = true not $ssl = 'true'  null - leave the current status untouched,
+     *                                     true - create a ssl url, false - create a non-ssl url.
+     * @param string         $fragment     The framgment to target within the URL.
+     * @param boolean|null   $fqurl        Fully Qualified URL. True to get full URL, eg for Redirect, else gets root-relative path unless SSL.
+     * @param boolean        $forcelongurl Force ModUtil::url to not create a short url even if the system is configured to do so.
+     * @param boolean|string $forcelang    Force the inclusion of the $forcelang or default system language in the generated url.
+     *
+     * @return void
+     */
+    public static function url($obj, $func, $args = array(), $ssl = null, $fragment = null, $fqurl = null, $forcelongurl = false, $forcelang=false)
+    {
+        if ($obj instanceof Clip_Model_Pubtype) {
+            $args['tid'] = $obj['tid'];
+
+        } else if ($obj instanceof Clip_Doctrine_Pubdata) {
+            $args['tid'] = $obj['core_tid'];
+            if ($func == 'display' || $func == 'edit') {
+                $args['pid'] = $obj['core_pid'];
+                if ($func == 'edit') {
+                    $args['id'] = $obj['id'];
+                }
+                $args['urltitle'] = $obj['core_urltitle'];
+            }
+
+        } else if (is_numeric($obj)) {
+            $args['tid'] = $obj;
+        }
+
+        return ModUtil::url('Clip', 'user', $func, $args, $ssl, $fragment, $fqurl, $forcelongurl, $forcelang);
+    }
 }

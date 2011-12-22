@@ -46,7 +46,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 LogUtil::registerError($this->__('You have no authorization to submit publications.'));
             }
 
-            return $view->redirect(ModUtil::url('Clip', 'user', 'list', array('tid' => $this->tid)));
+            return $view->redirect(Clip_Util::url($this->tid, 'list'));
         }
 
         //// Processing
@@ -115,7 +115,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // stores the first referer and the item URL
         if (!$view->getStateData('referer')) {
-            $viewurl = ModUtil::url('Clip', 'user', 'list', array('tid' => $this->tid), null, null, true);
+            $viewurl = Clip_Util::url($this->tid, 'list', array(), null, null, true);
             $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $viewurl));
         }
 
@@ -220,18 +220,15 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
-                $this->goto = ModUtil::url('Clip', 'user', 'edit',
-                                       array('tid'  => $this->tid,
-                                             'id'   => $this->id,
-                                             'goto' => 'stepmode'));
+                $this->goto = Clip_Util::url($this->pub, 'edit', array('goto' => 'stepmode'));
                 break;
 
             case 'form':
-                $this->goto = ModUtil::url('Clip', 'user', 'edit', array('tid' => $this->tid, 'goto' => 'form'));
+                $this->goto = Clip_Util::url($this->tid, 'edit', array('goto' => 'form'));
                 break;
 
             case 'list':
-                $this->goto = ModUtil::url('Clip', 'user', 'list', array('tid' => $this->tid));
+                $this->goto = Clip_Util::url($this->tid, 'list');
                 break;
 
             case 'display':
@@ -326,10 +323,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     protected function processGoto($data)
     {
         if ($this->id) {
-            $this->itemurl = ModUtil::url('Clip', 'user', 'display',
-                             array('tid' => $this->pub['core_tid'],
-                                   'pid' => $this->pub['core_pid'],
-                                   'urltitle' => $this->pub['core_urltitle']));
+            $this->itemurl = Clip_Util::url($this->pub, 'display');
         }
 
         $goto = null;
@@ -340,7 +334,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if (isset($ops['delete'][$uniqueid])) {
             // if the item was deleted
             if (Clip_Access::toPubtype($data['core_tid'], 'list')) {
-                $url = ModUtil::url('Clip', 'user', 'list', array('tid' => $data['core_tid']));
+                $url = Clip_Util::url($data['core_tid'], 'list');
             } else {
                 $url = System::getHomepageUrl();
             }
@@ -350,10 +344,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         } elseif (isset($ops['create'][$uniqueid]) && $ops['create'][$uniqueid]) {
             // the publication was created
             if ($data['core_online'] == 1) {
-                $goto = ModUtil::url('Clip', 'user', 'display',
-                                     array('tid' => $data['core_tid'],
-                                           'pid' => $data['core_pid'],
-                                           'urltitle' => $data['core_urltitle']));
+                $goto = Clip_Util::url($data, 'display');
             } else {
                 // back to the pubtype pending template or referer page if it is not approved yet
                 $goto = isset($ops['create']['goto']) ? $ops['create']['goto'] : $this->referer;

@@ -33,7 +33,7 @@ class Clip_Url extends Zikula_ModUrl
 
     public function __toString()
     {
-        return $this->getUrl();
+        return DataUtil::formatForDisplay($this->getUrl());
     }
 
     public function getUrl($ssl=null, $fqurl=null, $forcelongurl=false, $forcelang=false)

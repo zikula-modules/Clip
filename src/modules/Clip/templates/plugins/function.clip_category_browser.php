@@ -174,10 +174,10 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
 
             $args = $params;
             if ($new_filter == '') {
-                $url = ModUtil::url('Clip', 'user', 'list', $args);
+                $url = Clip_Util::url($tid, 'list', $args);
             } else {
                 $args['filter'] = $new_filter;
-                $url = ModUtil::url('Clip', 'user', 'list', $args);
+                $url = Clip_Util::url($tid, 'list', $args);
             }
 
             if ($count) {
@@ -206,7 +206,7 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
             $nullcat = array(
                 -1 => array(
                     'fullTitle' => $view->__('Uncategorized'),
-                    'url'       => ModUtil::url('Clip', 'user', 'list', $args),
+                    'url'       => Clip_Util::url($tid, 'list', $args),
                     'depth'     => 0,
                     'selected'  => 0
                 )
