@@ -28,6 +28,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
 
     /**
      * Record load post process.
+     * For internal use only.
      *
      * @param boolean $args['handleplugins']      Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']       Whether to add the workflow information.

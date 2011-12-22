@@ -157,7 +157,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Relations
         // filters will be limited to the loaded relations
-        $args['rel'] = isset($args['rel']) ? Clip_Util::getPubtypeConfig('view', $args['rel']) : array();
+        $args['rel'] = isset($args['rel']) ? Clip_Util::getPubtypeConfig('list', $args['rel']) : array();
 
         if ($args['rel'] && $args['rel']['load']) {
             // adds the relations data

@@ -228,6 +228,7 @@ class Clip_Util
         );
 
         if ($config && $section && isset($result[$section])) {
+            $config = array_intersect_key($config, $result[$section]);
             return array_merge($result[$section], $config);
         }
 
