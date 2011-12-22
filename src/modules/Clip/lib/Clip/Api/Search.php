@@ -46,7 +46,7 @@ class Clip_Api_Search extends Zikula_AbstractApi
     {
         ModUtil::dbInfoLoad('Search');
 
-        $search_tid = isset($args['tids']) ? (array)$args['tids'] : (array)FormUtil::getPassedValue('search_tid', array(), 'REQUEST');
+        $search_tid = isset($args['tids']) ? (array)$args['tids'] : (array)FormUtil::getPassedValue('search_cliptid', array(), 'REQUEST');
         $sessionId  = session_id();
 
         $pubtypes = self::get_searchable();
@@ -68,12 +68,10 @@ class Clip_Api_Search extends Zikula_AbstractApi
                            ->selectCollection($where)
                            ->toArray();
 
-                $core_title = $pubtype->getTitleField();
-
                 foreach ($publist as $pub)
                 {
                     $record = array(
-                        'title'   => $pub[$core_title],
+                        'title'   => $pub['core_title'],
                         'text'    => '',
                         'extra'   => serialize(array('tid' => $pubtype->tid, 'pid' => $pub['core_pid'])),
                         'created' => $pub['cr_date'],
@@ -124,7 +122,7 @@ class Clip_Api_Search extends Zikula_AbstractApi
         foreach ($pubtypes as $tid => $pubtype)
         {
             if (!in_array($tid, $searchable)) {
-                unset($pubtypes[$key]);
+                unset($pubtypes[$tid]);
             }
         }
 
