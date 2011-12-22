@@ -155,6 +155,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     return false;
                 }
             case '0.4.20':
+                if (!self::pubtypeConfigs()) {
+                    return false;
+                }
+            case '0.4.21':
                 // further upgrade handling
                 // * contenttype stuff
                 //   Content_Installer::updateContentType('Clip');
@@ -1060,6 +1064,28 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 }
             }
         }
+
+        return true;
+    }
+
+    /**
+     * Upgrade all the pubtype's configurations.
+     *
+     * @return boolean
+     */
+    private static function pubtypeConfigs()
+    {
+        $tablename = DBUtil::getLimitedTablename('clip_pubtypes');
+        $q = "UPDATE {$tablename} SET config = REPLACE(config, 'view', 'list')";
+
+        if (!DBUtil::executeSQL($q)) {
+            return LogUtil::registerError($this->__('Error! Update attempt failed.')." - $q");
+        }
+
+        $pubtypes = Clip_Util::getPubType(-1, null, true);
+        $pubtypes->save();
+
+        return true;
     }
 
     /**

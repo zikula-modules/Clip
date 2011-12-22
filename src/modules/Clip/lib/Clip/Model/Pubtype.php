@@ -164,30 +164,30 @@ class Clip_Model_Pubtype extends Doctrine_Record
     public function defaultConfig($config)
     {
         $default = array(
-            'view' => array(
+            'list' => array(
                 'load' => false,
                 'onlyown' => true,
-                'processrefs' => false,
-                'checkperm' => false,
-                'handleplugins' => false,
-                'loadworkflow' => false
+                'checkperm' => false
             ),
             'display' => array(
                 'load' => true,
                 'onlyown' => true,
-                'processrefs' => true,
-                'checkperm' => true,
-                'handleplugins' => false,
-                'loadworkflow' => false
+                'checkperm' => true
             ),
             'edit' => array(
                 'load' => true,
-                'onlyown' => true
+                'onlyown' => true,
+                'checkperm' => false
             )
         );
 
         foreach ($default as $k => $v) {
-            $config[$k] = isset($config[$k]) ? array_merge($v, $config[$k]) : $v;
+            if (isset($config[$k])) {
+                $config[$k] = array_intersect_key($config[$k], $v);
+                $config[$k] = array_merge($v, $config[$k]);
+            } else {
+                $config[$k] = $v;
+            }
         }
 
         return $config;
