@@ -171,7 +171,7 @@ class Clip_Controller_Ajaxexec extends Zikula_Controller_AbstractAjax
         $diffs  = array();
         $udiffs = array();
         foreach (array_keys($original) as $gid) {
-            $diffs[$gid]  = array_diff($gids[$gid], $original[$gid]);
+            $diffs[$gid]  = array_diff((array)$gids[$gid], $original[$gid]);
             $udiffs[$gid] = array_diff_assoc($gids[$gid], $original[$gid]);
         }
 
