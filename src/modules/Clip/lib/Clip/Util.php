@@ -210,25 +210,20 @@ class Clip_Util
     public static function getPubtypeConfig($section = null, $config = array())
     {
         $result = array(
-            'view' => array(
+            'list' => array(
                 'load' => false,
                 'onlyown' => true,
-                'processrefs' => false,
-                'checkperm' => false,
-                'handleplugins' => false,
-                'loadworkflow' => false
+                'checkperm' => false
             ),
             'display' => array(
                 'load' => true,
                 'onlyown' => true,
-                'processrefs' => true,
-                'checkperm' => true,
-                'handleplugins' => false,
-                'loadworkflow' => false
+                'checkperm' => true
             ),
             'edit' => array(
                 'load' => true,
-                'onlyown' => true
+                'onlyown' => true,
+                'checkperm' => false
             )
         );
 

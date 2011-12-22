@@ -145,35 +145,21 @@
                 <legend>{gt text='List view'}</legend>
                 <div class="z-formrow">
                     {formlabel __text='Load related records?'}
-                    <div id="view_load">
-                        {formradiobutton id='view_load_1' groupName='view_load' dataField='view.load' group='config' value='1'}
-                        {formlabel for='view_load_1' __text='Yes'}
-                        {formradiobutton id='view_load_0' groupName='view_load' dataField='view.load' group='config' value='0'}
-                        {formlabel for='view_load_0' __text='No'}
+                    <div id="list_load">
+                        {formradiobutton id='list_load_1' groupName='list_load' dataField='list.load' group='config' value='1'}
+                        {formlabel for='list_load_1' __text='Yes'}
+                        {formradiobutton id='list_load_0' groupName='list_load' dataField='list.load' group='config' value='0'}
+                        {formlabel for='list_load_0' __text='No'}
                     </div>
                 </div>
-                <div id="view_advancedconfig" class="z-formnote">
+                <div id="list_advancedconfig" class="z-formnote">
                     <div>
-                        {formcheckbox id='view_onlyown' name='view.onlyown' dataField='view.onlyown' group='config'}
-                        {formlabel for='view_onlyown' __text='Only own relations?'}
+                        {formcheckbox id='list_onlyown' name='list.onlyown' dataField='list.onlyown' group='config'}
+                        {formlabel for='list_onlyown' __text='Only own relations?'}
                     </div>
                     <div>
-                        {formcheckbox id='view_processrefs' name='view.processrefs' dataField='view.processrefs' group='config'}
-                        {formlabel for='view_processrefs' __text='Process relations data'}
-                    </div>
-                    <div id="view_advancedprocess">
-                        <div>
-                            {formcheckbox id='view_checkperm' name='view.checkperm' dataField='view.checkperm' group='config'}
-                            {formlabel for='view_checkperm' __text='Check permissions?'}
-                        </div>
-                        <div>
-                            {formcheckbox id='view_handleplugins' name='view.handleplugins' dataField='view.handleplugins' group='config'}
-                            {formlabel for='view_handleplugins' __text='Handle plugins data?'}
-                        </div>
-                        <div>
-                            {formcheckbox id='view_loadworkflow' name='view.loadworkflow' dataField='view.loadworkflow' group='config'}
-                            {formlabel for='view_loadworkflow' __text='Load workflow state?'}
-                        </div>
+                        {formcheckbox id='list_checkperm' name='list.checkperm' dataField='list.checkperm' group='config'}
+                        {formlabel for='list_checkperm' __text='Check related publications permissions?'}
                     </div>
                 </div>
             </fieldset>
@@ -195,22 +181,8 @@
                         {formlabel for='display_onlyown' __text='Only own relations?'}
                     </div>
                     <div>
-                        {formcheckbox id='display_processrefs' name='display.processrefs' dataField='display.processrefs' group='config'}
-                        {formlabel for='display_processrefs' __text='Process relations data'}
-                    </div>
-                    <div id="display_advancedprocess">
-                        <div>
-                            {formcheckbox id='display_checkperm' name='display.checkperm' dataField='display.checkperm' group='config'}
-                            {formlabel for='display_checkperm' __text='Check permissions?'}
-                        </div>
-                        <div>
-                            {formcheckbox id='display_handleplugins' name='display.handleplugins' dataField='display.handleplugins' group='config'}
-                            {formlabel for='display_handleplugins' __text='Handle plugins data?'}
-                        </div>
-                        <div>
-                            {formcheckbox id='display_loadworkflow' name='display.loadworkflow' dataField='display.loadworkflow' group='config'}
-                            {formlabel for='display_loadworkflow' __text='Load workflow state?'}
-                        </div>
+                        {formcheckbox id='display_checkperm' name='display.checkperm' dataField='display.checkperm' group='config'}
+                        {formlabel for='display_checkperm' __text='Check related publications permissions?'}
                     </div>
                 </div>
             </fieldset>

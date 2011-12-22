@@ -15,12 +15,10 @@ Zikula.Clip.Pubtype =
     Init: function()
     {
         var i = 0;
-        while ($('view_load_'+i)) {
-            $('view_load_'+i).observe('change', Zikula.Clip.Pubtype.ListenerViewLoad);
+        while ($('list_load_'+i)) {
+            $('list_load_'+i).observe('change', Zikula.Clip.Pubtype.ListenerViewLoad);
             i++;
         }
-
-        $('view_processrefs').observe('change', Zikula.Clip.Pubtype.ListenerViewProcess);
 
         i = 0;
         while ($('display_load_'+i)) {
@@ -28,14 +26,10 @@ Zikula.Clip.Pubtype =
             i++;
         }
 
-        $('display_processrefs').observe('change', Zikula.Clip.Pubtype.ListenerDisplayProcess);
-
         $('edit_load').observe('change', Zikula.Clip.Pubtype.ListenerEditLoad);
 
         Zikula.Clip.Pubtype.ListenerViewLoad();
-        Zikula.Clip.Pubtype.ListenerViewProcess();
         Zikula.Clip.Pubtype.ListenerDisplayLoad();
-        Zikula.Clip.Pubtype.ListenerDisplayProcess();
         Zikula.Clip.Pubtype.ListenerEditLoad();
 
         new Zikula.UI.Panels('clip-pubtype-form',
@@ -48,22 +42,12 @@ Zikula.Clip.Pubtype =
 
     ListenerViewLoad: function()
     {
-        Zikula.radioswitchdisplaystate('view_load', 'view_advancedconfig', true);
-    },
-
-    ListenerViewProcess: function()
-    {
-        Zikula.checkboxswitchdisplaystate('view_processrefs', 'view_advancedprocess', true);
+        Zikula.radioswitchdisplaystate('list_load', 'list_advancedconfig', true);
     },
 
     ListenerDisplayLoad: function()
     {
         Zikula.radioswitchdisplaystate('display_load', 'display_advancedconfig', true);
-    },
-
-    ListenerDisplayProcess: function()
-    {
-        Zikula.checkboxswitchdisplaystate('display_processrefs', 'display_advancedprocess', true);
     },
 
     ListenerEditLoad: function()
