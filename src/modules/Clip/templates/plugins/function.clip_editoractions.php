@@ -57,6 +57,10 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
                    '</span>';
     }
 
+    $links[] = '<span class="clip-ac-editform">'.
+               '  <a target="_blank" href="'.Clip_Util::url($pub, 'display', array('id' => $pub['id'])).'" title="'.$view->__('Preview this publication').'">'.$view->__('Preview').'</a>'.
+               '</span>';
+
     // loop the actions building their output
     foreach ($actions as $aid => $action) {
         //$class = isset($action['parameters']['link']['class']) ? $action['parameters']['link']['class'] : '';
