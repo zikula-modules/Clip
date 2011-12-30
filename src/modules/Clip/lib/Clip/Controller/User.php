@@ -304,6 +304,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // assign the data to the output
         $this->view->assign('pubtype',   $pubtype)
                    ->assign('publist',   $result['publist'])
+                   ->assign('pubfields', Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))
                    ->assign('clipargs',  Clip_Util::getArgs())
                    ->assign('returnurl', $returnurl);
 
