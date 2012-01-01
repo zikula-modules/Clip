@@ -144,13 +144,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // hooks validators
-        $pubtype  = Clip_Util::getPubType($this->tid);
-        $hooktype = $args['commandName'] == 'delete' ? 'validate_delete' : 'validate_edit';
-        $valhook  = new Zikula_ValidationHook($pubtype->getHooksEventName($hooktype), new Zikula_Collection_HookValidationProviders());
-        $this->notifyHooks($valhook);
-        $validators = $valhook->getValidators();
-
-        if (!$validators->hasErrors()) {
+        if (!$this->validateHooks()) {
             return false;
         }
 
@@ -326,6 +320,20 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * Validate hooks.
+     */
+    public function validateHooks()
+    {
+        $pubtype  = Clip_Util::getPubType($this->tid);
+        $hooktype = $args['commandName'] == 'delete' ? 'validate_delete' : 'validate_edit';
+        $valhook  = new Zikula_ValidationHook($pubtype->getHooksEventName($hooktype), new Zikula_Collection_HookValidationProviders());
+        $this->notifyHooks($valhook);
+        $validators = $valhook->getValidators();
+
+        return $validators->hasErrors();
     }
 
     /**
