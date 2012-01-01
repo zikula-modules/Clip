@@ -109,7 +109,7 @@
         {/if}
         <div class="z-formrow">
             {formlabel for='name' __text='Name' mandatorysym=true}
-            {formtextinput id='name' group='field' maxLength='255' mandatory=true}
+            {formtextinput id='name' group='field' maxLength='255' mandatory=true regexValidationPattern='/^[a-zA-Z0-9_]+$/' __regexValidationMessage='Field name can only contain a-z letters and numbers.'}
             <div class="z-formnote z-warningmsg" style="margin-bottom: 0 !important">
                 {gt text='This value is used as the form field ID, so be sure to choose a unique one.'}
             </div>
