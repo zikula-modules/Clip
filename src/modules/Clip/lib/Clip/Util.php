@@ -591,7 +591,7 @@ class Clip_Util
     }
 
     /**
-     * Process of Clip's view for its controllers.
+     * Build a public Clip URL.
      *
      * @param mixed          $obj          A pubtype, a publication or a tid.
      * @param string         $func         The specific function to run.
@@ -603,9 +603,9 @@ class Clip_Util
      * @param boolean        $forcelongurl Force ModUtil::url to not create a short url even if the system is configured to do so.
      * @param boolean|string $forcelang    Force the inclusion of the $forcelang or default system language in the generated url.
      *
-     * @return void
+     * @return string
      */
-    public static function url($obj, $func, $args = array(), $ssl = null, $fragment = null, $fqurl = null, $forcelongurl = false, $forcelang=false)
+    public static function url($obj, $func, $args = array(), $ssl = null, $fragment = null, $fqurl = null, $forcelongurl = false, $forcelang = false)
     {
         if ($obj instanceof Clip_Model_Pubtype) {
             $args['tid'] = $obj['tid'];
@@ -625,5 +625,38 @@ class Clip_Util
         }
 
         return ModUtil::url('Clip', 'user', $func, $args, $ssl, $fragment, $fqurl, $forcelongurl, $forcelang);
+    }
+
+    /**
+     * Build a public Clip URL object.
+     *
+     * @param mixed  $obj      A pubtype, a publication or a tid.
+     * @param string $func     The specific function to run.
+     * @param array  $args     The array of arguments to put on the URL.
+     * @param string $language Force the inclusion of the $forcelang or default system language in the generated url.
+     * @param string $fragment The framgment to target within the URL.
+     *
+     * @return object Clip_Url instance.
+     */
+    public static function urlobj($obj, $func, $args = array(), $language = null, $fragment = null)
+    {
+        if ($obj instanceof Clip_Model_Pubtype) {
+            $args['tid'] = $obj['tid'];
+
+        } else if ($obj instanceof Clip_Doctrine_Pubdata) {
+            $args['tid'] = $obj['core_tid'];
+            if ($func == 'display' || $func == 'edit') {
+                $args['pid'] = $obj['core_pid'];
+                if ($func == 'edit') {
+                    $args['id'] = $obj['id'];
+                }
+                $args['urltitle'] = $obj['core_urltitle'];
+            }
+
+        } else if (is_numeric($obj)) {
+            $args['tid'] = $obj;
+        }
+
+        return new Clip_Url('Clip', 'user', $func, $args, $language, $fragment);
     }
 }
