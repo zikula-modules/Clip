@@ -76,7 +76,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     public function clipValues($handleplugins=false)
     {
         $this->mapValue('core_title',    $this[$this->core_titlefield]);
-        $this->mapValue('core_uniqueid', $this->core_tid.'-'.$this->core_pid);
+        $this->mapValue('core_uniqueid', $this->core_pid ? $this->core_tid.'-'.$this->core_pid : null);
         $this->mapValue('core_creator',  ($this->core_author == UserUtil::getVar('uid')) ? true : false);
 
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']) ? $this['__WORKFLOW__']['state'] : null);

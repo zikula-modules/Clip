@@ -504,13 +504,13 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
             \$obj->mapValue('core_tid', $tid);
             \$obj->mapValue('core_titlefield', '$titlefield');
             \$obj->mapValue('core_title',    \$obj[\$obj->core_titlefield]);
-            \$obj->mapValue('core_uniqueid', \$obj->core_tid.'-'.\$obj->core_pid);
+            \$obj->mapValue('core_uniqueid', \$obj->core_pid ? \$obj->core_tid.'-'.\$obj->core_pid : null);
             \$obj->mapValue('core_creator',  (\$obj->core_author == UserUtil::getVar('uid')) ? true : false);
         } else {
             \$obj['core_tid']   = $tid;
             \$obj['core_titlefield'] = '$titlefield';
             \$obj['core_title']    = \$obj[\$obj['core_titlefield']];
-            \$obj['core_uniqueid'] = \$obj['core_tid'].'-'.\$obj['core_pid'];
+            \$obj['core_uniqueid'] = \$obj['core_pid'] ? \$obj['core_tid'].'-'.\$obj['core_pid'] : null;
             \$obj['core_creator']  = (\$obj['core_author'] == UserUtil::getVar('uid')) ? true : false;
         }
     }
