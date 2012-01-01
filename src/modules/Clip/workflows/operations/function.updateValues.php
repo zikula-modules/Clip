@@ -29,8 +29,8 @@ function Clip_operation_updateValues(&$pub, $params)
     $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
     unset($params['allrev'], $params['silent'], $params['nextstate']);
 
-    // initializes the result flag
-    $result = false;
+    // initializes the result flag (no fail case)
+    $result = true;
 
     // build the array of values to update
     $update = array();
@@ -41,35 +41,22 @@ function Clip_operation_updateValues(&$pub, $params)
     }
 
     if ($update) {
+        // update the passed values
+        $q = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid'])
+                 ->createQuery()
+                 ->update()
+                 ->where('core_pid = ?', $pub->core_pid);
+
         if (!$allrev) {
             // update the passed pub only
-            foreach ($update as $key => $val) {
-                $pub[$key] = $val;
-            }
-
-            // validate and save the publication
-            if ($pub->isValid()) {
-                $pub->trySave();
-                $result = true;
-            }
-        } else {
-            // update all the revisions
-            $q = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid'])
-                     ->createQuery()
-                     ->update()
-                     ->where('core_pid = ?', $pub->core_pid);
-
-            foreach ($update as $key => $val) {
-                $q->set($key, $val);
-            }
-
-            $q->execute();
-            $result = true;
+            $q->andWhere('id = ?', $pub->id);
         }
-    } else {
-        // not having fields to update is not a failure
-        // then do not interrupt the workflow action execution
-        $result = true;
+
+        foreach ($update as $key => $val) {
+            $q->set($key, $val);
+        }
+
+        $q->execute();
     }
 
     if ($result) {
