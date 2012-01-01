@@ -409,7 +409,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     {
         $pubtype = Clip_Util::getPubType($this->core_tid);
         $urlobj  = Clip_Util::urlobj($this, 'display'); // describes how to retrieve this object by URL metadata
-        $hook    = new Zikula_Process($pubtype->getHooksEventName($hooktype), $this->core_uniqueid, $urlobj);
+        $hook    = new Zikula_ProcessHook($pubtype->getHooksEventName($hooktype), $this->core_uniqueid, $urlobj);
         ServiceUtil::getManager()->getService('zikula.hookmanager')->notify($hook);
     }
 
