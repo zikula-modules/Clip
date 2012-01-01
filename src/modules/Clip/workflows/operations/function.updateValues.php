@@ -75,7 +75,8 @@ function Clip_operation_updateValues(&$pub, $params)
     if ($result) {
         $result = array($pub['core_uniqueid'] => true);
 
-        // TODO HOOKS let know hooks that the publication was updated
+        // hooks: let know that the publication was updated
+        $pub->notifyHooks('process_edit');
     }
 
     // output message

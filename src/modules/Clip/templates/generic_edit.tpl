@@ -67,7 +67,7 @@
             </fieldset>
 
             <div class="clip-hooks-edit">
-                {notifydisplayhooks eventname="clip.ui_hooks.pubtype`$pubtype.tid`.form_edit" id=$pubdata.core_uniqueid}
+                {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') id=$pubdata.core_uniqueid}
             </div>
 
             <div class="z-buttons z-formbuttons">

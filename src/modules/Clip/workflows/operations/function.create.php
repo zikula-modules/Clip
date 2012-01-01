@@ -44,7 +44,8 @@ function Clip_operation_create(&$pub, $params)
         $pub->trySave();
         $result = array($pub['core_uniqueid'] => true);
 
-        // TODO HOOKS let know that a publication was created
+        // hooks: let know that a publication was created
+        $pub->notifyHooks('process_edit');
     }
 
     // output message

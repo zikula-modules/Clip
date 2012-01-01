@@ -143,6 +143,17 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             return false;
         }
 
+        // hooks validators
+        $pubtype  = Clip_Util::getPubType($this->tid);
+        $hooktype = $args['commandName'] == 'delete' ? 'validate_delete' : 'validate_edit';
+        $valhook  = new Zikula_ValidationHook($pubtype->getHooksEventName($hooktype), new Zikula_Collection_HookValidationProviders());
+        $this->notifyHooks($valhook);
+        $validators = $valhook->getValidators();
+
+        if (!$validators->hasErrors()) {
+            return false;
+        }
+
         // get the data set in the form
         $data = $view->getValues();
         // get the initial relations links

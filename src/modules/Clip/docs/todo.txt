@@ -24,3 +24,6 @@
     DATA
       Pubdata models indexes
       New admin screen to validate the data integrity (only one online revision, title field, categories, etc)
+
+    HOOKS
+      Implement ui_hooks.form_delete

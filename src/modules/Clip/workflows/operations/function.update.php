@@ -98,7 +98,8 @@ function Clip_operation_update(&$pub, &$params)
     }
 
     if ($result) {
-        // TODO HOOKS let know hooks that the publication was updated
+        // hooks: let know that the publication was updated
+        $pub->notifyHooks('process_edit');
     }
 
     // output message

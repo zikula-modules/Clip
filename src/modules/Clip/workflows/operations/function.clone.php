@@ -64,7 +64,8 @@ function Clip_operation_clone(&$pub, $params)
             $result = array($pub['core_uniqueid'] => true);
 
             // TODO event with cloned publication as subject?
-            // TODO HOOKS let know hooks that a publication was created
+            // hooks: let know that a publication was created
+            $copy->notifyHooks('process_edit');
 
         } else {
             // delete the previously inserted record

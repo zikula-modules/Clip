@@ -43,7 +43,8 @@ function Clip_operation_delete(&$pub, $params)
         $count = $tbl->selectFieldFunction('1', 'COUNT', array(array('core_pid = ?', $pub['core_pid']))) + 1;
 
         if ($count == 0) {
-            // TODO HOOKS if no other revisions, let know hooks that the publication was deleted
+            // hooks: if no other revisions, let know that a publication was deleted
+            $pub->notifyHooks('process_delete');
         }
     }
 
