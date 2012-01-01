@@ -501,7 +501,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             return false;
         }
 
-        $supportedfunctions = array('main', 'list', 'display', 'edit', 'view', 'publist', 'viewpub', 'pubedit');
+        $supportedfunctions = array('main', 'list', 'display', 'edit', 'exec', 'view', 'publist', 'viewpub', 'pubedit', 'executecommand');
         if (!in_array($args['func'], $supportedfunctions)) {
             return false;
         }
@@ -519,6 +519,9 @@ class Clip_Api_User extends Zikula_AbstractApi
                 break;
             case 'viewpub':
                 $args['func'] = 'display';
+                break;
+            case 'executecommand':
+                $args['func'] = 'exec';
                 break;
         }
 
@@ -558,6 +561,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         //  edit:    /pubtype/pubtitle[/goto/somewhere]/edit.htm[l]
         //  edit:    /pubtype/pubtitle[/template/goto/somewhere]/edit.htm[l]
         //  edit:    /pubtype/pubtitle[/param1/value1/param2/value2]/edit.htm[l]
+        //  exec:    /pubtype/pubtitle/action/___/csfrtoken/___/exec
 
         static $cache = array();
 
@@ -593,6 +597,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $_['pid'] = 0;
                 }
 
+            case 'exec':
             case 'display':
                 if (!isset($_['urltitle']) && !isset($_['pid']) && !isset($_['id'])) {
                     return false;
@@ -638,8 +643,8 @@ class Clip_Api_User extends Zikula_AbstractApi
 
                 unset($_['urltitle'], $_['title'], $_['pid'], $_['id']);
 
-                if ($args['func'] == 'edit') {
-                    // edit case: override the display shortURL
+                if (in_array($args['func'], array('edit', 'exec'))) {
+                    // override the display shortURL
                     $shorturl  = ($pid ? $urltitle : '');
                     $shorturl .= ($template ? "/$template" : '');
                     // adds the parameters
@@ -648,7 +653,18 @@ class Clip_Api_User extends Zikula_AbstractApi
                             $shorturl .= '/'.urlencode($k).'/'.urlencode($v);
                         }
                     }
-                    $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ($tpl ? ".$tplhtml" : '');
+                    
+                    switch ($args['func'])
+                    {
+                        case 'edit':
+                            $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ($tpl ? ".$tplhtml" : '');
+                            break;
+
+                        case 'exec':
+                            $shorturl .= '/exec';
+                            break;
+                    }
+                    
                 }
                 break;
         }
@@ -668,7 +684,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         // utility assign
         $_ = array_slice($args['vars'], 2);
 
-        if (isset($args[2]) && $args[2] == 'exec') {
+        if (isset($args[2])) {
             // unsupported function, process it with default shortURLs
             return false;
         }
@@ -696,6 +712,13 @@ class Clip_Api_User extends Zikula_AbstractApi
             $pid  = ($filename == 'submit') ? null : 0;
 
             unset($_[0], $_[count($_)]);
+
+        // direct execution
+        } elseif ($filename == 'exec') {
+            $func = 'exec';
+            $pubtitle = $_[1];
+
+            unset($_[count($_)-1], $_[0], $_[1]);
 
         } else {
             // process the possibilities and resolve the pubtype urltitle
@@ -766,6 +789,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                     unset($_[key($_)]);
                 }
 
+            case 'exec':
                 if (!empty($_)) {
                     $_ = array_values($_);
                     // there are more parameters
