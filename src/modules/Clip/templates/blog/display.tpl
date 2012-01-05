@@ -27,7 +27,7 @@
             <span class="clip-post-reads">({gt text='%s read' plural='%s reads' count=$pubdata.core_hitcount tag1=$pubdata.core_hitcount})</span>
         </div>
         <div class="clip-post-content z-floatbox">
-            {$pubdata.content|safehtml|notifyfilters:"clip.hook.`$pubtype.tid`.ui.filter"}
+            {$pubdata.content|safehtml|clip_notifyfilters:$pubtype}
         </div>
         <div class="clip-post-utility">
             {strip}

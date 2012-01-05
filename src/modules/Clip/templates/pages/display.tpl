@@ -18,7 +18,7 @@
         </h2>
 
         <div class="clip-page-content">
-            {$pubdata.content|safehtml|notifyfilters:"clip.hook.`$pubtype.tid`.ui.filter"}
+            {$pubdata.content|safehtml|clip_notifyfilters:$pubtype}
         </div>
 
         {if $pubdata.displayinfo}
