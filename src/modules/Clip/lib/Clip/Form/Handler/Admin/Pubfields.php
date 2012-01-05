@@ -84,17 +84,20 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
             return $view->redirect($this->referer);
         }
 
+        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
+
         // get the data set in the form
         $data = $view->getValues();
 
         // creates a Pubfield instance
         if ($this->id) {
             // object fetch due the use of default values
-            $pubfield = Doctrine_Core::getTable('Clip_Model_Pubfield')->find($this->id)->copy(true);
+            $pubfield = $tableObj->find($this->id)->copy(true);
             $pubfield->assignIdentifier($this->id);
         } else {
             $pubfield = new Clip_Model_Pubfield();
         }
+
         $pubfield->fromArray($data['field']);
 
         // fill default data
@@ -115,7 +118,6 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                     return false;
                 }
 
-                $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
                 $previous = $this->id ? $tableObj->find($this->id) : null;
 
                 // name restrictions
@@ -127,21 +129,19 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                     return $view->setPluginErrorMsg('name', $this->__('The submitted name is reserved. Please choose a different one.'));
                 }
 
+                $pubClass = 'ClipModels_Pubdata'.$pubfield->tid;
+                $pubObj   = Doctrine_Core::getTable($pubClass)->getRecord();
+
                 // check that the name is not in use
                 if (!$this->id || $pubfield->name != $previous->name) {
-                    $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$pubfield->tid)->getRecord();
-                    if (array_key_exists($pubfield->name, $pub->pubFields())) {
+                    if (array_key_exists($pubfield->name, $pubObj->pubFields())) {
                         return $view->setPluginErrorMsg('name', $this->__f("The name '%s' is already in use.", $pubfield->name));
                     }
                 }
 
                 // check that the new name is not another publication property
-                if (!$this->id) {
-                    $pubClass = 'ClipModels_Pubdata'.$this->tid;
-                    $pubObj   = new $pubClass();
-                    if ($pubObj->contains($pubfield->name)) {
-                        return $view->setPluginErrorMsg('name', $this->__('The provided name is reserved for the publication standard fields.'));
-                    }
+                if (!$this->id && $pubObj->contains($pubfield->name)) {
+                    return $view->setPluginErrorMsg('name', $this->__('The provided name is reserved for the publication standard fields.'));
                 }
 
                 // reset any other title field if this one is enabled

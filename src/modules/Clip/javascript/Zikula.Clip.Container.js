@@ -330,7 +330,8 @@ Zikula.Clip.Container = Class.create(
             form.select('input[type=submit]').invoke('disable');
 
             new Zikula.Ajax.Request(
-                'ajax.php?module=Clip&type=ajax&func='+Zikula.Clip.Container.func+'&tid='+Zikula.Clip.Container.pars.tid+'&lang='+Zikula.Config.lang,
+                form.action,
+                //'ajax.php?module=Clip&type=ajax&func='+Zikula.Clip.Container.func+'&tid='+Zikula.Clip.Container.pars.tid+'&lang='+Zikula.Config.lang,
                 {
                     method: 'post',
                     parameters: form.serialize(),
