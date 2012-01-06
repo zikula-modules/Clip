@@ -450,15 +450,22 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     {
         $pub = $event->getInvoker();
 
+        // figures out a publication id
+        if (!$pub['core_pid']) {
+            $pub['core_pid'] = $this->getTable()->selectFieldFunction('core_pid', 'MAX') + 1;
+        }
+
         // fills the urltitle
         if (!$pub['core_urltitle']) {
-            $pub['core_urltitle'] = substr(DataUtil::formatPermalink($pub[$pub['core_titlefield']]), 0, 255);
+            $urltitle = $pub[$pub['core_titlefield']] ? $pub[$pub['core_titlefield']] : $pub['core_pid'];
+            $pub['core_urltitle'] = substr(DataUtil::formatPermalink($urltitle), 0, 255);
         }
 
         // validate the unique urltitle
         $pid = $this->getTable()->selectFieldBy('core_pid', $pub['core_urltitle'], 'core_urltitle');
 
         while ($pid && $pid != $pub['core_pid']) {
+            // TODO better to throw a validation exception
             ++$pub->core_urltitle;
 
             $pid = $this->getTable()->selectFieldBy('core_pid', $pub['core_urltitle'], 'core_urltitle');
