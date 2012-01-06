@@ -30,13 +30,19 @@ class Clip_Doctrine_Table extends Doctrine_Table
             if (strpos($alias, 'ClipModels_Relation') === 0) {
                 continue;
             }
+
+            $prefix = isset($dynaMap[$alias]) ? $dynaMap[$alias].'.' : $alias.':';
+
             // checks if this relation is not owned
             if (preg_match('/^rel\_\d+$/', $relation['local'])) {
                 $columns[$alias] = $relation['local'];
             } else {
                 // when owned the foreign field is in the other table
-                $v = isset($dynaMap[$relation['class']]) ? $dynaMap[$relation['class']].'.' : $relation['class'].':';
-                $columns[$alias] = "{$v}{$relation['local']}";
+                $columns[$alias] = "{$prefix}{$relation['local']}";
+            }
+
+            foreach ($relation->getTable()->getFieldNames() as $field) {
+                $columns["$alias.$field"] = "{$prefix}{$field}";
             }
         }
 
