@@ -124,8 +124,6 @@ class Clip_Util_Grouptypes
      */
     public static function getTreeJS($grouptypes = null, $renderRoot = false, $withPubtypes = false, array $options = array(), $accessLevel = ACCESS_OVERVIEW)
     {
-        $dom = ZLanguage::getModuleDomain('Clip');
-
         if (!$grouptypes) {
             $grouptypes = self::getTree($accessLevel, true, true);
             // just for safety, disable the root grouptype of drag & drop
@@ -164,26 +162,18 @@ class Clip_Util_Grouptypes
      */
     public static function getTreeJSNode($grouptype, &$leafNodes)
     {
-        $dom  = ZLanguage::getModuleDomain('Clip');
-        $lang = ZLanguage::getLanguageCode();
-        $sysl = System::getVar('language_i18n');
+        $dom = ZLanguage::getModuleDomain('Clip');
 
         // name
-        if (is_string($grouptype['name'])) {
+        if ($grouptype['name']) {
             $grouptype['name'] = DataUtil::formatForDisplay($grouptype['name']);
-        } elseif (isset($grouptype['name'][$lang]) && !empty($grouptype['name'][$lang])) {
-            $grouptype['name'] = DataUtil::formatForDisplay($grouptype['name'][$lang]);
-        } elseif ($lang != $sysl && isset($grouptype['name'][$sysl]) && !empty($grouptype['name'][$sysl])) {
-            $grouptype['name'] = DataUtil::formatForDisplay($grouptype['name'][$sysl]);
         } else {
             $grouptype['name'] = __f('Group ID [%s]', $grouptype['gid'], $dom);
         }
 
         // description
-        if (isset($grouptype['description'][$lang]) && !empty($grouptype['description'][$lang])) {
-            $grouptype['description'] = DataUtil::formatForDisplay($grouptype['description'][$lang]);
-        } elseif ($lang != $sysl && isset($grouptype['description'][$sysl]) && !empty($grouptype['description'][$sysl])) {
-            $grouptype['description'] = DataUtil::formatForDisplay($grouptype['description'][$sysl]);
+        if ($grouptype['description']) {
+            $grouptype['description'] = DataUtil::formatForDisplay($grouptype['description']);
         } else {
             $grouptype['description'] = '';
         }
