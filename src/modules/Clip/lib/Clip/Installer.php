@@ -51,6 +51,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $modvars = array(
             'uploadpath' => $dirs['upload'],
             'modelspath' => $dirs['models'],
+            'pubtype'    => null,
             'shorturls'  => 'htm',
             'maxperpage' => 100,
             'devmode'    => true
@@ -159,6 +160,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     return false;
                 }
             case '0.4.21':
+                $this->setVar('pubtype', null);
+            case '0.4.22':
                 // further upgrade handling
                 // * contenttype stuff
                 //   Content_Installer::updateContentType('Clip');

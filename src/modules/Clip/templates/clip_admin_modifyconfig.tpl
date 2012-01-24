@@ -66,6 +66,11 @@
             </span>
         </div>
         <div class="z-formrow">
+            {formlabel for='pubtype' text='Publication Type'}
+            {formdropdownlist items=$pubtypes id='pubtype'}
+            <span class="z-formnote z-sub">{gt text='Default publication type to use when none is passed to Clip.'}</span>
+        </div>
+        <div class="z-formrow">
             {formlabel for='shorturls' __text='Default template'}
             {formtextinput id='shorturls' maxLength='40'}
             <span class="z-formnote z-sub">

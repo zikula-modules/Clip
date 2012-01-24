@@ -49,6 +49,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
+        if (!$args['tid'] && $this->getVar('pubtype')) {
+            System::redirect(ModUtil::url('Clip', 'user', 'main', array('tid' => $this->getVar('pubtype'))));
+        }
+
         if (!Clip_Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }

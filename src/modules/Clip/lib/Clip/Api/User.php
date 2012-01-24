@@ -690,6 +690,9 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         if (empty($_)) {
+            if ($this->getVar('pubtype')) {
+                System::redirect(ModUtil::url('Clip', 'user', 'main', array('tid' => $this->getVar('pubtype'))));
+            }
             // no pubtype passed, let the module to process the error
             return true;
         }

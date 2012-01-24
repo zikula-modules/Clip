@@ -49,6 +49,7 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
         // fill the output
         $view->assign('siteroot', DataUtil::formatForDisplay($this->siteroot))
              ->assign('status', $status)
+             ->assign('pubtypes', Clip_Util_Selectors::pubtypes())
              ->assign($modvars);
 
         return true;
@@ -91,6 +92,9 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
                 // shorturls default template
                 $data['shorturls'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $data['shorturls']);
                 ModUtil::setVar('Clip', 'shorturls', $data['shorturls']);
+
+                // default publication type
+                ModUtil::setVar('Clip', 'pubtype', $data['pubtype']);
 
                 // development mode
                 ModUtil::setVar('Clip', 'devmode', $data['devmode']);
