@@ -324,6 +324,13 @@ class Clip_Model_Pubtype extends Doctrine_Record
     {
         $pubtype = $event->getInvoker();
 
+        // validates that the default pubtype id is correct
+        $default = ModUtil::getVar('Clip', 'pubtype');
+
+        if ($default && $this->tid == $default) {
+            ModUtil::setVar('Clip', 'pubtype', null);
+        }
+
         // delete its pubfields
         Clip_Util::getPubFields($this->tid)->delete();
 
