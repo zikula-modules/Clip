@@ -87,7 +87,7 @@
                 {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') id=$pubdata.core_uniqueid}
             </div>
 
-            <div class="z-buttons z-formbuttons">
+            <div class="z-buttons">
                 {foreach item='action' from=$actions}
                     {formbutton commandName=$action.id text=$action.title zparameters=$action.parameters.button|default:''}
                 {/foreach}

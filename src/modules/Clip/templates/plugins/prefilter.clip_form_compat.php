@@ -35,6 +35,8 @@ function smarty_prefilter_clip_form_compat($source, $view)
 
     $source = preg_replace("/formcheckbox id='.*?_(delete|thumbs)'/", 'formcheckbox id="`$fieldid`_$1"', $source);
 
+    $source = str_replace('z-buttons z-formbuttons', 'z-buttons', $source);
+
     // return the modified source
     return $source;
 }

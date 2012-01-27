@@ -285,10 +285,6 @@ table.z-admintable thead tr th {
   border-radius: 0 0 4px 4px;
 }
 
-.z-module-clip .z-formbuttons {
-  margin-left: 0.5em;
-  padding-top: 0;
-}
 .z-module-clip .z-form .z-buttons input,
 .z-module-clip .z-form .z-buttons button {
   margin-bottom: 0.5em;
