@@ -44,32 +44,17 @@ class Clip_Util_Grouptypes
         // array hydration does not work with postHydrate hook
         $grouptypes = $treeObj->fetchTree()->toArray();
 
-        $lang = ZLanguage::getLanguageCode();
-        $sysl = System::getVar('language_i18n');
-
         $withpubtypes = array();
         // organize the grouptype data
         foreach ($grouptypes as $k => &$group) {
             // set the localized name
             if ($group['level'] == 0) {
                 $group['name'] = __('Root', $dom);
-            } elseif (isset($group['name'][$lang])) {
-                $group['name'] = $group['name'][$lang];
-            } elseif ($sysl != $lang && isset($group['name'][$sysl])) {
-                $group['name'] = $group['name'][$sysl];
-            } else {
-                $group['name'] = current($group['name']);
             }
 
             // set the localized description
             if ($group['level'] == 0) {
                 $group['description'] = '';
-            } elseif (isset($group['description'][$lang])) {
-                $group['description'] = $group['description'][$lang];
-            } elseif ($sysl != $lang && isset($group['description'][$sysl])) {
-                $group['description'] = $group['description'][$sysl];
-            } else {
-                $group['description'] = current($group['description']);
             }
 
             // sort the group's pubtypes
@@ -164,19 +149,38 @@ class Clip_Util_Grouptypes
     {
         $dom = ZLanguage::getModuleDomain('Clip');
 
+        $lang = ZLanguage::getLanguageCode();
+        $sysl = System::getVar('language_i18n');
+
         // name
-        if ($grouptype['name']) {
-            $grouptype['name'] = DataUtil::formatForDisplay($grouptype['name']);
-        } else {
-            $grouptype['name'] = __f('Group ID [%s]', $grouptype['gid'], $dom);
+        if (is_array($grouptype['name'])) {
+            if (isset($grouptype['name'][$lang])) {
+                $grouptype['name'] = $grouptype['name'][$lang];
+            } elseif ($sysl != $lang && isset($grouptype['name'][$sysl])) {
+                $grouptype['name'] = $grouptype['name'][$sysl];
+            } else {
+                $grouptype['name'] = current($grouptype['name']);
+            }
         }
 
-        // description
-        if ($grouptype['description']) {
-            $grouptype['description'] = DataUtil::formatForDisplay($grouptype['description']);
-        } else {
-            $grouptype['description'] = '';
+        if (!$grouptype['name']) {
+            $grouptype['name'] = __f('Group %s', $grouptype['gid'], $dom);
         }
+
+        $grouptype['name'] = DataUtil::formatForDisplay($grouptype['name']);
+
+        // description
+        if (is_array($grouptype['description'])) {
+            if (isset($grouptype['description'][$lang])) {
+                $grouptype['description'] = $grouptype['description'][$lang];
+            } elseif ($sysl != $lang && isset($grouptype['description'][$sysl])) {
+                $grouptype['description'] = $grouptype['description'][$sysl];
+            } else {
+                $grouptype['description'] = current($grouptype['description']);
+            }
+        }
+
+        $grouptype['description'] = DataUtil::formatForDisplay($grouptype['description']);
 
         // link title
         $grouptype['href'] = '#';
