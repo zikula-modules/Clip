@@ -70,6 +70,87 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
         }
     }
 
+    function render(Zikula_Form_View $view)
+    {
+        // adds the jsCalendar header
+        parent::render($view);
+
+        $i18n = ZI18n::getInstance();
+
+        $result = '<div>';
+
+        if ($this->useSelectionMode) {
+            $hiddenInputField = str_replace(array('type="text"', '&nbsp;*'),
+                                            array('type="hidden"', ''),
+                                            Zikula_Form_Plugin_TextInput::render($view));
+
+            $result .= $hiddenInputField . '<span id="' . $this->id . 'cal">';
+            if ($this->text) {
+                $txtdate = DataUtil::formatForDisplay(DateUtil::getDatetime(DateUtil::parseUIDate($this->text), $this->daFormat));
+            } else {
+                $txtdate = $this->__('Select date');
+            }
+            $result .= $txtdate;
+        } else {
+            $result .= '<span class="z-form-date" style="white-space: nowrap">';
+            $result .= Zikula_Form_Plugin_TextInput::render($view);
+        }
+
+        $result .= '</span>';
+
+        $result .= '&nbsp;';
+        $result .= "<img id=\"{$this->id}_img\" src=\"modules/Clip/images/icons/cal.png\" style=\"vertical-align: middle\" class=\"clickable\" alt=\"{$this->__('Select date')}\" />";
+
+        $result .= '&nbsp;';
+        if ($this->useSelectionMode) {
+            $onclick = "onclick=\"document.getElementById('{$this->id}').value = '{$this->text}'; document.getElementById('{$this->id}cal').innerHTML = '{$txtdate}';\"";
+        } else {
+            $onclick = "onclick=\"document.getElementById('{$this->id}').value = '{$this->text}';\"";
+        }
+        $result .= "<img id=\"{$this->id}_imgclr\" src=\"modules/Clip/images/icons/editclear.png\" style=\"vertical-align: middle\" class=\"clickable\" alt=\"{$this->__('Reset date')}\" {$onclick}/>";
+
+        $result .= '</div>';
+
+        // build jsCalendar script options
+        $result .= "<script type=\"text/javascript\">
+            // <![CDATA[
+            Calendar.setup(
+            {
+                inputField : \"{$this->id}\",";
+
+        if ($this->includeTime) {
+            $this->initDate = str_replace('-', ',', $this->initDate);
+            $result .= "
+                    ifFormat    : \"" . $this->ifFormat . "\",
+                    showsTime   :    true,
+                    timeFormat  :    \"" . $i18n->locale->getTimeformat() . "\",
+                    singleClick :    false,";
+        } else {
+            $result .= "
+                    ifFormat : \"" . $this->ifFormat . "\",";
+        }
+
+        if ($this->useSelectionMode) {
+            $result .= "
+                    displayArea :    \"{$this->id}cal\",
+                    daFormat    :    \"{$this->daFormat}\",
+                    align       :    \"Bl\",
+                    singleClick :    true,";
+        }
+
+        $result .= "
+                    button : \"{$this->id}_img\",";
+
+        $result .= "
+                    firstDay: " . $i18n->locale->getFirstweekday() . "
+                }
+            );
+            // ]]>
+            </script>";
+
+        return $result;
+    }
+
     /**
      * Clip processing methods.
      */
