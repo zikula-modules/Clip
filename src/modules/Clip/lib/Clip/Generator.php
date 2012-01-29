@@ -432,6 +432,11 @@ class Clip_Generator
             $options .= (!empty($options) ? "\n        " : '')."\$this->option('$k', '$v');";
         }
 
+        $options .= (!empty($options) ? "\n        " : '')."\$this->index('urltitle_index', array(
+                'fields' => array('urltitle')
+            )
+        );";
+
         // title field
         $titlefield = Clip_Util::getTitleField($tid);
 
