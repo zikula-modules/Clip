@@ -224,7 +224,7 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
     public function count($args)
     {
         //// Token check
-        $this->checkCsrfToken($this->request->getGet()->get('csrftoken', 'notokenpresent'));
+        $this->checkCsrfToken($this->request->getGet()->get('csrftoken', null));
 
         //// Pubtype
         // validate and get the publication type first
