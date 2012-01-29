@@ -309,11 +309,13 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
               //'                    <img src="{$pubdata.'.$field['name'].'.thumbnailUrl}" title="{gt text=\''.no__('Thumbnail').'\'}" alt="{gt text=\''.no__('Thumbnail').'\'}" />'."\n".
               //'                    <br />'."\n".
                 '                    <img width="250" src="{$pubdata.'.$field['name'].'.url}" title="{gt text=\''.no__('Image').'\'}" alt="{gt text=\''.no__('Image').'\'}" />'."\n".
-                '                    <pre>{clip_dump var=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '                    <br />'."\n".
+                '                    <a href="{clip_downloadurl field=\''.$field['name'].'\'}">{gt text=\''.no__('Download').'\'}</a>'."\n".
                 '                </div>'."\n".
                 '            {else}'."\n".
                 '                <span class="z-formnote">{gt text=\''.no__('No image uploaded.').'\'}</span>'."\n".
                 '            {/if}'."\n".
+                '            <pre class="z-formnote">{clip_dump var=$pubdata.'.$field['name'].'}</pre>'."\n".
                 '        </div>';
 
         return array('full' => $full);

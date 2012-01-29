@@ -171,4 +171,22 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
         return NULL;
     }
+
+    public static function getOutputDisplay($field)
+    {
+        $full = '        <div class="z-formrow">'."\n".
+                '            <span class="z-label">{$pubfields.'.$field['name'].'|clip_translate}:</span>'."\n".
+                '            {if $pubdata.'.$field['name'].'.file_name}'."\n".
+                '                <div class="z-formnote">'."\n".
+                '                    {$pubdata.'.$field['name'].'.orig_name}<br />'."\n".
+                '                    <a href="{clip_downloadurl field=\''.$field['name'].'\'}">{gt text=\''.no__('Download').'\'}</a>'."\n".
+                '                </div>'."\n".
+                '            {else}'."\n".
+                '                <span class="z-formnote">{gt text=\''.no__('No file uploaded.').'\'}</span>'."\n".
+                '            {/if}'."\n".
+                '            <pre class="z-formnote">{clip_dump var=$pubdata.'.$field['name'].'}</pre>'."\n".
+                '        </div>';
+
+        return array('full' => $full);
+    }
 }
