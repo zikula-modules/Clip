@@ -102,6 +102,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
             case '0.4.7':
                 self::tempUpdate047();
+                self::updatePubTables();
             case '0.4.8':
             case '0.4.9':
                 if (!Doctrine_Core::getTable('Clip_Model_Pubtype')->changeTable(true)) {
@@ -162,6 +163,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
             case '0.4.21':
                 $this->setVar('pubtype', null);
             case '0.4.22':
+                self::updatePubTables();
+            case '0.9.0':
                 // further upgrade handling
                 // * contenttype stuff
                 //   Content_Installer::updateContentType('Clip');
@@ -844,16 +847,6 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // TEMP UPDATE: Image fieldplugin type change: C(255) to C(1024)
         $table = DBUtil::getLimitedTablename('clip_pubfields');
         $sql[] = "UPDATE $table SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
-
-        // update the pubdata models files
-        Clip_Generator::resetModels();
-        Clip_Generator::checkModels(true);
-
-        // update the database
-        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
-        foreach ($pubtypes as $tid) {
-            Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->changeTable();
-        }
     }
 
     /**
@@ -1103,5 +1096,29 @@ class Clip_Installer extends Zikula_AbstractInstaller
             'pagesetter_publist' => 'ClipPublist'
         );
         return $oldToNew;
+    }
+
+    /**
+     * Utility method to update the pubdata tables.
+     */
+    private static function updatePubTables()
+    {
+        static $already = false;
+
+        if ($already) {
+            return;
+        }        
+
+        $already = true;
+
+        // update the pubdata models files
+        Clip_Generator::resetModels();
+        Clip_Generator::checkModels(true);
+
+        // update the database
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+        foreach ($pubtypes as $tid) {
+            Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->changeTable();
+        }
     }
 }

@@ -44,7 +44,7 @@ class Clip_Version extends Zikula_AbstractVersion
         $meta['oldnames']       = array('PageMaster');
         //! module name that appears in URL
         $meta['url']            = $this->__('clip');
-        $meta['version']        = '0.4.22';
+        $meta['version']        = '0.9.0';
         $meta['core_min']       = '1.3.2';
         $meta['core_max']       = '1.3.99';
 
