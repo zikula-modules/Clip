@@ -207,4 +207,142 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         );
         return new Zikula_Response_Ajax($result);
     }
+
+    /**
+     * Increment a counter inside a publication.
+     *
+     * Allows to download a file optionally.
+     *
+     * @param integer $args['tid']   ID of the publication type.
+     * @param integer $args['pid']   ID of the publication.
+     * @param integer $args['id']    ID of the publication revision (optional if pid is used).
+     * @param string  $args['count'] Field to increment the count (optional).
+     * @param string  $args['field'] Field to download (optional).
+     *
+     * @return Publication output.
+     */
+    public function count($args)
+    {
+        //// Token check
+        $this->checkCsrfToken($this->request->getGet()->get('csrftoken', 'notokenpresent'));
+
+        //// Pubtype
+        // validate and get the publication type first
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+        }
+
+        $pubtype = Clip_Util::getPubType($args['tid']);
+
+        //// Parameters
+        // define the arguments
+        $apiargs = array(
+            'tid'           => $args['tid'],
+            'pid'           => isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid'),
+            'id'            => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'),
+            'checkperm'     => false,
+            'handleplugins' => true,
+            'loadworkflow'  => false,
+            'rel'           => array()
+        );
+        $args = array(
+            'count' => isset($args['count']) ? $args['count'] : FormUtil::getPassedValue('count'),
+            'field' => isset($args['field']) ? $args['field'] : FormUtil::getPassedValue('field')
+        );
+
+        //// Validation
+        // validate the passed fields
+        $record = $pubtype->getPubInstance();
+
+        if ($args['count']) {
+            if (!$record->isPubField($args['count'])) {
+                return LogUtil::registerError($this->__('Error! Invalid field requested.'));
+            }
+
+            if (!Clip_Util::getPubFieldData($apiargs['tid'], $args['count'], 'iscounter')) {
+                return LogUtil::registerError($this->__('Error! Invalid field to increment was passed.'));
+            }
+        }
+
+        if ($args['field'] && !$record->isPubField($args['field'])) {
+            return LogUtil::registerError($this->__('Error! Invalid field requested.'));
+        }
+
+        if (!$args['field'] && !$args['count']) {
+            return LogUtil::registerError($this->__('Error! Invalid request.'));
+        }
+
+        // required the publication ID or record ID
+        if ((empty($apiargs['pid']) || !is_numeric($apiargs['pid'])) && (empty($apiargs['id']) || !is_numeric($apiargs['id']))) {
+            return LogUtil::registerError($this->__f('Error! Missing or wrong argument [%s].', 'id | pid'));
+        }
+
+        // get the pid if it was not passed
+        if (empty($apiargs['pid'])) {
+            $apiargs['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $apiargs);
+        }
+
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], ACCESS_READ, null, 'display'));
+
+        // setup an admin flag
+        $isadmin = Clip_Access::toPubtype($pubtype);
+
+        //// Execution
+        // fill the conditions of the item to get
+        $apiargs['where'] = array();
+        if (!Clip_Access::toPubtype($apiargs['tid'], 'editor')) {
+            $apiargs['where'][] = array('core_online = ?', 1);
+            $apiargs['where'][] = array('core_intrash = ?', 0);
+        }
+
+        // get the publication from the database
+        $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $apiargs);
+
+        if (!$pubdata) {
+            if ($isadmin) {
+                // detailed error message for the admin only
+                return LogUtil::registerError($this->__f('No such publication [tid: %1$s - pid: %2$s; id: %3$s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])));
+            } else {
+                return LogUtil::registerError($this->__('No such publication found.'));
+            }
+        }
+
+        // process the request
+        if ($args['field']) {
+            // there's a download requested
+            if (!is_array($pubdata[$args['field']]) || !isset($pubdata[$args['field']]['file_name'])) {
+                return LogUtil::registerError($this->__('Error! Invalid field requested.'));
+            }
+
+            $fileinfo = $pubdata[$args['field']];
+            $basepath = ModUtil::getVar('Clip', 'uploadpath');
+            $filepath = $basepath.'/'.$fileinfo['file_name'];
+
+            if (!$fileinfo['file_name'] || !file_exists($filepath)) {
+                return LogUtil::registerError($this->__('The requested file does not exists.'));
+            }
+
+            $output = new Clip_Util_Response_Download($filepath, $fileinfo['orig_name']);
+        }
+
+        // check if there's a field requested to increment
+        if ($args['count']) {
+            Doctrine_Core::getTable('ClipModels_Pubdata'.$apiargs['tid'])->incrementFieldBy($args['count'], $apiargs['pid'], 'core_pid');
+
+            // check if there was no download
+            if (!isset($output)) {
+                $result = array(
+                    'response' => true
+                );
+                $output = new Zikula_Response_Ajax($result);
+            }
+        }
+
+        //// Output
+        // return the response object
+        return $output;
+    }
 }

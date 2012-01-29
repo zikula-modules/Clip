@@ -276,6 +276,22 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Validates if the passed field name is a valid column.
+     *
+     * @return boolean
+     */
+    public function isPubField($fieldname)
+    {
+        $fields = array();
+
+        foreach ($this as $column => $value) {
+            $fields[$column] = true;
+        }
+
+        return isset($fields[$fieldname]);
+    }
+
+    /**
      * Returns the record fields as keys of a result array.
      *
      * @return array List of available fields as keys.

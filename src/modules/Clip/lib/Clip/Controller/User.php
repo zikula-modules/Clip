@@ -439,6 +439,9 @@ class Clip_Controller_User extends Zikula_AbstractController
             $this->view->setCaching(Zikula_View::CACHE_DISABLED);
         }
 
+        // setup an admin flag
+        $isadmin = Clip_Access::toPubtype($pubtype);
+
         //// Execution
         // fill the conditions of the item to get
         $apiargs['where'] = array();
@@ -449,9 +452,6 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // get the publication from the database
         $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $apiargs);
-
-        // setup an admin flag
-        $isadmin = Clip_Access::toPubtype($pubtype);
 
         if (!$pubdata) {
             if ($isadmin) {
