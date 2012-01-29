@@ -778,9 +778,11 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
                 $tableDef    = array();
             }
 
+            $default = $pubfield['iscounter'] ? 'DEFAULT 0' : 'NULL';
+
             // add the column and definition for this field
             $tableColumn[$pubfield['name']] = "field{$pubfield['id']}";
-            $tableDef[$pubfield['name']]    = "{$pubfield['fieldtype']} NULL";
+            $tableDef[$pubfield['name']]    = "{$pubfield['fieldtype']} {$default}";
 
             // set the actual tid to check a pubtype change in the next cycle
             $old_tid = $pubfield['tid'];
