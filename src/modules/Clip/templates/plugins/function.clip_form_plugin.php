@@ -77,19 +77,45 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
         $params['fieldconfig'] = $field['typedata'];
     }
 
-    // plugin instance
+    // check if there's a custom plugin class to use
     if (isset($params['pluginclass'])) {
+        $pluginclass = $params['pluginclass'];
+        unset($params['pluginclass']);
+
         // treat the single-word classes as Clip's ones
-        if (strpos($params['pluginclass'], '_') === false) {
-            $params['pluginclass'] = 'Clip_Form_Plugin_'.$params['pluginclass'];
+        if (strpos($pluginclass, '_') === false) {
+            $pluginclass = 'Clip_Form_Plugin_'.$pluginclass;
         }
+
         // validate that the class exists
-        if (!class_exists($params['pluginclass'])) {
-            $render->trigger_error($render->__f('Error! The specified plugin class [%s] does not exists.', $params['pluginclass']));
+        if (!class_exists($pluginclass)) {
+            $render->trigger_error($render->__f('Error! The specified plugin class [%s] does not exists.', $pluginclass));
         }
-        $plugin = new $params['pluginclass']($render, $params);
+
+        // check if it's needed to remove some parameters
+        $vars = array_keys(get_class_vars($pluginclass));
+
+        if (!in_array('maxLength', $vars)) {
+            unset($params['maxLength']);
+        }
+        if (!in_array('mandatory', $vars)) {
+            unset($params['mandatory']);
+        }
+
+        $plugin = new $pluginclass($render, $params);
     } else {
+        // field plugin class
         $plugin = Clip_Util_Plugins::get($pluginclass);
+
+        // check if it's needed to remove some parameters
+        $vars = array_keys(get_object_vars($plugin));
+
+        if (!in_array('maxLength', $vars)) {
+            unset($params['maxLength']);
+        }
+        if (!in_array('mandatory', $vars)) {
+            unset($params['mandatory']);
+        }
     }
 
     // register plugin

@@ -70,6 +70,16 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
     // plugin instance
     $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
+    // check if it's needed to remove some parameters
+    $vars = array_keys(get_object_vars($plugin));
+
+    if (!in_array('maxLength', $vars)) {
+        unset($params['maxLength']);
+    }
+    if (!in_array('mandatory', $vars)) {
+        unset($params['mandatory']);
+    }
+
     // register block
     if (method_exists($plugin, 'blockRegister')) {
         return $plugin->blockRegister($params, $render, $content);
