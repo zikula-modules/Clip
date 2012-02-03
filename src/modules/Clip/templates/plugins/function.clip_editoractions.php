@@ -53,12 +53,12 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
     if (Clip_Access::toPub($pubtype, $pub)) {
         $editargs = array_merge($args, array('goto' => 'referer'));
         $links[] = '<span class="clip-ac-editform">'.
-                   '  <a href="'.ModUtil::url('Clip', 'user', 'edit', $editargs).'" title="'.$view->__('Edit this publication').'">'.$view->__('Edit').'</a>'.
+                   '  <a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'edit', $editargs)).'" title="'.$view->__('Edit this publication').'">'.$view->__('Edit').'</a>'.
                    '</span>';
     }
 
     $links[] = '<span class="clip-ac-editform">'.
-               '  <a target="_blank" href="'.Clip_Util::url($pub, 'display', array('id' => $pub['id'])).'" title="'.$view->__('Preview this publication').'">'.$view->__('Preview').'</a>'.
+               '  <a target="_blank" href="'.DataUtil::formatForDisplay(Clip_Util::url($pub, 'display', array('id' => $pub['id']))).'" title="'.$view->__('Preview this publication').'">'.$view->__('Preview').'</a>'.
                '</span>';
 
     // loop the actions building their output
@@ -68,7 +68,7 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
         $args['csrftoken'] = $token;
         $onclick = isset($action['parameters']['button']['confirmMessage']) ? 'onclick="return confirm(\''.$action['parameters']['button']['confirmMessage'].'\')" ' : '';
         $links[] = '<span class="clip-ac-'.$aid.'">'.
-                   '  <a '.$onclick.'href="'.ModUtil::url('Clip', 'user', 'exec', $args).'" title="'.$action['description'].'">'.$action['title'].'</a>'.
+                   '  <a '.$onclick.'href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'exec', $args)).'" title="'.$action['description'].'">'.$action['title'].'</a>'.
                    '</span>';
     }
     $output .= implode(' <span class="text_separator">|</span> ', $links);
