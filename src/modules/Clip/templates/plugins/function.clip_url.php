@@ -86,7 +86,7 @@ function smarty_function_clip_url($params, Zikula_View &$view)
         $params = json_encode(array_merge($params, $args));
         $params = str_replace('"', "'", $params);
 
-        $url = "javascript:Zikula.Clip.Ajax.Request($params, '$func', '$type')";
+        $url = DataUtil::formatForDisplay("javascript:Zikula.Clip.Ajax.Request($params, '$func', '$type')");
     }
 
     if ($assign) {
