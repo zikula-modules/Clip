@@ -114,8 +114,8 @@ Zikula.Clip.Pubfields =
             return;
         }
 
-        var json = Zikula.dejsonize(req.responseText);
-        Zikula.updateauthids(json.authid);
+        /*var json = Zikula.dejsonize(req.responseText);
+        Zikula.updateauthids(json.authid);*/
 
         Zikula.recolor('pubfieldlist', 'pubfieldlistheader');
     }
