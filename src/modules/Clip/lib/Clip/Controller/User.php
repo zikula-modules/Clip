@@ -539,7 +539,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             'tid'      => $args['tid'],
             'pid'      => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
             'id'       => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
-            'template' => isset($args['template']) ? (int)$args['template'] : FormUtil::getPassedValue('template'),
+            'template' => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
             'lastrev'  => true
         );
 
