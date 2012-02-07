@@ -40,17 +40,13 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      */
     public function clipProcess($args = array())
     {
-        // handle the plugins data if needed
-        if ($args['handleplugins']) {
-            $this->clipPostRead();
-        }
-
         // load the workflow data if needed
         if ($args['loadworkflow']) {
             $this->clipWorkflow();
         }
 
-        $this->clipValues();
+        // handle the default values and plugins data if needed
+        $this->clipValues($args['handleplugins']);
 
         // post process related records
         if ($args['rel']['load'] && $args['rel']['checkperm']) {
