@@ -538,6 +538,24 @@ class Clip_Util
     }
 
     /**
+     * Clear the Theme's Engine cache.
+     *
+     * @return void
+     */
+    public static function clearThemeCache($cacheid)
+    {
+        $serviceManager = ServiceUtil::getManager();
+        $serviceId = 'zikula.theme';
+
+        if ($serviceManager->hasService($serviceId)) {
+            $themeInstance = $serviceManager->getService($serviceId);
+            if ($themeInstance->getCaching()) {
+                $themeInstance->clear_cache(null, $cacheid);
+            }
+        }
+    }
+
+    /**
      * Registration of Clip's plugins sensible to cache.
      *
      * @return void

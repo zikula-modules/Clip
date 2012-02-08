@@ -127,6 +127,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
      */
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
+        // clear theme caching of the edit forms
+        Clip_Util::clearThemeCache('Clip/user/edit');
+
         $isAjax = $view->getType() == 'ajax';
         $this->referer = $view->getStateData('referer');
 
@@ -212,6 +215,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // clear the cached templates
         // see http://www.smarty.net/manual/en/caching.groups.php
+        // clear all Clip's cache
+        Clip_Util::clearThemeCache('Clip');
         // clear the displays of the current publication
         $view->clear_cache(null, 'tid_'.$this->tid.'/display/pid'.$this->pub['core_pid']);
         // clear all lists
