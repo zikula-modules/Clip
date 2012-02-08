@@ -89,10 +89,11 @@ class Clip_Util_View
      */
     public function getmany($args, Zikula_View &$view)
     {
-        $args['distinct']     = isset($args['distinct']) ? $args['distinct'] : null;
-        $args['countmode']    = 'no';
-        $args['itemsperpage'] = isset($args['itemsperpage']) ? $args['itemsperpage'] : ModUtil::getVar('Clip', 'maxperpage', 100);
-        $args['orderby']      = isset($args['orderby']) ? $args['orderby'] : '';
+        $args['distinct']      = isset($args['distinct']) ? $args['distinct'] : null;
+        $args['countmode']     = 'no';
+        $args['itemsperpage']  = isset($args['itemsperpage']) ? $args['itemsperpage'] : ModUtil::getVar('Clip', 'maxperpage', 100);
+        $args['orderby']       = isset($args['orderby']) ? $args['orderby'] : '';
+        $args['handleplugins'] = isset($args['handleplugins']) ? $args['handleplugins'] : false;
 
         $args['where']   = array();
         $args['where'][] = array('core_online = ?', 1);
