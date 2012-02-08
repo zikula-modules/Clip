@@ -10,27 +10,30 @@
  */
 
 /**
- * Permission check for workflow schema 'standard'
+ * Permission check for workflow schema 'standard'.
  *
- * @param array $obj
- * @param int $permLevel
- * @param int $currentUser
- * @param string $actionId
- * @return bool
+ * @param object $pub         Publication instance.
+ * @param int    $permLevel   Permission level.
+ * @param int    $currentUser Current User ID.
+ * @param string $actionId    Action ID.
+ *
+ * @todo Take in account $actionId processing?
+ *
+ * @return bool True if allowed to execute the action, false otherwise.
  */
-function Clip_workflow_standard_permissioncheck($obj, $permLevel, $currentUser, $actionId)
+function Clip_workflow_standard_permissioncheck($pub, $permLevel, $currentUser, $actionId)
 {
-    $pubtype = Clip_Util::getPubType($obj->core_tid);
+    $pubtype = Clip_Util::getPubType($pub->core_tid);
 
-    if ($obj->exists()) {
+    if ($pub->exists()) {
         // check existing publication author and granular permission access check
-        if ($pubtype->enableeditown == 1 && $obj->core_author == $currentUser) {
-            // FIXME allow this only on update operations on not online publication (actionId standard)
+        if ($pubtype->enableeditown == 1 && $pub->core_author == $currentUser) {
+            // FIXME allow this only on update operations on offline publications (actionId standard)
             return true;
         }
     }
 
-    return Clip_Access::toPub($pubtype, $obj, null, $permLevel, $currentUser);
+    return Clip_Access::toPub($pubtype, $pub, null, $permLevel, $currentUser);
 }
 
 function Clip_workflow_standard_gettextstrings()
