@@ -176,7 +176,14 @@
             <tr class="{cycle name='prelationlist' values='z-even,z-odd'}">
                 <td><code>{$item.alias|safetext}</code></td>
                 <td>
-                    {capture assign='rellink'}</span><a href="{clip_url func='pubtypeinfo' tid=$item.tid}">{$item.title|safetext}</a>{/capture}
+                    {capture assign='rellink'}{strip}
+                        </span>
+                        {if $pubtype.tid neq $item.tid}
+                            <a href="{clip_url func='pubtypeinfo' tid=$item.tid}">{$item.title|safetext}</a>
+                        {else}
+                            {$item.title|safetext}
+                        {/if}
+                    {/strip}{/capture}
                     {if $item.single}
                         <span class="z-sub">{gt text='Has one %s' tag1=$rellink}
                     {else}
