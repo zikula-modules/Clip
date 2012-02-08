@@ -253,8 +253,8 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
 
         // fill any other data and map any "outer" value
         foreach ($pubdata as $key => $value) {
-            if ($this->getTable()->hasField($key) || array_key_exists($key, $this->_values)) {
-                $this->set($key, $value);
+            if ($this->getTable()->hasField($key) || $this->hasMappedValue($key)) {              
+                $this->set($key, $value, false);
             } else {
                 $method = 'set'.Doctrine_Inflector::classify($key);
                 try {
