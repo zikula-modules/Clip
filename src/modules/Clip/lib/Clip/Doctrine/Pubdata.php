@@ -211,7 +211,8 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     public function clipFormFill($pubdata, $links)
     {
         // allow specify fixed PIDs for new pubs
-        if (!$this->core_pid && isset($pubdata['core_pid'])) {
+        if (isset($pubdata['core_pid']) && !$this->core_pid) {
+            // accessing core_pid will fetch the record from the DB if not set
             $this->core_pid = $pubdata['core_pid'];
         }
 
