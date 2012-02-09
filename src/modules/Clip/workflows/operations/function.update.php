@@ -34,7 +34,7 @@ function Clip_operation_update(&$pub, &$params)
     // utility vars
     $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid']);
 
-    // overrides newrevision in pubtype. gives the dev. the possibility to not genereate a new revision
+    // overrides newrevision in pubtype. gives the dev. the possibility to not generate a new revision
     // e.g. when the revision is pending (waiting state) and will be updated
     $pubtype = Clip_Util::getPubType($pub['core_tid']);
 
