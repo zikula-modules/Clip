@@ -165,6 +165,33 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Old values getter.
+     *
+     * @return array
+     */
+    public function getOldValues($column = null)
+    {
+        // validate the requested column
+        if ($column && !array_key_exists($column, $this->_oldValues)) {
+            return false;
+        }
+
+        if ($column) {
+            $value = $this->_oldValues[$column];
+
+            return ($value instanceof Doctrine_Null ? null : $value);
+        }
+
+        $values = $this->_oldValues;
+
+        foreach ($values as &$value) {
+            $value = $value instanceof Doctrine_Null ? null : $value;
+        }
+
+        return $values;
+    }
+
+    /**
      * Form initial processing.
      *
      * @param boolean $loadrels Whether to load the related publications or not (default: false).
