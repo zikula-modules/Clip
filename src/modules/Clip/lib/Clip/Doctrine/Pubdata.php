@@ -454,6 +454,28 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * urltitle corrector.
+     *
+     * @return void
+     */
+    public function validateUrltitle()
+    {
+        if (!$this->core_urltitle) {
+            return;
+        }
+
+        // validate the unique urltitle
+        $pid = $this->getTable()->selectFieldBy('core_pid', $this->core_urltitle, 'core_urltitle');
+
+        while ($pid && $pid != $this->core_pid) {
+            // TODO better to throw a validation exception
+            ++$this->core_urltitle;
+
+            $pid = $this->getTable()->selectFieldBy('core_pid', $this->core_urltitle, 'core_urltitle');
+        }
+    }
+
+    /**
      * preInsert hook.
      *
      * @return void
@@ -501,15 +523,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
             $pub['core_urltitle'] = substr(DataUtil::formatPermalink($urltitle), 0, 255);
         }
 
-        // validate the unique urltitle
-        $pid = $this->getTable()->selectFieldBy('core_pid', $pub['core_urltitle'], 'core_urltitle');
-
-        while ($pid && $pid != $pub['core_pid']) {
-            // TODO better to throw a validation exception
-            ++$pub->core_urltitle;
-
-            $pid = $this->getTable()->selectFieldBy('core_pid', $pub['core_urltitle'], 'core_urltitle');
-        }
+        $pub->validateUrltitle();
 
         // invoke the preSave hook on pubfields
         if (isset($pub['core_tid'])) {
