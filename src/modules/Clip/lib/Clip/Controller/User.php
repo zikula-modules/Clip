@@ -155,6 +155,9 @@ class Clip_Controller_User extends Zikula_AbstractController
                    ->assign('clipargs',  Clip_Util::getArgs())
                    ->assign('returnurl', $returnurl);
 
+        // notify the ui main screen
+        $this->view = Clip_Event::notify('ui.main', $this->view, $args)->getData();
+
         // check if the template is available to render it
         if (!$this->view->template_exists($args['templatefile'])) {
             // auto-generate it only on development mode
@@ -293,7 +296,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $apiargs['where'][] = array('(core_expiredate IS NULL OR core_expiredate >= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
 
         // uses the API to get the list of publications
-        $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
+        list($publist, $pubcount) = array_values(ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs));
+
+        // notify the collection data
+        $publist = Clip_Event::notify('data.list', $publist, array_merge($args, $apiargs))->getData();
 
         // store the arguments used
         Clip_Util::setArgs('list', $args);
@@ -307,14 +313,17 @@ class Clip_Controller_User extends Zikula_AbstractController
         //// Output
         // assign the data to the output
         $this->view->assign('pubtype',   $pubtype)
-                   ->assign('publist',   $result['publist'])
+                   ->assign('publist',   $publist)
                    ->assign('pubfields', Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))
                    ->assign('clipargs',  Clip_Util::getArgs())
                    ->assign('returnurl', $returnurl);
 
         // assign the pager values
-        $this->view->assign('pager', array('numitems'     => $result['pubcount'],
+        $this->view->assign('pager', array('numitems'     => $pubcount,
                                            'itemsperpage' => $apiargs['itemsperpage']));
+
+        // notify the ui list
+        $this->view = Clip_Event::notify('ui.list', $this->view, array_merge($args, $apiargs))->getData();
 
         // check if the template is not available
         if (!$this->view->template_exists($args['templatefile'])) {
@@ -462,6 +471,9 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
         }
 
+        // notify the publication data
+        $pubdata = Clip_Event::notify('data.display', $pubdata)->getData();
+
         // store the arguments used
         Clip_Util::setArgs('display', $args);
 
@@ -472,6 +484,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $apiargs   = Clip_Util::getArgs('getapi');
         $returnurl = Clip_Util::url($pubdata, 'display', array(), null, null, true);
 
+        //// Output
         // assign the pubdata and pubtype to the output
         $this->view->assign('pubdata',   $pubdata)
                    ->assign('relations', $pubdata->getRelations(false, 'title'))
@@ -480,7 +493,9 @@ class Clip_Controller_User extends Zikula_AbstractController
                    ->assign('pubfields', Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))
                    ->assign('clipargs',  Clip_Util::getArgs());
 
-        //// Output
+        // notify the ui display
+        $this->view = Clip_Event::notify('ui.display', $this->view, array_merge($args, $apiargs))->getData();
+
         // check if template is not available
         if (!$this->view->template_exists($args['templatefile'])) {
             // auto-generate it only on development mode
@@ -591,12 +606,15 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         $args['state'] = $workflow->getWorkflow('state');
 
+        // notify the publication data
+        $pubdata = Clip_Event::notify('data.edit', $pubdata)->getData();
+
         //// Form Handler
         // no security check needed, will be done by the workflow actions for the state
         $handler = new Clip_Form_Handler_User_Pubedit();
 
         // setup the form handler
-        $handler->ClipSetUp($pubdata, $workflow, $pubtype, $pubfields);
+        $handler->ClipSetUp($pubdata, $workflow, $pubtype, $pubfields, $args);
 
         //// Output
         // checks for the input template value
@@ -618,6 +636,9 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         $render->assign('clipargs', Clip_Util::getArgs())
                ->assign('pubtype', $pubtype);
+
+        // notify the ui edition
+        $render = Clip_Event::notify('ui.edit', $render, $args)->getData();
 
         // resolve the template to use
         $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);

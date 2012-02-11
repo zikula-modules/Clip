@@ -24,10 +24,10 @@ function Clip_operation_notify(&$pub, $params)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
 
-    $silent   = isset($params['silent']) ? (bool)$params['silent'] : false;
-    $group    = isset($params['group']) ? $params['group'] : 'editor';
-    $type     = isset($params['type']) ? $params['type'] : 'update';
-    $template = isset($params['template']) ? $params['template'] : "{$group}_{$type}";
+    $params['silent']   = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $params['group']    = isset($params['group']) ? $params['group'] : 'editor';
+    $params['type']     = isset($params['type']) ? $params['type'] : 'update';
+    $params['template'] = isset($params['template']) ? $params['template'] : "{$params['group']}_{$params['type']}";
 
     // utility vars
     $pubtype = Clip_Util::getPubType($pub['core_tid']);
@@ -36,18 +36,21 @@ function Clip_operation_notify(&$pub, $params)
     $view = Zikula_View::getInstance('Clip');
 
     // locate the notification template to use
-    $tplpath = $pubtype['folder'].'/notify_'.$template;
+    $tplpath = $pubtype['folder'].'/notify_'.$params['template'];
 
     if ($view->template_exists($tplpath)) {
+        // event: notify the operation data
+        $pub = Clip_Event::notify('data.edit.operation.notify', $pub, $params)->getData();
+
         $view->assign('pub', $pub);
 
-        $message = $view->fetch($template);
+        $message = $view->fetch($params['template']);
 
         // convention: first line is the subject
         //$subject = 
 
         // TODO Configuration of recipient groups
-        //$recipients = ClipUtil::getPubTypeRecipients($group);
+        //$recipients = ClipUtil::getPubTypeRecipients($params['group']);
 
         if (ModUtil::available('Mailer')) {
             $ok = ModUtil::apiFunc('Mailer', 'user', 'sendmessage',
@@ -60,9 +63,9 @@ function Clip_operation_notify(&$pub, $params)
         }
 
         // output message
-        if (!$silent) {
+        if (!$params['silent']) {
             if ($ok) {
-                LogUtil::registerStatus(__f("Notification sent to '%s' group.", $group, $dom));
+                LogUtil::registerStatus(__f("Notification sent to '%s' group.", $params['group'], $dom));
             } else {
                 LogUtil::registerStatus(__('Notification failed.', $dom));
             }

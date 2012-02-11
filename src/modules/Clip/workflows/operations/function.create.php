@@ -23,8 +23,11 @@ function Clip_operation_create(&$pub, $params)
     $dom = ZLanguage::getModuleDomain('Clip');
 
     // parameters processing
-    $pub['core_online'] = isset($params['online']) ? (int)(bool)$params['online'] : 0;
-    $silent             = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $params['online'] = isset($params['online']) ? (int)(bool)$params['online'] : 0;
+    $params['silent'] = isset($params['silent']) ? (bool)$params['silent'] : false;
+
+    // assign the online value
+    $pub['core_online'] = $params['online'];
 
     // initializes the result flag
     $result = false;
@@ -46,10 +49,13 @@ function Clip_operation_create(&$pub, $params)
 
         // hooks: let know that a publication was created
         $pub->notifyHooks('process_edit');
+
+        // event: notify the operation data
+        $pub = Clip_Event::notify('data.edit.operation.create', $pub, $params)->getData();
     }
 
     // output message
-    if (!$silent) {
+    if (!$params['silent']) {
         if ($result) {
             if ($pub['core_online']) {
                 LogUtil::registerStatus(__('Done! Publication created.', $dom));
@@ -59,6 +65,7 @@ function Clip_operation_create(&$pub, $params)
             }
         } else {
             LogUtil::registerError(__('Error! Failed to create the publication.', $dom));
+
             if (ModUtil::getVar('Clip', 'devmode', false)) {
                 LogUtil::registerError($pub->getErrorStackAsString());
             }

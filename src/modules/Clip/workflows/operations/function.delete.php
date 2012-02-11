@@ -24,7 +24,7 @@ function Clip_operation_delete(&$pub, $params)
 
     // process the available parameters
     // TODO implement allrev, dleeting all workflows
-    $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $params['silent'] = isset($params['silent']) ? (bool)$params['silent'] : false;
 
     // process the deletion
     $result = false;
@@ -35,6 +35,9 @@ function Clip_operation_delete(&$pub, $params)
     $workflow = new Clip_Workflow($pubtype, $pub);
 
     if ($workflow->deleteWorkflow()) {
+        // event: notify the operation data
+        $pub = Clip_Event::notify('data.edit.operation.delete', $pub, $params)->getData();
+
         $result = array($pub['core_uniqueid'] => true);
 
         $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid']);
@@ -49,7 +52,7 @@ function Clip_operation_delete(&$pub, $params)
     }
 
     // output message
-    if (!$silent) {
+    if (!$params['silent']) {
         if ($result) {
             LogUtil::registerStatus(__('Done! Publication deleted.', $dom));
         } else {

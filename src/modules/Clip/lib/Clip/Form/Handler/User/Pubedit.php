@@ -22,6 +22,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     protected $tid;
     protected $pubtype;
     protected $pubfields;
+    protected $args;
     protected $itemurl;
     protected $referer;
     protected $goto;
@@ -156,6 +157,14 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // get the initial relations links
         $links = $view->getStateData('links');
 
+        // notify the start of the edition
+        $data['clipdata'] = Clip_Event::notify('data.edit.pre', $data['clipdata'], $this->args)->getData();
+
+        // validate if the event indicated invalid data
+        if ($data['clipdata'] === false) {
+            return false;
+        }
+
         // loop the values and create/update the passed values
         $mainres = array();
 
@@ -222,6 +231,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // clear all lists
         $view->clear_cache(null, 'tid_'.$this->tid.'/list');
 
+        // notify the finalization of the edition
+        $mainres = Clip_Event::notify('data.edit.post', $mainres, $this->pub)->getData();
+
         // core operations processing
         $goto = $this->processGoto($mainres);
 
@@ -283,11 +295,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     /**
      * Setters and getters.
      */
-    public function ClipSetUp(&$pubdata, &$workflow, $pubtype, $pubfields = null)
+    public function ClipSetUp(&$pubdata, &$workflow, $pubtype, $pubfields = null, $args = array())
     {
         $this->alias = 'clipmain';
         $this->tid   = (int)$pubtype['tid'];
         $this->id    = (int)$pubdata['id'];
+        $this->args  = $args;
 
         $this->workflow = $workflow;
 
@@ -346,11 +359,16 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
      */
     protected function processGoto($data)
     {
+        $goto = null;
+
+        if (empty($data)) {
+            return $goto;
+        }
+
         if ($this->id) {
             $this->itemurl = Clip_Util::url($this->pub, 'display');
         }
 
-        $goto = null;
         $uniqueid = $data['core_uniqueid'];
 
         $ops  = isset($data['core_operations']) ? $data['core_operations'] : array();

@@ -26,12 +26,11 @@ function Clip_operation_clone(&$pub, $params)
     // copies the publication record
     // FIXME consider better the copy of relations
     $copy = $pub->copy(false);
-    $copy->clipProcess();
+    $copy->clipValues();
 
     // process the available parameters
-    $state  = isset($params['state']) ? $params['state'] : 'initial';
-    $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
-    unset($params['state'], $params['silent'], $params['nextstate']);
+    $params['state']  = isset($params['state']) ? $params['state'] : 'initial';
+    $params['silent'] = isset($params['silent']) ? (bool)$params['silent'] : false;
 
     // initializes the result flag
     $result = false;
@@ -41,7 +40,7 @@ function Clip_operation_clone(&$pub, $params)
 
     // update any other parameter as that exists
     foreach ($params as $key => $val) {
-        if ($copy->contains($key)) {
+        if (!in_array($key, array('state', 'silent', 'nextstate')) && $copy->contains($key)) {
             $copy[$key] = $val;
         }
     }
@@ -49,6 +48,9 @@ function Clip_operation_clone(&$pub, $params)
     // save the publication
     if ($copy->isValid()) {
         $copy->trySave();
+
+        // event: notify the operation data
+        $copy = Clip_Event::notify('data.edit.operation.clone.pre', $copy, $params)->getData();
 
         // register the new workflow
         $copy->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
@@ -58,14 +60,16 @@ function Clip_operation_clone(&$pub, $params)
         $workflow = new Clip_Workflow($pubtype, $copy);
 
         // be sure that the state is valid
-        $state = $workflow->isValidState($state) ? $state : 'initial';
+        $params['state'] = $workflow->isValidState($params['state']) ? $params['state'] : 'initial';
 
-        if (!$workflow->registerWorkflow($state)) {
+        if (!$workflow->registerWorkflow($params['state'])) {
             $result = array($pub['core_uniqueid'] => true);
 
-            // TODO event with cloned publication as subject?
             // hooks: let know that a publication was created
             $copy->notifyHooks('process_edit');
+
+            // event: notify the operation data
+            $copy = Clip_Event::notify('data.edit.operation.clone.post', $copy, $params)->getData();
 
         } else {
             // delete the previously inserted record
@@ -74,7 +78,7 @@ function Clip_operation_clone(&$pub, $params)
     }
 
     // output message
-    if (!$silent) {
+    if (!$params['silent']) {
         if ($result) {
             LogUtil::registerStatus(__('Done! Publication copied.', $dom));
         } else {

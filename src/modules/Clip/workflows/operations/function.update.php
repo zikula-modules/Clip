@@ -28,8 +28,8 @@ function Clip_operation_update(&$pub, &$params)
     if (isset($params['online'])) {
         $pub['core_online'] = (int)(bool)$params['online'];
     }
-    $newrevision = isset($params['newrevision']) ? (bool)$params['newrevision'] : true;
-    $silent      = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $params['newrevision'] = isset($params['newrevision']) ? (bool)$params['newrevision'] : true;
+    $params['silent']      = isset($params['silent']) ? (bool)$params['silent'] : false;
 
     // utility vars
     $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid']);
@@ -52,7 +52,7 @@ function Clip_operation_update(&$pub, &$params)
     // get the max revision
     $maxrev = $tbl->selectFieldFunction('core_revision', 'MAX', array(array('core_pid = ?', $pub['core_pid'])));
 
-    if ($pubtype['enablerevisions'] && $newrevision) {
+    if ($pubtype['enablerevisions'] && $params['newrevision']) {
         // create the new revision
         $rev = $pub->copy();
 
@@ -100,10 +100,13 @@ function Clip_operation_update(&$pub, &$params)
     if ($result) {
         // hooks: let know that the publication was updated
         $pub->notifyHooks('process_edit');
+
+        // event: notify the operation data
+        $pub = Clip_Event::notify('data.edit.operation.update', $pub, $params)->getData();
     }
 
     // output message
-    if (!$silent) {
+    if (!$params['silent']) {
         if ($result) {
             LogUtil::registerStatus(__('Done! Publication updated.', $dom));
         } else {

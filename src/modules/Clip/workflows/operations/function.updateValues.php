@@ -25,9 +25,8 @@ function Clip_operation_updateValues(&$pub, $params)
     $dom = ZLanguage::getModuleDomain('Clip');
 
     // process the available parameters
-    $allrev = isset($params['allrev']) ? (bool)$params['allrev'] : false;
-    $silent = isset($params['silent']) ? (bool)$params['silent'] : false;
-    unset($params['allrev'], $params['silent'], $params['nextstate']);
+    $params['allrev'] = isset($params['allrev']) ? (bool)$params['allrev'] : false;
+    $params['silent'] = isset($params['silent']) ? (bool)$params['silent'] : false;
 
     // initializes the result flag (no fail case)
     $result = true;
@@ -35,7 +34,7 @@ function Clip_operation_updateValues(&$pub, $params)
     // build the array of values to update
     $update = array();
     foreach ($params as $key => $val) {
-        if ($pub->contains($key)) {
+        if (!in_array($key, array('allrev', 'silent', 'nextstate')) && $pub->contains($key)) {
             $update[$key] = $val;
         }
     }
@@ -47,7 +46,7 @@ function Clip_operation_updateValues(&$pub, $params)
                  ->update()
                  ->where('core_pid = ?', $pub->core_pid);
 
-        if (!$allrev) {
+        if (!$params['allrev']) {
             // update the passed pub only
             $q->andWhere('id = ?', $pub->id);
         }
@@ -57,6 +56,9 @@ function Clip_operation_updateValues(&$pub, $params)
         }
 
         $q->execute();
+
+        // notify the operation data
+        $pub = Clip_Event::notify('data.edit.operation.updatevalues', $pub, $params)->getData();
     }
 
     if ($result) {
@@ -67,7 +69,7 @@ function Clip_operation_updateValues(&$pub, $params)
     }
 
     // output message
-    if (!$silent) {
+    if (!$params['silent']) {
         if ($result) {
             if (isset($update['core_online'])) {
                 if ($update['core_online'] == 1) {
