@@ -325,15 +325,32 @@ class Clip_Util_Form
             return $view->trigger_error(__('Condition parameters must be passed to clip_form->resolveId.', ZLanguage::getModuleDomain('Clip')));
         }
 
+        // check the cached ids
+        static $cache = array();
+
+        $cacheid = ":{$this->alias}:{$this->tid}:~";
+        foreach ($params as $field => $value) {
+            $cacheid .= "$field~$value~";
+        }
+        $cacheid = base64_encode($cacheid);
+
+        if (isset($cache[$cacheid])) {
+            $this->id = $cache[$cacheid];
+            return;
+        }
+
+        // check if the data is set
         $data = $view->getTplVar('clipdata');
 
         if (!isset($data[$this->alias][$this->tid])) {
-            return $this->newId($params, $view);
+            $this->newId($params, $view);
+            $cache[$cacheid] = $this->id;
+            return;
         }
 
         $data = $data[$this->alias][$this->tid];
         
-        // validate the parameters existance
+        // validate the parameters
         $pub = reset($data);
         foreach (array_keys($params) as $field) {
             if (!array_key_exists($field, $pub)) {
@@ -358,13 +375,15 @@ class Clip_Util_Form
             }
 
             if ($found) {
-                $this->id = $id;
+                $this->id = $cache[$cacheid] = $id;
                 break;
             }
         }
 
         if (!$found) {
-            return $this->newId($params, $view);
+            $this->newId($params, $view);
+            $cache[$cacheid] = $this->id;
+            return;
         }
     }
 }
