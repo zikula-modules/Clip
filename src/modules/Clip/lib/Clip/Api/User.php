@@ -544,7 +544,8 @@ class Clip_Api_User extends Zikula_AbstractApi
         } else {
             $tpl = $this->getVar('shorturls');
         }
-        $tplhtml = (in_array($tpl, array('htm', 'html')) ? $tpl : 'htm');
+
+        $tplhtml = $template && $this->getVar('shorturls') ? (in_array($tpl, array('htm', 'html')) ? $tpl : 'htm') : '';
 
         unset($_['tid'], $_['template']);
 
@@ -646,7 +647,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                 if (in_array($args['func'], array('edit', 'exec'))) {
                     // override the display shortURL
                     $shorturl  = ($pid ? $urltitle : '');
-                    $shorturl .= ($template ? "/$template" : '');
+                    $shorturl .= ($tpl ? "/$tpl" : '');
                     // adds the parameters
                     if (!empty($_)) {
                         foreach ($_ as $k => $v) {
@@ -657,7 +658,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                     switch ($args['func'])
                     {
                         case 'edit':
-                            $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ($tpl ? ".$tplhtml" : '');
+                            $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ($tplhtml ? ".$tplhtml" : '');
                             break;
 
                         case 'exec':
