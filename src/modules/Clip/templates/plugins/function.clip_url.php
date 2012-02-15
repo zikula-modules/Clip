@@ -42,8 +42,8 @@ function smarty_function_clip_url($params, Zikula_View &$view)
         return false;
     }
 
-    if (isset($params['pub']) && !$params['pub'] instanceof Clip_Doctrine_Pubdata && !is_array($params['pub'])) {
-        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter is not valid.', array('clip_url', 'pub')));
+    if (isset($params['pub']) && !$params['pub'] instanceof Clip_Doctrine_Pubdata && !is_array($params['pub']) && !isset($params['tid'])) {
+        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter is not valid.', array('clip_url', 'pub | tid [pid]')));
         return false;
     }
 
