@@ -155,10 +155,10 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 $upl_arr =  array(
                                 'orig_name'    => $arrTypeData['orig_name'],
                                 'file_name'    => $arrTypeData['file_name'],
+                                'url'          => $url.'/'.$arrTypeData['file_name'],
                                 'preUrl'       => !empty($arrTypeData['pre_name']) ? $url.'/'.$arrTypeData['pre_name'] : '',
                                 'fullUrl'      => !empty($arrTypeData['full_name']) ? $url.'/'.$arrTypeData['full_name'] : '',
                                 'thumbnailUrl' => !empty($arrTypeData['tmb_name']) ? $url.'/'.$arrTypeData['tmb_name'] : '',
-                                'url'          => $url.'/'.$arrTypeData['file_name'],
                                 'extension'    => FileUtil::getExtension($arrTypeData['orig_name']),
                                 'thumbnails'   => $upl_arr['thumbnails']
                             );

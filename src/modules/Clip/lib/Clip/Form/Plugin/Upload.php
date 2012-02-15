@@ -118,7 +118,8 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
             if (!empty($arrTypeData['file_name'])) {
                 $upl_arr = array(
                                'orig_name' => $arrTypeData['orig_name'],
-                               'file_name' => $url.'/'.$arrTypeData['file_name'],
+                               'file_name' => $arrTypeData['file_name'],
+                               'url'       => $url.'/'.$arrTypeData['file_name'],
                                'file_size' => isset($arrTypeData['file_size']) && $arrTypeData['file_size'] ? $arrTypeData['file_size'] : filesize("$path/$arrTypeData[file_name]"),
                                'extension' => FileUtil::getExtension($arrTypeData['file_name'])
                            );
