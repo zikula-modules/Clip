@@ -1,0 +1,80 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Zikula 1.x\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-15 00:30-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: javascript/Zikula.Clip.Container.js:410
+#: javascript/Zikula.Clip.Container.js:447
+msgid "Edit"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:419
+#: javascript/Zikula.Clip.Container.js:645
+msgid "Delete"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:428
+msgid "Add group after selected"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:437
+msgid "Add subgroup into selected"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:458
+msgid "Fields"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:469
+msgid "Relations"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:480
+msgid "Code"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:492
+msgid "Editor list"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:503
+msgid "New publication"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:613
+msgid "Submit"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:614
+#: javascript/Zikula.Clip.Container.js:646 javascript/Clip.Pubfields.js:59
+msgid "Cancel"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:642
+msgid "Do you really want to delete this group?"
+msgstr ""
+
+#: javascript/Zikula.Clip.Container.js:652
+msgid "Confirmation prompt"
+msgstr ""
+
+#: javascript/Clip.Pubfields.js:54
+msgid "Save"
+msgstr ""
+
+#: javascript/Clip.Pubfields.js:65
+msgid "Plugin configuration"
+msgstr ""
