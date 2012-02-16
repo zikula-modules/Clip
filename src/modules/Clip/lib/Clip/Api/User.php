@@ -61,6 +61,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'where'         => isset($args['where']) ? $args['where'] : array(),
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'distinct'      => isset($args['distinct']) ? $args['distinct'] : null,
+            'groupby'       => isset($args['groupby']) ? $args['groupby'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : null,
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)abs($args['startnum']) : 1,
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)abs($args['itemsperpage']) : 0,
@@ -122,7 +123,17 @@ class Clip_Api_User extends Zikula_AbstractApi
         $query = $tableObj->createQuery($args['queryalias']);
 
         if ($args['distinct']) {
-            $query->select("DISTINCT {$args['distinct']} as {$args['distinct']}");
+            $distinct = explode(',', $args['distinct']);
+            foreach ($distinct as $k => $v) {
+                $distinct[$k] = "$v as $v";
+            }
+            $distinct = implode(',', $distinct);
+
+            $query->select("DISTINCT $distinct");
+        }
+
+        if ($args['groupby']) {
+            $query->groupBy($args['groupby']);
         }
 
         //// Filter
@@ -244,8 +255,10 @@ class Clip_Api_User extends Zikula_AbstractApi
                 // distinct field
                 $publist = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-                foreach ($publist as $k => $v) {
-                    $publist[$k] = $v[$args['distinct']];
+                if (strpos($args['distinct'], ',') === false) {
+                    foreach ($publist as $k => $v) {
+                        $publist[$k] = $v[$args['distinct']];
+                    }
                 }
 
             } else {

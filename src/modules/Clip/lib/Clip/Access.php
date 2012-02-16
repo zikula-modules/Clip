@@ -174,7 +174,10 @@ class Clip_Access
             if ($pub->exists()) {
                 $pid = $pub['core_pid'];
 
-                $state = $pub->clipWorkflow('state');
+                // state only needed on edit* context
+                if (strpos($context, 'edit') === 0) {
+                    $state = $pub->clipWorkflow('state');
+                }
             } else {
                 // the user may wants to save a new record
                 $pid = '';
@@ -195,9 +198,8 @@ class Clip_Access
                 $where = "WHERE $wfcolumn[module] = 'Clip' AND $wfcolumn[obj_table] = '{$pubtype->getTableName()}'
                             AND $wfcolumn[obj_idcolumn] = 'id' AND $wfcolumn[obj_id] = '" . DataUtil::formatForStore($id) . "'";
 
-                $state = DBUtil::selectField('workflows', 'state', $where);
+                $state = (string)DBUtil::selectField('workflows', 'state', $where);
             }
-            $state = $state ? $state : '';
         }
 
         // evaluate the access depending of the required context

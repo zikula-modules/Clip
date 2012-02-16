@@ -90,6 +90,7 @@ class Clip_Util_View
     public function getmany($args, Zikula_View &$view)
     {
         $args['distinct']      = isset($args['distinct']) ? $args['distinct'] : null;
+        $args['groupby']       = isset($args['groupby']) ? $args['groupby'] : null;
         $args['countmode']     = 'no';
         $args['itemsperpage']  = isset($args['itemsperpage']) ? $args['itemsperpage'] : ModUtil::getVar('Clip', 'maxperpage', 100);
         $args['orderby']       = isset($args['orderby']) ? $args['orderby'] : '';
