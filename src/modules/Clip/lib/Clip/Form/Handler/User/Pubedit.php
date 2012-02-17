@@ -168,7 +168,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // loop the values and create/update the passed values
         $mainres = array();
-var_dump($data['clipdata']['registros'][28]);die();
+
         foreach ($data['clipdata'] as $alias => $a) {
             foreach ($a as $tid => $b) {
                 $pubtype = Clip_Util::getPubType($tid);
