@@ -203,24 +203,34 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     {
         $data = $this->toArray(false);
 
+        // load the relation if requested to
         if ($loadrels) {
-            foreach (array_keys($this->getRelations($onlyown)) as $key) {
+            foreach (array_keys($this->getRelations($onlyown)) as $alias) {
                 // set the data object
-                if ($this->$key instanceof Doctrine_Collection) {
-                    foreach ($this->$key as $k => &$v) {
+                if ($this->$alias instanceof Doctrine_Collection) {
+                    foreach ($this->$alias as $k => &$v) {
                         // exclude null records
                         if (!$v->exists()) {
-                            unset($this->$key[$k]);
+                            unset($this->$alias[$k]);
                         }
                     }
-                    $data[$key] = $this->$key->toArray(false);
+                    $data[$alias] = $this->$alias->toArray(false);
 
-                } elseif ($this->$key instanceof Doctrine_Record && $this->$key->exists()) {
-                    $data[$key] = $this->$key->toArray(false);
+                } elseif ($this->$alias instanceof Doctrine_Record && $this->$alias->exists()) {
+                    $data[$alias] = $this->$alias->toArray(false);
 
                 } else {
-                    $data[$key] = null;
+                    $data[$alias] = null;
                 }
+            }
+        }
+
+        // fill the existing relations with the aliases to be able to resolve the id
+        foreach ($this->getRelations(false) as $alias => $info) {
+            $field = "rel_{$info['id']}";
+            // check that the relation is not loaded and the feld exists
+            if ($info['single'] && !isset($data[$alias]) && isset($data[$field])) {
+                $data[$alias] = $data[$field];
             }
         }
 
