@@ -17,7 +17,7 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
     // custom plugin vars
     public $relation;
     public $reldata;
-    public $delimiter;
+    public $delimiter = ',';
 
     // Clip data handling
     public $alias;
@@ -50,7 +50,7 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
         if ($this->maxLength == null && !in_array(strtolower($this->textMode), array('multiline', 'hidden'))) {
             $params['maxLength'] = 65535;
         }
-        
+
         parent::create($view, $params);
     }
 
@@ -62,10 +62,6 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
      */
     public function load($view, &$params)
     {
-        if (!$this->delimiter) {
-            $this->delimiter = ',';
-        }
-
         if (!$this->relation) {
             $this->relation = Clip_Util::getPubType($this->tid)->getRelation($this->field);
         }

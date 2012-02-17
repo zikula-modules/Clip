@@ -43,7 +43,6 @@ class Clip_Form_Plugin_Relations_Autocompleter extends Clip_Form_Plugin_Relation
     public function create($view, &$params)
     {
         $params['textMode'] = 'hidden';
-        $params['delimiter'] = ':';
 
         parent::create($view, $params);
 
@@ -52,6 +51,7 @@ class Clip_Form_Plugin_Relations_Autocompleter extends Clip_Form_Plugin_Relation
         $this->minchars = (isset($params['minchars']) && is_int($params['minchars'])) ? abs($params['minchars']) : 2;
 
         $this->op = (isset($params['op']) && in_array($params['op'], array('search', 'likefirst', 'like'))) ? $params['op'] : 'search';
+        $this->delimiter = ':';
     }
 
     /**
