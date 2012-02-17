@@ -15,6 +15,7 @@
 class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 {
     protected $id;
+    protected $pid;
     protected $pub;
     protected $workflow;
 
@@ -68,7 +69,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             $view->setStateData('links', array());
 
             // handle the Doctrine_Record data as an array
-            $data[$this->alias][$this->tid][$this->id] = $this->pub->clipFormGet($relconfig['load'], $relconfig['onlyown']);
+            $data[$this->alias][$this->tid][$this->id][$this->pid] = $this->pub->clipFormGet($relconfig['load'], $relconfig['onlyown']);
 
             // check for set_* and clip_* parameters from $_GET
             $fieldnames = $this->pub->pubFields();
@@ -79,7 +80,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     $fieldname = preg_replace(array('/^set_/', '/^clip_/'), '', $param);
 
                     if ($this->pub->contains($fieldname)) {
-                        $data[$this->alias][$this->tid][$this->id][$fieldname] = $get->filter($param);
+                        $data[$this->alias][$this->tid][$this->id][$this->pid][$fieldname] = $get->filter($param);
                     } else {
                         $clipvalues[$fieldname] = $get->filter($param);
                     }
@@ -112,7 +113,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // create and register clip_form
         $clip_form = new Clip_Util_Form($view);
 
-        $view->register_object('clip_form', $clip_form, array('get', 'set', 'reset', 'newId', 'getvalue', 'loadone', 'loadmany', 'loadvalue', 'resolveId'));
+        $view->register_object('clip_form', $clip_form, array('get', 'set', 'reset', 'newId', 'getvalue', 'loadone', 'loadmany', 'loadvalue', 'resolveId', 'resolvePid'));
 
         // stores the first referer and the item URL
         if (!$view->getStateData('referer')) {
@@ -167,22 +168,29 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // loop the values and create/update the passed values
         $mainres = array();
-
+var_dump($data['clipdata']['registros'][28]);die();
         foreach ($data['clipdata'] as $alias => $a) {
             foreach ($a as $tid => $b) {
                 $pubtype = Clip_Util::getPubType($tid);
 
-                foreach ($b as $pid => $pubdata) {
+                foreach ($b as $id => $pubdata) {
+                    $pid = key($pubdata);
+                    $pubdata = reset($pubdata);
+
                     // publication instance
                     $pub = $pubtype->getPubInstance();
 
-                    if (is_numeric($pid) && $pid) {
+                    if (is_numeric($id) && $id) {
                         // FIXME verify it's on the 'pubs' state data
-                        $pub->assignIdentifier($pid);
+                        $pub->assignIdentifier($id);
+                    }
+
+                    if (is_numeric($pid) && $pid) {
+                        $pub['core_pid'] = $pid;
                     }
 
                     // fill the publication data
-                    $l = isset($links[$alias][$tid][$pid]) ? $links[$alias][$tid][$pid] : array();
+                    $l = isset($links[$alias][$tid][$id][$pid]) ? $links[$alias][$tid][$id][$pid] : array();
                     $pub->clipFormFill($pubdata, $l)
                         ->clipValues();
 
@@ -193,7 +201,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     } elseif (isset($pub->commandName)) {
                         $commandName = $pub->commandName;
 
-                    } elseif (!is_numeric($pid) || !$pid) {
+                    } elseif (!is_numeric($id) || !$id) {
                         $this->workflow->setup($pubtype, $pub);
                         // get the first higher command permission for initial state
                         $commandName = $this->workflow->getHighestAction('id');
@@ -227,7 +235,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // clear all Clip's cache
         Clip_Util::clearThemeCache('Clip');
         // clear the displays of the current publication
-        $view->clear_cache(null, 'tid_'.$this->tid.'/display/pid'.$this->pub['core_pid']);
+        $view->clear_cache(null, 'tid_'.$this->tid.'/display/pid'.$this->pid);
         // clear all lists
         $view->clear_cache(null, 'tid_'.$this->tid.'/list');
 
@@ -299,6 +307,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     {
         $this->alias = 'clipmain';
         $this->tid   = (int)$pubtype['tid'];
+        $this->pid   = (int)$pubdata['core_pid'];
         $this->id    = (int)$pubdata['id'];
         $this->args  = $args;
 
@@ -333,6 +342,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     public function getTid()
     {
         return $this->tid;
+    }
+
+    public function getPid()
+    {
+        return $this->pid;
     }
 
     public function getId()

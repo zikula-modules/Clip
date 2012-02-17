@@ -14,6 +14,7 @@ class Clip_Form_Plugin_RadioButton extends Zikula_Form_Plugin_RadioButton
     // Clip data handling
     public $alias;
     public $tid;
+    public $rid;
     public $pid;
     public $field;
 
@@ -29,8 +30,8 @@ class Clip_Form_Plugin_RadioButton extends Zikula_Form_Plugin_RadioButton
         if ($this->dataBased) {
             $value = null;
 
-            if (isset($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field])) {
-                $value = $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field];
+            if (isset($values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field])) {
+                $value = $values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field];
             }
 
             if ($value !== null) {
@@ -45,9 +46,9 @@ class Clip_Form_Plugin_RadioButton extends Zikula_Form_Plugin_RadioButton
     {
         if ($this->dataBased && $this->checked) {
             if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->alias => array($this->tid => array($this->pid => array())));
+                $data[$this->group] = array($this->alias => array($this->tid => array($this->rid => array($this->pid => array()))));
             }
-            $data[$this->group][$this->alias][$this->tid][$this->pid][$this->field] = $this->value;
+            $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $this->value;
         }
     }
 }

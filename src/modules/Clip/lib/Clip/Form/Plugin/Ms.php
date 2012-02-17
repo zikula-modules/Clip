@@ -18,6 +18,7 @@ class Clip_Form_Plugin_Ms extends Zikula_Form_Plugin_TextInput
     // Clip data handling
     public $alias;
     public $tid;
+    public $rid;
     public $pid;
     public $field;
 
@@ -47,8 +48,8 @@ class Clip_Form_Plugin_Ms extends Zikula_Form_Plugin_TextInput
     public function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
-            if (isset($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field])) {
-                $this->text = $this->formatValue($view, $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field]);
+            if (isset($values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field])) {
+                $this->text = $this->formatValue($view, $values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field]);
             }
         }
     }
@@ -59,9 +60,9 @@ class Clip_Form_Plugin_Ms extends Zikula_Form_Plugin_TextInput
             $value = $this->parseValue($view, $this->text);
 
             if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->alias => array($this->tid => array($this->pid => array())));
+                $data[$this->group] = array($this->alias => array($this->tid => array($this->rid => array($this->pid => array()))));
             }
-            $data[$this->group][$this->alias][$this->tid][$this->pid][$this->field] = $value;
+            $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $value;
         }
     }
 

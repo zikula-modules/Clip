@@ -22,6 +22,7 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
     // Clip data handling
     public $alias;
     public $tid;
+    public $rid;
     public $pid;
     public $field;
 
@@ -85,7 +86,7 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
     public function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
-            $data = $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field];
+            $data = $values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field];
 
             // assign existing data
             if ($data) {
@@ -107,7 +108,7 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
 
             // save the data in the state session
             $links = $view->getStateData('links');
-            $links[$this->alias][$this->tid][$this->pid][$this->field] = $ids;
+            $links[$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $ids;
             $view->setStateData('links', $links);
         }
     }
@@ -129,9 +130,9 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
             $ids = $this->relation['single'] ? array($this->text) : explode($this->delimiter, $this->text);
 
             if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->alias => array($this->tid => array($this->pid => array())));
+                $data[$this->group] = array($this->alias => array($this->tid => array($this->rid => array($this->pid => array()))));
             }
-            $data[$this->group][$this->alias][$this->tid][$this->pid][$this->field] = $ids;
+            $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $ids;
         }
     }
 }

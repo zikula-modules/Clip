@@ -12,6 +12,14 @@
 /**
  * Form Plugin to handle a pubtype's relation Autocompleter.
  *
+ * Available parameters:
+ *  - alias       (string)  Form data alias
+ *  - tid         (integer) Pubtype's ID (defaults to current pubtype)
+ *  - rid         (integer) Publication ID (defaults to form's publication ID)
+ *  - pid         (integer) Publication PID (defaults to form's publication PID)
+ *  - field       (string)  Pubtype's field id (name).
+ *  - pluginclass (string)  Clip relation plugin class to use.
+ *
  * @param array            $params All parameters passed to this plugin from the template.
  * @param Zikula_Form_View $render Reference to the {@link Zikula_Form_View} object.
  *
@@ -26,10 +34,11 @@ function smarty_function_clip_form_relation($params, Zikula_Form_View &$render)
     // clip data handling
     $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
     $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();
-    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getId();
+    $params['rid']   = isset($params['rid']) && $params['rid'] ? $params['rid'] : $render->get_registered_object('clip_form')->getId();
+    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getPid($render);
 
     // form framework parameters adjustment
-    $params['id'] = "cliprel_{$params['alias']}_{$params['tid']}_{$params['pid']}_{$params['field']}";
+    $params['id']    = "cliprel_{$params['alias']}_{$params['tid']}_{$params['rid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'clipdata';
 
     // resolve classname

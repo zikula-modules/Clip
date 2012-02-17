@@ -14,11 +14,16 @@
  * Clip's interface to load one of its form plugins.
  *
  * Available parameters:
- *  - tid       (integer) Pubtype's ID (defaults to current pubtype)
- *  - pid       (integer) Publication ID (defaults to form's publication ID)
- *  - field     (string) Pubtype's field name.
- *  - mandatory (bool) Whether this form field is mandatory.
- *  - maxLength (integer) Maximum lenght of the input (optional).
+ *  - alias       (string)  Form data alias
+ *  - tid         (integer) Pubtype's ID (defaults to current pubtype)
+ *  - rid         (integer) Publication ID (defaults to form's publication ID)
+ *  - pid         (integer) Publication PID (defaults to form's publication PID)
+ *  - field       (string)  Pubtype's field name.
+ *  - mandatory   (bool)    Whether this form field is mandatory.
+ *  - maxLength   (integer) Maximum lenght of the input (optional).
+ *  - fieldplugin (string)  Override the field plugin ID
+ *  - fieldconfig (string)  Configuration for the field when fieldplugin is used.
+ *  - pluginclass (string)  Override the plugin Clip class.
  *
  * Example:
  *
@@ -42,10 +47,11 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
     // clip data handling
     $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
     $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();
-    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getId();
+    $params['rid']   = isset($params['rid']) && $params['rid'] ? $params['rid'] : $render->get_registered_object('clip_form')->getId();
+    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getPid($render);
 
     // form framework parameters adjustment
-    $params['id'] = "clip_{$params['alias']}_{$params['tid']}_{$params['pid']}_{$params['field']}";
+    $params['id']    = "clip_{$params['alias']}_{$params['tid']}_{$params['rid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'clipdata';
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
@@ -58,7 +64,7 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
     if (!isset($params['mandatory'])) {
         $params['mandatory'] = $field['ismandatory'];
     }
-    if (!isset($params['maxLength'])){
+    if (!isset($params['maxLength'])) {
         $params['maxLength'] = $field['fieldmaxlength'];
     }
 

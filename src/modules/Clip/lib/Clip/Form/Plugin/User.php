@@ -26,6 +26,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     // Clip data handling
     public $alias;
     public $tid;
+    public $rid;
     public $pid;
     public $field;
 
@@ -45,6 +46,14 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     /**
      * Form framework overrides.
      */
+    public function readParameters(Zikula_Form_View $view, &$params)
+    {
+        $this->parseConfig($params['fieldconfig']);
+        unset($params['fieldconfig']);
+
+        parent::readParameters($view, $params);
+    }
+
     public function create(Zikula_Form_View $view, &$params)
     {
         parent::create($view, $params);
@@ -54,19 +63,11 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $this->minchars = (isset($params['minchars']) && is_int($params['minchars'])) ? abs($params['minchars']) : 3;
     }
 
-    public function readParameters(Zikula_Form_View $view, &$params)
-    {
-        $this->parseConfig($params['fieldconfig']);
-        unset($params['fieldconfig']);
-
-        parent::readParameters($view, $params);
-    }
-
     public function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
-            if (isset($values[$this->group][$this->alias][$this->tid][$this->pid][$this->field])) {
-                $this->text = $this->formatValue($view, $values[$this->group][$this->alias][$this->tid][$this->pid][$this->field]);
+            if (isset($values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field])) {
+                $this->text = $this->formatValue($view, $values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field]);
             }
         }
     }
@@ -75,9 +76,9 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     {
         if ($this->dataBased) {
             if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->alias => array($this->tid => array($this->pid => array())));
+                $data[$this->group] = array($this->alias => array($this->tid => array($this->rid => array($this->pid => array()))));
             }
-            $data[$this->group][$this->alias][$this->tid][$this->pid][$this->field] = ":{$this->text}:";
+            $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = ":{$this->text}:";
         }
     }
 
@@ -120,7 +121,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
             <ul class="z-auto-feed">
                 ';
 
-        $pubdata = $view->_tpl_vars['clipdata'][$this->tid][$this->pid];
+        $pubdata = $view->_tpl_vars['clipdata'][$this->tid][$this->rid][$this->pid];
 
         self::postRead($pubdata, array('name' => $this->field));
 
