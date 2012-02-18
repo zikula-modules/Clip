@@ -543,6 +543,33 @@ class Clip_Workflow extends Zikula_AbstractBase
     }
 
     /**
+     * Get the first allowed action for a given state.
+     *
+     * @param string  $field Optional field to retrieve (title, description, permission, state, nextState).
+     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param string  $state State actions to retrieve, default = object's state.
+     *
+     * @return mixed First allowed actions or false on failure.
+     */
+    public function getFirstAction($field = null, $mode = self::ACTIONS_ALL, $state = null)
+    {
+        if ($field && !in_array($field, array('id', 'title', 'description', 'permission', 'state', 'nextState'))) {
+            return false;
+        }
+
+        // eval what's the FIRST action allowed
+        $actions = $this->getActions($mode, $state);
+
+        if (empty($actions)) {
+            return false;
+        }
+
+        $action = reset($actions);
+
+        return $field ? $action[$field] : $action;
+    }
+
+    /**
      * Method to validate a specific state string inside the object schema.
      *
      * @param string $state State to validate.

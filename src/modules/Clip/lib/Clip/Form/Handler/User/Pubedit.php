@@ -204,11 +204,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     } elseif (!is_numeric($id) || !$id) {
                         $this->workflow->setup($pubtype, $pub);
                         // get the first higher command permission for initial state
-                        $commandName = $this->workflow->getHighestAction('id');
+                        $commandName = $this->workflow->getFirstAction('id');
 
                     } else {
                         // assumes an update
-                        $commandName = 'update';
+                        $this->workflow->setup($pubtype, $pub);
+                        $commandName = $this->workflow->getFirstAction('id');
                     }
 
                     // perform the command
