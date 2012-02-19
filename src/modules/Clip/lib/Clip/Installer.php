@@ -168,7 +168,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 // further upgrade handling
                 // * contenttype stuff
                 //   Content_Installer::updateContentType('Clip');
-                //   EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
+                //   EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getContentTypes'));
         }
 
         return true;
@@ -1091,11 +1091,12 @@ class Clip_Installer extends Zikula_AbstractInstaller
      */
     public static function LegacyContentTypeMap()
     {
-        $oldToNew = array(
-            'pagesetter_pub' => 'ClipPub',
+        $map = array(
+            'pagesetter_pub'     => 'ClipPub',
             'pagesetter_publist' => 'ClipPublist'
         );
-        return $oldToNew;
+
+        return $map;
     }
 
     /**
