@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Clip 0.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-15 00:30-0500\n"
+"POT-Creation-Date: 2012-02-19 00:38-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: lib/Clip/Form/Handler/Admin/Pubtypes.php:29
 #: lib/Clip/Form/Handler/Admin/Pubfields.php:31 lib/Clip/Api/User.php:42
-#: lib/Clip/Api/User.php:292 lib/Clip/Controller/Admin.php:54
+#: lib/Clip/Api/User.php:305 lib/Clip/Controller/Admin.php:54
 #: lib/Clip/Controller/Admin.php:97 lib/Clip/Controller/Admin.php:136
 #: lib/Clip/Controller/Ajaxdata.php:45 lib/Clip/Controller/Editor.php:76
 #: lib/Clip/Controller/Editor.php:159 lib/Clip/Controller/Ajax.php:234
@@ -197,11 +197,11 @@ msgstr ""
 msgid "Done! Module configuration updated."
 msgstr ""
 
-#: lib/Clip/Form/Handler/User/Pubedit.php:45
+#: lib/Clip/Form/Handler/User/Pubedit.php:46
 msgid "You have no permissions to execute any action on this publication."
 msgstr ""
 
-#: lib/Clip/Form/Handler/User/Pubedit.php:47
+#: lib/Clip/Form/Handler/User/Pubedit.php:48
 msgid "You have no authorization to submit publications."
 msgstr ""
 
@@ -216,190 +216,129 @@ msgid "There are no matches found."
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/User.php:37
-msgid "User"
+#: lib/Clip/Form/Plugin/Text.php:31
+msgid "Text"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/User.php:118
-msgid "Type the username"
-msgid_plural "Type the usernames"
-msgstr[0] ""
-msgstr[1] ""
-
-#: lib/Clip/Form/Plugin/User.php:231
-msgid "Multiple Users?"
+#: lib/Clip/Form/Plugin/Text.php:119
+msgid "Use Scribite!"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/User.php:237
-msgid "in the beggining"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/User.php:238
-msgid "inside the username"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/User.php:241
-msgid "Search"
+#: lib/Clip/Form/Plugin/Text.php:124
+msgid "Install Scribite! if you want to use it in this text field."
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/List.php:31
+#: lib/Clip/Form/Plugin/List.php:32
 #: templates/plugins/function.clip_adminmenu.php:104
 #: templates/clip_base_pubtypeinfo.tpl:93
 msgid "List"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/List.php:177 lib/Clip/Form/Plugin/MultiCheck.php:200
-#: lib/Clip/Form/Plugin/MultiList.php:211
-#: lib/Clip/Form/Plugin/RadioList.php:231 templates/pages/form_all.tpl:25
+#: lib/Clip/Form/Plugin/List.php:178 lib/Clip/Form/Plugin/MultiList.php:212
+#: lib/Clip/Form/Plugin/MultiCheck.php:201
+#: lib/Clip/Form/Plugin/RadioList.php:232 templates/pages/form_all.tpl:25
 #: templates/blog/form_all.tpl:34
 msgid "Category"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/List.php:196
+#: lib/Clip/Form/Plugin/List.php:197
 msgid "Include an empty item?"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/List.php:203 lib/Clip/Form/Plugin/MultiCheck.php:219
-#: lib/Clip/Form/Plugin/MultiList.php:236
-#: lib/Clip/Form/Plugin/RadioList.php:250
+#: lib/Clip/Form/Plugin/List.php:204 lib/Clip/Form/Plugin/MultiList.php:237
+#: lib/Clip/Form/Plugin/MultiCheck.php:220
+#: lib/Clip/Form/Plugin/RadioList.php:251
 msgid "Edit link"
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/Checkbox.php:29
-msgid "Checkbox"
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/Date.php:30
-msgid "Date"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Date.php:91
-msgid "Select date"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Date.php:197
-msgid "Include time"
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/Int.php:30
-msgid "Integer"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Int.php:97 lib/Clip/Form/Plugin/Float.php:97
-msgid "Min value"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Int.php:101 lib/Clip/Form/Plugin/Float.php:101
-msgid "Max value"
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/Ms.php:29
-msgid "Mediashare"
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/Email.php:29
-msgid "Email"
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/Float.php:30
-msgid "Float"
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/Image.php:31
-msgid "Image Upload"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:150
-msgid "Stored data is invalid."
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:311
-msgid "Image"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:313 lib/Clip/Form/Plugin/Upload.php:182
-msgid "Download"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:316
-msgid "No image uploaded."
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:326
-msgid "Delete the image"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:327
-msgid "Regenerate thumbnails"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:371
-msgid "Preserve filename"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:375
-msgid "Thumbnail width"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:379
-msgid "Thumbnail height"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:384
-msgid "Preview width"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:388
-msgid "Preview height"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:393
-msgid "Full width"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:397
-msgid "Full height"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Image.php:402
-msgid ""
-"Warning! The Thumbnails module is not available. This plugin needs it to "
-"build the Preview and Thumbnail of each uploaded Image."
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/MultiCheck.php:31
-msgid "MultiCheckbox List"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/MultiCheck.php:166
-#: lib/Clip/Form/Plugin/MultiList.php:169 lib/Clip/Generator.php:46
-msgid "(empty)"
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/MultiList.php:31
+#: lib/Clip/Form/Plugin/MultiList.php:32
 msgid "Multiple Selector"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/MultiList.php:229
+#: lib/Clip/Form/Plugin/MultiList.php:170
+#: lib/Clip/Form/Plugin/MultiCheck.php:167 lib/Clip/Generator.php:46
+msgid "(empty)"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/MultiList.php:230
 msgid "Size"
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/RadioList.php:31
+#: lib/Clip/Form/Plugin/Checkbox.php:30
+msgid "Checkbox"
+msgstr ""
+
+#. ! field type name
+#: lib/Clip/Form/Plugin/Ms.php:30
+msgid "Mediashare"
+msgstr ""
+
+#. ! field type name
+#: lib/Clip/Form/Plugin/Date.php:31
+msgid "Date"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Date.php:92
+msgid "Select date"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Date.php:198
+msgid "Include time"
+msgstr ""
+
+#. ! field type name
+#: lib/Clip/Form/Plugin/Email.php:30
+msgid "Email"
+msgstr ""
+
+#. ! field type name
+#: lib/Clip/Form/Plugin/Upload.php:32
+msgid "File Upload"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Upload.php:114
+msgid "Stored data is invalid"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Upload.php:184 lib/Clip/Form/Plugin/Image.php:314
+msgid "Download"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Upload.php:187
+msgid "No file uploaded."
+msgstr ""
+
+#. ! field type name
+#: lib/Clip/Form/Plugin/Language.php:31
+msgid "Language Selector"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Language.php:96 lib/Clip/Generator.php:102
+msgid "Available for all languages."
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Language.php:133
+msgid "Show only the installed languages?"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Language.php:140
+msgid "Show the 'All' option?"
+msgstr ""
+
+#. ! field type name
+#: lib/Clip/Form/Plugin/MultiCheck.php:32
+msgid "MultiCheckbox List"
+msgstr ""
+
+#. ! field type name
+#: lib/Clip/Form/Plugin/RadioList.php:32
 msgid "Radio list"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/RadioList.php:141
+#: lib/Clip/Form/Plugin/RadioList.php:142
 #: templates/plugins/function.clip_editoractions.php:56
 #: templates/plugins/function.clip_adminmenu.php:57
 #: templates/plugins/function.clip_adminmenu.php:59
@@ -419,65 +358,126 @@ msgid "Edit"
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/String.php:29
-msgid "String"
-msgstr ""
-
-#. ! field type name
-#: lib/Clip/Form/Plugin/Url.php:29
+#: lib/Clip/Form/Plugin/Url.php:30
 msgid "URL"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Url.php:86
+#: lib/Clip/Form/Plugin/Url.php:87
 msgid "Error! Invalid URL."
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/Language.php:30
-msgid "Language Selector"
+#: lib/Clip/Form/Plugin/Float.php:31
+msgid "Float"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Language.php:95 lib/Clip/Generator.php:102
-msgid "Available for all languages."
+#: lib/Clip/Form/Plugin/Float.php:98 lib/Clip/Form/Plugin/Int.php:98
+msgid "Min value"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Language.php:132
-msgid "Show only the installed languages?"
-msgstr ""
-
-#: lib/Clip/Form/Plugin/Language.php:139
-msgid "Show the 'All' option?"
+#: lib/Clip/Form/Plugin/Float.php:102 lib/Clip/Form/Plugin/Int.php:102
+msgid "Max value"
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/Private.php:29
+#: lib/Clip/Form/Plugin/Private.php:30
 msgid "Private"
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/Text.php:30
-msgid "Text"
+#: lib/Clip/Form/Plugin/Image.php:32
+msgid "Image Upload"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Text.php:118
-msgid "Use Scribite!"
+#: lib/Clip/Form/Plugin/Image.php:151
+msgid "Stored data is invalid."
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Text.php:123
-msgid "Install Scribite! if you want to use it in this text field."
+#: lib/Clip/Form/Plugin/Image.php:312
+msgid "Image"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:317
+msgid "No image uploaded."
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:327
+msgid "Delete the image"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:328
+msgid "Regenerate thumbnails"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:372
+msgid "Preserve filename"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:376
+msgid "Thumbnail width"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:380
+msgid "Thumbnail height"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:385
+msgid "Preview width"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:389
+msgid "Preview height"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:394
+msgid "Full width"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:398
+msgid "Full height"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:403
+msgid ""
+"Warning! The Thumbnails module is not available. This plugin needs it to "
+"build the Preview and Thumbnail of each uploaded Image."
 msgstr ""
 
 #. ! field type name
-#: lib/Clip/Form/Plugin/Upload.php:31
-msgid "File Upload"
+#: lib/Clip/Form/Plugin/Int.php:31
+msgid "Integer"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Upload.php:113
-msgid "Stored data is invalid"
+#. ! field type name
+#: lib/Clip/Form/Plugin/User.php:38
+msgid "User"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Upload.php:185
-msgid "No file uploaded."
+#: lib/Clip/Form/Plugin/User.php:119
+msgid "Type the username"
+msgid_plural "Type the usernames"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/Clip/Form/Plugin/User.php:232
+msgid "Multiple Users?"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/User.php:238
+msgid "in the beggining"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/User.php:239
+msgid "inside the username"
+msgstr ""
+
+#: lib/Clip/Form/Plugin/User.php:242
+msgid "Search"
+msgstr ""
+
+#. ! field type name
+#: lib/Clip/Form/Plugin/String.php:30
+msgid "String"
 msgstr ""
 
 #: lib/Clip/Form/PluginType.php:53
@@ -554,11 +554,11 @@ msgstr ""
 msgid "Number of reads"
 msgstr ""
 
-#: lib/Clip/Util/Form.php:126 lib/Clip/Util/Form.php:290
-#: lib/Clip/Util/Form.php:294 lib/Clip/Util/View.php:196
-#: lib/Clip/Util/View.php:200 lib/Clip/Util/View.php:242
-#: lib/Clip/Util/View.php:246 lib/Clip/Util/View.php:327
-#: lib/Clip/Util/View.php:379
+#: lib/Clip/Util/Form.php:131 lib/Clip/Util/Form.php:296
+#: lib/Clip/Util/Form.php:300 lib/Clip/Util/View.php:197
+#: lib/Clip/Util/View.php:201 lib/Clip/Util/View.php:243
+#: lib/Clip/Util/View.php:247 lib/Clip/Util/View.php:328
+#: lib/Clip/Util/View.php:380
 #: templates/plugins/function.clip_editoractions.php:31
 #: templates/plugins/function.clip_downloadurl.php:34
 #: templates/plugins/function.clip_url.php:41
@@ -575,12 +575,14 @@ msgstr ""
 msgid "Error! in %1$s: the %2$s parameter must be specified."
 msgstr ""
 
-#: lib/Clip/Util/Form.php:325
+#: lib/Clip/Util/Form.php:335
 msgid "Condition parameters must be passed to clip_form->resolveId."
 msgstr ""
 
-#: lib/Clip/Util/Form.php:357
-msgid "The passed parameters does not match with the publications to search."
+#: lib/Clip/Util/Form.php:369
+#, php-format
+msgid ""
+"The passed parameter [%s] does not match with the publications to search."
 msgstr ""
 
 #: lib/Clip/Util/Grouptypes.php:52
@@ -604,25 +606,25 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: lib/Clip/Util/View.php:257
+#: lib/Clip/Util/View.php:258
 #, php-format
 msgid "Error! in %1$s: the variable [%2$s] is not a collection or array."
 msgstr ""
 
-#: lib/Clip/Util/View.php:266
+#: lib/Clip/Util/View.php:267
 #, php-format
 msgid ""
 "Error! in %1$s: the parameter [%2$s] specifies a non existing field in the "
 "data to tabulate."
 msgstr ""
 
-#: lib/Clip/Util/View.php:337
+#: lib/Clip/Util/View.php:338
 #, php-format
 msgid ""
 "Error! in %1$s: the passed list is not a Doctrine_Collection nor an array."
 msgstr ""
 
-#: lib/Clip/Util/View.php:341
+#: lib/Clip/Util/View.php:342
 #, php-format
 msgid "Error! in %1$s: the field [%2$s] does not exist on a list record."
 msgstr ""
@@ -687,16 +689,16 @@ msgstr ""
 msgid "Error! Could not save the search results."
 msgstr ""
 
-#: lib/Clip/Api/User.php:39 lib/Clip/Api/User.php:289
-#: lib/Clip/Api/User.php:295 lib/Clip/Api/User.php:400
-#: lib/Clip/Api/User.php:403 lib/Clip/Api/User.php:438
-#: lib/Clip/Api/User.php:441 lib/Clip/Api/User.php:462
-#: lib/Clip/Api/User.php:465 lib/Clip/Controller/Admin.php:147
+#: lib/Clip/Api/User.php:39 lib/Clip/Api/User.php:302
+#: lib/Clip/Api/User.php:308 lib/Clip/Api/User.php:413
+#: lib/Clip/Api/User.php:416 lib/Clip/Api/User.php:451
+#: lib/Clip/Api/User.php:454 lib/Clip/Api/User.php:475
+#: lib/Clip/Api/User.php:478 lib/Clip/Controller/Admin.php:147
 #: lib/Clip/Controller/Editor.php:174 lib/Clip/Controller/User.php:729
 #: templates/plugins/function.clip_form_label.php:35
-#: templates/plugins/function.clip_form_relation.php:23
-#: templates/plugins/function.clip_form_plugin.php:35
-#: templates/plugins/block.clip_form_block.php:37
+#: templates/plugins/function.clip_form_relation.php:31
+#: templates/plugins/block.clip_form_block.php:41
+#: templates/plugins/function.clip_form_plugin.php:40
 #: templates/plugins/function.clip_multilistdecode.php:34
 #, php-format
 msgid "Error! Missing argument [%s]."
@@ -706,11 +708,11 @@ msgstr ""
 msgid "Error! No publication fields found."
 msgstr ""
 
-#: lib/Clip/Api/User.php:403
+#: lib/Clip/Api/User.php:416
 msgid "commandName has to be a valid workflow action for the current state."
 msgstr ""
 
-#: lib/Clip/Api/User.php:418 lib/Clip/Controller/User.php:757
+#: lib/Clip/Api/User.php:431 lib/Clip/Controller/User.php:757
 msgid "Unknown workflow action error. Operation failed."
 msgstr ""
 
@@ -815,22 +817,6 @@ msgstr ""
 
 #: lib/Clip/Controller/User.php:749
 msgid "Error! Invalid action passed."
-msgstr ""
-
-#: lib/Clip/ContentType/ClipPub.php:41
-msgid "Clip publication"
-msgstr ""
-
-#: lib/Clip/ContentType/ClipPub.php:45
-msgid "Display a Clip publication."
-msgstr ""
-
-#: lib/Clip/ContentType/ClipPublist.php:82
-msgid "Clip publication list"
-msgstr ""
-
-#: lib/Clip/ContentType/ClipPublist.php:86
-msgid "Clip list of filtered, ordered, and/or formatted publications."
 msgstr ""
 
 #: lib/Clip/Model/Pubtype.php:244
@@ -952,17 +938,6 @@ msgstr ""
 msgid "Workflow operation function [%s] is not defined"
 msgstr ""
 
-#: lib/Clip/Access.php:48
-#, php-format
-msgid "%1$s: Invalid grouptype ID passed [%2$s]."
-msgstr ""
-
-#: lib/Clip/Access.php:80 lib/Clip/Access.php:160
-#: templates/plugins/function.clip_adminmenu.php:34
-#, php-format
-msgid "%1$s: Invalid publication type ID passed [%2$s]."
-msgstr ""
-
 #: lib/Clip/Generator.php:138
 msgid "No expire date specified."
 msgstr ""
@@ -1070,6 +1045,17 @@ msgstr ""
 msgid "clip"
 msgstr ""
 
+#: lib/Clip/Access.php:48
+#, php-format
+msgid "%1$s: Invalid grouptype ID passed [%2$s]."
+msgstr ""
+
+#: lib/Clip/Access.php:80 lib/Clip/Access.php:160
+#: templates/plugins/function.clip_adminmenu.php:34
+#, php-format
+msgid "%1$s: Invalid publication type ID passed [%2$s]."
+msgstr ""
+
 #: templates/plugins/function.clip_editoractions.php:56
 #: templates/generic_navbar.tpl:92
 msgid "Edit this publication"
@@ -1083,28 +1069,28 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: templates/plugins/function.clip_form_relation.php:45
-#: templates/plugins/function.clip_form_plugin.php:92
+#: templates/plugins/function.clip_form_relation.php:54
+#: templates/plugins/function.clip_form_plugin.php:98
 #, php-format
 msgid "Error! The specified plugin class [%s] does not exists."
+msgstr ""
+
+#: templates/plugins/block.clip_form_block.php:45
+#: templates/plugins/function.clip_form_plugin.php:44
+#, php-format
+msgid "Error! '%1$s' parameter cannot be '%2$s'."
+msgstr ""
+
+#: templates/plugins/block.clip_form_block.php:61
+#: templates/plugins/function.clip_form_plugin.php:60
+#, php-format
+msgid "Error! The publication field '%s' does not exist."
 msgstr ""
 
 #: templates/plugins/function.clip_downloadurl.php:43
 #: templates/plugins/function.clip_url.php:46
 #, php-format
 msgid "Error! in %1$s: the %2$s parameter is not valid."
-msgstr ""
-
-#: templates/plugins/function.clip_form_plugin.php:39
-#: templates/plugins/block.clip_form_block.php:41
-#, php-format
-msgid "Error! '%1$s' parameter cannot be '%2$s'."
-msgstr ""
-
-#: templates/plugins/function.clip_form_plugin.php:54
-#: templates/plugins/block.clip_form_block.php:56
-#, php-format
-msgid "Error! The publication field '%s' does not exist."
 msgstr ""
 
 #: templates/plugins/function.clip_pagerabc.php:92
