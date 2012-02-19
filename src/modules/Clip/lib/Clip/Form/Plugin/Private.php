@@ -38,6 +38,19 @@ class Clip_Form_Plugin_Private extends Zikula_Form_Plugin_TextInput
     /**
      * Form framework overrides.
      */
+    public function readParameters(Zikula_Form_View $view, &$params)
+    {
+        unset($params['fieldconfig']);
+
+        // defaults readOnly to true
+        $params['readOnly'] = isset($params['readOnly']) ? $params['readOnly'] : true;
+
+        parent::readParameters($view, $params);
+
+        // preserve the text value if passed and not the loaded value
+        $this->text = isset($params['value']) ? $params['value'] : $this->text;
+    }
+
     function create(Zikula_Form_View $view, &$params)
     {
         // overradable defaults
@@ -45,14 +58,6 @@ class Clip_Form_Plugin_Private extends Zikula_Form_Plugin_TextInput
         $this->textMode = 'hidden';
 
         parent::create($view, $params);
-    }
-
-    function load(Zikula_Form_View $view, &$params)
-    {
-        parent::load($view, $params);
-
-        // preserve the text value if passed and not the loaded value
-        $this->text = isset($params['value']) ? $params['value'] : $this->text;
     }
 
     public function loadValue(Zikula_Form_View $view, &$values)
