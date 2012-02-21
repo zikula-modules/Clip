@@ -172,7 +172,7 @@
             </tr>
         </thead>
         <tbody>
-            {foreach from=$pubtype->getRelations(false) item='item'}
+            {foreach from=$relations item='item'}
             <tr class="{cycle name='prelationlist' values='z-even,z-odd'}">
                 <td><code>{$item.alias|safetext}</code></td>
                 <td>

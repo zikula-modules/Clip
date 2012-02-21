@@ -59,8 +59,13 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype));
 
+        // sort the relations by alias
+        $relations = $pubtype->getRelations(false);
+        uasort($relations, function($a, $b) { return strcasecmp($a['alias'], $b['alias']); });
+
         //// Output
         return $this->view->assign('pubtype', $pubtype)
+                          ->assign('relations', $relations)
                           ->fetch("clip_base_pubtypeinfo.tpl");
     }
 
