@@ -103,13 +103,42 @@ class Clip_Util_Form
     }
 
     /**
+     * Get the current pub id prefix.
+     *
+     * Available attributes:
+     *  - assign (string)  The name of a template variable to assign the output to.
+     *  - alias  (string)  Context of the value to set.
+     *  - tid    (integer) ID of the publication type.
+     *  - rid    (integer) ID of the publication record.
+     *
+     * Example:
+     *
+     *  Get the current publication prefix and assign it to $pre:
+     *
+     *  <samp>{clip_form->getprefix assign='pre'}</samp>
+     *
+     * @param array       $args All parameters passed to this plugin from the template.
+     * @param Zikula_View $view Reference to the {@link Zikula_View} object.
+     *
+     * @return string Prefix of the field id
+     */
+    public function getprefix($args, Zikula_View $view)
+    {
+        $alias = isset($args['alias']) ? $args['alias'] : $this->alias;
+        $tid   = isset($args['tid']) ? $args['tid'] : $this->tid;
+        $rid   = isset($args['rid']) ? $args['rid'] : $this->id;
+        $pid   = isset($args['pid']) ? $args['pid'] : $this->getPid($view);
+
+        return "clip_{$alias}_{$tid}_{$rid}_{$pid}_";
+    }
+
+    /**
      * Get a common field of a data set.
      *
      * Available attributes:
      *  - assign (string)  The name of a template variable to assign the output to.
      *  - alias  (string)  Context of the value to set.
      *  - tid    (integer) ID of the publication type.
-     *  - id     (integer) ID of the publication.
      *  - field  (string)  The field to retrieve.
      *
      * Example:
@@ -272,7 +301,7 @@ class Clip_Util_Form
      * Available attributes:
      *  - alias (string)  Context of the value to set.
      *  - tid   (integer) ID of the publication type.
-     *  - pid   (integer) ID of the publication.
+     *  - rid   (integer) ID of the publication (optional).
      *  - field (string) The field to retrieve.
      *  - value (mixed)   Value to set.
      *
@@ -302,13 +331,13 @@ class Clip_Util_Form
 
         $alias = isset($args['alias']) ? $args['alias'] : $this->alias;
         $tid   = isset($args['tid']) ? $args['tid'] : $this->tid;
-        $id    = isset($args['id']) ? $args['id'] : $this->id;
+        $rid   = isset($args['rid']) ? $args['rid'] : $this->id;
         $pid   = isset($args['pid']) ? $args['pid'] : $this->resolvePid($args, $view);
 
         // processing
         $data = $view->getTplVar('clipdata');
 
-        $data[$alias][$tid][$id][$pid][$field] = $value;
+        $data[$alias][$tid][$rid][$pid][$field] = $value;
 
         $view->assign('clipdata', $data);
     }
@@ -409,7 +438,7 @@ class Clip_Util_Form
      *  - assign (string)  The name of a template variable to assign the output to.
      *  - alias  (string)  Context of the value to set.
      *  - tid    (integer) ID of the publication type.
-     *  - id     (integer) ID of the publication.
+     *  - rid    (integer) ID of the publication.
      *
      * Example:
      *
@@ -430,10 +459,10 @@ class Clip_Util_Form
     {
         $alias = isset($args['alias']) ? $args['alias'] : $this->alias;
         $tid   = isset($args['tid']) ? $args['tid'] : $this->tid;
-        $id    = isset($args['id']) ? $args['id'] : $this->id;
+        $rid   = isset($args['rid']) ? $args['rid'] : $this->id;
 
         $data = $view->getTplVar('clipdata');
 
-        $this->pid = isset($data[$alias][$tid][$id]) ? key($data[$alias][$tid][$id]) : 'a';
+        $this->pid = isset($data[$alias][$tid][$rid]) ? key($data[$alias][$tid][$rid]) : 'a';
     }
 }
