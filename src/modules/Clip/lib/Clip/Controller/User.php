@@ -256,16 +256,27 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
-            $args['templatefile']  = $pubtype['folder'].'/list.tpl';
+            $args['templatefile']  = 'list.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
-            $args['templatefile']  = $pubtype['folder']."/list_{$args['template']}.tpl";
+            $args['templatefile']  = "list_{$args['template']}.tpl";
         }
 
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'list', $apiargs['templateid']));
 
         //// Cache
+        // validate the template existance, if not defaults to the general one
+        if ($this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
+            $args['templatefile'] = $pubtype['folder'].'/'.$args['templatefile'];
+        }
+
+        // check if the general does not exist
+        if (!$this->view->template_exists($args['templatefile']) && !$this->getVar('devmode', false)) {
+            // auto-generate it only on development mode
+            return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
+        }
+
         // check if cache is enabled and this view is cached
         if (!empty($args['cachelifetime']) && $this->view->template_exists($args['templatefile'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
@@ -338,11 +349,6 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // check if the template is not available
         if (!$this->view->template_exists($args['templatefile'])) {
-            // auto-generate it only on development mode
-            if (!$this->getVar('devmode', false)) {
-                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
-            }
-
             if (Clip_Access::toPubtype($pubtype)) {
                 // pubtype admins only
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['templatefile']));
@@ -427,16 +433,27 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = '';
-            $args['templatefile']  = $pubtype['folder'].'/display.tpl';
+            $args['templatefile']  = 'display.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
-            $args['templatefile']  = $pubtype['folder']."/display_{$args['template']}.tpl";
+            $args['templatefile']  = "display_{$args['template']}.tpl";
         }
 
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], ACCESS_READ, null, 'display', $apiargs['templateid']));
 
         //// Cache
+        // validate the template existance, if not defaults to the general one
+        if ($this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
+            $args['templatefile'] = $pubtype['folder'].'/'.$args['templatefile'];
+        }
+
+        // check if the general does not exist
+        if (!$this->view->template_exists($args['templatefile']) && !$this->getVar('devmode', false)) {
+            // auto-generate it only on development mode
+            return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
+        }
+
         // check if cache is enabled and this view is cached
         if (!empty($args['cachelifetime']) && $this->view->template_exists($args['templatefile'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
@@ -514,11 +531,6 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // check if template is not available
         if (!$this->view->template_exists($args['templatefile'])) {
-            // auto-generate it only on development mode
-            if (!$this->getVar('devmode', false)) {
-                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
-            }
-
             if ($isadmin) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['templatefile']));
             }
