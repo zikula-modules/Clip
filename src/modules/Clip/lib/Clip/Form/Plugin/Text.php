@@ -116,6 +116,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
         if (ModUtil::available('scribite')) {
             $checked = $this->config['usescribite'] ? 'checked="checked"' : '';
             $html = '<div class="z-formrow">
+                         <span class="z-warningmsg">'.$this->__('Be sure to setup a default editor for Scribite!. It will be used in these text fields.').'</span>
                          <label for="clipplugin_usescribite">'.$this->__('Use Scribite!').':</label>
                          <input type="checkbox" id="clipplugin_usescribite" name="clipplugin_usescribite" '.$checked.' />
                      </div>';
