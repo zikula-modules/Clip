@@ -20,7 +20,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     // Clip data handling
     public $alias;
     public $tid;
-    public $ric;
+    public $rid;
     public $pid;
     public $field;
 
