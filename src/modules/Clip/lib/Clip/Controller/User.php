@@ -60,6 +60,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
+        // extract the clip arguments
+        $clipvalues = array();
+        Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
+
         // define the arguments
         $args = array(
             'tid'           => $args['tid'],
@@ -111,6 +115,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
 
             return $this->view->assign('clip_simple_tpl', true)
+                              ->assign('clipvalues', $clipvalues)
                               ->assign('pubtype', $pubtype)
                               ->fetch($args['templatesimple']);
         }
@@ -151,9 +156,10 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Output
         // assign the data to the output
-        $this->view->assign('pubtype',   $pubtype)
-                   ->assign('clipargs',  Clip_Util::getArgs())
-                   ->assign('returnurl', $returnurl);
+        $this->view->assign('clipvalues', $clipvalues)
+                   ->assign('pubtype',    $pubtype)
+                   ->assign('clipargs',   Clip_Util::getArgs())
+                   ->assign('returnurl',  $returnurl);
 
         // notify the ui main screen
         $this->view = Clip_Event::notify('ui.main', $this->view, $args)->getData();
@@ -196,7 +202,7 @@ class Clip_Controller_User extends Zikula_AbstractController
      *
      * @return string Publication list output.
      */
-    public function view($args=array())
+    public function view($args)
     {
         //// Pubtype
         // validate and get the publication type first
@@ -209,6 +215,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
+        // extract the clip arguments
+        $clipvalues = array();
+        Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
+
         // define the arguments
         $apiargs = array(
             'tid'           => $args['tid'],
@@ -312,11 +322,12 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Output
         // assign the data to the output
-        $this->view->assign('pubtype',   $pubtype)
-                   ->assign('publist',   $publist)
-                   ->assign('pubfields', Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))
-                   ->assign('clipargs',  Clip_Util::getArgs())
-                   ->assign('returnurl', $returnurl);
+        $this->view->assign('clipvalues', $clipvalues)
+                   ->assign('pubtype',    $pubtype)
+                   ->assign('publist',    $publist)
+                   ->assign('pubfields',  Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))
+                   ->assign('clipargs',   Clip_Util::getArgs())
+                   ->assign('returnurl',  $returnurl);
 
         // assign the pager values
         $this->view->assign('pager', array('numitems'     => $pubcount,
@@ -376,6 +387,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
+        // extract the clip arguments
+        $clipvalues = array();
+        Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
+
         // define the arguments
         $apiargs = array(
             'tid'           => $args['tid'],
@@ -486,12 +501,13 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Output
         // assign the pubdata and pubtype to the output
-        $this->view->assign('pubdata',   $pubdata)
-                   ->assign('relations', $pubdata->getRelations(false, 'title'))
-                   ->assign('returnurl', $returnurl)
-                   ->assign('pubtype',   $pubtype)
-                   ->assign('pubfields', Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))
-                   ->assign('clipargs',  Clip_Util::getArgs());
+        $this->view->assign('clipvalues', $clipvalues)
+                   ->assign('pubdata',    $pubdata)
+                   ->assign('relations',  $pubdata->getRelations(false, 'title'))
+                   ->assign('returnurl',  $returnurl)
+                   ->assign('pubtype',    $pubtype)
+                   ->assign('pubfields',  Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))
+                   ->assign('clipargs',   Clip_Util::getArgs());
 
         // notify the ui display
         $this->view = Clip_Event::notify('ui.display', $this->view, array_merge($args, $apiargs))->getData();
@@ -549,6 +565,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
+        // extract the clip arguments
+        $clipvalues = array();
+        Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
+
         // define the arguments
         $args = array(
             'tid'      => $args['tid'],
@@ -634,8 +654,9 @@ class Clip_Controller_User extends Zikula_AbstractController
         // register clip_util
         Clip_Util::register_utilities($render);
 
-        $render->assign('clipargs', Clip_Util::getArgs())
-               ->assign('pubtype', $pubtype);
+        $render->assign('clipvalues', $clipvalues)
+               ->assign('clipargs',   Clip_Util::getArgs())
+               ->assign('pubtype',    $pubtype);
 
         // notify the ui edition
         $render = Clip_Event::notify('ui.edit', $render, $args)->getData();

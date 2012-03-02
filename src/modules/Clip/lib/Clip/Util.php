@@ -78,6 +78,28 @@ class Clip_Util
     }
 
     /**
+     * Extract the arguments.
+     *
+     * @param array $args
+     *
+     * @return array Extracted arguments.
+     */
+    public static function getClipArgs(&$clipvalues, $get, $args = array())
+    {
+        foreach (array_keys($get->getCollection()) as $param) {
+            if (strpos($param, '_') === 0) {
+                $clipvalues[substr($param, 1)] = $get->filter($param);
+            }
+        }
+
+        foreach (array_keys((array)$args) as $param) {
+            if (strpos($param, '_') === 0) {
+                $clipvalues[substr($param, 1)] = $args[$param];
+            }
+        }
+    }
+
+    /**
      * Format the orderby parameter.
      *
      * @param string $orderby

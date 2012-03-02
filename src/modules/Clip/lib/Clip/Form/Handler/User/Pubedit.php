@@ -52,9 +52,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         //// Processing
-        // GET values set on the first screen only
-        $clipvalues = array();
-
         // assign the configured relations
         $relconfig = $this->pubtype['config']['edit'];
         $relations = array();
@@ -71,18 +68,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             // handle the Doctrine_Record data as an array
             $data[$this->alias][$this->tid][$this->id][$this->pid] = $this->pub->clipFormGet($relconfig['load'], $relconfig['onlyown']);
 
-            // check for set_* and clip_* parameters from $_GET
-            $fieldnames = $this->pub->pubFields();
-
+            // check for set_* parameters from $_GET
             $get = $this->request->getGet();
             foreach (array_keys($get->getCollection()) as $param) {
-                if (strpos($param, 'set_') === 0 || strpos($param, 'clip_') === 0) {
-                    $fieldname = preg_replace(array('/^set_/', '/^clip_/'), '', $param);
-
-                    if ($this->pub->contains($fieldname)) {
-                        $data[$this->alias][$this->tid][$this->id][$this->pid][$fieldname] = $get->filter($param);
-                    } else {
-                        $clipvalues[$fieldname] = $get->filter($param);
+                if (strpos($param, 'set_') === 0) {
+                    if ($this->pub->contains(substr($param, 4))) {
+                        $data[$this->alias][$this->tid][$this->id][$this->pid][substr($param, 4)] = $get->filter($param);
                     }
                 }
             }
@@ -103,12 +94,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $pubdata->clipValues(true);
 
         // fills the render
-        $view->assign('clipdata',   $data)
-             ->assign('pubdata',    $pubdata)
-             ->assign('pubfields',  $this->pubfields)
-             ->assign('relations',  $relations)
-             ->assign('actions',    $actions)
-             ->assign('clipvalues', $clipvalues);
+        $view->assign('clipdata',  $data)
+             ->assign('pubdata',   $pubdata)
+             ->assign('pubfields', $this->pubfields)
+             ->assign('relations', $relations)
+             ->assign('actions',   $actions);
 
         // create and register clip_form
         $clip_form = new Clip_Util_Form($view);
