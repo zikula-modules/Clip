@@ -45,9 +45,13 @@ function smarty_function_clip_include($params, Zikula_View &$view)
         $file = "$dir/$file";
     }
 
-    // compile and include the template
+    // backup the current tpl vars
     $tpl_vars = $view->_tpl_vars;
 
+    // include the passed parameters into the existing clipvalues
+    $view->_tpl_vars['clipvalues'] = array_merge((array)$view->_tpl_vars['clipvalues'], (array)$params);
+
+    // compile and include the template
     $output = $view->_smarty_include(
                   array(
                       'smarty_include_tpl_file' => $file,
@@ -55,6 +59,7 @@ function smarty_function_clip_include($params, Zikula_View &$view)
                   )
               );
 
+    // restore the original tpl vars
     $view->_tpl_vars = $tpl_vars;
 
     if ($assign) {
