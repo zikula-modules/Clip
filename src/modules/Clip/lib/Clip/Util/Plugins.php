@@ -220,6 +220,10 @@ class Clip_Util_Plugins
 
         switch ($name)
         {
+            case 'core_urltitle':
+                $corefield['fieldplugin'] = 'String';
+                break;
+
             case 'core_language':
                 $corefield['fieldplugin'] = 'Language';
                 break;

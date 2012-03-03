@@ -36,6 +36,13 @@
             <fieldset>
                 <legend>{gt text='Publication options'}</legend>
 
+                {clip_accessblock tid=$pubtype.tid context='editor'}
+                <div class="z-formrow">
+                    {clip_form_label for='core_urltitle' __text='Permalink title'}
+                    {clip_form_plugin field='core_urltitle' mandatory=false}
+                </div>
+                {/clip_accessblock}
+
                 <div class="z-formrow">
                     {clip_form_label for='core_language' __text='Language'}
                     {clip_form_plugin field='core_language' mandatory=false}
