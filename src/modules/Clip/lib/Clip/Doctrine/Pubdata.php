@@ -90,7 +90,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
 
         return $copy;
     }
-
+    
     /**
      * Returns the parents for breadcrumbs.
      *
@@ -126,6 +126,18 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         $relations = $this->getRelations(false);
 
         return isset($relations[$alias])? $relations[$alias] : false;
+    }
+
+    /**
+     * Checks if a field is modified.
+     *
+     * @param string $field Field name to check if it is modified.
+     *
+     * @return boolean
+     */
+    public function clipModified($field)
+    {
+        return in_array($field, $this->_lastModified);
     }
 
     /**
