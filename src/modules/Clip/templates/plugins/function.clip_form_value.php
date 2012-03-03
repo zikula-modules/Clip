@@ -10,8 +10,8 @@
  */
 
 /**
- * Generic Form Plugin.
- * Clip's interface to load one of its form plugins.
+ * Generic Form Value.
+ * Clip's interface to map a value on a publication input.
  *
  * Available parameters:
  *  - alias       (string)  Form data alias
@@ -25,19 +25,25 @@
  *  - fieldconfig (string)  Configuration for the field when fieldplugin is used.
  *  - pluginclass (string)  Override the plugin Clip class.
  *
- * Example:
+ * Examples:
  *
- *  <samp>{clip_form_plugin field='title' mandatory=true}</samp>
+ *  <samp>{clip_form_value field='myvalue1' fieldplugin='List' category=$categoryID mandatory=true}</samp>
+ * 
+ *  <samp>{clip_form_value field='value2' fieldplugin='Text' maxLength=10}</samp>
  *
  * @param array            $params All parameters passed to this plugin from the template.
  * @param Zikula_Form_View $view   Reference to the {@link Zikula_Form_View} object.
  *
  * @return mixed Plugin output.
  */
-function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
+function smarty_function_clip_form_value($params, Zikula_Form_View &$render)
 {
     if (!isset($params['field']) || !$params['field']) {
         $render->trigger_error($render->__f('Error! Missing argument [%s].', 'field'));
+    }
+
+    if (!isset($params['pluginclass']) && !isset($params['fieldplugin'])) {
+        $render->trigger_error($render->__f('Error! Missing argument [%s].', 'pluginclass | fieldplugin'));
     }
 
     if ($params['field'] == 'id') {
@@ -51,36 +57,14 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
     $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getPid($render);
 
     // form framework parameters adjustment
+    $params['alias'] = $params['alias'];
     $params['id']    = "clip_{$params['alias']}_{$params['tid']}_{$params['rid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'clipdata';
 
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
 
-    if (!$field) {
-        $render->trigger_error($render->__f("Error! The publication field '%s' does not exist.", DataUtil::formatForDisplay($params['field'])));
-    }
-
-    // use the main settings if not explicitly declared on the template
-    if (!isset($params['mandatory'])) {
-        $params['mandatory'] = $field['ismandatory'];
-    }
-    if (!isset($params['maxLength'])) {
-        $params['maxLength'] = $field['fieldmaxlength'];
-    }
-
-    // plugin class and configuration customization
-    if (isset($params['fieldplugin'])) {
-        // override the main class
-        $pluginclass = $params['fieldplugin'];
-        // unset it
-        unset($params['fieldplugin']);
-        // be sure there's a config specified or reset to empty
-        $params['fieldconfig'] = isset($params['fieldconfig']) ? $params['fieldconfig'] : '';
-    } else {
-        // setup the main class
-        $pluginclass = $field['fieldplugin'];
-        // setup the main field configuration
-        $params['fieldconfig'] = $field['typedata'];
+    if ($field) {
+        $render->trigger_error($render->__f("Error! '%1\$s' parameter cannot be '%2\$s'.", array('field', DataUtil::formatForDisplay($params['field']))).' '.$render->__('It must not match any existing field.'));
     }
 
     // check if there's a custom plugin class to use
@@ -109,7 +93,15 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
         }
 
         $plugin = new $pluginclass($render, $params);
-    } else {
+
+    } else if (isset($params['fieldplugin'])) {
+        // plugin class and configuration customization
+        $pluginclass = $params['fieldplugin'];
+        // be sure there's a config specified or reset to empty
+        $params['fieldconfig'] = isset($params['fieldconfig']) ? $params['fieldconfig'] : '';
+        // unset them
+        unset($params['fieldplugin']);
+
         // field plugin class
         $plugin = Clip_Util_Plugins::get($pluginclass);
 

@@ -145,8 +145,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // get the data set in the form
         $data = $view->getValues();
-        // get the initial relations links
-        $links = $view->getStateData('links');
 
         // notify the start of the edition
         $data['clipdata'] = Clip_Event::notify('data.edit.pre', $data['clipdata'], $this->args)->getData();
@@ -155,6 +153,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if ($data['clipdata'] === false) {
             return false;
         }
+
+        // get the initial relations links
+        $links = $view->getStateData('links');
 
         // loop the values and create/update the passed values
         $mainpub = array();
@@ -181,6 +182,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
                     // fill the publication data
                     $l = isset($links[$alias][$tid][$id][$pid]) ? $links[$alias][$tid][$id][$pid] : array();
+
                     $pub->clipFormFill($pubdata, $l)
                         ->clipValues();
 
