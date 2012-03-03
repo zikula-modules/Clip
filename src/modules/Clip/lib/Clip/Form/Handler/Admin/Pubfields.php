@@ -184,6 +184,6 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         }
 
         // redirect to the determined url
-        return $view->redirect($this->referer);
+        return $view->redirect($this->referer instanceof Clip_Url ? $this->referer->getUrl() : $this->referer);
     }
 }
