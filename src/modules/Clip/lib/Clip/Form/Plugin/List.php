@@ -45,8 +45,10 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
         $this->parseConfig($params['fieldconfig']);
         unset($params['fieldconfig']);
 
+        $includeempty = isset($params['mandatory']) && $params['mandatory'] ? false : $this->config[1];
+
         $params['category'] = isset($params['category']) ? $params['category'] : $this->config[0];
-        $params['includeEmptyElement'] = isset($params['includeEmptyElement']) ? $params['includeEmptyElement'] : $this->config[1];
+        $params['includeEmptyElement'] = isset($params['includeEmptyElement']) ? $params['includeEmptyElement'] : $includeempty;
         $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config[2];
 
         parent::readParameters($view, $params);
