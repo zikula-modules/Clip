@@ -354,8 +354,8 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     /**
      * Form post processing.
      *
-     * @param boolean $pubdata Publication data to fill into this record.
-     * @param boolean $links   Relations to be filled into this record.
+     * @param array $pubdata Publication data to fill into this record.
+     * @param array $links   Relations to be filled into this record.
      *
      * @return $this
      */
@@ -464,14 +464,14 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
 
         // reorder the fields conveniently
         $reorder = array(
-            'core_title' => 'map',
-            'core_urltitle' => 'value',
-            'core_uniqueid' => 'map',
-            'core_tid' => 'map',
-            'core_pid' => 'value',
-            'core_author' => 'value',
-            'core_creator' => 'map',
-            'core_approvalstate' => 'map'
+            'core_title' => 'value',
+            'core_urltitle' => 'column',
+            'core_uniqueid' => 'value',
+            'core_tid' => 'value',
+            'core_pid' => 'column',
+            'core_author' => 'column',
+            'core_creator' => 'value',
+            'core_approvalstate' => 'value'
         );
         $fields = array_merge($reorder, $fields);
 
