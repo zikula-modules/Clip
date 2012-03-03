@@ -157,7 +157,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // loop the values and create/update the passed values
-        $mainres = array();
+        $mainpub = array();
 
         foreach ($data['clipdata'] as $alias => $a) {
             foreach ($a as $tid => $b) {
@@ -215,7 +215,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
                     // store the main result to process the goto
                     if ($alias == $this->alias) {
-                        $mainres = $res;
+                        $mainpub = $res;
                     }
                 }
             }
@@ -231,10 +231,10 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $view->clear_cache(null, 'tid_'.$this->tid.'/list');
 
         // notify the finalization of the edition
-        $mainres = Clip_Event::notify('data.edit.post', $mainres, $this->pub)->getData();
+        $mainpub = Clip_Event::notify('data.edit.post', $mainpub, $this->pub)->getData();
 
         // core operations processing
-        $goto = $this->processGoto($mainres);
+        $goto = $this->processGoto($mainpub);
 
         // check the goto parameter
         switch ($this->goto)
@@ -253,7 +253,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             case 'display':
-                $goto = $displayUrl;
+                $goto = Clip_Util::url($this->pub, 'display');
                 break;
 
             case 'admin':
@@ -344,7 +344,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     {
         return $this->id;
     }
-    
+
     /**
      * Validate hooks.
      */
@@ -370,10 +370,17 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             return $goto;
         }
 
-        if ($this->id) {
-            $this->itemurl = Clip_Util::url($this->pub, 'display');
+        $this->itemurl = Clip_Util::url($data, 'display');
+
+        // on urltitle change, correct the referer if needed
+        if ($data->clipModified('core_urltitle') && strpos($this->referer, Clip_Util::url($this->pub, 'display')) !== false) {
+            $this->referer = $this->itemurl;
         }
 
+        // now update the pub instance with the final main one
+        $this->pub = $data;
+
+        // check the core operations that equires special redirect
         $uniqueid = $data['core_uniqueid'];
 
         $ops  = isset($data['core_operations']) ? $data['core_operations'] : array();
