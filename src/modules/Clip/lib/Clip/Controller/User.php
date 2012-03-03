@@ -503,8 +503,12 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
         }
 
+        // prevent Doctrine to mess with the publication by cloning it
+        $pub = $pubdata->copy(true);
+        $pub->assignIdentifier($pubdata->id);
+
         // notify the publication data
-        $pubdata = Clip_Event::notify('data.display', $pubdata)->getData();
+        $pub = Clip_Event::notify('data.display', $pub)->getData();
 
         // store the arguments used
         Clip_Util::setArgs('display', $args);
@@ -514,13 +518,13 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // resolve the permalink
         $apiargs   = Clip_Util::getArgs('getapi');
-        $returnurl = Clip_Util::url($pubdata, 'display', array(), null, null, true);
+        $returnurl = Clip_Util::url($pub, 'display', array(), null, null, true);
 
         //// Output
         // assign the pubdata and pubtype to the output
         $this->view->assign('clipvalues', $clipvalues)
-                   ->assign('pubdata',    $pubdata)
-                   ->assign('relations',  $pubdata->getRelations(false, 'title'))
+                   ->assign('pubdata',    $pub)
+                   ->assign('relations',  $pub->getRelations(false, 'title'))
                    ->assign('returnurl',  $returnurl)
                    ->assign('pubtype',    $pubtype)
                    ->assign('pubfields',  Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))
