@@ -205,7 +205,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         // delete the files if requested to or if there's a new upload
         if ($oldData && ($newUpload || $newData['delete'] || $newData['thumbs'])) {
             $toDelete = array('tmb_name', 'pre_name', 'full_name');
-            if ($newData['delete']) {
+            if ($newUpload || $newData['delete']) {
                 $toDelete[] = 'file_name';
                 $data['orig_name'] = '';
             } else {
@@ -366,42 +366,43 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
 
+        $html = '<div class="z-formrow">
+                     <label for="clipplugin_preservename">'.$this->__('Preserve filename').':</label>
+                     <input type="checkbox" value="1" id="clipplugin_preservename" name="clipplugin_preservename" '.($this->config[6] ? ' checked="checked"' : '').' />
+                 </div>';
+
         if (ModUtil::available('Thumbnail')) {
             // TODO Fieldsets and help text explaining how they work
-            $html = '<div class="z-formrow">
-                         <label for="clipplugin_preservename">'.$this->__('Preserve filename').':</label>
-                         <input type="checkbox" value="1" id="clipplugin_preservename" name="clipplugin_preservename" '.($this->config[6] ? ' checked="checked"' : '').' />
-                     </div>
-                     <div class="z-formrow">
-                         <label for="clipplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
-                         <input type="text" value="'.$this->config[0].'" id="clipplugin_tmpx_px" name="clipplugin_tmpx_px" />
-                     </div>
-                     <div class="z-formrow">
-                         <label for="clipplugin_tmpy_px">'.$this->__('Thumbnail height').':</label>
-                         <input type="text" value="'.$this->config[1].'" id="clipplugin_tmpy_px" name="clipplugin_tmpy_px" />
-                         <br />
-                     </div>
-                     <div class="z-formrow">
-                         <label for="clipplugin_pre_px">'.$this->__('Preview width').':</label>
-                         <input type="text" value="'.$this->config[2].'" id="clipplugin_previewx_px" name="clipplugin_previewx_px" />
-                     </div>
-                     <div class="z-formrow">
-                         <label for="clipplugin_pre_px">'.$this->__('Preview height').':</label>
-                         <input type="text" value="'.$this->config[3].'" id="clipplugin_previewy_px" name="clipplugin_previewy_px" />
-                         <br />
-                     </div>
-                     <div class="z-formrow">
-                         <label for="clipplugin_full_px">'.$this->__('Full width').':</label>
-                         <input type="text" value="'.$this->config[4].'" id="clipplugin_fullx_px" name="clipplugin_fullx_px" />
-                     </div>
-                     <div class="z-formrow">
-                         <label for="clipplugin_full_px">'.$this->__('Full height').':</label>
-                         <input type="text" value="'.$this->config[5].'" id="clipplugin_fully_px" name="clipplugin_fully_px" />
-                     </div>';
+            $html .= '<div class="z-formrow">
+                          <label for="clipplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
+                          <input type="text" value="'.$this->config[0].'" id="clipplugin_tmpx_px" name="clipplugin_tmpx_px" />
+                      </div>
+                      <div class="z-formrow">
+                          <label for="clipplugin_tmpy_px">'.$this->__('Thumbnail height').':</label>
+                          <input type="text" value="'.$this->config[1].'" id="clipplugin_tmpy_px" name="clipplugin_tmpy_px" />
+                          <br />
+                      </div>
+                      <div class="z-formrow">
+                          <label for="clipplugin_pre_px">'.$this->__('Preview width').':</label>
+                          <input type="text" value="'.$this->config[2].'" id="clipplugin_previewx_px" name="clipplugin_previewx_px" />
+                      </div>
+                      <div class="z-formrow">
+                          <label for="clipplugin_pre_px">'.$this->__('Preview height').':</label>
+                          <input type="text" value="'.$this->config[3].'" id="clipplugin_previewy_px" name="clipplugin_previewy_px" />
+                          <br />
+                      </div>
+                      <div class="z-formrow">
+                          <label for="clipplugin_full_px">'.$this->__('Full width').':</label>
+                          <input type="text" value="'.$this->config[4].'" id="clipplugin_fullx_px" name="clipplugin_fullx_px" />
+                      </div>
+                      <div class="z-formrow">
+                          <label for="clipplugin_full_px">'.$this->__('Full height').':</label>
+                          <input type="text" value="'.$this->config[5].'" id="clipplugin_fully_px" name="clipplugin_fully_px" />
+                      </div>';
         } else {
-            $html = '<div class="z-warningmsg">
-                         '.$this->__('Warning! The Thumbnails module is not available. This plugin needs it to build the Preview and Thumbnail of each uploaded Image.').'
-                     </div>';
+            $html .= '<div class="z-warningmsg">
+                          '.$this->__('Warning! The Thumbnails module is not available. This plugin needs it to build the Preview and Thumbnail of each uploaded Image.').'
+                      </div>';
         }
 
         return $html;
@@ -412,7 +413,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
      */
     public function parseConfig($typedata='', $args=array())
     {
-        // config string: "$tmpx:$tmpy:$prex:$prey:$fullx:$fully"
+        // config string: "$tmpx:$tmpy:$prex:$prey:$fullx:$fully:$preserve"
         $this->config = explode(':', $typedata);
 
         // validate all the values

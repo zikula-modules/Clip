@@ -42,6 +42,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
      */
     public function readParameters(Zikula_Form_View $view, &$params)
     {
+        $this->parseConfig($params['fieldconfig']);
         unset($params['fieldconfig']);
 
         parent::readParameters($view, $params);
@@ -84,9 +85,26 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     public function render(Zikula_Form_View $view)
     {
         $input_html = parent::render($view);
-        $note_html  = $this->upl_arr ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
+        $note_html  = $this->upl_arr && $this->upl_arr['orig_name'] ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
 
         return $input_html.$note_html;
+    }
+
+    public function renderBegin(Zikula_Form_View $view)
+    {
+        $view->assign('fieldid', $this->id);
+
+        return $this->render($view);
+    }
+
+    public function renderContent(Zikula_Form_View $view, $content)
+    {
+        return $content;
+    }
+
+    public function renderEnd(Zikula_Form_View $view)
+    {
+        return '';
     }
 
     /**
@@ -100,6 +118,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         // default
         $upl_arr = array(
                  'orig_name' => '',
+                 'url'       => '',
                  'file_name' => '',
                  'file_size' => 0,
                  'extension' => ''
@@ -119,8 +138,8 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
             if (!empty($arrTypeData['file_name'])) {
                 $upl_arr = array(
                                'orig_name' => $arrTypeData['orig_name'],
-                               'file_name' => $arrTypeData['file_name'],
                                'url'       => $url.'/'.$arrTypeData['file_name'],
+                               'file_name' => $arrTypeData['file_name'],
                                'file_size' => isset($arrTypeData['file_size']) && $arrTypeData['file_size'] ? $arrTypeData['file_size'] : filesize("$path/$arrTypeData[file_name]"),
                                'extension' => FileUtil::getExtension($arrTypeData['file_name'])
                            );
@@ -130,48 +149,69 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         $pub[$fieldname] = $upl_arr;
     }
 
-    public static function preSave($data, $field)
+    public function preSave($pub, $field)
     {
-        $postData = $data[$field['name']];
+        $newData = $pub[$field['name']];
 
-        if ($data['id'] != NULL) {
+        if ($pub['id']) {
             // if it's not a new pub get the old upload
-            $old_upload = (string)Doctrine_Core::getTable('ClipModels_Pubdata'.$data['core_tid'])
-                                  ->selectFieldBy($field['name'], $data['id'], 'id');
-        }
+            $oldData = (string)Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid'])
+                               ->selectFieldBy($field['name'], $pub['id'], 'id');
 
-        if ($postData != $old_upload && !empty($postData['name'])) {
-            $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
-
-            // delete the old file
-            if ($data['id'] != NULL) {
-                $old_upload_arr = unserialize($old_upload);
-                unlink($uploadpath.'/'.$old_upload_arr['file_name']);
+            // evaluate if preSave is triggered by the Pub Record without changes
+            if ($newData == $oldData) {
+                // $newData is serialized too
+                return $oldData;
             }
 
-            $srcTempFilename = $postData['tmp_name'];
-            $ext             = strtolower(FileUtil::getExtension($postData['name']));
-            $randName        = Clip_Util::getNewFileReference();
-            $new_filename    = "{$randName}.{$ext}";
-            $dstFilename     = "{$uploadpath}/{$new_filename}";
-
-            copy($srcTempFilename, $dstFilename);
-
-            $arrTypeData = array (
-                'orig_name' => $postData['name'],
-                'file_name' => $new_filename,
-                'file_size' => filesize($dstFilename)
-            );
-
-            return serialize($arrTypeData);
-
-        } elseif ($data['id'] != NULL) {
-            // if it's not a new pub
-            // return the old upload if no new is selected
-            return $old_upload;
+            // unserialize the old data
+            $oldData = $data = ($oldData ? unserialize($oldData) : '');
+        } else {
+            $oldData = null;
+            $data = array();
         }
 
-        return NULL;
+        // check if there's a new upload
+        $newUpload = !empty($newData['name']) && $newData['error'] == 0;
+
+        if ($newUpload || $oldData) {
+            $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
+            $extension  = strtolower(FileUtil::getExtension($newData['name'] ? $newData['name'] : $oldData['file_name']));
+            // FIXME validate the supported file format uploaded
+        }
+
+        $this->parseConfig($field['typedata']);
+
+        // delete the files if requested to or if there's a new upload
+        if ($oldData && ($newUpload || $newData['delete'])) {
+            if ($oldData['file_name'] && file_exists($uploadpath.'/'.$oldData['file_name'])) {
+                unlink($uploadpath.'/'.$oldData['file_name']);
+            }
+            $data['file_name'] = '';
+            $data['orig_name'] = '';
+
+        } elseif ($oldData) {
+            // rename the file_name if the preserve name is enabled now
+            if ($this->config['preserve'] && file_exists($uploadpath.'/'.$oldData['file_name']) && $oldData['file_name'] != $oldData['orig_name']) {
+                rename($uploadpath.'/'.$oldData['file_name'], $uploadpath.'/'.$oldData['orig_name']);
+                $data['file_name'] = $oldData['orig_name'];
+            }
+        }
+
+        // process the upload if there's one
+        if ($newUpload) {
+            $data['orig_name'] = $newData['name'];
+            $data['file_size'] = $newData['size'];
+            $filename  = $this->config['preserve'] ? DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])) : Clip_Util::getNewFileReference();
+            $data['file_name'] = "$filename.$extension";
+            move_uploaded_file($newData['tmp_name'], "{$uploadpath}/{$data['file_name']}");
+        }
+
+        if ($data) {
+            return serialize($data);
+        }
+
+        return $oldData;
     }
 
     public static function getOutputDisplay($field)
@@ -190,5 +230,66 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
                 '        </div>';
 
         return array('full' => $full);
+    }
+
+    public static function getOutputEdit($field)
+    {
+        $gtdelete = no__('Delete the file');
+
+        $full = "\n".
+                '                <div class="z-formrow">'."\n".
+                '                    {clip_form_label for=\''.$field['name'].'\' text=$pubfields.'.$field['name'].'.title|clip_translate'.((bool)$field['ismandatory'] ? ' mandatorysym=true' : '').'}'."\n".
+                '                    {clip_form_block field=\''.$field['name'].'\'}'."\n".
+                '                    {if $pubfields.'.$field['name'].'.description|clip_translate}'."\n".
+                '                        <span class="z-formnote z-sub">{$pubfields.'.$field['name'].'.description|clip_translate}</span>'."\n".
+                '                    {/if}'."\n".
+                '                    {if $pubdata.id and $pubdata.'.$field['name'].'.file_name}'."\n".
+                '                        <span class="z-formlist clip-edit-suboptions">'."\n".
+                '                            {formcheckbox id="`$fieldid`_delete"} {formlabel for="`$fieldid`_delete" __text=\''.$gtdelete.'\'}'."\n".
+                '                        </span>'."\n".
+                '                    {/if}'."\n".
+                '                    {/clip_form_block}'."\n".
+                '                </div>'."\n";
+
+        return array('full' => $full);
+    }
+
+    /**
+     * Clip admin methods.
+     */
+    public static function getConfigSaveJSFunc($field)
+    {
+        return 'function()
+                {
+                    $(\'typedata\').value = $F(\'clipplugin_preservename\');
+
+                    Zikula.Clip.Pubfields.ConfigClose();
+                }';
+    }
+
+    public function getConfigHtml($field, $view)
+    {
+        $this->parseConfig($view->_tpl_vars['field']['typedata']);
+
+        $html = '<div class="z-formrow">
+                     <label for="clipplugin_preservename">'.$this->__('Preserve filename').':</label>
+                     <input type="checkbox" value="1" id="clipplugin_preservename" name="clipplugin_preservename" '.($this->config[6] ? ' checked="checked"' : '').' />
+                 </div>';
+
+        return $html;
+    }
+
+    /**
+     * Parse configuration
+     */
+    public function parseConfig($typedata='', $args=array())
+    {
+        // config string: "$preserve"
+        //$this->config = explode(':', $typedata);
+
+        // validate all the values
+        $this->config = array(
+            'preserve' => (bool)$typedata
+        );
     }
 }
