@@ -173,24 +173,26 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
         // check if there's a new upload
         $newUpload = !empty($newData['name']) && $newData['error'] == 0;
+        $oldUpload = $oldData && $oldData['file_name'];
 
-        if ($newUpload || $oldData) {
-            $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
+        if ($newUpload || $oldUpload) {
             $extension  = strtolower(FileUtil::getExtension($newData['name'] ? $newData['name'] : $oldData['file_name']));
             // FIXME validate the supported file format uploaded
         }
 
+        $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
         $this->parseConfig($field['typedata']);
 
         // delete the files if requested to or if there's a new upload
-        if ($oldData && ($newUpload || $newData['delete'])) {
+        if ($oldUpload && ($newUpload || $newData['delete'])) {
             if ($oldData['file_name'] && file_exists($uploadpath.'/'.$oldData['file_name'])) {
                 unlink($uploadpath.'/'.$oldData['file_name']);
             }
-            $data['file_name'] = '';
             $data['orig_name'] = '';
+            $data['file_name'] = '';
+            $data['file_size'] = 0;
 
-        } elseif ($oldData) {
+        } elseif ($oldUpload) {
             // rename the file_name if the preserve name is enabled now
             if ($this->config['preserve'] && file_exists($uploadpath.'/'.$oldData['file_name']) && $oldData['file_name'] != $oldData['orig_name']) {
                 rename($uploadpath.'/'.$oldData['file_name'], $uploadpath.'/'.$oldData['orig_name']);

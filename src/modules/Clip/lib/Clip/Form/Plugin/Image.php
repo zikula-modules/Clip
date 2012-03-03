@@ -185,7 +185,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             }
 
             // unserialize the old data
-            $oldData = $data = ($oldData ? unserialize($oldData) : '');
+            $oldData = $data = ($oldData ? unserialize($oldData) : array());
         } else {
             $oldData = null;
             $data = array();
@@ -193,17 +193,18 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
         // check if there's a new upload
         $newUpload = !empty($newData['name']) && $newData['error'] == 0;
+        $oldUpload = $oldData && $oldData['file_name'];
 
-        if ($newUpload || $oldData) {
-            $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
+        if ($newUpload || $oldUpload) {
             $extension  = strtolower(FileUtil::getExtension($newData['name'] ? $newData['name'] : $oldData['file_name']));
             // FIXME validate a supported image format uploaded
         }
 
+        $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
         $this->parseConfig($field['typedata']);
 
         // delete the files if requested to or if there's a new upload
-        if ($oldData && ($newUpload || $newData['delete'] || $newData['thumbs'])) {
+        if ($oldUpload && ($newUpload || $newData['delete'] || $newData['thumbs'])) {
             $toDelete = array('tmb_name', 'pre_name', 'full_name');
             if ($newUpload || $newData['delete']) {
                 $toDelete[] = 'file_name';
@@ -233,7 +234,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         }
 
         // thumbnail regeneration
-        if ($newUpload || $oldData && !$newData['delete'] && $newData['thumbs']) {
+        if ($newUpload || $oldData && $oldData['file_name'] && !$newData['delete'] && $newData['thumbs']) {
             $tmbargs  = array();
             $preargs  = array();
             $fullargs = array();
@@ -258,7 +259,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 $fullargs['h'] = $fully;
             }
 
-            // Check for the Thumbnails module and if we need it
+            // check for the Thumbnails module and if we need it
             if (!empty($tmbargs) && ModUtil::available('Thumbnail')) {
                 $data['tmb_name'] = str_replace(".$extension", "-tmb.$extension", $data['file_name']);
                 $tmbargs['filename']    = "{$uploadpath}/{$data['file_name']}";
