@@ -27,6 +27,108 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Returns the publication as an array.
+     *
+     * @param boolean $deep      Whether to include relations.
+     * @param boolean $prefixKey Not used.
+     *
+     * @return array
+     */
+    public function toArray($deep = true, $prefixKey = false)
+    {
+        $fields = $this->pubFields();
+
+        $a = parent::toArray($deep, $prefixKey);
+        $a = $a ? array_intersect_key($a, $fields) : $fields;
+
+        return $a;
+    }
+
+    /**
+     * Returns an array of a publication property field.
+     *
+     * @param string $key   Name of the property to retrieve.
+     * @param string $field Field to retrieve (optional).
+     *
+     * @return mixed Array with the requested field or the property if not specified.
+     */
+    public function toKeyValueArray($key, $field = null)
+    {
+        if (!$this->contains($key)) {
+            throw new Exception("Invalid property [$key] requested on ".get_class()."->toKeyValueArray");
+        }
+
+        if (!$field) {
+            return $this->$key;
+        }
+
+        $result = array();
+        foreach ($this->$key as $k => $v) {
+            if (!isset($v[$field])) {
+                throw new Exception("Invalid field [$field] requested for the property [$key] on ".get_class()."->toKeyValueArray");
+            }
+            $result[$k] = $v[$field];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Generates a copy of this object.
+     *
+     * @param boolean $deep Whether to include relations or not.
+     *
+     * @return object
+     */
+    public function copy($deep = true)
+    {
+        $copy = parent::copy($deep);
+
+        foreach ($this->_values as $k => $v) {
+            $copy->mapValue($k, $v);
+        }
+
+        return $copy;
+    }
+
+    /**
+     * Returns the parents for breadcrumbs.
+     *
+     * @return array List of parents.
+     */
+    public function getAncestors()
+    {
+        $parents = array();
+
+        if (!$this->hasRelation('parent')) {
+            return $parents;
+        }
+
+        $record = $this;
+
+        while ($record->parent && $record->parent->exists()) {
+            $record = $record->parent;
+            $parents[] = $record;
+        }
+
+        return array_reverse($parents);
+    }
+
+    /**
+     * Returns the information of a specific relation.
+     *
+     * @param string $alias Alias of the relation.
+     *
+     * @return array Information of the relation if exists, false otherwise.
+     */
+    public function getRelation($alias)
+    {
+        $relations = $this->getRelations(false);
+
+        return isset($relations[$alias])? $relations[$alias] : false;
+    }
+
+    /**
      * Record load post process.
      * For internal use only.
      *
@@ -362,90 +464,6 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         $fields = array_merge($reorder, $fields);
 
         return $fields;
-    }
-
-    /**
-     * Returns the publication as an array.
-     *
-     * @param boolean $deep      Whether to include relations.
-     * @param boolean $prefixKey Not used.
-     *
-     * @return array
-     */
-    public function toArray($deep = true, $prefixKey = false)
-    {
-        $fields = $this->pubFields();
-
-        $a = parent::toArray($deep, $prefixKey);
-        $a = $a ? array_intersect_key($a, $fields) : $fields;
-
-        return $a;
-    }
-
-    /**
-     * Returns an array of a publication property field.
-     *
-     * @param string $key   Name of the property to retrieve.
-     * @param string $field Field to retrieve (optional).
-     *
-     * @return mixed Array with the requested field or the property if not specified.
-     */
-    public function toKeyValueArray($key, $field = null)
-    {
-        if (!$this->contains($key)) {
-            throw new Exception("Invalid property [$key] requested on ".get_class()."->toKeyValueArray");
-        }
-
-        if (!$field) {
-            return $this->$key;
-        }
-
-        $result = array();
-        foreach ($this->$key as $k => $v) {
-            if (!isset($v[$field])) {
-                throw new Exception("Invalid field [$field] requested for the property [$key] on ".get_class()."->toKeyValueArray");
-            }
-            $result[$k] = $v[$field];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns the parents for breadcrumbs.
-     *
-     * @return array List of parents.
-     */
-    public function getAncestors()
-    {
-        $parents = array();
-
-        if (!$this->hasRelation('parent')) {
-            return $parents;
-        }
-
-        $record = $this;
-
-        while ($record->parent && $record->parent->exists()) {
-            $record = $record->parent;
-            $parents[] = $record;
-        }
-
-        return array_reverse($parents);
-    }
-
-    /**
-     * Returns the information of a specific relation.
-     *
-     * @param string $alias Alias of the relation.
-     *
-     * @return array Information of the relation if exists, false otherwise.
-     */
-    public function getRelation($alias)
-    {
-        $relations = $this->getRelations(false);
-
-        return isset($relations[$alias])? $relations[$alias] : false;
     }
 
     /**
