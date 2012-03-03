@@ -12,11 +12,11 @@
 
     <ul>
         <li>
-            <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid}">{gt text='Go to the list'}</a>
+            <a href="{clip_url func='list' tid=$pubtype.tid}">{gt text='Go to the list'}</a>
         </li>
         {clip_accessblock tid=$pubtype.tid context='submit'}
         <li>
-            <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">{gt text='Submit a publication'}</a>
+            <a href="{clip_url func='edit' tid=$pubtype.tid}">{gt text='Submit a publication'}</a>
         </li>
         {/clip_accessblock}
     </ul>

@@ -31,7 +31,7 @@
             {strip}
             <span class="clip-page-edit-link">
                 <span class="z-nowrap">
-                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$pubdata.core_pid}">{gt text='Edit'}</a>
+                    <a href="{clip_url func='edit' pid=$pubdata}">{gt text='Edit'}</a>
                 </span>
             </span>
             {/strip}
@@ -47,13 +47,13 @@
             <span class="clip-page-category">
             {if $pubdata.category.id}
                 {capture assign='category'}
-                <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid filter="category:sub:`$pubdata.category.id`"}" title="{gt text='View all posts in %s' tag1=$pubdata.category.fullTitle}">
+                <a href="{clip_url func='list' tid=$pubtype.tid filter="category:sub:`$pubdata.category.id`"}" title="{gt text='View all posts in %s' tag1=$pubdata.category.fullTitle}">
                     {$pubdata.category.fullTitle}
                 </a>
                 {/capture}
                 {gt text='Category: %s' tag1=$category}
             {else}
-                <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid filter="category:null"}" title="{gt text='View all uncategorized pages'}">
+                <a href="{clip_url func='list' tid=$pubtype.tid filter="category:null"}" title="{gt text='View all uncategorized pages'}">
                     {gt text='Uncategorized'}
                 </a>
             {/if}

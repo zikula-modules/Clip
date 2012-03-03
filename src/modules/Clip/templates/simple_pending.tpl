@@ -8,7 +8,7 @@
 <p>
     {gt text='Thanks for your submission!'}
     <br />
-    <a href="{modurl modname='Clip' type='user' func='main' tid=$pubtype.tid}">
+    <a href="{clip_url func='main' tid=$pubtype.tid}">
         {gt text='Go back to the index'}
     </a>
 </p>

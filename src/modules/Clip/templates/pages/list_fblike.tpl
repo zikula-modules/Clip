@@ -13,23 +13,23 @@
             {foreach from=$publist item='pubdata'}
             <tr class="{cycle values='z-even,z-odd'}">
                 <td>
-                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}">{$pubdata.core_title|safetext}</a>
+                    <a href="{clip_url func='display' pub=$pubdata}">{$pubdata.core_title|safetext}</a>
                     <span class="z-sub z-floatright">({gt text='%s read' plural='%s reads' count=$pubdata.core_hitcount tag1=$pubdata.core_hitcount})</span>
                 </td>
                 <td class="z-right z-nowrap">
                     {strip}
-                    <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}">
+                    <a href="{clip_url func='display' pub=$pubdata}">
                         {img modname='core' src='demo.png' set='icons/extrasmall' __title='View' __alt='View'}
                     </a>
                     {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
                     &nbsp;
-                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$pubdata.core_pid}">
+                    <a href="{clip_url func='edit' pub=$pubdata}">
                         {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                     </a>
                     {/clip_accessblock}
                     {/strip}
 
-                    {modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid fqurl=true assign='returnurl'}
+                    {clip_url func='display' pub=$pubdata fqurl=true assign='returnurl'}
                     {fblike url=$returnurl width=150 layout='horizontal' rel='list_item'}
                 </td>
             </tr>

@@ -27,7 +27,7 @@
         {/if}
         {clip_accessblock tid=$pubtype.tid context='submit'}
         <span class="clip-breadlink">
-            <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid}">
+            <a href="{clip_url func='edit' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Submit a publication'}
             </a>
         </span>
@@ -53,19 +53,19 @@
 
         {if $func eq 'main'}
             <span class="clip-breadtext">
-                {$pubtype.title}
+                {$pubtype.title|safetext}
             </span>
         {else}
             {if $func neq 'list'}
                 <span class="clip-breadtext">
-                    <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid}">
-                        {$pubtype.title}
+                    <a href="{clip_url func='list' tid=$pubtype.tid}">
+                        {$pubtype.title|safetext}
                     </a>
                 </span>
             {else}
                 <span class="clip-breadtext">
-                    <a href="{modurl modname='Clip' type='user' func='main' tid=$pubtype.tid}">
-                        {$pubtype.title}
+                    <a href="{clip_url func='main' tid=$pubtype.tid}">
+                        {$pubtype.title|safetext}
                     </a>
                 </span>
             {/if}
@@ -77,18 +77,18 @@
                     {* edit check *}
                     {if $pubdata.id}
                     <span class="clip-breadtext">
-                        <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}" title="{$pubdata.core_title}">
-                            {$pubdata.core_title|truncate:40}
+                        <a href="{clip_url func='display' pub=$pubdata}" title="{$pubdata.core_title|safetext}">
+                            {$pubdata.core_title|truncate:40|safetext}
                         </a>
                     </span>
                     {/if}
                 {else}
                     <span class="clip-breadtext" title="{$pubdata.core_title}">
-                        {$pubdata.core_title|truncate:40}
+                        {$pubdata.core_title|truncate:40|safetext}
                     </span>
-                    {clip_accessblock tid=$pubtype.tid pid=$pubdata.core_pid context='edit'}
+                    {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
                     <span class="clip-breadlink">
-                        <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubdata.core_tid id=$pubdata.id}">
+                        <a href="{clip_url func='edit' pub=$pubdata}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit this publication' __alt='Edit'}
                         </a>
                     </span>

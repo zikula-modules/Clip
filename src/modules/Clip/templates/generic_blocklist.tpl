@@ -4,12 +4,12 @@
         <li class="z-clearfix">
             {strip}
             {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
-            <a class="z-floatright" href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$pubdata.core_pid}">
+            <a class="z-floatright" href="{clip_url func='edit' pub=$pubdata}">
                 {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
             </a>
             {/clip_accessblock}
 
-            <a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink}">
+            <a href="{clip_url func='display' pub=$pubdata}">
                 {$pubdata.core_title|safetext}
             </a>
             {/strip}

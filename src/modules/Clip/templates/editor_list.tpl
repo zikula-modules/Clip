@@ -46,7 +46,7 @@
                     {$pubitem.core_pid|safetext}
                 </td>
                 <td>
-                    <strong><a href="{modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubitem.core_pid id=$pubitem.id}">{$pubitem.core_title|safetext}</a></strong>
+                    <strong><a href="{clip_url func='display' pub=$pubitem}">{$pubitem.core_title|safetext}</a></strong>
                     {clip_editoractions pub=$pubitem}
                 </td>
                 <td class="z-sub">

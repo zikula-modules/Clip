@@ -34,13 +34,13 @@
             <span class="clip-post-category">
             {if $pubdata.category.id}
                 {capture assign='category'}
-                <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid filter="category:sub:`$pubdata.category.id`"}" title="{gt text='View all posts in %s' tag1=$pubdata.category.fullTitle}">
+                <a href="{clip_url func='list' tid=$pubtype.tid filter="category:sub:`$pubdata.category.id`"}" title="{gt text='View all posts in %s' tag1=$pubdata.category.fullTitle}">
                     {$pubdata.category.fullTitle}
                 </a>
                 {/capture}
                 {gt text='Posted in %s' tag1=$category}
             {else}
-                <a href="{modurl modname='Clip' type='user' func='list' tid=$pubtype.tid filter="category:null"}" title="{gt text='View all uncategorized posts'}">
+                <a href="{clip_url func='list' tid=$pubtype.tid filter="category:null"}" title="{gt text='View all uncategorized posts'}">
                     {gt text='Uncategorized'}
                 </a>
             {/if}
@@ -50,8 +50,8 @@
             <span class="text_separator">|</span>
 
             <span class="clip-post-permalink">
+                {clip_url func='display' pub=$pubdata assign='bookmark_url'}
                 {gt text='Permalink to %s' tag1=$pubdata.core_title assign='bookmark_title'}
-                {modurl modname='Clip' type='user' func='display' tid=$pubtype.tid pid=$pubdata.core_pid title=$pubdata.core_title|formatpermalink assign='bookmark_url'}
                 {gt text='Bookmark the <a rel="bookmark" title="%1$s" href="%2$s">permalink</a>' tag1=$bookmark_title|safehtml tag2=$bookmark_url|safehtml}
             </span>
 
@@ -60,7 +60,7 @@
             <span class="clip-post-edit-link">
                 {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
                 <span class="z-nowrap">
-                    <a href="{modurl modname='Clip' type='user' func='edit' tid=$pubtype.tid pid=$pubdata.core_pid}">{gt text='Edit'}</a>
+                    <a href="{clip_url func='edit' pub=$pubdata}">{gt text='Edit'}</a>
                 </span>
                 {/clip_accessblock}
             </span>
