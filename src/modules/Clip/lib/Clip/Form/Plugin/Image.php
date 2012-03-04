@@ -298,7 +298,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             return serialize($data);
         }
 
-        return $oldData;
+        return $oldData ? $oldData : '';
     }
 
     public static function getOutputDisplay($field)

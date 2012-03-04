@@ -165,7 +165,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
             }
 
             // unserialize the old data
-            $oldData = $data = ($oldData ? unserialize($oldData) : '');
+            $oldData = $data = ($oldData ? unserialize($oldData) : array());
         } else {
             $oldData = null;
             $data = array();
@@ -213,7 +213,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
             return serialize($data);
         }
 
-        return $oldData;
+        return $oldData ? $oldData : '';
     }
 
     public static function getOutputDisplay($field)
