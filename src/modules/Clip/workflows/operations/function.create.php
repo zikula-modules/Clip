@@ -61,7 +61,7 @@ function Clip_operation_create(&$pub, $params)
                 LogUtil::registerStatus(__('Done! Publication created.', $dom));
             } else {
                 // setup a redirect to the pending template
-                $result['goto'] = Clip_Util::url($pub, 'main', array('template' => 'pending'));
+                $result['goto'] = Clip_Util::urlobj($pub, 'main', array('template' => 'pending'));
             }
         } else {
             LogUtil::registerError(__('Error! Failed to create the publication.', $dom));

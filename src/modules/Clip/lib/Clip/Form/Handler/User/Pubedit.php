@@ -243,23 +243,23 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
-                $this->goto = Clip_Util::url($this->pub, 'edit', array('goto' => 'stepmode'));
+                $this->goto = Clip_Util::urlobj($this->pub, 'edit', array('goto' => 'stepmode'));
                 break;
 
             case 'form':
-                $this->goto = Clip_Util::url($this->tid, 'edit', array('goto' => 'form'));
+                $this->goto = Clip_Util::urlobj($this->tid, 'edit', array('goto' => 'form'));
                 break;
 
             case 'list':
-                $this->goto = Clip_Util::url($this->tid, 'list');
+                $this->goto = Clip_Util::urlobj($this->tid, 'list');
                 break;
 
             case 'display':
-                $goto = Clip_Util::url($this->pub, 'display');
+                $goto = Clip_Util::urlobj($this->pub, 'display');
                 break;
 
             case 'admin':
-                $this->goto = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => $this->tid));
+                $this->goto = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => $this->tid), null, null, true);
                 break;
 
             case 'home':
@@ -290,7 +290,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // redirect to the determined url
-        return $view->redirect($this->goto);
+        return $view->redirect($this->goto instanceof Clip_Url ? $this->goto->getUrl(null, true) : $this->goto);
     }
 
     /**
