@@ -141,6 +141,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
 
                     // map the local display name
                     $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+                    $cat['fullDesc']  = isset($cat['display_desc'][$lang]) ? $cat['display_desc'][$lang] : $cat['name'];
                 }
             }
         }

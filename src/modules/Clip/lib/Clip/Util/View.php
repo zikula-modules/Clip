@@ -386,6 +386,7 @@ class Clip_Util_View
         }
 
         $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+        $cat['fullDesc']  = isset($cat['display_desc'][$lang]) ? $cat['display_desc'][$lang] : $cat['name'];
 
         if ($field) {
             if (!isset($cat[$field])) {
@@ -443,6 +444,7 @@ class Clip_Util_View
                 continue;
             }
             $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+            $cat['fullDesc']  = isset($cat['display_desc'][$lang]) ? $cat['display_desc'][$lang] : $cat['name'];
         }
 
         return $cats;

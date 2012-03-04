@@ -86,6 +86,7 @@ class Clip_Form_Plugin_Ms extends Zikula_Form_Plugin_TextInput
 
                 // compatible mode to pagesetter
                 $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+                $cat['fullDesc']  = isset($cat['display_desc'][$lang]) ? $cat['display_desc'][$lang] : $cat['name'];
                 $cat['value']     = $cat['name'];
                 $cat['title']     = $cat['name'];
             }
