@@ -346,6 +346,59 @@ class Clip_Util_View
     }
 
     /**
+     * Retrieve a category.
+     *
+     * Available attributes:
+     *  - cid    (integer) The parent category ID.
+     *  - field  (string)  The name of the field to retrieve (optional).
+     *  - assign (string)  The name of a template variable to assign the output to.
+     *
+     * Examples:
+     *
+     *  Get the category on $pub.cat and assign it to the template variable $category:
+     *
+     *  <samp>{clip_util->getcategory cid=$pub.cat assign='category'}</samp>
+     *
+     *  Get the dsplay name of $pub.cat:
+     *
+     *  <samp>{clip_util->getcategory cid=$pub.cat field='fullTitle'}</samp>
+     *
+     * @param array       $params All parameters passed to this plugin from the template.
+     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     *
+     * @return mixed
+     */
+    function getcategory($params, Zikula_View $view)
+    {
+        $cid   = isset($params['cid'])   ? (int)$params['cid'] : 0;
+        $field = isset($params['field']) ? $params['field']    : null;
+
+        if (!$cid) {
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->getcategory', 'cid')));
+        }
+
+        $lang = ZLanguage::getLanguageCode();
+
+        $cat = CategoryUtil::getCategoryByID($cid);
+
+        if (!$cat) {
+            return $field ? '#error#' : array();
+        }
+
+        $cat['fullTitle'] = isset($cat['display_name'][$lang]) ? $cat['display_name'][$lang] : $cat['name'];
+
+        if ($field) {
+            if (!isset($cat[$field])) {
+                $view->trigger_error(__f('Error! Category [%1$s] does not have the field [%2$s] set.', array($id, $field)));
+            }
+
+            return $cat[$field];
+        }
+
+        return $cat;
+    }
+
+    /**
      * Retrieve a list of categories.
      *
      * Available attributes:
@@ -361,7 +414,7 @@ class Clip_Util_View
      * @param array       $params All parameters passed to this plugin from the template.
      * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
      *
-     * @return void
+     * @return mixed
      */
     function getsubcategories($params, Zikula_View $view)
     {
@@ -380,9 +433,9 @@ class Clip_Util_View
             $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->getsubcategories', 'cid')));
         }
 
-        $cats = CategoryUtil::getSubCategories($cid, $recurse, $relative, $includeRoot, $includeLeaf, $all, $excludeCid, $assocKey, null, $sortField, null);
-
         $lang = ZLanguage::getLanguageCode();
+
+        $cats = CategoryUtil::getSubCategories($cid, $recurse, $relative, $includeRoot, $includeLeaf, $all, $excludeCid, $assocKey, null, $sortField, null);
 
         foreach ($cats as $k => &$cat) {
             if ($onlyLeafs && !(bool)$cat['is_leaf']) {
