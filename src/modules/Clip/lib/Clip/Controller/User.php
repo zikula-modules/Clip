@@ -96,8 +96,8 @@ class Clip_Controller_User extends Zikula_AbstractController
         $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
 
         // skip main if there's no template
-        if (!$args['templateid'] && !$this->view->template_exists($args['templatefile'])) {
-            return $this->redirect(Clip_Util::url($args['tid'], 'list', array('template' => $args['templateid'])));
+        if ($args['templateid'] == 'clipdefault' && !$this->view->template_exists($args['templatefile'])) {
+            return $this->redirect(Clip_Util::url($args['tid'], 'list', array('template' => $args['template'])));
         }
 
         // fetch simple templates
