@@ -16,9 +16,6 @@ grouptype
 --------
 `Clip:g$gid: | ::`
 
-pattern:  
-`Clip:g.*?: | ::`
-
 Denying the access to a grouptype it won't be visible on the admin or editor panel.  
 The permission required to see them is overview access.  
 This does not include its pubtypes, as they depends on their own permissions.
@@ -36,9 +33,6 @@ pubtype
 --------
 `Clip:$tid: | ::`
 
-pattern for one pubtype:  
-`Clip:[\d]*?: | ::`
-
 Denying the access to a pubtype will block all its publications too.  
 It won't appear on the admin or editor panel either.
 
@@ -50,9 +44,6 @@ unless another previous rule block the access to a specific section, and vice ve
 main
 --------
 `Clip:$tid:main | ::$templateid`
-
-pattern for a main screen of a pubtype:  
-`Clip:[\d]*?:main | ::[A-Za-z0-9_\.\-]*`
 
 The main screen can be controlled for different templates.
 
@@ -69,9 +60,6 @@ list
 --------
 `Clip:$tid:list | ::$templateid`
 
-pattern for a list screen of a pubtype:  
-`Clip:[\d]*?:list | ::[A-Za-z0-9_\.\-]*`
-
 The list screen can be controlled for different templates.
 
 Example rules:
@@ -86,9 +74,6 @@ Example rules:
 display
 --------
 `Clip:$tid:display | $pid::$templateid`
-
-pattern for a display screen of a publication:  
-`Clip:[\d]*?:display | [\d]*?::[A-Za-z0-9_\.\-]*`
 
 The control of the display screen determines which publications are available,  
 through the pid, and also controls the allowed templates to render.
@@ -105,9 +90,6 @@ Example rules:
 edit
 --------
 `Clip:$tid:edit | $pid:$wfstate:$templateid`
-
-pattern for a edit form of a publication:  
-`Clip:[\d]*?:edit | [\d]*?:[\w]*?:[A-Za-z0-9_\.\-]*`
 
 The edit form can be controlled too by the publication pid,  
 the workflow state of it, and the requested form template.
@@ -127,9 +109,6 @@ Example rules:
 exec
 --------
 `Clip:$tid:exec | $pid:$wfstate:$actionid`
-
-pattern for a main screen of a pubtype:  
-`Clip:[\d]*?:exec | [\d]*?:[\w]*?:[\w]*`
 
 The workflow operations can be controlled per publication through the pid,  
 and also globally with the workflow state and the action id.
