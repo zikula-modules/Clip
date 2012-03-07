@@ -3,7 +3,7 @@
     {foreach from=$publist item='pubdata'}
         <li class="z-clearfix">
             {strip}
-            {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
+            {clip_accessblock pub=$pubdata context='edit'}
             <a class="z-floatright" href="{clip_url func='edit' pub=$pubdata}">
                 {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
             </a>

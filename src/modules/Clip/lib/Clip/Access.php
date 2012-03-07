@@ -235,11 +235,18 @@ class Clip_Access
                 $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:display", "$pid::$tplid", $permlvl, $uid);
                 break;
 
-            case 'edit':
+            case 'form':
                 // TODO consider edit.own
                 $permlvl = $permlvl ? $permlvl : ACCESS_READ;
                 $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:edit", "$pid:$state:$tplid", $permlvl, $uid);
                 break;
+
+            case 'edit':
+                // TODO consider edit.own
+                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:edit", "$pid:$state:$tplid", ACCESS_READ, $uid);
+                if (!$allowed) {
+                    break;
+                }
 
             case 'exec':
             case 'execinline':

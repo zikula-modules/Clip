@@ -591,11 +591,11 @@ class Clip_Util
 
         /* blocks */
         // clip_accessblock
-        Zikula_View_Resource::register($view, 'block', 'clip_accessblock', $delayed_load, $cacheable, array('gid', 'tid', 'pid', 'id', 'context', 'permlvl', 'tplid', 'assign'));
+        Zikula_View_Resource::register($view, 'block', 'clip_accessblock', $delayed_load, $cacheable, array('gid', 'tid', 'pub', 'pid', 'id', 'context', 'tplid', 'permlvl'));
 
         /* plugins */
         // clip_access
-        Zikula_View_Resource::register($view, 'function', 'clip_access', $delayed_load, $cacheable, array('gid', 'pid', 'tid', 'context', 'permlvl', 'tplid', 'assign'));
+        Zikula_View_Resource::register($view, 'function', 'clip_access', $delayed_load, $cacheable, array('gid', 'tid', 'pub', 'pid', 'id', 'context', 'tplid', 'permlvl', 'assign'));
         // clip_hitcount
         Zikula_View_Resource::register($view, 'function', 'clip_hitcount', $delayed_load, $cacheable, array('pid', 'tid'));
     }

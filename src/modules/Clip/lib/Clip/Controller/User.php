@@ -655,7 +655,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['state'] = $workflow->getWorkflow('state');
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $pubdata, null, 'edit', $args['templateid']));
+        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $pubdata, null, 'form', $args['templateid']));
 
         // notify the publication data
         $pubdata = Clip_Event::notify('data.edit', $pubdata)->getData();

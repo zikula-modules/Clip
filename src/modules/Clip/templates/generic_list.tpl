@@ -19,7 +19,7 @@
                     <a href="{clip_url func='display' pub=$pubdata}">
                         {img modname='core' src='demo.png' set='icons/extrasmall' __title='View' __alt='View'}
                     </a>
-                    {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
+                    {clip_accessblock pub=$pubdata context='edit'}
                     &nbsp;
                     <a href="{clip_url func='edit' pub=$pubdata}">
                         {img modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}

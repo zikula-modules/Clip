@@ -86,7 +86,7 @@
                     <span class="clip-breadtext" title="{$pubdata.core_title}">
                         {$pubdata.core_title|truncate:40|safetext}
                     </span>
-                    {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
+                    {clip_accessblock pub=$pubdata context='edit'}
                     <span class="clip-breadlink">
                         <a href="{clip_url func='edit' pub=$pubdata}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit this publication' __alt='Edit'}

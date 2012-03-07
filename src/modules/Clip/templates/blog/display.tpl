@@ -58,7 +58,7 @@
             <span class="text_separator">|</span>
 
             <span class="clip-post-edit-link">
-                {clip_accessblock tid=$pubtype.tid pid=$pubdata context='edit'}
+                {clip_accessblock pub=$pubdata context='edit'}
                 <span class="z-nowrap">
                     <a href="{clip_url func='edit' pub=$pubdata}">{gt text='Edit'}</a>
                 </span>

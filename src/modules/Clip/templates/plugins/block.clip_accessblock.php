@@ -15,12 +15,12 @@
  * Available parameters:
  *  - gid     (integer) Grouptype ID.
  *  - tid     (mixed)   Publication type instance or ID.
- *  - pid     (mixed)   Publication instance or ID.
+ *  - pub     (object)  Publication instance.
+ *  - pid     (integer) Publication ID.
  *  - id      (integer) Publication revision ID.
  *  - context (string)  Context to evaluate.
- *  - permlvl (integer) Required permission level for the check.
  *  - tplid   (string)  Template id to evaluate.
- *  - assign  (string)  Optional variable name to assign the result to.
+ *  - permlvl (integer) Required permission level for the check.
  *
  * Examples:
  *
@@ -31,10 +31,10 @@
  *  <samp>{clip_access gid=$gid}</samp>
  *
  *  For Pubtype access check:
- *  <samp>{clip_access tid=$pubtype}</samp>
+ *  <samp>{clip_access tid=$pubtype.tid}</samp>
  *
  *  For Publication edit access check:
- *  <samp>{clip_access tid=$pubtype.tid pid=$pubdata context='edit'}</samp>
+ *  <samp>{clip_access pub=$pubdata context='edit'}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -50,9 +50,16 @@ function smarty_block_clip_accessblock($params, $content, Zikula_View $view)
     $params['pid'] = isset($params['pid']) ? $params['pid'] : null;
     $params['id']  = isset($params['id']) ? $params['id'] : null;
 
+    if (isset($params['pub'])) {
+        $params['tid'] = $params['pub']['core_tid'];
+        $params['pid'] = $params['pub'];
+        $params['id']  = $params['pub']['id'];
+        unset($params['pub']);
+    }
+
     $context = isset($params['context']) ? $params['context'] : null;
-    $permlvl = isset($params['permlvl']) ? constant($params['permlvl']) : null;
     $tplid   = isset($params['tplid']) ? $params['tplid'] : '';
+    $permlvl = isset($params['permlvl']) ? constant($params['permlvl']) : null;
 
     $result  = false;
 
