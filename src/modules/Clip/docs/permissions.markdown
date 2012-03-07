@@ -9,14 +9,14 @@ module
 `Clip:: | ::`
 
 To access to the admin panel  it's needed this admin permission level.  
-In a later revision it will need n admin permission to a pubtype, at least.
+In a later revision it will need admin permission to a pubtype, at least.
 
 
 grouptype
 --------
 `Clip:g$gid: | ::`
 
-Denying the access to a grouptype it won't be visible on the admin or editor panel.  
+Denying the access to a grouptype it won't be visible on the admin nor editor panel.  
 The permission required to see them is overview access.  
 This does not include its pubtypes, as they depends on their own permissions.
 
@@ -49,11 +49,14 @@ The main screen can be controlled for different templates.
 
 Example rules:
 
-* only allow the access to main template 'categories' of the pubtype 3  
+* only allow the access to the default main template of the pubtype 2  
+  `Clip:2:main | ::clipdefault | OVERVIEW`
+
+* only allow the access to the 'categories' main template of the pubtype 3  
   `Clip:3:main | ::categories | OVERVIEW`
 
 * deny the access to any other main screen  
-  `Clip:3:main | :: | NONE`
+  `Clip:(2|3):main | :: | NONE`
 
 
 list
@@ -64,10 +67,10 @@ The list screen can be controlled for different templates.
 
 Example rules:
 
-* only allow the access to list template 'xml' of the pubtypes 7 and 10  
+* only allow the access to the 'xml' list template of the pubtypes 7 and 10  
   `Clip:(7|10):list | ::xml | OVERVIEW`
 
-* deny the access to any other list screen of pubtype 7  
+* deny the access to any other list screen of the pubtype 7  
   `Clip:7:list | :: | NONE`
 
 
@@ -81,10 +84,10 @@ through the pid, and also controls the allowed templates to render.
 Example rules:
 
 * deny the access to the 'print' display of pubs 1, 2 and 3 of the pubtype 5  
-  `Clip:5:list | (1|2|3)::print | NONE`
+  `Clip:5:display | (1|2|3)::print | NONE`
 
 * deny the access to display the publication with pid 5 of the pubtype 13  
-  `Clip:13:list | 5:: | NONE`
+  `Clip:13:display | 5:: | NONE`
 
 
 edit

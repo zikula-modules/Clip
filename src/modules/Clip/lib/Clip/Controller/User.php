@@ -80,7 +80,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // cleans it of not desired parameters
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
-            $args['templateid']   = '';
+            $args['templateid']   = 'clipdefault';
             $args['templatefile'] = $pubtype['folder'].'/main.tpl';
         } else {
             $args['templateid'] = "{$args['template']}";
@@ -129,7 +129,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             $cacheid = 'tid_'.$args['tid'].'/main'
                        .'/'.UserUtil::getGidCacheString()
-                       .'/tpl_'.(!empty($args['templateid']) ? $args['templateid'] : 'clipdefault');
+                       .'/tpl_'.$args['templateid'];
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
 
@@ -255,7 +255,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // cleans it of not desired parameters
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
-            $apiargs['templateid'] = '';
+            $apiargs['templateid'] = 'clipdefault';
             $args['templatefile']  = 'list.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
@@ -287,7 +287,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             $cacheid = 'tid_'.$apiargs['tid'].'/list'
                        .'/'.UserUtil::getGidCacheString()
-                       .'/tpl_'.(!empty($apiargs['templateid']) ? $apiargs['templateid'] : 'clipdefault')
+                       .'/tpl_'.$apiargs['templateid']
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
                        .'/perpage_'.$apiargs['itemsperpage']
@@ -390,7 +390,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
-            $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
         // extract the clip arguments
@@ -432,7 +432,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // cleans it of not desired parameters
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
-            $apiargs['templateid'] = '';
+            $apiargs['templateid'] = 'clipdefault';
             $args['templatefile']  = 'display.tpl';
         } else {
             $apiargs['templateid'] = "{$args['template']}";
@@ -463,7 +463,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             $cacheid = 'tid_'.$apiargs['tid'].'/display'
                        .'/pid'.$apiargs['pid']
                        .'/id'.$apiargs['id']
-                       .'/tpl_'.(!empty($apiargs['templateid']) ? $apiargs['templateid'] : 'clipdefault')
+                       .'/tpl_'.$apiargs['templateid']
                        .'/'.UserUtil::getGidCacheString();
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
@@ -620,9 +620,9 @@ class Clip_Controller_User extends Zikula_AbstractController
         // cleans it of not desired parameters
         $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
-            $args['templateid']   = '';
+            $args['templateid'] = 'clipdefault';
         } else {
-            $args['templateid']   = "{$args['template']}";
+            $args['templateid'] = "{$args['template']}";
         }
 
         //// Publication processing
