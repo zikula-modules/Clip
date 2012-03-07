@@ -280,7 +280,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         // process a record
         if ($this[$alias] instanceof Doctrine_Record) {
             // check the list and individual permission if needed
-            if ($checkperm && (!Clip_Access::toPubtype($relation['tid'], 'list') || !Clip_Access::toPub($relation['tid'], $this[$alias], null, ACCESS_READ, null, 'display'))) {
+            if ($checkperm && (!Clip_Access::toPubtype($relation['tid'], 'list') || !Clip_Access::toPub($relation['tid'], $this[$alias], null, 'display'))) {
                 $this[$alias] = false;
             }
 
@@ -295,7 +295,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
             } else {
                 // process each related publication permission
                 foreach ($this[$alias] as $k => $v) {
-                    if ($checkperm && !Clip_Access::toPub($relation['tid'], $this[$alias][$k], null, ACCESS_READ, null, 'display')) {
+                    if ($checkperm && !Clip_Access::toPub($relation['tid'], $this[$alias][$k], null, 'display')) {
                         unset($this[$alias][$k]);
                     }
                 }

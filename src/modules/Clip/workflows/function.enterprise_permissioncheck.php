@@ -33,7 +33,7 @@ function Clip_workflow_enterprise_permissioncheck($pub, $permLevel, $currentUser
         }
     }
 
-    return Clip_Access::toPub($pubtype, $pub, null, $permLevel, $currentUser);
+    return Clip_Access::toPub($pubtype, $pub, null, 'exec', null, $permLevel, $currentUser, $actionId);
 }
 
 function Clip_workflow_enterprise_gettextstrings()

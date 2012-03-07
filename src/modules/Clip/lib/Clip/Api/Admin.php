@@ -23,7 +23,7 @@ class Clip_Api_Admin extends Zikula_AbstractApi
     {
         $links = array ();
 
-        if (Clip_Access::toClip(ACCESS_ADMIN, 'ANY')) {
+        if (Clip_Access::toClip(ACCESS_ADMIN, 'ANY') /*Clip_Access::toPubtype(null, 'anyadmin')*/) {
             $links[] = array (
                 'url'  => ModUtil::url('Clip', 'admin', 'main'),
                 'text' => $this->__('Index')

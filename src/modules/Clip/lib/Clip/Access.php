@@ -36,11 +36,10 @@ class Clip_Access
      * Checks if the current user has access to a grouptype.
      *
      * @param integer $gid     Grouptype ID.
-     * @param integer $permlvl Required permission level to have (default: ACCESS_OVERVIEW).
      *
      * @return boolean True if allowed, false otherwise.
      */
-    public static function toGrouptype($gid, $permlvl = null)
+    public static function toGrouptype($gid)
     {
         $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -48,11 +47,8 @@ class Clip_Access
             return LogUtil::registerError(__f('%1$s: Invalid grouptype ID passed [%2$s].', array('Clip_Access::toGrouptype', DataUtil::formatForDisplay($gid)), $dom));
         }
 
-        // fill default values if needed
-        $permlvl = $permlvl ? $permlvl : ACCESS_OVERVIEW;
-
         // evaluate the access
-        return SecurityUtil::checkPermission("Clip:{$gid}:", '::', $permlvl);
+        return SecurityUtil::checkPermission("Clip:g{$gid}:", '::', ACCESS_OVERVIEW);
     }
 
     /**
@@ -63,9 +59,11 @@ class Clip_Access
      * @param string  $tplid   Template ID required for permission check on main/list (default: '').
      * @param integer $uid     User ID of the user to check permission for (default: current user).
      *
+     * @throws Exception If an invalid context was passed.
+     *
      * @return boolean True if allowed, false otherwise.
      */
-    public static function toPubtype($pubtype, $context = null, $tplid = null, $uid = null)
+    public static function toPubtype($pubtype = null, $context = null, $tplid = null, $uid = null)
     {
         $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -74,23 +72,36 @@ class Clip_Access
         $tplid   = $tplid ? $tplid : '';
         $uid     = $uid ? $uid : (int)UserUtil::getVar('uid');
 
+        $component = "Clip::";
+        $instance  = "::";
+        $permlvl   = ACCESS_ADMIN;
+
         // be sure to have a Clip_Model_Pubtype instance
-        if (!$pubtype instanceof Clip_Model_Pubtype) {
-            if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPubtype', DataUtil::formatForDisplay($pubtype)), $dom));
+        if ($pubtype) {
+            if (!$pubtype instanceof Clip_Model_Pubtype) {
+                if (!Clip_Util::validateTid($pubtype)) {
+                    return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPubtype', DataUtil::formatForDisplay($pubtype)), $dom));
+                }
+
+                $pubtype = Clip_Util::getPubType($pubtype);
             }
 
-            $pubtype = Clip_Util::getPubType($pubtype);
+            $component = "Clip:{$pubtype->tid}:";
         }
-
-        $component = "Clip:{$pubtype->grouptype}:";
-        $instance  = "{$pubtype->tid}::";
-        $permlvl   = ACCESS_ADMIN;
 
         // evaluate the access depending of the required context
         switch ($context)
         {
-            case 'admin':
+            case 'access':
+                $permlvl = ACCESS_OVERVIEW;
+                break;
+
+            case 'list':
+            case 'main':
+            case 'edit':
+                $component .= $context;
+                $instance  .= $tplid;
+                $permlvl    = ACCESS_OVERVIEW;
                 break;
 
             case 'editor': // panel
@@ -99,6 +110,10 @@ class Clip_Access
                 $workflow = new Clip_Workflow($pubtype);
                 // assumes level 1 as the first moderator permission
                 $permlvl = $workflow->getPermissionLevel(1, 'initial');
+                if (!$permlvl) {
+                    // if there isn't a level 1, assumes the level 0 as editor
+                    $permlvl = $workflow->getPermissionLevel(0, 'initial');
+                }
                 break;
 
             case 'submit': // submit new content
@@ -108,21 +123,22 @@ class Clip_Access
                 $permlvl = $workflow->getPermissionLevel(0, 'initial');
                 break;
 
-            case 'list':
-            case 'main':
-                $component .= $context;
-                $instance  .= $tplid;
-                $permlvl    = ACCESS_OVERVIEW;
+            case 'admin':
                 break;
 
-            case 'access':
-                $permlvl = ACCESS_OVERVIEW;
+            case 'anyeditor':
+                $permlvl = ACCESS_EDITOR;
+            case 'anyadmin':
+                $component = "Clip:x:";
+                //$instance = 'ANY';
+                // use a reverse method
                 break;
 
             default:
-                $context = 'admin';
+                throw new Exception(__f('%1$s: Invalid context passed [%2$s].', array('Clip_Access::toPubtype', DataUtil::formatForDisplay($context)), $dom));
         }
 
+        // check the cached results
         static $cache = array();
 
         if (!isset($cache[$context][$uid][$component][$instance])) {
@@ -137,15 +153,16 @@ class Clip_Access
      *
      * @param integer $pubtype Publication type instance or ID.
      * @param integer $pub     Publication instance or ID.
-     * @param integer $id      Publication revision ID.
+     * @param integer $id      Publication revision ID (optional if $pub is a instance) (default: null).
+     * @param string  $context Context to check the access for (default: access).
+     * @param string  $tplid   Template ID required for permission check on display (default: null).
      * @param integer $permlvl Required permission level to have, used on edit context only (default: null).
      * @param integer $uid     User ID of the user to check permission for (default: current user).
-     * @param string  $context Context to check the access for (default: edit).
-     * @param string  $tplid   Template ID required for permission check on display (default: '').
+     * @param string  $action  Action ID required for permission check on exec (default: null).
      *
      * @return boolean True if allowed, false otherwise.
      */
-    public static function toPub($pubtype, $pub, $id = null, $permlvl = null, $uid = null, $context = null, $tplid = null)
+    public static function toPub($pubtype, $pub, $id = null, $context = null, $tplid = null, $permlvl = null, $uid = null, $action = null)
     {
         $dom = ZLanguage::getModuleDomain('Clip');
 
@@ -153,6 +170,7 @@ class Clip_Access
         $context = $context ? strtolower($context) : 'edit';
         $tplid   = $tplid ? $tplid : '';
         $state   = '';
+        $action  = $action ? $action : '';
 
         // be sure to have a Clip_Model_Pubtype instance
         if (!$pubtype instanceof Clip_Model_Pubtype) {
@@ -163,11 +181,6 @@ class Clip_Access
             $pubtype = Clip_Util::getPubType($pubtype);
         }
 
-        // needs at least overview permission for the pubtype
-        if (!self::toPubtype($pubtype, 'access', null, $uid)) {
-            return false;
-        }
-
         // when it's an instance we can do a complete check
         if ($pub instanceof Clip_Doctrine_Pubdata) {
             // check an already stored record
@@ -175,7 +188,7 @@ class Clip_Access
                 $pid = $pub['core_pid'];
 
                 // state only needed on edit* context
-                if (strpos($context, 'edit') === 0) {
+                if (self::isPubStateNeeded($context)) {
                     $state = $pub->clipWorkflow('state');
                 }
             } else {
@@ -186,7 +199,7 @@ class Clip_Access
             // plain PID
             $pid = $pub;
             // check if we need additional information
-            if (strpos($context, 'edit') === 0) {
+            if (self::isPubStateNeeded($context)) {
                 // gets the online/latest revision state, if $id not specified
                 if (!$id) {
                     $id = (int)ModUtil::apiFunc('Clip', 'user', 'getId', array('tid' => $pubtype->tid, 'pid' => $pid, 'lastrev'  => true));
@@ -207,27 +220,47 @@ class Clip_Access
 
         switch ($context)
         {
-            case 'edit':
-            case 'editinline':
-                // TODO consider edit.own
-                if (!$permlvl) {
-                    // gets the minimum state permission level
-                    $workflow = new Clip_Workflow($pubtype);
-                    $mode    = $context == 'editinline' ? Clip_Workflow::ACTIONS_ALL : Clip_Workflow::ACTIONS_FORM;
-                    $permlvl = $workflow->getPermissionLevel(0, $state, $mode);
-                }
-                if ($permlvl) {
-                    $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:edit", "{$pubtype->tid}:$pid:$state", $permlvl, $uid);
+            case 'access':
+                $permlvl = $permlvl ? $permlvl : ACCESS_READ;
+                // TODO adjust with display/edit changes
+                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:edit", "$pid:$state:$tplid", $permlvl, $uid);
+                if (!$allowed) {
+                    $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:display", "$pid::$tplid", $permlvl, $uid);
                 }
                 break;
 
             case 'display':
                 $permlvl = $permlvl ? $permlvl : ACCESS_READ;
                 // TODO check core_online + normal user = false (relations check, etc)
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->grouptype}:$context", "{$pubtype->tid}:$pid:$tplid", $permlvl, $uid);
+                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:display", "$pid::$tplid", $permlvl, $uid);
+                break;
+
+            case 'edit':
+                // TODO consider edit.own
+                $permlvl = $permlvl ? $permlvl : ACCESS_READ;
+                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:edit", "$pid:$state:$tplid", $permlvl, $uid);
+                break;
+
+            case 'exec':
+            case 'execinline':
+                // TODO consider edit.own
+                if (!$permlvl) {
+                    // gets the minimum state permission level
+                    $workflow = $pub instanceof Clip_Doctrine_Pubdata ? new Clip_Workflow($pubtype, $pub) : new Clip_Workflow($pubtype);
+                    $mode     = $context == 'execinline' ? Clip_Workflow::ACTIONS_ALL : Clip_Workflow::ACTIONS_FORM;
+                    $permlvl  = $workflow->getPermissionLevel(0, $state, $mode);
+                }
+                if ($permlvl) {
+                    $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:exec", "$pid:$state:$action", $permlvl, $uid);
+                }
                 break;
         }
 
         return $allowed;
     }
+
+    public static function isPubStateNeeded($context)
+    {
+        return in_array($context, array('access', 'exec'))  || strpos($context, 'edit') === 0;
+    } 
 }

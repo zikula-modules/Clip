@@ -50,7 +50,7 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
     $links = array();
 
     // adds the edit link if has access to the form
-    if (Clip_Access::toPub($pubtype, $pub)) {
+    if (Clip_Access::toPub($pubtype, $pub, null, 'exec')) {
         $editargs = array_merge($args, array('goto' => 'referer'));
         $links[] = '<span class="clip-ac-editform">'.
                    '  <a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'edit', $editargs)).'" title="'.$view->__('Edit this publication').'">'.$view->__('Edit').'</a>'.

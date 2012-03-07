@@ -55,7 +55,7 @@ function smarty_function_clip_access($params, Zikula_View &$view)
     // check the parameters and figure out the method to use
     if (isset($params['gid'])) {
         // grouptype check
-        $result = Clip_Access::toGrouptype($params['gid'], $permlvl);
+        $result = Clip_Access::toGrouptype($params['gid']);
 
     } elseif (isset($params['tid'])) {
         if (!isset($params['pid']) && !isset($params['id'])) {
@@ -63,7 +63,7 @@ function smarty_function_clip_access($params, Zikula_View &$view)
             $result = Clip_Access::toPubtype($params['tid'], $context, $tplid);
         } else {
             // pub check
-            $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $permlvl, null, $context, $tplid);
+            $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl);
         }
     } else {
         // module check

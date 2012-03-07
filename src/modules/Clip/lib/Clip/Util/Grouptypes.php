@@ -20,19 +20,26 @@ class Clip_Util_Grouptypes
      * @param integer $accessLevel  Minimum access level to check the grouptypes for (default: overview).
      * @param boolean $includeRoot  Whether or not to include the root grouptypes in the result (optional) (default: true).
      * @param boolean $includeEmpty Whether or not to include the grouptypes without pubtypes (optional) (default: false).
+     * @param boolean $withPubtypes Whether or not to include the child pubtypes in the result (optional) (default: true).
      *
      * @return array Accessible tree for the current user.
      */
-    public static function getTree($accessLevel = ACCESS_OVERVIEW, $includeRoot = true, $includeEmpty = false)
+    public static function getTree($context = 'admin', $includeRoot = true, $includeEmpty = false, $withPubtypes = true)
     {
         $dom = ZLanguage::getModuleDomain('Clip');
 
         $tbl     = Doctrine_Core::getTable('Clip_Model_Grouptype');
         $treeObj = $tbl->getTree();
 
-        $q = $tbl->createQuery('g')
-                 ->select('g.*, p.tid, p.title, p.description, p.workflow')
-                 ->leftJoin('g.pubtypes p');
+        if ($withPubtypes) {
+            $q = $tbl->createQuery('g')
+                     ->select('g.*, p.tid, p.title, p.description, p.workflow')
+                     ->leftJoin('g.pubtypes p');
+        } else {
+            $q = $tbl->createQuery('g')->select('g.*');
+        }
+
+        $q->setHydrationMode(Doctrine_Core::HYDRATE_ARRAY);
 
         // discard the root if needed
         if (!$includeRoot) {
@@ -42,37 +49,43 @@ class Clip_Util_Grouptypes
         $treeObj->setBaseQuery($q);
 
         // array hydration does not work with postHydrate hook
-        $grouptypes = $treeObj->fetchTree()->toArray();
+        $grouptypes = $treeObj->fetchTree();
 
-        $withpubtypes = array();
+        $haspubtypes = array();
         // organize the grouptype data
         foreach ($grouptypes as $k => &$group) {
             // set the localized name
             if ($group['level'] == 0) {
                 $group['name'] = __('Root', $dom);
+            } else {
+                $group['name'] = ($group['name'] && DataUtil::is_serialized($group['name']) ? unserialize($group['name']) : $group['name']);
             }
 
             // set the localized description
             if ($group['level'] == 0) {
                 $group['description'] = '';
+            } else {
+                $group['description'] = ($group['description'] && DataUtil::is_serialized($group['description']) ? unserialize($group['description']) : $group['description']);
             }
 
             // sort the group's pubtypes
-            if (!empty($group['pubtypes'])) {
+            if ($withPubtypes && !empty($group['pubtypes'])) {
+                $group['order'] = ($group['order'] && DataUtil::is_serialized($group['order']) ? unserialize($group['order']) : $group['order']);
+
                 $group['pubtypes'] = self::sortPubtypes($group);
 
-                $withpubtypes[] = array('lft' => $group['lft'], 'rgt' => $group['rgt']);
+                $haspubtypes[] = array('lft' => $group['lft'], 'rgt' => $group['rgt']);
             }
             unset($group['order']);
         }
 
         // exclude the empty groups if needed
-        if (!$includeEmpty) {
+        if ($withPubtypes && !$includeEmpty) {
             foreach ($grouptypes as $k => $g) {
                 if (empty($g['pubtypes'])) {
                     $skip = false;
                     // check if has a child grouptype with pubtypes
-                    foreach ($withpubtypes as $c) {
+                    foreach ($haspubtypes as $c) {
                         if ($g['lft'] < $c['lft'] && $c['rgt'] < $g['rgt']) {
                             $skip = true;
                             break;
@@ -88,8 +101,15 @@ class Clip_Util_Grouptypes
 
         // checks the permissions for the remaining ones
         foreach ($grouptypes as $k => $g) {
-            if (!Clip_Access::toGrouptype($g['gid'], $accessLevel)) {
+            if (!Clip_Access::toGrouptype($g['gid'])) {
                 unset($grouptypes[$k]);
+            }
+            if ($withPubtypes) {
+                foreach ($g['pubtypes'] as $j => $pubtype) {
+                    if (!Clip_Access::toPubtype($pubtype['tid'], $context)) {
+                        unset($grouptypes[$k][$j]);
+                    }
+                }
             }
         }
 
@@ -103,14 +123,14 @@ class Clip_Util_Grouptypes
      * @param boolean $renderRoot   Wheter to render the first item on $grouptypes (default: false).
      * @param boolean $withPubtypes Whether or not to include the child pubtypes (optional) (default: false).
      * @param array   $options      Options array for Zikula_Tree (optional (default: array()).
-     * @param integer $accessLevel  Minimum access level to check the grouptypes for (default: overview).
+     * @param integer $context      Context to perform the permission checks to groptypes and pubtypes (default: admin)..
      *
      * @return string Generated tree JS text.
      */
-    public static function getTreeJS($grouptypes = null, $renderRoot = false, $withPubtypes = false, array $options = array(), $accessLevel = ACCESS_OVERVIEW)
+    public static function getTreeJS($grouptypes = null, $renderRoot = false, $withPubtypes = false, array $options = array(), $context = 'admin')
     {
         if (!$grouptypes) {
-            $grouptypes = self::getTree($accessLevel, true, true);
+            $grouptypes = self::getTree($accessLevel, true, true, $withPubtypes);
             // just for safety, disable the root grouptype of drag & drop
             $options['disabled'] = isset($options['disabled']) ? array_merge($options['disabled'], array(1)) : array(1);
         }

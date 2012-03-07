@@ -31,9 +31,9 @@ class Clip_Controller_Admin extends Zikula_AbstractController
     public function main()
     {
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) /*Clip_Access::toPubtype(null, 'anyadmin')*/);
 
-        $treejscode = Clip_Util_Grouptypes::getTreeJS(null, false, true, array('sortable' => true), ACCESS_ADMIN);
+        $treejscode = Clip_Util_Grouptypes::getTreeJS(null, false, false, array('sortable' => true), 'admin');
 
         //// Output
         $this->view->assign('treejscode', $treejscode);
@@ -57,7 +57,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         $pubtype = Clip_Util::getPubType($tid);
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype));
+        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'admin'));
 
         // sort the relations by alias
         $relations = $pubtype->getRelations(false);
@@ -78,10 +78,12 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         // validate and get the publication type first
         $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
 
-        $pubtypeadmin = (Clip_Util::validateTid($tid) && Clip_Access::toPubtype($tid)) ? true : false;
+        if (!Clip_Util::validateTid($tid)) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
+        }
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || $pubtypeadmin);
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || Clip_Access::toPubtype($tid, 'admin'));
 
         //// Output
         return Clip_Util::newForm($this, true)
@@ -103,7 +105,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         }
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($tid));
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || Clip_Access::toPubtype($tid, 'admin'));
 
         //// Output
         return Clip_Util::newForm($this, true)
@@ -116,8 +118,16 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function relations()
     {
+        //// Pubtype
+        // validate and get the publication type first
+        $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
+
+        if ($tid && !Clip_Util::validateTid($tid)) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
+        }
+
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || $tid && Clip_Access::toPubtype($tid, 'admin'));
 
         //// Output
         return Clip_Util::newForm($this, true)
@@ -130,9 +140,6 @@ class Clip_Controller_Admin extends Zikula_AbstractController
      */
     public function generator($args = array())
     {
-        //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
-
         //// Pubtype
         // validate and get the publication type
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
@@ -140,6 +147,9 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         if (!Clip_Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
+
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || Clip_Access::toPubtype($args['tid'], 'admin'));
 
         //// Parameters
         $args = array(

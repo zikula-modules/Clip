@@ -38,6 +38,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
+
         if (!Clip_Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
@@ -79,7 +80,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Security
         if ($args['checkperm'] && !Clip_Access::toPubtype($args['tid'], 'list')) {
-            return LogUtil::registerPermissionError();
+            return false;
         }
 
         //// Misc values
@@ -301,9 +302,11 @@ class Clip_Api_User extends Zikula_AbstractApi
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
+
         if (!Clip_Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
+
         if (!isset($args['id']) && !isset($args['pid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
@@ -384,8 +387,8 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Security
         // check permissions if needed
-        if ($args['checkperm'] && !Clip_Access::toPub($args['tid'], $pubdata, null, ACCESS_READ, null, 'display', $args['templateid'])) {
-            return LogUtil::registerPermissionError();
+        if ($args['checkperm'] && !Clip_Access::toPub($args['tid'], $pubdata, null, 'access', $args['templateid'])) {
+            return false;
         }
 
         //// Result

@@ -285,7 +285,7 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         }
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], ACCESS_READ, null, 'display'));
+        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], 'display'));
 
         // setup an admin flag
         $isadmin = Clip_Access::toPubtype($pubtype);

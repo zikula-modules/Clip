@@ -390,7 +390,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
-        $pubtype = Clip_Util::getPubType($args['tid']);
+            $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
         // extract the clip arguments
@@ -440,7 +440,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], ACCESS_READ, null, 'display', $apiargs['templateid']));
+        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], 'display', $apiargs['templateid']));
 
         //// Cache
         // validate the template existance, if not defaults to the general one
@@ -614,12 +614,24 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
         }
 
+        //// Template
+        // checks for the input template value
+        $args['template'] = DataUtil::formatForOS($args['template']);
+        // cleans it of not desired parameters
+        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
+        if (empty($args['template'])) {
+            $args['templateid']   = '';
+        } else {
+            $args['templateid']   = "{$args['template']}";
+        }
+
         //// Publication processing
         // process a new or existing pub, and it's available actions
         if ($args['id']) {
             $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', array(
-                'tid' => $args['tid'],
-                'id'  => $args['id'],
+                'tid'           => $args['tid'],
+                'id'            => $args['id'],
+                'templateid'    => $args['templateid'],
                 'checkperm'     => true,
                 'handleplugins' => false, // do not interfer with selected values on edit form
                 'loadworkflow'  => false
@@ -642,6 +654,9 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         $args['state'] = $workflow->getWorkflow('state');
 
+        //// Security
+        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $pubdata, null, 'edit', $args['templateid']));
+
         // notify the publication data
         $pubdata = Clip_Event::notify('data.edit', $pubdata)->getData();
 
@@ -653,11 +668,6 @@ class Clip_Controller_User extends Zikula_AbstractController
         $handler->ClipSetUp($pubdata, $workflow, $pubtype, $pubfields, $args);
 
         //// Output
-        // checks for the input template value
-        // and cleans it of not desired parameters
-        $args['template'] = DataUtil::formatForOS($args['template']);
-        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
-
         // create the output object
         $render = Clip_Util::newForm($this, true);
 
