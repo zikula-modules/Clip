@@ -58,7 +58,7 @@ class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
 
         // security check
         // FIXME SECURITY centralize on Clip_Access
-        if (!SecurityUtil::checkPermission('Clip:block:viewpub', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('Clip:block:viewpub', "$blockinfo[bid]:$vars[tid]:", ACCESS_OVERVIEW)) {
             return;
         }
 

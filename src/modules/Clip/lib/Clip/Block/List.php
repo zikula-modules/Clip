@@ -55,7 +55,7 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
 
         // security check
         // FIXME SECURITY centralize on Clip_Access
-        if (!SecurityUtil::checkPermission('Clip:block:list', "$blockinfo[bid]:$vars[tid]:", ACCESS_READ)) {
+        if (!SecurityUtil::checkPermission('Clip:block:list', "$blockinfo[bid]:$vars[tid]:", ACCESS_OVERVIEW)) {
             return;
         }
 
