@@ -74,24 +74,6 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
-     * Generates a copy of this object.
-     *
-     * @param boolean $deep Whether to include relations or not.
-     *
-     * @return object
-     */
-    public function copy($deep = true)
-    {
-        $copy = parent::copy($deep);
-
-        foreach ($this->_values as $k => $v) {
-            $copy->mapValue($k, $v);
-        }
-
-        return $copy;
-    }
-    
-    /**
      * Returns the parents for breadcrumbs.
      *
      * @return array List of parents.
@@ -128,6 +110,55 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         return isset($relations[$alias])? $relations[$alias] : false;
     }
 
+    /**
+     * Generates a copy of this object.
+     *
+     * @param boolean $deep Whether to include relations or not.
+     *
+     * @return object
+     */
+    public function clipCopy($deep = true)
+    {
+        $data = $this->_data;
+        $idtype = $this->_table->getIdentifierType();
+        if ($idtype === Doctrine_Core::IDENTIFIER_AUTOINC || $idtype === Doctrine_Core::IDENTIFIER_SEQUENCE) {
+            $id = $this->_table->getIdentifier();
+
+            unset($data[$id]);
+        }
+
+        $ret = $this->_table->create($data);
+        $modified = array();
+
+        foreach ($data as $key => $val) {
+            if ( ! ($val instanceof Doctrine_Null)) {
+                $ret->_modified[] = $key;
+            }
+        }
+
+        if ($deep) {
+            foreach ($this->_references as $key => $value) {
+                if ($value instanceof Doctrine_Collection) {
+                    foreach ($value as $valueKey => $record) {
+                        $ret->{$key}[$valueKey] = $record;
+                    }
+                } else if ($value instanceof Doctrine_Record) {
+                    $ret->set($key, $value);
+                }
+            }
+        }
+
+        foreach ($this->_values as $k => $v) {
+            $ret->mapValue($k, $v);
+        }
+
+        if ($this[$this->_table->getIdentifier()]) {
+            $ret->assignIdentifier($this[$this->_table->getIdentifier()]);
+        }
+
+        return $ret;
+    }
+    
     /**
      * Checks if a field is modified.
      *

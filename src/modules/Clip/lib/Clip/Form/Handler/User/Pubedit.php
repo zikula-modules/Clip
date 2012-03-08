@@ -87,10 +87,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // clone the pub to assign the pubdata and do not modify the pub data
-        $pubdata = $this->pub->copy(true);
-        if ($this->id) {
-            $pubdata->assignIdentifier($this->id);
-        }
+        $pubdata = $this->pub->clipCopy(true);
         $pubdata->clipValues(true);
 
         // fills the render

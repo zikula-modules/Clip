@@ -504,7 +504,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         // prevent Doctrine to mess with the publication by cloning it
-        $pub = $pubdata->copy(true);
+        $pub = $pubdata->clipCopy(true);
         $pub->assignIdentifier($pubdata->id);
 
         // notify the publication data
