@@ -30,6 +30,23 @@ class Clip_Filter_List extends FilterUtil_Filter_Category
     }
 
     /**
+     * Returns the operators the plugin can handle.
+     *
+     * @return array Operators.
+     */
+    public function availableOperators()
+    {
+        return array(
+                     'eq',
+                     'ne',
+                     'sub',
+                     'dis',
+                     'null',
+                     'notnull'
+                    );
+    }
+
+    /**
      * Returns DQL code.
      *
      * @param string $field Field name.
@@ -61,16 +78,19 @@ class Clip_Filter_List extends FilterUtil_Filter_Category
                 break;
 
             case 'sub':
+            case 'dis':
                 $cats = CategoryUtil::getSubCategories($value);
                 $items = array($value);
                 foreach ($cats as $item) {
                     $items[] = $item['id'];
                 }
                 if (count($items) == 1) {
-                    $where = "$column = ?";
+                    $opr   = $op == 'sub' ? '=' : '!=';
+                    $where = "$column $opr ?";
                     $params[] = $value;
                 } else {
-                    $where = "$column IN (".implode(',', $items).")";
+                    $opr   = $op == 'sub' ? 'IN' : 'NOT IN';
+                    $where = "$column $opr (".implode(',', $items).")";
                 }
                 break;
 

@@ -12,6 +12,21 @@
 class Clip_Filter_MultiList extends Clip_Filter_List
 {
     /**
+     * Returns the operators the plugin can handle.
+     *
+     * @return array Operators.
+     */
+    public function availableOperators()
+    {
+        return array(
+                     'eq',
+                     'ne',
+                     'sub',
+                     'dis'
+                    );
+    }
+
+    /**
      * Returns DQL code.
      *
      * @param string $field Field name.
@@ -43,11 +58,13 @@ class Clip_Filter_MultiList extends Clip_Filter_List
                 break;
 
             case 'sub':
-                $where = "$column LIKE ?";
+            case 'dis':
+                $opr   = $op == 'sub' ? 'LIKE' : 'NOT LIKE';
+                $where = "$column $opr ?";
                 $params[] = '%:'.$value.':%';
                 $cats = CategoryUtil::getSubCategories($value);
                 foreach ($cats as $item) {
-                    $where .= " OR $column LIKE ?";
+                    $where .= ($op == 'sub' ? ' OR' : ' AND')." $column $opr ?";
                     $params[] = '%:'.$item['id'].':%';
                 }
                 break;
