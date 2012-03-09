@@ -101,7 +101,7 @@ class Clip_Util_View
         $args['where'][] = array('core_visible = ?', 1);
         $args['where'][] = array('core_intrash = ?', 0);
 
-        $args['filter'] = isset($args['filter']) ? $args['filter'] : '()';
+        $args['filter'] = isset($args['filter']) && !empty($args['filter']) ? $args['filter'] : '()';
         // search for additional filters like FilterUtil
         $i = 1;
         while (isset($args["filter$i"]) && $args["filter$i"]) {

@@ -42,6 +42,11 @@ function smarty_function_clip_func($params, Zikula_View &$view)
     $params['modname'] = isset($params['modname']) ? $params['modname'] : 'Clip';
     $params['type']    = isset($params['type']) ? $params['type'] : 'user';
 
+    // be sure to define a filter for list calls to not get the input parameters
+    if ($params['func'] == 'list') {
+        $params['filter'] = isset($params['filter']) && !empty($params['filter']) ? $params['filter'] : '()';
+    }
+
     // serialize the parameters to let the output filter to work later
     return 'CLIPFUNC:'.serialize($params);
 }
