@@ -571,13 +571,13 @@ class Clip_Api_User extends Zikula_AbstractApi
         //  list:    /pubtype[/filter[/orderby]]/pageX.template]
         //  list:    /pubtype[/filter[/orderby]]/startY.template]
         //  display: /pubtype/pubtitle[.template]
-        //  edit:    /pubtype[/template]/submit.htm[l]
-        //  edit:    /pubtype[/goto/somewhere]/edit.htm[l]
-        //  edit:    /pubtype[/template/goto/somewhere]/edit.htm[l]
-        //  edit:    /pubtype/pubtitle[/template]/edit.htm[l]
-        //  edit:    /pubtype/pubtitle[/goto/somewhere]/edit.htm[l]
-        //  edit:    /pubtype/pubtitle[/template/goto/somewhere]/edit.htm[l]
-        //  edit:    /pubtype/pubtitle[/param1/value1/param2/value2]/edit.htm[l]
+        //  edit:    /pubtype[/template]/submit[.htm[l]]
+        //  edit:    /pubtype[/goto/somewhere]/edit[.htm[l]]
+        //  edit:    /pubtype[/template/goto/somewhere]/edit[.htm[l]]
+        //  edit:    /pubtype/pubtitle[/template]/edit[.htm[l]]
+        //  edit:    /pubtype/pubtitle[/goto/somewhere]/edit[.htm[l]]
+        //  edit:    /pubtype/pubtitle[/template/goto/somewhere]/edit[.htm[l]]
+        //  edit:    /pubtype/pubtitle[/param1/value1/param2/value2]/edit[.htm[l]]
         //  exec:    /pubtype/pubtitle/action/___/csfrtoken/___/exec
 
         static $cache = array();
