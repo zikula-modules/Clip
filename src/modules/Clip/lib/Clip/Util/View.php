@@ -138,6 +138,10 @@ class Clip_Util_View
             $args['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $args);
         }
 
+        $pubtype = $view->getTplVar('pubtype');
+
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : $pubtype->tid;
+
         // API call
         $pub = ModUtil::apiFunc('Clip', 'user', 'get', $args);
 
@@ -179,6 +183,9 @@ class Clip_Util_View
      */
     public function getmany($args, Zikula_View &$view)
     {
+        $pubtype = $view->getTplVar('pubtype');
+
+        $args['tid']           = isset($args['tid']) ? $args['tid'] : $pubtype->tid;
         $args['distinct']      = isset($args['distinct']) ? $args['distinct'] : null;
         $args['groupby']       = isset($args['groupby']) ? $args['groupby'] : null;
         $args['countmode']     = 'no';
@@ -232,13 +239,16 @@ class Clip_Util_View
      */
     public function count($args, Zikula_View &$view)
     {
+        $pubtype = $view->getTplVar('pubtype');
+
+        $args['tid']       = isset($args['tid']) ? $args['tid'] : $pubtype->tid;
+        $args['countmode'] = 'just';
+
         // status
         $online  = isset($args['online'])  ? (int)(bool)$args['online']  : 1;
         $visible = isset($args['visible']) ? (int)(bool)$args['visible'] : 1;
         $intrash = isset($args['intrash']) ? (int)(bool)$args['intrash'] : 0;
         unset($args['online'], $args['visible'], $args['intrash']);
-
-        $args['countmode']    = 'just';
 
         $args['where']   = array();
         $args['where'][] = array('core_online = ?',  $online);
