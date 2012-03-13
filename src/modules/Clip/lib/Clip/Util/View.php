@@ -18,6 +18,96 @@
 class Clip_Util_View
 {
     /**
+     * Utility var storage.
+     *
+     * @var array
+     */
+    protected $storage = array();
+
+    /**
+     * Store an utility var.
+     *
+     * Available attributes:
+     *  - assign (string) The name of a template variable to assign the output to.
+     *  - var    (string) The name of the variable to store.
+     *  - value  (mixed)  The value to store.
+     *
+     * Example:
+     *
+     *  Store an utility value to be used later on a Clip template:
+     *
+     *  <samp>{clip_util->store var='myvar' value=$myvar}</samp>
+     *
+     * @param array       $params All parameters passed to this plugin from the template.
+     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     *
+     * @return void
+     */
+    public function store($params, Zikula_Form_View &$view)
+    {
+        if (!isset($params['var']) || !$params['var']) {
+            return;
+        }
+
+        $this->storage[$params['var']] = isset($params['value']) ? $params['value'] : null;
+    }
+
+    /**
+     * Retrieve an utility var.
+     *
+     * Available attributes:
+     *  - assign (string) The name of a template variable to assign the output to.
+     *  - var    (string) The name of the variable to store.
+     *
+     * Example:
+     *
+     *  Retrieve an utility value stored previously:
+     *
+     *  <samp>{clip_util->retrieve var='myvar' assign='retrieved'}</samp>
+     *
+     * @param array       $params All parameters passed to this plugin from the template.
+     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     *
+     * @return mixed
+     */
+    public function retrieve($params, Zikula_Form_View &$view)
+    {
+        $var = isset($params['var']) ? $params['var'] : null;
+
+        return $var && isset($this->storage[$var]) ? $this->storage[$var] : null;
+    }
+
+    /**
+     * Deletes an utility var.
+     *
+     * Available attributes:
+     *  - assign (string) The name of a template variable to assign the popped value to.
+     *  - var    (string) The name of the variable to delete.
+     *
+     * Example:
+     *
+     *  Delete an utility value stored previously:
+     *
+     *  <samp>{clip_util->pop var='myvar' assign='deleted'}</samp>
+     *
+     * @param array       $params All parameters passed to this plugin from the template.
+     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     *
+     * @return mixed
+     */
+    public function pop($params, Zikula_Form_View &$view)
+    {
+        $var = isset($params['var']) ? $params['var'] : null;
+
+        if ($var && isset($this->storage[$var])) {
+            $value = $this->storage[$var];
+            unset($this->storage[$var]);
+        }
+
+        return isset($value) ? $value : null;
+    }
+
+    /**
      * Get one publication.
      *
      * Available attributes:
