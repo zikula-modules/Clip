@@ -156,14 +156,14 @@
             {formcheckbox id='isfilterable' group='field'}
             <div class="z-formnote z-sub">{gt text='This field can be used to filter a list?'}</div>
         </div>
-        {if in_array($field.fieldplugin, array('Float', 'Int'))}
+        {if in_array($field.fieldplugin, array('BigInt', 'Float', 'Int'))}
         <div class="z-formrow">
             {formlabel for='iscounter' __text='Counter'}
             {formcheckbox id='iscounter' group='field'}
             <div class="z-formnote z-sub">{gt text='This field acts as a counter?'}</div>
         </div>
         {/if}
-        {if !in_array($field.fieldplugin, array('Checkbox', 'Date', 'Float', 'Image', 'Int', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Upload', 'User'))}
+        {if !in_array($field.fieldplugin, array('BigInt', 'Checkbox', 'Date', 'Float', 'Image', 'Int', 'List', 'Ms', 'MultiCheck', 'MultiList', 'RadioList', 'Upload', 'User'))}
         <div class="z-formrow">
             {formlabel for='fieldmaxlength' __text='Max. length'}
             {formintinput id='fieldmaxlength' group='field' maxLength='15'}

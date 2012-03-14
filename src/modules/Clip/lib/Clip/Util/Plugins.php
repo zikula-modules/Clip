@@ -34,6 +34,7 @@ class Clip_Util_Plugins
         }
 
         $classNames = array(
+            'BigInt'     => 'Clip_Form_Plugin_BigInt',
             'Checkbox'   => 'Clip_Form_Plugin_Checkbox',
             'Date'       => 'Clip_Form_Plugin_Date',
             'Email'      => 'Clip_Form_Plugin_Email',
