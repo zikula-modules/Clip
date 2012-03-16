@@ -588,6 +588,13 @@ class Clip_Api_User extends Zikula_AbstractApi
         {
             case 'main':
                 $shorturl = $tpl ? ".$tpl" : '';
+
+                // adds the parameters
+                if (!empty($_)) {
+                    foreach ($_ as $k => $v) {
+                        $shorturl .= '/'.urlencode($k).'/'.urlencode($v);
+                    }
+                }
                 break;
 
             case 'list':
@@ -655,33 +662,33 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $cache['urltitle'][$tid][$pid] = $urltitle;
 
                     $urltitle = "/$urltitle" . (isset($id) ? "~$id" : '');
-                    $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
                 }
 
                 unset($_['urltitle'], $_['title'], $_['pid'], $_['id']);
 
-                if (in_array($args['func'], array('edit', 'exec'))) {
-                    // override the display shortURL
+                if ($args['func'] == 'display') {
+                    $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
+                } else {
                     $shorturl  = ($pid ? $urltitle : '');
                     $shorturl .= ($tpl ? "/$tpl" : '');
-                    // adds the parameters
-                    if (!empty($_)) {
-                        foreach ($_ as $k => $v) {
-                            $shorturl .= '/'.urlencode($k).'/'.urlencode($v);
-                        }
-                    }
-                    
-                    switch ($args['func'])
-                    {
-                        case 'edit':
-                            $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ($tplhtml ? ".$tplhtml" : '');
-                            break;
+                }
 
-                        case 'exec':
-                            $shorturl .= '/exec';
-                            break;
+                // adds the parameters
+                if (!empty($_)) {
+                    foreach ($_ as $k => $v) {
+                        $shorturl .= '/'.urlencode($k).'/'.urlencode($v);
                     }
-                    
+                }
+
+                switch ($args['func'])
+                {
+                    case 'edit':
+                        $shorturl .= '/' . ($pid ? 'edit' : 'submit') . ($tplhtml ? ".$tplhtml" : '');
+                        break;
+
+                    case 'exec':
+                        $shorturl .= '/exec';
+                        break;
                 }
                 break;
         }
@@ -717,52 +724,57 @@ class Clip_Api_User extends Zikula_AbstractApi
         // reset the function to main
         System::queryStringSetVar('func', 'main');
 
-        if (!preg_match('/^([a-z0-9_\-\~]+?)(\.([a-z0-9_\.\-]+))?$/i', end($_), $matches)) {
-            // there must be a valid filename
-            return true;
-        }
+        preg_match('/^([a-z0-9_\-\~]+?)(\.([a-z0-9_\.\-]+))?$/i', end($_), $matches);
 
         $urltitle = reset($_);
         $filename = $matches[1];
         $template = isset($matches[3]) ? $matches[3] : '';
 
-        // direct detection of edit mode
+        // detection of edit mode
         if (in_array($filename, array('submit', 'edit'))) {
             $func = 'edit';
             $pid  = ($filename == 'submit') ? null : 0;
 
             unset($_[0], $_[count($_)]);
 
-        // direct execution
+        // action execution
         } elseif ($filename == 'exec') {
             $func = 'exec';
             $pubtitle = $_[1];
 
             unset($_[count($_)-1], $_[0], $_[1]);
 
+        // list request
+        } elseif (preg_match('/^(page|start)/', $filename)) {
+            $func = 'list';
+
+            unset($_[0], $_[count($_)]);
+
         } else {
-            // process the possibilities and resolve the pubtype urltitle
-            switch (count($_))
-            {
-                case 1: // main
-                    $urltitle = $filename;
-                    $func = 'main';
-                    break;
+            // process the possibilities
+            if (count($_) % 2 == 1) {
+                // if odd, it's a main request
+                if (!preg_match('/^([a-z0-9_\-\~]+?)(\.([a-z0-9_\.\-]+))?$/i', $_[0], $matches)) {
+                    // there must be a valid filename
+                    return true;
+                }
+                $func = 'main';
+                $urltitle = $matches[1];
+                $template = isset($matches[3]) ? $matches[3] : '';
 
-                case 2: // list / display
-                    if (preg_match('/^(page|start)/', $filename)) {
-                        $func = 'list';
-                    } else {
-                        $func = 'display';
-                    }
+                unset($_[0]);
 
-                    $_ = array();
-                    break;
+            } else {
+                // if even, it includes the publication title
+                if (!preg_match('/^([a-z0-9_\-\~]+?)(\.([a-z0-9_\.\-]+))?$/i', $_[1], $matches)) {
+                    // there must be a valid filename
+                    return true;
+                }
+                $func = 'display';
+                $filename = $matches[1];
+                $template = isset($matches[3]) ? $matches[3] : '';
 
-                default: // list
-                    $func = 'list';
-
-                    unset($_[0], $_[count($_)]);
+                unset($_[0], $_[1]);
             }
         }
 
@@ -790,9 +802,14 @@ class Clip_Api_User extends Zikula_AbstractApi
                     // no valid number given
                     return true;
                 }
+
+            case 'main':
                 // additional args
-                for ($i = 1; $i <= floor(count($_)/2); $i++) {
-                    System::queryStringSetVar($_[$i*2-1], $_[$i*2]);
+                if (!empty($_)) {
+                    $_ = array_values($_);
+                    for ($i = 0; $i < floor(count($_)/2); $i++) {
+                        System::queryStringSetVar($_[$i*2], $_[$i*2+1]);
+                    }
                 }
                 break;
 
@@ -810,15 +827,14 @@ class Clip_Api_User extends Zikula_AbstractApi
                 }
 
             case 'exec':
+            case 'display':
                 if (!empty($_)) {
                     $_ = array_values($_);
-                    // there are more parameters
-                    for ($i = 0; $i < count($_); $i += 2) {
-                        System::queryStringSetVar($_[$i], $_[$i+1]);
+                    for ($i = 0; $i < floor(count($_)/2); $i++) {
+                        System::queryStringSetVar($_[$i*2], $_[$i*2+1]);
                     }
                 }
 
-            case 'display':
                 $s = preg_quote(System::getVar('shorturlsseparator'), '~');
 
                 if (!isset($pubtitle)) {
