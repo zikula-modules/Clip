@@ -374,8 +374,9 @@ class Clip_Util
     /**
      * Pubtype Relations getter.
      *
-     * @param integer $tid Pubtype ID.
-     * @param boolean $owningSide Wheter to fetch the owning side relations of the pubtype.
+     * @param integer $tid        Pubtype ID.
+     * @param boolean $owningSide Whether to fetch the owning side relations of the pubtype.
+     * @þaram boolean $force      Whether to force the refresh of the cache.
      *
      * @return array Relations for the passed pubtype.
      */

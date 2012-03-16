@@ -251,11 +251,12 @@ class Clip_Generator
     /**
      * Build the Doctrine Model code dynamically.
      *
-     * @param integer $tid Publication type ID.
+     * @param integer $tid   Publication type ID.
+     * @param boolean $force Force the load of relations.
      *
      * @return string The model class code.
      */
-    public static function pubmodel($tid)
+    public static function pubmodel($tid, $force = false)
     {
         $table = "clip_pubdata{$tid}";
         $tables = DBUtil::getTables();
@@ -273,7 +274,7 @@ class Clip_Generator
         $hasRelations = '';
 
         // owning side
-        $relations = Clip_Util::getRelations($tid, true);
+        $relations = Clip_Util::getRelations($tid, true, $force);
         foreach ($relations as $relation) {
             // set the method to use
             switch ($relation['type']) {
@@ -538,17 +539,18 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
     /**
      * Build the Doctrine Table code dynamically.
      *
-     * @param integer $tid Publication type ID.
+     * @param integer $tid   Publication type ID.
+     * @param boolean $force Force the load of relations.
      *
      * @return string The table class code.
      */
-    public static function pubtable($tid)
+    public static function pubtable($tid, $force = false)
     {
         $ownRelations = '';
         $allRelations = '';
 
         // owning side
-        $relations = Clip_Util::getRelations($tid, true);
+        $relations = Clip_Util::getRelations($tid, true, $force);
         foreach ($relations as $relation) {
             // add the relation array field
             $ownRelations .= "
@@ -859,7 +861,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         }
     }
 
-    public static function updateModel($tid, $loadtables = true)
+    public static function updateModel($tid, $loadtables = true, $force = false)
     {
         if ($loadtables) {
             self::addtables($tid);
@@ -868,7 +870,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $path = ModUtil::getVar('Clip', 'modelspath');
 
         $file = "$path/Pubdata{$tid}.php";
-        $code = Clip_Generator::pubmodel($tid);
+        $code = Clip_Generator::pubmodel($tid, $force);
         file_put_contents($file, '<?php'.$code);
 
         $file = "$path/Pubdata{$tid}Table.php";

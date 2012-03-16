@@ -130,7 +130,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
     public function updateTable()
     {
         // update the pubtype's model file
-        Clip_Generator::updateModel($this->tid);
+        Clip_Generator::updateModel($this->tid, false, true);
 
         // update the pubtype's table
         $classname = Clip_Generator::createTempModel($this->tid);
