@@ -49,7 +49,15 @@ function smarty_function_clip_url($params, Zikula_View &$view)
 
     $assign = isset($params['assign']) ? $params['assign'] : null;
     unset($params['assign']);
+    
+    // discard empty or null values
+    foreach ($params as $k => $v) {
+        if (is_null($v) || $v === '') {
+            unset($params[$k]);
+        }
+    }
 
+    // set the required parameters
     $params['modname'] = 'Clip';
     $params['type']    = isset($params['type']) ? $params['type'] : $view->getRequest()->getControllerName();
     $params['type']    = $params['type'] ? $params['type'] : 'user';
