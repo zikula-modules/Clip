@@ -25,7 +25,7 @@ Zikula.Clip.Pubfields =
 
         // also add the anchor to the form
         var form = $$('form.z-form').first();
-        form.action = form.action + '#newpubfield'
+        //form.action = form.action + '#newpubfield'
 
         // enable the tooltips
         Zikula.UI.Tooltips($$('.tooltips'));
@@ -51,18 +51,18 @@ Zikula.Clip.Pubfields =
                                   {
                                       'name':  'save',
                                       'class': 'z-bt-ok z-btgreen',
-                                      'label': Zikula.__('Save')
+                                      'label': Zikula.__('Save', 'module_clip_js')
                                   },
                                   {
                                       'name':  'cancel',
                                       'class': 'z-bt-cancel z-btred',
-                                      label:Zikula.__('Cancel')
+                                      label:Zikula.__('Cancel', 'module_clip_js')
                                   }
                               ],
                               {
                                   callback: Zikula.Clip.Pubfields.ConfigCallback,
                                   modal: true,
-                                  title: Zikula.__('Plugin configuration'),
+                                  title: Zikula.__('Plugin configuration', 'module_clip_js'),
                                   width: 600,
                                   overlayOpacity: 0.6
                               }
