@@ -1,3 +1,4 @@
+{pageaddvar name='jsgettext' value='module_clip_js:Clip'}
 {ajaxheader module='Clip' filename='Clip.Pubfields.js' ui=true}
 {pageaddvarblock name='header'}
 <script type="text/javascript">

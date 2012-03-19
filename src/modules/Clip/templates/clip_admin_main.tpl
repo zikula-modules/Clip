@@ -1,3 +1,4 @@
+{pageaddvar name='jsgettext' value='module_clip_js:Clip'}
 {ajaxheader filename='Zikula.Clip.Container.js' ui=true}
 {pageaddvar name='javascript' value='modules/Clip/javascript/Clip.Pubtype.js'}
 {pageaddvar name='javascript' value='modules/Clip/javascript/Clip.Pubfields.js'}

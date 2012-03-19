@@ -407,7 +407,7 @@ Zikula.Clip.AttachMenu = function ()
 
     /* Grouptype links */
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Edit'),
+        label: Zikula.__('Edit', 'module_clip_js'),
         condition: function() {
             return Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -416,7 +416,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Delete'),
+        label: Zikula.__('Delete', 'module_clip_js'),
         condition: function() {
             return Zikula.Clip.ContextMenu.isGrouptype && !Zikula.Clip.ContextMenu.lastClick.findElement('a').up('li').down('ul');
         },
@@ -425,7 +425,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Add group after selected'),
+        label: Zikula.__('Add group after selected', 'module_clip_js'),
         condition: function() {
             return Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -434,7 +434,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Add subgroup into selected'),
+        label: Zikula.__('Add subgroup into selected', 'module_clip_js'),
         condition: function() {
             return Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -444,7 +444,7 @@ Zikula.Clip.AttachMenu = function ()
     });
     /* Pubtype links */
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Edit'),
+        label: Zikula.__('Edit', 'module_clip_js'),
         condition: function() {
             return !Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -455,7 +455,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Fields'),
+        label: Zikula.__('Fields', 'module_clip_js'),
         condition: function() {
             return !Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -466,7 +466,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Relations'),
+        label: Zikula.__('Relations', 'module_clip_js'),
         condition: function() {
             return !Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -477,7 +477,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Code'),
+        label: Zikula.__('Code', 'module_clip_js'),
         condition: function() {
             return !Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -489,7 +489,7 @@ Zikula.Clip.AttachMenu = function ()
     });
     /*
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('Editor list'),
+        label: Zikula.__('Editor list', 'module_clip_js'),
         condition: function() {
             return !Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -500,7 +500,7 @@ Zikula.Clip.AttachMenu = function ()
         }
     });
     Zikula.Clip.ContextMenu.addItem({
-        label: Zikula.__('New publication'),
+        label: Zikula.__('New publication', 'module_clip_js'),
         condition: function() {
             return !Zikula.Clip.ContextMenu.isGrouptype;
         },
@@ -610,8 +610,8 @@ Zikula.Clip.OpenForm = function(data, callback)
         title: $('clip_ajax_form_container').title,
         width: 700,
         buttons: [
-            {label: Zikula.__('Submit'), type: 'submit', name: 'submit', value: 'submit', 'class': 'z-btgreen', close: false},
-            {label: Zikula.__('Cancel'), type: 'submit', name: 'cancel', value: false, 'class': 'z-btred', close: true}
+            {label: Zikula.__('Submit', 'module_clip_js'), type: 'submit', name: 'submit', value: 'submit', 'class': 'z-btgreen', close: false},
+            {label: Zikula.__('Cancel', 'module_clip_js'), type: 'submit', name: 'cancel', value: false, 'class': 'z-btred', close: true}
         ]
     });
 
@@ -639,17 +639,17 @@ Zikula.Clip.DeleteMenuAction = function(node)
     }
 
     var msg = new Element('div', {id:'dialogContent'}).insert(
-            new Element('p').update(Zikula.__('Do you really want to delete this group?'))
+            new Element('p').update(Zikula.__('Do you really want to delete this group?', 'module_clip_js'))
         ),
         buttons = [
-            {name: 'Delete', value: 'Delete', label: Zikula.__('Delete'), 'class': 'z-btgreen'},
-            {name: 'Cancel', value: 'Cancel', label: Zikula.__('Cancel'), 'class': 'z-btred'},
+            {name: 'Delete', value: 'Delete', label: Zikula.__('Delete', 'module_clip_js'), 'class': 'z-btgreen'},
+            {name: 'Cancel', value: 'Cancel', label: Zikula.__('Cancel', 'module_clip_js'), 'class': 'z-btred'},
         ];
 
     Zikula.Clip.DeleteDialog = new Zikula.UI.Dialog(
         msg,
         buttons,
-        {title: Zikula.__('Confirmation prompt'), width: 500, callback: function(res) {
+        {title: Zikula.__('Confirmation prompt', 'module_clip_js'), width: 500, callback: function(res) {
              switch (res.value) {
                  case 'Delete':
                     Zikula.Clip.MenuAction(node, 'delete');
