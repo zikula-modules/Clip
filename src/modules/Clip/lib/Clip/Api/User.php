@@ -20,7 +20,8 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param integer $args['tid']           ID of the publication type.
      * @param array   $args['where']         Direct where conditions to the query.
      * @param string  $args['filter']        Filter string.
-     * @param string  $args['distinct']      Distinct field to select.
+     * @param string  $args['distinct']      Distinct field(s) to select.
+     * @param string  $args['function']      Function(s) to perform.
      * @param string  $args['orderby']       OrderBy string.
      * @param integer $args['startnum']      Offset to start from.
      * @param integer $args['itemsperpage']  Number of items to retrieve.
@@ -62,6 +63,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'where'         => isset($args['where']) ? $args['where'] : array(),
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'distinct'      => isset($args['distinct']) ? $args['distinct'] : null,
+            'function'      => isset($args['function']) ? $args['function'] : null,
             'groupby'       => isset($args['groupby']) ? $args['groupby'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : null,
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)abs($args['startnum']) : 1,
@@ -131,6 +133,17 @@ class Clip_Api_User extends Zikula_AbstractApi
             $distinct = implode(',', $distinct);
 
             $query->select("DISTINCT $distinct");
+
+        } elseif ($args['function']) {
+            $function = explode(',', $args['function']);
+            foreach ($function as $k => $v) {
+                $v = explode(':', $v);
+                $func = isset($v[1]) ? strtoupper($v[1]) : 'COUNT';
+                if (!in_array($func, array('MIN', 'MAX', 'SUM', 'COUNT'))) {
+                    return LogUtil::registerError($this->__('Error! Invalid function passed.'));
+                }
+                $query->addSelect("$func({$v[0]}) AS ".strtolower("{$v[0]}_{$func}"));
+            }
         }
 
         if ($args['groupby']) {
@@ -222,57 +235,67 @@ class Clip_Api_User extends Zikula_AbstractApi
         $filterstr = strpos($filterstr, '(') === 0 ? substr($filterstr, 1, -1) : $filterstr;
         $args['filterstr'] = explode(')*(', $filterstr);
 
-        //// Count
-        if ($args['countmode'] != 'no') {
-            $pubcount = $query->count();
-        }
+        if ($args['function']) {
+            $publist = $query->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-        //// Collection
-        if ($args['countmode'] != 'just') {
-            //// Order by
-            // replaces the core_title alias by the original field name
-            if (strpos($args['orderby'], 'core_title') !== false) {
-                $args['orderby'] = str_replace('core_title', $pubtype->getTitleField(), $args['orderby']);
-            }
-            // check if some plugin specific orderby has to be done
-            $args['orderby'] = Clip_Util_Plugins::handleOrderBy($args['orderby'], $pubfields, $args['queryalias'].'.');
-
-            // add the orderby to the query
-            foreach (explode(', ', $args['orderby']) as $orderby) {
-                $query->orderBy($orderby);
+            if (count($publist) == 1) {
+                $publist = reset($publist);
             }
 
-            //// Offset and limit
-            if ($args['startnum']-1 > 0) {
-                $query->offset($args['startnum']-1);
+        } else {
+            //// Count
+            if ($args['countmode'] != 'no') {
+                $pubcount = $query->count();
+
             }
 
-            if ($args['itemsperpage'] > 0) {
-                $query->limit($args['itemsperpage']);
-            }
+            //// Collection
+            if ($args['countmode'] != 'just') {
+                //// Order by
+                // replaces the core_title alias by the original field name
+                if (strpos($args['orderby'], 'core_title') !== false) {
+                    $args['orderby'] = str_replace('core_title', $pubtype->getTitleField(), $args['orderby']);
+                }
+                // check if some plugin specific orderby has to be done
+                $args['orderby'] = Clip_Util_Plugins::handleOrderBy($args['orderby'], $pubfields, $args['queryalias'].'.');
 
-            //// execution and postprocess
-            if ($args['distinct']) {
-                // distinct field
-                $publist = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+                // add the orderby to the query
+                foreach (explode(', ', $args['orderby']) as $orderby) {
+                    $query->orderBy($orderby);
+                }
 
-                if (strpos($args['distinct'], ',') === false) {
-                    foreach ($publist as $k => $v) {
-                        $publist[$k] = $v[$args['distinct']];
+                //// Offset and limit
+                if ($args['startnum']-1 > 0) {
+                    $query->offset($args['startnum']-1);
+                }
+
+                if ($args['itemsperpage'] > 0) {
+                    $query->limit($args['itemsperpage']);
+                }
+
+                //// execution and postprocess
+                if ($args['distinct']) {
+                    // distinct field
+                    $publist = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+                    if (strpos($args['distinct'], ',') === false) {
+                        foreach ($publist as $k => $v) {
+                            $publist[$k] = $v[$args['distinct']];
+                        }
                     }
+
+                } else {
+                    // normal list
+                    $publist = $query->execute();
+
+                    for ($i = 0; $i < count($publist); $i++) {
+                        // FIXME SECURITY individual permission check here and fetch additional ones?
+                        $publist[$i]->clipProcess($args);
+                    }
+
+                    // store the arguments used
+                    Clip_Util::setArgs('getallapi', $args);
                 }
-
-            } else {
-                // normal list
-                $publist = $query->execute();
-
-                for ($i = 0; $i < count($publist); $i++) {
-                    // FIXME SECURITY individual permission check here and fetch additional ones?
-                    $publist[$i]->clipProcess($args);
-                }
-
-                // store the arguments used
-                Clip_Util::setArgs('getallapi', $args);
             }
         }
 

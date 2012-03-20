@@ -161,7 +161,8 @@ class Clip_Util_View
      *  - toarray       (boolean) Whether to convert the resulting publications to an array (default: false).
      *  - tid           (integer) ID of the publication type.
      *  - filter        (string)  Filter string.
-     *  - distinct      (string)  Distinct field to select.
+     *  - distinct      (string)  Distinct field(s) to select.
+     *  - function      (string)  Function(s) to perform.
      *  - orderby       (string)  OrderBy string.
      *  - startnum      (integer) Offset to start from.
      *  - itemsperpage  (integer) Number of items to retrieve.
@@ -187,6 +188,7 @@ class Clip_Util_View
 
         $args['tid']           = isset($args['tid']) ? $args['tid'] : $pubtype->tid;
         $args['distinct']      = isset($args['distinct']) ? $args['distinct'] : null;
+        $args['function']      = isset($args['function']) ? $args['function'] : null;
         $args['groupby']       = isset($args['groupby']) ? $args['groupby'] : null;
         $args['countmode']     = 'no';
         $args['itemsperpage']  = isset($args['itemsperpage']) ? $args['itemsperpage'] : ModUtil::getVar('Clip', 'maxperpage', 100);
