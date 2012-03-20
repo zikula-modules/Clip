@@ -125,8 +125,13 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         //// Query setup
-        $args['queryalias'] = "pub_{$args['tid']}";
-        $query = $tableObj->createQuery($args['queryalias']);
+        $args['queryalias'] = $queryalias = "pub_{$args['tid']}";
+
+        if (!$args['distinct'] && !$args['function']) {
+            $queryalias = "{$args['queryalias']} INDEXBY {$args['queryalias']}.id";
+        }
+
+        $query = $tableObj->createQuery($queryalias);
 
         if ($args['distinct']) {
             $distinct = explode(',', $args['distinct']);
@@ -291,9 +296,9 @@ class Clip_Api_User extends Zikula_AbstractApi
                     // normal list
                     $publist = $query->execute(array(), $args['array'] ? Doctrine_Core::HYDRATE_ARRAY : Doctrine_Core::HYDRATE_RECORD);
 
-                    for ($i = 0; $i < count($publist); $i++) {
+                    foreach ($publist as $i => $pub) {
                         // FIXME fetch additional ones when unset?
-                        if (Clip_Access::toPub($pubtype, $publist[$i]['core_pid'], null, 'display')) {
+                        if (Clip_Access::toPub($pubtype, $pub, null, 'display')) {
                             if (is_object($publist[$i])) {
                                 $publist[$i]->clipProcess($args);
                             }
