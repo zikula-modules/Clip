@@ -158,6 +158,7 @@ class Clip_Util_View
      *  - filter        (string)  Filter string.
      *  - distinct      (string)  Distinct field(s) to select.
      *  - function      (string)  Function(s) to perform.
+     *  - groupby       (string)  GroupBy field.
      *  - orderby       (string)  OrderBy string.
      *  - startnum      (integer) Offset to start from.
      *  - itemsperpage  (integer) Number of items to retrieve.

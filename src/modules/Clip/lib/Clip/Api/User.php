@@ -22,6 +22,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param string  $args['filter']        Filter string.
      * @param string  $args['distinct']      Distinct field(s) to select.
      * @param string  $args['function']      Function(s) to perform.
+     * @param string  $args['groupby']       GroupBy field.
      * @param string  $args['orderby']       OrderBy string.
      * @param integer $args['startnum']      Offset to start from.
      * @param integer $args['itemsperpage']  Number of items to retrieve.
