@@ -112,7 +112,7 @@ class Clip_Util_View
      *
      * Available attributes:
      *  - assign        (string)  The name of a template variable to assign the output to.
-     *  - toarray       (boolean) Whether to convert the resulting publications to an array (default: false).
+     *  - array         (boolean) Whether to fetch the resulting publication as array (default: false).
      *  - tid           (integer) ID of the publication type.
      *  - pid           (integer) ID of the publication.
      *  - id            (integer) ID of the publication revision (optional if pid is used).
@@ -145,11 +145,6 @@ class Clip_Util_View
         // API call
         $pub = ModUtil::apiFunc('Clip', 'user', 'get', $args);
 
-        // processing
-        if (isset($args['toarray']) && $args['toarray']) {
-            $pub = $pub->toArray();
-        }
-
         return $pub;
     }
 
@@ -158,7 +153,7 @@ class Clip_Util_View
      *
      * Available attributes:
      *  - assign        (string)  The name of a template variable to assign the output to (default: pubs).
-     *  - toarray       (boolean) Whether to convert the resulting publications to an array (default: false).
+     *  - array         (boolean) Whether to fetch the resulting publications as array (default: false).
      *  - tid           (integer) ID of the publication type.
      *  - filter        (string)  Filter string.
      *  - distinct      (string)  Distinct field(s) to select.
@@ -211,10 +206,7 @@ class Clip_Util_View
         // API call
         $pubs = ModUtil::apiFunc('Clip', 'user', 'getall', $args);
 
-        // processing
-        $pubs = (isset($args['toarray']) && $args['toarray']) ? $pubs['publist']->toArray() : $pubs['publist'];
-
-        return $pubs;
+        return $pubs['publist'];
     }
 
     /**

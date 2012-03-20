@@ -26,6 +26,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param integer $args['startnum']      Offset to start from.
      * @param integer $args['itemsperpage']  Number of items to retrieve.
      * @param string  $args['countmode']     Mode: no (list without count - default), just (count elements only), both.
+     * @param boolean $args['array']         Whether to fetch the resulting publications as array (default: false).
      * @param boolean $args['checkperm']     Whether to check the permissions.
      * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']  Whether to add the workflow information.
@@ -69,6 +70,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)abs($args['startnum']) : 1,
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)abs($args['itemsperpage']) : 0,
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
+            'array'         => isset($args['array']) ? (bool)$args['array'] : false,
             'limitdate'     => isset($args['limitdate']) ? (bool)$args['limitdate'] : !Clip_Access::toPubtype($args['tid'], 'editor'),
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
@@ -286,11 +288,17 @@ class Clip_Api_User extends Zikula_AbstractApi
 
                 } else {
                     // normal list
-                    $publist = $query->execute();
+                    $publist = $query->execute(array(), $args['array'] ? Doctrine_Core::HYDRATE_ARRAY : Doctrine_Core::HYDRATE_RECORD);
 
                     for ($i = 0; $i < count($publist); $i++) {
-                        // FIXME SECURITY individual permission check here and fetch additional ones?
-                        $publist[$i]->clipProcess($args);
+                        // FIXME fetch additional ones when unset?
+                        if (Clip_Access::toPub($pubtype, $publist[$i]['core_pid'], null, 'display')) {
+                            if (is_object($publist[$i])) {
+                                $publist[$i]->clipProcess($args);
+                            }
+                        } else {
+                            unset($publist[$i]);
+                        }
                     }
 
                     // store the arguments used
@@ -312,7 +320,10 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param integer $args['tid']           ID of the publication type.
      * @param integer $args['pid']           ID of the publication.
      * @param integer $args['id']            ID of the publication revision (optional if pid is used).
+     * @param array   $args['where']         Direct where conditions to the query.
+     * @param boolean $args['array']         Whether to fetch the resulting publications as array (default: false).
      * @param boolean $args['checkperm']     Whether to check the permissions.
+     * @param string  $args['templateid']    Template ID for the permission check.
      * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']  Whether to add the workflow information.
      * @param array   $args['rel']           Relation configuration flags to use {load, onlyown, processrefs, checkperm, handleplugins, loadworkflow}.
@@ -345,6 +356,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'pid'           => isset($args['pid']) ? (int)$args['pid'] : null,
             'id'            => isset($args['id']) ? (int)$args['id'] : null,
             'where'         => isset($args['where']) ? $args['where'] : array(),
+            'array'         => isset($args['array']) ? (bool)$args['array'] : false,
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'templateid'    => isset($args['templateid']) ? $args['templateid'] : '', // for perm check
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
@@ -402,7 +414,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // fetch the publication
-        $pubdata = $query->fetchOne();
+        $pubdata = $query->fetchOne(array(), $args['array'] ? Doctrine_Core::HYDRATE_ARRAY : Doctrine_Core::HYDRATE_RECORD);
 
         if (!$pubdata) {
             return false;
@@ -416,7 +428,9 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         //// Result
         // postprocess the record and related records depending on the call arguments
-        $pubdata->clipProcess($args);
+        if (is_object($pubdata)) {
+            $pubdata->clipProcess($args);
+        }
 
         // store the arguments used
         Clip_Util::setArgs('getapi', $args);

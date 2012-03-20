@@ -196,8 +196,16 @@ class Clip_Access
                 $pid = '';
             }
         } else {
-            // plain PID
-            $pid = $pub;
+            if (is_numeric($pub)) {
+                // direct pid
+                $pid = (int)$pub;
+            } else if (is_array($pub) && isset($pub['core_pid'])) {
+                // pub as array
+                $pid = (int)$pub['core_pid'];
+            } else {
+                return false;
+            }
+
             // check if we need additional information
             if (self::isPubStateNeeded($context)) {
                 // gets the online/latest revision state, if $id not specified
