@@ -96,8 +96,8 @@ class Clip_Access
                 $permlvl = ACCESS_OVERVIEW;
                 break;
 
-            case 'list':
             case 'main':
+            case 'list':
             case 'edit':
                 $component .= $context;
                 $instance  .= $tplid;
@@ -129,9 +129,9 @@ class Clip_Access
             case 'anyeditor':
                 $permlvl = ACCESS_EDITOR;
             case 'anyadmin':
-                $component = "Clip:x:";
+                //$component = "Clip::";
                 //$instance = 'ANY';
-                // use a reverse method
+                // TODO Use a reverse method to detect the available permissions rules
                 break;
 
             default:

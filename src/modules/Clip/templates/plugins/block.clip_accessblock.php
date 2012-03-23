@@ -25,16 +25,16 @@
  * Examples:
  *
  *  For Clip access check:
- *  <samp>{clip_access permlvl=ACCESS_ADMIN}</samp>
+ *  <samp>{clip_accessblock permlvl=ACCESS_ADMIN} your code {/clip_accessblock}</samp>
  *
  *  For Grouptype access check:
- *  <samp>{clip_access gid=$gid}</samp>
+ *  <samp>{clip_accessblock gid=$gid} your code {/clip_accessblock}</samp>
  *
  *  For Pubtype access check:
- *  <samp>{clip_access tid=$pubtype.tid}</samp>
+ *  <samp>{clip_accessblock tid=$pubtype.tid} your code {/clip_accessblock}</samp>
  *
  *  For Publication edit access check:
- *  <samp>{clip_access pub=$pubdata context='edit'}</samp>
+ *  <samp>{clip_accessblock pub=$pubdata context='edit'} your code {/clip_accessblock}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
