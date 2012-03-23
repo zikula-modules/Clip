@@ -251,8 +251,8 @@ class Clip_Access
 
             case 'edit':
                 // TODO consider edit.own
-                $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:edit", "$pid:$state:$tplid", ACCESS_READ, $uid);
-                if (!$allowed) {
+                if (!SecurityUtil::checkPermission("Clip:{$pubtype->tid}:edit", "$pid:$state:$tplid", ACCESS_READ, $uid)) {
+                    // direct discard if do not have permission to the form
                     break;
                 }
 
