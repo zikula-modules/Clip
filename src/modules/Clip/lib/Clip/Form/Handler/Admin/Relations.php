@@ -122,8 +122,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
         // stores the return URL and filter
         if (!$view->getStateData('referer')) {
-            $referer = ModUtil::url('Clip', 'admin', 'relations', $this->filter);
-            $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $referer));
+            $view->setStateData('referer', ModUtil::url('Clip', 'admin', 'relations', $this->filter));
         }
 
         $view->setStateData('filter', $this->filter)
