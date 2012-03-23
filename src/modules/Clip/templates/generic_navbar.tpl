@@ -25,13 +25,15 @@
         </span>
         {/clip_accessblock}
         {/if}
+        {if $type neq 'editor' or $func neq 'main'}
         {clip_accessblock tid=$pubtype.tid context='submit'}
         <span class="clip-breadlink">
-            <a href="{clip_url func='edit' tid=$pubtype.tid}">
+            <a href="{clip_url type='user' func='edit' tid=$pubtype.tid}">
                 {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Submit a publication'}
             </a>
         </span>
         {/clip_accessblock}
+        {/if}
 
         {if $type eq 'editor'}
             <span class="text_separator">&raquo;</span>

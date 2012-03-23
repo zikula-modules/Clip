@@ -27,6 +27,29 @@ function smarty_function_clip_editorpanel($params, Zikula_View $view)
         return false;
     }
 
+    // get the localized name
+    $lang = ZLanguage::getLanguageCode();
+    $sysl = System::getVar('language_i18n');
+
+    foreach ($params['data'] as $k => &$group) {
+        // name
+        if (is_array($group['name'])) {
+            if (isset($group['name'][$lang])) {
+                $group['name'] = $group['name'][$lang];
+            } elseif ($sysl != $lang && isset($group['name'][$sysl])) {
+                $group['name'] = $group['name'][$sysl];
+            } else {
+                $group['name'] = current($group['name']);
+            }
+        }
+
+        if (!$group['name']) {
+            $group['name'] = __f('Group %s', $group['gid'], $dom);
+        }
+
+        $group['name'] = DataUtil::formatForDisplay($group['name']);
+    }
+
     // initialize the output
     $output = '<ul class="clip-editorlist">'."\n";
 

@@ -52,7 +52,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         // TODO be sure that the tree handle only the ones with Edit access
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT/*, 'ANY'*/));
 
-        $grouptypes = Clip_Util_Grouptypes::getTree(ACCESS_OVERVIEW, false);
+        $grouptypes = Clip_Util_Grouptypes::getTree('edit', false);
 
         // register clip_util
         Clip_Util::register_utilities($this->view);
