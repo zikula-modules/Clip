@@ -9,7 +9,7 @@
         </span>
 
         {* action icons *}
-        {if $auth_admin}
+        {if $auth_admin and $pubtype|default:false}
         <span class="clip-breadlink">
             <a href="{modurl modname='Clip' type='admin' func='main' fragment="`$pubtype.tid`/pubtypeinfo"}">
                 {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
@@ -25,7 +25,7 @@
         </span>
         {/clip_accessblock}
         {/if}
-        {if $type neq 'editor' or $func neq 'main'}
+        {if $pubtype|default:false}
         {clip_accessblock tid=$pubtype.tid context='submit'}
         <span class="clip-breadlink">
             <a href="{clip_url type='user' func='edit' tid=$pubtype.tid}">
