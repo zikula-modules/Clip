@@ -46,7 +46,7 @@
                     {$pubitem.core_pid|safetext}
                 </td>
                 <td>
-                    <strong><a href="{clip_url func='display' pub=$pubitem}">{$pubitem.core_title|safetext}</a></strong>
+                    <strong><a href="{clip_url type='user' func='display' pub=$pubitem}">{$pubitem.core_title|safetext}</a></strong>
                     {clip_editoractions pub=$pubitem}
                 </td>
                 <td class="z-sub">
