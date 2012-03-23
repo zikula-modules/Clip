@@ -39,7 +39,7 @@ class Clip_Event
      *
      * @return boolean
      */
-    static public function notify($name, $data, array $args = array())
+    static public function notify($name, $data, $args = array())
     {
         // format the name abbreviation
         $name = self::getName($name);
