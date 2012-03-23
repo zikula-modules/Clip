@@ -106,10 +106,10 @@ class Clip_Model_Pubrelation extends Doctrine_Record
      */
     public function updatePubtypes()
     {
-        Clip_Util::getPubType($this->tid1)->updateTable();
+        Clip_Util::getPubType($this->tid1)->updateTable(false);
 
         if ($this->tid2 != $this->tid1) {
-            Clip_Util::getPubType($this->tid2)->updateTable();
+            Clip_Util::getPubType($this->tid2)->updateTable(false);
         }
     }
 }

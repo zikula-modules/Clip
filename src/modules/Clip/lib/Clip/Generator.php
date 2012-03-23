@@ -252,7 +252,7 @@ class Clip_Generator
      * Build the Doctrine Model code dynamically.
      *
      * @param integer $tid   Publication type ID.
-     * @param boolean $force Force the load of relations.
+     * @param boolean $force Force the reload of relations.
      *
      * @return string The model class code.
      */
@@ -721,10 +721,17 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $tables[$tablename.'_column_def'] = $tableDef;
     }
 
-    public static function addtables($tid = false)
+    public static function addtables($tid = 0, $force = false)
     {
-        $tables = array();
-        $where  = $tid ? array(array('tid = ?', $tid)) : '' ;
+        static $added = array();
+
+        if ((isset($added[$tid]) || $tid && isset($added[0])) && !$force) {
+            return;
+        }
+
+        $added[$tid] = true;
+
+        $where  = $tid ? array(array('tid = ?', (int)$tid)) : '' ;
 
         $pubfields = Doctrine_Core::getTable('Clip_Model_Pubfield')
                      ->selectCollection($where, 'tid ASC, lineno ASC');
@@ -733,6 +740,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             return LogUtil::registerError('Error! Failed to load the pubfields.');
         }
 
+        $tables = array();
         $tableOrder = array(
             'core_pid'         => 'pid',
             'id'               => 'id'
@@ -861,16 +869,14 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         }
     }
 
-    public static function updateModel($tid, $loadtables = true, $force = false)
+    public static function updateModel($tid, $loadtables = false, $forcerels = false)
     {
-        if ($loadtables) {
-            self::addtables($tid);
-        }
+        self::addtables($tid, $loadtables);
 
         $path = ModUtil::getVar('Clip', 'modelspath');
 
         $file = "$path/Pubdata{$tid}.php";
-        $code = Clip_Generator::pubmodel($tid, $force);
+        $code = Clip_Generator::pubmodel($tid, $forcerels);
         file_put_contents($file, '<?php'.$code);
 
         $file = "$path/Pubdata{$tid}Table.php";

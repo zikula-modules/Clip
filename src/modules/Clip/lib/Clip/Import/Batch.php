@@ -87,7 +87,7 @@ class Clip_Import_Batch
     {
         foreach (self::$idmap['tids'] as $tid) {
             if (!isset(self::$idmap['updt'][$tid])) {
-                Doctrine_Core::getTable('Clip_Model_Pubtype')->find($tid)->updateTable();
+                Doctrine_Core::getTable('Clip_Model_Pubtype')->find($tid)->updateTable(true);
                 self::$idmap['updt'][$tid] = true;
             }
         }
