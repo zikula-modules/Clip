@@ -90,7 +90,7 @@ class Clip_Util_Form
         $this->alias = $view->eventHandler->getAlias();
         $this->tid   = $view->eventHandler->getTid();
         $this->id    = $view->eventHandler->getId();
-        $this->pid   = $this->resolvePid($params, $view);
+        $this->pid   = $this->resolvePid(array(), $view);
     }
 
     public function newId($params, Zikula_Form_View &$view)
