@@ -519,6 +519,8 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
             \$obj['core_uniqueid'] = \$obj['core_pid'] ? \$obj['core_tid'].'-'.\$obj['core_pid'] : null;
             \$obj['core_creator']  = (\$obj['core_author'] == UserUtil::getVar('uid')) ? true : false;
         }
+
+        return \$obj;
     }
 
     /**
@@ -528,7 +530,7 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
      */
     public function postHydrate(\$event)
     {
-        \$this->assignClipValues(\$event->data);
+        \$event->data = \$this->assignClipValues(\$event->data);
     }
 }
 ";
