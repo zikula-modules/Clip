@@ -20,15 +20,15 @@
  *
  * Examples:
  *
- *  <samp>{clip_url func='main' tid=$pubtype.tid}</samp>
+ *  <samp>{clip_url func='main'}</samp>
  *
- *  <samp>{clip_url func='list' tid=$pubtype.tid}</samp>
+ *  <samp>{clip_url func='list'}</samp>
  *
  *  <samp>{clip_url func='display' pub=$pubdata}</samp>
  *
  *  <samp>{clip_url func='edit' pub=$pubdata}</samp>
  *
- *  <samp>{clip_url func='edit' tid=$pubtype.tid}</samp>
+ *  <samp>{clip_url func='edit'}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -72,6 +72,11 @@ function smarty_function_clip_url($params, Zikula_View &$view)
             $params['urltitle'] = $params['pub']['core_urltitle'];
         }
         unset($params['pub']);
+    }
+
+    // setup the tid if not set
+    if (!isset($params['tid'])) {
+        $params['tid'] = $view->getTplVar('pubtype')->tid;
     }
 
     // dispatch any non-ajax request with modurl

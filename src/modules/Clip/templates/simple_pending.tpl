@@ -8,7 +8,7 @@
 <p>
     {gt text='Thanks for your submission!'}
     <br />
-    <a href="{clip_url func='main' tid=$pubtype.tid}">
+    <a href="{clip_url func='main'}">
         {gt text='Go back to the index'}
     </a>
 </p>

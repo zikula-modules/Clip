@@ -34,7 +34,7 @@
     </ul>
     <ul>
         <li class="z-clearfix">
-            <a href="{clip_url func='pubtype' tid=$pubtype.tid}" title="{gt text='Edit this publication type'}">
+            <a href="{clip_url func='pubtype'}" title="{gt text='Edit this publication type'}">
                 {gt text="Edit '%s'" tag1=$pubtype.title|safetext}
             </a>
             <p>
@@ -60,7 +60,7 @@
             </dl>
         </li>
         <li class="z-clearfix">
-            <a href="{clip_url func='pubfields' tid=$pubtype.tid}" title="{gt text='Add, sort or modify the fields of this publication type'}">
+            <a href="{clip_url func='pubfields'}" title="{gt text='Add, sort or modify the fields of this publication type'}">
                 {gt text='Manage its fields'}
             </a>
             <p>
@@ -68,7 +68,7 @@
             </p>
         </li>
         <li class="z-clearfix">
-            <a href="{clip_url func='relations' tid=$pubtype.tid withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Edit the relations of this publication type'}">
+            <a href="{clip_url func='relations' withtid1=$pubtype.tid op='or' withtid2=$pubtype.tid}" title="{gt text='Edit the relations of this publication type'}">
                 {gt text='Manage its relations'}
             </a>
             <p>
@@ -81,7 +81,7 @@
 <div id="p{$pubtype.tid}code" class="clip-infotab">
     <ul>
         <li>
-            <a href="{clip_url func='generator' tid=$pubtype.tid code='form'}">
+            <a href="{clip_url func='generator' code='form'}">
                 {gt text='Form'}
             </a>
             <p>
@@ -89,7 +89,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='generator' tid=$pubtype.tid code='list'}">
+            <a href="{clip_url func='generator' code='list'}">
                 {gt text='List'}
             </a>
             <p>
@@ -97,7 +97,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='generator' tid=$pubtype.tid code='display'}">
+            <a href="{clip_url func='generator' code='display'}">
                 {gt text='Display'}
             </a>
             <p>
@@ -105,7 +105,7 @@
             </p>
         </li>
         <li>
-            <a href="{clip_url func='generator' tid=$pubtype.tid code='blocklist'}">
+            <a href="{clip_url func='generator' code='blocklist'}">
                 {gt text='List block'}
             </a>
             <p>
@@ -124,7 +124,7 @@
 </div>
 
 <div id="p{$pubtype.tid}fields" class="clip-infotab">
-    <a class="z-floatright" href="{clip_url func='pubfields' tid=$pubtype.tid fragment='newpubfield'}">{gt text='Add a new field'}</a>
+    <a class="z-floatright" href="{clip_url func='pubfields' fragment='newpubfield'}">{gt text='Add a new field'}</a>
 
     <h4>{gt text='Fields'}</h4>
 
@@ -157,7 +157,7 @@
         </tbody>
     </table>
 
-    <a class="z-floatright" href="{clip_url func='relations' tid=$pubtype.tid withtid1=$item.tid op='or' withtid2=$pubtype.tid fragment='relform'}">{gt text='Add a new relation'}</a>
+    <a class="z-floatright" href="{clip_url func='relations' withtid1=$item.tid op='or' withtid2=$pubtype.tid fragment='relform'}">{gt text='Add a new relation'}</a>
 
     <h4>{gt text='Relations'}</h4>
 
