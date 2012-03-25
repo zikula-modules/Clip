@@ -101,13 +101,37 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      *
      * @param string $alias Alias of the relation.
      *
-     * @return array Information of the relation if exists, false otherwise.
+     * @return mixed Information of the relation if exists, false otherwise.
      */
     public function getRelation($alias)
     {
         $relations = $this->getRelations(false);
 
         return isset($relations[$alias])? $relations[$alias] : false;
+    }
+
+    /**
+     * Returns the information fields of the publication that are relations.
+     *
+     * @return array Information of the relation if exists, false otherwise.
+     */
+    public function getRelationFields()
+    {
+        $relfields = array();
+
+        foreach ($this->getRelations(false) as $alias => $info) {
+            if ($info['own']) {
+                if ($info['type'] == 2) {
+                    $relfields[$alias] = "rel_{$info['id']}";
+                }
+            } else {
+                if (in_array($info['type'], array(0, 1))) {
+                    $relfields[$alias] = "rel_{$info['id']}";
+                }
+            }
+        }
+
+        return $relfields;
     }
 
     /**

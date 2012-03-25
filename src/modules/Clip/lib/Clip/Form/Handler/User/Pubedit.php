@@ -65,22 +65,29 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             $view->setStateData('pubs', array());
             $view->setStateData('links', array());
 
-            // handle the Doctrine_Record data as an array
-            $data[$this->alias][$this->tid][$this->id][$this->pid] = $this->pub->clipFormGet($relconfig['load'], $relconfig['onlyown']);
+            $rels = $this->pub->getRelationFields();
 
             // check for set_* parameters from $_GET
             $get = $this->request->getGet();
             foreach (array_keys($get->getCollection()) as $param) {
                 if (strpos($param, 'set_') === 0) {
-                    if ($this->pub->contains(substr($param, 4))) {
-                        $data[$this->alias][$this->tid][$this->id][$this->pid][substr($param, 4)] = $get->filter($param);
+                    $field = substr($param, 4);
+                    if (isset($rels[$field])) {
+                        $this->pub[$rels[$field]] = $get->filter($param);
+                    } else if ($this->pub->contains($field)) {
+                        $this->pub[$field] = $get->filter($param);
                     }
                 }
             }
+
+            // handle the Doctrine_Record data as an array
+            $data[$this->alias][$this->tid][$this->id][$this->pid] = $this->pub->clipFormGet($relconfig['load'], $relconfig['onlyown']);
+
         } elseif (!$view->isValid()) {
             // assign the incoming data
             $data = $view->getValues();
             $data = $data['clipdata'];
+
         } else {
             // let the handleCommand to work
             $data = array();
