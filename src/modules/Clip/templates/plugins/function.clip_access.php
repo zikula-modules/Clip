@@ -32,9 +32,11 @@
  *  <samp>{clip_access gid=$gid}</samp>
  *
  *  For Pubtype access check:
- *  <samp>{clip_access tid=$pubtype.tid}</samp>
+ *  (available contexts: access, main, list, edit, editor, submit, admin)
+ *  <samp>{clip_access context='editor'}</samp>
  *
  *  For Publication edit access check:
+ *  (available contexts: access, display, form, edit, exec, execinline)
  *  <samp>{clip_access pub=$pubdata context='edit'}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
@@ -44,15 +46,16 @@
  */
 function smarty_function_clip_access($params, Zikula_View &$view)
 {
-    $params['pid'] = isset($params['pid']) ? $params['pid'] : null;
-    $params['id']  = isset($params['id']) ? $params['id'] : null;
-
     if (isset($params['pub'])) {
         $params['tid'] = $params['pub']['core_tid'];
         $params['pid'] = $params['pub'];
         $params['id']  = $params['pub']['id'];
         unset($params['pub']);
     }
+
+    $params['tid'] = isset($params['tid']) ? $params['tid'] : $view->getTplVar('pubtype')->tid;
+    $params['pid'] = isset($params['pid']) ? $params['pid'] : null;
+    $params['id']  = isset($params['id'])  ? $params['id']  : null;
 
     $context = isset($params['context']) ? $params['context'] : null;
     $tplid   = isset($params['tplid']) ? $params['tplid'] : '';
@@ -62,21 +65,21 @@ function smarty_function_clip_access($params, Zikula_View &$view)
     $result  = false;
 
     // check the parameters and figure out the method to use
-    if (isset($params['gid'])) {
+    if ($permlvl) {
+        // module check
+        $result = Clip_Access::toClip($permlvl);
+
+    } else if (isset($params['gid'])) {
         // grouptype check
         $result = Clip_Access::toGrouptype($params['gid']);
 
-    } elseif (isset($params['tid'])) {
-        if (!isset($params['pid']) && !isset($params['id'])) {
-            // pubtype check
-            $result = Clip_Access::toPubtype($params['tid'], $context, $tplid);
-        } else {
-            // pub check
-            $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl);
-        }
+    } else if (isset($params['pid']) || isset($params['id'])) {
+        // pub check
+        $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl);
+
     } else {
-        // module check
-        $result = Clip_Access::toClip($permlvl);
+        // pubtype check
+        $result = Clip_Access::toPubtype($params['tid'], $context, $tplid);
     }
 
     if ($assign) {
