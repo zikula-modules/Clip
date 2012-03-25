@@ -21,7 +21,8 @@
  *
  * Example:
  *
- *  <samp>{clip_hitcount tid=$pubtype.tid pid=$pubdata.core_pid}</samp>
+ *  TO increment the counter of the current $pubdata.
+ *  <samp>{clip_hitcount}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -30,15 +31,10 @@
  */
 function smarty_function_clip_hitcount($params, Zikula_View &$view)
 {
-    if (!isset($params['tid']) || !$params['tid']) {
-        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_hitcount', 'tid')));
-        return false;
-    }
+    $pubdata = $view->getTplVar('pubdata');
 
-    if (!isset($params['pid']) || !$params['pid']) {
-        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_hitcount', 'pid')));
-        return false;
-    }
+    $tid = isset($params['tid']) && $params['tid'] ? $params['tid'] : $pubdata['core_tid'];
+    $pid = isset($params['pid']) && $params['pid'] ? $params['pid'] : $pubdata['core_pid'];
 
-    Doctrine_Core::getTable('ClipModels_Pubdata'.$params['tid'])->incrementFieldBy('core_hitcount', $params['pid'], 'core_pid');
+    Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->incrementFieldBy('core_hitcount', $pid, 'core_pid');
 }

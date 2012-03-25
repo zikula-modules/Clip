@@ -1,5 +1,5 @@
 
-{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}
+{clip_hitcount}
 
 {* Open Graph tags
 {ogtag prop='title' content=$pubdata.core_title}
