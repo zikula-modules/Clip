@@ -19,12 +19,12 @@
  *
  * Example:
  *
- *  <samp>{clip_include file='navbar_options.tpl' tid=$pubtype.tid}</samp>
+ *  <samp>{clip_include file='navbar_options.tpl' dir=$clipdirs.anotherpubtype}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
  *
- * @return boolean
+ * @return void
  */
 function smarty_function_clip_include($params, Zikula_View &$view)
 {
@@ -70,7 +70,5 @@ function smarty_function_clip_include($params, Zikula_View &$view)
     if ($assign) {
         $view->assign($assign, ob_get_contents());
         ob_end_clean();
-    } else {
-        return $output;
     }
 }
