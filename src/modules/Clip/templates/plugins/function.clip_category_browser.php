@@ -37,17 +37,12 @@
  */
 function smarty_function_clip_category_browser($params, Zikula_View &$view)
 {
-    if (!isset($params['tid']) || !$params['tid']) {
-        $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_category_browser', 'array')));
-        return false;
-    }
-
     if (!isset($params['field']) || !$params['field']) {
         $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_category_browser', 'field')));
         return false;
     }
 
-    $tid   = $params['tid'];
+    $tid   = isset($params['tid']) ? $params['tid'] : $view->getTplVar('pubtype')->tid;
     $field = $params['field'];
 
     // get the plugin parametes

@@ -18,5 +18,5 @@
     </p>
     {/if}
 
-    {clip_category_browser tid=$pubtype.tid field='category'}
+    {clip_category_browser field='category'}
 </div>
