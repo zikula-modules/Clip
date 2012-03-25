@@ -184,8 +184,11 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         if (!empty($args['filter'])) {
             $filter['obj']->setFilter($args['filter']);
-        } elseif (!empty($pubtype['defaultfilter'])) {
+        } elseif (!$filter['obj']->getFilter() && !empty($pubtype['defaultfilter'])) {
             $filter['obj']->setFilter($pubtype['defaultfilter']);
+        }
+        if (empty($args['filter']) && !empty($pubtype['fixedfilter'])) {
+            $filter['obj']->andFilter($pubtype['fixedfilter']);
         }
 
         //// Relations
@@ -242,7 +245,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $filterstr = $filter['obj']->getFilter();
         $filterstr = strpos($filterstr, '(') === 0 ? substr($filterstr, 1, -1) : $filterstr;
         $args['filterstr'] = explode(')*(', $filterstr);
-
+echo $query->getSQLQuery(); var_dump($query->getParams());
         if ($args['function']) {
             $publist = $query->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 

@@ -62,7 +62,7 @@
                     <div class="z-formrow">
                         {formlabel for='fixedfilter' __text='Fixed filter'}
                         {formtextinput id='fixedfilter' group='pubtype' maxLength='255'}
-                        <div class="z-formnote z-sub">{gt text='The filter used always on listings.'}</div>
+                        <div class="z-formnote z-sub">{gt text='The filter used always on public listings.'}</div>
                     </div>
                     <div class="z-formrow">
                         {formlabel for='defaultfilter' __text='Default filter'}
