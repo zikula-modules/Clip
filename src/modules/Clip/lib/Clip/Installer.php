@@ -66,9 +66,14 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $this->createGrouptypesTree();
         Clip_Util::installDefaultypes();
 
+        if (ModUtil::available('Content')) {
+            // include the integration with the Content module
+            Content_Installer::updateContentType('Clip');
+        }
+
         // register persistent event listeners (handlers)
         EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
-        //EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getTypes'));
+        EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getContentTypes'));
 
         return true;
     }
@@ -170,8 +175,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 $this->setVar('commontpls', false);
                 // update the model generator changes
                 Clip_Generator::resetModels();
-                // include the integration with the Content module
-                Content_Installer::updateContentType('Clip');
+                if (ModUtil::available('Content')) {
+                    // include the integration with the Content module
+                    Content_Installer::updateContentType('Clip');
+                }
                 EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getContentTypes'));
             case '0.9.2':
                 // further upgrade handling
