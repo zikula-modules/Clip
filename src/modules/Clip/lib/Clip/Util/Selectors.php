@@ -105,8 +105,9 @@ class Clip_Util_Selectors
     {
         $dom = ZLanguage::getModuleDomain('Clip');
 
-        $pubtypes = Clip_Util::getPubType(-1);
+        $pubtypes = Clip_Util::getPubType()->toKeyValueArray('tid', 'title');
 
+        // build the selector
         $array = array();
 
         if ($includeempty) {
@@ -116,18 +117,14 @@ class Clip_Util_Selectors
             );
         }
 
-        foreach ($pubtypes as $tid => $pubtype) {
+        foreach ($pubtypes as $tid => $title) {
             $array[$tid] = array(
-                'text'  => $pubtype['title'].($includetid ? " ($tid)" : ''),
+                'text'  => $title.($includetid ? " ($tid)" : ''),
                 'value' => $tid
             );
         }
 
-        $array = array_values(array_filter($array));
-
-        uasort($array, 'Clip_Util_Selectors::sortByTitle');
-
-        return $array;
+        return array_values(array_filter($array));
     }
 
     /**
@@ -188,23 +185,23 @@ class Clip_Util_Selectors
             )
         );
 
-        $pubfields = Clip_Util::getPubFields($tid);
+        if (Clip_Util::validateTid($tid)) {
+            $pubfields = Clip_Util::getPubFields($tid);
 
-        foreach ($pubfields as $fieldname => $pubfield) {
-            $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
-            $array[$index] = array(
-                'text'  => $pubfield['title'],
-                'value' => $fieldname
-            );
+            foreach ($pubfields as $fieldname => $pubfield) {
+                $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
+                $array[$index] = array(
+                    'text'  => $pubfield['title'],
+                    'value' => $fieldname
+                );
+            }
         }
 
         if (!$includeempty) {
             unset($array['core_empty']);
         }
 
-        $array = array_values(array_filter(array_merge($arraysort, $array)));
-
-        return $array;
+        return array_values(array_filter(array_merge($arraysort, $array)));
     }
 
     /**

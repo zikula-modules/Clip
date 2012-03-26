@@ -165,10 +165,12 @@ class Clip_Installer extends Zikula_AbstractInstaller
             case '0.4.22':
                 self::updatePubTables();
             case '0.9.0':
+            case '0.9.1':
+                // include the integration with the Content module
+                Content_Installer::updateContentType('Clip');
+                EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getContentTypes'));
+            case '0.9.2':
                 // further upgrade handling
-                // * contenttype stuff
-                //   Content_Installer::updateContentType('Clip');
-                //   EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getContentTypes'));
         }
 
         return true;

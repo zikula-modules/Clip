@@ -52,6 +52,9 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         if (!isset($vars['tid']) || empty($vars['tid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
         }
+        if (!Clip_Util::validateTid($vars['tid'])) {
+            return $alert ? LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($vars['tid']))) : null;
+        }
 
         // security check
         // FIXME SECURITY centralize on Clip_Access
@@ -59,28 +62,22 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
             return;
         }
 
-        $pubtype = Clip_Util::getPubType((int)$vars['tid']);
-        if (!$pubtype) {
-            return;
-        }
-
         // default values
-        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['folder'];
-        $listCount     = (isset($vars['listCount']) && (int)$vars['listCount'] > 0) ? $vars['listCount'] : 5;
-        $listOffset    = (isset($vars['listOffset'])) ? $vars['listOffset'] : 0;
-        $filterStr     = (isset($vars['listfilter'])) ? $vars['listfilter'] : '';
-        $orderBy       = (isset($vars['orderBy'])) ? $vars['orderBy'] : '';
-        $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
+        $template = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : '';
+        $orderdir = (isset($vars['orderDir']) && !empty($vars['orderDir'])) ? ':asc' : ':desc';
+        $orderstr = (isset($vars['orderBy']) && !empty($vars['orderBy'])) ? $vars['orderBy'].$orderdir : '';
 
-        $blockinfo['content'] = ModUtil::func('Clip', 'user', 'list',
-                                              array('tid'           => $vars['tid'],
-                                                    'template'      => 'block_'.$template,
-                                                    'filter'        => !empty($filterStr)  ? $filterStr : '()',
-                                                    'orderby'       => $orderBy,
-                                                    'itemsperpage'  => $listCount,
-                                                    'startnum'      => $listOffset,
-                                                    'handleplugins' => true,
-                                                    'cachelifetime' => $cachelifetime));
+        $args = array(
+            'tid'           => $vars['tid'],
+            'orderby'       => $orderstr,
+            'filter'        => (isset($vars['listfilter']) && !empty($vars['listfilter'])) ? $vars['listfilter'] : '()',
+            'itemsperpage'  => (isset($vars['listCount']) && (int)$vars['listCount'] > 0) ? $vars['listCount'] : 5,
+            'startnum'      => (isset($vars['listOffset'])) ? $vars['listOffset'] : 0,
+            'template'      => $template ? 'block_'.$template : 'block',
+            'cachelifetime' => (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null
+        );
+
+        $blockinfo['content'] = ModUtil::func('Clip', 'user', 'list', $args);
 
         if (empty($blockinfo['content'])) {
             return;
@@ -99,7 +96,16 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
 
         // defaults
         if (!isset($vars['tid'])) {
-            $vars['tid'] = 0;
+            $vars['tid'] = '';
+        }
+        if (!isset($vars['orderBy'])) {
+            $vars['orderBy'] = '';
+        }
+        if (!isset($vars['orderDir'])) {
+            $vars['orderDir'] = 0;
+        }
+        if (!isset($vars['listfilter'])) {
+            $vars['listfilter'] = '';
         }
         if (!isset($vars['listCount'])) {
             $vars['listCount'] = 5;
@@ -107,87 +113,21 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         if (!isset($vars['listOffset'])) {
             $vars['listOffset'] = 0;
         }
-        if (!isset($vars['cachelifetime'])) {
-            $vars['cachelifetime'] = 0;
-        }
-        if (!isset($vars['listfilter'])) {
-            $vars['listfilter'] = '';
-        }
-        if (!isset($vars['orderBy'])) {
-            $vars['orderBy'] = '';
-        }
         if (!isset($vars['template'])) {
             $vars['template'] = '';
+        }
+        if (!isset($vars['cachelifetime'])) {
+            $vars['cachelifetime'] = 0;
         }
 
         // builds the pubtypes selector
         $pubtypes = Clip_Util::getPubType(-1)->toKeyValueArray('tid', 'title');
 
+        $fields = Clip_Util_Selectors::fields($vars['tid']);
+
         $pubfields = array();
-        if (!empty($vars['tid'])) {
-            $arraysort = array(
-                'core_empty' => array(),
-                'core_title' => array(),
-                'core_cr_date' => array(),
-                'core_pu_date' => array(),
-                'core_hitcount' => array()
-            );
-
-            $pubarr = array(
-                'core_empty' => array(
-                    'text'  => '',
-                    'value' => ''
-                ),
-                'core_cr_date' => array(
-                    'text'  => $this->__('Creation date'),
-                    'value' => 'cr_date'
-                ),
-                'core_lu_date' => array(
-                    'text'  => $this->__('Update date'),
-                    'value' => 'lu_date'
-                ),
-                'core_cr_uid' => array(
-                    'text'  => $this->__('Creator'),
-                    'value' => 'core_author'
-                ),
-                'core_lu_uid' => array(
-                    'text'  => $this->__('Updater'),
-                    'value' => 'lu_uid'
-                ),
-                'core_pu_date' => array(
-                    'text'  => $this->__('Publish date'),
-                    'value' => 'core_publishdate'
-                ),
-                'core_ex_date' => array(
-                    'text'  => $this->__('Expire date'),
-                    'value' => 'core_expiredate'
-                ),
-                'core_language' => array(
-                    'text'  => $this->__('Language'),
-                    'value' => 'core_language'
-                ),
-                'core_hitcount' => array(
-                    'text'  => $this->__('Number of reads'),
-                    'value' => 'core_hitcount'
-                )
-            );
-
-            $pubfields = Clip_Util::getPubFields($vars['tid']);
-
-            foreach ($pubfields as $fieldname => $pubfield) {
-                $index = ($pubfield['istitle'] == 1) ? 'core_title' : $fieldname;
-                $pubarr[$index] = array(
-                    'text'  => $pubfield['title'],
-                    'value' => $fieldname
-                );
-            }
-
-            $pubarr = array_values(array_filter(array_merge($arraysort, $pubarr)));
-
-            $pubfields = array();
-            foreach (array_keys($pubarr) as $k) {
-                $pubfields[$pubarr[$k]['value']] = $pubarr[$k]['text'];
-            }
+        foreach (array_keys($fields) as $k) {
+            $pubfields[$fields[$k]['value']] = $fields[$k]['text'];
         }
 
         // builds and return the output
@@ -205,6 +145,7 @@ class Clip_Block_List extends Zikula_Controller_AbstractBlock
         $vars = array (
             'tid'           => FormUtil::getPassedValue('tid'),
             'orderBy'       => FormUtil::getPassedValue('orderBy'),
+            'orderDir'      => (int)FormUtil::getPassedValue('orderDir'),
             'listfilter'    => FormUtil::getPassedValue('listfilter'),
             'listCount'     => FormUtil::getPassedValue('listCount'),
             'listOffset'    => FormUtil::getPassedValue('listOffset'),

@@ -29,8 +29,8 @@ class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
     {
         return array(
             'module'         => 'Clip',
-            'text_type'      => $this->__('Clip viewpub'),
-            'text_type_long' => $this->__('Clip View Publication'),
+            'text_type'      => $this->__('Clip Pub'),
+            'text_type_long' => $this->__('Clip publication block'),
             'allow_multiple' => true,
             'form_content'   => false,
             'form_refresh'   => false,
@@ -55,6 +55,9 @@ class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
         if (!isset($vars['pid']) || empty($vars['pid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'pid') : null;
         }
+        if (!Clip_Util::validateTid($vars['tid'])) {
+            return $alert ? LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($vars['tid']))) : null;
+        }
 
         // security check
         // FIXME SECURITY centralize on Clip_Access
@@ -62,21 +65,18 @@ class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
             return;
         }
 
-        $pubtype = Clip_Util::getPubType((int)$vars['tid']);
-        if (!$pubtype) {
-            return;
-        }
-
         // default values
-        $template      = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : $pubtype['filename'];
-        $cachelifetime = (isset($vars['cachelifetime'])) ? $vars['cachelifetime'] : null;
+        $template = (isset($vars['template']) && !empty($vars['template'])) ? $vars['template'] : '';
+        $cachelt  = isset($vars['cachelifetime']) ? $vars['cachelifetime'] : null;
 
-        $blockinfo['content'] = ModUtil::func('Clip', 'user', 'display',
-                                              array('tid'                => $vars['tid'],
-                                                    'pid'                => $vars['pid'],
-                                                    'template'           => 'block_'.$template,
-                                                    'checkPerm'          => true,
-                                                    'cachelifetime'      => $cachelifetime));
+        $args = array(
+            'tid'           => $vars['tid'],
+            'pid'           => $vars['pid'],
+            'template'      => $template ? 'block_'.$template : 'block',
+            'cachelifetime' => $cachelt
+        );
+
+        $blockinfo['content'] = ModUtil::func('Clip', 'user', 'display', $args);
 
         if (empty($blockinfo['content'])) {
             return;
@@ -95,16 +95,16 @@ class Clip_Block_Viewpub extends Zikula_Controller_AbstractBlock
 
         // defaults
         if (!isset($vars['tid'])) {
-            $vars['tid'] = 0;
+            $vars['tid'] = '';
         }
         if (!isset($vars['pid'])) {
-            $vars['pid'] = 0;
-        }
-        if (!isset($vars['cachelifetime'])) {
-            $vars['cachelifetime'] = 0;
+            $vars['pid'] = '';
         }
         if (!isset($vars['template'])) {
             $vars['template'] = '';
+        }
+        if (!isset($vars['cachelifetime'])) {
+            $vars['cachelifetime'] = 0;
         }
 
         // builds the pubtypes selector

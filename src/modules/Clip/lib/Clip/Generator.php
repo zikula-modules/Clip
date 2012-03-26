@@ -82,7 +82,7 @@ class Clip_Generator
                     switch ($name) {
                         // title
                         case 'core_title':
-                            $rowcode['full'] = !$forblock ? false : '        <h5>$pubdata.'.$name.'</h5>';
+                            $rowcode['full'] = !$forblock ? false : '        <h5>{$pubdata.'.$name.'}</h5>';
                             break;
 
                         // reads
@@ -168,8 +168,13 @@ class Clip_Generator
             }
 
             if ($rowcode['full'] !== false) {
-                // add the snippet to the final template
-                $code .= "\n".$rowcode['full']."\n";
+                if ($forblock && strpos($name, 'core_') !== 0) {
+                    // add non core rows commented out
+                    $code .= "{*\n".$rowcode['full']."\n*}";
+                } else {
+                    // add the snippet to the final template
+                    $code .= "\n".$rowcode['full']."\n";
+                }
             }
         }
 
