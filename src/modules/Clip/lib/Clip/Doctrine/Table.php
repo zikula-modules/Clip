@@ -212,7 +212,7 @@ class Clip_Doctrine_Table extends Doctrine_Table
         }
 
         // adds the orderby if present
-        if (!empty($orderBy) && $this->hasField($orderBy)) {
+        if (!empty($orderBy)) {
             $q->orderBy($orderBy);
         }
 

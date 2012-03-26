@@ -271,8 +271,8 @@ class Clip_Api_User extends Zikula_AbstractApi
                 $args['orderby'] = Clip_Util_Plugins::handleOrderBy($args['orderby'], $pubfields, $args['queryalias'].'.');
 
                 // add the orderby to the query
-                foreach (explode(', ', $args['orderby']) as $orderby) {
-                    $query->orderBy($orderby);
+                if ($args['orderby']) {
+                    $query->orderBy($args['orderby']);
                 }
 
                 //// Offset and limit
