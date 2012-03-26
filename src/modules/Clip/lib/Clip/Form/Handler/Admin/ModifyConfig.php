@@ -96,6 +96,9 @@ class Clip_Form_Handler_Admin_ModifyConfig extends Zikula_Form_AbstractHandler
                 // default publication type
                 ModUtil::setVar('Clip', 'pubtype', $data['pubtype']);
 
+                // common tpls enabled
+                ModUtil::setVar('Clip', 'commontpls', $data['commontpls']);
+
                 // development mode
                 ModUtil::setVar('Clip', 'devmode', $data['devmode']);
 

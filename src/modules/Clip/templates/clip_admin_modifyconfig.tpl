@@ -85,6 +85,14 @@
             </span>
         </div>
         <div class="z-formrow">
+            {formlabel for='commontpls' __text='Common templates'}
+            {formcheckbox id='commontpls'}
+            <span class="z-formnote z-informationmsg">
+                {gt text='Enable the use of common templates for the main, list and display screens.'}<br />
+                {gt text='If the template <var>$pubtype/$func[_$tpl].tpl</var> does not exists, Clip will search for <var>common_$func[_$tpl].tpl</var> and use it if exists.'}
+            </span>
+        </div>
+        <div class="z-formrow">
             {formlabel for='devmode' __text='Development mode'}
             {formcheckbox id='devmode'}
             <span class="z-formnote z-informationmsg">

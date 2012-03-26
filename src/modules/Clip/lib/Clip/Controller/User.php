@@ -116,7 +116,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Cache
         // validate the template existance, if not defaults to the general one
-        if ($this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
+        if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
             $args['templatefile'] = $pubtype['folder'].'/'.$args['templatefile'];
         } else {
             $args['templatefile'] = 'common_'.$args['templatefile'];
@@ -276,7 +276,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Cache
         // validate the template existance, if not defaults to the general one
-        if ($this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
+        if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
             $args['templatefile'] = $pubtype['folder'].'/'.$args['templatefile'];
         } else {
             $args['templatefile'] = 'common_'.$args['templatefile'];
@@ -455,7 +455,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Cache
         // validate the template existance, if not defaults to the general one
-        if ($this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
+        if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
             $args['templatefile'] = $pubtype['folder'].'/'.$args['templatefile'];
         } else {
             $args['templatefile'] = 'common_'.$args['templatefile'];

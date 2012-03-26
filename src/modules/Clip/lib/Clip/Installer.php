@@ -54,6 +54,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
             'pubtype'    => null,
             'shorturls'  => 'htm',
             'maxperpage' => 100,
+            'commontpls' => false,
             'devmode'    => true
         );
         $this->setVars($modvars);
@@ -166,6 +167,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 self::updatePubTables();
             case '0.9.0':
             case '0.9.1':
+                $this->setVar('commontpls', false);
+                // update the model generator changes
                 Clip_Generator::resetModels();
                 // include the integration with the Content module
                 Content_Installer::updateContentType('Clip');
