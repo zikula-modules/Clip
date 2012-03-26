@@ -52,11 +52,17 @@ class Clip_Util
      */
     public static function boot()
     {
-        // add the dynamic models path
-        ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
+        static $booted = false;
 
-        // check if the models are already created
-        Clip_Generator::checkModels();
+        if (!$booted) {
+            // add the dynamic models path
+            ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
+
+            // check if the models are already created
+            Clip_Generator::checkModels();
+
+            $booted = true;
+        }
     }
 
     /**

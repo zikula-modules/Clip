@@ -21,6 +21,9 @@ class Clip_TaggedObjectMeta_Clip extends Tag_AbstractTaggedObjectMeta
     {
         parent::__construct($objectId, $areaId, $module, $objectUrl);
 
+        /*
+        Clip_Util::boot();
+
         list($tid, $pid) = explode('-', $this->getObjectId());
 
         $apiargs = array(
@@ -46,6 +49,7 @@ class Clip_TaggedObjectMeta_Clip extends Tag_AbstractTaggedObjectMeta
             $this->setObjectAuthor($pubdata['author']);
             $this->setObjectUrl(ModUtil::url('Clip', 'user', 'display', array('tid' => $tid, 'pid' => $pid)));
         }
+        */
     }
 
     public function setObjectTitle($title)

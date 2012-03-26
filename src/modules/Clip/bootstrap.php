@@ -9,10 +9,8 @@
  * @subpackage Bootstrap
  */
 
-// load models check
-$modinfo = ModUtil::getInfoFromName('Clip');
-
-if ($modinfo['state'] == ModUtil::STATE_ACTIVE) {
+// boot Clip if it's active
+if (ModUtil::available('Clip')) {
     Clip_Util::boot();
 }
 
