@@ -303,7 +303,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             // $cacheid .= '|field'.id.'|'.output
                        .'/perpage_'.$apiargs['itemsperpage']
                        .'/filter_'.(!empty($filterid) ? $filterid : 'clipnone')
-                       .'/order_'.(!empty($orderby) ? Clip_Util::createOrderBy($apiargs['orderby']) : 'clipnone')
+                       .'/order_'.(!empty($orderby) ? str_replace(array(':', ','), array('', ''), $apiargs['orderby']) : 'clipnone')
                        .'/start_'.(!empty($apiargs['startnum']) ? $apiargs['startnum'] : '0');
 
             // set the output info

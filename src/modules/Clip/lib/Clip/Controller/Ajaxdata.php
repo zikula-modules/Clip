@@ -82,7 +82,6 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
         if (empty($args['orderby'])) {
             $args['orderby'] = $titlefield;
         }
-        $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);
 
         //// Execution
         // Uses the API to get the list of publications

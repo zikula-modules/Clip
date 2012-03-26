@@ -102,18 +102,14 @@ class Clip_Util
     /**
      * Format the orderby parameter.
      *
-     * @param string $orderby
+     * @param string $orderby   Order by string.
+     * @param array  $relfields Relation field aliases on this table.
      *
-     * @return string Formatted orderby.
+     * @return string Orderby clause.
      */
-    public static function createOrderBy($orderby)
+    public static function createOrderBy($orderby, $relfields = array())
     {
-        if (!is_array($orderby)) {
-            $orderbylist = explode(',', $orderby);
-        } else {
-            $orderbylist = $orderby;
-        }
-
+        $orderbylist = !is_array($orderby) ? explode(',', $orderby) : $orderby;
         $orderbylist = array_map('trim', $orderbylist);
 
         $orderby = '';
@@ -121,9 +117,9 @@ class Clip_Util
             if ($key > 0) {
                 $orderby .= ', ';
             }
-            // $value = {col[:asc|desc]}
+            // $value = {col[:(asc|desc)]}
             $value    = explode(':', $value);
-            $orderby .= DataUtil::formatForStore($value[0]);
+            $orderby .= isset($relfields[$value[0]]) ? DataUtil::formatForStore($relfields[$value[0]]) : DataUtil::formatForStore($value[0]);
             $orderby .= (isset($value[1]) && in_array(strtoupper($value[1]), array('ASC', 'DESC')) ? ' '.strtoupper($value[1]) : '');
         }
 

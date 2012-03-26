@@ -89,39 +89,31 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         //// Misc values
-        // utility table object
-        $tableObj = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid']);
+        // utility vars
+        $tableObj  = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid']);
+        $record    = $tableObj->getRecordInstance();
+        $relfields = $record->getRelationFields();
 
         // set the order
         // handling column names till the end
         if (empty($args['orderby'])) {
-            if (!empty($pubtype['sortfield1'])) {
-                if ($pubtype['sortdesc1'] == 1) {
-                    $args['orderby'] = $pubtype['sortfield1'].' DESC ';
-                } else {
-                    $args['orderby'] = $pubtype['sortfield1'].' ASC ';
-                }
+            $args['orderby'] = array();
+            if (!empty($pubtype['sortfield1']) && $record->contains($pubtype['sortfield1'])) {
+                $args['orderby'][] = $pubtype['sortfield1'].($pubtype['sortdesc1'] == 1 ? ' DESC' : ' ASC');
+            }
+            if (!empty($pubtype['sortfield2']) && $record->contains($pubtype['sortfield2'])) {
+                $args['orderby'][] = $pubtype['sortfield2'].($pubtype['sortdesc2'] == 1 ? ' DESC' : ' ASC');
+            }
+            if (!empty($pubtype['sortfield3']) && $record->contains($pubtype['sortfield3'])) {
+                $args['orderby'][] = $pubtype['sortfield3'].($pubtype['sortfield3'] == 1 ? ' DESC' : ' ASC');
+            }
+            $args['orderby'] = implode(', ', $args['orderby']);
 
-                if (!empty($pubtype['sortfield2'])) {
-                    if ($pubtype['sortdesc2'] == 1) {
-                        $args['orderby'] .= ', '.$pubtype['sortfield2'].' DESC ';
-                    } else {
-                        $args['orderby'] .= ', '.$pubtype['sortfield2'].' ASC ';
-                    }
-                }
-
-                if (!empty($pubtype['sortfield3'])) {
-                    if ($pubtype['sortdesc3'] == 1) {
-                        $args['orderby'] .= ', '.$pubtype['sortfield3'].' DESC ';
-                    } else {
-                        $args['orderby'] .= ', '.$pubtype['sortfield3'].' ASC ';
-                    }
-                }
-            } else {
+            if (empty($args['orderby'])) {
                 $args['orderby'] = 'core_publishdate DESC';
             }
         } else {
-            $args['orderby'] = Clip_Util::createOrderBy($args['orderby']);
+            $args['orderby'] = Clip_Util::createOrderBy($args['orderby'], $relfields);
         }
 
         //// Query setup
@@ -136,7 +128,11 @@ class Clip_Api_User extends Zikula_AbstractApi
         if ($args['distinct']) {
             $distinct = explode(',', $args['distinct']);
             foreach ($distinct as $k => $v) {
-                $distinct[$k] = "$v as $v";
+                if (isset($relfields[$v])) {
+                    $distinct[$k] = "{$relfields[$v]} as $v";
+                } else {
+                    $distinct[$k] = "$v as $v";
+                }
             }
             $distinct = implode(',', $distinct);
 
@@ -146,11 +142,12 @@ class Clip_Api_User extends Zikula_AbstractApi
             $function = explode(',', $args['function']);
             foreach ($function as $k => $v) {
                 $v = explode(':', $v);
-                $func = isset($v[1]) ? strtoupper($v[1]) : 'COUNT';
+                $field = isset($relfields[$v[0]]) ? $relfields[$v[0]] : $v[0];
+                $func  = isset($v[1]) ? strtoupper($v[1]) : 'COUNT';
                 if (!in_array($func, array('MIN', 'MAX', 'SUM', 'COUNT'))) {
                     return LogUtil::registerError($this->__('Error! Invalid function passed.'));
                 }
-                $query->addSelect("$func({$v[0]}) AS ".strtolower("{$v[0]}_{$func}"));
+                $query->addSelect("$func($field) AS ".strtolower("{$v[0]}_{$func}"));
             }
         }
 
@@ -197,7 +194,6 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         if ($args['rel'] && $args['rel']['load']) {
             // adds the relations data
-            $record = $tableObj->getRecordInstance();
             foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
                 // load the relation if it means to load ONE related record only
                 if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
