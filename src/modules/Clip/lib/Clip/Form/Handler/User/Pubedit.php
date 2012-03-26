@@ -65,17 +65,19 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             $view->setStateData('pubs', array());
             $view->setStateData('links', array());
 
-            $rels = $this->pub->getRelationFields();
+            // check for set_* parameters from $_GET if its a new publication
+            if (!$this->pub->exists()) {
+                $rels = $this->pub->getRelationFields();
 
-            // check for set_* parameters from $_GET
-            $get = $this->request->getGet();
-            foreach (array_keys($get->getCollection()) as $param) {
-                if (strpos($param, 'set_') === 0) {
-                    $field = substr($param, 4);
-                    if (isset($rels[$field])) {
-                        $this->pub[$rels[$field]] = $get->filter($param);
-                    } else if ($this->pub->contains($field)) {
-                        $this->pub[$field] = $get->filter($param);
+                $get = $this->request->getGet();
+                foreach (array_keys($get->getCollection()) as $param) {
+                    if (strpos($param, 'set_') === 0) {
+                        $field = substr($param, 4);
+                        if (isset($rels[$field])) {
+                            $this->pub[$rels[$field]] = $get->filter($param);
+                        } else if ($this->pub->contains($field)) {
+                            $this->pub[$field] = $get->filter($param);
+                        }
                     }
                 }
             }
@@ -94,8 +96,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // clone the pub to assign the pubdata and do not modify the pub data
-        $pubdata = $this->pub->clipCopy(true);
-        $pubdata->clipValues(true);
+        $pubdata = $this->pub->clipCopy();
 
         // fills the render
         $view->assign('clipdata',  $data)

@@ -137,78 +137,78 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     /**
      * Generates a copy of this object.
      *
-     * @param boolean $deep Whether to include relations or not.
-     *
      * @return object
      */
-    public function clipCopy($deep = true)
+    public function clipCopy()
     {
-        $data = $this->_data;
-        $idtype = $this->_table->getIdentifierType();
-        if ($idtype === Doctrine_Core::IDENTIFIER_AUTOINC || $idtype === Doctrine_Core::IDENTIFIER_SEQUENCE) {
-            $id = $this->_table->getIdentifier();
+        $ret = $this->_table->create();
 
-            unset($data[$id]);
-        }
-
-        $ret = $this->_table->create($data);
-        $modified = array();
-
-        foreach ($data as $key => $val) {
-            if ( ! ($val instanceof Doctrine_Null)) {
-                $ret->_modified[] = $key;
-            }
-        }
-
-        if ($deep) {
-            foreach ($this->_references as $key => $value) {
-                if ($value instanceof Doctrine_Collection) {
-                    foreach ($value as $valueKey => $record) {
-                        $ret->{$key}[$valueKey] = $record;
-                    }
-                } else if ($value instanceof Doctrine_Record) {
-                    $ret->set($key, $value);
-                }
-            }
-        }
-
-        foreach ($this->_values as $k => $v) {
-            $ret->mapValue($k, $v);
-        }
-
-        if ($this[$this->_table->getIdentifier()]) {
-            $ret->assignIdentifier($this[$this->_table->getIdentifier()]);
-        }
+        // convenience assignments to mimic the original record as the clone won't be saved
+        $ret->clip_state = $this->clip_state;
+        $ret->_id = $this->_id;
+        $ret->_data = $this->_data;
+        $ret->_values = $this->_values;
+        $ret->_state = $this->_state;
+        $ret->_lastModified = $this->_lastModified;
+        $ret->_modified = $this->_modified;
+        $ret->_oldValues = $this->_oldValues;
+        $ret->_references = $this->_references;
 
         return $ret;
     }
-    
+
     /**
-     * Checks if a field is modified.
+     * Modified fields getter.
      *
-     * @param string $field Field name to check if it is modified.
+     * Checks if a field is modified or return the modified fields.
      *
-     * @return boolean
+     * @param string $field Field name to check if it is modified (optional).
+     *
+     * @return mixed
      */
-    public function clipModified($field)
+    public function clipModified($field = null)
     {
+        if (is_null($field)) {
+            return $this->_modified;
+        }
+
+        return in_array($field, $this->_modified);
+    }
+
+    /**
+     * Last modified fields getter.
+     *
+     * Checks if a field was modified or return the last modified fields.
+     *
+     * @param string $field Field name to check if it was modified (optional).
+     *
+     * @return mixed
+     */
+    public function clipLastModified($field = null)
+    {
+        if (is_null($field)) {
+            return $this->_lastModified;
+        }
+
         return in_array($field, $this->_lastModified);
     }
 
     /**
      * Old values getter.
      *
-     * @return array
+     * @param string $field Field name to check its old value (optional).
+     *
+     * @return mixed
      */
-    public function clipOldValues($column = null)
+    public function clipOldValues($field = null)
     {
         // validate the requested column
-        if ($column && !array_key_exists($column, $this->_oldValues)) {
+        if ($field && !array_key_exists($field, $this->_oldValues)) {
             return false;
         }
 
-        if ($column) {
-            $value = $this->_oldValues[$column];
+        if ($field) {
+            $value = $this->_oldValues[$field];
 
             return ($value instanceof Doctrine_Null ? null : $value);
         }
