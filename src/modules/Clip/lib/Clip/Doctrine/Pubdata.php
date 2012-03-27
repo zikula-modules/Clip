@@ -555,7 +555,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         $event  = Clip_Util::getPubType($this->core_tid)->getHooksEventName($hooktype);
         $urlobj = Clip_Util::urlobj($this, 'display'); // describes how to retrieve this object by URL metadata
         // build and notify the process hook
-        $hook   = new Zikula_ProcessHook($event, $this->core_uniqueid, $urlobj);
+        $hook   = new Zikula_ProcessHook($event, $this->core_pid, $urlobj);
         ServiceUtil::getManager()->getService('zikula.hookmanager')->notify($hook);
     }
 

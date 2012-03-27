@@ -35,5 +35,6 @@ function smarty_modifier_clip_notifyfilters($content, $pubtype, $hooktype = 'fil
     }
 
     $eventName = $pubtype->getHooksEventName($hooktype, $category, $subarea);
+
     return smarty_modifier_notifyfilters($content, $eventName);
 }
