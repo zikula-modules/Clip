@@ -73,6 +73,6 @@
     </div>
 
     <div class="clip-hooks-display">
-        {notifydisplayhooks eventname=$pubtype->getHooksEventName() id=$pubdata.core_uniqueid}
+        {notifydisplayhooks eventname=$pubtype->getHooksEventName() urlObject=$pubdata->clipUrl() id=$pubdata.core_uniqueid}
     </div>
 </div>

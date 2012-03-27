@@ -89,7 +89,7 @@
             {/if}
 
             <div class="clip-hooks-edit">
-                {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') id=$pubdata.core_uniqueid}
+                {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') urlObject=$pubdata->clipUrl() id=$pubdata.core_uniqueid}
             </div>
 
             <div class="z-buttons">

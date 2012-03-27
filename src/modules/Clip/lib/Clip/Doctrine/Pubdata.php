@@ -135,6 +135,16 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Build a Clip_Url instance to access this publication.
+     *
+     * @return Clip_Url URL Object.
+     */
+    public function clipUrl()
+    {
+        return !$this->exists() ? '' : Clip_Util::urlobj($this, 'display');
+    }
+
+    /**
      * Generates a copy of this object.
      *
      * @return object
@@ -542,9 +552,10 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      */
     public function notifyHooks($hooktype)
     {
-        $pubtype = Clip_Util::getPubType($this->core_tid);
-        $urlobj  = Clip_Util::urlobj($this, 'display'); // describes how to retrieve this object by URL metadata
-        $hook    = new Zikula_ProcessHook($pubtype->getHooksEventName($hooktype), $this->core_uniqueid, $urlobj);
+        $event  = Clip_Util::getPubType($this->core_tid)->getHooksEventName($hooktype);
+        $urlobj = Clip_Util::urlobj($this, 'display'); // describes how to retrieve this object by URL metadata
+        // build and notify the process hook
+        $hook   = new Zikula_ProcessHook($event, $this->core_uniqueid, $urlobj);
         ServiceUtil::getManager()->getService('zikula.hookmanager')->notify($hook);
     }
 
