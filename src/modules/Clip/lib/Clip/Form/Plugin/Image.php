@@ -240,53 +240,103 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             $fullargs = array();
 
             list($tmbx, $tmby ,$prex, $prey, $fullx, $fully) = $this->config;
-            if ($tmbx > 0) {
-                $tmbargs['w'] = $tmbx;
+            if ((int)$tmbx > 0) {
+                $tmbargs[] = $tmbx;
             }
-            if ($tmby > 0) {
-                $tmbargs['h'] = $tmby;
+            if ((int)$tmby > 0) {
+                $tmbargs[] = $tmby;
             }
-            if ($prex > 0) {
-                $preargs['w'] = $prex;
+            if ((int)$prex > 0) {
+                $preargs[] = $prex;
             }
-            if ($prey > 0) {
-                $preargs['h'] = $prey;
+            if ((int)$prey > 0) {
+                $preargs[] = $prey;
             }
-            if ($fullx > 0) {
-                $fullargs['w'] = $fullx;
+            if ((int)$fullx > 0) {
+                $fullargs[] = $fullx;
             }
-            if ($fully > 0) {
-                $fullargs['h'] = $fully;
+            if ((int)$fully > 0) {
+                $fullargs[] = $fully;
             }
 
-            // check for the Thumbnails module and if we need it
-            if (!empty($tmbargs) && ModUtil::available('Thumbnail')) {
+            $dotmb  = (count($tmbargs) == 2);
+            $dopre  = (count($preargs) == 2);
+            $dofull = (count($fullargs) == 2);
+
+            // check if we need to build thumbnails
+            if ($dotmb || $dopre || $dofull) {
+                // check which engine is available
+
+                // Gmagick
+                if (class_exists('Gmagick')) {
+                    $Imagine = new Imagine\Gmagick\Imagine();
+                }
+
+                // Imagick
+                if (!isset($Imagine) && class_exists('Imagick')) {
+                    $imagick = new \Imagick();
+                    $v = $imagick->getVersion();
+                    list($version, $year, $month, $day, $q, $website) = sscanf($v['versionString'], 'ImageMagick %s %04d-%02d-%02d %s %s');
+
+                    if (version_compare('6.2.9', $version) <= 0) {
+                        $Imagine = new Imagine\Imagick\Imagine();
+                    }
+                }
+
+                // GD 2.0.1+
+                if (!isset($Imagine) && function_exists('gd_info') && version_compare(GD_VERSION, '2.0.1', '>=')) {
+                    $Imagine = new Imagine\Gd\Imagine();
+                }
+            }
+
+            if ($dotmb && isset($Imagine)) {
                 $data['tmb_name'] = str_replace(".$extension", "-tmb.$extension", $data['file_name']);
-                $tmbargs['filename']    = "{$uploadpath}/{$data['file_name']}";
-                $tmbargs['dstFilename'] = "{$uploadpath}/{$data['tmb_name']}";
-                $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $tmbargs);
+
+                $image = $Imagine->open("{$uploadpath}/{$data['file_name']}");
+
+                if ($this->config[7]) {
+                    $size = $image->getSize();
+                    self::calcImageSize($tmbargs, array($size->getWidth(), $size->getHeight()));
+                }
+
+                $image->resize(new Imagine\Image\Box($tmbargs[0], $tmbargs[1]))
+                      ->save("{$uploadpath}/{$data['tmb_name']}");
 
             } elseif ($newUpload) {
                 // no thumbnail needed
                 $data['tmb_name'] = '';
             }
 
-            if (!empty($preargs) && ModUtil::available('Thumbnail')) {
+            if ($dopre && isset($Imagine)) {
                 $data['pre_name'] = str_replace(".$extension", "-pre.$extension", $data['file_name']);
-                $preargs['filename']    = "{$uploadpath}/{$data['file_name']}";
-                $preargs['dstFilename'] = "{$uploadpath}/{$data['pre_name']}";
-                $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $preargs);
+
+                $image = $Imagine->open("{$uploadpath}/{$data['file_name']}");
+
+                if ($this->config[7]) {
+                    $size = isset($size) ? $size : $image->getSize();
+                    self::calcImageSize($preargs, array($size->getWidth(), $size->getHeight()));
+                }
+
+                $image->resize(new Imagine\Image\Box($preargs[0], $preargs[1]))
+                        ->save("{$uploadpath}/{$data['pre_name']}");
 
             } elseif ($newUpload) {
                 // no thumbnail needed
                 $data['pre_name'] = '';
             }
 
-            if (!empty($fullargs) && ModUtil::available('Thumbnail')) {
+            if ($dofull && isset($Imagine)) {
                 $data['full_name'] = str_replace(".$extension", "-full.$extension", $data['file_name']);
-                $fullargs['filename']    = "{$uploadpath}/{$data['file_name']}";
-                $fullargs['dstFilename'] = "{$uploadpath}/{$data['full_name']}";
-                $dstName = ModUtil::apiFunc('Thumbnail', 'user', 'generateThumbnail', $fullargs);
+
+                $image = $Imagine->open("{$uploadpath}/{$data['file_name']}");
+
+                if ($this->config[7]) {
+                    $size = isset($size) ? $size : $image->getSize();
+                    self::calcImageSize($fullargs, array($size->getWidth(), $size->getHeight()));
+                }
+
+                $image->resize(new Imagine\Image\Box($fullargs[0], $fullargs[1]))
+                        ->save("{$uploadpath}/{$data['full_name']}");
 
             } elseif ($newUpload) {
                 // no thumbnail needed
@@ -299,6 +349,18 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         }
 
         return $oldData ? $oldData : '';
+    }
+
+    public static function calcImageSize(&$args, $size)
+    {
+        $sp = $size[0]/$size[1];
+        $ap = $args[0]/$args[1];
+
+        if ($sp >= $ap) {
+            $args[1] = floor($args[0]*$size[1]/$size[0]);
+        } else {
+            $args[0] = floor($args[1]*$size[0]/$size[1]);
+        }
     }
 
     public static function getOutputDisplay($field)
@@ -357,7 +419,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     {
         return 'function()
                 {
-                    $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+$F(\'clipplugin_preservename\');
+                    $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+$F(\'clipplugin_preservename\')+\':\'+$F(\'clipplugin_preserveprop\');
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
@@ -370,41 +432,44 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         $html = '<div class="z-formrow">
                      <label for="clipplugin_preservename">'.$this->__('Preserve filename').':</label>
                      <input type="checkbox" value="1" id="clipplugin_preservename" name="clipplugin_preservename" '.($this->config[6] ? ' checked="checked"' : '').' />
+                     <span class="z-formnote z-sub">'.$this->__('Preserve the file name of the original file uploaded instead generate a random one.').'</span>
+                 </div>
+                 <div class="z-formrow">
+                     <label for="clipplugin_preserveprop">'.$this->__('Preserve aspect ratio').':</label>
+                     <input type="checkbox" value="1" id="clipplugin_preserveprop" name="clipplugin_preserveprop" '.($this->config[7] ? ' checked="checked"' : '').' />
+                     <span class="z-formnote z-sub">'.$this->__('Preserve the proportions of the original image on the secondary images.').'</span>
                  </div>';
 
-        if (ModUtil::available('Thumbnail')) {
-            // TODO Fieldsets and help text explaining how they work
-            $html .= '<div class="z-formrow">
-                          <label for="clipplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
-                          <input type="text" value="'.$this->config[0].'" id="clipplugin_tmpx_px" name="clipplugin_tmpx_px" />
-                      </div>
-                      <div class="z-formrow">
-                          <label for="clipplugin_tmpy_px">'.$this->__('Thumbnail height').':</label>
-                          <input type="text" value="'.$this->config[1].'" id="clipplugin_tmpy_px" name="clipplugin_tmpy_px" />
-                          <br />
-                      </div>
-                      <div class="z-formrow">
-                          <label for="clipplugin_pre_px">'.$this->__('Preview width').':</label>
-                          <input type="text" value="'.$this->config[2].'" id="clipplugin_previewx_px" name="clipplugin_previewx_px" />
-                      </div>
-                      <div class="z-formrow">
-                          <label for="clipplugin_pre_px">'.$this->__('Preview height').':</label>
-                          <input type="text" value="'.$this->config[3].'" id="clipplugin_previewy_px" name="clipplugin_previewy_px" />
-                          <br />
-                      </div>
-                      <div class="z-formrow">
-                          <label for="clipplugin_full_px">'.$this->__('Full width').':</label>
-                          <input type="text" value="'.$this->config[4].'" id="clipplugin_fullx_px" name="clipplugin_fullx_px" />
-                      </div>
-                      <div class="z-formrow">
-                          <label for="clipplugin_full_px">'.$this->__('Full height').':</label>
-                          <input type="text" value="'.$this->config[5].'" id="clipplugin_fully_px" name="clipplugin_fully_px" />
-                      </div>';
-        } else {
-            $html .= '<div class="z-warningmsg">
-                          '.$this->__('Warning! The Thumbnails module is not available. This plugin needs it to build the Preview and Thumbnail of each uploaded Image.').'
-                      </div>';
-        }
+        // TODO Fieldsets and help text explaining how they work
+        $html .= '<div class="z-informationmsg">
+                      '.$this->__('Leave empty if you do not need to generate any secondary image.').'
+                  </div>
+                  <div class="z-formrow">
+                      <label for="clipplugin_tmpx_px">'.$this->__('Thumbnail width').':</label>
+                      <input type="text" value="'.$this->config[0].'" id="clipplugin_tmpx_px" name="clipplugin_tmpx_px" />
+                  </div>
+                  <div class="z-formrow">
+                      <label for="clipplugin_tmpy_px">'.$this->__('Thumbnail height').':</label>
+                      <input type="text" value="'.$this->config[1].'" id="clipplugin_tmpy_px" name="clipplugin_tmpy_px" />
+                      <br />
+                  </div>
+                  <div class="z-formrow">
+                      <label for="clipplugin_pre_px">'.$this->__('Preview width').':</label>
+                      <input type="text" value="'.$this->config[2].'" id="clipplugin_previewx_px" name="clipplugin_previewx_px" />
+                  </div>
+                  <div class="z-formrow">
+                      <label for="clipplugin_pre_px">'.$this->__('Preview height').':</label>
+                      <input type="text" value="'.$this->config[3].'" id="clipplugin_previewy_px" name="clipplugin_previewy_px" />
+                      <br />
+                  </div>
+                  <div class="z-formrow">
+                      <label for="clipplugin_full_px">'.$this->__('Full width').':</label>
+                      <input type="text" value="'.$this->config[4].'" id="clipplugin_fullx_px" name="clipplugin_fullx_px" />
+                  </div>
+                  <div class="z-formrow">
+                      <label for="clipplugin_full_px">'.$this->__('Full height').':</label>
+                      <input type="text" value="'.$this->config[5].'" id="clipplugin_fully_px" name="clipplugin_fully_px" />
+                  </div>';
 
         return $html;
     }
@@ -414,18 +479,19 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
      */
     public function parseConfig($typedata='', $args=array())
     {
-        // config string: "$tmpx:$tmpy:$prex:$prey:$fullx:$fully:$preserve"
+        // config string: "$tmpx:$tmpy:$prex:$prey:$fullx:$fully:$preserveName:$proportions"
         $this->config = explode(':', $typedata);
 
         // validate all the values
         $this->config = array(
             0 => (int)$this->config[0],
-            1 => isset($this->config[1]) ? (int)$this->config[1] : 0,
-            2 => isset($this->config[2]) ? (int)$this->config[2] : 0,
-            3 => isset($this->config[3]) ? (int)$this->config[3] : 0,
-            4 => isset($this->config[4]) ? (int)$this->config[4] : 0,
-            5 => isset($this->config[5]) ? (int)$this->config[5] : 0,
-            6 => isset($this->config[6]) ? (bool)$this->config[6] : false
+            1 => isset($this->config[1]) ? (int)$this->config[1] : '',
+            2 => isset($this->config[2]) ? (int)$this->config[2] : '',
+            3 => isset($this->config[3]) ? (int)$this->config[3] : '',
+            4 => isset($this->config[4]) ? (int)$this->config[4] : '',
+            5 => isset($this->config[5]) ? (int)$this->config[5] : '',
+            6 => isset($this->config[6]) ? (bool)$this->config[6] : true,
+            7 => isset($this->config[7]) ? (bool)$this->config[7] : true
         );
     }
 }

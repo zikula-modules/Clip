@@ -1,27 +1,23 @@
 
   INSTALL
-    Install Clip as any other module:
+    Install Clip is pretty easy:
     Copy its files inside the /modules folder.
+    Optionally, create a writable folder as ztemp/ClipModels,
+    Clip will try to create it automatically if it doesn't exists.
 
-    Go to your Modules Admin Panel and regenerate the list,
-    install, activate and configure the writable folder path
-    that Clip will use when need to upload files to the site,
-    and that's all, begin the creation of your publication types
+    Go to your Modules Admin Panel and click the install icon.
+    Configure the path where you want to upload files and images.
+    That's all! begin the creation of your publication types
     and manage your stuff ;-)
 
   TO-KNOW
     Some things you should know for using Clip:
 
-    Workflow: "none":
-    * All users can add new publications to the publication type
-      if they own the ACCESS_COMMENT permission in Zikula
+    Standard and Enterprise workflows:
+    * All users can submit new publications to the publication type
+      if they have general 'comment' access in your site.
 
-    General:
-    * If you are using the file upload possibility of Clip
-      there will be thumbnails created by the Thumbnail module.
-      The Thumbnail module needs at least the permission
-      ACCESS_EDIT to create Thumbnails. So, do not forget to
-      give this permission to the user group that should be able
-      to upload image files.
+    For more information on permissions check this document:
+    https://github.com/zikula-modules/Clip/blob/master/src/modules/Clip/docs/permissions.markdown
 
   Enjoy!

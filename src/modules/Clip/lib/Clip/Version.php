@@ -68,11 +68,7 @@ class Clip_Version extends Zikula_AbstractVersion
                 array('modname'    => 'Scribite',
                       'minversion' => '4.2.1',
                       'maxversion' => '',
-                      'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
-                array('modname'    => 'Thumbnail',
-                      'minversion' => '1.4.0',
-                      'maxversion' => '',
-                      'status'     => ModUtil::DEPENDENCY_RECOMMENDED),
+                      'status'     => ModUtil::DEPENDENCY_RECOMMENDED)
         );
 
         return $meta;
