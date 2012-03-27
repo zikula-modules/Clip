@@ -83,7 +83,9 @@ class Clip_Installer extends Zikula_AbstractInstaller
      */
     public function upgrade($oldversion)
     {
-        Clip_Util::boot();
+        if (version_compare($oldversion, '0.4.6') >= 0) {
+            Clip_Util::boot();
+        }
 
         switch ($oldversion)
         {
@@ -100,7 +102,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     return '0.4.4';
                 }
             case '0.4.5':
-                if (!self::migratePubField()) {
+                if (!$this->migratePubField()) {
                     return '0.4.5';
                 }
             case '0.4.6':
@@ -108,7 +110,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
             case '0.4.7':
                 self::tempUpdate047();
-                self::updatePubTables();
+                //self::updatePubTables();
             case '0.4.8':
             case '0.4.9':
                 if (!Doctrine_Core::getTable('Clip_Model_Pubtype')->changeTable(true)) {
@@ -136,7 +138,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
             case '0.4.15':
                 // update the permission schema
                 $table = DBUtil::getLimitedTablename('group_perms');
-                DBUtil::executeSQL("UPDATE $table SET component = 'Clip:display:' WHERE component = 'Clip:full:'");
+                DBUtil::executeSQL("UPDATE $table SET component = 'Clip:.*?:display' WHERE component = 'Clip:full:'");
                 // regenerate the hook information
                 $regtables = array('hook_runtime' => 'sowner', 'hook_binding' => 'sowner', 'hook_subscriber' => 'owner');
                 foreach ($regtables as $rtable => $rfield) {
@@ -156,7 +158,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     return '0.4.17';
                 }
             case '0.4.18':
-                $dirs = self::createDirectories(array('models'));
+                $dirs = self::createDirectories(array('models'), true);
                 $this->setVar('modelspath', $dirs['models']);
             case '0.4.19':
                 if (!self::introduceUrltitle()) {
@@ -417,7 +419,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
     /**
      * Upload and Models directories creation
      */
-    private function createDirectories($toCreate = array())
+    private function createDirectories($toCreate = array(), $silent = false)
     {
         $dirs = array();
         $dirs['upload'] = FileUtil::getDataDirectory().'/Clip/uploads';
@@ -444,7 +446,9 @@ class Clip_Installer extends Zikula_AbstractInstaller
                     }
                 }
             }
-            LogUtil::registerStatus($msg.'.');
+            if (!$silent) {
+                LogUtil::registerStatus($msg.'.');
+            }
         }
 
         return $dirs;
@@ -472,15 +476,17 @@ class Clip_Installer extends Zikula_AbstractInstaller
         $existingtables = DBUtil::metaTables();
 
         // detects and update the relations table
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
         if (in_array(DBUtil::getLimitedTablename('pagemaster_relations'), $existingtables)) {
-            $tableObj->dropTable();
+            DBUtil::dropTable('pagemaster_relations');
         }
-        $tableObj->createTable();
+        Doctrine_Core::getTable('Clip_Model_Pubrelation')->createTable();
 
         // rename the others
         DBUtil::renameTable('pagemaster_pubfields', 'clip_pubfields');
         DBUtil::renameTable('pagemaster_pubtypes',  'clip_pubtypes');
+
+        // ensure tid is not pm_tid
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_tid', 'tid');
 
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
@@ -634,9 +640,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
             DoctrineUtil::renameColumn('clip_pubtypes', 'pm_defaultFilter', 'pm_defaultfilter');
         }
 
-        if (!Doctrine_Core::getTable('Clip_Model_Pubtype')->changeTable()) {
-            return false;
-        }
+        // ensure tid is not pm_tid
+        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_tid', 'tid');
 
         // fills the empty publish dates
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
@@ -662,13 +667,24 @@ class Clip_Installer extends Zikula_AbstractInstaller
     /**
      * Deprecation of the Publication field.
      */
-    private static function migratePubField()
+    private function migratePubField()
     {
-        if (!Doctrine_Core::getTable('Clip_Model_Pubfield')->changeTable()) {
+        self::upgradeDBpre09();
+
+        if (!Doctrine_Core::getTable('Clip_Model_Pubtype')->changeTable()) {
             return false;
         }
 
-        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('outputset', null, '', false, 'tid');
+        if (!Doctrine_Core::getTable('Clip_Model_Pubfield')->changeTable()) {
+            return false;
+        }
+        
+        // create the modelspath to be able to build the relations models
+        $dirs = self::createDirectories(array('models'), true);
+        $this->setVar('modelspath', $dirs['models']);
+        ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left($dirs['models'], -11)));
+
+        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('folder', null, '', false, 'tid');
 
         $fields = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection("fieldplugin = 'Pub'", 'tid');
 
@@ -857,21 +873,24 @@ class Clip_Installer extends Zikula_AbstractInstaller
      */
     private static function tempUpdate047()
     {
+        DoctrineUtil::renameColumn('clip_pubfields', 'pm_fieldtype', 'fielddbtype');
+
         // TEMP UPDATE: Image fieldplugin type change: C(255) to C(1024)
         $table = DBUtil::getLimitedTablename('clip_pubfields');
-        $sql[] = "UPDATE $table SET pm_fieldtype = 'C(1024)' WHERE pm_fieldplugin = 'Image' OR pm_fieldplugin = 'Upload'";
+        $sql[] = "UPDATE $table SET fielddbtype = 'C(1024)' WHERE fielddbtype = 'Image' OR fielddbtype = 'Upload'";
     }
 
     /**
-     * Upgrade Database by last time before 0.9 release.
-     *
-     * @return boolean
+     * Upgrade pubtypes table.
      */
-    private function upgradeDBpre09()
+    private static function upgTablePubtypes()
     {
-        // last db changes before Clip 0.9
+        static $done = false;
+        if ($done) { return true; }
+        $done = true;
 
-        // table structure
+        $ptcols = array_keys(DBUtil::metaColumnNames('clip_pubtypes'));
+
         // pubtypes
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_tid', 'tid');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_title', 'title');
@@ -895,14 +914,29 @@ class Clip_Installer extends Zikula_AbstractInstaller
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_outputset', 'folder');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_workflow', 'workflow');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_group', 'grouptype');
-        DoctrineUtil::alterColumn('clip_pubtypes', 'pm_config', array('type' => 'clob', 'options' => array('length' => 65532)));
-        DoctrineUtil::renameColumn('clip_pubtypes', 'pm_config', 'config');
+        if (in_array('pm_config', $ptcols)) {
+            DoctrineUtil::alterColumn('clip_pubtypes', 'pm_config', array('type' => 'clob', 'options' => array('length' => 65532)));
+            DoctrineUtil::renameColumn('clip_pubtypes', 'pm_config', 'config');
+        }
         DoctrineUtil::dropColumn('clip_pubtypes', 'pm_inputset');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_obj_status', 'obj_status');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_cr_date', 'cr_date');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_cr_uid', 'cr_uid');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_lu_date', 'lu_date');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_lu_uid', 'lu_uid');
+    }
+
+    /**
+     * Upgrade pubtypes table.
+     */
+    private static function upgTablePubfields()
+    {
+        static $done = false;
+        if ($done) { return true; }
+        $done = true;
+
+        $pfcols = array_keys(DBUtil::metaColumnNames('clip_pubfields'));
+
         // pubfields
         DoctrineUtil::renameColumn('clip_pubfields', 'pm_id', 'id');
         DoctrineUtil::alterColumn('clip_pubfields', 'pm_tid', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
@@ -922,35 +956,60 @@ class Clip_Installer extends Zikula_AbstractInstaller
         DoctrineUtil::createColumn('clip_pubfields', 'is_filterable', array('type' => 'boolean', 'length' => null, 'notnull' => true, 'default' => 0));
         DoctrineUtil::renameColumn('clip_pubfields', 'pm_ispageable', 'is_pageable');
         DoctrineUtil::createColumn('clip_pubfields', 'is_counter', array('type' => 'boolean', 'length' => null, 'notnull' => true, 'default' => 0));
-        DoctrineUtil::dropColumn('clip_pubfields', 'pm_isuid');
+        if (in_array('pm_isuid', $pfcols)) {
+            DoctrineUtil::dropColumn('clip_pubfields', 'pm_isuid');
+        }
         DoctrineUtil::renameColumn('clip_pubfields', 'pm_obj_status', 'obj_status');
         DoctrineUtil::renameColumn('clip_pubfields', 'pm_cr_date', 'cr_date');
         DoctrineUtil::renameColumn('clip_pubfields', 'pm_cr_uid', 'cr_uid');
         DoctrineUtil::renameColumn('clip_pubfields', 'pm_lu_date', 'lu_date');
         DoctrineUtil::renameColumn('clip_pubfields', 'pm_lu_uid', 'lu_uid');
+    }
+
+    /**
+     * Upgrade Database by last time before 0.9 release.
+     *
+     * @return boolean
+     */
+    private function upgradeDBpre09()
+    {
+        static $done = false;
+        if ($done) { return true; }
+        $done = true;
+
+        // last db changes before Clip 0.9
+        $tables = Doctrine_Manager::connection()->import->listTables();
+
+        // table structure
+        self::upgTablePubtypes();
+        self::upgTablePubfields();
         // grouptypes
-        DoctrineUtil::renameColumn('clip_grouptypes', 'c_gid', 'gid');
-        DoctrineUtil::renameColumn('clip_grouptypes', 'c_name', 'name');
-        DoctrineUtil::renameColumn('clip_grouptypes', 'c_description', 'description');
-        DoctrineUtil::renameColumn('clip_grouptypes', 'c_order', 'sortorder');
+        if (in_array(DBUtil::getLimitedTablename('clip_grouptypes'), $tables)) {
+            DoctrineUtil::renameColumn('clip_grouptypes', 'c_gid', 'gid');
+            DoctrineUtil::renameColumn('clip_grouptypes', 'c_name', 'name');
+            DoctrineUtil::renameColumn('clip_grouptypes', 'c_description', 'description');
+            DoctrineUtil::renameColumn('clip_grouptypes', 'c_order', 'sortorder');
+        }
         // relations
-        DoctrineUtil::renameColumn('clip_relations', 'pm_id', 'id');
-        DoctrineUtil::alterColumn('clip_relations', 'pm_type', array('type' => 'integer', 'options' => array('length' => 2, 'notnull' => true, 'default' => 1)));
-        DoctrineUtil::renameColumn('clip_relations', 'pm_type', 'type');
-        DoctrineUtil::alterColumn('clip_relations', 'pm_tid1', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
-        DoctrineUtil::renameColumn('clip_relations', 'pm_tid1', 'tid1');
-        DoctrineUtil::alterColumn('clip_relations', 'pm_alias1', array('type' => 'string', 'options' => array('length' => 100, 'notnull' => false)));
-        DoctrineUtil::renameColumn('clip_relations', 'pm_alias1', 'alias1');
-        DoctrineUtil::renameColumn('clip_relations', 'pm_title1', 'title1');
-        DoctrineUtil::renameColumn('clip_relations', 'pm_desc1', 'desc1');
-        DoctrineUtil::alterColumn('clip_relations', 'pm_tid2', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
-        DoctrineUtil::renameColumn('clip_relations', 'pm_tid2', 'tid2');
-        DoctrineUtil::alterColumn('clip_relations', 'pm_alias2', array('type' => 'string', 'options' => array('length' => 100, 'notnull' => false)));
-        DoctrineUtil::renameColumn('clip_relations', 'pm_alias2', 'alias2');
-        DoctrineUtil::renameColumn('clip_relations', 'pm_title2', 'title2');
-        DoctrineUtil::renameColumn('clip_relations', 'pm_desc2', 'desc2');
+        $rlcols = array_keys(DBUtil::metaColumnNames('clip_relations'));
+        if (in_array('pm_id', $rlcols)) {
+            DoctrineUtil::renameColumn('clip_relations', 'pm_id', 'id');
+            DoctrineUtil::alterColumn('clip_relations', 'pm_type', array('type' => 'integer', 'options' => array('length' => 2, 'notnull' => true, 'default' => 1)));
+            DoctrineUtil::renameColumn('clip_relations', 'pm_type', 'type');
+            DoctrineUtil::alterColumn('clip_relations', 'pm_tid1', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
+            DoctrineUtil::renameColumn('clip_relations', 'pm_tid1', 'tid1');
+            DoctrineUtil::alterColumn('clip_relations', 'pm_alias1', array('type' => 'string', 'options' => array('length' => 100, 'notnull' => false)));
+            DoctrineUtil::renameColumn('clip_relations', 'pm_alias1', 'alias1');
+            DoctrineUtil::renameColumn('clip_relations', 'pm_title1', 'title1');
+            DoctrineUtil::renameColumn('clip_relations', 'pm_desc1', 'desc1');
+            DoctrineUtil::alterColumn('clip_relations', 'pm_tid2', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
+            DoctrineUtil::renameColumn('clip_relations', 'pm_tid2', 'tid2');
+            DoctrineUtil::alterColumn('clip_relations', 'pm_alias2', array('type' => 'string', 'options' => array('length' => 100, 'notnull' => false)));
+            DoctrineUtil::renameColumn('clip_relations', 'pm_alias2', 'alias2');
+            DoctrineUtil::renameColumn('clip_relations', 'pm_title2', 'title2');
+            DoctrineUtil::renameColumn('clip_relations', 'pm_desc2', 'desc2');
+        }
         // pubdatas
-        $tables  = Doctrine_Manager::connection()->import->listTables();
         $pubdata = DBUtil::getLimitedTablename('clip_pubdata');
         foreach ($tables as $k => $table) {
             if (strpos($table, $pubdata) !== 0) {
@@ -1045,7 +1104,10 @@ class Clip_Installer extends Zikula_AbstractInstaller
         // update the database
         $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
-            DoctrineUtil::createColumn('clip_pubdata'.$tid, 'urltitle', array('type' => 'string', 'length' => 255));
+            $cols = array_keys(DBUtil::metaColumnNames('clip_pubdata'.$tid));
+            if (!in_array('urltitle', $cols)) {
+                DoctrineUtil::createColumn('clip_pubdata'.$tid, 'urltitle', array('type' => 'string', 'length' => 255));
+            }
 
             // fill the urltitles
             $urltitles  = array();
