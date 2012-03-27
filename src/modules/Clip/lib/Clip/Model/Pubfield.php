@@ -133,29 +133,11 @@ class Clip_Model_Pubfield extends Doctrine_Record
     }
 
     /**
-     * Save hook.
-     *
-     * @return void
-     */
-    public function postSave($event)
-    {
-        $this->updatePubtype($event);
-    }
-
-    /**
      * Delete hook.
      *
      * @return void
      */
     public function postDelete($event)
-    {
-        $this->updatePubtype($event);
-    }
-
-    /**
-     * Common method.
-     */
-    public function updatePubtype($event)
     {
         $pubfield = $event->getInvoker();
 

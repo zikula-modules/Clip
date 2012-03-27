@@ -160,6 +160,9 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
 
                 $pubfield->save();
 
+                // update the pubtype table
+                Clip_Util::getPubType($this->tid)->updateTable();
+
                 // create/edit status messages
                 if (!$this->id) {
                     LogUtil::registerStatus($this->__('Done! Field created.'));
