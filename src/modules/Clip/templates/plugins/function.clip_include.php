@@ -10,7 +10,9 @@
  */
 
 /**
- * Plugin to include a pubtype specific or a generic Clip template.
+ * Plugin to include a pubtype specific or a common Clip template.
+ *
+ * clip_include will use the common templates always, if the requested one is a main|list|display template.
  *
  * Available parameters:
  *  - file    (string)  Template filename to render.
@@ -43,6 +45,10 @@ function smarty_function_clip_include($params, Zikula_View &$view)
     // check if the file is inside the pubtype's folder or just use the generic name passed
     if ($view->template_exists("$dir/$file")) {
         $file = "$dir/$file";
+
+    // check if need to search a common main, list or display template
+    } else if (preg_match('/^(main|list|display)_/', $file)) {
+        $file = "common_$file";
     }
 
     // backup the current tpl vars
