@@ -240,9 +240,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // notify the finalization of the edition
         $mainpub = Clip_Event::notify('data.edit.post', $mainpub, $this->pub)->getData();
 
-        // core operations processing
-        $goto = $this->processGoto($mainpub);
-
         // check the goto parameter
         switch ($this->goto)
         {
@@ -272,10 +269,13 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             case 'referer':
-                $this->goto = $goto ? $goto : $this->referer;
+                $this->goto = $this->referer;
                 break;
 
             default:
+                // core operations goto processing
+                $goto = $this->processGoto($mainpub);
+
                 $this->goto = $goto ? $goto : ($this->itemurl ? $this->itemurl : $this->referer);
         }
 
