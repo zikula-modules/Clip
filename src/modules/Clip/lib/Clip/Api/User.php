@@ -245,15 +245,19 @@ class Clip_Api_User extends Zikula_AbstractApi
         if ($args['function']) {
             $publist = $query->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 
-            if (count($publist) == 1) {
-                $publist = reset($publist);
+            // remove the posthydrated core values
+            foreach ($publist as $k => $v) {
+                if (strpos($k, 'core_') === 0) {
+                    unset($publist[$k]);
+                }
             }
+
+            $publist = (count($publist) == 1) ? reset($publist) : $publist;
 
         } else {
             //// Count
             if ($args['countmode'] != 'no') {
                 $pubcount = $query->count();
-
             }
 
             //// Collection
@@ -282,8 +286,17 @@ class Clip_Api_User extends Zikula_AbstractApi
 
                 //// execution and postprocess
                 if ($args['distinct']) {
-                    // distinct field
+                    // distinct field(s)
                     $publist = $query->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
+
+                    // remove the posthydrated core values
+                    foreach ($publist as $j => $res) {
+                        foreach ($res as $k => $v) {
+                            if (strpos($k, 'core_') === 0) {
+                                unset($publist[$j][$k]);
+                            }
+                        }
+                    }
 
                     if (strpos($args['distinct'], ',') === false) {
                         foreach ($publist as $k => $v) {
