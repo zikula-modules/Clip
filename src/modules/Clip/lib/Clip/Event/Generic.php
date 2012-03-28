@@ -72,7 +72,7 @@ class Clip_Event_Generic extends Zikula_Event //implements Zikula_EventInterface
      *
      * @throws InvalidArgumentException When name is empty.
      */
-    public function __construct($name, $subject, $data = null, array $args = array())
+    public function __construct($name, $subject, $data = null, $args = array())
     {
         // must have a name
         if (empty($name)) {
