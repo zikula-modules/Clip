@@ -114,11 +114,18 @@ class Clip_Controller_User extends Zikula_AbstractController
                               ->fetch($args['templatesimple']);
         }
 
+        // alert pubtype admins only
+        $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+
         //// Cache
         // validate the template existance, if not defaults to the general one
         if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
             $args['templatefile'] = $pubtype['folder'].'/'.$args['templatefile'];
         } else {
+            if ($alert) {
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['folder'].'/'.$args['templatefile']));
+            }
+
             $args['templatefile'] = 'common_'.$args['templatefile'];
         }
 
@@ -180,8 +187,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // check if the template is available to render it
         if (!$this->view->template_exists($args['templatefile'])) {
-            if (Clip_Access::toPubtype($pubtype)) {
-                // pubtype admins only
+            if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['templatefile']));
             }
 
@@ -274,11 +280,18 @@ class Clip_Controller_User extends Zikula_AbstractController
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'list', $apiargs['templateid']));
 
+        // alert pubtype admins only
+        $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+
         //// Cache
         // validate the template existance, if not defaults to the general one
         if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
             $args['templatefile'] = $pubtype['folder'].'/'.$args['templatefile'];
         } else {
+            if ($alert) {
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['folder'].'/'.$args['templatefile']));
+            }
+
             $args['templatefile'] = 'common_'.$args['templatefile'];
         }
 
@@ -360,8 +373,8 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // check if the template is not available
         if (!$this->view->template_exists($args['templatefile'])) {
-            if (Clip_Access::toPubtype($pubtype)) {
-                // pubtype admins only
+            if ($alert) {
+                // alert pubtype admins only
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['templatefile']));
             }
 
@@ -453,11 +466,18 @@ class Clip_Controller_User extends Zikula_AbstractController
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], 'display', $apiargs['templateid']));
 
+        // alert pubtype admins only
+        $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+
         //// Cache
         // validate the template existance, if not defaults to the general one
         if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'].'/'.$args['templatefile'])) {
             $args['templatefile'] = $pubtype['folder'].'/'.$args['templatefile'];
         } else {
+            if ($alert) {
+                LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $pubtype['folder'].'/'.$args['templatefile']));
+            }
+
             $args['templatefile'] = 'common_'.$args['templatefile'];
         }
 
@@ -493,9 +513,6 @@ class Clip_Controller_User extends Zikula_AbstractController
             $this->view->setCaching(Zikula_View::CACHE_DISABLED);
         }
 
-        // setup an admin flag
-        $isadmin = Clip_Access::toPubtype($pubtype);
-
         //// Execution
         // fill the conditions of the item to get
         $apiargs['where'] = array();
@@ -508,7 +525,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $apiargs);
 
         if (!$pubdata) {
-            if ($isadmin) {
+            if (Clip_Access::toPubtype($pubtype)) {
                 // detailed error message for the admin only
                 return LogUtil::registerError($this->__f('No such publication [tid: %1$s - pid: %2$s; id: %3$s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])));
             } else {
@@ -547,7 +564,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // check if template is not available
         if (!$this->view->template_exists($args['templatefile'])) {
-            if ($isadmin) {
+            if ($alert) {
                 LogUtil::registerStatus($this->__f('Notice: Template [%s] not found.', $args['templatefile']));
             }
 
@@ -691,9 +708,10 @@ class Clip_Controller_User extends Zikula_AbstractController
         // notify the ui edition
         $render = Clip_Event::notify('ui.edit', $render, $args)->getData();
 
-        // resolve the template to use
+        // alert pubtype admins only
         $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
 
+        // resolve the template to use
         // 1. custom template
         if (!empty($args['template'])) {
             $template = $pubtype['folder']."/form_{$args['state']}_{$args['template']}.tpl";
