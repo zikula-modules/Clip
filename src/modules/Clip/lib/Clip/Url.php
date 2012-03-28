@@ -84,6 +84,11 @@ class Clip_Url extends Zikula_ModUrl
         return $this->args;
     }
 
+    public function getArg($name)
+    {
+        return isset($this->args[$name]) ? $this->args[$name] : null;
+    }
+
     public function getLanguage()
     {
         return $this->language;
