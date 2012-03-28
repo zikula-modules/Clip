@@ -1,5 +1,5 @@
 
-{clip_hitcount pid=$pubdata.core_pid tid=$pubdata.core_tid}
+{clip_hitcount}
 
 <div class="clip-wrapper clip-display clip-display-{$pubtype.urltitle}">
     {include file='generic_navbar.tpl'}
