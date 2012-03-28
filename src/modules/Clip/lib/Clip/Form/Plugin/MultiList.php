@@ -185,16 +185,13 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
                     var config = new Array()
                     config.push($F(\'clipplugin_categorylist\'))
 
-                    if (parseInt($F(\'clipplugin_multisize\')) != NaN && parseInt($F(\'clipplugin_multisize\')) > 0) {
+                    if (Number($F(\'clipplugin_multisize\')) > 0) {
                         config.push($F(\'clipplugin_multisize\'));
                     } else {
                         config.push(\'~\');
                     }
-                    if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
-                        config.push(\'1\');
-                    } else {
-                        config.push(\'0\');
-                    }
+                    config.push(Number($F(\'clipplugin_editlink\')));
+
                     $(\'typedata\').value = config.join(\'|\')
 
                     Zikula.Clip.Pubfields.ConfigClose();
@@ -236,7 +233,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
         $checked = $this->config[2] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
                       <label for="clipplugin_editlink">'.$this->__('Edit link').':</label>
-                      <input type="checkbox" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
+                      <input type="checkbox" value="1" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
                   </div>';
 
         return $html;

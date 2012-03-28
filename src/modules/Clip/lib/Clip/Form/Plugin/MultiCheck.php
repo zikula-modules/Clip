@@ -179,13 +179,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
     {
         return 'function()
                 {
-                    $(\'typedata\').value = $F(\'clipplugin_checklist\') ;
-                    $(\'typedata\').value += \'|\';
-                    if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
-                        $(\'typedata\').value += 1;
-                    } else {
-                        $(\'typedata\').value += 0;
-                    }
+                    $(\'typedata\').value = $F(\'clipplugin_checklist\')+\'|\'+Number($F(\'clipplugin_editlink\'));
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
@@ -219,7 +213,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         $checked = $this->config['edit'] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
                       <label for="clipplugin_editlink">'.$this->__('Edit link').':</label>
-                      <input type="checkbox" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
+                      <input type="checkbox" value="1" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
                   </div>';
 
         return $html;

@@ -419,7 +419,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     {
         return 'function()
                 {
-                    $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+$F(\'clipplugin_preservename\')+\':\'+$F(\'clipplugin_preserveprop\');
+                    $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+Number($F(\'clipplugin_preservename\'))+\':\'+Number($F(\'clipplugin_preserveprop\'));
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';

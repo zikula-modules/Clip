@@ -153,18 +153,7 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
                     } else {
                         $(\'typedata\').value = '.Clip_Util::getDefaultCategoryID().';
                     }
-                    $(\'typedata\').value += \',\';
-                    if ($F(\'clipplugin_categoryempty\') == \'on\') {
-                        $(\'typedata\').value += 1;
-                    } else {
-                        $(\'typedata\').value += 0;
-                    }
-                    $(\'typedata\').value += \',\';
-                    if ($(\'clipplugin_editlink\') && $F(\'clipplugin_editlink\') == \'on\') {
-                        $(\'typedata\').value += 1;
-                    } else {
-                        $(\'typedata\').value += 0;
-                    }
+                    $(\'typedata\').value += \',\'+Number($F(\'clipplugin_categoryempty\'))+\',\'+Number($F(\'clipplugin_editlink\'));
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
@@ -198,14 +187,14 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
         $checked = $this->config[1] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
                       <label for="clipplugin_categoryempty">'.$this->__('Include an empty item?').'</label>
-                      <input type="checkbox" id="clipplugin_categoryempty" name="clipplugin_categoryempty" '.$checked.' />
+                      <input type="checkbox" value="1" id="clipplugin_categoryempty" name="clipplugin_categoryempty" '.$checked.' />
                   </div>';
 
         // edit link checkbox
         $checked = $this->config[2] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
                       <label for="clipplugin_editlink">'.$this->__('Edit link').':</label>
-                      <input type="checkbox" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
+                      <input type="checkbox" value="1" id="clipplugin_editlink" name="clipplugin_editlink" '.$checked.' />
                   </div>';
 
         return $html;

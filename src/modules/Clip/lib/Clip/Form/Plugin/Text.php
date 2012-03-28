@@ -98,11 +98,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
     {
         return 'function()
                 {
-                    if ($(\'clipplugin_usescribite\') && $F(\'clipplugin_usescribite\') == \'on\') {
-                        $(\'typedata\').value = 1;
-                    } else {
-                        $(\'typedata\').value = 0;
-                    }
+                    $(\'typedata\').value = $(\'clipplugin_usescribite\') ? Number($F(\'clipplugin_usescribite\')) : \'\';
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
@@ -118,7 +114,7 @@ class Clip_Form_Plugin_Text extends Zikula_Form_Plugin_TextInput
             $html = '<div class="z-formrow">
                          <span class="z-warningmsg">'.$this->__('Be sure to setup a default editor for Scribite!. It will be used in these text fields.').'</span>
                          <label for="clipplugin_usescribite">'.$this->__('Use Scribite!').':</label>
-                         <input type="checkbox" id="clipplugin_usescribite" name="clipplugin_usescribite" '.$checked.' />
+                         <input type="checkbox" value="1" id="clipplugin_usescribite" name="clipplugin_usescribite" '.$checked.' />
                      </div>';
         } else {
             $html = '<div class="z-formrow">

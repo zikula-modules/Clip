@@ -263,7 +263,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     {
         return 'function()
                 {
-                    $(\'typedata\').value = $F(\'clipplugin_preservename\');
+                    $(\'typedata\').value = Number($F(\'clipplugin_preservename\'));
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';

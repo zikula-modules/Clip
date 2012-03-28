@@ -107,17 +107,7 @@ class Clip_Form_Plugin_Language extends Zikula_Form_Plugin_LanguageSelector
     {
         return 'function()
                 {
-                    if ($F(\'clipplugin_onlyinstalled\') == \'on\') {
-                        $(\'typedata\').value += 1;
-                    } else {
-                        $(\'typedata\').value += 0;
-                    }
-                    $(\'typedata\').value += \',\';
-                    if ($F(\'clipplugin_alloption\') == \'on\') {
-                        $(\'typedata\').value += 1;
-                    } else {
-                        $(\'typedata\').value += 0;
-                    }
+                    $(\'typedata\').value = Number($F(\'clipplugin_onlyinstalled\'))+\',\'+Number($F(\'clipplugin_alloption\'));
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
@@ -131,14 +121,14 @@ class Clip_Form_Plugin_Language extends Zikula_Form_Plugin_LanguageSelector
         $checked = $this->config[0] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
                       <label for="clipplugin_onlyinstalled">'.$this->__('Show only the installed languages?').'</label>
-                      <input type="checkbox" id="clipplugin_onlyinstalled" name="clipplugin_onlyinstalled" '.$checked.' />
+                      <input type="checkbox" value="1" id="clipplugin_onlyinstalled" name="clipplugin_onlyinstalled" '.$checked.' />
                   </div>';
 
         // edit link checkbox
         $checked = $this->config[1] ? 'checked="checked"' : '';
         $html .= '<div class="z-formrow">
                       <label for="clipplugin_alloption">'.$this->__("Show the 'All' option?").':</label>
-                      <input type="checkbox" id="clipplugin_alloption" name="clipplugin_alloption" '.$checked.' />
+                      <input type="checkbox" value="1" id="clipplugin_alloption" name="clipplugin_alloption" '.$checked.' />
                   </div>';
 
         return $html;

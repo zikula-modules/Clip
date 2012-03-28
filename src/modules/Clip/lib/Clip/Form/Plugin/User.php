@@ -206,12 +206,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
     {
         return 'function()
                 {
-                    if ($(\'clipplugin_multiple\') && $F(\'clipplugin_multiple\') == \'on\') {
-                        $(\'typedata\').value = 1;
-                    } else {
-                        $(\'typedata\').value = 0;
-                    }
-                    $(\'typedata\').value += \'|\';
+                    $(\'typedata\').value = Number($F(\'clipplugin_multiple\'))+\'|\';
                     if ($F(\'clipplugin_operator\') != null) {
                         $(\'typedata\').value += $F(\'clipplugin_operator\');
                     } else {
@@ -230,7 +225,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $checked = $this->config['multiple'] ? 'checked="checked"' : '';
         $html = '<div class="z-formrow">
                      <label for="clipplugin_multiple">'.$this->__('Multiple Users?').'</label>
-                     <input type="checkbox" id="clipplugin_multiple" name="clipplugin_multiple" '.$checked.' />
+                     <input type="checkbox" value="1" id="clipplugin_multiple" name="clipplugin_multiple" '.$checked.' />
                  </div>';
 
         // operator to use

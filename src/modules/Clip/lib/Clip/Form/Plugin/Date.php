@@ -179,11 +179,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     {
         return 'function()
                 {
-                    if ($F(\'clipplugin_usedatetime\') == \'on\') {
-                        $(\'typedata\').value = 1;
-                    } else {
-                        $(\'typedata\').value = 0;
-                    }
+                    $(\'typedata\').value = Number($F(\'clipplugin_usedatetime\'));
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
@@ -196,7 +192,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
 
         $html = '<div class="z-formrow">
                      <label for="clipplugin_usedatetime">'.$this->__('Include time').':</label>
-                     <input type="checkbox" id="clipplugin_usedatetime" name="clipplugin_usedatetime" '.$checked.' />
+                     <input type="checkbox" value="1" id="clipplugin_usedatetime" name="clipplugin_usedatetime" '.$checked.' />
                  </div>';
 
         return $html;
