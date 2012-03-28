@@ -177,8 +177,8 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 $this->setVar('commontpls', false);
                 // update the model generator changes
                 Clip_Generator::resetModels();
+                // include the integration with the Content module if available
                 if (ModUtil::available('Content')) {
-                    // include the integration with the Content module
                     Content_Installer::updateContentType('Clip');
                 }
                 EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getContentTypes'));
