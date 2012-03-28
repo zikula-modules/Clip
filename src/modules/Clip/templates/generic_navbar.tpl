@@ -19,7 +19,7 @@
         {if $type neq 'editor'}
         {clip_accessblock context='editor'}
         <span class="clip-breadlink">
-            <a href="{modurl modname='Clip' type='editor' func='list' tid="`$pubtype.tid`"}">
+            <a href="{clip_url type='editor' func='list'}">
                 {img width='12' height='12' modname='core' src='lists.png' set='icons/extrasmall' alt='' __title='Editor panel'}
             </a>
         </span>
