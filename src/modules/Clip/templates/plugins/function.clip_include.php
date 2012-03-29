@@ -55,7 +55,7 @@ function smarty_function_clip_include($params, Zikula_View &$view)
     $tpl_vars = $view->_tpl_vars;
 
     // include the passed parameters into the existing clipvalues
-    $view->_tpl_vars['clipvalues'] = array_merge((array)$view->_tpl_vars['clipvalues'], (array)$params);
+    $view->_tpl_vars['clipvalues'] = array_merge((array)$view->getTplVar('clipvalues'), (array)$params);
 
     if ($assign) {
         ob_start();
