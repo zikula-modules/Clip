@@ -1,9 +1,6 @@
 
   TODO
 
-    PAGEMASTER
-      Upgrade path possibly broken with the new file-based models, need to reorder it
-
     EDITOR PANEL
       Adjustments to review the own publications + revisions
 
@@ -12,7 +9,6 @@
 
     PLUGINS
       General:
-        Maxlenght more clean solution. Exclude some default plugins?
         Expand the support to multiple rows with the introduction of D2
       Relations:
         Exclude already linked pubs?

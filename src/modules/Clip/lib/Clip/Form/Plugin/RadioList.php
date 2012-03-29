@@ -29,7 +29,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
 
         //! field type name
-        $this->pluginTitle = $this->__('Radio list');
+        $this->pluginTitle = $this->__('Radio List');
     }
 
     public function getFilename()

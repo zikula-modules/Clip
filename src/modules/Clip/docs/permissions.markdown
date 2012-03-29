@@ -1,7 +1,7 @@
 
 Clip Permissions Scheme
 ========
-Replace the $variables with your corresponding value or pattern.
+Replace the `$variables` with your corresponding value or pattern.
 
 
 module
