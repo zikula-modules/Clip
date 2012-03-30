@@ -137,9 +137,9 @@ class Clip_Model_Pubtype extends Doctrine_Record
         Doctrine_Core::getTable($classname)->changeTable(true);
     }
 
-    public function getFields()
+    public function getFields($attrs = false)
     {
-        return $this->tid ? Clip_Util::getPubFields($this->tid) : array();
+        return $this->tid ? Clip_Util::getPubFields($this->tid, null, 'lineno', $attrs) : array();
     }
 
     public function getRelations($onlyown = true, $field = null)

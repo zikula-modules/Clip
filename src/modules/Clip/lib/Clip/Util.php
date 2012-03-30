@@ -405,10 +405,11 @@ class Clip_Util
      * @param integer $tid     Pubtype ID.
      * @param string  $name    Name of the field to get.
      * @param string  $orderBy Field name to sort by.
+     * @param boolean $attrs   Whether to load field attributes or not.
      *
      * @return array Array of fields of one or all the loaded pubtypes.
      */
-    public static function getPubFields($tid, $name = null, $orderBy = 'lineno')
+    public static function getPubFields($tid, $name = null, $orderBy = 'lineno', $attrs = false)
     {
         static $pubfields_arr;
 
@@ -420,6 +421,19 @@ class Clip_Util
 
         if ($name) {
             return isset($pubfields_arr[$tid][$name]) ? $pubfields_arr[$tid][$name] : array();
+        }
+
+        if ($attrs) {
+            foreach ($pubfields_arr[$tid] as $name => &$field) {
+                if ($field->hasMappedValue('attrs')) {
+                    // already loaded
+                    break;
+                }
+
+                $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+
+                $field->mapValue('attrs', method_exists($plugin, 'clipAttributes') ? (array)$plugin->clipAttributes($field) : array());
+            }
         }
 
         return isset($pubfields_arr[$tid]) ? $pubfields_arr[$tid] : array();

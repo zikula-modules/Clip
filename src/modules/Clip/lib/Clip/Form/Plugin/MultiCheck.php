@@ -153,6 +153,13 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         return $this->config['cat'];
     }
 
+    public function clipAttributes($field)
+    {
+        return array(
+            'cid' => $this->getRootCategoryID($field['typedata'])
+        );
+    }
+
     public static function getOutputDisplay($field)
     {
         $full = '        <div class="z-formrow">'."\n".

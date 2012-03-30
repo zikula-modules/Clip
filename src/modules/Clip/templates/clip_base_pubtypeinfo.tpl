@@ -139,7 +139,7 @@
             <th class="z-w05">{gt text='Edit'}</th>
         </thead>
         <tbody>
-            {foreach from=$pubtype->getFields() item='item'}
+            {foreach from=$pubtype->getFields(true) item='item'}
             <tr class="{cycle name='pfieldlist' values='z-even,z-odd'}">
                 <td><code>{$item.name|safetext}</code></td>
                 <td>{$item.title|safetext}</td>
@@ -149,11 +149,16 @@
                     <a href="{clip_url func='pubfields' tid=$item.tid id=$item.id fragment='newpubfield'}">
                         {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit' __alt='Edit'}
                     </a>
+                    {if $item.attrs.cid|default:false}
+                    <a href="{modurl modname='Categories' type='user' func='edit' dr=$item.attrs.cid}">
+                        {img width='12' height='12' modname='core' src='xedit.png' set='icons/extrasmall' __title='List' __alt='List'}
+                    </a>
+                    {/if}
                 </td>
             </tr>
             {foreachelse}
             <tr>
-                <td colspan="5">{gt text='There are no field defined yet.'}</td>
+                <td colspan="5">{gt text='There are no fields defined yet.'}</td>
             </tr>
             {/foreach}
         </tbody>

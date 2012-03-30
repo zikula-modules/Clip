@@ -128,6 +128,13 @@ class Clip_Form_Plugin_List extends Zikula_Form_Plugin_CategorySelector
         return $this->config[0];
     }
 
+    public function clipAttributes($field)
+    {
+        return array(
+            'cid' => $this->getRootCategoryID($field['typedata'])
+        );
+    }
+
     public static function getOutputDisplay($field)
     {
         $full = '        <div class="z-formrow">'."\n".

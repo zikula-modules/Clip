@@ -186,6 +186,13 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         return $this->config['cat'];
     }
 
+    public function clipAttributes($field)
+    {
+        return array(
+            'cid' => $this->getRootCategoryID($field['typedata'])
+        );
+    }
+
     public static function getOutputDisplay($field)
     {
         $full = '        <div class="z-formrow">'."\n".
