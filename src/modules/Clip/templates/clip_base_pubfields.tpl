@@ -9,7 +9,7 @@
 <div class="z-admin-content-pagetitle">
     {img modname='core' src='db_update.png' set='icons/small' alt=''}
     <h3>{$pubtype.title} &raquo; {gt text='Manage Publication fields'}</h3>
-    {clip_adminmenu tid=$tid field=$field.id}
+    {clip_adminmenu field=$field.id}
 </div>
 
 {insert name='getstatusmsg'}

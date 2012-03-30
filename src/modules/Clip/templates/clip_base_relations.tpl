@@ -3,7 +3,7 @@
     {icon type='hook' size='small'}
     {if $tid}
         <h3>{$pubtypes[$tid].title} &raquo; {gt text='Relations'}</h3>
-        {clip_adminmenu tid=$tid}
+        {clip_adminmenu}
     {else}
         <h3>{gt text='Manage Relations'}</h3>
     {/if}
@@ -69,7 +69,7 @@
                     {/if}
                     &nbsp;
                     <br />
-                    <span class="z-sub">$pubdata.{$item.alias1|safetext}</span>
+                    <span class="z-sub" title="{$item.descr1|safetext}">{$item.title1|safetext} | <code>$pubdata.{$item.alias1|safetext}</code></span>
                     &nbsp;&nbsp;
                 </span>
                 <span class="z-itemcell z-w40">
@@ -79,7 +79,7 @@
                         {gt text='has Many <strong>%s</strong>' tag1=$pubtypes[$item.tid2].title|safetext}
                     {/if}
                     <br />&nbsp;
-                    <span class="z-sub">$pubdata.{$item.alias2|safetext}</span>
+                    <span class="z-sub" title="{$item.descr2|safetext}"><code>$pubdata.{$item.alias2|safetext}</code> | {$item.title2|safetext}</span>
                 </span>
                 <span class="z-itemcell z-w10">
                     <a href="{clip_url func='relations' tid=$tid id=$item.id withtid1=$filter.withtid1 op=$filter.op withtid2=$filter.withtid2 fragment='relform'}">

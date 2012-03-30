@@ -9,7 +9,7 @@
     {img modname='core' src='db.png' set='icons/small' alt=''}
     {if isset($pubtype.tid)}
         <h3>{$pubtype.title} &raquo; {gt text='Edit publication type'}</h3>
-        {clip_adminmenu tid=$pubtype.tid}
+        {clip_adminmenu}
     {else}
         <h3>{gt text='Create publication type'}</h3>
     {/if}

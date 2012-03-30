@@ -1,7 +1,7 @@
 
 <h3>{gt text='Publications list'}</h3>
 
-{clip_adminmenu tid=$pubtype.tid}
+{clip_adminmenu}
 
 {pager display='page' posvar='page' rowcount=$pager.numitems limit=$pager.itemsperpage maxpages=9 owner='Clip' template='pager_default.tpl' processUrls=false}
 

@@ -2,7 +2,7 @@
 <div class="z-admin-content-pagetitle">
     {img modname='core' src='folder_documents.png' set='icons/small' __title='Publication type information' alt=''}
     <h3>{$pubtype.title}</h3>
-    {clip_adminmenu tid=$pubtype.tid}
+    {clip_adminmenu}
 </div>
 
 {insert name='getstatusmsg'}
@@ -83,7 +83,7 @@
 <div id="p{$pubtype.tid}code" class="clip-infotab">
     <ul>
         <li>
-            <a href="{clip_url func='generator' code='form'}">
+            <a href="{clip_url func='generator' code='edit'}">
                 {gt text='Form'}
             </a>
             <p>

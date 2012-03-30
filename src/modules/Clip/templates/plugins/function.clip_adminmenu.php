@@ -13,11 +13,11 @@
  * Builds and displays the admin submenu.
  *
  * Available parameters:
- *  - tid (integer) Publication type ID.
+ *  - tid (integer) Publication type ID (optional).
  *
  * Example:
  *
- *  <samp>{clip_adminmenu tid=$pubtype.tid}</samp>
+ *  <samp>{clip_adminmenu}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -28,13 +28,13 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 {
     include_once('modules/Clip/templates/plugins/function.clip_url.php');
 
-    $tid = (int)$params['tid'];
+    $pubtype = $view->getTplVar('pubtype');
 
-    if (!$tid) {
-        return LogUtil::registerError($view->__f('%1$s: Invalid publication type ID passed [%2$s].', array('{clip_adminmenu}', DataUtil::formatForDisplay($tid))));
+    $tid = isset($params['tid']) ? (int)$params['tid'] : ($pubtype ? $pubtype['tid'] : $view->getTplVar('tid'));
+
+    if (!$tid || !Clip_Util::validateTid($tid)) {
+        return;
     }
-
-    $pubtype = Clip_Util::getPubType($tid);
 
     // build the output
     $args = array('func' => 'pubtypeinfo', 'args' => array('tid' => $tid));

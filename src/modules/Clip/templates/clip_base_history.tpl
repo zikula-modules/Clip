@@ -1,7 +1,7 @@
 
 <h3>{gt text='History'}</h3>
 
-{clip_adminmenu tid=$pubtype.tid}
+{clip_adminmenu}
 
 <table class="z-admintable">
     <thead>
