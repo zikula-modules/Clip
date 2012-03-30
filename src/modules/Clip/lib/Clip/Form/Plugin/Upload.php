@@ -275,7 +275,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
         $html = '<div class="z-formrow">
                      <label for="clipplugin_preservename">'.$this->__('Preserve filename').':</label>
-                     <input type="checkbox" value="1" id="clipplugin_preservename" name="clipplugin_preservename" '.($this->config[6] ? ' checked="checked"' : '').' />
+                     <input type="checkbox" value="1" id="clipplugin_preservename" name="clipplugin_preservename" '.($this->config['preserve'] ? ' checked="checked"' : '').' />
                  </div>';
 
         return $html;
@@ -287,7 +287,6 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     public function parseConfig($typedata='', $args=array())
     {
         // config string: "$preserve"
-        //$this->config = explode(':', $typedata);
 
         // validate all the values
         $this->config = array(
