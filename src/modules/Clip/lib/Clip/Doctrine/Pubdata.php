@@ -38,7 +38,17 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     {
         $fields = $this->pubFields();
 
-        $a = parent::toArray($deep, $prefixKey);
+        $a = parent::toArray(false, $prefixKey);
+
+        if ($deep) {
+            // process the references here as edit convert them to arrays
+            foreach ($this->_references as $key => $relation) {
+                if ( ! $relation instanceof Doctrine_Null and is_object($relation)) {
+                    $a[$key] = $relation->toArray($deep, $prefixKey);
+                }
+            }
+        }
+
         $a = $a ? array_intersect_key($a, $fields) : $fields;
 
         return $a;
@@ -54,8 +64,10 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
      */
     public function toKeyValueArray($key, $field = null)
     {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
         if (!$this->contains($key)) {
-            throw new Exception("Invalid property [$key] requested on ".get_class()."->toKeyValueArray");
+            throw new Exception(__f("Invalid property [%s] requested on %s->toKeyValueArray", array($key, get_class()), $dom));
         }
 
         if (!$field) {
@@ -65,7 +77,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         $result = array();
         foreach ($this->$key as $k => $v) {
             if (!isset($v[$field])) {
-                throw new Exception("Invalid field [$field] requested for the property [$key] on ".get_class()."->toKeyValueArray");
+                throw new Exception(__f("Invalid field [%s] requested for the property [%s] on %s->toKeyValueArray", array($field, $key, get_class()), $dom));
             }
             $result[$k] = $v[$field];
         }
@@ -255,7 +267,7 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
         $this->clipValues($args['handleplugins']);
 
         // post process related records
-        if ($args['rel']['load'] && $args['rel']['checkperm']) {
+        if (isset($args['rel']['load']) && $args['rel']['load'] && $args['rel']['checkperm']) {
             // process the loaded related records
             foreach ($this->getRelations($args['rel']['onlyown']) as $alias => $relation) {
                 if ($this->hasReference($alias)) {

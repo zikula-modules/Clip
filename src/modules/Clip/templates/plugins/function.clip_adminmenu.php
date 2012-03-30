@@ -89,7 +89,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
 
     // show code links
     $args['func'] = 'generator';
-    $args['args'] = array('tid' => $tid, 'code' => 'form');
+    $args['args'] = array('tid' => $tid, 'code' => 'edit');
 
     if ($func == 'generator') {
         $output .= '<br />';
@@ -98,7 +98,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
         $links = array();
 
         $args['args']['code'] = 'main';
-        $links[] = $params['code'] == 'main'      ? $view->__('Index')      : '<a class="tooltips" title="'.$view->__('Publication type main template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Index').'</a>';
+        $links[] = $params['code'] == 'main'      ? $view->__('Main')       : '<a class="tooltips" title="'.$view->__('Publication type main template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Main').'</a>';
 
         $args['args']['code'] = 'list';
         $links[] = $params['code'] == 'list'      ? $view->__('List')       : '<a class="tooltips" title="'.$view->__('Publications list template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('List').'</a>';
@@ -106,8 +106,8 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
         $args['args']['code'] = 'display';
         $links[] = $params['code'] == 'display'   ? $view->__('Display')    : '<a class="tooltips" title="'.$view->__('Publication display template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Display').'</a>';
 
-        $args['args']['code'] = 'form';
-        $links[] = $params['code'] == 'form'      ? $view->__('Form')       : '<a class="tooltips" title="'.$view->__('Publication input form template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Form').'</a>';
+        $args['args']['code'] = 'edit';
+        $links[] = $params['code'] == 'edit'      ? $view->__('Form')       : '<a class="tooltips" title="'.$view->__('Publication input form template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Form').'</a>';
 
         $args['args']['code'] = 'blocklist';
         $links[] = $params['code'] == 'blocklist' ? $view->__('List block') : '<a class="tooltips" title="'.$view->__('List block template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('List block').'</a>';

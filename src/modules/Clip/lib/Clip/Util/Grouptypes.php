@@ -17,7 +17,7 @@ class Clip_Util_Grouptypes
     /**
      * Get the accessible grouptypes tree array.
      *
-     * @param integer $accessLevel  Minimum access level to check the grouptypes for (default: overview).
+     * @param integer $context      Context required to have access for the pubtypes (default: admin).
      * @param boolean $includeRoot  Whether or not to include the root grouptypes in the result (optional) (default: true).
      * @param boolean $includeEmpty Whether or not to include the grouptypes without pubtypes (optional) (default: false).
      * @param boolean $withPubtypes Whether or not to include the child pubtypes in the result (optional) (default: true).
@@ -130,7 +130,7 @@ class Clip_Util_Grouptypes
     public static function getTreeJS($grouptypes = null, $renderRoot = false, $withPubtypes = false, array $options = array(), $context = 'admin')
     {
         if (!$grouptypes) {
-            $grouptypes = self::getTree($accessLevel, true, true, $withPubtypes);
+            $grouptypes = self::getTree($context, true, true, $withPubtypes);
             // just for safety, disable the root grouptype of drag & drop
             $options['disabled'] = isset($options['disabled']) ? array_merge($options['disabled'], array(1)) : array(1);
         }

@@ -87,6 +87,9 @@ class Clip_Access
             }
 
             $component = "Clip:{$pubtype->tid}:";
+
+        } else if (in_array($context, array('editor', 'submit'))) {
+            return false;
         }
 
         // evaluate the access depending of the required context

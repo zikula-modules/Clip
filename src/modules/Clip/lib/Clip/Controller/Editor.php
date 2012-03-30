@@ -49,16 +49,22 @@ class Clip_Controller_Editor extends Zikula_AbstractController
     public function main()
     {
         //// Security
-        // TODO be sure that the tree handle only the ones with Edit access
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT/*, 'ANY'*/));
 
+        // checks if there is a pubtype selected
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
+        
+        $pubtype = Clip_Util::validateTid($args['tid']) ? Clip_Util::getPubType($args['tid']) : new Clip_Model_Pubtype();
+
+        // get the tree of pubtypes with edit access
         $grouptypes = Clip_Util_Grouptypes::getTree('edit', false);
 
         // register clip_util
         Clip_Util::register_utilities($this->view);
 
         //// Output
-        $this->view->assign('grouptypes', $grouptypes);
+        $this->view->assign('pubtype',    $pubtype)
+                   ->assign('grouptypes', $grouptypes);
 
         return $this->view->fetch('editor_main.tpl');
     }
@@ -90,7 +96,8 @@ class Clip_Controller_Editor extends Zikula_AbstractController
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : false,
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : true,
             'checkperm'     => false,
-            'countmode'     => 'both'
+            'countmode'     => 'both',
+            'rel'           => $pubtype['config']['list']
         );
         $args = array(
             'startnum'      => (isset($args['startnum']) && is_numeric($args['startnum'])) ? (int)$args['startnum'] : (int)FormUtil::getPassedValue('startnum', 0),

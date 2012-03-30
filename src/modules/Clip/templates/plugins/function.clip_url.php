@@ -76,7 +76,8 @@ function smarty_function_clip_url($params, Zikula_View &$view)
 
     // setup the tid if not set
     if (!isset($params['tid'])) {
-        $params['tid'] = $view->getTplVar('pubtype')->tid;
+        $pubtype = $view->getTplVar('pubtype');
+        $params['tid'] = $pubtype['tid'];
     }
 
     // dispatch any non-ajax request with modurl

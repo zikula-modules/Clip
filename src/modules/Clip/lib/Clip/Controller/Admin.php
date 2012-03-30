@@ -154,7 +154,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
         //// Parameters
         $args = array(
             'tid'  => $args['tid'],
-            'code' => isset($args['code']) ? $args['code'] : FormUtil::getPassedValue('code', 'form')
+            'code' => isset($args['code']) ? $args['code'] : FormUtil::getPassedValue('code', 'edit')
         );
 
         //// Validation
@@ -180,7 +180,7 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                 $output = Clip_Generator::pubdisplay($args['tid'], false);
                 break;
 
-            case 'form':
+            case 'edit':
                 $output = Clip_Generator::pubedit($args['tid']);
                 break;
 
