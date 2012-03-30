@@ -276,6 +276,7 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         $html = '<div class="z-formrow">
                      <label for="clipplugin_preservename">'.$this->__('Preserve filename').':</label>
                      <input type="checkbox" value="1" id="clipplugin_preservename" name="clipplugin_preservename" '.($this->config['preserve'] ? ' checked="checked"' : '').' />
+                     <span class="z-formnote z-sub">'.$this->__('Preserve the file name of the original file uploaded instead generate a random one.').'</span>
                  </div>';
 
         return $html;

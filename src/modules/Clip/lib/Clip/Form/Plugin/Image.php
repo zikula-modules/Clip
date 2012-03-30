@@ -484,14 +484,14 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
 
         // validate all the values
         $this->config = array(
-            0 => (int)$this->config[0],
-            1 => isset($this->config[1]) ? (int)$this->config[1] : '',
-            2 => isset($this->config[2]) ? (int)$this->config[2] : '',
-            3 => isset($this->config[3]) ? (int)$this->config[3] : '',
-            4 => isset($this->config[4]) ? (int)$this->config[4] : '',
-            5 => isset($this->config[5]) ? (int)$this->config[5] : '',
-            6 => isset($this->config[6]) ? (bool)$this->config[6] : true,
-            7 => isset($this->config[7]) ? (bool)$this->config[7] : true
+            0 => !empty($this->config[0]) ? (int)$this->config[0]  : '',
+            1 => isset($this->config[1])  ? (int)$this->config[1]  : '',
+            2 => isset($this->config[2])  ? (int)$this->config[2]  : '',
+            3 => isset($this->config[3])  ? (int)$this->config[3]  : '',
+            4 => isset($this->config[4])  ? (int)$this->config[4]  : '',
+            5 => isset($this->config[5])  ? (int)$this->config[5]  : '',
+            6 => isset($this->config[6])  ? (bool)$this->config[6] : true,
+            7 => isset($this->config[7])  ? (bool)$this->config[7] : true
         );
     }
 }
