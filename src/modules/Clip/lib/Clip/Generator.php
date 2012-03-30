@@ -515,8 +515,8 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
             \$obj->mapValue('core_tid',        $tid);
             \$obj->mapValue('core_titlefield', '$titlefield');
             \$obj->mapValue('core_title',      \$obj->_get(\$obj->core_titlefield, false) ? \$obj[\$obj->core_titlefield] : '');
-            \$obj->mapValue('core_uniqueid',   \$obj->_get(\$obj->core_pid, false) ? \$obj->core_tid.'-'.\$obj->core_pid : null);
-            \$obj->mapValue('core_creator',    \$obj->_get(\$obj->core_author, false) ? (\$obj->core_author == UserUtil::getVar('uid') ? true : false) : null);
+            \$obj->mapValue('core_uniqueid',   \$obj->_get('core_pid', false) ? \$obj->core_tid.'-'.\$obj->core_pid : null);
+            \$obj->mapValue('core_creator',    \$obj->_get('core_author', false) ? (\$obj->core_author == UserUtil::getVar('uid') ? true : false) : null);
         } else {
             \$obj['core_tid']        = $tid;
             \$obj['core_titlefield'] = '$titlefield';
