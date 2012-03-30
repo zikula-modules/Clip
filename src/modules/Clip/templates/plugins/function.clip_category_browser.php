@@ -121,7 +121,7 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
             $cats[$k]['selected'] = 0;
 
             $old_filter = '';
-            $filter_act = $field.':'.$operator.':'.$cats[$k]['id'];
+            $filter_act = $field.'^'.$operator.'^'.$cats[$k]['id'];
 
             $depth = StringUtil::countInstances($cats[$k]['path'], '/');
             if (strlen($cats[$k]['path']) > 1) {
@@ -144,7 +144,7 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
                     } else {
                         // just add if from another browser
                         if ($globalmultiselect) {
-                            list($fx, $subx, $idx) = explode(':', $fv);
+                            list($fx, $subx, $idx) = explode('^', $fv);
 
                             if (!in_array($idx, $catIDs)) {
                                 $old_filter .= ','.$fv;
@@ -193,11 +193,12 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
             $cats[$k]['depth']     = $depth;
             $cats[$k]['url']       = $url;
             $cats[$k]['fullTitle'] = isset($cats[$k]['display_name'][$lang]) ? $cats[$k]['display_name'][$lang] : $cats[$k]['name'];
+            $cats[$k]['fullDesc']  = isset($cats[$k]['display_desc'][$lang]) ? $cats[$k]['display_desc'][$lang] : '';
         }
 
         if ($includenulllink) {
             $args = $params;
-            $args['filter'] = $field.':null';
+            $args['filter'] = $field.'^null';
             $nullcat = array(
                 -1 => array(
                     'fullTitle' => $view->__('Uncategorized'),
