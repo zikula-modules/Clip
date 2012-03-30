@@ -656,11 +656,15 @@ class Clip_Util
         } else if ($obj instanceof Clip_Doctrine_Pubdata) {
             $args['tid'] = $obj['core_tid'];
             if ($func == 'display' || $func == 'edit') {
-                $args['pid'] = $obj['core_pid'];
-                if ($func == 'edit') {
-                    $args['id'] = $obj['id'];
+                if ($obj['core_pid']) {
+                    $args['pid'] = $obj['core_pid'];
+                    if ($func == 'edit') {
+                        $args['id'] = $obj['id'];
+                    }
+                    $args['urltitle'] = $obj['core_urltitle'];
+                } else {
+                    $func = 'main';
                 }
-                $args['urltitle'] = $obj['core_urltitle'];
             }
 
         } else if (is_numeric($obj)) {

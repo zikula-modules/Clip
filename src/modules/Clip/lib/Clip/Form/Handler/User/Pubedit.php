@@ -113,8 +113,8 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // stores the first referer and the item URL
         if (!$view->getStateData('referer')) {
-            $displayurl = Clip_Util::url($this->pub, 'display', array(), null, null, true);
-            $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $displayurl));
+            $returnurl = Clip_Util::url($this->pub, $this->pub->core_pid ? 'display' : 'main', array(), null, null, true);
+            $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $returnurl));
         }
 
         return true;
