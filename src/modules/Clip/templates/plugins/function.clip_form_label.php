@@ -38,10 +38,11 @@ function smarty_function_clip_form_label($params, Zikula_Form_View &$render)
     // clip data handling
     $alias = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
     $tid   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();
-    $pid   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getId();
+    $rid   = isset($params['rid']) && $params['rid'] ? $params['rid'] : $render->get_registered_object('clip_form')->getId();
+    $pid   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getPid($render);
 
-    // form framework parameters adjustment
-    $params['for'] = "clip_{$alias}_{$tid}_{$pid}_{$params['for']}";
+    // form framework parameter adjustment
+    $params['for'] = "clip_{$alias}_{$tid}_{$rid}_{$pid}_{$params['for']}";
 
     return $render->registerPlugin('Zikula_Form_Plugin_Label', $params);
 }
