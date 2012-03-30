@@ -85,9 +85,13 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
     public function render(Zikula_Form_View $view)
     {
         $input_html = parent::render($view);
-        $note_html  = $this->upl_arr && $this->upl_arr['orig_name'] ? ' <em class="z-formnote z-sub">'.$this->upl_arr['orig_name'].'</em>' : '';
 
-        return $input_html.$note_html;
+        if ($this->upl_arr && $this->upl_arr['orig_name']) {
+            $url = System::getBaseUrl().ModUtil::getVar('Clip', 'uploadpath').'/'.$this->upl_arr['file_name'];
+            $input_html .= ' <em class="z-formnote z-sub"><a href="'.$url.'">'.$this->upl_arr['orig_name'].'</a></em>';
+        }
+
+        return $input_html;
     }
 
     public function renderBegin(Zikula_Form_View $view)
