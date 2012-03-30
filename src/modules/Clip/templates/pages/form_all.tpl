@@ -37,6 +37,7 @@
                 </div>
             </fieldset>
 
+            {clip_accessblock context='editor'}
             <fieldset>
                 <legend>
                     <a id="clip_pagesettings_collapse" href="javascript:void(0);">{gt text='Page settings'}</a>
@@ -46,6 +47,12 @@
                     <div class="z-formrow">
                         {clip_form_label for='displayinfo' __text='Display page information'}
                         {clip_form_plugin field='displayinfo'}
+                    </div>
+
+                    <div class="z-formrow">
+                        {clip_form_label for='core_urltitle' __text='Permalink title'}
+                        {clip_form_plugin field='core_urltitle' mandatory=false}
+                        <em class="z-formnote z-sub">{gt text='Leave blank to autogenerate'}</em>
                     </div>
 
                     <div class="z-formrow">
@@ -87,6 +94,7 @@
 
             </fieldset>
             {/if}
+            {/clip_accessblock}
 
             <div class="clip-hooks-edit">
                 {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') urlObject=$pubdata->clipUrl() id=$pubdata.core_pid}
@@ -103,6 +111,7 @@
     {/form}
 </div>
 
+{clip_accessblock context='editor'}
 {ajaxheader}
 {pageaddvarblock name='header'}
 <script type="text/javascript">
@@ -128,3 +137,4 @@
 // ]]>
 </script>
 {/pageaddvarblock}
+{/clip_accessblock}

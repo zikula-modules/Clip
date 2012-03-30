@@ -36,6 +36,7 @@
                 </div>
             </fieldset>
 
+            {clip_accessblock context='editor'}
             {if $relations}
             <fieldset>
                 <legend>{gt text='Related publications'}</legend>
@@ -56,6 +57,12 @@
                 <div class="z-formrow">
                     {clip_form_label for='core_language' __text='Language'}
                     {clip_form_plugin field='core_language' mandatory=false}
+                </div>
+
+                <div class="z-formrow">
+                    {clip_form_label for='core_urltitle' __text='Permalink title'}
+                    {clip_form_plugin field='core_urltitle' mandatory=false}
+                    <em class="z-formnote z-sub">{gt text='Leave blank to autogenerate'}</em>
                 </div>
 
                 <div class="z-formrow">
@@ -82,6 +89,7 @@
                     <em class="z-formnote z-sub">{gt text='If enabled, the publication will be closed for changes'}</em>
                 </div>
             </fieldset>
+            {/clip_accessblock}
 
             <div class="clip-hooks-edit">
                 {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') urlObject=$pubdata->clipUrl() id=$pubdata.core_pid}
