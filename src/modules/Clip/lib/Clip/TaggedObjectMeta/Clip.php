@@ -19,7 +19,7 @@ class Clip_TaggedObjectMeta_Clip extends Tag_AbstractTaggedObjectMeta
 {
     function __construct($objectId, $areaId, $module, $urlString = null, Zikula_ModUrl $urlObject = null)
     {
-        parent::__construct($objectId, $areaId, $module, $objectUrl, $urlObject);
+        parent::__construct($objectId, $areaId, $module, $urlString, $urlObject);
 
         if (!$urlObject instanceof Clip_Url) {
             return;
@@ -49,7 +49,6 @@ class Clip_TaggedObjectMeta_Clip extends Tag_AbstractTaggedObjectMeta
             $this->setObjectTitle($pubdata['core_title']);
             $this->setObjectDate($pubdata['core_publishdate']);
             $this->setObjectAuthor($pubdata['core_author']);
-            $this->setObjectUrl(ModUtil::url('Clip', 'user', 'display', array('tid' => $tid, 'pid' => $pid)));
         }
     }
 
