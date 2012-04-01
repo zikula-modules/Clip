@@ -36,7 +36,7 @@ class Clip_Url extends Zikula_ModUrl
         return DataUtil::formatForDisplay($this->getUrl());
     }
 
-    public function getUrl($ssl=null, $fqurl=null, $forcelongurl=false, $forcelang=false)
+    public function getUrl($ssl=null, $fqurl=null, $forcelongurl=false, $forcelang=true)
     {
         return ModUtil::url($this->application, $this->controller, $this->action, $this->args, $ssl, $this->fragment, $fqurl, $forcelongurl, $forcelang);
     }
