@@ -762,7 +762,7 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 .clip-pagedetails .z-formrow {
   overflow: hidden;
 }
-.clip-hooks-display div {
+.clip-hooks-display {
   margin-top: 1.5em;
 }
 
