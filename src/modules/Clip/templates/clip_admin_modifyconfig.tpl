@@ -66,7 +66,7 @@
             </span>
         </div>
         <div class="z-formrow">
-            {formlabel for='pubtype' text='Publication Type'}
+            {formlabel for='pubtype' __text='Publication Type'}
             {formdropdownlist items=$pubtypes id='pubtype'}
             <span class="z-formnote z-sub">{gt text='Default publication type to use when none is passed to Clip.'}</span>
         </div>

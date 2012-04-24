@@ -11,12 +11,12 @@
     {formvalidationsummary}
     <fieldset>
         <div class="z-formrow">
-            {formlabel text='File' for='file'}
+            {formlabel __text='File' for='file'}
             {formuploadinput id='file'}
             <span class="z-formnote z-sub">{gt text='Select the file with the publication(s) data.'}</span>
         </div>
         <div class="z-formrow">
-            {formlabel text='Redirect' for='redirect_options'}
+            {formlabel __text='Redirect' for='redirect_options'}
             <div id="redirect_options">
                 {formradiobutton id='redirect1' dataField='redirect' value=1} {formlabel for='redirect1' __text='Yes' for='redirect1'}
                 {formradiobutton id='redirect0' dataField='redirect' value=0} {formlabel for='redirect0' __text='No' for='redirect0'}
