@@ -23,7 +23,7 @@
         {modurl modname='Clip' type='admin' func='generator' tid=$vars.tid code='blockpub' assign='codeurl'}
         <br />{gt text='You can customize the generic code <a href="%s">available here</a>.' tag1=$codeurl|safetext}
         {/if}
-        <br />{gt text='If the template is not found, Clip will use generic_blockpub.tpl will be used if the development mode is enabled.'}
+        <br />{gt text='If the template is not found, Clip will use generic_blockpub.tpl if the development mode is enabled.'}
     </em>
 </div>
 
