@@ -4,6 +4,6 @@
 {foreach from=$pubtypes item='pubtype'}
 <div>
     <input type="checkbox" id="active_cliptid{$pubtype.tid}" name="search_cliptid[{$pubtype.tid}]" value="1" checked="checked" />
-    <label for="Clip{$pubtype.tid}">{$pubtype.title|safetext}</label>
+    <label for="active_cliptid{$pubtype.tid}">{$pubtype.title|safetext}</label>
 </div>
 {/foreach}
