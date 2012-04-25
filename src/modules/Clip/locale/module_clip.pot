@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Clip 0.9.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-30 18:33-0400\n"
+"POT-Creation-Date: 2012-04-25 13:48-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -137,6 +137,7 @@ msgid "Done! Field '%s' deleted."
 msgstr ""
 
 #: lib/Clip/Form/Handler/Admin/Export.php:36
+#: templates/clip_admin_import.tpl:14
 msgid "File"
 msgstr ""
 
@@ -512,26 +513,12 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: lib/Clip/Form/PluginType.php:53
+#: lib/Clip/Form/PluginType.php:56
 msgid "Open the plugin configuration popup"
 msgstr ""
 
-#: lib/Clip/Form/PluginType.php:53
+#: lib/Clip/Form/PluginType.php:56
 msgid "Configuration"
-msgstr ""
-
-#: lib/Clip/Import/Parser/XML.php:65
-#, php-format
-msgid "Unexpected section found [%s]."
-msgstr ""
-
-#: lib/Clip/Import/Parser/XML.php:77
-#, php-format
-msgid "Unexpected element found [%s]."
-msgstr ""
-
-#: lib/Clip/Import/Batch.php:51
-msgid "You must specify a file to import from."
 msgstr ""
 
 #: lib/Clip/Util/Selectors.php:155 templates/clip_base_publist.tpl:37
@@ -658,6 +645,106 @@ msgstr ""
 #: lib/Clip/Util/View.php:488
 #, php-format
 msgid "Error! Category [%1$s] does not have the field [%2$s] set."
+msgstr ""
+
+#: lib/Clip/Import/Parser/XML.php:65
+#, php-format
+msgid "Unexpected section found [%s]."
+msgstr ""
+
+#: lib/Clip/Import/Parser/XML.php:77
+#, php-format
+msgid "Unexpected element found [%s]."
+msgstr ""
+
+#: lib/Clip/Import/Batch.php:51
+msgid "You must specify a file to import from."
+msgstr ""
+
+#: lib/Clip/Model/Pubtype.php:244
+#, php-format
+msgid "%s Item Hooks"
+msgstr ""
+
+#: lib/Clip/Model/Pubtype.php:255
+#, php-format
+msgid "%s Filter"
+msgstr ""
+
+#: lib/Clip/Doctrine/Table.php:364
+#, php-format
+msgid "The parameter %s must not be empty"
+msgstr ""
+
+#: lib/Clip/Doctrine/Pubdata.php:70
+#, php-format
+msgid "Invalid property [%s] requested on %s->toKeyValueArray"
+msgstr ""
+
+#: lib/Clip/Doctrine/Pubdata.php:80
+#, php-format
+msgid ""
+"Invalid field [%s] requested for the property [%s] on %s->toKeyValueArray"
+msgstr ""
+
+#: lib/Clip/Workflow/Util.php:38 lib/Clip/Workflow/Util.php:199
+#, php-format
+msgid "%1$s: The specified module [%2$s] does not exist."
+msgstr ""
+
+#: lib/Clip/Workflow/Util.php:45
+#, php-format
+msgid "%1$s: Unable to find the workflow file [%2$s]."
+msgstr ""
+
+#: lib/Clip/Workflow/Util.php:214
+#, php-format
+msgid "%s: Unsupported module type."
+msgstr ""
+
+#: lib/Clip/Workflow/Util.php:219
+#, php-format
+msgid "%1$s: The module [%2$s] is not active."
+msgstr ""
+
+#: lib/Clip/Workflow/Util.php:274
+#, php-format
+msgid "Workflow permission check file [%s] does not exist."
+msgstr ""
+
+#: lib/Clip/Workflow/Util.php:281
+#, php-format
+msgid "Workflow permission check function [%s] is not defined."
+msgstr ""
+
+#: lib/Clip/Workflow/Parser.php:63
+#, php-format
+msgid "Unable to parse XML workflow (line %1$s, %2$s): %3$s."
+msgstr ""
+
+#: lib/Clip/Workflow/Parser.php:123
+#, php-format
+msgid "Unknown %1$s name '%2$s' in action '%3$s'."
+msgstr ""
+
+#: lib/Clip/Workflow/Parser.php:142
+#, php-format
+msgid "Unknown %1$s name '%2$s' in action '%3$s' of the '%4$s' state."
+msgstr ""
+
+#: lib/Clip/Workflow/Parser.php:149
+#, php-format
+msgid "Unknown state name '%1$s' in action '%2$s', operation '%3$s'."
+msgstr ""
+
+#: lib/Clip/Workflow/Parser.php:276
+#, php-format
+msgid "Workflow state error: '%2$s' tag of the state '%1$s'."
+msgstr ""
+
+#: lib/Clip/Workflow/Parser.php:399
+#, php-format
+msgid "Unexpected %1$s tag in %2$s state."
 msgstr ""
 
 #: lib/Clip/ContentType/ClipPub.php:66
@@ -875,92 +962,6 @@ msgstr ""
 msgid "Error! Invalid action passed."
 msgstr ""
 
-#: lib/Clip/Model/Pubtype.php:244
-#, php-format
-msgid "%s Item Hooks"
-msgstr ""
-
-#: lib/Clip/Model/Pubtype.php:255
-#, php-format
-msgid "%s Filter"
-msgstr ""
-
-#: lib/Clip/Doctrine/Table.php:364
-#, php-format
-msgid "The parameter %s must not be empty"
-msgstr ""
-
-#: lib/Clip/Doctrine/Pubdata.php:70
-#, php-format
-msgid "Invalid property [%s] requested on %s->toKeyValueArray"
-msgstr ""
-
-#: lib/Clip/Doctrine/Pubdata.php:80
-#, php-format
-msgid ""
-"Invalid field [%s] requested for the property [%s] on %s->toKeyValueArray"
-msgstr ""
-
-#: lib/Clip/Workflow/Util.php:38 lib/Clip/Workflow/Util.php:199
-#, php-format
-msgid "%1$s: The specified module [%2$s] does not exist."
-msgstr ""
-
-#: lib/Clip/Workflow/Util.php:45
-#, php-format
-msgid "%1$s: Unable to find the workflow file [%2$s]."
-msgstr ""
-
-#: lib/Clip/Workflow/Util.php:214
-#, php-format
-msgid "%s: Unsupported module type."
-msgstr ""
-
-#: lib/Clip/Workflow/Util.php:219
-#, php-format
-msgid "%1$s: The module [%2$s] is not active."
-msgstr ""
-
-#: lib/Clip/Workflow/Util.php:274
-#, php-format
-msgid "Workflow permission check file [%s] does not exist."
-msgstr ""
-
-#: lib/Clip/Workflow/Util.php:281
-#, php-format
-msgid "Workflow permission check function [%s] is not defined."
-msgstr ""
-
-#: lib/Clip/Workflow/Parser.php:63
-#, php-format
-msgid "Unable to parse XML workflow (line %1$s, %2$s): %3$s."
-msgstr ""
-
-#: lib/Clip/Workflow/Parser.php:123
-#, php-format
-msgid "Unknown %1$s name '%2$s' in action '%3$s'."
-msgstr ""
-
-#: lib/Clip/Workflow/Parser.php:142
-#, php-format
-msgid "Unknown %1$s name '%2$s' in action '%3$s' of the '%4$s' state."
-msgstr ""
-
-#: lib/Clip/Workflow/Parser.php:149
-#, php-format
-msgid "Unknown state name '%1$s' in action '%2$s', operation '%3$s'."
-msgstr ""
-
-#: lib/Clip/Workflow/Parser.php:276
-#, php-format
-msgid "Workflow state error: '%2$s' tag of the state '%1$s'."
-msgstr ""
-
-#: lib/Clip/Workflow/Parser.php:399
-#, php-format
-msgid "Unexpected %1$s tag in %2$s state."
-msgstr ""
-
 #: lib/Clip/Generator.php:138
 msgid "No expire date specified."
 msgstr ""
@@ -1125,144 +1126,6 @@ msgstr ""
 #: lib/Clip/Access.php:141
 #, php-format
 msgid "%1$s: Invalid context passed [%2$s]."
-msgstr ""
-
-#: templates/plugins/function.clip_category_browser.php:108
-#, php-format
-msgid "Error! No such category found for the ID passed [%s]."
-msgstr ""
-
-#: templates/plugins/function.clip_category_browser.php:204
-#: templates/pages/list.tpl:18 templates/pages/display.tpl:57
-#: templates/blog/display.tpl:44 templates/blog/list.tpl:38
-msgid "Uncategorized"
-msgstr ""
-
-#: templates/plugins/function.clip_editoractions.php:56
-#: templates/generic_navbar.tpl:74
-msgid "Edit this publication"
-msgstr ""
-
-#: templates/plugins/function.clip_editoractions.php:61
-msgid "Preview this publication"
-msgstr ""
-
-#: templates/plugins/function.clip_editoractions.php:61
-msgid "Preview"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:46
-#: templates/plugins/function.clip_adminmenu.php:48
-msgid "Info"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:68
-#: templates/plugins/function.clip_adminmenu.php:71
-#: templates/plugins/function.clip_adminmenu.php:74
-#: templates/clip_base_pubtypeinfo.tpl:15
-#: templates/clip_base_pubtypeinfo.tpl:131
-msgid "Fields"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:96
-#: templates/plugins/function.clip_adminmenu.php:121
-msgid "Generate templates"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:101
-msgid "Main"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:101
-msgid "Publication type main template"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:104
-msgid "Publications list template"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:107
-#: templates/clip_base_pubtypeinfo.tpl:103
-msgid "Display"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:107
-msgid "Publication display template"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:110
-#: templates/clip_base_pubtypeinfo.tpl:87
-msgid "Form"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:110
-msgid "Publication input form template"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:113
-#: templates/clip_base_pubtypeinfo.tpl:111
-msgid "List block"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:113
-#: templates/clip_base_generator.tpl:33
-msgid "List block template"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:116
-msgid "Pub block"
-msgstr ""
-
-#: templates/plugins/function.clip_adminmenu.php:116
-msgid "Publication block template"
-msgstr ""
-
-#: templates/plugins/function.clip_url.php:46
-#: templates/plugins/function.clip_downloadurl.php:43
-#, php-format
-msgid "Error! in %1$s: the %2$s parameter is not valid."
-msgstr ""
-
-#: templates/plugins/function.clip_form_relation.php:54
-#: templates/plugins/function.clip_form_plugin.php:98
-#: templates/plugins/function.clip_form_value.php:82
-#, php-format
-msgid "Error! The specified plugin class [%s] does not exists."
-msgstr ""
-
-#: templates/plugins/block.clip_form_block.php:45
-#: templates/plugins/function.clip_form_plugin.php:44
-#: templates/plugins/function.clip_form_value.php:50
-#: templates/plugins/function.clip_form_value.php:67
-#, php-format
-msgid "Error! '%1$s' parameter cannot be '%2$s'."
-msgstr ""
-
-#: templates/plugins/block.clip_form_block.php:61
-#: templates/plugins/function.clip_form_plugin.php:60
-#, php-format
-msgid "Error! The publication field '%s' does not exist."
-msgstr ""
-
-#: templates/plugins/function.clip_form_value.php:67
-msgid "It must not match any existing field."
-msgstr ""
-
-#: templates/plugins/function.clip_pagerabc.php:92
-msgid "clip_pagerabc: Values length must be the same of the Names"
-msgstr ""
-
-#: templates/plugins/function.clip_pagerabc.php:100
-msgid "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z"
-msgstr ""
-
-#: templates/plugins/function.clip_copytoclipboard.php:59
-#, php-format
-msgid "Error! Clippy.swf not found on this view paths [%s]."
-msgstr ""
-
-#: templates/plugins/function.clip_copytoclipboard.php:67
-msgid "Copy to clipboard"
 msgstr ""
 
 #: workflows/operations/function.update.php:111
@@ -1464,7 +1327,7 @@ msgstr ""
 #: workflows/function.enterprise_permissioncheck.php:75
 #: workflows/function.enterprise_permissioncheck.php:84
 #: workflows/function.none_permissioncheck.php:59
-#: templates/clip_base_relations.tpl:180 templates/clip_base_pubtype.tpl:211
+#: templates/clip_base_relations.tpl:178 templates/clip_base_pubtype.tpl:211
 #: templates/clip_base_pubfields.tpl:187
 msgid "Delete"
 msgstr ""
@@ -1578,6 +1441,144 @@ msgstr ""
 #: templates/generic_main.tpl:19 templates/editor_header.tpl:50
 #: templates/generic_navbar.tpl:29
 msgid "Submit a publication"
+msgstr ""
+
+#: templates/plugins/function.clip_category_browser.php:108
+#, php-format
+msgid "Error! No such category found for the ID passed [%s]."
+msgstr ""
+
+#: templates/plugins/function.clip_category_browser.php:204
+#: templates/pages/list.tpl:18 templates/pages/display.tpl:57
+#: templates/blog/display.tpl:44 templates/blog/list.tpl:38
+msgid "Uncategorized"
+msgstr ""
+
+#: templates/plugins/function.clip_editoractions.php:56
+#: templates/generic_navbar.tpl:74
+msgid "Edit this publication"
+msgstr ""
+
+#: templates/plugins/function.clip_editoractions.php:61
+msgid "Preview this publication"
+msgstr ""
+
+#: templates/plugins/function.clip_editoractions.php:61
+msgid "Preview"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:46
+#: templates/plugins/function.clip_adminmenu.php:48
+msgid "Info"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:68
+#: templates/plugins/function.clip_adminmenu.php:71
+#: templates/plugins/function.clip_adminmenu.php:74
+#: templates/clip_base_pubtypeinfo.tpl:15
+#: templates/clip_base_pubtypeinfo.tpl:131
+msgid "Fields"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:96
+#: templates/plugins/function.clip_adminmenu.php:121
+msgid "Generate templates"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:101
+msgid "Main"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:101
+msgid "Publication type main template"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:104
+msgid "Publications list template"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:107
+#: templates/clip_base_pubtypeinfo.tpl:103
+msgid "Display"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:107
+msgid "Publication display template"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:110
+#: templates/clip_base_pubtypeinfo.tpl:87
+msgid "Form"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:110
+msgid "Publication input form template"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:113
+#: templates/clip_base_pubtypeinfo.tpl:111
+msgid "List block"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:113
+#: templates/clip_base_generator.tpl:33
+msgid "List block template"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:116
+msgid "Pub block"
+msgstr ""
+
+#: templates/plugins/function.clip_adminmenu.php:116
+msgid "Publication block template"
+msgstr ""
+
+#: templates/plugins/function.clip_url.php:46
+#: templates/plugins/function.clip_downloadurl.php:43
+#, php-format
+msgid "Error! in %1$s: the %2$s parameter is not valid."
+msgstr ""
+
+#: templates/plugins/function.clip_form_relation.php:54
+#: templates/plugins/function.clip_form_plugin.php:98
+#: templates/plugins/function.clip_form_value.php:82
+#, php-format
+msgid "Error! The specified plugin class [%s] does not exists."
+msgstr ""
+
+#: templates/plugins/block.clip_form_block.php:45
+#: templates/plugins/function.clip_form_plugin.php:44
+#: templates/plugins/function.clip_form_value.php:50
+#: templates/plugins/function.clip_form_value.php:67
+#, php-format
+msgid "Error! '%1$s' parameter cannot be '%2$s'."
+msgstr ""
+
+#: templates/plugins/block.clip_form_block.php:61
+#: templates/plugins/function.clip_form_plugin.php:60
+#, php-format
+msgid "Error! The publication field '%s' does not exist."
+msgstr ""
+
+#: templates/plugins/function.clip_form_value.php:67
+msgid "It must not match any existing field."
+msgstr ""
+
+#: templates/plugins/function.clip_pagerabc.php:92
+msgid "clip_pagerabc: Values length must be the same of the Names"
+msgstr ""
+
+#: templates/plugins/function.clip_pagerabc.php:100
+msgid "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z"
+msgstr ""
+
+#: templates/plugins/function.clip_copytoclipboard.php:59
+#, php-format
+msgid "Error! Clippy.swf not found on this view paths [%s]."
+msgstr ""
+
+#: templates/plugins/function.clip_copytoclipboard.php:67
+msgid "Copy to clipboard"
 msgstr ""
 
 #: templates/pages/list_fblike.tpl:17 templates/pages/list.tpl:45
@@ -1704,24 +1705,24 @@ msgid "Related pages"
 msgstr ""
 
 #: templates/pages/form_all.tpl:107 templates/blog/form_all.tpl:102
-#: templates/clip_base_relations.tpl:184 templates/generic_edit.tpl:85
-#: templates/clip_base_pubtype.tpl:215 templates/clip_base_pubfields.tpl:191
+#: templates/clip_base_relations.tpl:182 templates/generic_edit.tpl:85
 #: templates/clip_admin_modifyconfig.tpl:106
+#: templates/clip_base_pubtype.tpl:215 templates/clip_base_pubfields.tpl:191
 msgid "Reset"
 msgstr ""
 
 #: templates/pages/form_all.tpl:107 templates/blog/form_all.tpl:102
-#: templates/clip_base_relations.tpl:184 templates/generic_edit.tpl:85
-#: templates/clip_base_pubtype.tpl:215 templates/clip_base_pubfields.tpl:191
+#: templates/clip_base_relations.tpl:182 templates/generic_edit.tpl:85
 #: templates/clip_admin_modifyconfig.tpl:106
+#: templates/clip_base_pubtype.tpl:215 templates/clip_base_pubfields.tpl:191
 msgid "Reset the form to its initial state"
 msgstr ""
 
 #: templates/pages/form_all.tpl:108 templates/blog/form_all.tpl:103
-#: templates/clip_base_relations.tpl:185 templates/generic_edit.tpl:86
-#: templates/clip_admin_import.tpl:30 templates/clip_base_pubtype.tpl:216
-#: templates/clip_admin_export.tpl:66 templates/clip_base_pubfields.tpl:192
+#: templates/clip_base_relations.tpl:183 templates/generic_edit.tpl:86
 #: templates/clip_admin_modifyconfig.tpl:107
+#: templates/clip_base_pubtype.tpl:216 templates/clip_admin_export.tpl:66
+#: templates/clip_base_pubfields.tpl:192 templates/clip_admin_import.tpl:30
 msgid "Cancel"
 msgstr ""
 
@@ -1743,7 +1744,7 @@ msgid "Sort ascending"
 msgstr ""
 
 #: templates/contenttype/clippublist_edit.tpl:16
-#: templates/clip_base_relations.tpl:31
+#: templates/clip_base_relations.tpl:31 templates/clip_admin_export.tpl:32
 msgid "Filter"
 msgstr ""
 
@@ -1989,8 +1990,7 @@ msgstr ""
 
 #: templates/clip_base_relations.tpl:165
 msgid ""
-"\n"
-"            Explanation of the side details:\n"
+"Explanation of each relation side:\n"
 "            <ul style=\"margin-bottom: 0\">\n"
 "                <li><strong>Alias</strong>: Used as a field name on the "
 "publication code. i.e. $pubdata.Alias1</li>\n"
@@ -1998,21 +1998,20 @@ msgid ""
 "the public name of the relation.</li>\n"
 "                <li><strong>Description</strong>: Also used in the forms as "
 "the autocompleter tooltip.</li>\n"
-"            </ul>\n"
-"            "
+"            </ul>"
 msgstr ""
 
-#: templates/clip_base_relations.tpl:178 templates/clip_base_pubtype.tpl:208
-#: templates/clip_base_pubfields.tpl:185
+#: templates/clip_base_relations.tpl:176
 #: templates/clip_admin_modifyconfig.tpl:105
+#: templates/clip_base_pubtype.tpl:208 templates/clip_base_pubfields.tpl:185
 msgid "Save"
 msgstr ""
 
-#: templates/clip_base_relations.tpl:179
+#: templates/clip_base_relations.tpl:177
 msgid "Are you sure you want to delete this relation?"
 msgstr ""
 
-#: templates/clip_base_relations.tpl:182 templates/clip_base_pubtype.tpl:213
+#: templates/clip_base_relations.tpl:180 templates/clip_base_pubtype.tpl:213
 #: templates/clip_base_pubfields.tpl:189
 msgid "Create"
 msgstr ""
@@ -2075,16 +2074,14 @@ msgstr ""
 msgid "Admin Panel"
 msgstr ""
 
-#: templates/clip_admin_main.tpl:25
+#: templates/clip_admin_main.tpl:26
 msgid "About Clip"
 msgstr ""
 
-#: templates/clip_admin_main.tpl:26
+#: templates/clip_admin_main.tpl:28
 msgid ""
-"\n"
-"            <p>Clip is one of the <strong>must have</strong> Zikula modules. "
-"It let you manage any type of estructured content or media in your Zikula "
-"website.</p>\n"
+"<p>Clip is one of the <strong>must have</strong> Zikula modules. It let you "
+"manage any type of estructured content or media in your Zikula website.</p>\n"
 "            <p>To use its potential, you just need to know what do you need "
 "in detail; let's suppose you need a News system. Then your Publication Type "
 "can be named \"News\" and its <em>Publications</em> will be Articles.\n"
@@ -2113,24 +2110,20 @@ msgid ""
 "                <li>Ready! You can add Articles, filter it lists, and "
 "stablish permissions to let the require groups to submit stuff.</li>\n"
 "                <li>Enjoy and Share your experiences!</li>\n"
-"            </ol>\n"
-"            "
-msgstr ""
-
-#: templates/clip_admin_main.tpl:42
-msgid "About this Index"
+"            </ol>"
 msgstr ""
 
 #: templates/clip_admin_main.tpl:43
+msgid "About this Index"
+msgstr ""
+
+#: templates/clip_admin_main.tpl:45
 msgid ""
-"\n"
-"            <p>Clip let you organize your Publication Types through Groups. "
-"At the left side, you can manage and order all of them to feel confortable.</"
-"p>\n"
+"<p>Clip let you organize your Publication Types through Groups. At the left "
+"side, you can manage and order all of them to feel confortable.</p>\n"
 "            <p>By clicking a <em>Publication Type</em> you will get its "
 "details and available options loaded dynamically. You can right click the "
-"elements of the tree to see their options too.</p>\n"
-"            "
+"elements of the tree to see their options too.</p>"
 msgstr ""
 
 #: templates/generic_edit.tpl:7 templates/clip_base_pubtypeinfo.tpl:40
@@ -2326,22 +2319,111 @@ msgstr ""
 msgid "Go back to the index"
 msgstr ""
 
-#: templates/clip_admin_import.tpl:16
-msgid "Select the file with the publication(s) data."
+#: templates/clip_admin_modifyconfig.tpl:11
+msgid "Reset models"
 msgstr ""
 
-#: templates/clip_admin_import.tpl:21 templates/clip_base_pubtype.tpl:150
-#: templates/clip_base_pubtype.tpl:173 templates/clip_admin_export.tpl:39
-msgid "Yes"
+#: templates/clip_admin_modifyconfig.tpl:14
+msgid "Install 'Blog' and 'Pages' publication types"
 msgstr ""
 
-#: templates/clip_admin_import.tpl:22 templates/clip_base_pubtype.tpl:152
-#: templates/clip_base_pubtype.tpl:175 templates/clip_admin_export.tpl:40
-msgid "No"
+#: templates/clip_admin_modifyconfig.tpl:17 templates/import_pagesetter.tpl:6
+msgid "Import pagesetter publications"
 msgstr ""
 
-#: templates/clip_admin_import.tpl:24
-msgid "Go to the newly created publication type after the import."
+#: templates/clip_admin_modifyconfig.tpl:25
+msgid "General settings"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:27
+msgid "Upload path"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:32
+#: templates/clip_admin_modifyconfig.tpl:53
+msgid "The given path doesn't exists"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:34
+#: templates/clip_admin_modifyconfig.tpl:55
+msgid "The given path is not a directory"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:36
+#: templates/clip_admin_modifyconfig.tpl:57
+msgid "The given path is not writeable"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:40
+#: templates/clip_admin_modifyconfig.tpl:61
+msgid "The given path is writeable"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:43
+#, php-format
+msgid ""
+"Path where uploaded files will be stored, relative to the site root (%s)"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:48
+msgid "Models path"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:64
+msgid ""
+"Path where Clip stores temporary files. The folder must be named 'ClipModels'"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:69 templates/clip_admin_export.tpl:15
+msgid "Publication Type"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:71
+msgid "Default publication type to use when none is passed to Clip."
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:74
+msgid "Default template"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:77
+msgid ""
+"Default template used in short URLs. Leave it empty to nor use extensions "
+"with short URls enabled. Only 'htm' and 'html' are omitted of special "
+"processing."
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:81
+msgid "Max. items per page"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:84
+msgid ""
+"Maximum number of items to display when a pubtype does not have a limit."
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:88
+msgid "Common templates"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:91
+msgid ""
+"Enable the use of common templates for the main, list and display screens."
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:92
+msgid ""
+"If the template <var>$pubtype/$func[_$tpl].tpl</var> does not exists, Clip "
+"will search for <var>common_$func[_$tpl].tpl</var> and use it if exists."
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:96
+msgid "Development mode"
+msgstr ""
+
+#: templates/clip_admin_modifyconfig.tpl:99
+msgid ""
+"Enable the development mode to see detailed notices about Clip requirements."
 msgstr ""
 
 #: templates/pager_default.tpl:5 templates/pager_default.tpl:8
@@ -2498,6 +2580,16 @@ msgstr ""
 msgid "Load related records?"
 msgstr ""
 
+#: templates/clip_base_pubtype.tpl:150 templates/clip_base_pubtype.tpl:173
+#: templates/clip_admin_export.tpl:39 templates/clip_admin_import.tpl:21
+msgid "Yes"
+msgstr ""
+
+#: templates/clip_base_pubtype.tpl:152 templates/clip_base_pubtype.tpl:175
+#: templates/clip_admin_export.tpl:40 templates/clip_admin_import.tpl:22
+msgid "No"
+msgstr ""
+
 #: templates/clip_base_pubtype.tpl:158 templates/clip_base_pubtype.tpl:181
 msgid "Only own relations?"
 msgstr ""
@@ -2536,8 +2628,16 @@ msgstr ""
 msgid "Publication type to export."
 msgstr ""
 
+#: templates/clip_admin_export.tpl:21
+msgid "Include relations"
+msgstr ""
+
 #: templates/clip_admin_export.tpl:23
 msgid "Include its related publication types and data?"
+msgstr ""
+
+#: templates/clip_admin_export.tpl:27
+msgid "Format"
 msgstr ""
 
 #: templates/clip_admin_export.tpl:29
@@ -2548,12 +2648,20 @@ msgstr ""
 msgid "Any filter string to use in the export."
 msgstr ""
 
-#: templates/clip_admin_export.tpl:58
-msgid "Without the extension."
+#: templates/clip_admin_export.tpl:37
+msgid "Export data"
 msgstr ""
 
-#: templates/import_pagesetter.tpl:6 templates/clip_admin_modifyconfig.tpl:17
-msgid "Import pagesetter publications"
+#: templates/clip_admin_export.tpl:47
+msgid "Output to"
+msgstr ""
+
+#: templates/clip_admin_export.tpl:56
+msgid "Filename"
+msgstr ""
+
+#: templates/clip_admin_export.tpl:58
+msgid "Without the extension."
 msgstr ""
 
 #: templates/import_pagesetter.tpl:9
@@ -2586,8 +2694,8 @@ msgstr ""
 
 #: templates/clip_block_viewpub_modify.tpl:26
 msgid ""
-"If the template is not found, Clip will use generic_blockpub.tpl will be "
-"used if the development mode is enabled."
+"If the template is not found, Clip will use generic_blockpub.tpl if the "
+"development mode is enabled."
 msgstr ""
 
 #: templates/editor_main.tpl:1 templates/editor_header.tpl:60
@@ -2744,105 +2852,6 @@ msgstr ""
 msgid "Are you sure you want to delete this field?"
 msgstr ""
 
-#: templates/clip_admin_modifyconfig.tpl:11
-msgid "Reset models"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:14
-msgid "Install 'Blog' and 'Pages' publication types"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:25
-msgid "General settings"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:27
-msgid "Upload path"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:32
-#: templates/clip_admin_modifyconfig.tpl:53
-msgid "The given path doesn't exists"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:34
-#: templates/clip_admin_modifyconfig.tpl:55
-msgid "The given path is not a directory"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:36
-#: templates/clip_admin_modifyconfig.tpl:57
-msgid "The given path is not writeable"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:40
-#: templates/clip_admin_modifyconfig.tpl:61
-msgid "The given path is writeable"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:43
-#, php-format
-msgid ""
-"Path where uploaded files will be stored, relative to the site root (%s)"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:48
-msgid "Models path"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:64
-msgid ""
-"Path where Clip stores temporary files. The folder must be named 'ClipModels'"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:71
-msgid "Default publication type to use when none is passed to Clip."
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:74
-msgid "Default template"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:77
-msgid ""
-"Default template used in short URLs. Leave it empty to nor use extensions "
-"with short URls enabled. Only 'htm' and 'html' are omitted of special "
-"processing."
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:81
-msgid "Max. items per page"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:84
-msgid ""
-"Maximum number of items to display when a pubtype does not have a limit."
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:88
-msgid "Common templates"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:91
-msgid ""
-"Enable the use of common templates for the main, list and display screens."
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:92
-msgid ""
-"If the template <var>$pubtype/$func[_$tpl].tpl</var> does not exists, Clip "
-"will search for <var>common_$func[_$tpl].tpl</var> and use it if exists."
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:96
-msgid "Development mode"
-msgstr ""
-
-#: templates/clip_admin_modifyconfig.tpl:99
-msgid ""
-"Enable the development mode to see detailed notices about Clip requirements."
-msgstr ""
-
 #: templates/clip_block_list_modify.tpl:16
 msgid "Filter string"
 msgstr ""
@@ -2965,6 +2974,18 @@ msgid ""
 "This is a generic template used when <a href=\"%1$s\">development mode</a> "
 "is enabled. You can build your template starting with <a href=\"%2$s\">the "
 "autogenerated code</a>, and reading instructions of where to place it."
+msgstr ""
+
+#: templates/clip_admin_import.tpl:16
+msgid "Select the file with the publication(s) data."
+msgstr ""
+
+#: templates/clip_admin_import.tpl:19
+msgid "Redirect"
+msgstr ""
+
+#: templates/clip_admin_import.tpl:24
+msgid "Go to the newly created publication type after the import."
 msgstr ""
 
 #: templates/clip_admin_header.tpl:5
