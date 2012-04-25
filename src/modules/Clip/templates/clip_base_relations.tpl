@@ -162,14 +162,12 @@
             </div>
         </div>
         <div class="z-informationmsg z-clearer">
-            {gettext}
-            Explanation of the side details:
+            {gettext}Explanation of each relation side:
             <ul style="margin-bottom: 0">
                 <li><strong>Alias</strong>: Used as a field name on the publication code. i.e. $pubdata.Alias1</li>
                 <li><strong>Title</strong>: Used in the user side forms as the public name of the relation.</li>
                 <li><strong>Description</strong>: Also used in the forms as the autocompleter tooltip.</li>
-            </ul>
-            {/gettext}
+            </ul>{/gettext}
         </div>
     </fieldset>
 
