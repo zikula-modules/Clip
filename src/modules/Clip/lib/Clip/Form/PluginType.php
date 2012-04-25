@@ -32,6 +32,9 @@ class Clip_Form_PluginType extends Zikula_Form_Plugin_DropdownList
 
     public function render($render)
     {
+        // domain is not settled on postBack
+        $this->setDomain(ZLanguage::getModuleDomain('Clip'));
+
         $this->cssClass = strpos($this->cssClass, 'clip-plugintypeselector') === false ? $this->cssClass.' clip-plugintypeselector' : $this->cssClass;
         $result = parent::render($render);
 
