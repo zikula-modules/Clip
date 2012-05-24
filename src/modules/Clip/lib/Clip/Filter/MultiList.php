@@ -19,10 +19,13 @@ class Clip_Filter_MultiList extends Clip_Filter_List
     public function availableOperators()
     {
         return array(
+                     'like',
                      'eq',
                      'ne',
                      'sub',
-                     'dis'
+                     'dis',
+                     'null',
+                     'notnull'
                     );
     }
 
@@ -47,14 +50,15 @@ class Clip_Filter_MultiList extends Clip_Filter_List
 
         switch ($op)
         {
+            case 'like':
             case 'eq':
-                $where = "$column = ?";
-                $params[] = $value;
+                $where = "$column LIKE ?";
+                $params[] = '%:'.$value.':%';
                 break;
 
             case 'ne':
-                $where = "$column <> ?";
-                $params[] = $value;
+                $where = "$column NOT LIKE ?";
+                $params[] = '%:'.$value.':%';
                 break;
 
             case 'sub':
@@ -67,6 +71,14 @@ class Clip_Filter_MultiList extends Clip_Filter_List
                     $where .= ($op == 'sub' ? ' OR' : ' AND')." $column $opr ?";
                     $params[] = '%:'.$item['id'].':%';
                 }
+                break;
+
+            case 'null':
+                $where = "($column = '::' OR $column IS NULL)";
+                break;
+
+            case 'notnull':
+                $where = "($column <> '::' OR $column IS NOT NULL)";
                 break;
         }
 
