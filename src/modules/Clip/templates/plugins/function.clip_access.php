@@ -21,6 +21,7 @@
  *  - context (string)  Context to evaluate.
  *  - tplid   (string)  Template id to evaluate.
  *  - permlvl (integer) Required permission level for the check.
+ *  - action  (string)  Action ID to check
  *  - assign  (string)  Optional variable name to assign the result to.
  *
  * Examples:
@@ -38,6 +39,9 @@
  *  For Publication edit access check:
  *  (available contexts: access, display, form, edit, exec, execinline)
  *  <samp>{clip_access pub=$pubdata context='edit'}</samp>
+ *
+ *  For Publication action execution check:
+ *  <samp>{clip_access pub=$pubdata context='exec' action='update'}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -60,6 +64,7 @@ function smarty_function_clip_access($params, Zikula_View &$view)
     $context = isset($params['context']) ? $params['context'] : null;
     $tplid   = isset($params['tplid']) ? $params['tplid'] : '';
     $permlvl = isset($params['permlvl']) ? constant($params['permlvl']) : null;
+    $action  = isset($params['action']) ? $params['action'] : null;
     $assign  = isset($params['assign']) ? $params['assign'] : null;
 
     $result  = false;
@@ -75,7 +80,7 @@ function smarty_function_clip_access($params, Zikula_View &$view)
 
     } else if (isset($params['pid']) || isset($params['id'])) {
         // pub check
-        $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl);
+        $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl, null, $action);
 
     } else {
         // pubtype check
