@@ -110,6 +110,9 @@ class Clip_Import_Batch
 
         $result = $parser->parseSections(array($this, 'parseSection'));
 
+        // update the models and tables in case only struture was imported
+        $this->updateTables();
+
         if ($result) {
             // redirect to the first pubtype imported info screen
             $result = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => reset(self::$idmap['tids'])));
