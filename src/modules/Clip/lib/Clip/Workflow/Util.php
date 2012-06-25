@@ -58,9 +58,10 @@ class Clip_Workflow_Util
 
         // only take the info we need
         $data = array(
-            'workflow' => $data['workflow'],
-            'states'   => $data['states'],
-            'actions'  => $data['actions']
+            'workflow'  => $data['workflow'],
+            'states'    => $data['states'],
+            'actions'   => $data['actions'],
+            'variables' => $data['variables']
         );
 
         // translate the action permissions to system number values
@@ -108,6 +109,17 @@ class Clip_Workflow_Util
                     if (isset($action['parameters']['button']) && !isset($action['parameters']['button']['title'])) {
                         $action['parameters']['button']['title'] = $action['description'];
                     }
+                }
+            }
+        }
+
+        // variables translation
+        foreach ($data['variables'] as &$variable) {
+            foreach ($variable as $k => $v) {
+                if (strpos($k, '__') === 0) {
+                    unset($variable[$k]);
+                    $k = substr($k, 2);
+                    $variable[$k] = __($v, $dom);
                 }
             }
         }

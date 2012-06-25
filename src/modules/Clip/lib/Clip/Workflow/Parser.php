@@ -196,6 +196,11 @@ class Clip_Workflow_Parser extends Zikula_AbstractBase
                         $state = 'actions';
                         $this->workflow['actions'] = array();
                         break;
+                    case 'VARIABLES':
+                        xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+                        $state = 'variables';
+                        $this->workflow['variables'] = array();
+                        break;
                     default:
                         $this->workflow['errorMessage'] = $this->unexpectedXMLError($name, "$state ". __LINE__);
                         $state = 'error';
@@ -256,6 +261,17 @@ class Clip_Workflow_Parser extends Zikula_AbstractBase
                         $this->workflow['errorMessage'] = $this->unexpectedXMLError($name, "$state ". __LINE__);
                         $state = 'error';
                         break;
+                }
+                break;
+
+            case 'variables':
+                if ($name == 'VARIABLE') {
+                    $this->workflow['value'] = '';
+                    $this->workflow['variableParameters'] = $attribs;
+                    $state = 'variable';
+                } else {
+                    $this->workflow['errorMessage'] = $this->unexpectedXMLError($name, "$state ". __LINE__);
+                    $state = 'error';
                 }
                 break;
 
@@ -357,14 +373,30 @@ class Clip_Workflow_Parser extends Zikula_AbstractBase
                 }
                 break;
 
+            case 'variable':
+                switch ($name) {
+                    case 'VARIABLE':
+                        $this->workflow['variables'][trim($this->workflow['value'])] = $this->workflow['variableParameters'];
+                        $state = 'variables';
+                        break;
+                }
+                break;
+
+            case 'states':
+                if ($name == 'STATES') {
+                    $state = 'workflow';
+                }
+                break;
+
             case 'actions':
                 if ($name == 'ACTIONS') {
                     $state = 'workflow';
                 }
                 break;
 
-            case 'states':
-                if ($name == 'STATES') {
+            case 'variables':
+                if ($name == 'VARIABLES') {
+                    xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 1);
                     $state = 'workflow';
                 }
                 break;

@@ -39,6 +39,9 @@ function Clip_workflow_enterprise_permissioncheck($pub, $permLevel, $currentUser
 function Clip_workflow_enterprise_gettextstrings()
 {
     no__('Are you sure you want to delete this publication?');
+    no__('Authors recipients');
+    no__('Editors recipients');
+    no__('Moderators recipients');
 
     return array(
         'title' => no__('Enterprise'),
