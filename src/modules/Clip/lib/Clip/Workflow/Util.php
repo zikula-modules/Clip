@@ -61,7 +61,7 @@ class Clip_Workflow_Util
             'workflow'  => $data['workflow'],
             'states'    => $data['states'],
             'actions'   => $data['actions'],
-            'variables' => $data['variables']
+            'variables' => isset($data['variables']) ? $data['variables'] : array()
         );
 
         // translate the action permissions to system number values
