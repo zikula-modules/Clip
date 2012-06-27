@@ -709,7 +709,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $render = Clip_Event::notify('ui.edit', $render, $args)->getData();
 
         // alert pubtype admins only
-        $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+        $alert = !$render->isPostBack() && $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
 
         // resolve the template to use
         // 1. custom template
