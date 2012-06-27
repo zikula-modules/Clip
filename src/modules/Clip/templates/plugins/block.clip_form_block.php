@@ -86,9 +86,5 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
     }
 
     // register block
-    if (method_exists($plugin, 'blockRegister')) {
-        return $plugin->blockRegister($params, $render, $content);
-    } else {
-        return $render->registerBlock(get_class($plugin), $params, $content);
-    }
+    return $render->registerBlock(get_class($plugin), $params, $content);
 }

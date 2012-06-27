@@ -60,6 +60,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // initialize the data depending on the form state
+        $data = array();
         if (!$view->isPostBack()) {
             // initialize the session vars
             $view->setStateData('pubs', array());
@@ -84,15 +85,13 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
             // handle the Doctrine_Record data as an array
             $data[$this->alias][$this->tid][$this->id][$this->pid] = $this->pub->clipFormGet($relconfig['load'], $relconfig['onlyown']);
-
-        } elseif (!$view->isValid()) {
+/*
+        SECTION TO PROCESS LATER WITH CORE SUPPORT
+        } else {
             // assign the incoming data
             $data = $view->getValues();
             $data = $data['clipdata'];
-
-        } else {
-            // let the handleCommand to work
-            $data = array();
+*/
         }
 
         // clone the pub to assign the pubdata and do not modify the pub data

@@ -125,9 +125,5 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
     }
 
     // register plugin
-    if (method_exists($plugin, 'pluginRegister')) {
-        return $plugin->pluginRegister($params, $render);
-    } else {
-        return $render->registerPlugin(get_class($plugin), $params);
-    }
+    return $render->registerPlugin(get_class($plugin), $params);
 }

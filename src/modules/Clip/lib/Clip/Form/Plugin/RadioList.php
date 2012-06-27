@@ -16,6 +16,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     public $columnDef   = 'I4';
     public $filterClass = 'cliplist';
     public $config = array();
+    public $params = array();
 
     // Clip data handling
     public $alias;
@@ -40,29 +41,21 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
     /**
      * Form framework overrides.
      */
-    public function pluginRegister(&$params, &$view)
-    {
-        $this->setDomain($view->getDomain());
-        $this->setup();
-
-        // copy parameters to member variables and attribute set
-        $this->readParameters($view, $params);
-        $this->create($view, $params);
-        $this->load($view, $params);
-
-        $this->dataBound($view, $params);
-
-        return $this->renderRadioList($view, $params);
-    }
-
     public function readParameters(Zikula_Form_View $view, &$params)
     {
         $this->parseConfig($params['fieldconfig']);
         unset($params['fieldconfig']);
 
+        // backup the base parameters
+        $this->params = $params;
+        unset($this->params['category'], $this->params['editLink'], $this->params['includeEmptyElement'], $this->params['maxLength']);
+
+        // process the plugin parameters
         $params['category'] = isset($params['category']) ? $params['category'] : $this->config['cat'];
         $params['editLink'] = isset($params['editLink']) ? $params['editLink'] : $this->config['edit'];
         $params['includeEmptyElement'] = false;
+        $params['mandatory'] = false;
+        $params['readOnly'] = true;
 
         parent::readParameters($view, $params);
     }
@@ -72,7 +65,7 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
         parent::load($view, $params);
 
         if ($this->mandatory) {
-            // CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for checkboxes
+            // CategorySelector makes a "- - -" entry for mandatory field, what makes no sense for RadioList
             array_shift($this->items);
         }
     }
@@ -102,26 +95,21 @@ class Clip_Form_Plugin_RadioList extends Zikula_Form_Plugin_CategorySelector
 
     public function saveValue(Zikula_Form_View $view, &$data)
     {
-        if ($this->dataBased) {
-            if (!array_key_exists($this->group, $data)) {
-                $data[$this->group] = array($this->alias => array($this->tid => array($this->rid => array($this->pid => array()))));
-            }
-            $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $this->getSelectedValue();
-        }
+        // this plugin do not saves anything directly
+        // but indirectly through the registered RadioButtons
+        return;
     }
 
-    public function renderRadioList(&$view, $params)
+    public function render(Zikula_Form_View &$view)
     {
-        $id = $params['id'];
-        unset($params['maxLength']);
-        unset($params['category']);
+        $params = $this->params;
 
         $output = '';
         foreach ($this->items as $item) {
             $output .= '<div class="z-formlist">'."\n";
 
-            $params['id']        = 'radio_'.$id.$item['value'];
-            $params['dataField'] = $id;
+            $params['id']        = 'radio_'.$params['id'].$item['value'];
+            $params['dataField'] = $params['id'];
             $params['groupName'] = $this->inputName;
             $params['value']     = $item['value'];
 
