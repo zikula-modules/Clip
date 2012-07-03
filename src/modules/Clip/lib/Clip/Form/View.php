@@ -55,6 +55,10 @@ class Clip_Form_View extends Zikula_Form_View
             $this->decodeStateData();
             $this->decodeState();
 
+            // load plugins (no create event)
+            $this->initializePlugins(); // initialize event
+            $this->decodePlugins(); // decode event
+
             if ($eventHandler->initialize($this) === false) {
                 return $this->getErrorMsg();
             }
@@ -64,10 +68,8 @@ class Clip_Form_View extends Zikula_Form_View
 
             $this->eventHandler->postInitialize();
 
-            // (no create event)
-            $this->initializePlugins(); // initialize event
-            $this->decodePlugins(); // decode event
-            $this->decodePostBackEvent(); // Execute optional postback after plugins have read their values
+            // Execute optional postback after plugins have read their values
+            $this->decodePostBackEvent();
 
             // check if there's an ajax response
             if ($this->response instanceof Zikula_Response_Ajax_AbstractBase) {
