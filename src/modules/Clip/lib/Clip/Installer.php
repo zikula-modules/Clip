@@ -161,11 +161,11 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 $dirs = self::createDirectories(array('models'), true);
                 $this->setVar('modelspath', $dirs['models']);
             case '0.4.19':
-                if (!self::introduceUrltitle()) {
+                if (!$this->introduceUrltitle()) {
                     return false;
                 }
             case '0.4.20':
-                if (!self::pubtypeConfigs()) {
+                if (!$this->pubtypeConfigs()) {
                     return false;
                 }
             case '0.4.21':
@@ -1095,7 +1095,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
      *
      * @return boolean
      */
-    private static function introduceUrltitle()
+    private function introduceUrltitle()
     {
         // regen models
         Clip_Generator::resetModels();
@@ -1144,7 +1144,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
      *
      * @return boolean
      */
-    private static function pubtypeConfigs()
+    private function pubtypeConfigs()
     {
         $tablename = DBUtil::getLimitedTablename('clip_pubtypes');
         $q = "UPDATE {$tablename} SET config = REPLACE(config, 'view', 'list')";
