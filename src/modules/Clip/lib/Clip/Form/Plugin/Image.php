@@ -304,7 +304,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 }
 
                 $image->resize(new Imagine\Image\Box($tmbargs[0], $tmbargs[1]))
-                      ->save("{$uploadpath}/{$data['tmb_name']}");
+                      ->save("{$uploadpath}/{$data['tmb_name']}", array('quality' => $this->config[8]));
 
             } elseif ($newUpload) {
                 // no thumbnail needed
@@ -322,7 +322,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 }
 
                 $image->resize(new Imagine\Image\Box($preargs[0], $preargs[1]))
-                        ->save("{$uploadpath}/{$data['pre_name']}");
+                        ->save("{$uploadpath}/{$data['pre_name']}", array('quality' => $this->config[8]));
 
             } elseif ($newUpload) {
                 // no thumbnail needed
@@ -340,7 +340,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 }
 
                 $image->resize(new Imagine\Image\Box($fullargs[0], $fullargs[1]))
-                        ->save("{$uploadpath}/{$data['full_name']}");
+                        ->save("{$uploadpath}/{$data['full_name']}", array('quality' => $this->config[8]));
 
             } elseif ($newUpload) {
                 // no thumbnail needed
@@ -423,7 +423,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
     {
         return 'function()
                 {
-                    $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+Number($F(\'clipplugin_preservename\'))+\':\'+Number($F(\'clipplugin_preserveprop\'));
+                    $(\'typedata\').value = $F(\'clipplugin_tmpx_px\')+\':\'+$F(\'clipplugin_tmpy_px\')+\':\'+$F(\'clipplugin_previewx_px\')+\':\'+$F(\'clipplugin_previewy_px\')+\':\'+$F(\'clipplugin_fullx_px\')+\':\'+$F(\'clipplugin_fully_px\')+\':\'+Number($F(\'clipplugin_preservename\'))+\':\'+Number($F(\'clipplugin_preserveprop\'))+\':\'+Number($F(\'clipplugin_quality\'));
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
@@ -473,6 +473,10 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                   <div class="z-formrow">
                       <label for="clipplugin_full_px">'.$this->__('Full height').':</label>
                       <input type="text" value="'.$this->config[5].'" id="clipplugin_fully_px" name="clipplugin_fully_px" />
+                  </div>
+                  <div class="z-formrow">
+                      <label for="clipplugin_quality">'.$this->__('Quality').':</label>
+                      <input type="text" value="'.$this->config[8].'" id="clipplugin_quality" name="clipplugin_quality" />
                   </div>';
 
         return $html;
@@ -483,7 +487,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
      */
     public function parseConfig($typedata='', $args=array())
     {
-        // config string: "$tmpx:$tmpy:$prex:$prey:$fullx:$fully:$preserveName:$proportions"
+        // config string: "$tmpx:$tmpy:$prex:$prey:$fullx:$fully:$preserveName:$proportions:$quality"
         $this->config = explode(':', $typedata);
 
         // validate all the values
@@ -495,7 +499,8 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
             4 => isset($this->config[4])  ? (int)$this->config[4]  : '',
             5 => isset($this->config[5])  ? (int)$this->config[5]  : '',
             6 => isset($this->config[6])  ? (bool)$this->config[6] : true,
-            7 => isset($this->config[7])  ? (bool)$this->config[7] : true
+            7 => isset($this->config[7])  ? (bool)$this->config[7] : true,
+            8 => isset($this->config[8])  ? (int)$this->config[8] : 80
         );
     }
 }
