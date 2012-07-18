@@ -2,6 +2,7 @@
 {ajaxheader filename='Zikula.Clip.Container.js' ui=true}
 {pageaddvar name='javascript' value='modules/Clip/javascript/Clip.Pubtype.js'}
 {pageaddvar name='javascript' value='modules/Clip/javascript/Clip.Pubfields.js'}
+{pageaddvar name='javascript' value='modules/Clip/javascript/Zikula.Autocompleter.js'}
 {pageaddvar name='stylesheet' value='system/Theme/style/pagercss.css'}
 
 {include file='clip_admin_header.tpl'}

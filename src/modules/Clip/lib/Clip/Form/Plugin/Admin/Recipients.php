@@ -163,9 +163,8 @@ class Clip_Form_Plugin_Admin_Recipients extends Zikula_Form_Plugin_TextInput
                                                   maxItems: '.$this->maxitems.'
                                                  });
             }
-            document.observe(\'dom:loaded\', clip_enable_'.$this->id.', false);
+            clip_enable_'.$this->id.'();
         '."\n// ]]>\n</script>";
-        PageUtil::addVar('header', $script);
 
         // build the autocompleter output
         $typeDataHtml = '
@@ -189,7 +188,7 @@ class Clip_Form_Plugin_Admin_Recipients extends Zikula_Form_Plugin_TextInput
             </ul>
         </div>';
 
-        return $result . $typeDataHtml;
+        return $result . $typeDataHtml . $script;
     }
 
     /**
