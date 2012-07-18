@@ -75,7 +75,7 @@ class Clip_Util_Plugins
     /**
      * Plugin getter.
      *
-     * @param string $pluginClass Class name of the plugin.
+     * @param string $pluginID Class name of the plugin.
      *
      * @return mixed Class instance.
      */
@@ -105,6 +105,27 @@ class Clip_Util_Plugins
         }
 
         return $sm->getService("clip.plugin.$pluginID");
+    }
+
+    /**
+     * Admin plugin class name getter.
+     *
+     * @param string $pluginName Class name of the plugin.
+     *
+     * @return mixed Class name or false if doesn't exists.
+     */
+    public static function getAdminClassname($pluginName)
+    {
+        // treat the single-word classes as Clip's ones
+        if (strpos($pluginName, '_') === false) {
+            $pluginName = 'Clip_Form_Plugin_Admin_' . ucwords($pluginName);
+        }
+
+        if (!class_exists($pluginName)) {
+            $pluginName = false;
+        }
+
+        return $pluginName;
     }
 
     /**

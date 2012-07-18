@@ -108,7 +108,6 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
             unset($params['mandatory']);
         }
 
-        $plugin = new $pluginclass($render, $params);
     } else {
         // field plugin class
         $plugin = Clip_Util_Plugins::get($pluginclass);
@@ -122,8 +121,10 @@ function smarty_function_clip_form_plugin($params, Zikula_Form_View &$render)
         if (!in_array('mandatory', $vars)) {
             unset($params['mandatory']);
         }
+
+        $pluginclass = get_class($plugin);
     }
 
     // register plugin
-    return $render->registerPlugin(get_class($plugin), $params);
+    return $render->registerPlugin($pluginclass, $params);
 }
