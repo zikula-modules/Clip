@@ -15,6 +15,8 @@
 class Clip_Workflow_Util
 {
     static $workflows = array();
+    static $variables = array();
+    static $varvalues = array();
 
     /**
      * Load XML workflow.
@@ -129,6 +131,285 @@ class Clip_Workflow_Util
 
         // return workflow object
         return self::$workflows[$module][$schema];
+    }
+
+    /**
+     * Checks to see if a pubtype variable is set.
+     *
+     * @param mixed  $pubtype The pubtype ID or instance.
+     * @param string $name    The name of the variable.
+     *
+     * @return boolean True if the variable exists in the database, false if not.
+     */
+    public static function hasVar($pubtype, $name)
+    {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        // validate the passed pubtype
+        if (!$pubtype instanceof Clip_Model_Pubtype) {
+            if (!Clip_Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Workflow_Util::getVar', DataUtil::formatForDisplay($pubtype)), $dom));
+            }
+
+            $pubtype = Clip_Util::getPubType($pubtype);
+        }
+
+        $name = isset($name) ? ((string)$name) : '';
+
+        // validate the varname
+        if (!System::varValidate($name, 'modvar')) {
+            return false;
+        }
+
+        if (!isset(self::$variables[$pubtype->tid])) {
+            self::getVar($pubtype);
+        }
+
+        return array_key_exists($name, self::$variables[$pubtype->tid]);
+    }
+
+    /**
+     * The getVar method gets a pubtype workflow variable.
+     *
+     * If the name parameter is included then method returns the
+     * pubtype variable value.
+     * if the name parameter is ommitted then method returns a multi
+     * dimentional array of the keys and values for the pubtype vars.
+     *
+     * @param mixed   $pubtype The pubtype ID or instance.
+     * @param string  $name    The name of the variable.
+     * @param boolean $default The value to return if the requested variable is not set.
+     *
+     * @return mixed
+     */
+    public static function getVar($pubtype, $name = '', $default = false)
+    {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        // validate the passed pubtype
+        if (!$pubtype instanceof Clip_Model_Pubtype) {
+            if (!Clip_Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Workflow_Util::getVar', DataUtil::formatForDisplay($pubtype)), $dom));
+            }
+
+            $pubtype = Clip_Util::getPubType($pubtype);
+        }
+
+        // if we haven't got vars for this pubtype yet then lets get them
+        if (!array_key_exists($pubtype->tid, self::$variables)) {
+            self::$variables[$pubtype->tid] = array();
+
+            $where = array(
+                array('tid = ?',      $pubtype->tid),
+                array('workflow = ?', $pubtype->workflow)
+            );
+
+            $vars = Doctrine_Core::getTable('Clip_Model_WorkflowVars')
+                        ->selectFieldArray('value', $where, '', false, 'setting');
+
+            foreach ($vars as $k => $v) {
+                // ref #2045 vars are being stored with 0/1 unserialised.
+                if ($v == '0' || $v == '1') {
+                    self::$variables[$pubtype->tid][$k] = $v;
+                } else {
+                    self::$variables[$pubtype->tid][$k] = unserialize($v);
+                }
+            }
+        }
+
+        // if they didn't pass a variable name then return every variable
+        // for the specified pubtype as an associative array.
+        // array('var1' => value1, 'var2' => value2)
+        if (empty($name)) {
+            return self::$variables[$pubtype->tid];
+        }
+
+        // since they passed a variable name then only return the value for
+        // that variable
+        if (array_key_exists($name, self::$variables[$pubtype->tid])) {
+            return self::$variables[$pubtype->tid][$name];
+        }
+
+        // we don't know the required pubtype var but we established all known
+        // variables for this pubtype so the requested one can't exist.
+        // we return the default (which itself defaults to false)
+        return $default;
+    }
+
+    /**
+     * The getVarValue method gets the processed variable value.
+     *
+     * If the name parameter is included then method returns the
+     * pubtype variable value.
+     * if the name parameter is ommitted then method returns a multi
+     * dimentional array of the keys and values for the pubtype vars.
+     *
+     * @param mixed   $pubtype The pubtype ID or instance.
+     * @param string  $name    The name of the variable.
+     * @param boolean $default The value to return if the requested variable is not set.
+     *
+     * @return mixed
+     */
+    public static function getVarValue($pubtype, $name = '', $default = false)
+    {
+        // if we haven't got var values for this pubtype yet then lets get them
+        if (!array_key_exists($pubtype->tid, self::$varvalues)) {
+            if (($vars = self::getVar($pubtype)) === false) {
+                return false;
+            }
+
+            self::$varvalues[$pubtype->tid] = array();
+
+            $wfvars = Clip_Workflow_Util::getSchemaVar($pubtype->getSchema());
+
+            foreach ($wfvars as $k => $var) {
+                $classname = Clip_Util_Plugins::getAdminClassname($var['plugin']);
+
+                if (!isset($vars[$k]) || !method_exists($classname, 'postRead')) {
+                    self::$varvalues[$pubtype->tid][$k] = isset($vars[$k]) ? $vars[$k] : null;
+                } else {
+                    self::$varvalues[$pubtype->tid][$k] = $classname::postRead($vars[$k]);
+                }
+            }
+
+        }
+
+        // if they didn't pass a variable name then return every variable
+        // for the specified pubtype as an associative array.
+        // array('var1' => value1, 'var2' => value2)
+        if (empty($name)) {
+            return self::$varvalues[$pubtype->tid];
+        }
+
+        // since they passed a variable name then only return the value for
+        // that variable
+        if (array_key_exists($name, self::$varvalues[$pubtype->tid])) {
+            return self::$varvalues[$pubtype->tid][$name];
+        }
+
+        // we don't know the required pubtype var but we established all known
+        // variables for this pubtype so the requested one can't exist.
+        // we return the default (which itself defaults to false)
+        return $default;
+    }
+
+    /**
+     * The setVar method sets a pubtype variable.
+     *
+     * @param mixed  $pubtype The pubtype ID or instance.
+     * @param string $name    The name of the variable.
+     * @param string $value   The value of the variable.
+     *
+     * @return boolean True if successful, false otherwise.
+     */
+    public static function setVar($pubtype, $name, $value = '')
+    {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        // validate the passed pubtype
+        if (!$pubtype instanceof Clip_Model_Pubtype) {
+            if (!Clip_Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Workflow_Util::setVar', DataUtil::formatForDisplay($pubtype)), $dom));
+            }
+
+            $pubtype = Clip_Util::getPubType($pubtype);
+        }
+
+        if (self::hasVar($pubtype, $name)) {
+            Doctrine_Core::getTable('Clip_Model_WorkflowVars')
+                ->createQuery()
+                ->update()
+                ->set('value', serialize($value))
+                ->where('setting = ?', $name)
+                ->andWhere('tid = ?', $pubtype->tid)
+                ->andWhere('workflow = ?', $pubtype->workflow)
+                ->execute();
+
+        } else {
+            $var = new Clip_Model_WorkflowVars();
+            $var->fromArray(array(
+                'tid'      => $pubtype->tid,
+                'workflow' => $pubtype->workflow,
+                'setting'  => $name,
+                'value'    => serialize($value)
+            ));
+            $var->save();
+        }
+
+        self::$variables[$pubtype->tid][$name] = $value;
+
+        return true;
+    }
+
+    /**
+     * The setVars method sets multiple pubtype variables.
+     *
+     * @param mixed $pubtype The pubtype ID or instance.
+     * @param array $vars    An associative array of varnames/varvalues.
+     *
+     * @return boolean True if successful, false otherwise.
+     */
+    public static function setVars($pubtype, array $vars)
+    {
+        $dom = ZLanguage::getModuleDomain('Clip');
+
+        // validate the passed pubtype
+        if (!$pubtype instanceof Clip_Model_Pubtype) {
+            if (!Clip_Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Workflow_Util::setVar', DataUtil::formatForDisplay($pubtype)), $dom));
+            }
+
+            $pubtype = Clip_Util::getPubType($pubtype);
+        }
+
+        // clean the old values
+        $where = array(
+            array('tid = ?',      $pubtype->tid),
+            array('workflow = ?', $pubtype->workflow)
+        );
+
+        Doctrine_Core::getTable('Clip_Model_WorkflowVars')->deleteWhere($where);
+
+        // set the passed values
+        $ok = true;
+
+        foreach ($vars as $k => $v) {
+            $ok = $ok && self::setVar($pubtype, $k, $v);
+        }
+
+        return $ok;
+    }
+
+    /**
+     * Get workflow schema variables.
+     *
+     * @param string $schema Schema name.
+     * @param string $name   Variable name.
+     * @param string $field  Variable data field.
+     *
+     * @return mixed
+     */
+    public static function getSchemaVar($schema, $name = '', $field = '')
+    {
+        // load up schema
+        $schema = self::loadSchema('Clip', $schema);
+
+        if (!$schema || !isset($schema['variables'])) {
+            return false;
+        }
+
+        if (empty($name)) {
+            return $schema['variables'];
+
+        } elseif (!isset($schema['variables'][$name])) {
+            return false;
+        }
+
+        if (!empty($field)) {
+            return array_key_exists($field, $schema['variables'][$name]) ? $schema['variables'][$name][$field] : false;
+        }
+
+        return $schema['variables'][$name];
     }
 
     /**
