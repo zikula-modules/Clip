@@ -85,7 +85,7 @@
       <permission>moderator</permission>
 
       <operation core_online="1">updateValues</operation>
-      <operation group="editors" action="promoted">notify</operation>
+      <operation group="editors" action="promote">notify</operation>
 
       <parameter core_online="0">condition</parameter>
       <parameter mode="exec" massive="1">action</parameter>
