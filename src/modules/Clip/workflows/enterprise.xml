@@ -36,7 +36,7 @@
       <permission>editor</permission>
 
       <operation online="1">create</operation>
-      <operation type="new" group="authors">notify</operation>
+      <operation group="authors" action="create">notify</operation>
 
       <parameter mode="form">action</parameter>
       <parameter class="z-bt-ok">button</parameter>
@@ -49,7 +49,7 @@
       <permission>moderator</permission>
 
       <operation>create</operation>
-      <operation type="promoted" group="editors">notify</operation>
+      <operation group="editors" action="create">notify</operation>
 
       <parameter mode="form">action</parameter>
       <parameter class="clip-bt-promote">button</parameter>
@@ -62,7 +62,7 @@
       <permission>comment</permission>
 
       <operation>create</operation>
-      <operation type="new" group="moderators">notify</operation>
+      <operation group="moderators" action="create">notify</operation>
 
       <parameter mode="form">action</parameter>
       <parameter class="z-bt-new">button</parameter>
@@ -78,7 +78,7 @@
       <permission>editor</permission>
 
       <operation core_online="1">update</operation>
-      <operation type="promoted" group="authors">notify</operation>
+      <operation group="authors" action="promote">notify</operation>
 
       <parameter mode="form">action</parameter>
       <parameter class="z-bt-ok">button</parameter>
@@ -92,7 +92,7 @@
       <permission>editor</permission>
 
       <operation core_online="1">update</operation>
-      <operation type="promoted" group="authors">notify</operation>
+      <operation group="authors" action="promote">notify</operation>
 
       <parameter mode="exec">action</parameter>
       <parameter class="clip-iconlink clip-op-activate">link</parameter>
@@ -106,7 +106,7 @@
       <permission>moderator</permission>
 
       <operation>update</operation>
-      <operation type="promoted" group="editors">notify</operation>
+      <operation group="editors" action="promote">notify</operation>
 
       <parameter mode="exec">action</parameter>
       <parameter class="clip-iconlink clip-op-activate">link</parameter>
@@ -175,7 +175,7 @@
       <permission>editor</permission>
 
       <operation core_online="1">update</operation>
-      <operation type="promoted" group="authors">notify</operation>
+      <operation group="authors" action="promote">notify</operation>
 
       <parameter mode="form">action</parameter>
       <parameter class="z-bt-ok">button</parameter>
@@ -255,7 +255,7 @@
       <nextState>accepted</nextState>
       <permission>author</permission>
 
-      <operation type="demoted" group="editors">notify</operation>
+      <operation group="editors" action="demote">notify</operation>
 
       <parameter massive="1">action</parameter>
       <parameter class="clip-iconlink clip-op-deactivate">link</parameter>
@@ -335,9 +335,9 @@
 
   <variables>
 
-    <variable plugin="recipients" __title="Authors recipients">notify.authors</variable>
-    <variable plugin="recipients" __title="Editors recipients">notify.editors</variable>
-    <variable plugin="recipients" __title="Moderators recipients">notify.moderators</variable>
+    <variable plugin="recipients" __title="Authors recipients">notify_authors</variable>
+    <variable plugin="recipients" __title="Editors recipients">notify_editors</variable>
+    <variable plugin="recipients" __title="Moderators recipients">notify_moderators</variable>
 
   </variables>
 

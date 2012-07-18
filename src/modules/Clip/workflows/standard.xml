@@ -31,6 +31,7 @@
       <permission>moderator</permission>
 
       <operation online="1">create</operation>
+      <operation group="editors" action="create">notify</operation>
 
       <parameter mode="form">action</parameter>
       <parameter class="z-bt-ok">button</parameter>
@@ -43,6 +44,7 @@
       <permission>comment</permission>
 
       <operation>create</operation>
+      <operation group="moderators" action="create">notify</operation>
 
       <parameter mode="form">action</parameter>
       <parameter class="z-bt-new">button</parameter>
@@ -83,6 +85,7 @@
       <permission>moderator</permission>
 
       <operation core_online="1">updateValues</operation>
+      <operation group="editors" action="promoted">notify</operation>
 
       <parameter core_online="0">condition</parameter>
       <parameter mode="exec" massive="1">action</parameter>
@@ -214,5 +217,12 @@
     </action>
 
   </actions>
+
+  <variables>
+
+    <variable plugin="recipients" __title="Editors recipients">notify_editors</variable>
+    <variable plugin="recipients" __title="Moderators recipients">notify_moderators</variable>
+
+  </variables>
 
 </workflow>
