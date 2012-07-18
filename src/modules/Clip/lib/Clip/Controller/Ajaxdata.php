@@ -159,4 +159,57 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
 
         return new Zikula_Response_Ajax_Json(array('data' => $result));
     }
+
+    /**
+     * Autocompletion Recipients list.
+     * Returns the recipients list on the expected autocompleter format.
+     *
+     * @return array Autocompletion list.
+     */
+    public function recipients()
+    {
+        $this->checkAjaxToken();
+
+        $result = array();
+
+        $args = array(
+            'keyword' => $this->request->getPost()->get('keyword'),
+        );
+
+        $tables = DBUtil::getTables();
+
+        if (SecurityUtil::checkPermission('Groups::', 'ANY', ACCESS_OVERVIEW)) {
+            $grpColumn = $tables['groups_column'];
+
+            $value = DataUtil::formatForStore($args['keyword']);
+            $where = "WHERE {$grpColumn['name']} LIKE '%$value%'";
+
+            $results = DBUtil::selectFieldArray('groups', 'name', $where, $grpColumn['name'], false, 'gid');
+
+            foreach ($results as $gid => $name) {
+                $result[] = array(
+                    'value'   => "g$gid",
+                    'caption' => $this->__f('%s (Group)', DataUtil::formatForDisplay($name))
+                );
+            }
+        }
+
+        if (SecurityUtil::checkPermission('Users::', '::', ACCESS_COMMENT)) {
+            $usersColumn = $tables['users_column'];
+
+            $value = DataUtil::formatForStore($args['keyword']);
+            $where = "WHERE {$usersColumn['uname']} LIKE '%$value%'";
+
+            $results = DBUtil::selectFieldArray('users', 'uname', $where, $usersColumn['uname'], false, 'uid');
+
+            foreach ($results as $uid => $uname) {
+                $result[] = array(
+                    'value'   => "u$uid",
+                    'caption' => DataUtil::formatForDisplay($uname)
+                );
+            }
+        }
+
+        return new Zikula_Response_Ajax_Json(array('data' => $result));
+    }
 }
