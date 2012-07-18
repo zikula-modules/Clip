@@ -134,6 +134,25 @@
         </div>
     </fieldset>
 
+    {if isset($wfvars) and !empty($wfvars)}
+    <fieldset id="pubtype-settings">
+        <legend class="pubtype-panel-header">{gt text='Workflow settings'}</legend>
+        <div>
+            {foreach from=$wfvars key='id' item='var'}
+            <div class="z-formrow">
+                <label>{$var.title|safetext}</label>
+                {clip_admin_plugin group='workflow' id=$id plugin=$var.plugin}
+                {if $var.tooltip|default:''}<em class"z-formnote">{$var.tooltip}</em>{/if}
+            </div>
+            {/foreach}
+        </div>
+    </fieldset>
+
+    <div id="pubtype-wfchanged" class="z-warningmsg" style="display: none">
+        {gt text='To configure any workflow settings, you need to save first and edit this publication type again.'}
+    </div>
+    {/if}
+
     <fieldset>
         <legend class="pubtype-panel-header">{gt text='Relations options'}</legend>
         <div>

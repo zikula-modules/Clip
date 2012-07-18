@@ -12,6 +12,8 @@ Zikula.define('Clip');
 
 Zikula.Clip.Pubtype =
 {
+    workflow: '',
+
     Init: function()
     {
         var i = 0;
@@ -38,6 +40,23 @@ Zikula.Clip.Pubtype =
                 headerClassName: 'z-panel-indicator',
                 active: [0,2]
             });
+
+        if ($('pubtype-settings')) {
+            $('workflow').observe('change', Zikula.Clip.Pubtype.ListenerWorkflow);
+
+            Zikula.Clip.Pubtype.workflow = $F('workflow');
+        }
+    },
+
+    ListenerWorkflow: function()
+    {
+        if ($F('workflow') == Zikula.Clip.Pubtype.workflow) {
+            $('pubtype-settings').show();
+            $('pubtype-wfchanged').hide();
+        } else {
+            $('pubtype-settings').hide();
+            $('pubtype-wfchanged').show();
+        }
     },
 
     ListenerViewLoad: function()

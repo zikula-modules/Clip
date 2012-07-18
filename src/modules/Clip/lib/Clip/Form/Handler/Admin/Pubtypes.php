@@ -32,17 +32,13 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 
         // edit a pubtype or create one
         if ($this->tid) {
-            $pubtype   = Clip_Util::getPubType($this->tid);
-            $pubfields = Clip_Util_Selectors::fields($this->tid);
+            $pubtype = Clip_Util::getPubType($this->tid);
 
-            if (!$pubtype) {
-                $view->setErrorMsg($this->__f('Error! No such publication type [%s] found.', $this->tid));
-                return $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
-            }
-
-            // assigns the pubfuelds for the sort configuration
-            $view->assign('pubfields', $pubfields)
-                 ->assign('config', $this->configPreProcess($pubtype['config']));
+            // assigns the pubfields for the sort configuration
+            $view->assign('pubfields', Clip_Util_Selectors::fields($this->tid))
+                ->assign('config', $this->configPreProcess($pubtype['config']))
+                ->assign('wfvars', Clip_Workflow_Util::getSchemaVar($pubtype->getSchema()))
+                ->assign('workflow', Clip_Workflow_Util::getVar($pubtype));
 
         } else {
             $pubtype = new Clip_Model_Pubtype();
@@ -81,9 +77,6 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         // get the table object for utility purposes
         $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
 
-        // get the data set in the form
-        $data = $view->getValues();
-
         // creates and fill a Pubtype instance
         if ($this->tid) {
             // clone to avoid interferences of the Doctrine_Table cache
@@ -92,6 +85,9 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         } else {
             $pubtype = new Clip_Model_Pubtype();
         }
+
+        // get the data set in the form
+        $data = $view->getValues();
 
         // update the pubtype with the form values
         $pubtype->fromArray($data['pubtype']);
@@ -132,6 +128,13 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
 
                 // save the pubtype
                 $pubtype->save();
+
+                // save the workflow vars if present
+                $mod = $pubtype->getLastModified(true);
+
+                if (!$mod['workflow'] && isset($data['workflow'])) {
+                    Clip_Workflow_Util::setVars($pubtype, $data['workflow']);
+                }
 
                 // create/update status messages
                 if (!$this->tid) {
