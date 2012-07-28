@@ -773,7 +773,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
             'core_urltitle'    => "C(255) NOTNULL",
             'core_author'      => 'I4 NOTNULL',
             'core_hitcount'    => 'I8 DEFAULT 0',
-            'core_language'    => "C(10) NOTNULL", //FIXME how many chars are needed for a gettext code?
+            'core_language'    => "C(10) DEFAULT ''", //FIXME how many chars are needed for a gettext code?
             'core_revision'    => 'I4 NOTNULL DEFAULT 1',
             'core_online'      => 'L DEFAULT 0',
             'core_intrash'     => 'L DEFAULT 0',
