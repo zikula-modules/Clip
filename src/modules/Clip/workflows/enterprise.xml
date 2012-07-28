@@ -55,7 +55,7 @@
       <parameter class="clip-bt-promote">button</parameter>
     </action>
 
-    <action id="submit">
+    <action id="authorsubmit">
       <title>Submit</title>
       <description>Submit a publication for acceptance by a moderator</description>
       <nextState>waiting</nextState>
@@ -112,7 +112,7 @@
       <parameter class="clip-iconlink clip-op-activate">link</parameter>
     </action>
 
-    <action id="update">
+    <action id="authorupdate">
       <title>Update</title>
       <description>Update the content of the publication</description>
       <state>waiting</state>
@@ -181,7 +181,7 @@
       <parameter class="z-bt-ok">button</parameter>
     </action>
 
-    <action id="update">
+    <action id="authorupdate">
       <title>Update</title>
       <description>Update the content of the publication</description>
       <state>accepted</state>
@@ -236,7 +236,7 @@
 
     <!-- State: approved -->
 
-    <action id="update">
+    <action id="authorupdate">
       <title>Update</title>
       <description>Update the content of the publication</description>
       <state>approved</state>

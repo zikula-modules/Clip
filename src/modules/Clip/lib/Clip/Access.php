@@ -121,6 +121,7 @@ class Clip_Access
 
             case 'submit': // submit new content
                 $component .= 'edit';
+                $instance   = ':initial:';
                 $workflow = new Clip_Workflow($pubtype);
                 // assumes level 0 as the basic submit permission
                 $permlvl = $workflow->getPermissionLevel(0, 'initial');
@@ -189,14 +190,14 @@ class Clip_Access
             // check an already stored record
             if ($pub->exists()) {
                 $pid = $pub['core_pid'];
-
-                // state only needed on edit* context
-                if (self::isPubStateNeeded($context)) {
-                    $state = $pub->clipWorkflow('state');
-                }
             } else {
                 // the user may wants to save a new record
                 $pid = '';
+            }
+
+            // check if the state is needed
+            if (self::isPubStateNeeded($context)) {
+                $state = $pub->clipWorkflow('state');
             }
         } else {
             if (is_numeric($pub)) {
@@ -247,13 +248,11 @@ class Clip_Access
                 break;
 
             case 'form':
-                // TODO consider edit.own
                 $permlvl = $permlvl ? $permlvl : ACCESS_READ;
                 $allowed = SecurityUtil::checkPermission("Clip:{$pubtype->tid}:edit", "$pid:$state:$tplid", $permlvl, $uid);
                 break;
 
             case 'edit':
-                // TODO consider edit.own
                 if (!SecurityUtil::checkPermission("Clip:{$pubtype->tid}:edit", "$pid:$state:$tplid", ACCESS_READ, $uid)) {
                     // direct discard if do not have permission to the form
                     break;
@@ -261,7 +260,6 @@ class Clip_Access
 
             case 'exec':
             case 'execinline':
-                // TODO consider edit.own
                 if (!$permlvl) {
                     // gets the minimum state permission level
                     $workflow = $pub instanceof Clip_Doctrine_Pubdata ? new Clip_Workflow($pubtype, $pub) : new Clip_Workflow($pubtype);

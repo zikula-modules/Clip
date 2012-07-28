@@ -99,6 +99,19 @@ the workflow state of it, and the requested form template.
 
 Example rules:
 
+* allow submit publications to the pubtype 5 in the workflow "none",
+  first need to be able to read the form (included by default in a general one like .* .* COMMENT):
+  `Clip:3:edit | ::clipdefault | READ`
+  and also needs the execution access or edit own enabled for the pubtype:
+  `Clip:3:exec | :initial:submit | EDIT`
+  Finally, to see the submit button, this rule is needed:
+  `Clip:3:edit | :initial: | EDIT`
+  which can be mixed on:
+  `Clip:3:(edit|exec) | :initial:(submit)? | EDIT`
+
+* allow submit publications in the pubtype 5 with the workflow "standard":
+  `Clip:5:(edit|exec) | :initial:(submit)? | COMMENT`
+
 * deny the access to the approved publications of the pubtype 6  
   `Clip:6:edit | :approved: | NONE`
 
@@ -163,6 +176,8 @@ Assumes level 0 of 'initial' as content submitter permission level.
 Moderator
 --------
 Assumes level 1 of 'initial' as moderator permission level.
+From this level, the access to the editor panel is allowed, like for the "standard" workflow the rule is:
+`Clip:$tid:edit | :: | EDIT`
 
 Editor
 --------

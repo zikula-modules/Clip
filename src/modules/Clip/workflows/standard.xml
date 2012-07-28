@@ -37,7 +37,7 @@
       <parameter class="z-bt-ok">button</parameter>
     </action>
 
-    <action id="submit">
+    <action id="authorsubmit">
       <title>Submit</title>
       <description>Submit a publication for acceptance by a moderator</description>
       <nextState>waiting</nextState>
@@ -65,7 +65,7 @@
       <parameter class="z-bt-ok">button</parameter>
     </action>
 
-    <action id="update">
+    <action id="authorupdate">
       <title>Update</title>
       <description>Update the content for later publishing</description>
       <state>waiting</state>
@@ -135,7 +135,7 @@
 
     <!-- State: approved -->
 
-    <action id="update">
+    <action id="authorupdate">
       <title>Update</title>
       <description>Update the publication content</description>
       <state>approved</state>

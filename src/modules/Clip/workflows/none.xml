@@ -19,7 +19,7 @@
 
     <!-- From initial state -->
 
-    <action id="submit">
+    <action id="authorsubmit">
       <title>Submit</title>
       <description>Submit a publication</description>
       <nextState>approved</nextState>
@@ -33,7 +33,7 @@
 
     <!-- State: approved -->
 
-    <action id="update">
+    <action id="authorupdate">
       <title>Update</title>
       <description>Update the publication content</description>
       <state>approved</state>

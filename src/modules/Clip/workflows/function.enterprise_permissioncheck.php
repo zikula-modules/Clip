@@ -25,10 +25,10 @@ function Clip_workflow_enterprise_permissioncheck($pub, $permLevel, $currentUser
 {
     $pubtype = Clip_Util::getPubType($pub->core_tid);
 
-    if ($pub->exists()) {
-        // check existing publication author and granular permission access check
-        if ($pubtype->enableeditown == 1 && $pub->core_author == $currentUser) {
-            // FIXME allow this only on update operations on offline publications, and notify (actionId standard)
+    if ($pubtype->enableeditown == 1 && strpos($actionId, 'author') === 0) {
+        // check existing publication author
+        if (!$pub->exists() || $pub->core_author == $currentUser) {
+            // FIXME allow this only on update operations on offline publications only? not in approved?
             return true;
         }
     }
