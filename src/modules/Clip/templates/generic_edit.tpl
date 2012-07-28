@@ -1,3 +1,4 @@
+{clip_access context='editor' assign='isEditor'}
 
 <div class="clip-wrapper clip-edit clip-edit-{$pubtype.urltitle} clip-edit-{$pubtype.urltitle}-{$clipargs.edit.state}">
     {include file='generic_navbar.tpl'}
@@ -19,7 +20,7 @@
 {$code}
             </fieldset>
 
-            {clip_accessblock context='editor'}
+            {if $isEditor}
             {if $relations}
             <fieldset>
                 <legend>{gt text='Related publications'}</legend>
@@ -72,7 +73,7 @@
                     <em class="z-formnote z-sub">{gt text='If enabled, the publication will be closed for changes'}</em>
                 </div>
             </fieldset>
-           {/clip_accessblock}
+           {/if}
 
             <div class="clip-hooks-edit">
                 {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') urlObject=$pubdata->clipUrl() id=$pubdata.core_pid}
