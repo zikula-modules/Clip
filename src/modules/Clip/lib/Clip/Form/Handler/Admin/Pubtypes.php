@@ -132,7 +132,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 // save the workflow vars if present
                 $mod = $pubtype->getLastModified(true);
 
-                if (!$mod['workflow'] && isset($data['workflow'])) {
+                if (isset($mod['workflow']) && !$mod['workflow'] && isset($data['workflow'])) {
                     Clip_Workflow_Util::setVars($pubtype, $data['workflow']);
                 }
 
