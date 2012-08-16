@@ -99,18 +99,18 @@ the workflow state of it, and the requested form template.
 
 Example rules:
 
-* allow submit publications to the pubtype 5 in the workflow "none",
+* allow submit publications to the pubtype 3 in the workflow "none",
   first need to be able to read the form (included by default in a general one like .* .* COMMENT):
   `Clip:3:edit | ::clipdefault | READ`
   and also needs the execution access or edit own enabled for the pubtype:
-  `Clip:3:exec | :initial:submit | EDIT`
+  `Clip:3:exec | :initial:authorsubmit | EDIT`
   Finally, to see the submit button, this rule is needed:
   `Clip:3:edit | :initial: | EDIT`
   which can be mixed on:
-  `Clip:3:(edit|exec) | :initial:(submit)? | EDIT`
+  `Clip:3:(edit|exec) | :initial:(authorsubmit)? | EDIT`
 
 * allow submit publications in the pubtype 5 with the workflow "standard":
-  `Clip:5:(edit|exec) | :initial:(submit)? | COMMENT`
+  `Clip:5:(edit|exec) | :initial:(authorsubmit)? | COMMENT`
 
 * deny the access to the approved publications of the pubtype 6  
   `Clip:6:edit | :approved: | NONE`
