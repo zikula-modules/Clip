@@ -782,7 +782,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         // reset the function to main
         System::queryStringSetVar('func', 'main');
 
-        preg_match('/^([a-z0-9_\-\~]+?)(\.([a-z0-9_\.\-]+))?$/i', end($_), $matches);
+        preg_match('/^([a-z0-9_\s\-\~]+?)(\.([a-z0-9_\.\-]+))?$/i', end($_), $matches);
 
         $urltitle = reset($_);
         $filename = $matches[1];
@@ -824,7 +824,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
             } else {
                 // if even, it includes the publication title
-                if (!preg_match('/^([a-z0-9_\-\~]+?)(\.([a-z0-9_\.\-]+))?$/i', $_[1], $matches)) {
+                if (!preg_match('/^([a-z0-9_\-\~\s]+?)(\.([a-z0-9_\.\-]+))?$/i', $_[1], $matches)) {
                     // there must be a valid filename
                     return true;
                 }
@@ -897,13 +897,13 @@ class Clip_Api_User extends Zikula_AbstractApi
 
                 if (!isset($pubtitle)) {
                     // by now, the pub still has the id as suffix
-                    preg_match('/^([a-z0-9_\-'.$s.']+?(\~[\d]+)?)$/i', $filename, $matches);
+                    preg_match('/^([a-z0-9_\-\s'.$s.']+?(\~[\d]+)?)$/i', $filename, $matches);
 
                     $pubtitle = $matches[1];
                 }
 
                 // extract the urltitle[~id] when not submitting
-                if (!($func == 'edit' && !isset($pid)) && preg_match('~^([a-z0-9_\-'.$s.']+?)(\~(\d+))?$~i', $pubtitle, $matches)) {
+                if (!($func == 'edit' && !isset($pid)) && preg_match('~^([a-z0-9_\-\s'.$s.']+?)(\~(\d+))?$~i', $pubtitle, $matches)) {
                     $where = array();
 
                     if (isset($matches[3])) {
