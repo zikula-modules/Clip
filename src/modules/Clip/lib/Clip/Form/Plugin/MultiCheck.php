@@ -13,7 +13,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
 {
     // plugin definition
     public $pluginTitle;
-    public $columnDef   = 'C(512)';
+    public $columnDef   = 'C(255)'; //512
     public $filterClass = 'clipmlist';
     public $config = array();
 
