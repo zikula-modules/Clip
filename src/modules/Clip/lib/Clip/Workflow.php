@@ -181,7 +181,7 @@ class Clip_Workflow extends Zikula_AbstractBase
      *
      * @return boolean
      */
-    private function registerWorkflow($stateID = 'initial')
+    public function registerWorkflow($stateID = 'initial')
     {
         $idcolumn = $this->obj['__WORKFLOW__']['obj_idcolumn'];
 
@@ -208,7 +208,7 @@ class Clip_Workflow extends Zikula_AbstractBase
      *
      * @return boolean
      */
-    private function updateWorkflow($stateID)
+    public function updateWorkflow($stateID)
     {
         $rec = array('id'    => $this->obj['__WORKFLOW__']['id'],
                      'state' => $stateID);
