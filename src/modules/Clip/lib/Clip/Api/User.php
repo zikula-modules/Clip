@@ -697,11 +697,14 @@ class Clip_Api_User extends Zikula_AbstractApi
                         }
                     }
                 } elseif (isset($_['urltitle']) && !isset($pid)) {
-                    $pid = $cache['id'][$tid][$id] = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
-                                                     ->selectFieldBy('core_pid', $_['urltitle'], 'core_urltitle', 'core_online DESC');
-                    if (!$pid) {
+                    $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)
+                           ->selectFieldArrayBy('core_pid', $_['urltitle'], 'core_urltitle', 'core_online DESC', false, 'id');
+
+                    if (!reset($pub)) {
                         return false;
                     }
+
+                    $pid = $cache['id'][$tid][key($pub)] = current($pub);
                 }
 
                 if ($pid) {
