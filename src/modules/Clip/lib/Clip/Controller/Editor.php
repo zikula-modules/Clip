@@ -85,12 +85,12 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'editor'));
+        $this->throwForbiddenUnless(UserUtil::isLoggedIn() && Clip_Access::toPubtype($pubtype, 'editor'));
 
         // define the arguments
         $apiargs = array(
             'tid'           => $args['tid'],
-            'filter'        => isset($args['filter']) ? $args['filter'] : (FormUtil::getPassedValue('filter') ? null : 'core_online:eq:1'),
+            'filter'        => isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter', '()'),
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid:desc'),
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : abs((int)FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'])),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : false,
@@ -119,10 +119,9 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         //// Execution
         // fill the conditions of the list to get
         $apiargs['where'] = array();
-        if (UserUtil::isLoggedIn() && $pubtype['enableeditown'] == 1) {
+        if ($pubtype['enableeditown'] == 1) {
             $apiargs['where']['orWhere'] = array('core_author = ?', array(UserUtil::getVar('uid')));
         }
-        $apiargs['where'][] = array('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
 
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
