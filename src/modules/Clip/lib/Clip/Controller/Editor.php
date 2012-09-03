@@ -119,8 +119,8 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         //// Execution
         // fill the conditions of the list to get
         $apiargs['where'] = array();
-        if ($pubtype['enableeditown'] == 1) {
-            $apiargs['where']['orWhere'] = array('core_author = ?', array(UserUtil::getVar('uid')));
+        if ($pubtype['enableeditown'] == 1 && !Clip_Access::toPubtype($pubtype, 'admin')) {
+            $apiargs['where'][] = array('core_author = ?', array(UserUtil::getVar('uid')));
         }
 
         // uses the API to get the list of publications
