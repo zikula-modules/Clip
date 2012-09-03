@@ -93,7 +93,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
+        $this->throwForbiddenUnless(isset($args['templatesimple']) || Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
 
         // fetch simple templates
         if (isset($args['templatesimple'])) {
