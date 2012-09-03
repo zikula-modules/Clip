@@ -110,7 +110,7 @@ class Clip_Doctrine_Table extends Doctrine_Table
      * @param string  $field    The name of the field we wish to marshall.
      * @param array   $where    The where clause (optional) (default=array()).
      * @param string  $orderBy  The orderby clause (optional) (default='').
-     * @param boolean $distinct Whether or not to add a 'DISTINCT' clause (optional) (works without a assocKey) (default=false).
+     * @param boolean $distinct Whether or not to add a 'DISTINCT' clause (optional) (works without an assocKey) (default=false).
      * @param string  $assocKey The key field to use to build the associative index (optional) (default='').
      *
      * @return array The resulting array of field values.
@@ -143,22 +143,18 @@ class Clip_Doctrine_Table extends Doctrine_Table
      * @param string $value   The value we wish to select with.
      * @param string $column  The column to use (optional) (default='id').
      * @param string $orderBy The orderby clause (optional) (default='').
+     * @param boolean $distinct Whether or not to add a 'DISTINCT' clause (optional) (works without an assocKey) (default=false).
+     * @param string  $assocKey The key field to use to build the associative index (optional) (default='').
      *
      * @return array The resulting field array.
      */
-    public function selectFieldArrayBy($field, $value, $column = 'id', $orderBy = '')
+    public function selectFieldArrayBy($field, $value, $column = 'id', $orderBy = '', $distinct = false, $assocKey = '')
     {
-        // creates the query instance
-        $q = $this->selectFieldQuery($field, '', $orderBy);
+        $where = array(
+            array("$column = ?", $value)
+        );
 
-        $q->where($this->buildFindByWhere($column), (array)$value);
-
-        $result = $q->execute(array(), Doctrine_Core::HYDRATE_ARRAY);
-        foreach ($result as $k => $v) {
-            $result[$k] = $v[$field];
-        }
-
-        return $result;
+        return $this->selectFieldArray($field, $where, $orderBy, $distinct, $assocKey);
     }
 
     /**
