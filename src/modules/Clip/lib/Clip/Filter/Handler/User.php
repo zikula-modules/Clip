@@ -9,7 +9,7 @@
  * @subpackage Filter
  */
 
-class Clip_Filter_User extends FilterUtil_AbstractPlugin implements FilterUtil_BuildInterface
+class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements FilterUtil_BuildInterface
 {
     /**
      * Enabled operators.

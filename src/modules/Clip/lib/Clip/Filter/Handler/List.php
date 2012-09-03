@@ -9,8 +9,26 @@
  * @subpackage Filter
  */
 
-class Clip_Filter_MultiList extends Clip_Filter_List
+class Clip_Filter_Handler_List extends FilterUtil_Filter_Category
 {
+    /**
+     * Adds fields to list in the clip way.
+     *
+     * @param mixed $fields Fields to add.
+     *
+     * @return void
+     */
+    public function addFields($fields)
+    {
+        if (is_array($fields)) {
+            foreach ($fields as $fld) {
+                $this->addFields($fld);
+            }
+        } elseif (!empty($fields) && $this->fieldExists($fields) && array_search($fields, (array)$this->fields) === false) {
+            $this->fields[] = $fields;
+        }
+    }
+
     /**
      * Returns the operators the plugin can handle.
      *
@@ -19,7 +37,6 @@ class Clip_Filter_MultiList extends Clip_Filter_List
     public function availableOperators()
     {
         return array(
-                     'like',
                      'eq',
                      'ne',
                      'sub',
@@ -50,35 +67,39 @@ class Clip_Filter_MultiList extends Clip_Filter_List
 
         switch ($op)
         {
-            case 'like':
             case 'eq':
-                $where = "$column LIKE ?";
-                $params[] = '%:'.$value.':%';
+                $where = "$column = ?";
+                $params[] = $value;
                 break;
 
             case 'ne':
-                $where = "$column NOT LIKE ?";
-                $params[] = '%:'.$value.':%';
+                $where = "$column <> ?";
+                $params[] = $value;
                 break;
 
             case 'sub':
             case 'dis':
-                $opr   = $op == 'sub' ? 'LIKE' : 'NOT LIKE';
-                $where = "$column $opr ?";
-                $params[] = '%:'.$value.':%';
                 $cats = CategoryUtil::getSubCategories($value);
+                $items = array($value);
                 foreach ($cats as $item) {
-                    $where .= ($op == 'sub' ? ' OR' : ' AND')." $column $opr ?";
-                    $params[] = '%:'.$item['id'].':%';
+                    $items[] = $item['id'];
+                }
+                if (count($items) == 1) {
+                    $opr   = $op == 'sub' ? '=' : '!=';
+                    $where = "$column $opr ?";
+                    $params[] = $value;
+                } else {
+                    $opr   = $op == 'sub' ? 'IN' : 'NOT IN';
+                    $where = "$column $opr (".implode(',', $items).")";
                 }
                 break;
 
             case 'null':
-                $where = "($column = '::' OR $column IS NULL)";
+                $where = "($column = '' OR $column IS NULL)";
                 break;
 
             case 'notnull':
-                $where = "($column <> '::' OR $column IS NOT NULL)";
+                $where = "($column <> '' OR $column IS NOT NULL)";
                 break;
         }
 
