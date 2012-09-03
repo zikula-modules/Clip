@@ -108,16 +108,18 @@ class Clip_Access
                 break;
 
             case 'editor': // panel
-                $component .= 'edit';
-                // TODO consider edit.own and not for pubs submitted by guests
-                $workflow = new Clip_Workflow($pubtype);
-                // assumes level 1 as the first moderator permission
-                $permlvl = $workflow->getPermissionLevel(1, 'initial');
-                if (!$permlvl) {
-                    // if there isn't a level 1, assumes the level 0 as editor
-                    $permlvl = $workflow->getPermissionLevel(0, 'initial');
+                if ($pubtype['enableeditown'] != 1) {
+                    $component .= 'edit';
+                    // TODO consider edit.own and not for pubs submitted by guests
+                    $workflow = new Clip_Workflow($pubtype);
+                    // assumes level 1 as the first moderator permission
+                    $permlvl = $workflow->getPermissionLevel(1, 'initial');
+                    if (!$permlvl) {
+                        // if there isn't a level 1, assumes the level 0 as editor
+                        $permlvl = $workflow->getPermissionLevel(0, 'initial');
+                    }
+                    break;
                 }
-                break;
 
             case 'submit': // submit new content
                 $component .= 'edit';
