@@ -90,7 +90,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
         // define the arguments
         $apiargs = array(
             'tid'           => $args['tid'],
-            'filter'        => isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter', '()'),
+            'filter'        => isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter', ''),
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid:desc'),
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : abs((int)FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'])),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : false,

@@ -177,7 +177,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // filter instance
-        $filter['obj'] = new FilterUtil('Clip', $tableObj, $filter['args']);
+        $filter['obj'] = new Clip_Filter_Util('Clip', $tableObj, $filter['args']);
 
         if (!empty($args['filter'])) {
             $filter['obj']->setFilter($args['filter']);
@@ -203,14 +203,6 @@ class Clip_Api_User extends Zikula_AbstractApi
         }
 
         // add the conditions to the query
-        // restrictions for non-editors
-        if ($args['limitdate']) {
-            $query->andWhere('(core_publishdate IS NULL OR core_publishdate <= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
-            $query->andWhere('(core_expiredate IS NULL OR core_expiredate >= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
-        }
-        // query for the current user language
-        $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
-        // additional call specifications
         foreach ($args['where'] as $method => $condition) {
             if (is_numeric($method)) {
                 $method = 'andWhere';
@@ -225,23 +217,40 @@ class Clip_Api_User extends Zikula_AbstractApi
         // enrich the query with the Filterutil stuff
         $filter['obj']->enrichQuery($query);
 
-        // fill $args.filter with the final filter used
+        // restrict to the current user language
+        $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
+
+        // restrictions for non-editors
+        if ($args['limitdate']) {
+            $query->andWhere('(core_publishdate IS NULL OR core_publishdate <= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
+            $query->andWhere('(core_expiredate IS NULL OR core_expiredate >= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
+        }
+
+        // add the final filter used
         $args['filter'] = array();
-        foreach ($filter['obj']->getObject() as $f1) {
-            if (isset($f1['field'])) {
-                $args['filter'][$f1['field']]['ops'][] = $f1['op'];
-                $args['filter'][$f1['field']][$f1['op']][] = $f1['value'];
+        $args['filterform'] = array();
+
+        foreach ($filter['obj']->getObject() as $part) {
+            if (isset($part['field'])) {
+                $args['filter'][$part['field']]['ops'][] = $part['op'];
+                $args['filter'][$part['field']][$part['op']][] = $part['value'];
+                $args['filterform'][] = $part;
             } else {
-                foreach ($f1 as $farray) {
-                    $args['filter'][$farray['field']]['ops'][] = $farray['op'];
-                    $args['filter'][$farray['field']][$farray['op']][] = $farray['value'];
+                foreach ($part as $subp) {
+                    $args['filter'][$subp['field']]['ops'][] = $subp['op'];
+                    $args['filter'][$subp['field']][$subp['op']][] = $subp['value'];
+                    $args['filterform'][] = $subp;
                 }
             }
         }
-        $filterstr = $filter['obj']->getFilter();
-        $filterstr = strpos($filterstr, '(') === 0 ? substr($filterstr, 1, -1) : $filterstr;
-        $args['filterstr'] = explode(')*(', $filterstr);
 
+        // add the filter string as an array
+        $filterstr = $filter['obj']->getFilter();
+
+        $filterstr = strpos($filterstr, '(') === 0 ? substr($filterstr, 1, -1) : $filterstr;
+        $args['filterstr'] = explode('),(', $filterstr);
+
+        // executes the query
         if ($args['function']) {
             $publist = $query->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
 
