@@ -289,6 +289,14 @@ table.z-admintable thead tr th {
 .z-module-clip .z-form .z-buttons button {
   margin-bottom: 0.5em;
 }
+.clip-filter-form .z-buttons input,
+.clip-filter-form .z-buttons button {
+  margin-bottom: 0 !important;
+}
+
+.clip-filter-form span.z-nowrap {
+    margin-right: 0.5em;
+}
 
 /* general */
 img {

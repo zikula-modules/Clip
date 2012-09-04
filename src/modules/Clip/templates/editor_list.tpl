@@ -4,7 +4,8 @@
 {assign var='pagetitle' value="`$pubtype.title` &raquo; `$pagetitle`"}
 
 <div class="clip-editorpanel">
-    {include file='editor_header.tpl'}
+    {clip_include file='editor_header.tpl'}
+    {clip_include file='editor_filter.tpl'}
 
     <table class="z-datatable">
         <thead>
