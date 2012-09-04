@@ -1,5 +1,5 @@
-{clip_access assign='auth_admin'}
 {clip_access permlvl=ACCESS_ADMIN assign='clip_admin'}
+{clip_access context='admin' assign='auth_admin'}
 
 {switch expr=$func}
     {case expr='main'}
@@ -29,7 +29,13 @@
         </span>
 
         {* action icons *}
-        {if $clip_admin}
+        {if $pubtype.tid|default:false and ($clip_admin or $auth_admin)}
+        <span class="clip-breadlink">
+            <a href="{modurl modname='Clip' type='admin' func='main' fragment="`$pubtype.tid`/pubtypeinfo"}">
+                {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
+            </a>
+        </span>
+        {elseif $clip_admin}
         <span class="clip-breadlink">
             <a href="{modurl modname='Clip' type='admin' func='main'}">
                 {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
@@ -37,13 +43,6 @@
         </span>
         {/if}
         {if $pubtype.tid|default:false}
-        {if !$clip_admin and $auth_admin}
-        <span class="clip-breadlink">
-            <a href="{modurl modname='Clip' type='admin' func='main' fragment="`$pubtype.tid`/pubtypeinfo"}">
-                {img width='12' height='12' modname='core' src='configure.png' set='icons/extrasmall' alt='' __title='Administration panel'}
-            </a>
-        </span>
-        {/if}
         {clip_accessblock context='submit'}
         <span class="clip-breadlink">
             <a href="{clip_url type='user' func='edit'}">
