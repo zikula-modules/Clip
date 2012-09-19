@@ -138,6 +138,18 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
             $usersColumn = $tables['users_column'];
 
             $value = DataUtil::formatForStore($args['keyword']);
+
+            // check anonymous match first
+            $anonymous = $this->__('Anonymous');
+
+            if (stripos($anonymous, $value) !== false) {
+                $result[] = array(
+                    'value'   => 0,
+                    'caption' => DataUtil::formatForDisplay($anonymous)
+                );
+            }
+
+            // check matches in the database
             switch ($args['op']) {
                 case 'search':
                     $value = '%'.$value;

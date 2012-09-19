@@ -294,10 +294,6 @@ table.z-admintable thead tr th {
   margin-bottom: 0 !important;
 }
 
-.clip-filter-form span.z-nowrap {
-    margin-right: 0.5em;
-}
-
 /* general */
 img {
   vertical-align: middle;
@@ -714,7 +710,7 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 }
 
 /* Container and options */
-.z-form div.z-formrow > .z-auto-container {
+.z-auto-container {
   background: #eee;
   display: none;
   /*margin-left: 27.5% !important;*/
@@ -725,23 +721,23 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   width: 71%;
   z-index: 9999;
 }
-.z-linear div.z-formrow > .z-auto-container {
+.z-linear .z-auto-container {
   margin-left: 0 !important;
   width: 100%;
 }
-.z-form div.z-formrow > .z-auto-container .z-auto-default,
-.z-form div.z-formrow > .z-auto-container .z-auto-notfound {
+.z-auto-container .z-auto-default,
+.z-auto-container .z-auto-notfound {
   border: 1px solid #ccc;
   border-width: 0 1px 1px;
   padding: 5px 7px;
 }
-.z-form div.z-formrow > .z-auto-container ul {
+.z-auto-container ul {
   display: none;
   margin: 0;
   overflow: auto;
   padding: 0;
 }
-.z-form div.z-formrow > .z-auto-container ul li {
+.z-auto-container ul li {
   border: 1px solid #ccc;
   border-width: 0 1px 1px;
   cursor: pointer;
@@ -751,17 +747,45 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   padding: 5px 12px;
   z-index: 1000;
 }
-.z-form div.z-formrow > .z-auto-container ul li em {
+.z-auto-container ul li em {
   background: #ccc;
   font-style: normal;
   font-weight: bold;
 }
-.z-form div.z-formrow > .z-auto-container ul li.z-auto-focus {
+.z-auto-container ul li.z-auto-focus {
   background: #555;
   color: #fff;
 }
-.z-form div.z-formrow > .z-auto-container ul li.z-auto-focus em {
+.z-auto-container ul li.z-auto-focus em {
   background: none;
+}
+
+.clip-filter-form .z-nowrap {
+  display: inline;
+  float: left;
+  margin-right: 0.5em;
+  position: relative;
+}
+
+.clip-filter-form span.z-label {
+  float: left;
+  line-height: 2em;
+  padding-right: 0.4em;
+}
+.clip-filter-form .z-auto-filterwrap {
+  float: left;
+  position: relative;
+}
+.clip-filter-form ul.z-auto-holder {
+  padding: 0.2em 0 0.2em 0.2em;
+  width: auto !important;
+}
+
+.clip-filter-form ul.z-auto-holder li {
+  margin-bottom: 0;
+}
+.clip-filter-form ul.z-auto-holder li.z-auto-bit-input {
+  padding: 0;
 }
 
 /* Default pubtypes generic styles */

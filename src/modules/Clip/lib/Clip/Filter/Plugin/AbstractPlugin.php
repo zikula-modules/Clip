@@ -58,6 +58,15 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     public $field;
 
     /**
+     * Operator to use.
+     *
+     * This contains the operator to use in the filter.
+     *
+     * @var string
+     */
+    public $op;
+
+    /**
      * HTML attributes.
      *
      * Associative array of attributes to add to the plugin. For instance:

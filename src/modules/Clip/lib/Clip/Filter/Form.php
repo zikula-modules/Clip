@@ -66,13 +66,18 @@ class Clip_Filter_Form
      */
     public function getFilter($field, $del = true)
     {
-        $filter = reset($this->filters);
+        $filter = array();
 
-        if ($field == $filter['field'] && $del) {
-            array_shift($this->filters);
-        }
+        do {
+            $f = reset($this->filters);
 
-        return ($field == $filter['field']) ? $filter : false;
+            if ($field == $f['field'] && $del) {
+                $filter[] = $f;
+                array_shift($this->filters);
+            }
+        } while ($field == $f['field']);
+
+        return $filter;
     }
 
     /**

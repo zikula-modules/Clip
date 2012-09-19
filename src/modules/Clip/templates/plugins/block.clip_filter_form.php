@@ -59,7 +59,7 @@ function smarty_block_clip_filter_form($params, $content, Zikula_View &$view)
     $action = System::getBaseUrl().System::getVar('entrypoint', 'index.php');
 
     $output = '<div class="'.$class.'">'."\n".
-                   '<fieldset id="'.$filter->getId().'wrapper" style="display: none">'."\n".
+                   '<fieldset id="'.$filter->getId().'wrapper" class="z-linear" style="display: none">'."\n".
                        //'<legend>'.__('Filter', $dom).'</legend>'."\n".
                        $content."\n".
                        '<form id="'.$filter->getId().'form" method="get" action="'.$action.'" style="display: inline">'."\n".

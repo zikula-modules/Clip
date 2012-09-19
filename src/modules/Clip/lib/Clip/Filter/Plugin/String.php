@@ -14,10 +14,9 @@
  *
  * General purpose input plugin that allows the user to enter any kind of character based data, Example:
  * <code>
- * {clip_filter_plugin p='String' id='title' maxLength='100' width='30em'}
+ * {clip_filter_plugin p='String' id='core_title' maxLength='100' width='30em'}
  * </code>
  */
-
 class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
 {
     /**
@@ -137,8 +136,10 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
      */
     public function load($params, $filter)
     {
-        if ($args = $filter->getFilter($this->field)) {
-            $this->text = $this->formatValue($args['value']);
+        $this->text = '';
+
+        foreach ($filter->getFilter($this->field) as $args) {
+            $this->text .= ($this->text ? ':' : '') . $this->formatValue($args['value']);
         }
     }
 

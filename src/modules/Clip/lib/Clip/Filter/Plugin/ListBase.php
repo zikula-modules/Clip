@@ -92,13 +92,11 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
      */
     public function load($params, $filter)
     {
-        $value = null;
+        $this->setSelectedValue(null);
 
-        if ($args = $filter->getFilter($this->field)) {
-            $value = $args['value'];
+        foreach ($filter->getFilter($this->field) as $args) {
+            $this->setSelectedValue($args['value']);
         }
-
-        $this->setSelectedValue($value);
     }
 
     /**
