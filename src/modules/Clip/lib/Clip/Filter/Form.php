@@ -16,7 +16,8 @@ class Clip_Filter_Form
 {
     const INPUTVAR = 'filter';
 
-    var $id;
+    var $id;                // form id
+    var $tid;               // tid to filter
     var $filters = array(); // list arguments
     var $plugins = array(); // registered plugins
     var $obsform = array(); // registered form observers
@@ -30,7 +31,8 @@ class Clip_Filter_Form
      */
     public function __construct(&$params, Zikula_View $view)
     {
-        $this->id = uniqid('cf');
+        $this->id  = uniqid('cf');
+        $this->tid = $view->getTplVar('pubtype')->tid;
         // extract the clip filters from the view
         $clipargs = $view->getTplVar('clipargs');
         $this->filters = $clipargs['getallapi']['filterform'];
@@ -44,6 +46,16 @@ class Clip_Filter_Form
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * TID getter.
+     *
+     * @return string Form pubtype TID.
+     */
+    public function getTid()
+    {
+        return $this->tid;
     }
 
     /**
