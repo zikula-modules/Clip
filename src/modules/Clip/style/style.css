@@ -285,6 +285,14 @@ table.z-admintable thead tr th {
   border-radius: 0 0 4px 4px;
 }
 
+.z-clip-mini div.z-formrow {
+  padding: 0 0 0.4em;
+}
+.z-clip-mini div.z-formrow > span,
+.z-clip-mini div.z-formrow > div {
+  padding: 0;
+}
+
 .z-module-clip .z-form .z-buttons input,
 .z-module-clip .z-form .z-buttons button {
   margin-bottom: 0.5em;

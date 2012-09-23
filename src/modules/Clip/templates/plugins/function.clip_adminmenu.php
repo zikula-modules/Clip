@@ -103,6 +103,9 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
         $args['args']['code'] = 'list';
         $links[] = $params['code'] == 'list'      ? $view->__('List')       : '<a class="tooltips" title="'.$view->__('Publications list template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('List').'</a>';
 
+        $args['args']['code'] = 'filter';
+        $links[] = $params['code'] == 'filter'    ? $view->__('List Filter') : '<a class="tooltips" title="'.$view->__('List filter template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('List Filter').'</a>';
+
         $args['args']['code'] = 'display';
         $links[] = $params['code'] == 'display'   ? $view->__('Display')    : '<a class="tooltips" title="'.$view->__('Publication display template').'" href="'.smarty_function_clip_url($args, $view).'">'.$view->__('Display').'</a>';
 

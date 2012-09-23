@@ -21,6 +21,10 @@
         <h4>{gt text='List template'}</h4>
         {assign var='cliptplname' value='list.tpl'}
     {/case}
+    {case expr='filter'}
+    <h4>{gt text='List filter template'}</h4>
+        {assign var='cliptplname' value='filter.tpl'}
+    {/case}
     {case expr='display'}
         <h4>{gt text='Display template'}</h4>
         {assign var='cliptplname' value='display.tpl'}
@@ -64,6 +68,13 @@
             {gt text='You can also have custom templates like <strong>list_TEMPLATE.tpl</strong> depending of the <var>template</var> parameter passed. For instance, <code>%1$s</code> will use <strong>%2$s</strong>, and <code>%3$s</code> will use <strong>%4$s</strong>.' tag1=$tag1 tag2=$tpl1 tag3=$tag2|safehtml tag4=$tpl2}
         </p>
     {/case}
+    {case expr='filter'}
+        {capture assign='tag1'}{ldelim}clip_filter template='mini'{rdelim}{/capture}
+        {assign var='tpl1' value='filter_mini.tpl'}
+        <p class="z-informationmsg">
+            {gt text='You can also have custom templates like <strong>filter_TEMPLATE.tpl</strong> when you use on your list templates something like <code>%1$s</code>, it will require <strong>%2$s</strong>.' tag1=$tag1|safehtml tag2=$tpl1}
+        </p>
+    {/case}
     {case expr='display'}
         {assign var='tag1' value='index.php?module=Clip&type=user&func=display&tid=1&pid=5&template=xml'|safehtml}
         {assign var='tpl1' value='display_xml.tpl'}
@@ -92,9 +103,11 @@
     {/case}
 {/switch}
 
+{if $code eq 'filter'}{include file='clip_base_genfilter.tpl'}{/if}
+
 {* HTML workaround: SCRIPT is the unique that do not scape HTML nor any Chars *}
 <script id="clip_generatorcode" type="text/html">{{$output}}</script>
 
 <pre class="clip-generatorcode">
-    {$output|safetext}
+{$output|safetext}
 </pre>

@@ -4,6 +4,7 @@
 
     <h2>{$pubtype.title}</h2>
 
+    {clip_filter}
     {*clip_pagerabc*}
 
     <table class="z-datatable clip-list-items">

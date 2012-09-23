@@ -485,7 +485,7 @@ class Clip_Util_View
 
         if ($field) {
             if (!isset($cat[$field])) {
-                $view->trigger_error(__f('Error! Category [%1$s] does not have the field [%2$s] set.', array($id, $field)));
+                $view->trigger_error(__f('Error! Category [%1$s] does not have the field [%2$s] set.', array($cid, $field)));
             }
 
             return $cat[$field];

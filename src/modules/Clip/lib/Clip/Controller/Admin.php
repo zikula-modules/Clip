@@ -176,6 +176,32 @@ class Clip_Controller_Admin extends Zikula_AbstractController
                 $output = file_get_contents($path.'/generic_list.tpl');
                 break;
 
+            case 'filter':
+                $pubfields = Clip_Util::getPubFields($args['tid'])->toArray();
+                foreach ($pubfields as $k => &$pubfield) {
+                    // check that the field be filterable and has a default template at least
+                    $tpl = "pubfields/filters/{$pubfield['fieldplugin']}_default.tpl";
+                    if (!$pubfield['isfilterable'] || !$this->view->template_exists($tpl)) {
+                        unset($pubfields[$k]);
+                        continue;
+                    }
+                    // assign the input parameters
+                    $pubfield['gen'] = (bool)$this->request->getPost()->filter("gen_{$pubfield['name']}");
+                    $pubfield['tpl'] = $this->request->getPost()->filter("tpl_{$pubfield['name']}", 'default', FILTER_SANITIZE_STRING);
+                }
+                // include the core fields
+                $pubfields['core_author'] = array(
+                    'name'        => 'core_author',
+                    'title'       => $this->__('Publication author'),
+                    'fieldplugin' => 'core',
+                    'tpl'         => 'author',
+                    'gen'         => (bool)$this->request->getPost()->filter("gen_core_author")
+                );
+
+                $output = Clip_Generator::listfilter($args['tid'], $pubfields);
+                $this->view->assign('pubfields', $pubfields);
+                break;
+
             case 'display':
                 $output = Clip_Generator::pubdisplay($args['tid'], false);
                 break;

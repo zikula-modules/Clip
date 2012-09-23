@@ -14,6 +14,35 @@
  */
 class Clip_Generator
 {
+    public static function listfilter($tid, $pubfields = null)
+    {
+        if (is_null($pubfields)) {
+            $pubfields = Clip_Util::getPubFields($tid);
+        }
+
+        $view = Zikula_View::getInstance('Clip');
+
+        $code = '';
+
+        foreach ($pubfields as $pubfield)
+        {
+            if ($pubfield['gen']) {
+                $id = isset($pubfield['istitle']) && $pubfield['istitle'] ? 'core_title' : $pubfield['name'];
+
+                $tpl = "pubfields/filters/{$pubfield['fieldplugin']}_{$pubfield['tpl']}.tpl";
+                if ($tpp = $view->get_template_path($tpl)) {
+                    $code .= vsprintf(file_get_contents($tpp.'/'.$tpl), array($id, $pubfield['fieldplugin'], $pubfield['title']));
+                }
+            }
+        }
+
+        if ($code) {
+            $code = "\n{clip_filter_form}\n$code\n{/clip_filter_form}\n";
+        }
+
+        return $code;
+    }
+
     public static function pubdisplay($tid, $public=true, $forblock=false)
     {
         // build and process a dummy pubdata object

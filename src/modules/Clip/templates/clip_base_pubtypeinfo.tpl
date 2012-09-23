@@ -99,6 +99,14 @@
             </p>
         </li>
         <li>
+            <a href="{clip_url func='generator' code='filter'}">
+            {gt text='List Filter'}
+            </a>
+            <p>
+            {gt text='Get the code to filter lists of this publication type.'}
+            </p>
+        </li>
+        <li>
             <a href="{clip_url func='generator' code='display'}">
                 {gt text='Display'}
             </a>
