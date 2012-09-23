@@ -17,7 +17,7 @@ class Clip_Generator
     public static function listfilter($tid, $pubfields = null)
     {
         if (is_null($pubfields)) {
-            $pubfields = Clip_Util::getPubFields($tid);
+            $pubfields = Clip_Util::getPubFields($tid)->toArray();
         }
 
         $view = Zikula_View::getInstance('Clip');
@@ -26,10 +26,10 @@ class Clip_Generator
 
         foreach ($pubfields as $pubfield)
         {
-            if ($pubfield['gen']) {
-                $id = isset($pubfield['istitle']) && $pubfield['istitle'] ? 'core_title' : $pubfield['name'];
-
-                $tpl = "pubfields/filters/{$pubfield['fieldplugin']}_{$pubfield['tpl']}.tpl";
+            if (isset($pubfield['gen']) && $pubfield['gen'] || $pubfield['isfilterable']) {
+                $id  = isset($pubfield['istitle']) && $pubfield['istitle'] ? 'core_title' : $pubfield['name'];
+                $tpl = isset($pubfield['tpl']) ? $pubfield['tpl'] : 'default';
+                $tpl = "pubfields/filters/{$pubfield['fieldplugin']}_{$tpl}.tpl";
                 if ($tpp = $view->get_template_path($tpl)) {
                     $code .= vsprintf(file_get_contents($tpp.'/'.$tpl), array($id, $pubfield['fieldplugin'], $pubfield['title']));
                 }
