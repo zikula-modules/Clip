@@ -84,10 +84,6 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 
     public function render(Zikula_Form_View $view)
     {
-        $this->textMode = 'hidden';
-
-        $result = parent::render($view);
-
         // build the autocompleter setup
         PageUtil::addVar('javascript', 'prototype');
         PageUtil::addVar('javascript', 'modules/Clip/javascript/Zikula.Autocompleter.js');
@@ -113,26 +109,30 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         PageUtil::addVar('header', $script);
 
         // build the autocompleter output
-        $typeDataHtml = '
-        <div id="'.$this->id.'_div" class="z-auto-container">
-            <div class="z-auto-default">'.
-                (!empty($this->autotip) ? $this->autotip : $this->_fn('Type the username', 'Type the usernames', $this->config['multiple'] ? 2 : 1, array())).
+        $output = '
+        <div class="z-auto-wrapper">
+            <input type="hidden"'.$this->getIdHtml().' name="'.$this->inputName.'" class="'.$this->getStyleClass().'" value="'. DataUtil::formatForDisplay($this->text).'" />
+            <div id="'.$this->id.'_div" class="z-auto-container" style="display: none">
+                <div class="z-auto-default">'.
+            (!empty($this->autotip) ? $this->autotip : $this->_fn('Type the username', 'Type the usernames', $this->config['multiple'] ? 2 : 1, array())).
             '</div>
-            <ul class="z-auto-feed">
-                ';
+                <ul class="z-auto-feed">
+                    ';
 
-        $pubdata = $view->_tpl_vars['clipdata'][$this->tid][$this->rid][$this->pid];
+        $pubdata = $view->_tpl_vars['clipdata']['clipmain'][$this->tid][$this->rid][$this->pid];
 
         self::postRead($pubdata, array('name' => $this->field));
 
         foreach ($pubdata[$this->field] as $uid => $uname) {
-            $typeDataHtml .= '<li value="'.$uid.'">'.$uname.'</li>';
+            $output .= '<li value="'.$uid.'">'.$uname.'</li>';
         }
-        $typeDataHtml .= '
-            </ul>
+
+        $output .= '
+                </ul>
+            </div>
         </div>';
 
-        return $result . $typeDataHtml;
+        return $output;
     }
 
     /**
@@ -140,12 +140,12 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
      */
     public function enrichFilterArgs(&$filterArgs, $field, $args)
     {
-        $fieldname = $field['name'];
-        $filterArgs['plugins'][$this->filterClass]['fields'][] = $fieldname;
+        $filterArgs['plugins'][$this->filterClass]['fields'][] = $field['name'];
 
-        // includes the user operator restriction
-        $filterArgs['restrictions'][$fieldname][] = 'user';
-        $filterArgs['plugins']['clipuser']['fields'][] = $fieldname;
+        // includes a operator restriction for normal users
+        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
+            $filterArgs['restrictions'][$field['name']][] = 'me';
+        }
     }
 
     public static function postRead(&$pub, $field)

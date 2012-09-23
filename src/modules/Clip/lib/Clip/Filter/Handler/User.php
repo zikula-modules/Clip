@@ -56,7 +56,7 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
      */
     public function availableOperators()
     {
-        return array('user');
+        return array('me', 'user', 'users', 'in', 'ins');
     }
 
     /**
@@ -143,9 +143,41 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
 
         switch ($op)
         {
+            case 'me':
+                $where = "$column LIKE ?";
+                $params[] = '%:'.UserUtil::getVar('uid').':%';
+                break;
+
             case 'user':
                 $where = "$column = ?";
-                $params[] = UserUtil::getVar('uid');
+                $params[] = ':'.($value ? $value : UserUtil::getVar('uid')).':';
+                break;
+
+            case 'users':
+                $where = "$column LIKE ?";
+                $params[] = '%:'.($value ? $value : UserUtil::getVar('uid')).':%';
+                break;
+
+            case 'in':
+                $where = array();
+                foreach (explode('-', $value) as $uid) {
+                    if ($uid) {
+                        $where[]  = '?';
+                        $params[] = ':'.(int)$uid.':';
+                    }
+                }
+                $where = !empty($where) ? "$column IN (".implode(',', $where).")" : '';
+                break;
+
+            case 'ins':
+                $where = array();
+                foreach (explode('-', $value) as $uid) {
+                    if ($uid) {
+                        $where[]  = "$column LIKE ?";
+                        $params[] = '%:'.$uid.':%';
+                    }
+                }
+                $where = implode(' OR ', $where);
                 break;
         }
 

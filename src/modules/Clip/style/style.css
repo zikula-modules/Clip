@@ -642,7 +642,7 @@ ul.z-auto-holder {
   width: 67.8%;
 }
 .z-linear ul.z-auto-holder {
-  width: 96%;
+  width: auto;
 }
 ul.z-auto-holder:hover {
   border: 1px solid #aaa;
@@ -718,6 +718,10 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
 }
 
 /* Container and options */
+.z-auto-wrapper {
+  padding: 0 !important;
+  position: relative;
+}
 .z-auto-container {
   background: #eee;
   display: none;
