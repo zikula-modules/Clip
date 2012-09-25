@@ -202,6 +202,9 @@ class Clip_Api_User extends Zikula_AbstractApi
             }
         }
 
+        // prioritizes the where clause coming from the filter
+        $filter['obj']->enrichQuery($query);
+
         // add the conditions to the query
         foreach ($args['where'] as $method => $condition) {
             if (is_numeric($method)) {
@@ -213,9 +216,6 @@ class Clip_Api_User extends Zikula_AbstractApi
                 $query->$method($condition);
             }
         }
-
-        // enrich the query with the Filterutil stuff
-        $filter['obj']->enrichQuery($query);
 
         // restrict to the current user language
         $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
