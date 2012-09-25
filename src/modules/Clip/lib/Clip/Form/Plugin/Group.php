@@ -9,12 +9,12 @@
  * @subpackage Form_Plugin
  */
 
-class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
+class Clip_Form_Plugin_Group extends Zikula_Form_Plugin_TextInput
 {
     // plugin definition
     public $pluginTitle;
     public $columnDef   = 'C(255)';
-    public $filterClass = 'clipuser';
+    public $filterClass = 'clipgroup';
     public $config = array();
 
     // plugin custom vars
@@ -35,7 +35,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
 
         //! field type name
-        $this->pluginTitle = $this->__('User');
+        $this->pluginTitle = $this->__('Group');
     }
 
     public function getFilename()
@@ -88,7 +88,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         PageUtil::addVar('javascript', 'prototype');
         PageUtil::addVar('javascript', 'modules/Clip/javascript/Zikula.Autocompleter.js');
         $script =
-        "<script type=\"text/javascript\">\n// <![CDATA[\n".'
+            "<script type=\"text/javascript\">\n// <![CDATA[\n".'
             function clip_enable_'.$this->id.'() {
                 var_auto_'.$this->id.' = new Zikula.Autocompleter(\''.$this->id.'\', \''.$this->id.'_div\',
                                                  {
@@ -96,7 +96,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
                                                   parameters: {
                                                     module: "Clip",
                                                     type: "ajaxdata",
-                                                    func: "getusers",
+                                                    func: "getgroups",
                                                     op: "'.$this->config['operator'].'"
                                                   },
                                                   minchars: '.$this->minchars.',
@@ -114,7 +114,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
             <input type="hidden"'.$this->getIdHtml().' name="'.$this->inputName.'" class="'.$this->getStyleClass().'" value="'. DataUtil::formatForDisplay($this->text).'" />
             <div id="'.$this->id.'_div" class="z-auto-container" style="display: none">
                 <div class="z-auto-default">'.
-            (!empty($this->autotip) ? $this->autotip : $this->_fn('Type the username', 'Type the usernames', $this->config['multiple'] ? 2 : 1, array())).
+            (!empty($this->autotip) ? $this->autotip : $this->_fn('Type the group name', 'Type the group names', $this->config['multiple'] ? 2 : 1, array())).
             '</div>
                 <ul class="z-auto-feed">
                     ';
@@ -123,8 +123,8 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 
         self::postRead($pubdata, array('name' => $this->field));
 
-        foreach ($pubdata[$this->field] as $uid => $uname) {
-            $output .= '<li value="'.$uid.'">'.$uname.'</li>';
+        foreach ($pubdata[$this->field] as $gid => $gname) {
+            $output .= '<li value="'.$gid.'">'.$gname.'</li>';
         }
 
         $output .= '
@@ -153,30 +153,28 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $fieldname = $field['name'];
 
         // this plugin return an array
-        $uids = array();
+        $gids = array();
 
         // if there's a value index the username(s)
-        $data = $pub[$fieldname];
+        $data = array_filter(explode(':', $pub[$fieldname]));
 
         if (!empty($data)) {
-            $data = array_filter(explode(':', $data));
-
-            ModUtil::dbInfoLoad('Users');
+            ModUtil::dbInfoLoad('Groups');
             $tables = DBUtil::getTables();
 
-            $usersColumn = $tables['users_column'];
+            $grpColumn = $tables['groups_column'];
 
-            $where = 'WHERE ' . $usersColumn['uid'] . ' IN (\'' . implode('\', \'', $data) . '\')';
-            $results = DBUtil::selectFieldArray('users', 'uname', $where, $usersColumn['uname'], false, 'uid');
+            $where = 'WHERE ' . $grpColumn['gid'] . ' IN (\'' . implode('\', \'', $data) . '\')';
+            $results = DBUtil::selectFieldArray('groups', 'name', $where, $grpColumn['name'], false, 'gid');
 
             if ($results) {
-                foreach ($results as $uid => $uname) {
-                    $uids[$uid] = $uname;
+                foreach ($results as $gid => $gname) {
+                    $gids[$gid] = $gname;
                 }
             }
         }
 
-        $pub[$fieldname] = $uids;
+        $pub[$fieldname] = $gids;
     }
 
     public function getOutputDisplay($field)
@@ -185,9 +183,9 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
 
         $body = "\n".
             '            <span class="z-formnote">'."\n".
-            '                {foreach from=$pubdata.'.$field['name'].' key=\'pubuid\' item=\'pubuname\'}'."\n".
-            '                    {$pubuname|profilelinkbyuname}'."\n".
-            '                    <span class="z-sub">[{$pubuid|safehtml}]</span><br />'."\n".
+            '                {foreach from=$pubdata.'.$field['name'].' key=\'pubgid\' item=\'pubgname\'}'."\n".
+            '                    {$pubgname|safetext}'."\n".
+            '                    <span class="z-sub">[{$pubgid|safetext}]</span><br />'."\n".
             '                {/foreach}'."\n".
             '            </span>';
 
@@ -224,14 +222,14 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         // single or multiple
         $checked = $this->config['multiple'] ? 'checked="checked"' : '';
         $html = '<div class="z-formrow">
-                     <label for="clipplugin_multiple">'.$this->__('Multiple Users?').'</label>
+                     <label for="clipplugin_multiple">'.$this->__('Multiple Groups?').'</label>
                      <input type="checkbox" value="1" id="clipplugin_multiple" name="clipplugin_multiple" '.$checked.' />
                  </div>';
 
         // operator to use
         $operators = array(
             'likefirst' => $this->__('in the beggining'),
-            'search'    => $this->__('inside the username'),
+            'search'    => $this->__('inside the group name'),
         );
         $html .= '<div class="z-formrow">
                       <label for="clipplugin_operator">'.$this->__('Search').'</label>

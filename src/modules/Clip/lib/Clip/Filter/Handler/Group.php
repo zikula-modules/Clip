@@ -9,7 +9,7 @@
  * @subpackage Filter
  */
 
-class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements FilterUtil_BuildInterface
+class Clip_Filter_Handler_Group extends FilterUtil_AbstractPlugin implements FilterUtil_BuildInterface
 {
     /**
      * Enabled operators.
@@ -56,7 +56,7 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
      */
     public function availableOperators()
     {
-        return array('me', 'user', 'users', 'in', 'ins');
+        return array('me', 'group', 'groups', 'in', 'ins');
     }
 
     /**
@@ -144,26 +144,32 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
         switch ($op)
         {
             case 'me':
-                $where = "$column LIKE ?";
-                $params[] = '%:'.UserUtil::getVar('uid').':%';
+                $where = array();
+                foreach (UserUtil::getGroupsForUser(UserUtil::getVar('uid')) as $gid) {
+                    if ($gid) {
+                        $where[]  = "$column LIKE ?";
+                        $params[] = '%:'.$gid.':%';
+                    }
+                }
+                $where = implode(' OR ', $where);
                 break;
 
-            case 'user':
+            case 'group':
                 $where = "$column = ?";
-                $params[] = ':'.($value ? (int)$value : UserUtil::getVar('uid')).':';
+                $params[] = ':'.(int)$value.':';
                 break;
 
-            case 'users':
+            case 'groups':
                 $where = "$column LIKE ?";
-                $params[] = '%:'.($value ? (int)$value : UserUtil::getVar('uid')).':%';
+                $params[] = '%:'.(int)$value.':%';
                 break;
 
             case 'in':
                 $where = array();
-                foreach (explode('-', $value) as $uid) {
-                    if ($uid) {
+                foreach (explode('-', $value) as $gid) {
+                    if ($gid) {
                         $where[]  = '?';
-                        $params[] = ':'.(int)$uid.':';
+                        $params[] = ':'.(int)$gid.':';
                     }
                 }
                 $where = !empty($where) ? "$column IN (".implode(',', $where).")" : '';
@@ -171,10 +177,10 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
 
             case 'ins':
                 $where = array();
-                foreach (explode('-', $value) as $uid) {
-                    if ($uid) {
+                foreach (explode('-', $value) as $gid) {
+                    if ($gid) {
                         $where[]  = "$column LIKE ?";
-                        $params[] = '%:'.(int)$uid.':%';
+                        $params[] = '%:'.(int)$gid.':%';
                     }
                 }
                 $where = implode(' OR ', $where);

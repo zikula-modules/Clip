@@ -39,6 +39,7 @@ class Clip_Util_Plugins
             'Date'       => 'Clip_Form_Plugin_Date',
             'Email'      => 'Clip_Form_Plugin_Email',
             'Float'      => 'Clip_Form_Plugin_Float',
+            'Group'      => 'Clip_Form_Plugin_Group',
             'Image'      => 'Clip_Form_Plugin_Image',
             'Int'        => 'Clip_Form_Plugin_Int',
             'Language'   => 'Clip_Form_Plugin_Language',

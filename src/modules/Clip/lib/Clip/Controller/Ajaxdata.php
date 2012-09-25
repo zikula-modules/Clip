@@ -173,6 +173,55 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
     }
 
     /**
+     * Autocompletion Groups list.
+     * Returns the groups list on the expected autocompleter format.
+     *
+     * @return array Autocompletion list.
+     */
+    public function getgroups()
+    {
+        $this->checkAjaxToken();
+
+        $result = array();
+
+        // FIXME SECURITY check this
+        if (SecurityUtil::checkPermission('Groups::', 'ANY', ACCESS_OVERVIEW)) {
+            $args = array(
+                'keyword' => $this->request->getPost()->get('keyword'),
+                'op'      => $this->request->getPost()->get('op', 'likefirst')
+            );
+            $args['op'] = in_array($args['op'], array('search', 'likefirst')) ? $args['op'] : 'likefirst';
+
+            $tables = DBUtil::getTables();
+
+            $grpColumn = $tables['groups_column'];
+
+            $value = DataUtil::formatForStore($args['keyword']);
+
+            // check matches in the database
+            switch ($args['op']) {
+                case 'search':
+                    $value = '%'.$value;
+                case 'likefirst':
+                    $value .= '%';
+                    $value = "'$value'";
+                    break;
+            }
+            $where = 'WHERE ' . $grpColumn['name'] . ' LIKE ' . $value;
+            $results = DBUtil::selectFieldArray('groups', 'name', $where, $grpColumn['name'], false, 'gid');
+
+            foreach ($results as $gid => $gname) {
+                $result[] = array(
+                    'value'   => $gid,
+                    'caption' => DataUtil::formatForDisplay($gname)
+                );
+            }
+        }
+
+        return new Zikula_Response_Ajax_Json(array('data' => $result));
+    }
+
+    /**
      * Autocompletion Recipients list.
      * Returns the recipients list on the expected autocompleter format.
      *

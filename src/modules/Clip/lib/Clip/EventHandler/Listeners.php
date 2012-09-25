@@ -72,6 +72,7 @@ class Clip_EventHandler_Listeners
         $classNames['cliplist']  = 'Clip_Filter_Handler_List';
         $classNames['clipmlist'] = 'Clip_Filter_Handler_MultiList';
         $classNames['clipuser']  = 'Clip_Filter_Handler_User';
+        $classNames['clipgroup'] = 'Clip_Filter_Handler_Group';
 
         $event->setData(array_merge((array)$event->getData(), $classNames));
     }
