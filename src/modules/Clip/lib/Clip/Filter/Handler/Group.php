@@ -146,10 +146,8 @@ class Clip_Filter_Handler_Group extends FilterUtil_AbstractPlugin implements Fil
             case 'me':
                 $where = array();
                 foreach (UserUtil::getGroupsForUser(UserUtil::getVar('uid')) as $gid) {
-                    if ($gid) {
-                        $where[]  = "$column LIKE ?";
-                        $params[] = '%:'.$gid.':%';
-                    }
+                    $where[]  = "$column LIKE ?";
+                    $params[] = '%:'.$gid.':%';
                 }
                 $where = implode(' OR ', $where);
                 break;

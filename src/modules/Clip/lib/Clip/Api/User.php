@@ -28,6 +28,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param integer $args['itemsperpage']  Number of items to retrieve.
      * @param string  $args['countmode']     Mode: no (list without count - default), just (count elements only), both.
      * @param boolean $args['array']         Whether to fetch the resulting publications as array (default: false).
+     * @param boolean $args['restrict']      Whether to restrict the list according the pubfields configuration.
      * @param boolean $args['checkperm']     Whether to check the permissions.
      * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
      * @param boolean $args['loadworkflow']  Whether to add the workflow information.
@@ -72,6 +73,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)abs($args['itemsperpage']) : 0,
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
             'array'         => isset($args['array']) ? (bool)$args['array'] : false,
+            'restrict'      => isset($args['restrict']) ? (bool)$args['restrict'] : true,
             'limitdate'     => isset($args['limitdate']) ? (bool)$args['limitdate'] : !Clip_Access::toPubtype($args['tid'], 'editor'),
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : $args['handlePluginF'],
@@ -161,17 +163,18 @@ class Clip_Api_User extends Zikula_AbstractApi
             'alias'   => $args['queryalias'],
             'plugins' => array()
         );
-        foreach ($pubfields as $fieldname => $field)
+
+        foreach ($pubfields as $field)
         {
             $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
 
-            // process the filter args
+            // enrich the filter parameters for restrictions and configurations
             if (method_exists($plugin, 'enrichFilterArgs')) {
                 $plugin->enrichFilterArgs($filter['args'], $field, $args);
             }
 
             // enrich the query
-            if (method_exists($plugin, 'enrichQuery')) {
+            if ($args['restrict'] && method_exists($plugin, 'enrichQuery')) {
                 $plugin->enrichQuery($query, $field, $args);
             }
         }

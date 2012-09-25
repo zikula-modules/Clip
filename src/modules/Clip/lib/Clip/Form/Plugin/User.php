@@ -78,7 +78,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
             if (!array_key_exists($this->group, $data)) {
                 $data[$this->group] = array($this->alias => array($this->tid => array($this->rid => array($this->pid => array()))));
             }
-            $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = ":{$this->text}:";
+            $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = !empty($this->text) ? ":{$this->text}:" : null;
         }
     }
 
@@ -148,6 +148,19 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         }
     }
 
+    public function enrichQuery($query, $field, $args)
+    {
+        $this->parseConfig($field['typedata']);
+
+        if ($this->config['restrict']) {
+            if (UserUtil::isLoggedIn()) {
+                $query->andWhere("{$field['name']} IS NULL OR {$field['name']} LIKE ?", '%:'.UserUtil::getVar('uid').':%');
+            } else {
+                $query->andWhere("{$field['name']} IS NULL");
+            }
+        }
+    }
+
     public static function postRead(&$pub, $field)
     {
         $fieldname = $field['name'];
@@ -156,11 +169,9 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $uids = array();
 
         // if there's a value index the username(s)
-        $data = $pub[$fieldname];
+        $data = array_filter(explode(':', $pub[$fieldname]));
 
         if (!empty($data)) {
-            $data = array_filter(explode(':', $data));
-
             ModUtil::dbInfoLoad('Users');
             $tables = DBUtil::getTables();
 
@@ -212,6 +223,7 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
                     } else {
                         $(\'typedata\').value += \'likefirst\';
                     }
+                    $(\'typedata\').value += \'|\'+Number($F(\'clipplugin_restrict\'));
 
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
@@ -246,6 +258,15 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
         $html .= '    </select>
                   </div>';
 
+        // restrict public list
+        $checked = $this->config['restrict'] ? 'checked="checked"' : '';
+        $html .= '<div class="z-formrow">
+                     <label for="clipplugin_restrict">'.$this->__('Restrict public list?').'</label>
+                     <input type="checkbox" value="1" id="clipplugin_restrict" name="clipplugin_restrict" '.$checked.' />
+                     <em class="z-formnote">'.$this->__('Publications will be seen only by the user(s) set on this field.').'</em>
+                  </div>';
+
+        // operator to use
         return $html;
     }
 
@@ -254,12 +275,13 @@ class Clip_Form_Plugin_User extends Zikula_Form_Plugin_TextInput
      */
     public function parseConfig($typedata='')
     {
-        // config: "{(bool)multiple, (string)operator}"
+        // config: "{(bool)multiple, (string)operator, (bool)restrict}"
         $typedata = explode('|', $typedata);
 
         $this->config = array(
             'multiple' => $typedata[0] !== '' ? (bool)$typedata[0] : false,
-            'operator' => isset($typedata[1]) ? $typedata[1] : 'likefirst'
+            'operator' => isset($typedata[1]) ? $typedata[1] : 'likefirst',
+            'restrict' => isset($typedata[2]) ? $typedata[2] : false
         );
     }
 }

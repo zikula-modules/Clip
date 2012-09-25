@@ -95,6 +95,7 @@ class Clip_Controller_Editor extends Zikula_AbstractController
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : abs((int)FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'])),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : false,
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : true,
+            'restrict'      => false,
             'checkperm'     => false,
             'countmode'     => 'both',
             'rel'           => $pubtype['config']['list']
