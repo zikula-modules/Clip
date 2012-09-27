@@ -183,6 +183,7 @@ class Clip_Installer extends Zikula_AbstractInstaller
                 }
                 EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getContentTypes'));
             case '0.9.2':
+            case '0.9.3':
                 // further upgrade handling
         }
 
