@@ -54,7 +54,6 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         if (!Clip_Util::validateTid($args['tid'])) {
-            LogUtil::registerError($this->__('Page not found'));
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
 
