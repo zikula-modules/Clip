@@ -40,9 +40,6 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
     $workflow = new Clip_Workflow($pubtype, $pub);
     $actions  = $workflow->getActions(Clip_Workflow::ACTIONS_EXEC);
 
-    // build the plugin output
-    $output = '<div class="clip-editoractions">';
-
     // common action exec arguments
     $token = SecurityUtil::generateCsrfToken();
     $args  = array('tid' => $pub['core_tid'], 'id' => $pub['id']);
@@ -62,17 +59,21 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
                '</span>';
 
     // loop the actions building their output
-    foreach ($actions as $aid => $action) {
-        //$class = isset($action['parameters']['link']['class']) ? $action['parameters']['link']['class'] : '';
-        $args['action'] = $aid;
-        $args['csrftoken'] = $token;
-        $onclick = isset($action['parameters']['button']['confirmMessage']) ? 'onclick="return confirm(\''.$action['parameters']['button']['confirmMessage'].'\')" ' : '';
-        $links[] = '<span class="clip-ac-'.$aid.'">'.
-                   '  <a '.$onclick.'href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'exec', $args)).'" title="'.$action['description'].'">'.$action['title'].'</a>'.
-                   '</span>';
+    if ($actions) {
+        foreach ($actions as $aid => $action) {
+            //$class = isset($action['parameters']['link']['class']) ? $action['parameters']['link']['class'] : '';
+            $args['action'] = $aid;
+            $args['csrftoken'] = $token;
+            $onclick = isset($action['parameters']['button']['confirmMessage']) ? 'onclick="return confirm(\''.$action['parameters']['button']['confirmMessage'].'\')" ' : '';
+            $links[] = '<span class="clip-ac-'.$aid.'">'.
+                '  <a '.$onclick.'href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'exec', $args)).'" title="'.$action['description'].'">'.$action['title'].'</a>'.
+                '</span>';
+        }
     }
-    $output .= implode(' <span class="text_separator">|</span> ', $links);
 
+    // build the plugin output
+    $output  = '<div class="clip-editoractions">';
+    $output .= implode(' <span class="text_separator">|</span> ', $links);
     $output .= '</div>';
 
     if ($assign) {
