@@ -1,4 +1,4 @@
-{*ajaxheader module='Clip' filename='Clip.Export.js'*}
+{pageaddvar name='javascript' value='prototype'}
 
 {include file='clip_admin_header.tpl'}
 
@@ -61,10 +61,17 @@
         *}
     </fieldset>
 
-    <div class="z-buttons z-formbuttons">
-        {formbutton commandName='export' __text='Export' class='z-bt-ok'}
+    <div id="clipex-buttons" class="z-buttons z-formbuttons">
+        {capture assign='onClick'}{literal}window.setTimeout(function() { $('clipex-buttons').hide(); $('clipex-warning').show(); }, 500){/literal}{/capture}
+        {formbutton commandName='export' __text='Export' class='z-bt-ok' onClick=$onClick}
         {formbutton commandName='cancel' __text='Cancel' class='z-bt-cancel'}
+    </div>
+
+    <div id="clipex-warning" class="z-warningmsg" style="display: none;">
+        {modurl modname='Clip' type='admin' func='clipexport' assign='exporturl'}
+        {gt text='To use the export form again, <a href="%s">refresh it by clicking here</a>.' tag1=$exporturl|safetext}
     </div>
 </div>
 {/form}
+
 {adminfooter}
