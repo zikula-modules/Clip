@@ -170,6 +170,11 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
             // unserialize the old data
             $oldData = $data = ($oldData ? unserialize($oldData) : array());
+
+        } elseif (DataUtil::is_serialized($newData)) {
+            // an already processed data
+            return $newData;
+
         } else {
             $oldData = null;
             $data = array();
