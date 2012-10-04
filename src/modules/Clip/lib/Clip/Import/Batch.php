@@ -113,7 +113,10 @@ class Clip_Import_Batch
         // update the models and tables in case only struture was imported
         $this->updateTables();
 
-        if ($result) {
+        if (!reset(self::$idmap['tids'])) {
+            $result = LogUtil::registerError(__('The import operation was unsuccessful, please verify the integrity of the file to be imported.'), 503);
+
+        } elseif ($result) {
             // redirect to the first pubtype imported info screen
             $result = ModUtil::url('Clip', 'admin', 'pubtypeinfo', array('tid' => reset(self::$idmap['tids'])));
         }
