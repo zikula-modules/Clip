@@ -36,6 +36,9 @@ class Clip_Export_Section
      */
     public function __construct($args)
     {
+        // only report strict errors while exporting
+        error_reporting(0);
+
         $objInfo = get_class_vars(get_class($this));
 
         // Iterate through all params: place known params in member variables
