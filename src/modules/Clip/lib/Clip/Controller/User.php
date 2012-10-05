@@ -3,7 +3,7 @@
  * Clip
  *
  * @copyright  (c) Clip Team
- * @link       http://code.zikula.org/clip/
+ * @link       http://github.com/zikula-modules/clip/
  * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package    Clip
  * @subpackage Controller
@@ -54,7 +54,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         if (!Clip_Util::validateTid($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
