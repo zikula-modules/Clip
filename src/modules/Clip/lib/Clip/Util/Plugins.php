@@ -223,10 +223,8 @@ class Clip_Util_Plugins
                     } else {
                         $orderby_col = $tbl_alias.$orderby_col;
                     }
-                } else {
-                    $orderby_col = $orderby_col;
                 }
-                $orderby_new .= $orderby_col.' '.$orderby_dir.',';
+                $orderby_new .= $orderby_col.($orderby_dir ? ' '.$orderby_dir : '').',';
             }
             $orderby = substr($orderby_new, 0, -1);
         }
