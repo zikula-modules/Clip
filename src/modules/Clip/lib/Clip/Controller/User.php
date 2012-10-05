@@ -54,7 +54,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         }
 
         if (!Clip_Util::validateTid($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
@@ -105,7 +105,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             }
 
             if (!$args['templatesimple']) {
-                return LogUtil::registerError($this->__('The requested page cannot be displayed. Please contact the administrador.'));
+                return LogUtil::registerError($this->__('The requested page cannot be displayed. Please contact the administrator.'), 403);
             }
 
             return $this->view->assign('clip_simple_tpl', true)
@@ -138,7 +138,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             // auto-generate it only on development mode
             if (!$this->getVar('devmode', false)) {
-                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
+                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'), 403);
             }
         }
 
@@ -224,7 +224,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
         if (!Clip_Util::validateTid($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
@@ -298,7 +298,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // check if the common does not exist
         if (!$this->view->template_exists($args['templatefile']) && !$this->getVar('devmode', false)) {
             // auto-generate it only on development mode
-            return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
+            return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'), 403);
         }
 
         // check if cache is enabled and this view is cached
@@ -411,7 +411,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
         if (!Clip_Util::validateTid($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
@@ -442,7 +442,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         //// Validation
         // required the publication ID or record ID
         if ((empty($apiargs['pid']) || !is_numeric($apiargs['pid'])) && (empty($apiargs['id']) || !is_numeric($apiargs['id']))) {
-            return LogUtil::registerError($this->__f('Error! Missing or wrong argument [%s].', 'id | pid'));
+            return LogUtil::registerError($this->__f('Error! Missing or wrong argument [%s].', 'id | pid'), 404);
         }
 
         // get the pid if it was not passed
@@ -484,7 +484,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         // check if the common does not exist
         if (!$this->view->template_exists($args['templatefile']) && !$this->getVar('devmode', false)) {
             // auto-generate it only on development mode
-            return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
+            return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'), 403);
         }
 
         // check if cache is enabled and this view is cached
@@ -527,9 +527,9 @@ class Clip_Controller_User extends Zikula_AbstractController
         if (!$pubdata) {
             if (Clip_Access::toPubtype($pubtype)) {
                 // detailed error message for the admin only
-                return LogUtil::registerError($this->__f('No such publication [tid: %1$s - pid: %2$s; id: %3$s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])));
+                return LogUtil::registerError($this->__f('No such publication [tid: %1$s - pid: %2$s; id: %3$s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])), 404);
             } else {
-                return LogUtil::registerError($this->__('No such publication found.'));
+                return LogUtil::registerError($this->__('No such publication found.'), 404);
             }
         }
 
@@ -600,7 +600,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
         if (!Clip_Util::validateTid($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
@@ -635,7 +635,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             $args['id'] = (int)ModUtil::apiFunc('Clip', 'user', 'getId', $args);
 
             if (!$args['id']) {
-                return LogUtil::registerError($this->__f('Error! No such publication [%1$s - %2$s] found.', array($args['tid'], $args['pid'])));
+                return LogUtil::registerError($this->__f('Error! No such publication [%1$s - %2$s] found.', array($args['tid'], $args['pid'])), 404);
             }
         }
 
@@ -660,9 +660,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
             // validate the publication
             if (!$pubdata) {
-                LogUtil::registerError($this->__f('Error! No such publication [%1$s - %2$s] found.', array($args['tid'], $args['id'])));
-
-                return $this->redirect(Clip_Util::url($args['tid'], 'list'));
+                return LogUtil::registerError($this->__f('Error! No such publication [%1$s - %2$s] found.', array($args['tid'], $args['id'])), 404);
             }
         } else {
             // initial values
@@ -740,7 +738,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         if (!$render->template_exists($template)) {
             // auto-generate it only on development mode
             if (!$this->getVar('devmode', false)) {
-                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'));
+                return LogUtil::registerError($this->__('This page cannot be displayed. Please contact the administrator.'), 403);
             }
 
             if ($alert) {
@@ -776,7 +774,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
         if (!Clip_Util::validateTid($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
@@ -795,7 +793,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         //// Validation
         if (empty($args['id']) || !is_numeric($args['id'])) {
-            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'));
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id'), 404);
         }
 
         //// Execution
@@ -803,7 +801,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid'])->find($args['id']);
 
         if (!$pub) {
-            return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', $args['id']));
+            return LogUtil::registerError($this->__f('Error! No such publication [%s] found.', $args['id']), 404);
         }
 
         // load the publication values and workflow
@@ -815,7 +813,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // be sure to have a valid action
         if (empty($args['action']) || !$workflow->isValidAction($args['action'])) {
-            return LogUtil::registerError($this->__('Error! Invalid action passed.'));
+            return LogUtil::registerError($this->__('Error! Invalid action passed.'), 404);
         }
 
         // execute the action and check if failed
