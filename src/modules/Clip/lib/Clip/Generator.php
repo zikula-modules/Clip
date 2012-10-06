@@ -3,7 +3,7 @@
  * Clip
  *
  * @copyright  (c) Clip Team
- * @link       http://code.zikula.org/clip/
+ * @link       http://github.com/zikula-modules/clip/
  * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package    Clip
  * @subpackage Lib
@@ -481,7 +481,7 @@ class Clip_Generator
  * Clip
  * Generated Model Class
  *
- * @link http://code.zikula.org/clip/
+ * @link http://github.com/zikula-modules/clip/
  */
 
 /**
@@ -629,7 +629,7 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
  * Clip
  * Generated Model Class
  *
- * @link http://code.zikula.org/clip/
+ * @link http://github.com/zikula-modules/clip/
  */
 
 /**

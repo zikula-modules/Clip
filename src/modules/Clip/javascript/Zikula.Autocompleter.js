@@ -1,7 +1,7 @@
 /**
  * Clip
  *
- * @link       http://code.zikula.org/clip/
+ * @link       http://github.com/zikula-modules/clip/
  * @package    Clip
  * @subpackage Javascript
  */

@@ -3,7 +3,7 @@
  * Clip
  *
  * @copyright  (c) Clip Team
- * @link       http://code.zikula.org/clip/
+ * @link       http://github.com/zikula-modules/clip/
  * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  * @package    Clip
  * @subpackage Installer
