@@ -50,7 +50,7 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         if ($mode == 'edit') {
             // edit mode of an existing item
             if (!$gid) {
-                return new Zikula_Response_Ajax_BadData($this->__f("Error! Cannot determine valid '%1$s' for edit in '%2$s'.", array('gid', 'editgroup')));
+                return new Zikula_Response_Ajax_BadData($this->__f('Error! Cannot determine valid \'%1$s\' for edit in \'%2$s\'.', array('gid', 'editgroup')));
             }
             $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
             $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
@@ -223,15 +223,12 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
      */
     public function count($args)
     {
-        //// Token check
-        $this->checkCsrfToken($this->request->getGet()->get('csrftoken', null));
-
         //// Pubtype
         // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
 
         if (!Clip_Util::validateTid($args['tid'])) {
-            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
 
         $pubtype = Clip_Util::getPubType($args['tid']);
@@ -276,7 +273,7 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
 
         // required the publication ID or record ID
         if ((empty($apiargs['pid']) || !is_numeric($apiargs['pid'])) && (empty($apiargs['id']) || !is_numeric($apiargs['id']))) {
-            return LogUtil::registerError($this->__f('Error! Missing or wrong argument [%s].', 'id | pid'));
+            return LogUtil::registerError($this->__f('Error! Missing or wrong argument [%s].', 'id | pid'), 404);
         }
 
         // get the pid if it was not passed
@@ -304,9 +301,9 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         if (!$pubdata) {
             if ($isadmin) {
                 // detailed error message for the admin only
-                return LogUtil::registerError($this->__f('No such publication [tid: %1$s - pid: %2$s; id: %3$s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])));
+                return LogUtil::registerError($this->__f('No such publication [tid: %1$s - pid: %2$s; id: %3$s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])), 404);
             } else {
-                return LogUtil::registerError($this->__('No such publication found.'));
+                return LogUtil::registerError($this->__('No such publication found.'), 404);
             }
         }
 

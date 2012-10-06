@@ -63,8 +63,6 @@ function smarty_function_clip_downloadurl($params, Zikula_View &$view)
         $url .= "&count={$params['count']}";
     }
 
-    $url .= '&csrftoken='.SecurityUtil::generateCsrfToken();
-
     if ($assign) {
         $view->assign($assign, $url);
     } else {
