@@ -66,7 +66,7 @@ function Clip_operation_create(&$pub, $params)
         } else {
             LogUtil::registerError(__('Error! Failed to create the publication.', $dom));
 
-            if (ModUtil::getVar('Clip', 'devmode', false)) {
+            if (ModUtil::getVar('Clip', 'devmode', false) && $pub->getErrorStackAsString()) {
                 LogUtil::registerError($pub->getErrorStackAsString());
             }
         }

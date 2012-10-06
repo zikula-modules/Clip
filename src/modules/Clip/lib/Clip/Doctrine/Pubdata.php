@@ -594,6 +594,41 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * isValid method override.
+     *
+     * @param boolean $deep  Run the validation process on the relations.
+     * @param boolean $hooks Invoke save hooks before start.
+     *
+     * @return boolean Whether or not this record is valid.
+     */
+    public function isValid($deep = false, $hooks = true)
+    {
+        $valid = true;
+
+        // invoke the isValid hook on pubfields
+        if (isset($this['core_tid'])) {
+            $pubfields = Clip_Util::getPubFields($this['core_tid']);
+
+            $modified = array_keys($this->getModified());
+
+            foreach ($pubfields as $fieldname => $field)
+            {
+                if (!in_array($fieldname, $modified)) {
+                    continue;
+                }
+
+                $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+
+                if (method_exists($plugin, 'isValid')) {
+                    $valid = $valid && $plugin->isValid($this->toArray(false), $field);
+                }
+            }
+        }
+
+        return $valid && parent::isValid($deep, $hooks);
+    }
+
+    /**
      * preInsert hook.
      *
      * @return void

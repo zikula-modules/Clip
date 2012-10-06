@@ -153,6 +153,43 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         $pub[$fieldname] = $upl_arr;
     }
 
+    public function isValid($pub, $field)
+    {
+        $this->parseConfig($field['typedata']);
+
+        $newData = $pub[$field['name']];
+
+        // FIXME validate the supported file format uploaded
+
+        // check the new upload if the filename is to be preserved
+        if ($this->config['preserve'] && !empty($newData['name']) && $newData['error'] == 0) {
+            $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
+            $extension  = strtolower(FileUtil::getExtension($newData['name']));
+            $file_name  = DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])).".$extension";
+
+            // check if the new file already exists on the storage
+            if (file_exists("{$uploadpath}/{$file_name}")) {
+                // if so, check if there's an old upload to be replaced for this field
+                if ($pub['id']) {
+                    // FIXME this can be checked with the record _oldValues?
+                    $oldData = (string)Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid'])
+                                       ->selectFieldBy($field['name'], $pub['id'], 'id');
+
+                    if (DataUtil::is_serialized($oldData)) {
+                        $oldData = unserialize($oldData);
+                        if ($file_name == $oldData['file_name']) {
+                            return true;
+                        }
+                    }
+                }
+
+                return LogUtil::registerError($this->__f('The file "%s" already exists.', DataUtil::formatForDisplay($file_name)));
+            }
+        }
+
+        return true;
+    }
+
     public function preSave($pub, $field)
     {
         $newData = $pub[$field['name']];
@@ -186,7 +223,6 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
         if ($newUpload || $oldUpload) {
             $extension  = strtolower(FileUtil::getExtension($newData['name'] ? $newData['name'] : $oldData['file_name']));
-            // FIXME validate the supported file format uploaded
         }
 
         $uploadpath = ModUtil::getVar('Clip', 'uploadpath');
