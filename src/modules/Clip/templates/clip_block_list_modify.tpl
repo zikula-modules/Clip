@@ -1,7 +1,7 @@
 
 <div class="z-formrow">
     <label for="viewpub_pubtype">{gt text='Publication type'}</label>
-    {html_options name='tid' options=$pubtypes selected=$vars.tid}
+    {html_options id="viewpub_pubtype" name='tid' options=$pubtypes selected=$vars.tid}
 </div>
 
 <div class="z-formrow">

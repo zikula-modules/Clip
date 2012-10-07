@@ -408,7 +408,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             $query->where('id = ?', $args['id']);
         } else {
             $query->where('core_pid = ?', $args['pid'])
-                  ->orderBy('core_language DESC, core_revision DESC');
+                  ->orderBy('core_revision DESC, core_language DESC');
         }
         // query for the current user language
         $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
@@ -504,6 +504,171 @@ class Clip_Api_User extends Zikula_AbstractApi
         $obj->mapValue('core_operations', $ret);
 
         return $obj;
+    }
+
+    /**
+     * Returns a random number of Publications.
+     *
+     * @param integer $args['tid']           ID of the publication type.
+     * @param array   $args['where']         Direct where conditions to the query.
+     * @param string  $args['filter']        Filter string.
+     * @param integer $args['limit']         Number of items to retrieve.
+     * @param boolean $args['array']         Whether to fetch the resulting publications as array (default: false).
+     * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
+     * @param boolean $args['loadworkflow']  Whether to add the workflow information.
+     * @param array   $args['rel']           Relation configuration flags to use {load, onlyown, processrefs, checkperm, handleplugins, loadworkflow}.
+     *
+     * @return Doctrine_Collection Collection of random publications.
+     */
+    public function getrandom($args)
+    {
+        //// Validation
+        if (!isset($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
+        }
+
+        if (!Clip_Util::validateTid($args['tid'])) {
+            return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
+        }
+
+        $pubfields = Clip_Util::getPubFields($args['tid']);
+
+        if (!$pubfields) {
+            return LogUtil::registerError($this->__('Error! No publication fields found.'));
+        }
+
+        $pubtype = Clip_Util::getPubType($args['tid']);
+
+        //// Parameters
+        // define the arguments
+        $args = array(
+            'tid'           => (int)$args['tid'],
+            'where'         => isset($args['where']) ? $args['where'] : array(),
+            'filter'        => isset($args['filter']) ? $args['filter'] : '()',
+            'limit'         => (isset($args['limit']) && is_numeric($args['limit'])) ? (int)abs($args['limit']) : 1,
+            'array'         => isset($args['array']) ? (bool)$args['array'] : false,
+            'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : true,
+            'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : false,
+            'rel'           => isset($args['rel']) ? $args['rel'] : null
+        );
+
+        if (!isset($args['rel'])) {
+            $args['rel'] = ($args['limit'] == 1) ? $pubtype['config']['display'] : $pubtype['config']['list'];
+        }
+
+        //// Misc values
+        // utility vars
+        $tableObj = Doctrine_Core::getTable('ClipModels_Pubdata'.$args['tid']);
+        $record   = $tableObj->getRecordInstance();
+
+        //// Query setup
+        $args['queryalias'] = $queryalias = "random_{$args['tid']}";
+        $queryalias = "{$args['queryalias']} INDEXBY {$args['queryalias']}.id";
+
+        $query = $tableObj->createQuery($queryalias);
+
+        //// Filter
+        // resolve the FilterUtil arguments
+        $filter['args'] = array(
+            'alias'   => $args['queryalias'],
+            'plugins' => array()
+        );
+
+        foreach ($pubfields as $field)
+        {
+            $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+
+            // enrich the filter parameters for restrictions and configurations
+            if (method_exists($plugin, 'enrichFilterArgs')) {
+                $plugin->enrichFilterArgs($filter['args'], $field, $args);
+            }
+
+            // enrich the query
+            if (method_exists($plugin, 'enrichQuery')) {
+                $plugin->enrichQuery($query, $field, $args);
+            }
+        }
+
+        // filter instance
+        $filter['obj'] = new Clip_Filter_Util('Clip', $tableObj, $filter['args']);
+        $filter['obj']->setFilter($args['filter']);
+
+        //// Relations
+        // filters will be limited to the loaded relations
+        $args['rel'] = isset($args['rel']) ? Clip_Util::getPubtypeConfig('list', $args['rel']) : array();
+
+        if ($args['rel'] && $args['rel']['load']) {
+            // adds the relations data
+            foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
+                // load the relation if it means to load ONE related record only
+                if (($rinfo['own'] && $rinfo['type'] % 2 == 0) || (!$rinfo['own'] && $rinfo['type'] < 2)) {
+                    $query->leftJoin("{$args['queryalias']}.{$ralias}");
+                }
+            }
+        }
+
+        // prioritizes the where clause coming from the filter
+        $filter['obj']->enrichQuery($query);
+
+        // add the conditions to the query
+        foreach ($args['where'] as $method => $condition) {
+            if (is_numeric($method)) {
+                $method = 'andWhere';
+            }
+            if (is_array($condition)) {
+                $query->$method($condition[0], $condition[1]);
+            } else {
+                $query->$method($condition);
+            }
+        }
+
+        // restrict to the current user language
+        $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
+
+        // restrictions for non-editors
+        $query->andWhere('(core_publishdate IS NULL OR core_publishdate <= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
+        $query->andWhere('(core_expiredate IS NULL OR core_expiredate >= ?)', date('Y-m-d H:i:s', time()) /*new Doctrine_Expression('NOW()')*/);
+
+        // gets the random publist
+        $publist = new Doctrine_Collection($tableObj);
+
+        // count how many pubs are available
+        $pubcount = $query->count();
+
+        if ($pubcount) {
+            // can't retrieve more items than the existing ones
+            if ($args['limit'] > $pubcount) {
+                $args['limit'] = $pubcount;
+            }
+
+            // we will get one random pub at once
+            $query->limit(1);
+
+            // get the required publications
+            $offsets = array();
+            do {
+                // get a random offset
+                do {
+                    $pos = rand(0, $pubcount - 1);
+
+                } while (in_array($pos, $offsets));
+
+                $offsets[] = $pos;
+                $query->offset($pos);
+
+                // get the publication and add it to the collection
+                $pub = $query->execute()->getFirst();
+
+                if (Clip_Access::toPub($pubtype, $pub, null, 'display')) {
+                    $pub->clipProcess($args);
+                    $publist->add($pub);
+                }
+
+            } while($publist->count() < $args['limit']);
+        }
+
+        //// Result
+        return $args['array'] ? $publist->toArray() : $publist;
     }
 
     /**
