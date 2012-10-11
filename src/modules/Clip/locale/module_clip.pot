@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula component\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-26 10:04+0000\n"
+"POT-Creation-Date: 2012-10-11 10:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,8 @@ msgstr ""
 
 #: lib/Clip/ContentType/ClipPublist.php:145
 #: lib/Clip/ContentType/ClipPub.php:97 lib/Clip/ContentType/ClipPub.php:100
-#: lib/Clip/Block/List.php:53 lib/Clip/Block/Viewpub.php:53
+#: lib/Clip/Block/RandomPub.php:53 lib/Clip/Block/List.php:53
+#: lib/Clip/Block/RandomList.php:53 lib/Clip/Block/Viewpub.php:53
 #: lib/Clip/Block/Viewpub.php:56
 #, php-format
 msgid "Required parameter [%s] not set or empty."
@@ -53,9 +54,11 @@ msgstr ""
 #: lib/Clip/Controller/Editor.php:82 lib/Clip/Controller/Editor.php:166
 #: lib/Clip/Controller/User.php:57 lib/Clip/Controller/User.php:227
 #: lib/Clip/Controller/User.php:414 lib/Clip/Controller/User.php:603
-#: lib/Clip/Controller/User.php:779 lib/Clip/Controller/Ajax.php:234
+#: lib/Clip/Controller/User.php:777 lib/Clip/Controller/Ajax.php:231
 #: lib/Clip/Api/User.php:47 lib/Clip/Api/User.php:371
-#: lib/Clip/Block/List.php:56 lib/Clip/Block/Viewpub.php:59
+#: lib/Clip/Api/User.php:531 lib/Clip/Block/RandomPub.php:56
+#: lib/Clip/Block/List.php:56 lib/Clip/Block/RandomList.php:56
+#: lib/Clip/Block/Viewpub.php:59
 #, php-format
 msgid "Error! Invalid publication type ID passed [%s]."
 msgstr ""
@@ -292,73 +295,78 @@ msgstr ""
 msgid "Stored data is invalid."
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:379
+#: lib/Clip/Form/Plugin/Image.php:206
+#, php-format
+msgid "The image \"%s\" already exists."
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Image.php:420
 msgid "Image"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:381 lib/Clip/Form/Plugin/Upload.php:230
+#: lib/Clip/Form/Plugin/Image.php:422 lib/Clip/Form/Plugin/Upload.php:271
 msgid "Download"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:384
+#: lib/Clip/Form/Plugin/Image.php:425
 msgid "No image uploaded."
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:394
+#: lib/Clip/Form/Plugin/Image.php:435
 msgid "Delete the image"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:395
+#: lib/Clip/Form/Plugin/Image.php:436
 msgid "Regenerate thumbnails"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:437 lib/Clip/Form/Plugin/Upload.php:281
+#: lib/Clip/Form/Plugin/Image.php:478 lib/Clip/Form/Plugin/Upload.php:322
 msgid "Preserve filename"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:439 lib/Clip/Form/Plugin/Upload.php:283
+#: lib/Clip/Form/Plugin/Image.php:480 lib/Clip/Form/Plugin/Upload.php:324
 msgid ""
 "Preserve the file name of the original file uploaded instead generate a "
 "random one."
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:442
+#: lib/Clip/Form/Plugin/Image.php:483
 msgid "Preserve aspect ratio"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:444
+#: lib/Clip/Form/Plugin/Image.php:485
 msgid "Preserve the proportions of the original image on the secondary images."
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:449
+#: lib/Clip/Form/Plugin/Image.php:490
 msgid "Leave empty if you do not need to generate any secondary image."
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:452
+#: lib/Clip/Form/Plugin/Image.php:493
 msgid "Thumbnail width"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:456
+#: lib/Clip/Form/Plugin/Image.php:497
 msgid "Thumbnail height"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:461
+#: lib/Clip/Form/Plugin/Image.php:502
 msgid "Preview width"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:465
+#: lib/Clip/Form/Plugin/Image.php:506
 msgid "Preview height"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:470
+#: lib/Clip/Form/Plugin/Image.php:511
 msgid "Full width"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:474
+#: lib/Clip/Form/Plugin/Image.php:515
 msgid "Full height"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Image.php:478
+#: lib/Clip/Form/Plugin/Image.php:519
 msgid "Quality"
 msgstr ""
 
@@ -465,7 +473,7 @@ msgid "Radio List"
 msgstr ""
 
 #: lib/Clip/Form/Plugin/RadioList.php:130
-#: templates/plugins/function.clip_editoractions.php:56
+#: templates/plugins/function.clip_editoractions.php:53
 #: templates/plugins/function.clip_adminmenu.php:57
 #: templates/plugins/function.clip_adminmenu.php:59
 #: templates/clip_base_history.tpl:48 templates/clip_base_pubtypeinfo.tpl:147
@@ -579,11 +587,16 @@ msgstr ""
 msgid "Stored data is invalid"
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Upload.php:233
+#: lib/Clip/Form/Plugin/Upload.php:186
+#, php-format
+msgid "The file \"%s\" already exists."
+msgstr ""
+
+#: lib/Clip/Form/Plugin/Upload.php:274
 msgid "No file uploaded."
 msgstr ""
 
-#: lib/Clip/Form/Plugin/Upload.php:243
+#: lib/Clip/Form/Plugin/Upload.php:284
 msgid "Delete the file"
 msgstr ""
 
@@ -597,103 +610,103 @@ msgstr ""
 msgid "Integer"
 msgstr ""
 
-#: lib/Clip/Installer.php:285 lib/Clip/Version.php:42
+#: lib/Clip/Installer.php:286 lib/Clip/Version.php:42
 msgid "Clip"
 msgstr ""
 
-#: lib/Clip/Installer.php:286
+#: lib/Clip/Installer.php:287
 msgid "Clip root category"
 msgstr ""
 
 #. ! this is the 'Topics' category name to registry
-#: lib/Clip/Installer.php:301
+#: lib/Clip/Installer.php:302
 msgid "Topics"
 msgstr ""
 
-#: lib/Clip/Installer.php:302
+#: lib/Clip/Installer.php:303
 msgid "Clip topics for its publications"
 msgstr ""
 
-#: lib/Clip/Installer.php:317
+#: lib/Clip/Installer.php:318
 msgid "Zikula related publications"
 msgstr ""
 
 #. ! this is the 'Free Software' example category name
-#: lib/Clip/Installer.php:326
+#: lib/Clip/Installer.php:327
 msgid "Free Software"
 msgstr ""
 
-#: lib/Clip/Installer.php:327
+#: lib/Clip/Installer.php:328
 msgid "Free software related publications"
 msgstr ""
 
 #. ! this is the 'Community' example category name
-#: lib/Clip/Installer.php:336
+#: lib/Clip/Installer.php:337
 msgid "Community"
 msgstr ""
 
-#: lib/Clip/Installer.php:337
+#: lib/Clip/Installer.php:338
 msgid "Community related publications"
 msgstr ""
 
-#: lib/Clip/Installer.php:351
+#: lib/Clip/Installer.php:352
 #, php-format
 msgid "Error! Could not create the [%s] Category Registry for Clip."
 msgstr ""
 
-#: lib/Clip/Installer.php:368
+#: lib/Clip/Installer.php:369
 #, php-format
 msgid "Category %s must be unique under parent"
 msgstr ""
 
-#: lib/Clip/Installer.php:371
+#: lib/Clip/Installer.php:372
 #, php-format
 msgid "Error! Could not create the [%s] category."
 msgstr ""
 
 #. ! name of the Default group of pubtypes
-#: lib/Clip/Installer.php:413
+#: lib/Clip/Installer.php:414
 msgid "Contents"
 msgstr ""
 
-#: lib/Clip/Installer.php:414
+#: lib/Clip/Installer.php:415
 msgid "Publication contents of this site."
 msgstr ""
 
-#: lib/Clip/Installer.php:432
+#: lib/Clip/Installer.php:433
 #, php-format
 msgid ""
 "Clip created the '%1$s' directory successfully at [%2$s]. Be sure that this "
 "directory is writable by the webserver"
 msgstr ""
 
-#: lib/Clip/Installer.php:434
+#: lib/Clip/Installer.php:435
 msgid "and is accessible via web"
 msgstr ""
 
-#: lib/Clip/Installer.php:438
+#: lib/Clip/Installer.php:439
 #, php-format
 msgid ""
 "Clip detected that the '%1$s' directory is already created at [%2$s] but "
 "it's not writable. Be sure to correct that"
 msgstr ""
 
-#: lib/Clip/Installer.php:440
+#: lib/Clip/Installer.php:441
 msgid "and that it's accessible via web"
 msgstr ""
 
-#: lib/Clip/Installer.php:443
+#: lib/Clip/Installer.php:444
 #, php-format
 msgid "Clip detected that the '%1$s' directory is already created at [%2$s]"
 msgstr ""
 
-#: lib/Clip/Installer.php:445
+#: lib/Clip/Installer.php:446
 msgid "Be sure that it's accessible via web"
 msgstr ""
 
-#: lib/Clip/Installer.php:617 lib/Clip/Installer.php:658
-#: lib/Clip/Installer.php:1078 lib/Clip/Installer.php:1134
-#: lib/Clip/Installer.php:1153 lib/Clip/Controller/Ajaxexec.php:41
+#: lib/Clip/Installer.php:618 lib/Clip/Installer.php:659
+#: lib/Clip/Installer.php:1079 lib/Clip/Installer.php:1135
+#: lib/Clip/Installer.php:1154 lib/Clip/Controller/Ajaxexec.php:41
 msgid "Error! Update attempt failed."
 msgstr ""
 
@@ -707,12 +720,12 @@ msgid "clip"
 msgstr ""
 
 #: lib/Clip/Controller/Admin.php:162 lib/Clip/Controller/Editor.php:181
-#: lib/Clip/Controller/User.php:798 lib/Clip/Api/User.php:43
+#: lib/Clip/Controller/User.php:796 lib/Clip/Api/User.php:43
 #: lib/Clip/Api/User.php:367 lib/Clip/Api/User.php:375
 #: lib/Clip/Api/User.php:483 lib/Clip/Api/User.php:486
-#: lib/Clip/Api/User.php:521 lib/Clip/Api/User.php:524
-#: lib/Clip/Api/User.php:545 lib/Clip/Api/User.php:548
-#: templates/plugins/function.clip_form_label.php:35
+#: lib/Clip/Api/User.php:527 lib/Clip/Api/User.php:686
+#: lib/Clip/Api/User.php:689 lib/Clip/Api/User.php:710
+#: lib/Clip/Api/User.php:713 templates/plugins/function.clip_form_label.php:35
 #: templates/plugins/function.clip_filter_plugin.php:36
 #: templates/plugins/function.clip_filter_plugin.php:40
 #: templates/plugins/function.clip_form_plugin.php:40
@@ -749,38 +762,40 @@ msgstr ""
 
 #: lib/Clip/Controller/User.php:108
 msgid ""
-"The requested page cannot be displayed. Please contact the administrador."
+"The requested page cannot be displayed. Please contact the administrator."
 msgstr ""
 
 #: lib/Clip/Controller/User.php:126 lib/Clip/Controller/User.php:191
 #: lib/Clip/Controller/User.php:292 lib/Clip/Controller/User.php:378
 #: lib/Clip/Controller/User.php:478 lib/Clip/Controller/User.php:568
-#: lib/Clip/Controller/User.php:723 lib/Clip/Controller/User.php:734
-#: lib/Clip/Controller/User.php:747
+#: lib/Clip/Controller/User.php:721 lib/Clip/Controller/User.php:732
+#: lib/Clip/Controller/User.php:745 lib/Clip/Block/RandomPub.php:129
+#: lib/Clip/Block/RandomList.php:131
 #, php-format
 msgid "Notice: Template [%s] not found."
 msgstr ""
 
 #: lib/Clip/Controller/User.php:141 lib/Clip/Controller/User.php:301
-#: lib/Clip/Controller/User.php:487 lib/Clip/Controller/User.php:743
+#: lib/Clip/Controller/User.php:487 lib/Clip/Controller/User.php:741
 msgid "This page cannot be displayed. Please contact the administrator."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:445 lib/Clip/Controller/Ajax.php:279
+#: lib/Clip/Controller/User.php:445 lib/Clip/Controller/Ajax.php:276
 #, php-format
 msgid "Error! Missing or wrong argument [%s]."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:530 lib/Clip/Controller/Ajax.php:307
+#: lib/Clip/Controller/User.php:530 lib/Clip/Controller/Ajax.php:304
 #, php-format
 msgid "No such publication [tid: %1$s - pid: %2$s; id: %3$s] found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:532 lib/Clip/Controller/Ajax.php:309
+#: lib/Clip/Controller/User.php:532 lib/Clip/Controller/Ajax.php:306
 msgid "No such publication found."
 msgstr ""
 
 #: lib/Clip/Controller/User.php:630 lib/Clip/Api/User.php:53
+#: lib/Clip/Api/User.php:537
 msgid "Error! No publication fields found."
 msgstr ""
 
@@ -789,33 +804,38 @@ msgstr ""
 msgid "Error! No such publication [%1$s - %2$s] found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:806
+#: lib/Clip/Controller/User.php:804
 #, php-format
 msgid "Error! No such publication [%s] found."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:818
+#: lib/Clip/Controller/User.php:816
 msgid "Error! Invalid action passed."
 msgstr ""
 
-#: lib/Clip/Controller/User.php:826 lib/Clip/Api/User.php:501
+#: lib/Clip/Controller/User.php:824 lib/Clip/Api/User.php:501
 msgid "Unknown workflow action error. Operation failed."
 msgstr ""
 
-#: lib/Clip/Controller/Ajax.php:261 lib/Clip/Controller/Ajax.php:270
-#: lib/Clip/Controller/Ajax.php:317
+#: lib/Clip/Controller/Ajax.php:53
+#, php-format
+msgid "Error! Cannot determine valid '%1$s' for edit in '%2$s'."
+msgstr ""
+
+#: lib/Clip/Controller/Ajax.php:258 lib/Clip/Controller/Ajax.php:267
+#: lib/Clip/Controller/Ajax.php:314
 msgid "Error! Invalid field requested."
 msgstr ""
 
-#: lib/Clip/Controller/Ajax.php:265
+#: lib/Clip/Controller/Ajax.php:262
 msgid "Error! Invalid field to increment was passed."
 msgstr ""
 
-#: lib/Clip/Controller/Ajax.php:274
+#: lib/Clip/Controller/Ajax.php:271
 msgid "Error! Invalid request."
 msgstr ""
 
-#: lib/Clip/Controller/Ajax.php:325
+#: lib/Clip/Controller/Ajax.php:322
 msgid "The requested file does not exists."
 msgstr ""
 
@@ -1041,7 +1061,7 @@ msgid "Relations"
 msgstr ""
 
 #: lib/Clip/Api/Admin.php:40 templates/clip_admin_export.tpl:7
-#: templates/clip_admin_export.tpl:65 templates/import_pagesetter.tpl:4
+#: templates/clip_admin_export.tpl:66 templates/import_pagesetter.tpl:4
 msgid "Export"
 msgstr ""
 
@@ -1103,6 +1123,12 @@ msgstr ""
 
 #: lib/Clip/Import/Batch.php:51
 msgid "You must specify a file to import from."
+msgstr ""
+
+#: lib/Clip/Import/Batch.php:117
+msgid ""
+"The import operation was unsuccessful, please verify the integrity of the "
+"file to be imported."
 msgstr ""
 
 #: lib/Clip/Import/Parser/XML.php:65
@@ -1236,12 +1262,28 @@ msgstr ""
 msgid "Could not import the '%s' publication type."
 msgstr ""
 
+#: lib/Clip/Block/RandomPub.php:32
+msgid "Random Pub"
+msgstr ""
+
+#: lib/Clip/Block/RandomPub.php:33
+msgid "Random publication block"
+msgstr ""
+
 #: lib/Clip/Block/List.php:32
 msgid "Clip List"
 msgstr ""
 
 #: lib/Clip/Block/List.php:33
 msgid "Clip list of publications"
+msgstr ""
+
+#: lib/Clip/Block/RandomList.php:32
+msgid "Random List"
+msgstr ""
+
+#: lib/Clip/Block/RandomList.php:33
+msgid "Random list of publications"
 msgstr ""
 
 #: lib/Clip/Block/Viewpub.php:32
@@ -1584,16 +1626,16 @@ msgstr ""
 msgid "Error! Failed to delete the publication."
 msgstr ""
 
-#: templates/plugins/function.clip_editoractions.php:56
+#: templates/plugins/function.clip_editoractions.php:53
 #: templates/generic_navbar.tpl:74
 msgid "Edit this publication"
 msgstr ""
 
-#: templates/plugins/function.clip_editoractions.php:61
+#: templates/plugins/function.clip_editoractions.php:58
 msgid "Preview this publication"
 msgstr ""
 
-#: templates/plugins/function.clip_editoractions.php:61
+#: templates/plugins/function.clip_editoractions.php:58
 msgid "Preview"
 msgstr ""
 
@@ -1831,6 +1873,89 @@ msgstr ""
 msgid "Go back to the index"
 msgstr ""
 
+#: templates/clip_block_randomlist_modify.tpl:3
+#: templates/clip_block_randompub_modify.tpl:3
+#: templates/clip_block_viewpub_modify.tpl:3
+#: templates/contenttype/clippublist_edit.tpl:3
+#: templates/contenttype/clippub_edit.tpl:3
+#: templates/clip_block_list_modify.tpl:3
+msgid "Publication type"
+msgstr ""
+
+#: templates/clip_block_randomlist_modify.tpl:8
+#: templates/contenttype/clippublist_edit.tpl:24
+#: templates/clip_block_list_modify.tpl:24
+msgid "Number of items"
+msgstr ""
+
+#: templates/clip_block_randomlist_modify.tpl:13
+#: templates/clip_block_randompub_modify.tpl:8
+msgid "Filter to use"
+msgstr ""
+
+#: templates/clip_block_randomlist_modify.tpl:18
+#: templates/clip_block_randomlist_modify.tpl:20
+#: templates/clip_block_randompub_modify.tpl:13
+#: templates/clip_block_randompub_modify.tpl:15
+#: templates/clip_block_viewpub_modify.tpl:13
+#: templates/clip_block_viewpub_modify.tpl:15
+#: templates/contenttype/clippublist_edit.tpl:40
+#: templates/contenttype/clippublist_edit.tpl:42
+#: templates/contenttype/clippub_edit.tpl:13
+#: templates/contenttype/clippub_edit.tpl:15
+#: templates/clip_block_list_modify.tpl:40
+#: templates/clip_block_list_modify.tpl:42
+msgid "Template"
+msgstr ""
+
+#: templates/clip_block_randomlist_modify.tpl:21
+#: templates/clip_block_randompub_modify.tpl:16
+#: templates/clip_block_viewpub_modify.tpl:16
+#: templates/contenttype/clippublist_edit.tpl:43
+#: templates/contenttype/clippub_edit.tpl:16
+#: templates/clip_block_list_modify.tpl:43
+msgid "FOLDER"
+msgstr ""
+
+#: templates/clip_block_randomlist_modify.tpl:26
+#: templates/clip_block_randompub_modify.tpl:21
+#: templates/clip_block_viewpub_modify.tpl:21
+#: templates/contenttype/clippublist_edit.tpl:48
+#: templates/contenttype/clippub_edit.tpl:21
+#: templates/clip_block_list_modify.tpl:48
+#, php-format
+msgid ""
+"The block will use the template <var>%s</var> if available, or <var>%s</var> "
+"if empty."
+msgstr ""
+
+#: templates/clip_block_randomlist_modify.tpl:29
+#: templates/clip_block_randompub_modify.tpl:24
+#: templates/clip_block_viewpub_modify.tpl:24
+#: templates/contenttype/clippublist_edit.tpl:51
+#: templates/contenttype/clippub_edit.tpl:24
+#: templates/clip_block_list_modify.tpl:51
+#, php-format
+msgid "You can customize the generic code <a href=\"%s\">available here</a>."
+msgstr ""
+
+#: templates/clip_block_randomlist_modify.tpl:31
+#: templates/contenttype/clippublist_edit.tpl:53
+#: templates/clip_block_list_modify.tpl:53
+msgid ""
+"If the template is not found, Clip will use generic_blocklist.tpl if the "
+"development mode is enabled."
+msgstr ""
+
+#: templates/clip_block_randomlist_modify.tpl:36
+#: templates/clip_block_randompub_modify.tpl:31
+#: templates/clip_block_viewpub_modify.tpl:31
+#: templates/contenttype/clippublist_edit.tpl:58
+#: templates/contenttype/clippub_edit.tpl:31
+#: templates/clip_block_list_modify.tpl:58
+msgid "Cache lifetime in seconds"
+msgstr ""
+
 #: templates/clip_base_genfilter.tpl:4
 msgid "Filter template generation options"
 msgstr ""
@@ -1842,6 +1967,13 @@ msgstr ""
 
 #: templates/clip_base_genfilter.tpl:15
 msgid "Generate"
+msgstr ""
+
+#: templates/clip_block_randompub_modify.tpl:26
+#: templates/clip_block_viewpub_modify.tpl:26
+msgid ""
+"If the template is not found, Clip will use generic_blockpub.tpl if the "
+"development mode is enabled."
 msgstr ""
 
 #: templates/clip_base_history.tpl:2 templates/clip_base_publist.tpl:82
@@ -1936,7 +2068,7 @@ msgstr ""
 msgid "Reset the form to its initial state"
 msgstr ""
 
-#: templates/generic_edit.tpl:87 templates/clip_admin_export.tpl:66
+#: templates/generic_edit.tpl:87 templates/clip_admin_export.tpl:67
 #: templates/blog/form_all.tpl:103 templates/clip_admin_modifyconfig.tpl:107
 #: templates/clip_base_pubfields.tpl:192 templates/clip_base_relations.tpl:183
 #: templates/clip_admin_import.tpl:30 templates/clip_base_pubtype.tpl:235
@@ -2032,65 +2164,9 @@ msgid ""
 "%s_TEMPLATE.tpl</strong>."
 msgstr ""
 
-#: templates/clip_block_viewpub_modify.tpl:3
-#: templates/contenttype/clippublist_edit.tpl:3
-#: templates/contenttype/clippub_edit.tpl:3
-#: templates/clip_block_list_modify.tpl:3
-msgid "Publication type"
-msgstr ""
-
 #: templates/clip_block_viewpub_modify.tpl:8
 #: templates/contenttype/clippub_edit.tpl:8
 msgid "Publication PID"
-msgstr ""
-
-#: templates/clip_block_viewpub_modify.tpl:13
-#: templates/clip_block_viewpub_modify.tpl:15
-#: templates/contenttype/clippublist_edit.tpl:40
-#: templates/contenttype/clippublist_edit.tpl:42
-#: templates/contenttype/clippub_edit.tpl:13
-#: templates/contenttype/clippub_edit.tpl:15
-#: templates/clip_block_list_modify.tpl:40
-#: templates/clip_block_list_modify.tpl:42
-msgid "Template"
-msgstr ""
-
-#: templates/clip_block_viewpub_modify.tpl:16
-#: templates/contenttype/clippublist_edit.tpl:43
-#: templates/contenttype/clippub_edit.tpl:16
-#: templates/clip_block_list_modify.tpl:43
-msgid "FOLDER"
-msgstr ""
-
-#: templates/clip_block_viewpub_modify.tpl:21
-#: templates/contenttype/clippublist_edit.tpl:48
-#: templates/contenttype/clippub_edit.tpl:21
-#: templates/clip_block_list_modify.tpl:48
-#, php-format
-msgid ""
-"The block will use the template <var>%s</var> if available, or <var>%s</var> "
-"if empty."
-msgstr ""
-
-#: templates/clip_block_viewpub_modify.tpl:24
-#: templates/contenttype/clippublist_edit.tpl:51
-#: templates/contenttype/clippub_edit.tpl:24
-#: templates/clip_block_list_modify.tpl:51
-#, php-format
-msgid "You can customize the generic code <a href=\"%s\">available here</a>."
-msgstr ""
-
-#: templates/clip_block_viewpub_modify.tpl:26
-msgid ""
-"If the template is not found, Clip will use generic_blockpub.tpl if the "
-"development mode is enabled."
-msgstr ""
-
-#: templates/clip_block_viewpub_modify.tpl:31
-#: templates/contenttype/clippublist_edit.tpl:58
-#: templates/contenttype/clippub_edit.tpl:31
-#: templates/clip_block_list_modify.tpl:58
-msgid "Cache lifetime in seconds"
 msgstr ""
 
 #: templates/clip_base_pubtypeinfo.tpl:3
@@ -2301,6 +2377,12 @@ msgstr ""
 
 #: templates/clip_admin_export.tpl:58
 msgid "Without the extension."
+msgstr ""
+
+#: templates/clip_admin_export.tpl:72
+#, php-format
+msgid ""
+"To use the export form again, <a href=\"%s\">refresh it by clicking here</a>."
 msgstr ""
 
 #: templates/generic_navbar.tpl:22
@@ -2783,11 +2865,6 @@ msgid ""
 "likefirst:A\")."
 msgstr ""
 
-#: templates/contenttype/clippublist_edit.tpl:24
-#: templates/clip_block_list_modify.tpl:24
-msgid "Number of items"
-msgstr ""
-
 #: templates/contenttype/clippublist_edit.tpl:27
 #: templates/clip_block_list_modify.tpl:27
 msgid "Leave empty to use the pubtype's default value."
@@ -2801,13 +2878,6 @@ msgstr ""
 #: templates/contenttype/clippublist_edit.tpl:35
 #: templates/clip_block_list_modify.tpl:35
 msgid "Offset to start the list from."
-msgstr ""
-
-#: templates/contenttype/clippublist_edit.tpl:53
-#: templates/clip_block_list_modify.tpl:53
-msgid ""
-"If the template is not found, Clip will use generic_blocklist.tpl if the "
-"development mode is enabled."
 msgstr ""
 
 #: templates/contenttype/clippub_edit.tpl:26
