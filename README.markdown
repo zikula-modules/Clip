@@ -1,7 +1,7 @@
 Clip
 ===================================
 
-Flexible content publishing platform for Zikula. 
+Flexible content publishing platform for Zikula Core 1.3.x. 
 
 - [Bugs and Feature requests Tracker](https://github.com/zikula-modules/Clip/issues)
 - [Available Versions](https://github.com/zikula-modules/Clip/tags)
