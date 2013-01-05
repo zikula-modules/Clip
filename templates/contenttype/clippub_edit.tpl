@@ -1,4 +1,3 @@
-
 <div class="z-formrow">
     {formlabel for='tid' __text='Publication type'}
     {clip_content_pubtypes id='tid' group='data' mandatory=true}
