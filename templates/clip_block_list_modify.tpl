@@ -16,7 +16,7 @@
     <label for="viewpub_filters">{gt text='Filter string'}</label>
     <input id="viewpub_filters" name="listfilter" type="text" size="30" maxlength="255" value="{$vars.listfilter|safetext}" />
     <em class="z-formnote">
-        {gt text='A <a href="%s">filter string</a> for FilterUtil (e.g. "core_title:likefirst:A")' tag1='https://github.com/zikula/core/blob/release-1.3/src/lib/util/FilterUtil/docs/users.markdown'}
+        {gt text='A <a href="%s">filter string</a> for FilterUtil (e.g. "core_title:likefirst:A")' tag1='https://github.com/zikula/core/blob/1.3/src/lib/util/FilterUtil/docs/users.markdown'}
     </em>
 </div>
 
