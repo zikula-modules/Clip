@@ -46,8 +46,8 @@
     {assign var='tpl2' value="$set/list_block.tpl"}
     <em class="z-formnote">
         {gt text="The block will use the template <var>%s</var> if available, or <var>%s</var> if empty." tag1=$tpl1 tag2=$tpl2}
-        {if $vars.tid}
-        {modurl modname='Clip' type='admin' func='showcode' tid=$vars.tid code='blocklist' assign='codeurl'}
+        {if $data.tid}
+        {modurl modname='Clip' type='admin' func='showcode' tid=$data.tid code='blocklist' assign='codeurl'}
         <br />{gt text='You can customize the generic code <a href="%s">available here</a>.' tag1=$codeurl|safetext}
         {/if}
         <br />{gt text='If the template is not found, Clip will use generic_blocklist.tpl if the development mode is enabled.'}
