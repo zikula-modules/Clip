@@ -237,12 +237,28 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // notify the finalization of the edition
         $mainpub = Clip_Event::notify('data.edit.post', $mainpub, $this->pub)->getData();
 
+        // check a limited stepmode
+        if (preg_match('/^stepmode(\d+)(-(\w+))?$/', $this->goto, $matches)) {
+            $next = isset($matches[3]) ? $matches[3] : '';
+            $step = $matches[1] - 1;
+            $aurl = array('goto' => $step ? 'stepmode'.($step-1).($next ? "-$next" : '') : ($next ? $next : 'referer'));
+            $this->goto = 'stepmode';
+        }
+
+        // core operations goto processing
+        $goto = $this->processGoto($mainpub);
+        $this->goto = $goto ? $goto : $this->goto;
+
         // check the goto parameter
         switch ($this->goto)
         {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
-                $this->goto = Clip_Util::urlobj($this->pub, 'edit', array('goto' => 'stepmode'));
+                $this->goto = Clip_Util::urlobj($mainpub, 'edit', isset($aurl) ? $aurl : array('goto' => 'stepmode'));
+                break;
+
+            case 'edit':
+                $this->goto = Clip_Util::urlobj($mainpub, 'edit');
                 break;
 
             case 'form':
@@ -254,7 +270,19 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             case 'display':
-                $goto = Clip_Util::urlobj($this->pub, 'display');
+                $this->goto = Clip_Util::urlobj($mainpub, 'display');
+                break;
+
+            case 'main':
+                $this->goto = Clip_Util::urlobj($this->tid, 'main');
+                break;
+
+            case 'pending':
+                $this->goto = Clip_Util::urlobj($this->tid, 'main', array('template' => 'pending'));
+                break;
+
+            case 'editor':
+                $this->goto = ModUtil::url('Clip', 'editor', 'list', array('tid' => $this->tid), null, null, true);
                 break;
 
             case 'admin':
@@ -270,10 +298,10 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             default:
-                // core operations goto processing
-                $goto = $this->processGoto($mainpub);
-
-                $this->goto = $goto ? $goto : ($this->itemurl ? $this->itemurl : $this->referer);
+                // if goto is empty or not an url then go to referer
+                if (!$this->goto) {
+                    $this->goto = $this->referer;
+                }
         }
 
         // stop here if the request is ajax based
@@ -384,17 +412,17 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // now update the pub instance with the final main one
         $this->pub = $data;
 
-        // check the core operations that equires special redirect
+        // check the core operations that requires special redirect
         $uniqueid = $data['core_uniqueid'];
 
-        $ops  = isset($data['core_operations']) ? $data['core_operations'] : array();
+        $ops = isset($data['core_operations']) ? $data['core_operations'] : array();
 
         if (isset($ops['delete'][$uniqueid])) {
             // if the item was deleted
             if (Clip_Access::toPubtype($data['core_tid'], 'list')) {
-                $url = Clip_Util::url($data['core_tid'], 'list');
+                $url = 'list';
             } else {
-                $url = System::getHomepageUrl();
+                $url = 'home';
             }
             // check if the user comes of the display screen or not
             $goto = (strpos($this->referer, $this->itemurl) === false) ? $this->referer : $url;
@@ -402,16 +430,16 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         } elseif (isset($ops['create'][$uniqueid]) && $ops['create'][$uniqueid]) {
             // the publication was created
             if ($data['core_online'] == 1) {
-                $goto = Clip_Util::url($data, 'display');
+                $goto = 'display';
             } else {
                 // back to the pubtype pending template or referer page if it is not approved yet
-                $goto = isset($ops['create']['goto']) ? $ops['create']['goto'] : $this->referer;
+                $goto = isset($ops['create']['goto']) ? $ops['create']['goto'] : 'referer';
             }
 
         } elseif (!empty($ops)) {
             // check if an operation thrown a goto value
             foreach (array_keys($ops) as $op) {
-                if (isset($ops[$op]['goto'])) {
+                if (is_array($ops[$op]) && isset($ops[$op]['goto'])) {
                     $goto = $ops[$op]['goto'];
                 }
             }
