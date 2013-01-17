@@ -16,6 +16,7 @@
  * @param bool   $params['allrev']    Wheter to update only the pub or all its revisions, (optional) (default: false).
  * @param bool   $params['silent']    Hide or display a status/error message, (optional) (default: false).
  * @param string $params['nextstate'] State for the updated publication if revisions enabled (optional).
+ * @param string $params['goto']   Goto redirection when the operation is successful (optional).
  * @param array  $params              Value(s) to change in the publication.
  *
  * @return bool|array False on failure or Publication core_uniqueid as index with true as value.
@@ -66,6 +67,11 @@ function Clip_operation_updateValues(&$pub, $params)
 
         // hooks: let know that the publication was updated
         $pub->notifyHooks('process_edit');
+    }
+
+    // goto handling
+    if ($result &&$params['goto']) {
+        $result['goto'] = $params['goto'];
     }
 
     // output message

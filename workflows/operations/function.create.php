@@ -15,6 +15,7 @@
  * @param object $pub              Publication object to create.
  * @param bool   $params['online'] Online value for the new publication (optional) (default: 0).
  * @param bool   $params['silent'] Hide or display a status/error message (optional) (default: false).
+ * @param string $params['goto']   Goto redirection when the operation is successful (optional).
  *
  * @return bool|array False on failure or Publication core_uniqueid as index with true as value.
  */
@@ -25,6 +26,7 @@ function Clip_operation_create(&$pub, $params)
     // parameters processing
     $params['online'] = isset($params['online']) ? (int)(bool)$params['online'] : 0;
     $params['silent'] = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $params['goto']   = isset($params['goto']) ? $params['goto'] : null;
 
     // assign the online value
     $pub['core_online'] = $params['online'];
@@ -54,14 +56,21 @@ function Clip_operation_create(&$pub, $params)
         $pub = Clip_Event::notify('data.edit.operation.create', $pub, $params)->getData();
     }
 
+    // goto handling
+    if ($result) {
+        if ($params['goto']) {
+            $result['goto'] = $params['goto'];
+        } elseif (!$pub['core_online']) {
+            // setup a redirect to the pending template
+            $result['goto'] = 'pending';
+        }
+    }
+
     // output message
     if (!$params['silent']) {
         if ($result) {
             if ($pub['core_online']) {
                 LogUtil::registerStatus(__('Done! Publication created.', $dom));
-            } else {
-                // setup a redirect to the pending template
-                $result['goto'] = Clip_Util::urlobj($pub, 'main', array('template' => 'pending'));
             }
         } else {
             LogUtil::registerError(__('Error! Failed to create the publication.', $dom));

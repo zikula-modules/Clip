@@ -15,6 +15,7 @@
  * @param object $pub              Publication to clone.
  * @param string $params['state']  State for the cloned publication (optional) (default: initial).
  * @param bool   $params['silent'] Hide or display a status/error message (optional) (default: false).
+ * @param string $params['goto']   Goto redirection when the operation is successful (optional).
  * @param array  $params           Value(s) to setup in the cloned publication.
  *
  * @return bool|array False on failure or Publication core_uniqueid as index with true as value.
@@ -31,6 +32,7 @@ function Clip_operation_clone(&$pub, $params)
     // process the available parameters
     $params['state']  = isset($params['state']) ? $params['state'] : 'initial';
     $params['silent'] = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $params['goto']   = isset($params['goto']) ? $params['goto'] : null;
 
     // initializes the result flag
     $result = false;
@@ -40,7 +42,7 @@ function Clip_operation_clone(&$pub, $params)
 
     // update any other parameter as that exists
     foreach ($params as $key => $val) {
-        if (!in_array($key, array('state', 'silent', 'nextstate')) && $copy->contains($key)) {
+        if (!in_array($key, array('state', 'silent', 'nextstate', 'goto')) && $copy->contains($key)) {
             $copy[$key] = $val;
         }
     }
@@ -62,7 +64,7 @@ function Clip_operation_clone(&$pub, $params)
         // be sure that the state is valid
         $params['state'] = $workflow->isValidState($params['state']) ? $params['state'] : 'initial';
 
-        if (!$workflow->registerWorkflow($params['state'])) {
+        if ($workflow->registerWorkflow($params['state'])) {
             $result = array($pub['core_uniqueid'] => true);
 
             // hooks: let know that a publication was created
@@ -75,6 +77,11 @@ function Clip_operation_clone(&$pub, $params)
             // delete the previously inserted record
             $copy->delete();
         }
+    }
+
+    // goto handling
+    if ($result &&$params['goto']) {
+        $result['goto'] = $params['goto'];
     }
 
     // output message

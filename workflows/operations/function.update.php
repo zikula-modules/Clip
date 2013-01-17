@@ -16,6 +16,7 @@
  * @param bool   $params['newrevision'] Flag to disable a new revision creation (default: true) (optional).
  * @param bool   $params['silent']      Hide or display a status/error message, (default: false) (optional).
  * @param string $params['nextstate']   State for the updated publication if revisions enabled (optional).
+ * @param string $params['goto']        Goto redirection when the operation is successful (optional).
  * @param array  $params                Fixed value(s) to change in the publication.
  *
  * @return bool|array False on failure or Publication core_uniqueid as index with true as value.
@@ -30,6 +31,7 @@ function Clip_operation_update(&$pub, &$params)
     }
     $params['newrevision'] = isset($params['newrevision']) ? (bool)$params['newrevision'] : true;
     $params['silent']      = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $params['goto']        = isset($params['goto']) ? $params['goto'] : null;
 
     // utility vars
     $tbl = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid']);
@@ -70,7 +72,7 @@ function Clip_operation_update(&$pub, &$params)
             }
 
             $rev->trySave();
-            $result = true;
+            $result = array($pub['core_uniqueid'] => true);
 
             // register the new workflow, return false if failure
             $rev->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
@@ -93,7 +95,7 @@ function Clip_operation_update(&$pub, &$params)
 
         if ($pub->isValid()) {
             $pub->trySave();
-            $result = true;
+            $result = array($pub['core_uniqueid'] => true);
         }
     }
 
@@ -103,6 +105,11 @@ function Clip_operation_update(&$pub, &$params)
 
         // event: notify the operation data
         $pub = Clip_Event::notify('data.edit.operation.update', $pub, $params)->getData();
+    }
+
+    // goto handling
+    if ($result && $params['goto']) {
+        $result['goto'] = $params['goto'];
     }
 
     // output message

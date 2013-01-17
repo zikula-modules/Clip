@@ -15,6 +15,7 @@
  * @param object $pub              Publication to delete.
  * @param bool   $params['allrev'] Wheter to delete only the pub or all its revisions (optional) (default: true).
  * @param bool   $params['silent'] Hide or display a status/error message (optional) (default: false).
+ * @param string $params['goto']   Goto redirection when the operation is successful (optional).
  *
  * @return bool|array False on failure or Publication core_uniqueid as index with true as value.
  */
@@ -23,8 +24,9 @@ function Clip_operation_delete(&$pub, $params)
     $dom = ZLanguage::getModuleDomain('Clip');
 
     // process the available parameters
-    // TODO implement allrev, dleeting all workflows
+    // TODO implement allrev, deleting all workflows
     $params['silent'] = isset($params['silent']) ? (bool)$params['silent'] : false;
+    $params['goto']   = isset($params['goto']) ? $params['goto'] : null;
 
     // process the deletion
     $result = false;
@@ -49,6 +51,10 @@ function Clip_operation_delete(&$pub, $params)
             // hooks: if no other revisions, let know that a publication was deleted
             $pub->notifyHooks('process_delete');
         }
+    }
+
+    if ($result && $params['goto']) {
+        $result['goto'] = $params['goto'];
     }
 
     // output message
