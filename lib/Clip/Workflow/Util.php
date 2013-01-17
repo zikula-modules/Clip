@@ -265,13 +265,12 @@ class Clip_Workflow_Util
             foreach ($wfvars as $k => $var) {
                 $classname = Clip_Util_Plugins::getAdminClassname($var['plugin']);
 
-                if (!isset($vars[$k]) || !method_exists($classname, 'postRead')) {
-                    self::$varvalues[$pubtype->tid][$k] = isset($vars[$k]) ? $vars[$k] : null;
-                } else {
+                if (isset($vars[$k]) && $classname && method_exists($classname, 'postRead')) {
                     self::$varvalues[$pubtype->tid][$k] = $classname::postRead($vars[$k]);
+                } else {
+                    self::$varvalues[$pubtype->tid][$k] = isset($vars[$k]) ? $vars[$k] : null;
                 }
             }
-
         }
 
         // if they didn't pass a variable name then return every variable
@@ -512,10 +511,10 @@ class Clip_Workflow_Util
             return LogUtil::registerError(__f('%1$s: The module [%2$s] is not active.', array('Clip_Workflow_Util', $module)));
         }
 
-        $themedir = ThemeUtil::getInfo(ThemeUtil::getIDFromName(UserUtil::getTheme()));
+        $themeinfo = ThemeUtil::getInfo(ThemeUtil::getIDFromName(UserUtil::getTheme()));
 
         $paths = array(
-            'themepath'  => DataUtil::formatForOS("themes/$themedir/workflows/$moduledir/$file"),
+            'themepath'  => DataUtil::formatForOS("themes/{$themeinfo['directory']}/workflows/$moduledir/$file"),
             'configpath' => DataUtil::formatForOS("config/workflows/$moduledir/$file"),
             'modulepath' => DataUtil::formatForOS("$modulepath/workflows/$file")
         );

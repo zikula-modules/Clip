@@ -40,7 +40,12 @@ function Clip_operation_notify(&$pub, $params)
 
     if ($view->template_exists($tplpath)) {
         // get the recipients
-        $recipients = Clip_Workflow_Util::getVarValue($pubtype, 'notify_'.$params['group'], array());
+        if ($params['group'] == 'author') {
+            $classname  = Clip_Util_Plugins::getAdminClassname('Recipients');
+            $recipients = $classname::postRead(array('u'.$pub['core_author']));
+        } else {
+            $recipients = Clip_Workflow_Util::getVarValue($pubtype, 'notify_'.$params['group'], array());
+        }
 
         if ($recipients) {
             // event: notify the operation data
