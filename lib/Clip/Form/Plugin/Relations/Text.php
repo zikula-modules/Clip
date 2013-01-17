@@ -85,7 +85,7 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
      */
     public function loadValue(Zikula_Form_View $view, &$values)
     {
-        if ($this->dataBased) {
+        if ($this->dataBased && isset($values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field])) {
             $data = $values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field];
 
             // assign existing data
