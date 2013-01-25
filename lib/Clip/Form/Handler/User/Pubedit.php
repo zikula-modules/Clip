@@ -429,7 +429,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         } elseif (isset($ops['create'][$uniqueid]) && $ops['create'][$uniqueid]) {
             // the publication was created
-            if ($data['core_online'] == 1) {
+            if ($data['core_online'] == 1 && empty($ops['create']['goto'])) {
                 $goto = 'display';
             } else {
                 // back to the pubtype pending template or referer page if it is not approved yet
