@@ -60,9 +60,9 @@ function Clip_operation_create(&$pub, $params)
     if ($result) {
         if ($params['goto']) {
             $result['goto'] = $params['goto'];
-        } elseif (!$pub['core_online']) {
-            // setup a redirect to the pending template
-            $result['goto'] = 'pending';
+        } else {
+            // setup a redirect after creation
+            $result['goto'] = !$pub['core_online'] ? 'pending' : 'display';
         }
     }
 

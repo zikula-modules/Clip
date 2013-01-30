@@ -419,21 +419,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         if (isset($ops['delete'][$uniqueid])) {
             // if the item was deleted
-            if (Clip_Access::toPubtype($data['core_tid'], 'list')) {
-                $url = 'list';
+            if (!isset($ops['delete']['goto'])) {
+                $url = (Clip_Access::toPubtype($data['core_tid'], 'list')) ? 'list' : 'home';
+                // check if the user comes of the display screen or not
+                $goto = (strpos($this->referer, $this->itemurl) === false) ? $this->referer : $url;
             } else {
-                $url = 'home';
-            }
-            // check if the user comes of the display screen or not
-            $goto = (strpos($this->referer, $this->itemurl) === false) ? $this->referer : $url;
-
-        } elseif (isset($ops['create'][$uniqueid]) && $ops['create'][$uniqueid]) {
-            // the publication was created
-            if ($data['core_online'] == 1) {
-                $goto = 'display';
-            } else {
-                // back to the pubtype pending template or referer page if it is not approved yet
-                $goto = isset($ops['create']['goto']) ? $ops['create']['goto'] : 'referer';
+                $goto = $ops['delete']['goto'];
             }
 
         } elseif (!empty($ops)) {
