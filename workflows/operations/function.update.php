@@ -41,7 +41,6 @@ function Clip_operation_update(&$pub, &$params)
     $pubtype = Clip_Util::getPubType($pub['core_tid']);
 
     // checks if there are fixed operation values to update
-    $update = array();
     foreach ($params as $key => $val) {
         if (!in_array($key, array('newrevision', 'silent', 'nextstate')) && $pub->contains($key)) {
             $pub[$key] = $val;
@@ -72,6 +71,7 @@ function Clip_operation_update(&$pub, &$params)
             }
 
             $rev->trySave();
+
             $result = array($pub['core_uniqueid'] => true);
 
             // register the new workflow, return false if failure

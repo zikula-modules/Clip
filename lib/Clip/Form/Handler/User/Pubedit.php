@@ -171,7 +171,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     $pubdata = reset($pubdata);
 
                     // publication instance
-                    $pub = $pubtype->getPubInstance();
+                    $pub = ($alias == $this->alias) ? $this->pub : $pubtype->getPubInstance();
 
                     if (is_numeric($id) && $id) {
                         // FIXME verify it's on the 'pubs' state data
