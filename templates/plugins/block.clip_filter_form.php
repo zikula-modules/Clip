@@ -61,8 +61,8 @@ function smarty_block_clip_filter_form($params, $content, Zikula_View &$view)
     $output = '<div class="'.$class.'">'."\n".
                    '<fieldset id="'.$filter->getId().'wrapper" class="z-linear" style="display: none">'."\n".
                        //'<legend>'.__('Filter', $dom).'</legend>'."\n".
-                       $content."\n".
                        '<form id="'.$filter->getId().'form" method="get" action="'.$action.'" style="display: inline">'."\n".
+                           $content."\n".
                            '<input type="hidden" name="module" value="Clip" />'."\n".
                            '<input type="hidden" name="type" value="'.$type.'" />'."\n".
                            '<input type="hidden" name="func" value="list" />'."\n".
