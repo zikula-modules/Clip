@@ -28,7 +28,7 @@
  */
 function smarty_modifier_clip_notifyfilters($content, $pubtype, $hooktype = 'filter', $category = 'filter_hooks', $subarea = '')
 {
-    include_once('lib/viewplugins/modifier.notifyfilters.php');
+    // NOTE: notifyfilters core modifier is added on Clip_Util::register_utilities
 
     if (is_numeric($pubtype)) {
         $pubtype = Clip_Util::getPubType($pubtype);

@@ -19,7 +19,7 @@
  */
 function smarty_outputfilter_clip_func($source, $view)
 {
-    include_once('lib/viewplugins/function.modfunc.php');
+    require_once $view->_get_plugin_filepath('function', 'modfunc');
 
     // detect all the clipfuncs
     $num = preg_match_all('/CLIPFUNC:(a:.*?\})/', $source, $matches);

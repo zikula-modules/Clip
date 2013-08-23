@@ -86,7 +86,7 @@ function smarty_function_clip_url($params, Zikula_View &$view)
         unset($params['args']);
         $params = array_merge($params, $args);
 
-        include_once('lib/viewplugins/function.modurl.php');
+        require_once $view->_get_plugin_filepath('function', 'modurl');
         $url = smarty_function_modurl($params, $view);
 
     } else {

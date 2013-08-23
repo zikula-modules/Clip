@@ -647,6 +647,9 @@ class Clip_Util
     {
         static $tids, $dirs;
 
+        // clip_notifyfilters requires the core modifier
+        require_once $view->_get_plugin_filepath('modifier', 'notifyfilters');
+
         if (!isset($tids) || !isset($dirs)) {
             $pubtypes = self::getPubType();
             // index the IDs with the urltitle
