@@ -68,8 +68,6 @@ class Clip_Util
     /**
      * Extract the TID from a string end.
      *
-     * @param string $tablename
-     *
      * @return integer Publication type ID.
      */
     public static function getDefaultCategoryID()
@@ -78,6 +76,27 @@ class Clip_Util
 
         if (!isset($id)) {
             $id = (int)CategoryRegistryUtil::getRegisteredModuleCategory('Clip', 'clip_pubtypes', 'Global');
+        }
+
+        return $id;
+    }
+
+    /**
+     * Extract the first GID from the grouptypes.
+     *
+     * @return integer Grouptype ID.
+     */
+    public static function getDefaultGrouptype()
+    {
+        static $id;
+
+        if (!isset($id)) {
+            $id = (int)Doctrine_Core::getTable('Clip_Model_Grouptype')
+                    ->createQuery()
+                    ->select('gid')
+                    ->orderBy('gid')
+                    ->where('gid > ?', 1)
+                    ->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
         }
 
         return $id;

@@ -147,6 +147,8 @@ class Clip_Import_Batch
                 }
                 // process the record
                 $obj->fromArray($args['pubtype']);
+                // assign the default grouptype
+                $obj->grouptype = Clip_Util::getDefaultGrouptype();
                 // see if we have the next tid already
                 static $nexttid;
                 if (!isset($nexttid)) {

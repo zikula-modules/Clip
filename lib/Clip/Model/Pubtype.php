@@ -267,14 +267,7 @@ class Clip_Model_Pubtype extends Doctrine_Record
         // make sure it belongs to a group (the first one after root)
         if (!$this->grouptype) {
             // TODO make this select-able on the pubtype form
-            $gid = Doctrine_Core::getTable('Clip_Model_Grouptype')
-                       ->createQuery()
-                       ->select('gid')
-                       ->orderBy('gid')
-                       ->where('gid > ?', 1)
-                       ->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
-
-            $this->grouptype = (int)$gid;
+            $this->grouptype = Clip_Util::getDefaultGrouptype();
         }
     }
 
