@@ -19,6 +19,7 @@ class Clip_Form_Plugin_Relations_Autocompleter extends Clip_Form_Plugin_Relation
     public $maxitems;
     public $minchars;
     public $op;
+    public $onchange;
 
     /**
      * Get filename for this plugin.
@@ -52,6 +53,8 @@ class Clip_Form_Plugin_Relations_Autocompleter extends Clip_Form_Plugin_Relation
 
         $this->op = (isset($params['op']) && in_array($params['op'], array('search', 'likefirst', 'like'))) ? $params['op'] : 'search';
         $this->delimiter = ':';
+
+        $this->onchange = isset($params['onchange']) ? $params['onchange'] : null;
     }
 
     /**
@@ -86,6 +89,7 @@ class Clip_Form_Plugin_Relations_Autocompleter extends Clip_Form_Plugin_Relation
                                                   maxresults: '.$this->numitems.',
                                                   maxItems: '.($this->relation['single'] ? 1 : $this->maxitems).'
                                                  });
+                '.(!$this->onchange ? '' : "var el = $('{$this->id}'); el.observe('change', {$this->onchange}.bind(el))").'
             }
             document.observe(\'dom:loaded\', clip_enable_'.$this->id.', false);
         '."\n// ]]>\n</script>";

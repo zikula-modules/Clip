@@ -2,6 +2,7 @@
  * Clip
  *
  * @link       http://github.com/zikula-modules/clip/
+ * @licence    MIT
  * @package    Clip
  * @subpackage Javascript
  */
@@ -27,7 +28,7 @@
  *        bug fix: the click event stopped working
  *        bug fix: the cursor does not 'travel' when going up/down the list - credit: Marcel
  *
- * Adaptation to zikula:
+ * Adaptation to Zikula:
  * - Changed CSS classes to use the 'z-auto' prefix
  * - Added the 'parameters' option for the Ajax call
  * - Merged FacebookList.loptions.autocomplete into this.options
@@ -36,6 +37,71 @@
  *
  * Copyright: InteRiders <http://interiders.com/> - Distributed under MIT - Keep this message!
  */
+
+/**
+ * Event.simulate(@element, eventName[, options]) -> Element
+ *
+ * - @element: element to fire event on
+ * - eventName: name of event to fire (only MouseEvents and HTMLEvents interfaces are supported)
+ * - options: optional object to fine-tune event properties - pointerX, pointerY, ctrlKey, etc.
+ *
+ *    $('foo').simulate('click'); // => fires "click" event on an element with id=foo
+ *
+ **/
+(function(){
+
+  var eventMatchers = {
+    'HTMLEvents': /^(?:load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll)$/,
+    'MouseEvents': /^(?:click|mouse(?:down|up|over|move|out))$/
+  }
+  var defaultOptions = {
+    pointerX: 0,
+    pointerY: 0,
+    button: 0,
+    ctrlKey: false,
+    altKey: false,
+    shiftKey: false,
+    metaKey: false,
+    bubbles: true,
+    cancelable: true
+  }
+
+  Event.simulate = function(element, eventName) {
+    var options = Object.extend(defaultOptions, arguments[2] || { });
+    var oEvent, eventType = null;
+
+    element = $(element);
+
+    for (var name in eventMatchers) {
+      if (eventMatchers[name].test(eventName)) { eventType = name; break; }
+    }
+
+    if (!eventType)
+      throw new SyntaxError('Only HTMLEvents and MouseEvents interfaces are supported');
+
+    if (document.createEvent) {
+      oEvent = document.createEvent(eventType);
+      if (eventType == 'HTMLEvents') {
+        oEvent.initEvent(eventName, options.bubbles, options.cancelable);
+      }
+      else {
+        oEvent.initMouseEvent(eventName, options.bubbles, options.cancelable, document.defaultView,
+          options.button, options.pointerX, options.pointerY, options.pointerX, options.pointerY,
+          options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
+      }
+      element.dispatchEvent(oEvent);
+    }
+    else {
+      options.clientX = options.pointerX;
+      options.clientY = options.pointerY;
+      oEvent = Object.extend(document.createEventObject(), options);
+      element.fireEvent('on' + eventName, oEvent);
+    }
+    return element;
+  }
+
+  Element.addMethods({ simulate: Event.simulate });
+})()
 
 /* Element helper functions */
 Element.addMethods({
@@ -199,6 +265,8 @@ var TextboxList = Class.create(
     if (this.numitems == this.options.get('maxItems')) {
       this.maininput.hide();
     }
+    // fires event
+    Event.simulate(this.element, 'change');
     return el;
   },
 
@@ -404,9 +472,9 @@ var FacebookList = Class.create(TextboxList,
     }
     // adjust the height of the results list
     if (count > this.options.get('results')) {
-      this.autoresults.setStyle({'height': (this.options.get('results')*24)+'px'});
+      this.autoresults.setStyle({'height': (this.options.get('results')*25)+'px'});
     } else {
-      this.autoresults.setStyle({'height': (count ? (count*24) : 0)+'px'});
+      this.autoresults.setStyle({'height': (count ? (count*25) : 0)+'px'});
     }
     // check this.autoresults count to see if we need the 'not found' message
     if (count == 0) {

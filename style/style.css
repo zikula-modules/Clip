@@ -722,18 +722,18 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   padding: 0 !important;
   position: relative;
 }
-.z-auto-container {
+.z-form div.z-formrow > div.z-auto-container {
   background: #eee;
   display: none;
   /*margin-left: 27.5% !important;*/
   margin-left: 29% !important;
-  padding: 0;
+  padding: 0 !important;
   position: absolute;
   /*width: 67.4%;*/
   width: 71%;
   z-index: 9999;
 }
-.z-linear .z-auto-container {
+.z-form .z-linear div.z-formrow > div.z-auto-container {
   margin-left: 0 !important;
   width: 100%;
 }
