@@ -209,8 +209,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     // perform the command
                     $res = ModUtil::apiFunc('Clip', 'user', 'edit',
                                             array('data'        => $pub,
-                                                  'commandName' => $commandName,
-                                                  'schema'      => str_replace('.xml', '', $pubtype['workflow'])));
+                                                  'commandName' => $commandName));
 
                     // detect a workflow operation fail
                     if (!$res) {
