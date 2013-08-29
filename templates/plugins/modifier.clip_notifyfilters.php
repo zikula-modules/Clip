@@ -30,7 +30,7 @@ function smarty_modifier_clip_notifyfilters($content, $pubtype, $hooktype = 'fil
 {
     // NOTE: notifyfilters core modifier is added on Clip_Util::register_utilities
 
-    if (is_numeric($pubtype)) {
+    if (!is_object($pubtype)) {
         $pubtype = Clip_Util::getPubType($pubtype);
     }
 

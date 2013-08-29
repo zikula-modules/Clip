@@ -777,7 +777,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $_ = $args['args'];
 
         // pubtype id
-        $tid      = (int)$_['tid'];
+        $tid      = $_['tid'];
         $tidtitle = Clip_Util::getPubType($tid, 'urltitle');
 
         // template parameter

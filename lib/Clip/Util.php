@@ -310,6 +310,9 @@ class Clip_Util
     {
         if (is_numeric($tid) && $tid > 0 && self::getPubType($tid)) {
             return true;
+
+        } else if (!is_numeric($tid) && self::getPubType($tid)) {
+            return true;
         }
 
         return false;
@@ -711,7 +714,7 @@ class Clip_Util
                 }
             }
 
-        } else if (is_numeric($obj)) {
+        } else {
             $args['tid'] = $obj;
         }
 
@@ -744,7 +747,7 @@ class Clip_Util
                 $args['urltitle'] = $obj['core_urltitle'];
             }
 
-        } else if (is_numeric($obj)) {
+        } else {
             $args['tid'] = $obj;
         }
 
