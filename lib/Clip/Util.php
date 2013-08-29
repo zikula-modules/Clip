@@ -350,20 +350,26 @@ class Clip_Util
     /**
      * PubType getter.
      *
-     * @param integer $tid Pubtype ID.
+     * @param integer $tid Pubtype ID or urltitle.
      *
      * @return Clip_Model_Pubtype Information of one or all the pubtypes.
      */
     public static function getPubType($tid = -1, $field = null, $force = false)
     {
-        static $pubtypes;
+        static $pubtypes, $urltitles;
 
         if (!isset($pubtypes) || $force) {
             $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
+
+            $urltitles = $pubtypes->toKeyValueArray('urltitle', 'tid');
         }
 
         if ($tid == -1) {
             return $pubtypes;
+        }
+
+        if (!is_numeric($tid)) {
+            $tid = isset($urltitles[$tid]) ? $urltitles[$tid] : $tid;
         }
 
         if (isset($pubtypes[$tid])) {
