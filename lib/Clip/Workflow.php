@@ -236,11 +236,11 @@ class Clip_Workflow extends Zikula_AbstractBase
      * Execute workflow action.
      *
      * @param string $actionID Action Id.
-     * @param string $stateID  State Id.
+     * @param string $params   Optional operations parameters overrides.
      *
      * @return mixed Array or false.
      */
-    public function executeAction($actionID)
+    public function executeAction($actionID, $params = array())
     {
         $stateID = $this->getWorkflow('state');
 
@@ -269,6 +269,9 @@ class Clip_Workflow extends Zikula_AbstractBase
         // process the action operations
         $result = array();
         foreach ($action['operations'] as $operation) {
+            if (isset($params[$operation['name']])) {
+                $operation['parameters'] = array_merge($operation['parameters'], $params[$operation['name']]);
+            }
             // execute the operation
             $r = $this->executeOperation($operation, $nextState);
             if ($r === false) {
