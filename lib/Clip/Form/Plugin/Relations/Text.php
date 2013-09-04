@@ -85,6 +85,8 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
      */
     public function loadValue(Zikula_Form_View $view, &$values)
     {
+        $ids = array();
+
         if ($this->dataBased && isset($values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field])) {
             $data = $values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field];
 
@@ -116,12 +118,12 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
             if (!$this->text) {
                 $this->text = implode($this->delimiter, $ids);
             }
-
-            // save the data in the state session
-            $links = $view->getStateData('links');
-            $links[$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $ids;
-            $view->setStateData('links', $links);
         }
+
+        // save the data in the state session
+        $links = $view->getStateData('links');
+        $links[$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $ids;
+        $view->setStateData('links', $links);
     }
 
     /**
