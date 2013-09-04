@@ -791,28 +791,35 @@ class Clip_Api_User extends Zikula_AbstractApi
         $tidtitle = Clip_Util::getPubType($tid, 'urltitle');
 
         // template parameter
-        $template = '';
+        $tpl = '';
         if (isset($_['template'])) {
-            $template = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $_['template']);
-            if ($template != $_['template']) {
+            $tpl = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $_['template']);
+            if ($tpl != $_['template']) {
                 // do not build shortURLs for faulty templates
                 return false;
             }
-            $tpl = $template = $_['template'];
+            $tpl = $_['template'];
         } else {
             $tpl = $this->getVar('shorturls');
         }
 
-        $tplhtml = $template && $this->getVar('shorturls') ? (in_array($tpl, array('htm', 'html')) ? $tpl : 'htm') : '';
+        if ($tpl && $this->getVar('shorturls')) {
+            if (in_array($tpl, array('htm', 'html'))) {
+				$tplhtml = $tpl;
+				$tpl = '';
+			} else {
+				$tplhtml = $this->getVar('shorturls');
+			}
+		}
 
         unset($_['tid'], $_['template']);
 
         // shortURLs scheme
         // template defaults to modvar - htm
-        //  main:    /pubtype[.template]
-        //  list:    /pubtype[/filter[/orderby]]/pageX.template]
-        //  list:    /pubtype[/filter[/orderby]]/startY.template]
-        //  display: /pubtype/pubtitle[.template]
+        //  main:    /pubtype[.template|htm[l]]
+        //  list:    /pubtype[/filter[/orderby]]/pageX.[template|htm[l]]]
+        //  list:    /pubtype[/filter[/orderby]]/startY.[template|htm[l]]]
+        //  display: /pubtype/pubtitle[.template|htm[l]]
         //  edit:    /pubtype[/template]/submit[.htm[l]]
         //  edit:    /pubtype[/goto/somewhere]/edit[.htm[l]]
         //  edit:    /pubtype[/template/goto/somewhere]/edit[.htm[l]]
@@ -829,7 +836,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         switch ($args['func'])
         {
             case 'main':
-                $shorturl = $tpl ? ".$tpl" : '';
+                $shorturl = $tpl ? ".$tpl" : ($tplhtml ? ".$tplhtml" : '');
 
                 // adds the parameters
                 if (!empty($_)) {
@@ -854,7 +861,7 @@ class Clip_Api_User extends Zikula_AbstractApi
                     }
                 }
 
-                $shorturl .= "/$filename" . ($tpl ? ".$tpl" : '');
+                $shorturl .= "/$filename" . ($tpl ? ".$tpl" : ($tplhtml ? ".$tplhtml" : ''));
                 break;
 
             case 'edit':
@@ -911,8 +918,10 @@ class Clip_Api_User extends Zikula_AbstractApi
 
                 unset($_['urltitle'], $_['title'], $_['pid'], $_['id']);
 
-                if ($args['func'] == 'display') {
-                    $shorturl .= $urltitle . ($tpl ? ".$tpl" : '');
+                if ($args['func'] == 'exec') {
+					$shorturl .= $urltitle;
+                } else if ($args['func'] == 'display') {
+                    $shorturl .= $urltitle . ($tpl ? ".$tpl" : ($tplhtml ? ".$tplhtml" : ''));
                 } else {
                     $shorturl  = ($pid ? $urltitle : '');
                     $shorturl .= ($tpl ? "/$tpl" : '');
