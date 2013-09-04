@@ -25,7 +25,7 @@ function Clip_operation_mapValues(&$pub, $params)
     unset($params['nextstate']);
 
     // initializes the result flag
-    $result = false;
+    $result = true;
 
     // map the values into the record
     // they should not exist in the record already
@@ -36,5 +36,5 @@ function Clip_operation_mapValues(&$pub, $params)
     }
 
     // returns the operation result
-    return true;
+    return $result;
 }

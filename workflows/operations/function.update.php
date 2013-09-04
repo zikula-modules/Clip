@@ -110,6 +110,9 @@ function Clip_operation_update(&$pub, &$params)
     // goto handling
     if ($result && $params['goto']) {
         $result['goto'] = $params['goto'];
+
+    } else if (isset($pub['core_goto'])) {
+        $result['goto'] = $pub['core_goto'];
     }
 
     // output message

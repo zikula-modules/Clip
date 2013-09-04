@@ -60,6 +60,10 @@ function Clip_operation_create(&$pub, $params)
     if ($result) {
         if ($params['goto']) {
             $result['goto'] = $params['goto'];
+
+        } else if (isset($pub['core_goto'])) {
+            $result['goto'] = $pub['core_goto'];
+
         } else {
             // setup a redirect after creation
             $result['goto'] = !$pub['core_online'] ? 'pending' : 'display';

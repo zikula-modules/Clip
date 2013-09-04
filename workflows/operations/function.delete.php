@@ -55,6 +55,9 @@ function Clip_operation_delete(&$pub, $params)
 
     if ($result && $params['goto']) {
         $result['goto'] = $params['goto'];
+
+    } else if (isset($pub['core_goto'])) {
+        $result['goto'] = $pub['core_goto'];
     }
 
     // output message

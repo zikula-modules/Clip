@@ -82,6 +82,9 @@ function Clip_operation_clone(&$pub, $params)
     // goto handling
     if ($result &&$params['goto']) {
         $result['goto'] = $params['goto'];
+
+    } else if (isset($copy['core_goto'])) {
+        $result['goto'] = $copy['core_goto'];
     }
 
     // output message
