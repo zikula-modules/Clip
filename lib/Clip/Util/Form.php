@@ -124,12 +124,13 @@ class Clip_Util_Form
      */
     public function getprefix($args, Zikula_View $view)
     {
+        $pre   = isset($args['rel']) && $args['rel'] ? 'cliprel' : 'clip';
         $alias = isset($args['alias']) ? $args['alias'] : $this->alias;
         $tid   = isset($args['tid']) ? $args['tid'] : $this->tid;
         $rid   = isset($args['rid']) ? $args['rid'] : $this->id;
         $pid   = isset($args['pid']) ? $args['pid'] : $this->getPid($view);
 
-        return "clip_{$alias}_{$tid}_{$rid}_{$pid}_";
+        return "{$pre}_{$alias}_{$tid}_{$rid}_{$pid}_";
     }
 
     /**
