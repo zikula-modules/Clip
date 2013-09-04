@@ -17,7 +17,7 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Returns a Publication List.
      *
-     * @param integer $args['tid']           ID of the publication type.
+     * @param mixed   $args['tid']           ID/urltitle of the publication type.
      * @param array   $args['where']         Direct where conditions to the query.
      * @param string  $args['filter']        Filter string.
      * @param string  $args['distinct']      Distinct field(s) to select.
@@ -28,6 +28,7 @@ class Clip_Api_User extends Zikula_AbstractApi
      * @param integer $args['itemsperpage']  Number of items to retrieve.
      * @param string  $args['countmode']     Mode: no (list without count - default), just (count elements only), both.
      * @param boolean $args['array']         Whether to fetch the resulting publications as array (default: false).
+     * @param boolean $args['fetchone']      Whether to fetch one publication only (default: false).
      * @param boolean $args['restrict']      Whether to restrict the list according the pubfields configuration.
      * @param boolean $args['checkperm']     Whether to check the permissions.
      * @param boolean $args['handleplugins'] Whether to parse the plugin fields.
@@ -47,13 +48,12 @@ class Clip_Api_User extends Zikula_AbstractApi
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
-        $pubfields = Clip_Util::getPubFields($args['tid']);
+        $pubtype   = Clip_Util::getPubType($args['tid']);
+        $pubfields = Clip_Util::getPubFields($pubtype['tid']);
 
         if (!$pubfields) {
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
-
-        $pubtype = Clip_Util::getPubType($args['tid']);
 
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
@@ -62,7 +62,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $args['getApprovalS']  = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : false;
         // define the arguments
         $args = array(
-            'tid'           => (int)$args['tid'],
+            'tid'           => $pubtype['tid'],
             'where'         => isset($args['where']) ? $args['where'] : array(),
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'distinct'      => isset($args['distinct']) ? $args['distinct'] : null,
@@ -73,6 +73,7 @@ class Clip_Api_User extends Zikula_AbstractApi
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage'])) ? (int)abs($args['itemsperpage']) : 0,
             'countmode'     => (isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both'))) ? $args['countmode'] : 'no',
             'array'         => isset($args['array']) ? (bool)$args['array'] : false,
+            'fetchone'      => isset($args['fetchone']) ? (bool)$args['fetchone'] : false,
             'restrict'      => isset($args['restrict']) ? (bool)$args['restrict'] : true,
             'limitdate'     => isset($args['limitdate']) ? (bool)$args['limitdate'] : !Clip_Access::toPubtype($args['tid'], 'editor'),
             'checkperm'     => isset($args['checkperm']) ? (bool)$args['checkperm'] : $args['checkPerm'],
@@ -292,6 +293,10 @@ class Clip_Api_User extends Zikula_AbstractApi
                     $query->offset($args['startnum']-1);
                 }
 
+                if ($args['fetchone']) {
+                    $args['itemsperpage'] = 1;
+                }
+
                 if ($args['itemsperpage'] > 0) {
                     $query->limit($args['itemsperpage']);
                 }
@@ -333,6 +338,10 @@ class Clip_Api_User extends Zikula_AbstractApi
 
                     // store the arguments used
                     Clip_Util::setArgs('getallapi', $args);
+
+                    if ($args['fetchone']) {
+                        $publist = $publist->getFirst();
+                    }
                 }
             }
         }
@@ -347,7 +356,7 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Returns a Publication.
      *
-     * @param integer $args['tid']           ID of the publication type.
+     * @param mixed   $args['tid']           ID/urltitle of the publication type.
      * @param integer $args['pid']           ID of the publication.
      * @param integer $args['id']            ID of the publication revision (optional if pid is used).
      * @param array   $args['where']         Direct where conditions to the query.
@@ -375,6 +384,8 @@ class Clip_Api_User extends Zikula_AbstractApi
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
 
+        $pubtype = Clip_Util::getPubType($args['tid']);
+
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
         $args['checkPerm']     = isset($args['checkPerm']) ? (bool)$args['checkPerm'] : false;
@@ -382,7 +393,7 @@ class Clip_Api_User extends Zikula_AbstractApi
         $args['getApprovalS']  = isset($args['getApprovalState']) ? (bool)$args['getApprovalState'] : false;
         // define the arguments
         $args = array(
-            'tid'           => (int)$args['tid'],
+            'tid'           => $pubtype['tid'],
             'pid'           => isset($args['pid']) ? (int)$args['pid'] : null,
             'id'            => isset($args['id']) ? (int)$args['id'] : null,
             'where'         => isset($args['where']) ? $args['where'] : array(),
@@ -471,7 +482,7 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Saves a new or existing publication.
      *
-     * @param array  $args['data']        Publication data.
+     * @param object $args['data']        Publication record.
      * @param string $args['commandName'] Command name has to be a valid workflow action for the currenct state.
      *
      * @return boolean True on success, false otherwise.
@@ -509,7 +520,7 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Returns a random number of Publications.
      *
-     * @param integer $args['tid']           ID of the publication type.
+     * @param mixed   $args['tid']           ID/urltitle of the publication type.
      * @param array   $args['where']         Direct where conditions to the query.
      * @param string  $args['filter']        Filter string.
      * @param integer $args['limit']         Number of items to retrieve.
@@ -531,18 +542,17 @@ class Clip_Api_User extends Zikula_AbstractApi
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
 
-        $pubfields = Clip_Util::getPubFields($args['tid']);
+        $pubtype   = Clip_Util::getPubType($args['tid']);
+        $pubfields = Clip_Util::getPubFields($pubtype['tid']);
 
         if (!$pubfields) {
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
 
-        $pubtype = Clip_Util::getPubType($args['tid']);
-
         //// Parameters
         // define the arguments
         $args = array(
-            'tid'           => (int)$args['tid'],
+            'tid'           => $pubtype['tid'],
             'where'         => isset($args['where']) ? $args['where'] : array(),
             'filter'        => isset($args['filter']) ? $args['filter'] : '()',
             'limit'         => (isset($args['limit']) && is_numeric($args['limit'])) ? (int)abs($args['limit']) : 1,
@@ -674,10 +684,10 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Returns pid.
      *
-     * @param int $args['tid']
-     * @param int $args['id']
+     * @param integer $args['tid'] Publication type ID.
+     * @param integer $args['id']  Publication ID.
      *
-     * @return int pid.
+     * @return integer Publication ID.
      */
     public function getPid($args)
     {
@@ -697,9 +707,9 @@ class Clip_Api_User extends Zikula_AbstractApi
     /**
      * Returns the ID of the online publication.
      *
-     * @param int $args['tid']
-     * @param int $args['pid']
-     * @param bool $args['lastrev']
+     * @param integer $args['tid']     Publication type ID.
+     * @param integer $args['pid']     Publication ID.
+     * @param boolean $args['lastrev'] Fetch last revision.
      *
      * @return int id.
      */

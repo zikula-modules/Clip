@@ -22,7 +22,7 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
     /**
      * Publications list.
      *
-     * @param integer $_POST['tid']           ID of the publication type.
+     * @param mixed   $_POST['tid']           ID/urltitle of the publication type.
      * @param string  $_POST['keyword']       core_title:likefirst:KEYWORD filter.
      * @param string  $_POST['filter']        Filter string.
      * @param string  $_POST['orderby']       OrderBy string.
@@ -52,7 +52,7 @@ class Clip_Controller_Ajaxdata extends Zikula_Controller_AbstractAjax
 
         //// Parameters
         $args = array(
-            'tid'           => (int)$args['tid'],
+            'tid'           => $pubtype['tid'],
             'keyword'       => $this->request->getPost()->get('keyword', null),
             'op'            => $this->request->getPost()->get('op', 'likefirst'),
             'filter'        => $this->request->getPost()->get('filter', null),

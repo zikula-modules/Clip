@@ -37,7 +37,7 @@ class Clip_Controller_User extends Zikula_AbstractController
     /**
      * Main user function.
      *
-     * @param integer $args['tid']           ID of the publication type.
+     * @param mixed   $args['tid']           ID/urltitle of the publication type.
      * @param string  $args['template']      Custom publication type template to use.
      * @param integer $args['cachelifetime'] Cache lifetime (empty for default pubtype config).
      *
@@ -66,7 +66,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // define the arguments
         $args = array(
-            'tid'           => $args['tid'],
+            'tid'           => $pubtype['tid'],
             'template'      => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
             'cachelifetime' => isset($args['cachelifetime']) ? (int)$args['cachelifetime'] : $pubtype['cachelifetime'],
         );
@@ -204,7 +204,7 @@ class Clip_Controller_User extends Zikula_AbstractController
     /**
      * Publications list.
      *
-     * @param integer $args['tid']           ID of the publication type.
+     * @param mixed   $args['tid']           ID/urltitle of the publication type.
      * @param string  $args['template']      Custom publication type template to use.
      * @param string  $args['filter']        Filter string.
      * @param string  $args['orderby']       OrderBy string.
@@ -236,7 +236,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // define the arguments
         $apiargs = array(
-            'tid'           => $args['tid'],
+            'tid'           => $pubtype['tid'],
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && (int)$args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)$pubtype['itemsperpage'],
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
@@ -396,7 +396,7 @@ class Clip_Controller_User extends Zikula_AbstractController
     /**
      * Display a publication.
      *
-     * @param integer $args['tid']           ID of the publication type.
+     * @param mixed   $args['tid']           ID/urltitle of the publication type.
      * @param integer $args['pid']           ID of the publication.
      * @param integer $args['id']            ID of the publication revision (optional if pid is used).
      * @param string  $args['template']      Custom publication type template to use.
@@ -423,7 +423,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // define the arguments
         $apiargs = array(
-            'tid'           => $args['tid'],
+            'tid'           => $pubtype['tid'],
             'pid'           => isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid'),
             'id'            => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'),
             'checkperm'     => false,
@@ -586,7 +586,7 @@ class Clip_Controller_User extends Zikula_AbstractController
     /**
      * Edit/Create a publication.
      *
-     * @param integer $args['tid']      ID of the publication type.
+     * @param mixed   $args['tid']      ID/urltitle of the publication type.
      * @param integer $args['pid']      ID of the publication.
      * @param integer $args['id']       ID of the publication revision (optional if pid is used).
      * @param string  $args['template'] Custom publication type template to use.
@@ -612,7 +612,7 @@ class Clip_Controller_User extends Zikula_AbstractController
 
         // define the arguments
         $args = array(
-            'tid'      => $args['tid'],
+            'tid'      => $pubtype['tid'],
             'pid'      => isset($args['pid']) ? (int)$args['pid'] : FormUtil::getPassedValue('pid'),
             'id'       => isset($args['id']) ? (int)$args['id'] : FormUtil::getPassedValue('id'),
             'template' => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'),
@@ -759,7 +759,7 @@ class Clip_Controller_User extends Zikula_AbstractController
     /**
      * Executes a Workflow command directly.
      *
-     * @param integer $args['tid']         ID of the publication type.
+     * @param mixed   $args['tid']         ID/urltitle of the publication type.
      * @param integer $args['id']          ID of the publication revision.
      * @param string  $args['commandName'] Command name has to be a valid workflow action for the currenct state.
      * @param string  $args['goto']        Redirect-to after execution.
@@ -785,7 +785,7 @@ class Clip_Controller_User extends Zikula_AbstractController
         $args['commandName'] = $args['commandName'] ? $args['commandName'] : FormUtil::getPassedValue('action');
         // define the arguments
         $args = array(
-            'tid'           => $args['tid'],
+            'tid'           => $pubtype['tid'],
             'id'            => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'),
             'action'        => isset($args['action']) ? $args['action'] : $args['commandName'],
             'goto'          => isset($args['goto']) ? $args['goto'] : FormUtil::getPassedValue('goto')

@@ -213,7 +213,7 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
      *
      * Allows to download a file optionally.
      *
-     * @param integer $args['tid']   ID of the publication type.
+     * @param mixed   $args['tid']   ID/urltitle of the publication type.
      * @param integer $args['pid']   ID of the publication.
      * @param integer $args['id']    ID of the publication revision (optional if pid is used).
      * @param string  $args['count'] Field to increment the count (optional).
@@ -236,7 +236,7 @@ class Clip_Controller_Ajax extends Zikula_Controller_AbstractAjax
         //// Parameters
         // define the arguments
         $apiargs = array(
-            'tid'           => $args['tid'],
+            'tid'           => $pubtype['tid'],
             'pid'           => isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid'),
             'id'            => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'),
             'checkperm'     => false,

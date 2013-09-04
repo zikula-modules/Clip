@@ -134,13 +134,17 @@ class Clip_Util_View
      */
     public function getone($args, Zikula_View &$view)
     {
+        $pubtype = $view->getTplVar('pubtype');
+
+        $args['tid'] = isset($args['tid']) ? $args['tid'] : $pubtype->tid;
+
         if (!isset($args['pid']) || empty($args['pid'])) {
             $args['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $args);
         }
 
-        $pubtype = $view->getTplVar('pubtype');
-
-        $args['tid'] = isset($args['tid']) ? $args['tid'] : $pubtype->tid;
+        if (!$args['pid']) {
+            return false;
+        }
 
         // API call
         $pub = ModUtil::apiFunc('Clip', 'user', 'get', $args);
@@ -154,6 +158,7 @@ class Clip_Util_View
      * Available attributes:
      *  - assign        (string)  The name of a template variable to assign the output to (default: pubs).
      *  - array         (boolean) Whether to fetch the resulting publications as array (default: false).
+     *  - fetchone      (boolean) Whether to fetch one publication only (default: false).
      *  - tid           (integer) ID of the publication type.
      *  - filter        (string)  Filter string.
      *  - distinct      (string)  Distinct field(s) to select.
@@ -169,9 +174,9 @@ class Clip_Util_View
      *
      * Example:
      *
-     *  Get a filtered list of publications of the pubtype #2 and assign it to the template variable $pubs:
+     *  Get a filtered list of publications of the blog pubtype and assign it to the template variable $pubs:
      *
-     *  <samp>{clip_util->getmany tid=2 filter="relation:eq:`$pubdata.id`" assign='pubs'}</samp>
+     *  <samp>{clip_util->getmany tid='blog' filter="relation:eq:`$pubdata.id`" assign='pubs'}</samp>
      *
      * @param array       $params All parameters passed to this plugin from the template.
      * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
