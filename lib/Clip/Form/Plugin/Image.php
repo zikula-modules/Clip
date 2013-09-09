@@ -256,15 +256,15 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
                 $data['orig_name'] = '';
             } else {
                 // rename the file_name if the preserve name is enabled now
-                if ($this->config[6] && file_exists($uploadpath.'/'.$oldData['file_name']) && $oldData['file_name'] != $oldData['orig_name']) {
-                    rename($uploadpath.'/'.$oldData['file_name'], $uploadpath.'/'.$oldData['orig_name']);
+                if ($this->config[6] && file_exists("{$uploadpath}/{$oldData['file_name']}") && $oldData['file_name'] != $oldData['orig_name']) {
+                    rename("{$uploadpath}/{$oldData['file_name']}", "{$uploadpath}/{$oldData['orig_name']}");
                     $data['file_name'] = $oldData['orig_name'];
                 }
             }
 
             foreach ($toDelete as $k) {
-                if ($oldData[$k] && file_exists($uploadpath.'/'.$oldData[$k])) {
-                    unlink($uploadpath.'/'.$oldData[$k]);
+                if ($oldData[$k] && file_exists("{$uploadpath}/{$oldData[$k]}")) {
+                    unlink("{$uploadpath}/{$oldData[$k]}");
                 }
                 $data[$k] = '';
             }
@@ -273,8 +273,16 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         // process the upload if there's one
         if ($newUpload) {
             $data['orig_name'] = $newData['name'];
-            $filename  = $this->config[6] ? DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])) : Clip_Util::getNewFileReference();
+            $filename = $this->config[6] ? DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])) : Clip_Util::getNewFileReference();
             $data['file_name'] = "$filename.$extension";
+
+            if ($this->config[6] && file_exists("{$uploadpath}/{$data['file_name']}")) {
+                do {
+                    $filename++;
+                    $data['file_name'] = "$filename.$extension";
+                } while (file_exists("{$uploadpath}/{$data['file_name']}"));
+            }
+
             move_uploaded_file($newData['tmp_name'], "{$uploadpath}/{$data['file_name']}");
         }
 

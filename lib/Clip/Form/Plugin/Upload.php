@@ -230,8 +230,8 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
         // delete the files if requested to or if there's a new upload
         if ($oldUpload && ($newUpload || $newData['delete'])) {
-            if ($oldData['file_name'] && file_exists($uploadpath.'/'.$oldData['file_name'])) {
-                unlink($uploadpath.'/'.$oldData['file_name']);
+            if ($oldData['file_name'] && file_exists("{$uploadpath}/{$oldData['file_name']}")) {
+                unlink("{$uploadpath}/{$oldData['file_name']}");
             }
             $data['orig_name'] = '';
             $data['file_name'] = '';
@@ -239,8 +239,8 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
 
         } elseif ($oldUpload) {
             // rename the file_name if the preserve name is enabled now
-            if ($this->config['preserve'] && file_exists($uploadpath.'/'.$oldData['file_name']) && $oldData['file_name'] != $oldData['orig_name']) {
-                rename($uploadpath.'/'.$oldData['file_name'], $uploadpath.'/'.$oldData['orig_name']);
+            if ($this->config['preserve'] && file_exists("{$uploadpath}/{$oldData['file_name']}") && $oldData['file_name'] != $oldData['orig_name']) {
+                rename("{$uploadpath}/{$oldData['file_name']}", "{$uploadpath}/{$oldData['orig_name']}");
                 $data['file_name'] = $oldData['orig_name'];
             }
         }
@@ -249,8 +249,16 @@ class Clip_Form_Plugin_Upload extends Zikula_Form_Plugin_UploadInput
         if ($newUpload) {
             $data['orig_name'] = $newData['name'];
             $data['file_size'] = $newData['size'];
-            $filename  = $this->config['preserve'] ? DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])) : Clip_Util::getNewFileReference();
+            $filename = $this->config['preserve'] ? DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])) : Clip_Util::getNewFileReference();
             $data['file_name'] = "$filename.$extension";
+
+            if ($this->config['preserve'] && file_exists("{$uploadpath}/{$data['file_name']}")) {
+                do {
+                    $filename++;
+                    $data['file_name'] = "$filename.$extension";
+                } while (file_exists("{$uploadpath}/{$data['file_name']}"));
+            }
+
             move_uploaded_file($newData['tmp_name'], "{$uploadpath}/{$data['file_name']}");
         }
 
