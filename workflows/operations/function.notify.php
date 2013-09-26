@@ -51,7 +51,8 @@ function Clip_operation_notify(&$pub, $params)
             // event: notify the operation data
             $pub = Clip_Event::notify('data.edit.operation.notify', $pub, $params)->getData();
 
-            $message = $view->assign('pubtype', $pubtype)
+            $message = $view->assign($params)
+                            ->assign('pubtype', $pubtype)
                             ->assign('pubdata', $pub)
                             ->fetch($tplpath);
 
