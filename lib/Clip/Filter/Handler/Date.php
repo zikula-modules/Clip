@@ -1,16 +1,12 @@
 <?php
 /**
- * Copyright Zikula Foundation 2009 - Zikula Application Framework
+ * Clip
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
- *
- * @license GNU/LGPv3 (or at your option any later version).
- * @package FilterUtil
+ * @copyright  (c) Clip Team
+ * @link       http://github.com/zikula-modules/clip/
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package    Clip
  * @subpackage Filter
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
  */
 
 /**
@@ -18,7 +14,6 @@
  */
 class Clip_Filter_Handler_Date extends FilterUtil_AbstractPlugin implements FilterUtil_BuildInterface, FilterUtil_ReplaceInterface
 {
-
     /**
      * Enabled operators.
      *

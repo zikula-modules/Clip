@@ -262,7 +262,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         $filterstr = strpos($filterstr, '(') === 0 ? substr($filterstr, 1, -1) : $filterstr;
         $args['filterstr'] = explode('),(', $filterstr);
-var_dump($query->getParams());echo $query->getSqlQuery();
+
         // executes the query
         if ($args['function']) {
             $publist = $query->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);
