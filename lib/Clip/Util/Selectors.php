@@ -151,6 +151,10 @@ class Clip_Util_Selectors
                 'text'  => '',
                 'value' => ''
             ),
+            'core_pid' => array(
+                'text'  => __('Publication ID', $dom),
+                'value' => 'core_pid'
+            ),
             'core_cr_date' => array(
                 'text'  => __('Creation date', $dom),
                 'value' => 'cr_date'
