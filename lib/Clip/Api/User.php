@@ -101,13 +101,13 @@ class Clip_Api_User extends Zikula_AbstractApi
         // handling column names till the end
         if (empty($args['orderby'])) {
             $args['orderby'] = array();
-            if (!empty($pubtype['sortfield1']) && $record->contains($pubtype['sortfield1'])) {
+            if (!empty($pubtype['sortfield1']) && $record->getTable()->hasField($pubtype['sortfield1'])) {
                 $args['orderby'][] = $pubtype['sortfield1'].($pubtype['sortdesc1'] == 1 ? ' DESC' : ' ASC');
             }
-            if (!empty($pubtype['sortfield2']) && $record->contains($pubtype['sortfield2'])) {
+            if (!empty($pubtype['sortfield2']) && $record->getTable()->hasField($pubtype['sortfield2'])) {
                 $args['orderby'][] = $pubtype['sortfield2'].($pubtype['sortdesc2'] == 1 ? ' DESC' : ' ASC');
             }
-            if (!empty($pubtype['sortfield3']) && $record->contains($pubtype['sortfield3'])) {
+            if (!empty($pubtype['sortfield3']) && $record->getTable()->hasField($pubtype['sortfield3'])) {
                 $args['orderby'][] = $pubtype['sortfield3'].($pubtype['sortfield3'] == 1 ? ' DESC' : ' ASC');
             }
             $args['orderby'] = implode(', ', $args['orderby']);
