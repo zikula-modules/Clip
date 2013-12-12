@@ -162,7 +162,16 @@ class Clip_Api_User extends Zikula_AbstractApi
         // resolve the FilterUtil arguments
         $filter['args'] = array(
             'alias'   => $args['queryalias'],
-            'plugins' => array()
+            'plugins' => array(
+                'clipdate' => array(
+                    'fields' => array(
+                        'core_publishdate',
+                        'core_expiredate',
+                        'cr_date',
+                        'lu_date'
+                    )
+                )
+            )
         );
 
         foreach ($pubfields as $field)
@@ -253,7 +262,7 @@ class Clip_Api_User extends Zikula_AbstractApi
 
         $filterstr = strpos($filterstr, '(') === 0 ? substr($filterstr, 1, -1) : $filterstr;
         $args['filterstr'] = explode('),(', $filterstr);
-
+var_dump($query->getParams());echo $query->getSqlQuery();
         // executes the query
         if ($args['function']) {
             $publist = $query->fetchOne(array(), Doctrine_Core::HYDRATE_ARRAY);

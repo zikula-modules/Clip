@@ -14,7 +14,7 @@ class Clip_Form_Plugin_Date extends Zikula_Form_Plugin_DateInput
     // plugin definition
     public $pluginTitle;
     public $columnDef = 'T';
-    public $filterClass = 'date';
+    public $filterClass = 'clipdate';
 
     // Clip data handling
     public $alias;
