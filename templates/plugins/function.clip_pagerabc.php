@@ -20,7 +20,7 @@
  *  - class_num   Class for the pager links (<a> tags).
  *  - class_numon Class for the active page.
  *  - separator   String to put between the letters, eg "|" makes " A | B | C | D | ...".
- *  - printempty  Print empty selection ('-').
+ *  - printempty  Print empty selection ('All').
  *  - names       String or array of names to select from (array or csv).
  *  - values      Optional parameter for the previous names (array or cvs).
  *  - modname     Module name for the links (optional).
@@ -178,7 +178,7 @@ function smarty_function_clip_pagerabc($params, Zikula_View &$view)
             $style = 'class="'.$params['class_num'].'"';
         }
         $urltemp = DataUtil::formatForDisplay(ModUtil::url($pager['module'], $pager['type'], $pager['func'], $pager['args']));
-        $output .= ' <a '.$style.' href="'.$urltemp.'"> -'."\n</a> ".$params['separator'];
+        $output .= ' <a '.$style.' href="'.$urltemp.'">'.$view->__('All')."</a> ".$params['separator'];
     }
 
     $pager['args'] = array_merge($pager['args'], $filters);

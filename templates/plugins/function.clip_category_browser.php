@@ -19,9 +19,11 @@
  *  - field             (string) Fieldname of the pubfield which contains category.
  *  - tpl               (string) Optional filename of template (default: clip_category_browser.tpl).
  *  - count             (bool) Optional count available pubs in this category.
+ *  - togglediv         (bool) This div will be toggled, if at least one entry is selected (if you wanna hide cats as pulldownmenus).
+ *  - printempty        (bool) Whether to include a link to all the entries or not (default: false).
+ *  - includenulllink   (bool) Whether to include a link to all the entries with null value on the specified field (default: false).
  *  - multiselect       (bool) Are more selection in one browser allowed (makes only sense for multilist fields).
  *  - globalmultiselect (bool) Are more then one selections in all available browsers allowed.
- *  - togglediv         (bool) This div will be toggled, if at least one entry is selected (if you wanna hidde cats as pulldownmenus).
  *  - cache             (bool) Enable render cache (if not already enabled).
  *  - assign            (string) Optional variable name to assign the output to.
  *
@@ -51,6 +53,7 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
 
     $assign            = isset($params['assign']) ? $params['assign'] : null;
     $operator          = isset($params['operator']) ? $params['operator'] : 'sub';
+    $includealllink    = isset($params['printempty']) ? $params['printempty'] : false;
     $includenulllink   = isset($params['includenulllink']) ? $params['includenulllink'] : true;
     $multiselect       = isset($params['multiselect']) ? $params['multiselect'] : false;
     $globalmultiselect = isset($params['globalmultiselect']) ? $params['globalmultiselect'] : false;
@@ -77,6 +80,7 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
     unset($params['tpl']);
     unset($params['assign']);
     unset($params['operator']);
+    unset($params['printempty']);
     unset($params['includenulllink']);
     unset($params['multiselect']);
     unset($params['globalmultiselect']);
@@ -202,6 +206,19 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
             $nullcat = array(
                 -1 => array(
                     'fullTitle' => $view->__('Uncategorized'),
+                    'url'       => Clip_Util::url($tid, 'list', $args),
+                    'depth'     => 0,
+                    'selected'  => 0
+                )
+            );
+            $cats = array_merge($nullcat, $cats);
+        }
+
+        if ($includealllink) {
+            $args = $params;
+            $nullcat = array(
+                -2 => array(
+                    'fullTitle' => $view->__('All'),
                     'url'       => Clip_Util::url($tid, 'list', $args),
                     'depth'     => 0,
                     'selected'  => 0
