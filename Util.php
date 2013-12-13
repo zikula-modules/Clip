@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,6 +8,7 @@
  * @package    Clip
  * @subpackage Lib
  */
+
 namespace Clip;
 
 use ModUtil;
@@ -38,6 +30,7 @@ use Clip_Util_View;
 use Clip_Doctrine_Pubdata;
 use Clip_Model_Pubtype;
 use Clip_Url;
+
 class Util
 {
     const REGEX_FOLDER = '#[^a-z0-9_/]+#i';
@@ -716,4 +709,4 @@ class Util
         return new Clip_Url('Clip', 'user', $func, $args, $language, $fragment);
     }
 
-}<?php 
+}

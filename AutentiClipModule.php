@@ -1,6 +1,9 @@
-<?phpnamespace Autenti\Clip;
+<?php
+
+namespace Autenti\Clip;
 
 use Zikula\Core\AbstractModule;
+
 class AutentiClipModule extends \AbstractModule
 {
     

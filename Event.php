@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,7 +8,8 @@
  * @package    Clip
  * @subpackage Event
  */
-namespace Clip;
+
+    namespace Clip;
 
 use Clip_Model_Pubtype;
 use Clip_Doctrine_Pubdata;
@@ -26,6 +18,7 @@ use Zikula_View;
 use InvalidArgumentException;
 use Clip_Event_Generic;
 use EventUtil;
+
 class Event
 {
     const NAME_PATTERN = 'module.clip.%s';
@@ -80,4 +73,4 @@ class Event
         return EventUtil::notify($event);
     }
 
-}<?php 
+}

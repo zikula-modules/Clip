@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,6 +8,7 @@
  * @package    Clip
  * @subpackage Workflow
  */
+
 namespace Clip;
 
 use ServiceUtil;
@@ -24,7 +16,8 @@ use DBUtil;
 use DataUtil;
 use Clip_Workflow_Util;
 use LogUtil;
-class Workflow extends \\Zikula_AbstractBase
+
+class Workflow extends \Zikula_AbstractBase
 {
     // Action types
     const ACTIONS_ALL = 1;
@@ -569,5 +562,4 @@ class Workflow extends \\Zikula_AbstractBase
     {
         return $this->module;
     }
-
-}<?php 
+}
