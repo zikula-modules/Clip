@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,6 +8,7 @@
  * @package    Clip
  * @subpackage Api
  */
+
 namespace Clip\Api;
 
 use LogUtil;
@@ -31,7 +23,8 @@ use Clip_Workflow;
 use Doctrine_Collection;
 use ModUtil;
 use System;
-class UserApi extends \\Zikula_AbstractApi
+
+class UserApi extends \Zikula_AbstractApi
 {
     /**
      * Returns a Publication List.
@@ -639,23 +632,6 @@ class UserApi extends \\Zikula_AbstractApi
         if (!in_array($args['func'], $supportedfunctions)) {
             return false;
         }
-        // deprecated functions transition
-        // @deprecated 0.9
-        switch ($args['func']) {
-            case 'pubedit':
-                $args['func'] = 'edit';
-                break;
-            case 'view':
-            case 'publist':
-                $args['func'] = 'list';
-                break;
-            case 'viewpub':
-                $args['func'] = 'display';
-                break;
-            case 'executecommand':
-                $args['func'] = 'exec';
-                break;
-        }
         // utility assign
         $_ = $args['args'];
         // pubtype id
@@ -953,35 +929,4 @@ class UserApi extends \\Zikula_AbstractApi
         }
         return true;
     }
-    
-    /**
-     * @see Clip_Api_User::getall
-     *
-     * @deprecated 0.9
-     */
-    public function pubList($args)
-    {
-        return $this->getall($args);
-    }
-    
-    /**
-     * @see Clip_Api_User::get
-     *
-     * @deprecated 0.9
-     */
-    public function getPub($args)
-    {
-        return $this->get($args);
-    }
-    
-    /**
-     * @see Clip_Api_User::edit
-     *
-     * @deprecated 0.9
-     */
-    public function editPub($args)
-    {
-        return $this->edit($args);
-    }
-
-}<?php 
+}
