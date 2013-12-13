@@ -50,7 +50,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
         return $response;
     }
     
-    public function editgroup()
+    public function editgroupAction()
     {
         $this->checkAjaxToken();
         $mode = $this->request->getPost()->get('mode', 'add');
@@ -81,7 +81,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
     /**
      * Resequence group/pubtypes
      */
-    public function treeresequence()
+    public function treeresequenceAction()
     {
         $this->checkAjaxToken();
         // FIXME SECURITY check this
@@ -210,7 +210,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
      *
      * @return Publication output.
      */
-    public function count($args)
+    public function countAction($args)
     {
         //// Pubtype
         // validate and get the publication type first
@@ -300,5 +300,4 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
         // return the response object
         return $output;
     }
-
 }

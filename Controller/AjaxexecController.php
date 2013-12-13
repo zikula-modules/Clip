@@ -30,8 +30,8 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
     {
         
     }
-    
-    public function changelistorder()
+
+    public function changelistorderAction()
     {
         $this->checkAjaxToken();
         // FIXME SECURITY check this
@@ -53,7 +53,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
         return array('result' => true);
     }
     
-    public function savegroup()
+    public function savegroupAction()
     {
         $this->checkAjaxToken();
         $mode = $this->request->getPost()->get('mode', 'new');
@@ -89,7 +89,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
         return new Zikula_Response_Ajax($result);
     }
     
-    public function deletegroup()
+    public function deletegroupAction()
     {
         $this->checkAjaxToken();
         // FIXME SECURITY check this
@@ -105,7 +105,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
     /**
      * Resequence group/pubtypes
      */
-    public function treeresequence()
+    public function treeresequenceAction()
     {
         $this->checkAjaxToken();
         // FIXME SECURITY check this
@@ -220,5 +220,4 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
         $result = array('response' => $result);
         return new Zikula_Response_Ajax($result);
     }
-
 }

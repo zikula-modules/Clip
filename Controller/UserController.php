@@ -22,7 +22,6 @@ use UserUtil;
 use Zikula_View;
 use Clip_Event;
 use Clip_Generator;
-use ;
 use Clip_Workflow;
 use Clip_Form_Handler_User_Pubedit;
 use Doctrine_Core;
@@ -59,7 +58,7 @@ class UserController extends \Zikula_AbstractController
      *
      * @return string Publication main output.
      */
-    public function main($args)
+    public function indexAction($args)
     {
         //// Pubtype
         // validate and get the publication type first
@@ -190,7 +189,7 @@ class UserController extends \Zikula_AbstractController
      *
      * @return string Publication list output.
      */
-    public function view($args)
+    public function viewAction($args)
     {
         //// Pubtype
         // validate and get the publication type first
@@ -313,7 +312,7 @@ class UserController extends \Zikula_AbstractController
      *
      * @return Publication output.
      */
-    public function display($args)
+    public function displayAction($args)
     {
         //// Pubtype
         // validate and get the publication type first
@@ -444,7 +443,7 @@ class UserController extends \Zikula_AbstractController
      *
      * @return Publication output.
      */
-    public function edit($args)
+    public function editAction($args)
     {
         //// Pubtype
         // get the publication type first
@@ -567,7 +566,7 @@ class UserController extends \Zikula_AbstractController
      * @param string  $args['commandName'] Command name has to be a valid workflow action for the currenct state.
      * @param string  $args['goto']        Redirect-to after execution.
      */
-    public function exec($args)
+    public function execAction($args)
     {
         //// Token check
         $this->checkCsrfToken($this->request->getGet()->get('csrftoken', 'notokenpresent'));
@@ -637,35 +636,4 @@ class UserController extends \Zikula_AbstractController
         }
         return System::redirect($goto);
     }
-    
-    /**
-     * @see Clip_Controller_User::display
-     *
-     * @deprecated 0.9
-     */
-    public function viewpub($args)
-    {
-        return $this->display($args);
-    }
-    
-    /**
-     * @see Clip_Controller_User::edit
-     *
-     * @deprecated 0.9
-     */
-    public function pubedit($args)
-    {
-        return $this->edit($args);
-    }
-    
-    /**
-     * @see Clip_Controller_User::exec
-     *
-     * @deprecated 0.9
-     */
-    public function executecommand($args)
-    {
-        return $this->exec($args);
-    }
-
 }

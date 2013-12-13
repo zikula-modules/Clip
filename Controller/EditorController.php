@@ -60,7 +60,7 @@ class EditorController extends \Zikula_AbstractController
     /**
      * Accessible grouptypes/pubtypes list screen.
      */
-    public function main()
+    public function indexAction()
     {
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT));
@@ -79,7 +79,7 @@ class EditorController extends \Zikula_AbstractController
     /**
      * Editor list screen.
      */
-    public function view($args = array())
+    public function viewAction($args = array())
     {
         //// Pubtype
         // validate and get the publication type first
@@ -130,7 +130,7 @@ class EditorController extends \Zikula_AbstractController
     /**
      * History screen.
      */
-    public function history($args = array())
+    public function historyAction($args = array())
     {
         //// Pubtype
         // validate and get the publication type first
@@ -162,5 +162,4 @@ class EditorController extends \Zikula_AbstractController
         $this->view->assign('pubtype', $pubtype)->assign('publist', $publist);
         return $this->view->fetch('clip_base_history.tpl');
     }
-
 }

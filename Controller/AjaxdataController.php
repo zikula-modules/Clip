@@ -44,7 +44,7 @@ class AjaxdataController extends \Zikula_Controller_AbstractAjax
      *
      * @return array Publication list.
      */
-    public function view()
+    public function viewAction()
     {
         $this->checkAjaxToken();
         //// Pubtype
@@ -86,7 +86,7 @@ class AjaxdataController extends \Zikula_Controller_AbstractAjax
      *
      * @return array Autocompletion list.
      */
-    public function autocomplete()
+    public function autocompleteAction()
     {
         $list = $this->view();
         $result = array();
@@ -102,7 +102,7 @@ class AjaxdataController extends \Zikula_Controller_AbstractAjax
      *
      * @return array Autocompletion list.
      */
-    public function getusers()
+    public function getusersAction()
     {
         $this->checkAjaxToken();
         $result = array();
@@ -142,7 +142,7 @@ class AjaxdataController extends \Zikula_Controller_AbstractAjax
      *
      * @return array Autocompletion list.
      */
-    public function getgroups()
+    public function getgroupsAction()
     {
         $this->checkAjaxToken();
         $result = array();
@@ -177,7 +177,7 @@ class AjaxdataController extends \Zikula_Controller_AbstractAjax
      *
      * @return array Autocompletion list.
      */
-    public function recipients()
+    public function recipientsAction()
     {
         $this->checkAjaxToken();
         $result = array();
@@ -203,5 +203,4 @@ class AjaxdataController extends \Zikula_Controller_AbstractAjax
         }
         return new Zikula_Response_Ajax_Json(array('data' => $result));
     }
-
 }

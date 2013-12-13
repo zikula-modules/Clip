@@ -47,7 +47,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Grouptypes list screen with the existing pubtypes.
      */
-    public function main()
+    public function indexAction()
     {
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
@@ -60,7 +60,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Publication types list.
      */
-    public function pubtypeinfo()
+    public function pubtypeinfoAction()
     {
         //// Pubtype
         // validate and get the publication type first
@@ -83,7 +83,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Publication type edition.
      */
-    public function pubtype()
+    public function pubtypeAction()
     {
         //// Pubtype
         // validate and get the publication type first
@@ -100,7 +100,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Publication fields management.
      */
-    public function pubfields()
+    public function pubfieldsAction()
     {
         //// Pubtype
         // validate and get the publication type first
@@ -117,7 +117,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Relations management.
      */
-    public function relations()
+    public function relationsAction()
     {
         //// Pubtype
         // validate and get the publication type first
@@ -134,7 +134,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Code generation.
      */
-    public function generator($args = array())
+    public function generatorAction($args = array())
     {
         //// Pubtype
         // validate and get the publication type
@@ -198,7 +198,7 @@ class AdminController extends \Zikula_AbstractController
                 break;
         }
         // code cleaning
-        $output = str_replace('', '', $output);
+        $output = str_replace("\n", '', $output);
         //// Output
         $this->view->assign('code', $args['code'])->assign('output', $output)->assign('pubtype', Clip_Util::getPubType($args['tid']));
         return $this->view->fetch('clip_base_generator.tpl');
@@ -207,7 +207,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Export process.
      */
-    public function clipexport()
+    public function clipexportAction()
     {
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
@@ -218,7 +218,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Import process.
      */
-    public function clipimport()
+    public function clipimportAction()
     {
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
@@ -229,7 +229,7 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Reset models.
      */
-    public function clipreset()
+    public function clipresetAction()
     {
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
@@ -246,22 +246,11 @@ class AdminController extends \Zikula_AbstractController
     /**
      * Module configuration.
      */
-    public function modifyconfig()
+    public function modifyconfigAction()
     {
         //// Security
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
         //// Output
         return FormUtil::newForm('Clip', $this)->execute('clip_admin_modifyconfig.tpl', new Clip_Form_Handler_Admin_ModifyConfig());
     }
-    
-    /**
-     * @see Clip_Controller_Admin::generate
-     *
-     * @deprecated 0.9
-     */
-    public function showcode($args)
-    {
-        return $this->generator($args);
-    }
-
 }

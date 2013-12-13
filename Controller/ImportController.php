@@ -39,7 +39,7 @@ class ImportController extends \Zikula_AbstractController
     /**
      * Installer of default pubtypes Blog and Pages.
      */
-    public function defaultypes()
+    public function defaultypesAction()
     {
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
         Clip_Util::installDefaultypes();
@@ -49,7 +49,7 @@ class ImportController extends \Zikula_AbstractController
     /**
      * Pagesetter import.
      */
-    public function importps()
+    public function importpsAction()
     {
         $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
         $step = FormUtil::getPassedValue('step');
@@ -62,5 +62,4 @@ class ImportController extends \Zikula_AbstractController
         $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false);
         return $this->view->fetch('import_pagesetter.tpl');
     }
-
 }
