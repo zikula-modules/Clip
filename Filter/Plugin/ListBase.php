@@ -9,10 +9,13 @@
  * @subpackage Filter_Plugin
  */
 
+namespace Clip\Filter\Plugin;
+
+
 /**
  * Base implementation for dropdown list.
  */
-class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
+class ListBase extends \Clip_Filter_Plugin_AbstractPlugin
 {
     /**
      * HTML input name for this plugin. Defaults to the ID of the plugin.
@@ -20,7 +23,6 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
      * @var string
      */
     public $inputName;
-
     /**
      * The list of selectable items.
      *
@@ -32,28 +34,24 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
      * @var array
      */
     public $items = array();
-
     /**
      * Enable or disable read only mode.
      *
      * @var boolean
      */
     public $readOnly;
-
     /**
      * CSS class for styling.
      *
      * @var string
      */
     public $cssClass;
-
     /**
      * Enable or disable mandatory asterisk.
      *
      * @var boolean
      */
     public $mandatorysym;
-
     /**
      * Get filename of this file.
      *
@@ -63,7 +61,7 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
     {
         return __FILE__;
     }
-
+    
     /**
      * Create event handler.
      *
@@ -75,13 +73,11 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
     public function create($params, $filter)
     {
         $this->inputName = $this->id;
-
-        $this->readOnly = (array_key_exists('readOnly', $params) ? $params['readOnly'] : false);
-        $this->mandatorysym = (array_key_exists('mandatorysym', $params) ? $params['mandatorysym'] : false);
-
-        $this->itemsDataField = (isset($params['itemsDataField'])) ? $params['itemsDataField'] : $this->id . 'Items';
+        $this->readOnly = array_key_exists('readOnly', $params) ? $params['readOnly'] : false;
+        $this->mandatorysym = array_key_exists('mandatorysym', $params) ? $params['mandatorysym'] : false;
+        $this->itemsDataField = isset($params['itemsDataField']) ? $params['itemsDataField'] : $this->id . 'Items';
     }
-
+    
     /**
      * Load event handler.
      *
@@ -93,12 +89,11 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
     public function load($params, $filter)
     {
         $this->setSelectedValue(null);
-
         foreach ($filter->getFilter($this->field) as $args) {
             $this->setSelectedValue($args['value']);
         }
     }
-
+    
     /**
      * Set the selected value.
      *
@@ -112,7 +107,7 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
     {
         return true;
     }
-
+    
     /**
      * Get the selected value.
      *
@@ -124,7 +119,7 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
     {
         return null;
     }
-
+    
     /**
      * Add item to list.
      *
@@ -135,14 +130,10 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
      */
     public function addItem($text, $value)
     {
-        $item = array(
-            'text' => $text,
-            'value' => $value
-        );
-
+        $item = array('text' => $text, 'value' => $value);
         $this->items[] = $item;
     }
-
+    
     /**
      * Add several items to list.
      *
@@ -157,4 +148,5 @@ class Clip_Filter_Plugin_ListBase extends Clip_Filter_Plugin_AbstractPlugin
     {
         $this->items = $items;
     }
+
 }

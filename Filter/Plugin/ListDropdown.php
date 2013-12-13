@@ -9,12 +9,16 @@
  * @subpackage Filter_Plugin
  */
 
+namespace Clip\Filter\Plugin;
+
+use DataUtil;
+
 /**
  * List drop down plugin.
  *
  * Renders an HTML <select> element with the supplied items.
  */
-class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
+class ListDropdown extends \Clip_Filter_Plugin_ListBase
 {
     /**
      * Selection mode.
@@ -25,7 +29,6 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
      * @var string Possible values are 'single' and 'multiple'
      */
     public $selectionMode = 'single';
-
     /**
      * Selected value.
      *
@@ -34,7 +37,6 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
      * @var mixed
      */
     public $selectedValue;
-
     /**
      * Selected item index.
      *
@@ -43,7 +45,6 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
      * @var integer Zero based index or null
      */
     public $selectedIndex;
-
     /**
      * Size of dropdown.
      *
@@ -52,7 +53,6 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
      * @var integer
      */
     public $size = null;
-
     /**
      * Get filename of this file.
      *
@@ -62,7 +62,7 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
     {
         return __FILE__;
     }
-
+    
     /**
      * Create event handler.
      *
@@ -74,10 +74,9 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
     public function create($params, $filter)
     {
         parent::create($params, $filter);
-
         $this->selectedIndex = -1;
     }
-
+    
     /**
      * Load event handler.
      *
@@ -89,20 +88,18 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
     public function load($params, $filter)
     {
         parent::load($params, $filter);
-
         if (is_null($this->getSelectedValue())) {
             // if someone decided to set selected value from the template then try to "set it for real"
             // (meaning: set also selected Index) - after the items, potentially, have been loaded.
             if (array_key_exists('selectedValue', $params)) {
                 $this->setSelectedValue($params['selectedValue']);
             }
-
             if (array_key_exists('selectedIndex', $params)) {
                 $this->setSelectedIndex($params['selectedIndex']);
             }
         }
     }
-
+    
     /**
      * Render event handler.
      *
@@ -113,11 +110,8 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
     public function render(Zikula_View $view)
     {
         $idHtml = $this->getIdHtml();
-
         $nameHtml = " name=\"{$this->inputName}[]\"";
-
-        $readOnlyHtml = ($this->readOnly ? " disabled=\"disabled\"" : '');
-
+        $readOnlyHtml = $this->readOnly ? ' disabled="disabled"' : '';
         $class = 'z-form-dropdownlist';
         if ($this->mandatorysym) {
             $class .= ' z-form-mandatory';
@@ -128,43 +122,37 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
         if ($this->cssClass != null) {
             $class .= ' ' . $this->cssClass;
         }
-
-        $classHtml = ($class == '' ? '' : " class=\"{$class}\"");
-
-        $sizeHtml = ($this->size == null ? '' : " size=\"{$this->size}\"");
-
+        $classHtml = $class == '' ? '' : " class=\"{$class}\"";
+        $sizeHtml = $this->size == null ? '' : " size=\"{$this->size}\"";
         $multipleHtml = '';
         if ($this->selectionMode == 'multiple') {
-            $multipleHtml = " multiple=\"multiple\"";
+            $multipleHtml = ' multiple="multiple"';
         }
-
         $attributes = $this->renderAttributes($view);
-
         $result = "<select{$idHtml}{$nameHtml}{$readOnlyHtml}{$classHtml}{$multipleHtml}{$sizeHtml}{$attributes}>\n";
         $currentOptGroup = null;
         foreach ($this->items as $item) {
-            $optgroup = (isset($item['optgroup']) ? $item['optgroup'] : null);
+            $optgroup = isset($item['optgroup']) ? $item['optgroup'] : null;
             if ($optgroup != $currentOptGroup) {
                 if ($currentOptGroup != null) {
-                    $result .= "</optgroup>\n";
+                    $result .= '</optgroup>
+';
                 }
                 if ($optgroup != null) {
-                    $result .= "<optgroup label=\"" . DataUtil::formatForDisplay($optgroup) . "\">\n";
+                    $result .= '<optgroup label="' . DataUtil::formatForDisplay($optgroup) . '">
+';
                 }
                 $currentOptGroup = $optgroup;
             }
-
             $text = DataUtil::formatForDisplay($item['text']);
-
             if ($item['value'] === null) {
                 $value = '#null#';
             } else {
                 $value = DataUtil::formatForDisplay($item['value']);
             }
-
             if ($this->selectionMode == 'single' && $value == $this->selectedValue) {
                 $selected = ' selected="selected"';
-            } elseif ($this->selectionMode == 'multiple' && in_array($value, (array)$this->selectedValue)) {
+            } elseif ($this->selectionMode == 'multiple' && in_array($value, (array) $this->selectedValue)) {
                 $selected = ' selected="selected"';
             } else {
                 $selected = '';
@@ -172,16 +160,17 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
             $result .= "<option value=\"{$value}\"{$selected}>{$text}</option>\n";
         }
         if ($currentOptGroup != null) {
-            $result .= "</optgroup>\n";
+            $result .= '</optgroup>
+';
         }
-        $result .= "</select>\n";
+        $result .= '</select>
+';
         if ($this->mandatorysym) {
             $result .= '<span class="z-form-mandatory-flag">*</span>';
         }
-
         return $result;
     }
-
+    
     /**
      * Set the selected value.
      *
@@ -194,8 +183,7 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
         if ($this->selectionMode == 'single') {
             // Check for exiting value in list (avoid tampering with post values)
             for ($i = 0, $count = count($this->items); $i < $count; ++$i) {
-                $item = &$this->items[$i];
-
+                $item =& $this->items[$i];
                 if ($item['value'] == $value) {
                     $this->selectedValue = $value;
                     $this->selectedIndex = $i;
@@ -205,14 +193,12 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
             if (is_string($value)) {
                 $value = explode(':', $value);
             }
-
             $ok = true;
             for ($j = 0, $jcount = count($value); $j < $jcount; ++$j) {
                 $ok2 = false;
                 // Check for exiting value in list (avoid tampering with post values)
                 for ($i = 0, $icount = count($this->items); $i < $icount; ++$i) {
-                    $item = &$this->items[$i];
-
+                    $item =& $this->items[$i];
                     if ($item['value'] == $value[$j]) {
                         $ok2 = true;
                         break;
@@ -220,14 +206,13 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
                 }
                 $ok = $ok && $ok2;
             }
-
             if ($ok) {
                 $this->selectedValue = $value;
                 $this->selectedIndex = 0;
             }
         }
     }
-
+    
     /**
      * Get the selected value.
      *
@@ -237,7 +222,7 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
     {
         return $this->selectedValue;
     }
-
+    
     /**
      * Set the selected item by index.
      *
@@ -252,7 +237,7 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
             $this->selectedIndex = $index;
         }
     }
-
+    
     /**
      * Get the selected index.
      *
@@ -262,4 +247,5 @@ class Clip_Filter_Plugin_ListDropdown extends Clip_Filter_Plugin_ListBase
     {
         return $this->selectedIndex;
     }
+
 }

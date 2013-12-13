@@ -1,5 +1,14 @@
-<?php
-/**
+<?php?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,17 +17,12 @@
  * @package    Clip
  * @subpackage Version
  */
-
 namespace Clip;
 
 use ModUtil;
 use Clip_Util;
 use HookUtil;
-
-/**
- * Clip Version Info.
- */
-class ClipVersion extends \Zikula_AbstractVersion
+class ClipVersion extends \\Zikula_AbstractVersion
 {
     protected function setupHookBundles()
     {
@@ -61,4 +65,4 @@ class ClipVersion extends \Zikula_AbstractVersion
         return $meta;
     }
 
-}
+}<?php 

@@ -1,3 +1,16 @@
+<?php?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
 <?php/**
  * Clip
  *
@@ -73,4 +86,4 @@ function Clip_operation_create(&$pub, $params)
     }
     // returns the operation result
     return $result;
-}
+}<?php 

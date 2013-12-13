@@ -1,3 +1,4 @@
+<?php?>
 <?php/**
  * Clip
  *
@@ -62,4 +63,4 @@ function Clip_operation_delete(&$pub, $params)
     }
     // returns the operation result
     return $result;
-}
+}<?php 

@@ -1,3 +1,16 @@
+<?php?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
 <?php/**
  * Clip
  *
@@ -65,4 +78,4 @@ function Clip_operation_notify(&$pub, $params)
         LogUtil::log(__f('Notification template [%s] not found.', $tplpath, $dom));
     }
     return true;
-}
+}<?php 

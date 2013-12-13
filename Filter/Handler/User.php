@@ -9,7 +9,11 @@
  * @subpackage Filter
  */
 
-class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements FilterUtil_BuildInterface
+namespace Clip\Filter\Handler;
+
+use UserUtil;
+
+class User extends \FilterUtil_AbstractPlugin implements \FilterUtil_BuildInterface
 {
     /**
      * Enabled operators.
@@ -17,14 +21,12 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
      * @var array
      */
     protected $ops = array();
-
     /**
      * Fields to use the plugin for.
      *
      * @var array
      */
     protected $fields = array();
-
     /**
      * Constructor.
      *
@@ -37,18 +39,16 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
     public function __construct($config)
     {
         parent::__construct($config);
-
         if (isset($config['fields']) && is_array($config['fields'])) {
             $this->addFields($config['fields']);
         }
-
         if (isset($config['ops']) && (!isset($this->ops) || !is_array($this->ops))) {
             $this->activateOperators($config['ops']);
         } else {
             $this->activateOperators($this->availableOperators());
         }
     }
-
+    
     /**
      * Returns the operators the plugin can handle.
      *
@@ -58,7 +58,7 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
     {
         return array('me', 'user', 'users', 'in', 'ins');
     }
-
+    
     /**
      * Adds operators.
      *
@@ -76,7 +76,7 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
             $this->ops[] = $op;
         }
     }
-
+    
     /**
      * Adds fields to list in common way.
      *
@@ -94,7 +94,7 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
             $this->_fields[] = $fields;
         }
     }
-
+    
     /**
      * Returns the fields.
      *
@@ -104,7 +104,7 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
     {
         return $this->_fields;
     }
-
+    
     /**
      * Get activated operators.
      *
@@ -113,15 +113,13 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
     public function getOperators()
     {
         $fields = $this->getFields();
-
         $ops = array();
         foreach ($this->ops as $op) {
             $ops[$op] = $fields;
         }
-
         return $ops;
     }
-
+    
     /**
      * Returns DQL code.
      *
@@ -131,56 +129,52 @@ class Clip_Filter_Handler_User extends FilterUtil_AbstractPlugin implements Filt
      *
      * @return array Doctrine Query where clause and parameters.
      */
-    public function getDql($field, $op, $value)
-    {
+    public function getDql(
+        $field,
+        $op,
+        $value
+    ) {
         if (array_search($op, $this->availableOperators()) === false || array_search($field, $this->getFields()) === false) {
             return '';
         }
-
-        $where  = '';
+        $where = '';
         $params = array();
         $column = $this->getColumn($field);
-
-        switch ($op)
-        {
+        switch ($op) {
             case 'me':
-                $where = "$column LIKE ?";
-                $params[] = '%:'.UserUtil::getVar('uid').':%';
+                $where = "{$column} LIKE ?";
+                $params[] = '%:' . UserUtil::getVar('uid') . ':%';
                 break;
-
             case 'user':
-                $where = "$column = ?";
-                $params[] = ':'.($value ? (int)$value : UserUtil::getVar('uid')).':';
+                $where = "{$column} = ?";
+                $params[] = ':' . ($value ? (int) $value : UserUtil::getVar('uid')) . ':';
                 break;
-
             case 'users':
-                $where = "$column LIKE ?";
-                $params[] = '%:'.($value ? (int)$value : UserUtil::getVar('uid')).':%';
+                $where = "{$column} LIKE ?";
+                $params[] = '%:' . ($value ? (int) $value : UserUtil::getVar('uid')) . ':%';
                 break;
-
             case 'in':
                 $where = array();
                 foreach (explode('-', $value) as $uid) {
                     if ($uid) {
-                        $where[]  = '?';
-                        $params[] = ':'.(int)$uid.':';
+                        $where[] = '?';
+                        $params[] = ':' . (int) $uid . ':';
                     }
                 }
-                $where = !empty($where) ? "$column IN (".implode(',', $where).")" : '';
+                $where = !empty($where) ? "{$column} IN (" . implode(',', $where) . ')' : '';
                 break;
-
             case 'ins':
                 $where = array();
                 foreach (explode('-', $value) as $uid) {
                     if ($uid) {
-                        $where[]  = "$column LIKE ?";
-                        $params[] = '%:'.(int)$uid.':%';
+                        $where[] = "{$column} LIKE ?";
+                        $params[] = '%:' . (int) $uid . ':%';
                     }
                 }
                 $where = implode(' OR ', $where);
                 break;
         }
-
         return array('where' => $where, 'params' => $params);
     }
+
 }

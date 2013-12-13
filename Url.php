@@ -1,5 +1,5 @@
-<?php
-/**
+<?php?>
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,17 +8,12 @@
  * @package    Clip
  * @subpackage Lib
  */
-
 namespace Clip;
 
 use ZLanguage;
 use DataUtil;
 use ModUtil;
-
-/**
- * Clip URL.
- */
-class Url extends \Zikula_ModUrl
+class Url extends \\Zikula_ModUrl
 {
     protected $application;
     protected $controller;
@@ -144,4 +139,4 @@ class Url extends \Zikula_ModUrl
         return $this;
     }
 
-}
+}<?php 

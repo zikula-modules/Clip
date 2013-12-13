@@ -1,3 +1,4 @@
+<?php?>
 <?php/**
  * Clip
  *
@@ -35,4 +36,4 @@ function Clip_workflow_none_permissioncheck($pub, $permLevel, $currentUser, $act
 function Clip_workflow_none_gettextstrings()
 {
     return array('title' => no__('None'), 'description' => no__('This is like a non-existing workflow. Everything is online immediately after creation.'), 'states' => array(no__('Approved') => no__('Content has been approved and is available online')), 'actions' => array('initial' => array(no__('Submit') => no__('Submit a publication')), 'approved' => array(no__('Update') => no__('Update the publication content'), no__('Trash') => no__('Move the publication to the recycle bin'), no__('Recover') => no__('Recover the publication from the recycle bin'), no__('Delete') => no__('Delete the publication permanently'))));
-}
+}<?php 

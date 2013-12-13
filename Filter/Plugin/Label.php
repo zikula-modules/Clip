@@ -9,6 +9,10 @@
  * @subpackage Filter_Plugin
  */
 
+namespace Clip\Filter\Plugin;
+
+use ZLanguage;
+
 /**
  * Clip filter form label.
  *
@@ -20,7 +24,7 @@
  * The rendered output is an HTML label element with the "for" value
  * set to the supplied id.
  */
-class Clip_Filter_Plugin_Label extends Clip_Filter_Plugin_AbstractPlugin
+class Label extends \Clip_Filter_Plugin_AbstractPlugin
 {
     /**
      * Text to show as label.
@@ -28,21 +32,18 @@ class Clip_Filter_Plugin_Label extends Clip_Filter_Plugin_AbstractPlugin
      * @var string
      */
     public $text;
-
     /**
      * Labelled plugin's ID.
      *
      * @var string
      */
     public $for;
-
     /**
      * Enable or disable the mandatory asterisk.
      *
      * @var boolean
      */
     public $mandatorysym;
-
     /**
      * Get filename of this file.
      *
@@ -52,7 +53,7 @@ class Clip_Filter_Plugin_Label extends Clip_Filter_Plugin_AbstractPlugin
     {
         return __FILE__;
     }
-
+    
     /**
      * Create event handler.
      *
@@ -64,10 +65,9 @@ class Clip_Filter_Plugin_Label extends Clip_Filter_Plugin_AbstractPlugin
     public function create($params, $filter)
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
-
         $this->for = $filter->getFieldID($this->for);
     }
-
+    
     /**
      * Render event handler.
      *
@@ -77,15 +77,13 @@ class Clip_Filter_Plugin_Label extends Clip_Filter_Plugin_AbstractPlugin
      */
     public function render(Zikula_View $view)
     {
-        $attrs  = $this->renderAttributes();
+        $attrs = $this->renderAttributes();
         $output = "<label for=\"{$this->for}\"{$attrs}>{$this->text}";
-
         if ($this->mandatorysym) {
             $output .= '<span class="z-form-mandatory-flag">*</span>';
         }
-
         $output .= '</label>';
-
         return $output;
     }
+
 }

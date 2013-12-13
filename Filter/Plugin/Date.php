@@ -9,10 +9,18 @@
  * @subpackage Filter_Plugin
  */
 
+namespace Clip\Filter\Plugin;
+
+use ZI18n;
+use DateUtil;
+use ZLanguage;
+use PageUtil;
+use DataUtil;
+
 /**
  * Date filter plugin.
  */
-class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
+class Date extends \Clip_Filter_Plugin_String
 {
     /**
      * Enable or disable input of time in addition to the date.
@@ -20,28 +28,24 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
      * @var boolean
      */
     public $includeTime;
-
     /**
      * The initial date.
      *
      * @var string
      */
     public $initDate;
-
     /**
      * Date format in the input field.
      *
      * @var string
      */
     public $ifFormat;
-
     /**
      * Date format in the display area.
      *
      * @var string
      */
     public $daFormat;
-
     /**
      * Default date value.
      *
@@ -59,14 +63,12 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
      * @var string
      */
     public $defaultValue;
-
     /**
      * Enable or disable selection only mode (with hidden input field), defaults to false.
      *
      * @var boolean
      */
     public $useSelectionMode;
-
     /**
      * Get filename of this file.
      *
@@ -76,7 +78,7 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
     {
         return __FILE__;
     }
-
+    
     /**
      * Create event handler.
      *
@@ -87,21 +89,18 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
      */
     public function create($params, $filter)
     {
-        $this->includeTime = (array_key_exists('includeTime', $params) ? $params['includeTime'] : 0);
-        $this->daFormat = (array_key_exists('daFormat', $params) ? $params['daFormat'] : ($this->includeTime ? __('%A, %B %d, %Y - %I:%M %p') : __('%A, %B %d, %Y')));
-        $this->ifFormat = (array_key_exists('ifFormat', $params) ? $params['ifFormat'] : ($this->includeTime ? __('%Y-%m-%d %H:%M') : __('%Y-%m-%d')));
-
-        $this->defaultValue = (array_key_exists('defaultValue', $params) ? $params['defaultValue'] : null);
-        $this->initDate = (array_key_exists('initDate', $params) ? $params['initDate'] : 0);
-        $this->useSelectionMode = (array_key_exists('useSelectionMode', $params) ? $params['useSelectionMode'] : 0);
-        $this->maxLength = ($this->includeTime ? 19 : 12);
-        $params['width'] = ($this->includeTime ? '10em' : '8em');
-
+        $this->includeTime = array_key_exists('includeTime', $params) ? $params['includeTime'] : 0;
+        $this->daFormat = array_key_exists('daFormat', $params) ? $params['daFormat'] : ($this->includeTime ? __('%A, %B %d, %Y - %I:%M %p') : __('%A, %B %d, %Y'));
+        $this->ifFormat = array_key_exists('ifFormat', $params) ? $params['ifFormat'] : ($this->includeTime ? __('%Y-%m-%d %H:%M') : __('%Y-%m-%d'));
+        $this->defaultValue = array_key_exists('defaultValue', $params) ? $params['defaultValue'] : null;
+        $this->initDate = array_key_exists('initDate', $params) ? $params['initDate'] : 0;
+        $this->useSelectionMode = array_key_exists('useSelectionMode', $params) ? $params['useSelectionMode'] : 0;
+        $this->maxLength = $this->includeTime ? 19 : 12;
+        $params['width'] = $this->includeTime ? '10em' : '8em';
         parent::create($params, $filter);
-
         $this->cssClass .= ' z-form-date';
     }
-
+    
     /**
      * Render event handler.
      *
@@ -112,14 +111,11 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
     public function render(Zikula_View $view)
     {
         static $firstTime = true;
-
         $i18n = ZI18n::getInstance();
-
         if (!empty($this->defaultValue)) {
             $d = strtolower($this->defaultValue);
             $now = getdate();
             $date = null;
-
             if ($d == 'now') {
                 $date = time();
             } elseif ($d == 'today') {
@@ -136,67 +132,31 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
             } elseif ($d == 'custom') {
                 $date = strtotime($this->initDate);
             }
-
             if ($date != null) {
-                $this->text = DateUtil::getDatetime($date, ($this->includeTime ? __('%Y-%m-%d %H:%M') : __('%Y-%m-%d')));
+                $this->text = DateUtil::getDatetime($date, $this->includeTime ? __('%Y-%m-%d %H:%M') : __('%Y-%m-%d'));
             } else {
                 $this->text = __('Unknown date');
             }
         }
-
         if ($firstTime) {
             $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
             // map of the jscalendar supported languages
-            $map = array(
-                'ca' => 'ca_ES',
-                'cz' => 'cs_CZ',
-                'da' => 'da_DK',
-                'de' => 'de_DE',
-                'el' => 'el_GR',
-                'en-us' => 'en_US',
-                'es' => 'es_ES',
-                'fi' => 'fi_FI',
-                'fr' => 'fr_FR',
-                'he' => 'he_IL',
-                'hr' => 'hr_HR',
-                'hu' => 'hu_HU',
-                'it' => 'it_IT',
-                'ja' => 'ja_JP',
-                'ko' => 'ko_KR',
-                'lt' => 'lt_LT',
-                'lv' => 'lv_LV',
-                'nl' => 'nl_NL',
-                'no' => 'no_NO',
-                'pl' => 'pl_PL',
-                'pt' => 'pt_BR',
-                'ro' => 'ro_RO',
-                'ru' => 'ru_RU',
-                'si' => 'si_SL',
-                'sk' => 'sk_SK',
-                'sv' => 'sv_SE',
-                'tr' => 'tr_TR');
-
+            $map = array('ca' => 'ca_ES', 'cz' => 'cs_CZ', 'da' => 'da_DK', 'de' => 'de_DE', 'el' => 'el_GR', 'en-us' => 'en_US', 'es' => 'es_ES', 'fi' => 'fi_FI', 'fr' => 'fr_FR', 'he' => 'he_IL', 'hr' => 'hr_HR', 'hu' => 'hu_HU', 'it' => 'it_IT', 'ja' => 'ja_JP', 'ko' => 'ko_KR', 'lt' => 'lt_LT', 'lv' => 'lv_LV', 'nl' => 'nl_NL', 'no' => 'no_NO', 'pl' => 'pl_PL', 'pt' => 'pt_BR', 'ro' => 'ro_RO', 'ru' => 'ru_RU', 'si' => 'si_SL', 'sk' => 'sk_SK', 'sv' => 'sv_SE', 'tr' => 'tr_TR');
             if (isset($map[$lang])) {
                 $lang = $map[$lang];
             }
-
             $headers[] = 'javascript/jscalendar/calendar.js';
-            if (file_exists("javascript/jscalendar/lang/calendar-$lang.utf8.js")) {
-                $headers[] = "javascript/jscalendar/lang/calendar-$lang.utf8.js";
+            if (file_exists("javascript/jscalendar/lang/calendar-{$lang}.utf8.js")) {
+                $headers[] = "javascript/jscalendar/lang/calendar-{$lang}.utf8.js";
             }
             $headers[] = 'javascript/jscalendar/calendar-setup.js';
             PageUtil::addVar('stylesheet', 'javascript/jscalendar/calendar-win2k-cold-2.css');
             PageUtil::addVar('javascript', $headers);
         }
         $firstTime = false;
-
         $result = '';
-
         if ($this->useSelectionMode) {
-            $hiddenInputField = str_replace(array('type="text"', '&nbsp;*'),
-                array('type="hidden"', ''),
-                parent::render($view));
-
+            $hiddenInputField = str_replace(array('type="text"', '&nbsp;*'), array('type="hidden"', ''), parent::render($view));
             $result .= '<div>' . $hiddenInputField . '<span id="' . $this->id . 'cal" style="background-color: #ff8; cursor: default" onmouseover="this.style.backgroundColor=\'#ff0\';" onmouseout="this.style.backgroundColor=\'#ff8\';">';
             if ($this->text) {
                 $result .= DataUtil::formatForDisplay(DateUtil::getDatetime(DateUtil::parseUIDate($this->text), $this->daFormat));
@@ -210,51 +170,36 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
         } else {
             $result .= '<span class="z-form-date" style="white-space: nowrap">';
             $result .= parent::render($view);
-
             $txt = __('Select date');
             $result .= " <img id=\"{$this->id}_img\" src=\"javascript/jscalendar/img.gif\" style=\"vertical-align: middle\" class=\"clickable\" alt=\"{$txt}\" /></span>";
         }
-
         // build jsCalendar script options
-        $result .= "<script type=\"text/javascript\">
-            // <![CDATA[
-            Calendar.setup(
-            {
-                inputField : \"{$this->id}\",";
-
+        $result .= "<script type=\"text/javascript\">\r\n            // <![CDATA[\r\n            Calendar.setup(\r\n            {\r\n                inputField : \"{$this->id}\",";
         if ($this->includeTime) {
             $this->initDate = str_replace('-', ',', $this->initDate);
-            $result .= "
-                    ifFormat : \"" . $this->ifFormat . "\",
+            $result .= '
+                    ifFormat : "' . $this->ifFormat . '",
                     showsTime      :    true,
-                    timeFormat     :    \"" . $i18n->locale->getTimeformat() . "\",
-                    singleClick    :    false,";
+                    timeFormat     :    "' . $i18n->locale->getTimeformat() . '",
+                    singleClick    :    false,';
         } else {
-            $result .= "
-                    ifFormat : \"" . $this->ifFormat . "\",";
+            $result .= '
+                    ifFormat : "' . $this->ifFormat . '",';
         }
-
         if ($this->useSelectionMode) {
-            $result .= "
-                    displayArea :    \"{$this->id}cal\",
-                    daFormat    :    \"{$this->daFormat}\",
-                    align       :    \"Bl\",
-                    singleClick :    true,";
+            $result .= "\r\n                    displayArea :    \"{$this->id}cal\",\r\n                    daFormat    :    \"{$this->daFormat}\",\r\n                    align       :    \"Bl\",\r\n                    singleClick :    true,";
         } else {
-            $result .= "
-                    button : \"{$this->id}_img\",";
+            $result .= "\r\n                    button : \"{$this->id}_img\",";
         }
-
-        $result .= "
-                    firstDay: " . $i18n->locale->getFirstweekday() . "
+        $result .= '
+                    firstDay: ' . $i18n->locale->getFirstweekday() . '
                 }
             );
             // ]]>
-            </script>";
-
+            </script>';
         return $result;
     }
-
+    
     /**
      * Parses a value.
      *
@@ -267,10 +212,9 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
         if (empty($text)) {
             return null;
         }
-
         return $text;
     }
-
+    
     /**
      * Format the value to specific format.
      *
@@ -282,4 +226,5 @@ class Clip_Filter_Plugin_Date extends Clip_Filter_Plugin_String
     {
         return DateUtil::formatDatetime($value, $this->ifFormat, false);
     }
+
 }

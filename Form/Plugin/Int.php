@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,34 +7,33 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
+namespace Clip\Form\Plugin;
 
-class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
+use ZLanguage;
+class Int extends \\Zikula_Form_Plugin_IntInput
 {
     // plugin definition
     public $pluginTitle;
     public $columnDef = 'I4';
     public $config = array();
-
     // Clip data handling
     public $alias;
     public $tid;
     public $rid;
     public $pid;
     public $field;
-
     public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
-
         //! field type name
         $this->pluginTitle = $this->__('Integer');
     }
-
+    
     public function getFilename()
     {
         return __FILE__;
     }
-
+    
     /**
      * Form framework overrides.
      */
@@ -43,13 +41,11 @@ class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
     {
         $this->parseConfig($params['fieldconfig']);
         unset($params['fieldconfig']);
-
         $params['minValue'] = isset($params['minValue']) ? $params['minValue'] : $this->config['min'];
         $params['maxValue'] = isset($params['maxValue']) ? $params['maxValue'] : $this->config['max'];
-
         parent::readParameters($view, $params);
     }
-
+    
     public function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
@@ -58,19 +54,18 @@ class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
             }
         }
     }
-
+    
     public function saveValue(Zikula_Form_View $view, &$data)
     {
         if ($this->dataBased) {
             $value = $this->parseValue($view, $this->text);
-
             if (!array_key_exists($this->group, $data)) {
                 $data[$this->group] = array($this->alias => array($this->tid => array($this->rid => array($this->pid => array()))));
             }
             $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $value;
         }
     }
-
+    
     /**
      * Clip admin methods.
      */
@@ -89,33 +84,28 @@ class Clip_Form_Plugin_Int extends Zikula_Form_Plugin_IntInput
                     Zikula.Clip.Pubfields.ConfigClose();
                 }';
     }
-
+    
     public function getConfigHtml($field, $view)
     {
         $this->parseConfig($view->_tpl_vars['field']['typedata']);
-
         $html = ' <div class="z-formrow">
-                      <label for="clipplugin_minvalue">'.$this->__('Min value').':</label>
-                      <input type="text" id="clipplugin_minvalue" name="clipplugin_minvalue" value="'.$this->config['min'].'" />
+                      <label for="clipplugin_minvalue">' . $this->__('Min value') . ':</label>
+                      <input type="text" id="clipplugin_minvalue" name="clipplugin_minvalue" value="' . $this->config['min'] . '" />
                   </div>
                   <div class="z-formrow">
-                      <label for="clipplugin_maxvalue">'.$this->__('Max value').':</label>
-                      <input type="text" id="clipplugin_maxvalue" name="clipplugin_maxvalue" value="'.$this->config['max'].'" />
+                      <label for="clipplugin_maxvalue">' . $this->__('Max value') . ':</label>
+                      <input type="text" id="clipplugin_maxvalue" name="clipplugin_maxvalue" value="' . $this->config['max'] . '" />
                   </div>';
-
         return $html;
     }
-
+    
     /**
      * Parse configuration
      */
-    public function parseConfig($typedata='', $args=array())
+    public function parseConfig($typedata = '', $args = array())
     {
         $typedata = explode('|', $typedata);
-
-        $this->config = array(
-            'min' => is_numeric($typedata[0]) ? (float)$typedata[0] : null,
-            'max' => isset($typedata[1]) && is_numeric($typedata[1]) ? (float)$typedata[1] : null
-        );
+        $this->config = array('min' => is_numeric($typedata[0]) ? (double) $typedata[0] : null, 'max' => isset($typedata[1]) && is_numeric($typedata[1]) ? (double) $typedata[1] : null);
     }
+
 }

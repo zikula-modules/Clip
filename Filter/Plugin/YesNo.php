@@ -9,13 +9,16 @@
  * @subpackage Filter_Plugin
  */
 
+namespace Clip\Filter\Plugin;
+
+
 /**
  * Yes/No selector plugin.
  *
  * This plugin creates a yes/no selector using a drop down list.
  * The selected value of the base drop down list will be set to 1/ respectively
  */
-class Clip_Filter_Plugin_YesNo extends Clip_Filter_Plugin_ListDropdown
+class YesNo extends \Clip_Filter_Plugin_ListDropdown
 {
     /**
      * Enable inclusion of an empty null value element.
@@ -23,7 +26,6 @@ class Clip_Filter_Plugin_YesNo extends Clip_Filter_Plugin_ListDropdown
      * @var boolean (default true)
      */
     public $includeEmptyElement;
-
     /**
      * Get filename of this file.
      *
@@ -33,7 +35,7 @@ class Clip_Filter_Plugin_YesNo extends Clip_Filter_Plugin_ListDropdown
     {
         return __FILE__;
     }
-
+    
     /**
      * Create event handler.
      *
@@ -44,17 +46,15 @@ class Clip_Filter_Plugin_YesNo extends Clip_Filter_Plugin_ListDropdown
      */
     public function create($params, $filter)
     {
-        $this->includeEmptyElement = (isset($params['includeEmptyElement']) ? $params['includeEmptyElement'] : true);
-
+        $this->includeEmptyElement = isset($params['includeEmptyElement']) ? $params['includeEmptyElement'] : true;
         if ($this->includeEmptyElement) {
             $this->addItem('', null);
         }
         $this->addItem(__('Yes'), 1);
         $this->addItem(__('No'), 0);
-
         parent::create($params, $filter);
     }
-
+    
     /**
      * Render event handler.
      *
@@ -65,13 +65,11 @@ class Clip_Filter_Plugin_YesNo extends Clip_Filter_Plugin_ListDropdown
     public function render(Zikula_View $view)
     {
         // adds the form observer
-        $filter   = $view->get_registered_object('clip_filter');
+        $filter = $view->get_registered_object('clip_filter');
         $filterid = $filter->getFilterID($this->field);
-
-        $code = "if (\$F('{$this->id}') != '#null#') { $('$filterid').value = '{$this->field}:eq:'+\$F('{$this->id}'); }";
-
+        $code = "if (\$F('{$this->id}') != '#null#') { \$('{$filterid}').value = '{$this->field}:eq:'+\$F('{$this->id}'); }";
         $filter->addFormObserver($code);
-
         return parent::render($view);
     }
+
 }

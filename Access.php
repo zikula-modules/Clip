@@ -1,5 +1,5 @@
-<?php
-/**
+<?php?>
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +8,6 @@
  * @package    Clip
  * @subpackage Lib
  */
-
 namespace Clip;
 
 use SecurityUtil;
@@ -23,10 +22,6 @@ use Exception;
 use ModUtil;
 use DBUtil;
 use Clip_Doctrine_Pubdata;
-
-/**
- * Clip Security Util.
- */
 class Access
 {
     /**
@@ -282,4 +277,4 @@ class Access
         return in_array($context, array('access', 'exec')) || strpos($context, 'edit') === 0;
     }
 
-}
+}<?php 

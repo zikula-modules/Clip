@@ -9,6 +9,9 @@
  * @subpackage Filter_Plugin
  */
 
+namespace Clip\Filter\Plugin;
+
+
 /**
  * Clip base filter plugin class.
  *
@@ -36,7 +39,7 @@
  *   it got through the previous events. This function is only called on Smarty function plugins.
  *   The event handler is supposed to return the rendered output.
  */
-abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableInterface
+abstract class AbstractPlugin implements \Zikula_TranslatableInterface
 {
     /**
      * Plugin identifier.
@@ -47,7 +50,6 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
      * @var string
      */
     public $id;
-
     /**
      * Field identifier.
      *
@@ -56,7 +58,6 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
      * @var string
      */
     public $field;
-
     /**
      * Operator to use.
      *
@@ -65,7 +66,6 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
      * @var string
      */
     public $op;
-
     /**
      * HTML attributes.
      *
@@ -75,21 +75,18 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
      * @var array
      */
     public $attributes = array();
-
     /**
      * Styles added programatically.
      *
      * @var array
      */
     public $styleAttributes = array();
-
     /**
      * Translation domain.
      *
      * @var string
      */
     protected $domain;
-
     /**
      * Constructor.
      *
@@ -102,7 +99,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
         $this->create($params, $filter);
         $this->load($params, $filter);
     }
-
+    
     /**
      * Retrieve the plugin identifier (see {@link $id}).
      *
@@ -112,7 +109,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         return $this->id;
     }
-
+    
     /**
      * Retrieve the field identifier (see {@link $field}).
      *
@@ -122,7 +119,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         return $this->field;
     }
-
+    
     /**
      * Retrieve the HTML attributes.
      *
@@ -132,7 +129,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         return $this->attributes;
     }
-
+    
     /**
      * Retrieve the styles added programatically.
      *
@@ -142,7 +139,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         return $this->styleAttributes;
     }
-
+    
     /**
      * Get translation domain.
      *
@@ -152,7 +149,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         return $this->domain;
     }
-
+    
     /**
      * Set translation domain.
      *
@@ -164,7 +161,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         $this->domain = $domain;
     }
-
+    
     /**
      * Read Smarty plugin parameters.
      *
@@ -179,7 +176,6 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     public function readParameters($params)
     {
         $varInfo = get_class_vars(get_class($this));
-
         // adds the zparameters to the $params if exists
         if (array_key_exists('zparameters', $params)) {
             if (is_array($params['zparameters'])) {
@@ -187,17 +183,16 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
             }
             unset($params['zparameters']);
         }
-
         // Iterate through all params: place known params in member variables and the rest in the attributes set
         foreach ($params as $name => $value) {
             if (array_key_exists($name, $varInfo)) {
-                $this->$name = $value;
+                $this->{$name} = $value;
             } else {
                 $this->attributes[$name] = $value;
             }
         }
     }
-
+    
     /**
      * Create event handler.
      *
@@ -211,8 +206,9 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
      */
     public function create($params, $filter)
     {
+        
     }
-
+    
     /**
      * Load event handler.
      *
@@ -225,8 +221,9 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
      */
     public function load($params, $filter)
     {
+        
     }
-
+    
     /**
      * Utility function to generate HTML for ID attribute.
      *
@@ -244,14 +241,12 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
         if ($id == null) {
             $id = $this->id;
         }
-
         if (preg_match('/^plg[0-9]+$/', $id)) {
             return '';
         }
-
         return " id=\"{$id}\"";
     }
-
+    
     /**
      * RenderAttributes event handler.
      *
@@ -262,7 +257,6 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     public function renderAttributes()
     {
         static $styleElements = array('width', 'height', 'color', 'background_color', 'border', 'padding', 'margin', 'float', 'display', 'position', 'visibility', 'overflow', 'clip', 'font', 'font_family', 'font_style', 'font_weight', 'font_size');
-
         $attr = '';
         $style = '';
         foreach ($this->attributes as $name => $value) {
@@ -274,23 +268,19 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
                 $attr .= " {$name}=\"{$value}\"";
             }
         }
-
         $style = trim($style);
         if (count($this->styleAttributes) > 0 && strlen($style) > 0 && $style[strlen($style) - 1] != ';') {
             $style .= ';';
         }
-
         foreach ($this->styleAttributes as $name => $value) {
-            $style .= str_replace('_', '-', $name) . ":$value;";
+            $style .= str_replace('_', '-', $name) . ":{$value};";
         }
-
         if (!empty($style)) {
             $attr .= " style=\"{$style}\"";
         }
-
         return $attr;
     }
-
+    
     /**
      * Render event handler.
      *
@@ -304,7 +294,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         return '';
     }
-
+    
     /**
      * Translate.
      *
@@ -316,7 +306,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         return __($msgid, $this->domain);
     }
-
+    
     /**
      * Translate with sprintf().
      *
@@ -329,7 +319,7 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
     {
         return __f($msgid, $params, $this->domain);
     }
-
+    
     /**
      * Translate plural string.
      *
@@ -339,11 +329,14 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
      *
      * @return string Translated string.
      */
-    public function _n($singular, $plural, $count)
-    {
+    public function _n(
+        $singular,
+        $plural,
+        $count
+    ) {
         return _n($singular, $plural, $count, $this->domain);
     }
-
+    
     /**
      * Translate plural string with sprintf().
      *
@@ -354,8 +347,13 @@ abstract class Clip_Filter_Plugin_AbstractPlugin implements Zikula_TranslatableI
      *
      * @return string
      */
-    public function _fn($sin, $plu, $n, $params)
-    {
+    public function _fn(
+        $sin,
+        $plu,
+        $n,
+        $params
+    ) {
         return _fn($sin, $plu, $n, $params, $this->domain);
     }
+
 }

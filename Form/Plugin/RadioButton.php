@@ -1,5 +1,8 @@
-<?php
-/**
+<?php?>
+<?php?>
+<?php 
+?>
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,8 +11,9 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
+namespace Clip\Form\Plugin;
 
-class Clip_Form_Plugin_RadioButton extends Zikula_Form_Plugin_RadioButton
+class RadioButton extends \\Zikula_Form_Plugin_RadioButton
 {
     // Clip data handling
     public $alias;
@@ -17,32 +21,28 @@ class Clip_Form_Plugin_RadioButton extends Zikula_Form_Plugin_RadioButton
     public $rid;
     public $pid;
     public $field;
-
     public function readParameters(Zikula_Form_View $view, &$params)
     {
         unset($params['fieldconfig']);
-
         parent::readParameters($view, $params);
     }
-
-    function loadValue(Zikula_Form_View $view, &$values)
+    
+    public function loadValue(Zikula_Form_View $view, &$values)
     {
         if ($this->dataBased) {
             $value = null;
-
             if (isset($values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field])) {
                 $value = $values[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field];
             }
-
             if ($value !== null) {
-                $this->checked = ($this->value === $value);
+                $this->checked = $this->value === $value;
             } else {
                 $this->checked = false;
             }
         }
     }
-
-    function saveValue(Zikula_Form_View $view, &$data)
+    
+    public function saveValue(Zikula_Form_View $view, &$data)
     {
         if ($this->dataBased && $this->checked) {
             if (!array_key_exists($this->group, $data)) {
@@ -51,4 +51,5 @@ class Clip_Form_Plugin_RadioButton extends Zikula_Form_Plugin_RadioButton
             $data[$this->group][$this->alias][$this->tid][$this->rid][$this->pid][$this->field] = $this->value;
         }
     }
-}
+
+}<?php 

@@ -1,3 +1,16 @@
+<?php?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
+<?php?>
+<?php 
+?>
 <?php/**
  * Clip
  *
@@ -84,4 +97,4 @@ function Clip_operation_updateValues(&$pub, $params)
     }
     // returns the operation result
     return $result;
-}
+}<?php 

@@ -9,6 +9,10 @@
  * @subpackage Filter_Plugin
  */
 
+namespace Clip\Filter\Plugin;
+
+use DataUtil;
+
 /**
  * Clip filter form string.
  *
@@ -17,7 +21,7 @@
  * {clip_filter_plugin p='String' id='core_title' maxLength='100' width='30em'}
  * </code>
  */
-class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
+class String extends \Clip_Filter_Plugin_AbstractPlugin
 {
     /**
      * HTML input name for this plugin. Defaults to the ID of the plugin.
@@ -25,7 +29,6 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
      * @var string
      */
     public $inputName;
-
     /**
      * Displayed text in the text input.
      *
@@ -35,7 +38,6 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
      * @var string
      */
     public $text = '';
-
     /**
      * Text input mode.
      *
@@ -46,7 +48,6 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
      * @var string
      */
     public $textMode = 'singleline';
-
     /**
      * Enable or disable read only mode.
      *
@@ -55,42 +56,36 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
      * @var boolean
      */
     public $readOnly;
-
     /**
      * CSS class to use.
      *
      * @var string
      */
     public $cssClass;
-
     /**
      * Enable or disable mandatory asterisk.
      *
      * @var boolean
      */
     public $mandatorysym;
-
     /**
      * Text to show as tool tip for the input.
      *
      * @var string
      */
     public $toolTip;
-
     /**
      * Size of HTML input (number of characters).
      *
      * @var integer
      */
     public $size;
-
     /**
      * Maximum number of characters allowed in the text input.
      *
      * @var integer
      */
     public $maxLength;
-
     /**
      * Get filename for this plugin.
      *
@@ -103,7 +98,7 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
     {
         return __FILE__;
     }
-
+    
     /**
      * Create event handler.
      *
@@ -117,15 +112,14 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
     {
         // All member variables are fetched automatically before create (as strings)
         // Here we afterwards load all special and non-string parameters
-        $this->inputName = (array_key_exists('inputName', $params) ? $params['inputName'] : $filter->getFilterName($this->field));
-        $this->textMode  = (array_key_exists('textMode', $params) ? $params['textMode'] : 'singleline');
-        $this->op        = (array_key_exists('op', $params) ? $params['op'] : 'search');
-
+        $this->inputName = array_key_exists('inputName', $params) ? $params['inputName'] : $filter->getFilterName($this->field);
+        $this->textMode = array_key_exists('textMode', $params) ? $params['textMode'] : 'singleline';
+        $this->op = array_key_exists('op', $params) ? $params['op'] : 'search';
         if ($this->maxLength == null && strtolower($this->textMode) == 'singleline') {
             $this->maxLength = 100;
         }
     }
-
+    
     /**
      * Load event handler.
      *
@@ -137,12 +131,11 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
     public function load($params, $filter)
     {
         $this->text = '';
-
         foreach ($filter->getFilter($this->field) as $args) {
             $this->text .= ($this->text ? ':' : '') . $this->formatValue($args['value']);
         }
     }
-
+    
     /**
      * Render event handler.
      *
@@ -153,30 +146,25 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
     public function render(Zikula_View $view)
     {
         // adds the form observer
-        $filter   = $view->get_registered_object('clip_filter');
+        $filter = $view->get_registered_object('clip_filter');
         $filterid = $filter->getFilterID($this->field);
-
-        if ($filter->hasPlugin($this->field, $this->id.'_op')) {
-            $code = "$('$filterid').value = '{$this->field}:'+\$F('{$this->id}_op')+':'+\$F('{$this->id}');";
+        if ($filter->hasPlugin($this->field, $this->id . '_op')) {
+            $code = "\$('{$filterid}').value = '{$this->field}:'+\$F('{$this->id}_op')+':'+\$F('{$this->id}');";
         } else {
-            $code = "$('$filterid').value = '{$this->field}:{$this->op}:'+\$F('{$this->id}');";
+            $code = "\$('{$filterid}').value = '{$this->field}:{$this->op}:'+\$F('{$this->id}');";
         }
-        $code = "if (\$F('{$this->id}')) { $code }";
-
+        $code = "if (\$F('{$this->id}')) { {$code} }";
         $filter->addFormObserver($code);
-
         // build the text input
         $idHtml = $this->getIdHtml();
         $nameHtml = " name=\"{$this->inputName}\"";
-        $titleHtml = ($this->toolTip != null ? ' title="' . $view->translateForDisplay($this->toolTip) . '"' : '');
-        $readOnlyHtml = ($this->readOnly ? ' readonly="readonly" tabindex="-1"' : '');
-        $sizeHtml = ($this->size > 0 ? " size=\"{$this->size}\"" : '');
-        $maxLengthHtml = ($this->maxLength > 0 ? " maxlength=\"{$this->maxLength}\"" : '');
+        $titleHtml = $this->toolTip != null ? ' title="' . $view->translateForDisplay($this->toolTip) . '"' : '';
+        $readOnlyHtml = $this->readOnly ? ' readonly="readonly" tabindex="-1"' : '';
+        $sizeHtml = $this->size > 0 ? " size=\"{$this->size}\"" : '';
+        $maxLengthHtml = $this->maxLength > 0 ? " maxlength=\"{$this->maxLength}\"" : '';
         $text = DataUtil::formatForDisplay($this->text);
         $class = $this->getStyleClass();
-
         $attributes = $this->renderAttributes($view);
-
         switch (strtolower($this->textMode)) {
             case 'singleline':
                 $result = "<input type=\"text\"{$idHtml}{$nameHtml}{$titleHtml}{$sizeHtml}{$maxLengthHtml}{$readOnlyHtml} class=\"{$class}\" value=\"{$text}\"{$attributes} />";
@@ -184,18 +172,15 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
                     $result .= '<span class="z-form-mandatory-flag">*</span>';
                 }
                 break;
-
             case 'hidden':
                 $result = "<input type=\"hidden\"{$idHtml}{$nameHtml} class=\"{$class}\" value=\"{$text}\" />";
                 break;
-
             default:
                 $result = __f('Unknown value [%1$s] for \'%2$s\'.', array($this->textMode, 'textMode'));
         }
-
         return $result;
     }
-
+    
     /**
      * Helper method to determine css class.
      *
@@ -206,7 +191,6 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
     protected function getStyleClass()
     {
         $class = 'z-form-text';
-
         if ($this->mandatorysym) {
             $class .= ' z-form-mandatory';
         }
@@ -216,10 +200,9 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
         if ($this->cssClass != null) {
             $class .= ' ' . $this->cssClass;
         }
-
         return $class;
     }
-
+    
     /**
      * Indicates whether or not the input is empty.
      *
@@ -229,7 +212,7 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
     {
         return $this->text == '';
     }
-
+    
     /**
      * Parses a value.
      *
@@ -243,7 +226,7 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
     {
         return $text;
     }
-
+    
     /**
      * Format the value to specific format.
      *
@@ -257,4 +240,5 @@ class Clip_Filter_Plugin_String extends Clip_Filter_Plugin_AbstractPlugin
     {
         return $value;
     }
+
 }

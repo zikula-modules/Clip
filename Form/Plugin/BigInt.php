@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,22 +7,23 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
+namespace Clip\Form\Plugin;
 
-class Clip_Form_Plugin_BigInt extends Clip_Form_Plugin_Int
+use ZLanguage;
+class BigInt extends \\Clip_Form_Plugin_Int
 {
     // plugin definition
     public $columnDef = 'I8';
-
     public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
-
         //! field type name
         $this->pluginTitle = $this->__('Big Integer');
     }
-
+    
     public function getFilename()
     {
         return __FILE__;
     }
+
 }

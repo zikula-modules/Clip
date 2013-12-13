@@ -9,7 +9,11 @@
  * @subpackage Filter
  */
 
-class Clip_Filter_Handler_List extends FilterUtil_Filter_Category
+namespace Clip\Filter\Handler;
+
+use CategoryUtil;
+
+class List extends \FilterUtil_Filter_Category
 {
     /**
      * Adds fields to list in the clip way.
@@ -24,11 +28,11 @@ class Clip_Filter_Handler_List extends FilterUtil_Filter_Category
             foreach ($fields as $fld) {
                 $this->addFields($fld);
             }
-        } elseif (!empty($fields) && $this->fieldExists($fields) && array_search($fields, (array)$this->fields) === false) {
+        } elseif (!empty($fields) && $this->fieldExists($fields) && array_search($fields, (array) $this->fields) === false) {
             $this->fields[] = $fields;
         }
     }
-
+    
     /**
      * Returns the operators the plugin can handle.
      *
@@ -36,16 +40,9 @@ class Clip_Filter_Handler_List extends FilterUtil_Filter_Category
      */
     public function availableOperators()
     {
-        return array(
-                     'eq',
-                     'ne',
-                     'sub',
-                     'dis',
-                     'null',
-                     'notnull'
-                    );
+        return array('eq', 'ne', 'sub', 'dis', 'null', 'notnull');
     }
-
+    
     /**
      * Returns DQL code.
      *
@@ -55,28 +52,26 @@ class Clip_Filter_Handler_List extends FilterUtil_Filter_Category
      *
      * @return array Doctrine Query where clause and parameters.
      */
-    public function getDql($field, $op, $value)
-    {
+    public function getDql(
+        $field,
+        $op,
+        $value
+    ) {
         if (array_search($op, $this->availableOperators()) === false || array_search($field, $this->getFields()) === false) {
             return '';
         }
-
-        $where  = '';
+        $where = '';
         $params = array();
         $column = $this->getColumn($field);
-
-        switch ($op)
-        {
+        switch ($op) {
             case 'eq':
-                $where = "$column = ?";
+                $where = "{$column} = ?";
                 $params[] = $value;
                 break;
-
             case 'ne':
-                $where = "$column <> ?";
+                $where = "{$column} <> ?";
                 $params[] = $value;
                 break;
-
             case 'sub':
             case 'dis':
                 $cats = CategoryUtil::getSubCategories($value);
@@ -85,24 +80,22 @@ class Clip_Filter_Handler_List extends FilterUtil_Filter_Category
                     $items[] = $item['id'];
                 }
                 if (count($items) == 1) {
-                    $opr   = $op == 'sub' ? '=' : '!=';
-                    $where = "$column $opr ?";
+                    $opr = $op == 'sub' ? '=' : '!=';
+                    $where = "{$column} {$opr} ?";
                     $params[] = $value;
                 } else {
-                    $opr   = $op == 'sub' ? 'IN' : 'NOT IN';
-                    $where = "$column $opr (".implode(',', $items).")";
+                    $opr = $op == 'sub' ? 'IN' : 'NOT IN';
+                    $where = "{$column} {$opr} (" . implode(',', $items) . ')';
                 }
                 break;
-
             case 'null':
-                $where = "($column = '' OR $column IS NULL)";
+                $where = "({$column} = '' OR {$column} IS NULL)";
                 break;
-
             case 'notnull':
-                $where = "($column <> '' OR $column IS NOT NULL)";
+                $where = "({$column} <> '' OR {$column} IS NOT NULL)";
                 break;
         }
-
         return array('where' => $where, 'params' => $params);
     }
+
 }
