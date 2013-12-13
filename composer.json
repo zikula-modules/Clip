@@ -1,9 +1,24 @@
-<?php
-
-namespace Autenti\Clip;
-
-use Zikula\Core\AbstractModule;
-
-class AutentiClipModule extends AbstractModule
 {
+    "name": "autenti/clip-module",
+    "description": "Dynamic content publishing platform for Zikula.",
+    "type": "zikula-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mateo Tibaquirá",
+            "homepage": "http://blanktheme.org/",
+            "email": "mateo@zikula.org"
+        }
+    ],
+    "autoload": {
+        "psr-0": { "Autenti\\Clip\\": "" }
+    },
+    "require": {
+        "php": ">5.3.3"
+    },
+    "extra": {
+        "zikula": {
+            "class": "Autenti\\Clip\\AutentiClipModule"
+        }
+    }
 }
