@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Plugin to include a filter inside a list template.
  * If the filter template does not exists, auto generate one.
@@ -32,35 +30,22 @@ function smarty_function_clip_filter($params, Zikula_View &$view)
     if ($view->getTplVar('func') != 'list') {
         return;
     }
-
     $pubtype = $view->getTplVar('pubtype');
-
     $tpl = isset($params['template']) ? $params['template'] : '';
-    $tpl = $pubtype->folder.'/filter'.($tpl ? "_$tpl" : '').'.tpl';
-
+    $tpl = $pubtype->folder . '/filter' . ($tpl ? "_{$tpl}" : '') . '.tpl';
     if ($view->template_exists($tpl)) {
         $output = $view->fetch($tpl);
-
     } else {
         $code = Clip_Generator::listfilter($pubtype->tid);
-
         if (!$code) {
             // no filterable fields
             return;
         }
-
         // FIXME check if this works fine
         $caching = $view->getCaching();
-
-        $view->setForceCompile(true)
-             ->setCaching(Zikula_View::CACHE_DISABLED)
-             ->assign('filter_generic_code', $code);
-
+        $view->setForceCompile(true)->setCaching(Zikula_View::CACHE_DISABLED)->assign('filter_generic_code', $code);
         $output = $view->fetch('var:filter_generic_code');
-
-        $view->setForceCompile(false)
-             ->setCaching($caching);
+        $view->setForceCompile(false)->setCaching($caching);
     }
-
     return $output;
 }

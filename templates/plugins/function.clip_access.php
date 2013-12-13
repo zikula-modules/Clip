@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Plugin to perform a Clip's permission check.
  *
@@ -53,40 +51,36 @@ function smarty_function_clip_access($params, Zikula_View &$view)
     if (isset($params['pub'])) {
         $params['tid'] = $params['pub']['core_tid'];
         $params['pid'] = $params['pub'];
-        $params['id']  = $params['pub']['id'];
+        $params['id'] = $params['pub']['id'];
         unset($params['pub']);
     }
-
     $params['tid'] = isset($params['tid']) ? $params['tid'] : $view->getTplVar('pubtype')->tid;
     $params['pid'] = isset($params['pid']) ? $params['pid'] : null;
-    $params['id']  = isset($params['id'])  ? $params['id']  : null;
-
+    $params['id'] = isset($params['id']) ? $params['id'] : null;
     $context = isset($params['context']) ? $params['context'] : null;
-    $tplid   = isset($params['tplid']) ? $params['tplid'] : '';
+    $tplid = isset($params['tplid']) ? $params['tplid'] : '';
     $permlvl = isset($params['permlvl']) ? constant($params['permlvl']) : null;
-    $action  = isset($params['action']) ? $params['action'] : null;
-    $assign  = isset($params['assign']) ? $params['assign'] : null;
-
-    $result  = false;
-
+    $action = isset($params['action']) ? $params['action'] : null;
+    $assign = isset($params['assign']) ? $params['assign'] : null;
+    $result = false;
     // check the parameters and figure out the method to use
     if ($permlvl) {
         // module check
         $result = Clip_Access::toClip($permlvl);
-
-    } else if (isset($params['gid'])) {
-        // grouptype check
-        $result = Clip_Access::toGrouptype($params['gid']);
-
-    } else if (isset($params['pid']) || isset($params['id'])) {
-        // pub check
-        $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl, null, $action);
-
     } else {
-        // pubtype check
-        $result = Clip_Access::toPubtype($params['tid'], $context, $tplid);
+        if (isset($params['gid'])) {
+            // grouptype check
+            $result = Clip_Access::toGrouptype($params['gid']);
+        } else {
+            if (isset($params['pid']) || isset($params['id'])) {
+                // pub check
+                $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl, null, $action);
+            } else {
+                // pubtype check
+                $result = Clip_Access::toPubtype($params['tid'], $context, $tplid);
+            }
+        }
     }
-
     if ($assign) {
         $view->assign($assign, $result);
     } else {

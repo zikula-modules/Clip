@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Modifiers
  */
-
 /**
  * Clip modifier to check if a Doctrine Collection/Record exists.
  *
@@ -20,21 +18,17 @@
  *
  * @return boolean True if exists and not empty, false otherwise.
  */
-function smarty_modifier_clip_exists($data, $q=null)
+function smarty_modifier_clip_exists($data, $q = null)
 {
     if (!is_object($data)) {
         return false;
     }
-
     $exists = false;
-
     if ($data instanceof Doctrine_Collection) {
-        $exists = (bool)count($data);
-
+        $exists = (bool) count($data);
     } elseif ($data instanceof Doctrine_Record) {
         $exists = $data->exists();
     }
-
     if ($exists && $q && in_array($q, array('one', 'many'))) {
         switch ($q) {
             case 'many':
@@ -43,6 +37,5 @@ function smarty_modifier_clip_exists($data, $q=null)
                 return $data instanceof Doctrine_Record;
         }
     }
-
     return $exists;
 }

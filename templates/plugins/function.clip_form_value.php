@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Generic Form Value.
  * Clip's interface to map a value on a publication input.
@@ -41,81 +39,66 @@ function smarty_function_clip_form_value($params, Zikula_Form_View &$render)
     if (!isset($params['field']) || !$params['field']) {
         $render->trigger_error($render->__f('Error! Missing argument [%s].', 'field'));
     }
-
     if (!isset($params['pluginclass']) && !isset($params['fieldplugin'])) {
         $render->trigger_error($render->__f('Error! Missing argument [%s].', 'pluginclass | fieldplugin'));
     }
-
     if ($params['field'] == 'id') {
-        $render->trigger_error($render->__f("Error! '%1\$s' parameter cannot be '%2\$s'.", array('field', 'id')));
+        $render->trigger_error($render->__f('Error! \'%1$s\' parameter cannot be \'%2$s\'.', array('field', 'id')));
     }
-
     // clip data handling
     $params['alias'] = isset($params['alias']) && $params['alias'] ? $params['alias'] : $render->get_registered_object('clip_form')->getAlias();
-    $params['tid']   = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int)$render->get_registered_object('clip_form')->getTid();
-    $params['rid']   = isset($params['rid']) && $params['rid'] ? $params['rid'] : $render->get_registered_object('clip_form')->getId();
-    $params['pid']   = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getPid($render);
-
+    $params['tid'] = isset($params['tid']) && $params['tid'] ? $params['tid'] : (int) $render->get_registered_object('clip_form')->getTid();
+    $params['rid'] = isset($params['rid']) && $params['rid'] ? $params['rid'] : $render->get_registered_object('clip_form')->getId();
+    $params['pid'] = isset($params['pid']) && $params['pid'] ? $params['pid'] : $render->get_registered_object('clip_form')->getPid($render);
     // form framework parameters adjustment
     $params['alias'] = $params['alias'];
-    $params['id']    = "clip_{$params['alias']}_{$params['tid']}_{$params['rid']}_{$params['pid']}_{$params['field']}";
+    $params['id'] = "clip_{$params['alias']}_{$params['tid']}_{$params['rid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'clipdata';
-
     $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
-
     if ($field) {
-        $render->trigger_error($render->__f("Error! '%1\$s' parameter cannot be '%2\$s'.", array('field', DataUtil::formatForDisplay($params['field']))).' '.$render->__('It must not match any existing field.'));
+        $render->trigger_error($render->__f('Error! \'%1$s\' parameter cannot be \'%2$s\'.', array('field', DataUtil::formatForDisplay($params['field']))) . ' ' . $render->__('It must not match any existing field.'));
     }
-
     // check if there's a custom plugin class to use
     if (isset($params['pluginclass'])) {
         $pluginclass = $params['pluginclass'];
         unset($params['pluginclass']);
-
         // treat the single-word classes as Clip's ones
         if (strpos($pluginclass, '_') === false) {
-            $pluginclass = 'Clip_Form_Plugin_'.$pluginclass;
+            $pluginclass = 'Clip_Form_Plugin_' . $pluginclass;
         }
-
         // validate that the class exists
         if (!class_exists($pluginclass)) {
             $render->trigger_error($render->__f('Error! The specified plugin class [%s] does not exists.', $pluginclass));
         }
-
         // check if it's needed to remove some parameters
         $vars = array_keys(get_class_vars($pluginclass));
-
         if (!in_array('maxLength', $vars)) {
             unset($params['maxLength']);
         }
         if (!in_array('mandatory', $vars)) {
             unset($params['mandatory']);
         }
-
         $plugin = new $pluginclass($render, $params);
-
-    } else if (isset($params['fieldplugin'])) {
-        // plugin class and configuration customization
-        $pluginclass = $params['fieldplugin'];
-        // be sure there's a config specified or reset to empty
-        $params['fieldconfig'] = isset($params['fieldconfig']) ? $params['fieldconfig'] : '';
-        // unset them
-        unset($params['fieldplugin']);
-
-        // field plugin class
-        $plugin = Clip_Util_Plugins::get($pluginclass);
-
-        // check if it's needed to remove some parameters
-        $vars = array_keys(get_object_vars($plugin));
-
-        if (!in_array('maxLength', $vars)) {
-            unset($params['maxLength']);
-        }
-        if (!in_array('mandatory', $vars)) {
-            unset($params['mandatory']);
+    } else {
+        if (isset($params['fieldplugin'])) {
+            // plugin class and configuration customization
+            $pluginclass = $params['fieldplugin'];
+            // be sure there's a config specified or reset to empty
+            $params['fieldconfig'] = isset($params['fieldconfig']) ? $params['fieldconfig'] : '';
+            // unset them
+            unset($params['fieldplugin']);
+            // field plugin class
+            $plugin = Clip_Util_Plugins::get($pluginclass);
+            // check if it's needed to remove some parameters
+            $vars = array_keys(get_object_vars($plugin));
+            if (!in_array('maxLength', $vars)) {
+                unset($params['maxLength']);
+            }
+            if (!in_array('mandatory', $vars)) {
+                unset($params['mandatory']);
+            }
         }
     }
-
     // register plugin
     if (method_exists($plugin, 'pluginRegister')) {
         return $plugin->pluginRegister($params, $render);

@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Clip compatibility plugin for older form templates.
  *
@@ -24,19 +22,14 @@ function smarty_prefilter_clip_form_compat($source, $view)
     $source = str_replace('clip_form_genericplugin id', 'clip_form_plugin field', $source);
     $source = str_replace('clip_form_block id', 'clip_form_block field', $source);
     $source = str_replace('clip_form_relation id', 'clip_form_relation field', $source);
- 
-    $source = str_replace(" group='pubdata'", '', $source);
-
-    $source = str_replace("formlanguageselector id='core_language'", "clip_form_plugin field='core_language'", $source);
-    $source = str_replace("formdateinput id='core_publishdate'", "clip_form_plugin field='core_publishdate'", $source);
-    $source = str_replace("formdateinput id='core_expiredate'", "clip_form_plugin field='core_expiredate'", $source);
-    $source = str_replace("formcheckbox id='core_visible'", "clip_form_plugin field='core_visible'", $source);
-    $source = str_replace("formcheckbox id='core_locked'", "clip_form_plugin field='core_locked'", $source);
-
-    $source = preg_replace("/formcheckbox id='.*?_(delete|thumbs)'/", 'formcheckbox id="`$fieldid`_$1"', $source);
-
+    $source = str_replace(' group=\'pubdata\'', '', $source);
+    $source = str_replace('formlanguageselector id=\'core_language\'', 'clip_form_plugin field=\'core_language\'', $source);
+    $source = str_replace('formdateinput id=\'core_publishdate\'', 'clip_form_plugin field=\'core_publishdate\'', $source);
+    $source = str_replace('formdateinput id=\'core_expiredate\'', 'clip_form_plugin field=\'core_expiredate\'', $source);
+    $source = str_replace('formcheckbox id=\'core_visible\'', 'clip_form_plugin field=\'core_visible\'', $source);
+    $source = str_replace('formcheckbox id=\'core_locked\'', 'clip_form_plugin field=\'core_locked\'', $source);
+    $source = preg_replace('/formcheckbox id=\'.*?_(delete|thumbs)\'/', 'formcheckbox id="`$fieldid`_$1"', $source);
     $source = str_replace('z-buttons z-formbuttons', 'z-buttons', $source);
-
     // return the modified source
     return $source;
 }

@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage Workflows_Operations
  */
-
 /**
  * updateValues operation.
  *
@@ -24,14 +22,11 @@
 function Clip_operation_updateValues(&$pub, $params)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
-
     // process the available parameters
-    $params['allrev'] = isset($params['allrev']) ? (bool)$params['allrev'] : false;
-    $params['silent'] = isset($params['silent']) ? (bool)$params['silent'] : false;
-
+    $params['allrev'] = isset($params['allrev']) ? (bool) $params['allrev'] : false;
+    $params['silent'] = isset($params['silent']) ? (bool) $params['silent'] : false;
     // initializes the result flag (no fail case)
     $result = true;
-
     // build the array of values to update
     $update = array();
     foreach ($params as $key => $val) {
@@ -39,66 +34,54 @@ function Clip_operation_updateValues(&$pub, $params)
             $update[$key] = $val;
         }
     }
-
     if ($update) {
         // update the passed values
-        $q = Doctrine_Core::getTable('ClipModels_Pubdata'.$pub['core_tid'])
-                 ->createQuery()
-                 ->update()
-                 ->where('core_pid = ?', $pub->core_pid);
-
+        $q = Doctrine_Core::getTable('ClipModels_Pubdata' . $pub['core_tid'])->createQuery()->update()->where('core_pid = ?', $pub->core_pid);
         if (!$params['allrev']) {
             // update the passed pub only
             $q->andWhere('id = ?', $pub->id);
         }
-
         foreach ($update as $key => $val) {
             $q->set($key, $val);
         }
-
         $q->execute();
-
         // notify the operation data
         $pub = Clip_Event::notify('data.edit.operation.updatevalues', $pub, $params)->getData();
     }
-
     if ($result) {
         $result = array($pub['core_uniqueid'] => true);
-
         // hooks: let know that the publication was updated
         $pub->notifyHooks('process_edit');
     }
-
     // goto handling
-    if ($result &&$params['goto']) {
+    if ($result && $params['goto']) {
         $result['goto'] = $params['goto'];
-
-    } else if (isset($pub['core_goto'])) {
-        $result['goto'] = $pub['core_goto'];
+    } else {
+        if (isset($pub['core_goto'])) {
+            $result['goto'] = $pub['core_goto'];
+        }
     }
-
     // output message
     if (!$params['silent']) {
         if ($result) {
             if (isset($update['core_online'])) {
                 if ($update['core_online'] == 1) {
-                    LogUtil::registerStatus(__("Publication status set to 'published'.", $dom));
+                    LogUtil::registerStatus(__('Publication status set to \'published\'.', $dom));
                 } else {
-                    LogUtil::registerStatus(__("Publication status set to 'unpublished'.", $dom));
+                    LogUtil::registerStatus(__('Publication status set to \'unpublished\'.', $dom));
                 }
             }
             if (isset($update['core_intrash'])) {
                 if ($update['core_intrash'] == 1) {
-                    LogUtil::registerStatus(__("Publication moved to the recycle bin.", $dom));
+                    LogUtil::registerStatus(__('Publication moved to the recycle bin.', $dom));
                 } else {
-                    LogUtil::registerStatus(__("Publication was recovered from the recycle bin.", $dom));
+                    LogUtil::registerStatus(__('Publication was recovered from the recycle bin.', $dom));
                 }
             }
         } else {
             LogUtil::registerError(__('Error! Failed to update the publication.', $dom));
         }
     }
-
     // returns the operation result
     return $result;
 }

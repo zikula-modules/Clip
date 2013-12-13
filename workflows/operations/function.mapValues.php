@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage Workflows_Operations
  */
-
 /**
  * mapValues operation.
  *
@@ -20,13 +18,10 @@
 function Clip_operation_mapValues(&$pub, $params)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
-
     // unset the always present nextstate parameter
     unset($params['nextstate']);
-
     // initializes the result flag
     $result = true;
-
     // map the values into the record
     // they should not exist in the record already
     foreach ($params as $key => $val) {
@@ -34,7 +29,6 @@ function Clip_operation_mapValues(&$pub, $params)
             $pub->mapValue($key, $val);
         }
     }
-
     // returns the operation result
     return $result;
 }

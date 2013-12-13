@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Utility plugin to display a Multi/RadioList field values.
  *
@@ -33,19 +31,14 @@ function smarty_function_clip_multilistdecode($params, &$view)
     if (!isset($params['value']) || !$params['value']) {
         return LogUtil::registerError($view->__f('Error! Missing argument [%s].', 'value'));
     }
-
     $field = isset($params['field']) ? $params['field'] : 'fullTitle';
-    $list  = isset($params['list']) ? (is_bool($params['list']) ? (bool)$params['list'] : $params['list']) : true;
-
-    $html = $list ? '<ul'.(!is_bool($params['list'] ? " class=\"{$params['list']}\"" : '')).'>' : '';
-
+    $list = isset($params['list']) ? is_bool($params['list']) ? (bool) $params['list'] : $params['list'] : true;
+    $html = $list ? '<ul' . !is_bool($params['list'] ? " class=\"{$params['list']}\"" : '') . '>' : '';
     foreach ($params['value'] as $cat) {
         $value = isset($cat[$field]) ? $cat[$field] : $cat['fullTitle'];
-        $html .=  ($list ? '<li>' : '') . $value . ($list ? '</li>' : '<br />');
+        $html .= ($list ? '<li>' : '') . $value . ($list ? '</li>' : '<br />');
     }
-
     $html .= $list ? '</ul>' : '';
-
     if (isset($params['assign'])) {
         $view->assign($params['assign'], $html);
     } else {

@@ -1,5 +1,4 @@
-<?php 
-/**
+<?php/**
  * Smarty resource
  * 
  * @copyright  (c) Zikula Development Team
@@ -8,12 +7,11 @@
  * @package    Smarty
  * @subpackage Resource
  */
-
 /**
  * Smarty Resource.
  * 
  * Fetches template from a Smarty object variable or a global one.
- */ 
+ */
 function smarty_resource_var_source($tpl_name, &$tpl_source, &$smarty)
 {
     if (isset($tpl_name) && !empty($tpl_name)) {
@@ -21,36 +19,28 @@ function smarty_resource_var_source($tpl_name, &$tpl_source, &$smarty)
         if (isset($smarty->_tpl_vars[$tpl_name])) {
             $tpl_source = $smarty->_tpl_vars[$tpl_name];
             unset($smarty->_tpl_vars[$tpl_name]);
-
-        // If not, takes the global one
         } else {
-            global $$tpl_name;
-            $tpl_source = $$tpl_name;
+            global ${$tpl_name};
+            $tpl_source = ${$tpl_name};
         }
-
         return true;
     }
-
     return false;
 }
-
 function smarty_resource_var_timestamp($tpl_name, $tpl_timestamp, &$smarty)
 {
     if (isset($tpl_name) && !empty($tpl_name)) {
         $tpl_timestamp = microtime();
         return true;
     }
-
     return false;
-} 
-
+}
 function smarty_resource_var_secure($tpl_name, &$smarty)
-{ 
-    // assume all variables are secure 
-    return true; 
-} 
-
+{
+    // assume all variables are secure
+    return true;
+}
 function smarty_resource_var_trusted($tpl_name, &$smarty)
-{ 
-    // not used for variables
-} 
+{
+    
+}

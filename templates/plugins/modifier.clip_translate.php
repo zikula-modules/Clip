@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Modifiers
  */
-
 /**
  * Clip modifier to translate a data array.
  *
@@ -21,12 +19,11 @@
  *
  * @return string Localized string found in the data.
  */
-function smarty_modifier_clip_translate($data, $lang=null)
+function smarty_modifier_clip_translate($data, $lang = null)
 {
     if (!is_array($data)) {
         return $data;
     }
-
     // TODO pending implementation
     return $data;
 }

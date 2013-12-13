@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Modifiers
  */
-
 /**
  * Clip modifier to process the orderby string
  * and return the corresponding link CSS class or revert parameter.
@@ -36,21 +34,18 @@
 function smarty_modifier_clip_orderby($orderby, $field, $return = 'param')
 {
     if (stripos($orderby, $field) !== false) {
-        $order = (stripos($orderby, "$field desc") === false) ? 'desc' : 'asc';
+        $order = stripos($orderby, "{$field} desc") === false ? 'desc' : 'asc';
     } else {
         $order = 'asc';
     }
     $output = '';
-
     switch ($return) {
         case 'param':
-            $output = "$field:$order";
+            $output = "{$field}:{$order}";
             break;
-
         case 'class':
-            $output = "z-order-$order";
+            $output = "z-order-{$order}";
             break;
     }
-
     return $output;
 }

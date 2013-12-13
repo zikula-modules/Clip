@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Block to capture a template section into a variable.
  *
@@ -32,15 +30,14 @@ function smarty_block_clip_capture($params, $content, Zikula_View $view)
         ob_start();
         return;
     }
-
     $assign = isset($params['assign']) ? $params['assign'] : null;
     $append = isset($params['append']) ? $params['append'] : null;
-
     if ($assign) {
         $view->assign($assign, ob_get_contents());
-    } else if ($append) {
-        $view->append($append, ob_get_contents());
+    } else {
+        if ($append) {
+            $view->append($append, ob_get_contents());
+        }
     }
-
     ob_end_clean();
 }

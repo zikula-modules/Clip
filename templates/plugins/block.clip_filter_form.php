@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Block to define a filter form.
  *
@@ -32,11 +30,9 @@ function smarty_block_clip_filter_form($params, $content, Zikula_View &$view)
     if ($view->getTplVar('func') != 'list') {
         return;
     }
-
-    $type  = $view->getRequest()->getGet()->get('type', 'user');
-    $class = 'clip-filter-form z-form'.((isset($params['class']) && $params['class']) ? ' '.$params['class'] : '');
+    $type = $view->getRequest()->getGet()->get('type', 'user');
+    $class = 'clip-filter-form z-form' . (isset($params['class']) && $params['class'] ? ' ' . $params['class'] : '');
     unset($params['class']);
-
     // process the filter object
     if (is_null($content)) {
         // initial call to the block
@@ -49,36 +45,31 @@ function smarty_block_clip_filter_form($params, $content, Zikula_View &$view)
         $filter = $view->get_registered_object('clip_filter');
         $view->unregister_object('clip_filter');
     }
-
     // do not process an empty form
     if (!trim($content)) {
         return;
     }
-
-    $dom    = ZLanguage::getModuleDomain('Clip');
-    $action = System::getBaseUrl().System::getVar('entrypoint', 'index.php');
-
-    $output = '<div class="'.$class.'">'."\n".
-                   '<fieldset id="'.$filter->getId().'wrapper" class="z-linear" style="display: none">'."\n".
-                       //'<legend>'.__('Filter', $dom).'</legend>'."\n".
-                       '<form id="'.$filter->getId().'form" method="get" action="'.$action.'" style="display: inline">'."\n".
-                           $content."\n".
-                           '<input type="hidden" name="module" value="Clip" />'."\n".
-                           '<input type="hidden" name="type" value="'.$type.'" />'."\n".
-                           '<input type="hidden" name="func" value="list" />'."\n".
-                           '<input type="hidden" name="tid" value="'.$view->getTplVar('pubtype')->tid.'" />'."\n";
-
+    $dom = ZLanguage::getModuleDomain('Clip');
+    $action = System::getBaseUrl() . System::getVar('entrypoint', 'index.php');
+    $output = '<div class="' . $class . '">' . '
+' . '<fieldset id="' . $filter->getId() . 'wrapper" class="z-linear" style="display: none">' . '
+' . '<form id="' . $filter->getId() . 'form" method="get" action="' . $action . '" style="display: inline">' . '
+' . $content . '
+' . '<input type="hidden" name="module" value="Clip" />' . '
+' . '<input type="hidden" name="type" value="' . $type . '" />' . '
+' . '<input type="hidden" name="func" value="list" />' . '
+' . '<input type="hidden" name="tid" value="' . $view->getTplVar('pubtype')->tid . '" />' . '
+';
     foreach ($filter->getFilterNames() as $id => $filterName) {
-        $output .= '<input type="hidden" id="'.$id.'" name="'.$filterName.'" value="" />'."\n";
+        $output .= '<input type="hidden" id="' . $id . '" name="' . $filterName . '" value="" />' . '
+';
     }
-
-    $output .=             '<span class="z-nowrap z-buttons">'."\n".
-                               '<input type="submit" value="'.__('Filter', $dom).'" class="z-bt-filter z-bt-small" />'."\n".
-                           '</span>'."\n".
-                       '</form>'."\n".
-                   '</fieldset>'."\n".
-               '</div>'."\n".
-               $filter->getFormScript();
-
+    $output .= '<span class="z-nowrap z-buttons">' . '
+' . '<input type="submit" value="' . __('Filter', $dom) . '" class="z-bt-filter z-bt-small" />' . '
+' . '</span>' . '
+' . '</form>' . '
+' . '</fieldset>' . '
+' . '</div>' . '
+' . $filter->getFormScript();
     return $output;
 }

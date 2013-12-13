@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Plugin to display the available Editor's actions for an item.
  *
@@ -31,51 +29,35 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
         $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_editoractions', 'pub')));
         return false;
     }
-
-    $pub    = $params['pub'];
+    $pub = $params['pub'];
     $assign = isset($params['assign']) ? $params['assign'] : null;
-
-    $pubtype  = Clip_Util::getPubType($pub['core_tid']);
-
+    $pubtype = Clip_Util::getPubType($pub['core_tid']);
     $workflow = new Clip_Workflow($pubtype, $pub);
-    $actions  = $workflow->getActions(Clip_Workflow::ACTIONS_EXEC);
-
+    $actions = $workflow->getActions(Clip_Workflow::ACTIONS_EXEC);
     // common action exec arguments
     $token = SecurityUtil::generateCsrfToken();
-    $args  = array('tid' => $pub['core_tid'], 'id' => $pub['id']);
-
+    $args = array('tid' => $pub['core_tid'], 'id' => $pub['id']);
     $links = array();
-
     // adds the edit link if has access to the form
     if (Clip_Access::toPub($pubtype, $pub, null, 'exec')) {
         $editargs = array_merge($args, array('goto' => 'referer'));
-        $links[] = '<span class="clip-ac-editform">'.
-                   '  <a href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'edit', $editargs)).'" title="'.$view->__('Edit this publication').'">'.$view->__('Edit').'</a>'.
-                   '</span>';
+        $links[] = '<span class="clip-ac-editform">' . '  <a href="' . DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'edit', $editargs)) . '" title="' . $view->__('Edit this publication') . '">' . $view->__('Edit') . '</a>' . '</span>';
     }
-
-    $links[] = '<span class="clip-ac-editform">'.
-               '  <a target="_blank" href="'.DataUtil::formatForDisplay(Clip_Util::url($pub, 'display', array('id' => $pub['id']))).'" title="'.$view->__('Preview this publication').'">'.$view->__('Preview').'</a>'.
-               '</span>';
-
+    $links[] = '<span class="clip-ac-editform">' . '  <a target="_blank" href="' . DataUtil::formatForDisplay(Clip_Util::url($pub, 'display', array('id' => $pub['id']))) . '" title="' . $view->__('Preview this publication') . '">' . $view->__('Preview') . '</a>' . '</span>';
     // loop the actions building their output
     if ($actions) {
         foreach ($actions as $aid => $action) {
             //$class = isset($action['parameters']['link']['class']) ? $action['parameters']['link']['class'] : '';
             $args['action'] = $aid;
             $args['csrftoken'] = $token;
-            $onclick = isset($action['parameters']['button']['confirmMessage']) ? 'onclick="return confirm(\''.$action['parameters']['button']['confirmMessage'].'\')" ' : '';
-            $links[] = '<span class="clip-ac-'.$aid.'">'.
-                '  <a '.$onclick.'href="'.DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'exec', $args)).'" title="'.$action['description'].'">'.$action['title'].'</a>'.
-                '</span>';
+            $onclick = isset($action['parameters']['button']['confirmMessage']) ? 'onclick="return confirm(\'' . $action['parameters']['button']['confirmMessage'] . '\')" ' : '';
+            $links[] = '<span class="clip-ac-' . $aid . '">' . '  <a ' . $onclick . 'href="' . DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'exec', $args)) . '" title="' . $action['description'] . '">' . $action['title'] . '</a>' . '</span>';
         }
     }
-
     // build the plugin output
-    $output  = '<div class="clip-editoractions">';
+    $output = '<div class="clip-editoractions">';
     $output .= implode(' <span class="text_separator">|</span> ', $links);
     $output .= '</div>';
-
     if ($assign) {
         $view->assign($assign, $output);
     } else {

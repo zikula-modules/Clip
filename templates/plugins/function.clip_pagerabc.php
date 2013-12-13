@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright   Zikula Foundation 2009 - Zikula Application Framework
@@ -8,7 +7,6 @@
  * @package     Clip
  * @subpackage  View_Plugins
  */
-
 /**
  * Clip alpha filter.
  *
@@ -43,39 +41,30 @@
 function smarty_function_clip_pagerabc($params, Zikula_View &$view)
 {
     $pubtype = $view->getTplVar('pubtype');
-
     if (!isset($params['field'])) {
         $params['field'] = 'core_title';
     }
-
     if ($params['field'] == 'core_title') {
         $params['field'] = $pubtype->getTitleField();
     }
-
     if (!isset($params['separator'])) {
         $params['separator'] = '|';
     }
-
     if (!isset($params['printempty']) || !is_bool($params['printempty'])) {
         $params['printempty'] = true;
     }
-
     // set a default class
     if (!isset($params['class'])) {
         $params['class'] = 'z-pager z-pagerabc';
     }
-
     if (!isset($params['class_num'])) {
         $params['class_num'] = 'z-pagerabclink';
     }
-
     if (!isset($params['class_numon'])) {
         $params['class_numon'] = 'z-pagerselected';
     }
-
     // start the pager
     $pager = array();
-
     if (!empty($params['names'])) {
         if (!is_array($params['names'])) {
             $pager['names'] = explode(';', $params['names']);
@@ -96,16 +85,12 @@ function smarty_function_clip_pagerabc($params, Zikula_View &$view)
         $alphabet = __('A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z');
         $pager['names'] = $pager['values'] = explode(',', $alphabet);
     }
-
     unset($params['names']);
     unset($params['values']);
-
     $pager['module'] = isset($params['modname']) ? $params['modname'] : FormUtil::getPassedValue('module', null, 'GETPOST', FILTER_SANITIZE_STRING);
     $pager['func'] = isset($params['func']) ? $params['func'] : FormUtil::getPassedValue('func', 'main', 'GETPOST', FILTER_SANITIZE_STRING);
     $pager['type'] = isset($params['type']) ? $params['type'] : FormUtil::getPassedValue('type', 'user', 'GETPOST', FILTER_SANITIZE_STRING);
-
     $allVars = array_merge($_POST, $_GET);
-
     $pager['args'] = array();
     if (empty($pager['module'])) {
         $pager['module'] = System::getVar('startpage');
@@ -113,7 +98,6 @@ function smarty_function_clip_pagerabc($params, Zikula_View &$view)
         $pager['type'] = !empty($starttype) ? $starttype : 'user';
         $startfunc = System::getVar('startfunc');
         $pager['func'] = !empty($startfunc) ? $startfunc : 'main';
-
         $startargs = explode(',', System::getVar('startargs'));
         foreach ($startargs as $arg) {
             if (!empty($arg)) {
@@ -122,67 +106,58 @@ function smarty_function_clip_pagerabc($params, Zikula_View &$view)
             }
         }
     }
-
     // If $forwardvars set, add only listed vars to query string, else add all POST and GET vars
     if (isset($params['forwardvars'])) {
         if (!is_array($params['forwardvars'])) {
-            $params['forwardvars'] = preg_split('/[,;\s]/', $params['forwardvars'], -1, PREG_SPLIT_NO_EMPTY);
+            $params['forwardvars'] = preg_split('/[,;\\s]/', $params['forwardvars'], -1, PREG_SPLIT_NO_EMPTY);
         }
-        foreach ((array)$params['forwardvars'] as $key => $var) {
-            if (!empty($var) && (!empty($allVars[$var]))) {
+        foreach ((array) $params['forwardvars'] as $key => $var) {
+            if (!empty($var) && !empty($allVars[$var])) {
                 $pager['args'][$var] = $allVars[$var];
             }
         }
     } else {
         $pager['args'] = array_merge($pager['args'], $allVars);
     }
-
     if (isset($params['additionalvars'])) {
         if (!is_array($params['additionalvars'])) {
-            $params['additionalvars'] = preg_split('/[,;\s]/', $params['additionalvars'], -1, PREG_SPLIT_NO_EMPTY);
+            $params['additionalvars'] = preg_split('/[,;\\s]/', $params['additionalvars'], -1, PREG_SPLIT_NO_EMPTY);
         }
-        foreach ((array)$params['additionalvars'] as $var) {
+        foreach ((array) $params['additionalvars'] as $var) {
             $additionalvar = preg_split('/=/', $var);
             if (!empty($var) && !empty($additionalvar[1])) {
                 $pager['args'][$additionalvar[0]] = $additionalvar[1];
             }
         }
     }
-
     // remove unneeded args
     unset($pager['args']['module']);
     unset($pager['args']['func']);
     unset($pager['args']['type']);
-
     // collect the present filters
     $filters = array();
     $i = 0;
     while (true) {
-        $filter = 'filter'.($i ? $i : '');
-
+        $filter = 'filter' . ($i ? $i : '');
         if (!isset($pager['args'][$filter])) {
             break;
         }
-
         $filters[$filter] = $pager['args'][$filter];
         unset($pager['args'][$filter]);
         $i++;
     }
-
     // begin to fill the output
-    $output = '<div class="'.$params['class'].'">'."\n";
-
+    $output = '<div class="' . $params['class'] . '">' . '
+';
     $style = '';
     if ($params['printempty']) {
         if (!empty($params['class_num'])) {
-            $style = 'class="'.$params['class_num'].'"';
+            $style = 'class="' . $params['class_num'] . '"';
         }
         $urltemp = DataUtil::formatForDisplay(ModUtil::url($pager['module'], $pager['type'], $pager['func'], $pager['args']));
-        $output .= ' <a '.$style.' href="'.$urltemp.'">'.$view->__('All')."</a> ".$params['separator'];
+        $output .= ' <a ' . $style . ' href="' . $urltemp . '">' . $view->__('All') . '</a> ' . $params['separator'];
     }
-
     $pager['args'] = array_merge($pager['args'], $filters);
-
     $varname = '';
     foreach ($filters as $k => $filter) {
         if (strpos($filter, "{$params['field']}:likefirst:") === 0) {
@@ -191,34 +166,30 @@ function smarty_function_clip_pagerabc($params, Zikula_View &$view)
         }
     }
     if (!$varname) {
-        $varname = (empty($filters) ? 'filter' : (count($filters) == 1 ? 'filter1' : ++$k));
+        $varname = empty($filters) ? 'filter' : (count($filters) == 1 ? 'filter1' : ++$k);
     }
-
     $style = '';
     foreach (array_keys($pager['names']) as $i) {
         if (!empty($params['class_numon'])) {
             $style = '';
             foreach ($filters as $filter) {
                 if ($filter == "{$params['field']}:likefirst:{$pager['values'][$i]}") {
-                    $style = ' class="'.(!empty($params['class_num']) ? $params['class_num'].' ' : '').$params['class_numon'].'"';
+                    $style = ' class="' . (!empty($params['class_num']) ? $params['class_num'] . ' ' : '') . $params['class_numon'] . '"';
                     break;
                 } elseif (!empty($params['class_num'])) {
-                    $style = ' class="'.$params['class_num'].'"';
+                    $style = ' class="' . $params['class_num'] . '"';
                 }
             }
         }
-
         $pager['args'][$varname] = "{$params['field']}:likefirst:{$pager['values'][$i]}";
-
         $urltemp = DataUtil::formatForDisplay(ModUtil::url($pager['module'], $pager['type'], $pager['func'], $pager['args']));
-
         if ($i > 0) {
             $output .= $params['separator'];
         }
-
-        $output .= ' <a'.$style.' href="'.$urltemp.'">'.$pager['names'][$i]."</a> \n";
+        $output .= ' <a' . $style . ' href="' . $urltemp . '">' . $pager['names'][$i] . '</a> 
+';
     }
-    $output .= "</div>\n";
-
+    $output .= '</div>
+';
     return $output;
 }

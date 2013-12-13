@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Modifiers
  */
-
 /**
  * Clip modifier to show the translated plugin name.
  * For internal use: Clip's Admin Panel > Pubfields.
@@ -24,6 +22,5 @@
 function smarty_modifier_clip_plugintitle($pluginID)
 {
     $plugin = Clip_Util_Plugins::get($pluginID);
-
     return $plugin->pluginTitle;
 }

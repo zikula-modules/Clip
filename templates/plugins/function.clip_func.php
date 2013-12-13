@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Plugin to include a modfunc without interrupt the current Clip template.
  *
@@ -34,20 +32,15 @@ function smarty_function_clip_func($params, Zikula_View &$view)
         $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_func', 'func')));
         return false;
     }
-
     $view->load_filter('output', 'clip_func');
-
     $params['modname'] = isset($params['modname']) ? $params['modname'] : 'Clip';
-    $params['type']    = isset($params['type']) ? $params['type'] : 'user';
-
+    $params['type'] = isset($params['type']) ? $params['type'] : 'user';
     if ($params['modname'] == 'Clip') {
         $pubtype = $view->getTplVar('pubtype');
-
         // setup the tid if not set
         if (!isset($params['tid'])) {
             $params['tid'] = $pubtype->tid;
         }
-
         // get the publication parameters if passed
         if (isset($params['pub'])) {
             $params['tid'] = $params['pub']['core_tid'];
@@ -57,14 +50,12 @@ function smarty_function_clip_func($params, Zikula_View &$view)
             }
             unset($params['pub']);
         }
-
         // be sure to define a default filter for list calls
         if ($params['func'] == 'list') {
-            $defaultfilter    = $pubtype->defaultfilter ? $pubtype->defaultfilter : '()';
+            $defaultfilter = $pubtype->defaultfilter ? $pubtype->defaultfilter : '()';
             $params['filter'] = isset($params['filter']) && !empty($params['filter']) ? $params['filter'] : $defaultfilter;
         }
     }
-
     // serialize the parameters to let the output filter to work later
-    return 'CLIPFUNC:'.serialize($params);
+    return 'CLIPFUNC:' . serialize($params);
 }

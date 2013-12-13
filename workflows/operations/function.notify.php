@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage Workflows_Operations
  */
-
 /**
  * notify operation.
  *
@@ -23,64 +21,48 @@
 function Clip_operation_notify(&$pub, $params)
 {
     $dom = ZLanguage::getModuleDomain('Clip');
-
-    $params['silent']   = isset($params['silent']) ? (bool)$params['silent'] : false;
-    $params['group']    = isset($params['group']) ? $params['group'] : 'editors';
-    $params['action']   = isset($params['action']) ? $params['action'] : 'create';
+    $params['silent'] = isset($params['silent']) ? (bool) $params['silent'] : false;
+    $params['group'] = isset($params['group']) ? $params['group'] : 'editors';
+    $params['action'] = isset($params['action']) ? $params['action'] : 'create';
     $params['template'] = isset($params['template']) ? $params['template'] : "{$params['group']}_{$params['action']}";
-
     // utility vars
     $pubtype = Clip_Util::getPubType($pub['core_tid']);
-
     // create the View object
     $view = Zikula_View::getInstance('Clip');
-
     // locate the notification template to use
-    $tplpath = $pubtype['folder'].'/notify_'.$params['template'].'.tpl';
-
+    $tplpath = $pubtype['folder'] . '/notify_' . $params['template'] . '.tpl';
     if ($view->template_exists($tplpath)) {
         // get the recipients
         if ($params['group'] == 'author') {
-            $classname  = Clip_Util_Plugins::getAdminClassname('Recipients');
-            $recipients = $classname::postRead(array('u'.$pub['core_author']));
+            $classname = Clip_Util_Plugins::getAdminClassname('Recipients');
+            $recipients = $classname::postRead(array('u' . $pub['core_author']));
         } else {
-            $recipients = Clip_Workflow_Util::getVarValue($pubtype, 'notify_'.$params['group'], array());
+            $recipients = Clip_Workflow_Util::getVarValue($pubtype, 'notify_' . $params['group'], array());
         }
-
         if ($recipients) {
             // event: notify the operation data
             $pub = Clip_Event::notify('data.edit.operation.notify', $pub, $params)->getData();
-
-            $message = $view->assign($params)
-                            ->assign('pubtype', $pubtype)
-                            ->assign('pubdata', $pub)
-                            ->fetch($tplpath);
-
+            $message = $view->assign($params)->assign('pubtype', $pubtype)->assign('pubdata', $pub)->fetch($tplpath);
             // convention: first line is the subject
-            list($subject, $message) = preg_split("/((\r?\n)|(\n?\r))/", $message, 2);
-
+            list($subject, $message) = preg_split('/((?
+)|(
+?))/', $message, 2);
             if (ModUtil::available('Mailer')) {
-                $ok = ModUtil::apiFunc('Mailer', 'user', 'sendmessage',
-                    array('toaddress' => $recipients,
-                          'subject'   => $subject,
-                          'body'      => $message,
-                          'html'      => true));
+                $ok = ModUtil::apiFunc('Mailer', 'user', 'sendmessage', array('toaddress' => $recipients, 'subject' => $subject, 'body' => $message, 'html' => true));
             } else {
                 $ok = mail(implode(', ', $recipients), $subject, $message);
             }
-
             // output message
             if (!$params['silent']) {
                 if ($ok) {
-                    LogUtil::registerStatus(__f("Notification sent to '%s' group.", $params['group'], $dom));
+                    LogUtil::registerStatus(__f('Notification sent to \'%s\' group.', $params['group'], $dom));
                 } else {
                     LogUtil::registerStatus(__('Notification failed.', $dom));
                 }
             }
         }
     } else {
-        LogUtil::log(__f("Notification template [%s] not found.", $tplpath, $dom));
+        LogUtil::log(__f('Notification template [%s] not found.', $tplpath, $dom));
     }
-
     return true;
 }

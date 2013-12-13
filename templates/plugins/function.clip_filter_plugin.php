@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Plugin to include a pubfield filter inside a filter form.
  *
@@ -30,35 +28,25 @@ function smarty_function_clip_filter_plugin($params, Zikula_View &$view)
     if ($view->getTplVar('func') != 'list') {
         return;
     }
-
     // validate the parameters
     if ((!isset($params['id']) || !$params['id']) && (!isset($params['for']) || !$params['for'])) {
         $view->trigger_error($view->__f('Error! Missing argument [%s].', 'id | for'));
     }
-
     if (!isset($params['p']) || !$params['p']) {
         $view->trigger_error($view->__f('Error! Missing argument [%s].', 'p (plugin)'));
     }
-
     // resolves the plugin class to use
     $className = "Clip_Filter_Plugin_{$params['p']}";
     unset($params['p']);
-
     // get the plugin output
     $output = '';
-
     if (class_exists($className)) {
         $filter = $view->get_registered_object('clip_filter');
-
         $params['field'] = isset($params['field']) ? $params['field'] : $params['id'];
-        $params['id']    = $filter->getFieldID($params['id']);
-
+        $params['id'] = $filter->getFieldID($params['id']);
         $plugin = new $className($params, $filter);
-
         $filter->addPlugin($plugin);
-
         $output = $plugin->render($view);
     }
-
     return $output;
 }

@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Clip modfunc outputfilter plugin.
  *
@@ -20,9 +18,8 @@
 function smarty_outputfilter_clip_func($source, $view)
 {
     require_once $view->_get_plugin_filepath('function', 'modfunc');
-
     // detect all the clipfuncs
-    $num = preg_match_all('/CLIPFUNC:(a:.*?\})/', $source, $matches);
+    $num = preg_match_all('/CLIPFUNC:(a:.*?\\})/', $source, $matches);
     for ($i = 0; $i < $num; $i++) {
         $params = unserialize($matches[1][$i]);
         // call the modfunc
@@ -34,7 +31,6 @@ function smarty_outputfilter_clip_func($source, $view)
         // replace them by the modfunc result
         $source = str_replace($matches[0][$i], $output, $source);
     }
- 
     // return the modified source
     return $source;
 }

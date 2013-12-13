@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Hit counter.
  *
@@ -32,9 +30,11 @@
 function smarty_function_clip_hitcount($params, Zikula_View &$view)
 {
     $pubdata = $view->getTplVar('pubdata');
-
     $tid = isset($params['tid']) && $params['tid'] ? $params['tid'] : $pubdata['core_tid'];
     $pid = isset($params['pid']) && $params['pid'] ? $params['pid'] : $pubdata['core_pid'];
-
-    Doctrine_Core::getTable('ClipModels_Pubdata'.$tid)->incrementFieldBy('core_hitcount', $pid, 'core_pid');
+    Doctrine_Core::getTable('ClipModels_Pubdata' . $tid)->incrementFieldBy(
+        'core_hitcount',
+        $pid,
+        'core_pid'
+    );
 }

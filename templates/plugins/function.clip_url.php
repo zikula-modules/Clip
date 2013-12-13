@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Returns a url depending on the context.
  *
@@ -41,27 +39,22 @@ function smarty_function_clip_url($params, Zikula_View &$view)
         $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_url', 'func')));
         return false;
     }
-
     if (isset($params['pub']) && !$params['pub'] instanceof Clip_Doctrine_Pubdata && !is_array($params['pub']) && !isset($params['tid'])) {
         $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter is not valid.', array('clip_url', 'pub | tid [pid]')));
         return false;
     }
-
     $assign = isset($params['assign']) ? $params['assign'] : null;
     unset($params['assign']);
-    
     // discard empty or null values
     foreach ($params as $k => $v) {
         if (is_null($v) || $v === '') {
             unset($params[$k]);
         }
     }
-
     // set the required parameters
     $params['modname'] = 'Clip';
-    $params['type']    = isset($params['type']) ? $params['type'] : $view->getRequest()->getControllerName();
-    $params['type']    = $params['type'] ? $params['type'] : 'user';
-
+    $params['type'] = isset($params['type']) ? $params['type'] : $view->getRequest()->getControllerName();
+    $params['type'] = $params['type'] ? $params['type'] : 'user';
     if (isset($params['pub'])) {
         $params['tid'] = $params['pub']['core_tid'];
         if ($params['func'] == 'display' || $params['func'] == 'edit') {
@@ -73,36 +66,28 @@ function smarty_function_clip_url($params, Zikula_View &$view)
         }
         unset($params['pub']);
     }
-
     // setup the tid if not set
     if (!isset($params['tid'])) {
         $pubtype = $view->getTplVar('pubtype');
         $params['tid'] = $pubtype['tid'];
     }
-
     // dispatch any non-ajax request with modurl
     if ($params['type'] != 'ajax') {
-        $args = (isset($params['args']) && $params['args']) ? $params['args'] : array();
+        $args = isset($params['args']) && $params['args'] ? $params['args'] : array();
         unset($params['args']);
         $params = array_merge($params, $args);
-
         require_once $view->_get_plugin_filepath('function', 'modurl');
         $url = smarty_function_modurl($params, $view);
-
     } else {
         // process the internal Clip ajax request output
-        $type = (isset($params['type']) && $params['type']) ? $params['type'] : 'ajax';
-        $func = (isset($params['func']) && $params['func']) ? $params['func'] : 'pubtypeinfo';
-        $args = (isset($params['args']) && $params['args']) ? $params['args'] : array();
-
+        $type = isset($params['type']) && $params['type'] ? $params['type'] : 'ajax';
+        $func = isset($params['func']) && $params['func'] ? $params['func'] : 'pubtypeinfo';
+        $args = isset($params['args']) && $params['args'] ? $params['args'] : array();
         unset($params['modname'], $params['type'], $params['func'], $params['fragment'], $params['args']);
-
         $params = json_encode(array_merge($params, $args));
-        $params = str_replace('"', "'", $params);
-
-        $url = DataUtil::formatForDisplay("javascript:Zikula.Clip.Ajax.Request($params, '$func', '$type')");
+        $params = str_replace('"', '\'', $params);
+        $url = DataUtil::formatForDisplay("javascript:Zikula.Clip.Ajax.Request({$params}, '{$func}', '{$type}')");
     }
-
     if ($assign) {
         $view->assign($assign, $url);
     } else {

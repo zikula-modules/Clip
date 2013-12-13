@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Modifiers
  */
-
 /**
  * Clip modifier to process the filter hooks.
  *
@@ -29,12 +27,13 @@
 function smarty_modifier_clip_notifyfilters($content, $pubtype, $hooktype = 'filter', $category = 'filter_hooks', $subarea = '')
 {
     // NOTE: notifyfilters core modifier is added on Clip_Util::register_utilities
-
     if (!is_object($pubtype)) {
         $pubtype = Clip_Util::getPubType($pubtype);
     }
-
-    $eventName = $pubtype->getHooksEventName($hooktype, $category, $subarea);
-
+    $eventName = $pubtype->getHooksEventName(
+        $hooktype,
+        $category,
+        $subarea
+    );
     return smarty_modifier_notifyfilters($content, $eventName);
 }

@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Plugin to show an array in a human readable way.
  *
@@ -31,7 +29,6 @@ function smarty_function_clip_dump($params, Zikula_View &$view)
         $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_dump', 'var')));
         return false;
     }
-
     // removes a useless "\n1" ending
     return substr(DataUtil::formatForDisplayHTML(print_r($params['var'])), 0, -2);
 }

@@ -1,5 +1,4 @@
-<?php
-/**
+<?php/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +7,6 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
-
 /**
  * Returns a download url to a specified field.
  *
@@ -34,35 +32,27 @@ function smarty_function_clip_downloadurl($params, Zikula_View &$view)
         $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_downloadurl', 'field | count')));
         return false;
     }
-
     if (!isset($params['pub'])) {
         $params['pub'] = $view->getTplVar('pubdata');
     }
-
     if (!$params['pub'] instanceof Clip_Doctrine_Pubdata && !is_array($params['pub'])) {
         $view->trigger_error($view->__f('Error! in %1$s: the %2$s parameter is not valid.', array('clip_downloadurl', 'pub')));
         return false;
     }
-
     // process the parameters
     if (!isset($params['tid']) && !isset($params['pid'])) {
         $params['tid'] = $params['pub']['core_tid'];
         $params['pid'] = $params['pub']['core_pid'];
     }
-
     $assign = isset($params['assign']) ? $params['assign'] : null;
-
     // build the URL
-    $url = System::getBaseUrl()."ajax.php?module=Clip&func=count&tid={$params['tid']}&pid={$params['pid']}";
-
+    $url = System::getBaseUrl() . "ajax.php?module=Clip&func=count&tid={$params['tid']}&pid={$params['pid']}";
     if ($params['field']) {
         $url .= "&field={$params['field']}";
     }
-
     if ($params['count']) {
         $url .= "&count={$params['count']}";
     }
-
     if ($assign) {
         $view->assign($assign, $url);
     } else {
