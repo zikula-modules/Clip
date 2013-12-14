@@ -9,19 +9,19 @@
  * @subpackage Event
  */
 
-    namespace Clip;
+namespace Clip;
 
 use Clip_Model_Pubtype;
 use Clip_Doctrine_Pubdata;
 use Clip_Util;
 use Zikula_View;
 use InvalidArgumentException;
-use Clip_Event_Generic;
 use EventUtil;
 
-class Event
+class EventHelper
 {
     const NAME_PATTERN = 'module.clip.%s';
+
     /**
      * Clip Event name resolver.
      *
@@ -52,24 +52,30 @@ class Event
     ) {
         // format the name abbreviation
         $name = self::getName($name);
+
         // resolve the subject
         if ($data instanceof Zikula_View) {
             $pubtype = $data->getTplVar('pubtype');
             if ($pubtype instanceof Clip_Model_Pubtype) {
                 $subject = $pubtype;
             }
+
         } elseif ($data instanceof Clip_Doctrine_Pubdata) {
             $subject = Clip_Util::getPubType($data['core_tid']);
+
         } elseif ($args instanceof Clip_Doctrine_Pubdata) {
             $subject = Clip_Util::getPubType($args['core_tid']);
+
         } elseif (isset($args['tid'])) {
             $subject = Clip_Util::getPubType($args['tid']);
         }
+
         if (empty($subject)) {
             throw new InvalidArgumentException('Invalid event parameters. Unable to determine que subject.');
         }
-        $event = new Clip_Event_Generic($name, $subject, $data, $args);
-        //$event = new Zikula_Event(self::getName($name), $subject, $args, $data);
+
+        // TODO upgrade event handling to PublicationEvent
+        $event = new GenericEvent($name, $subject, $data, $args);
         return EventUtil::notify($event);
     }
 
