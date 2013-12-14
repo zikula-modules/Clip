@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,10 +8,12 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
+
 namespace Clip\Form\Plugin;
 
 use ZLanguage;
-class Email extends \\Zikula_Form_Plugin_EmailInput
+
+class Email extends \Zikula_Form_Plugin_EmailInput
 {
     // plugin definition
     public $pluginTitle;
@@ -63,4 +65,4 @@ class Email extends \\Zikula_Form_Plugin_EmailInput
         }
     }
 
-}<?php 
+}

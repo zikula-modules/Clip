@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,6 +8,7 @@
  * @package    Clip
  * @subpackage Api
  */
+
 namespace Clip\Api;
 
 use ModUtil;
@@ -27,7 +19,8 @@ use DBUtil;
 use Categories_DBObject_Category;
 use DataUtil;
 use Clip_Util_Plugins;
-class ImportApi extends \\Zikula_AbstractApi
+
+class ImportApi extends \Zikula_AbstractApi
 {
     /**
      * Convert Lists to Categories.
@@ -379,5 +372,4 @@ class ImportApi extends \\Zikula_AbstractApi
         }
         return LogUtil::registerStatus($this->__('Data import succeded!'));
     }
-
-}<?php 
+}

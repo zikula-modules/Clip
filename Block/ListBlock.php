@@ -126,5 +126,4 @@ class ListBlock extends \Zikula_Controller_AbstractBlock
         $blockinfo['content'] = BlockUtil::varsToContent($vars);
         return $blockinfo;
     }
-
 }

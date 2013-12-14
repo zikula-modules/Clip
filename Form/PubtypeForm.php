@@ -1,11 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -14,10 +8,12 @@
  * @package    Clip
  * @subpackage Form
  */
+
 namespace Clip\Form;
 
 use Clip_Util;
-class PubtypeForm extends \\Zikula_Form_Plugin_DropdownList
+
+class PubtypeForm extends \Zikula_Form_Plugin_DropdownList
 {
     public function getFilename()
     {
@@ -34,4 +30,4 @@ class PubtypeForm extends \\Zikula_Form_Plugin_DropdownList
         parent::load($view, $params);
     }
 
-}<?php 
+}

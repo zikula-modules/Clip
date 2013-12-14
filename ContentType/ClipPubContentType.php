@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,6 +8,7 @@
  * @package    Clip
  * @subpackage Installer
  */
+
 namespace Clip\ContentType;
 
 use ModUtil;
@@ -24,7 +16,8 @@ use Clip_Access;
 use DataUtil;
 use LogUtil;
 use Clip_Util;
-class ClipPubContentType extends \\Content_AbstractContentType
+
+class ClipPubContentType extends \Content_AbstractContentType
 {
     protected $tid;
     protected $pid;
@@ -125,5 +118,4 @@ class ClipPubContentType extends \\Content_AbstractContentType
         // default values
         return array('tid' => '', 'pid' => '', 'tpl' => '', 'clt' => null);
     }
-
-}<?php 
+}

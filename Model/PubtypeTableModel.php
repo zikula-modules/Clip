@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,9 +8,10 @@
  * @package    Clip
  * @subpackage Model
  */
+
 namespace Clip\Model;
 
-class PubtypeTableModel extends \\Clip_Doctrine_Table
+class PubtypeTableModel extends \Clip_Doctrine_Table
 {
     public function getPubtypes()
     {
@@ -32,4 +24,4 @@ class PubtypeTableModel extends \\Clip_Doctrine_Table
         );
     }
 
-}<?php 
+}

@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,6 +8,7 @@
  * @package    Clip
  * @subpackage Api
  */
+
 namespace Clip\Api;
 
 use Zikula_View;
@@ -28,7 +20,8 @@ use Search_Api_User;
 use LogUtil;
 use DBUtil;
 use Clip_Util;
-class SearchApi extends \\Zikula_AbstractApi
+
+class SearchApi extends \Zikula_AbstractApi
 {
     /**
      * Search plugin info.
@@ -117,5 +110,4 @@ class SearchApi extends \\Zikula_AbstractApi
         }
         return $pubtypes;
     }
-
-}<?php 
+}

@@ -1,4 +1,5 @@
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -7,10 +8,12 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
+
 namespace Clip\Form\Plugin;
 
 use ZLanguage;
-class BigInt extends \\Clip_Form_Plugin_Int
+
+class BigInt extends \Clip_Form_Plugin_Int
 {
     // plugin definition
     public $columnDef = 'I8';

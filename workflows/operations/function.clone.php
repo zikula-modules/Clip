@@ -1,17 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -92,4 +80,4 @@ function Clip_operation_clone(&$pub, $params)
     }
     // returns the operation result
     return $result;
-}<?php 
+}

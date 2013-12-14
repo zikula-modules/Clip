@@ -1,8 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -11,9 +8,10 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
+
 namespace Clip\Form\Plugin;
 
-class RadioButton extends \\Zikula_Form_Plugin_RadioButton
+class RadioButton extends \Zikula_Form_Plugin_RadioButton
 {
     // Clip data handling
     public $alias;
@@ -52,4 +50,4 @@ class RadioButton extends \\Zikula_Form_Plugin_RadioButton
         }
     }
 
-}<?php 
+}

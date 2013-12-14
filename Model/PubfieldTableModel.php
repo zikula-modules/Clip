@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,9 +8,10 @@
  * @package    Clip
  * @subpackage Model
  */
+
 namespace Clip\Model;
 
-class PubfieldTableModel extends \\Clip_Doctrine_Table
+class PubfieldTableModel extends \Clip_Doctrine_Table
 {
     
-}<?php 
+}

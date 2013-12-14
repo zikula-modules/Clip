@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -63,4 +63,4 @@ function Clip_operation_delete(&$pub, $params)
     }
     // returns the operation result
     return $result;
-}<?php 
+}

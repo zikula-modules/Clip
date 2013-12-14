@@ -1,17 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -44,4 +32,4 @@ function Clip_operation_mapValues(&$pub, $params)
     }
     // returns the operation result
     return $result;
-}<?php 
+}

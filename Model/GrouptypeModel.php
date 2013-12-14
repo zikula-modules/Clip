@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,10 +8,12 @@
  * @package    Clip
  * @subpackage Model
  */
+
 namespace Clip\Model;
 
 use DataUtil;
-class GrouptypeModel extends \\Doctrine_Record
+
+class GrouptypeModel extends \Doctrine_Record
 {
     /**
      * Set table definition.
@@ -101,4 +94,4 @@ class GrouptypeModel extends \\Doctrine_Record
         $data['order'] = isset($data['order']) && !empty($data['order']) ? DataUtil::is_serialized($data['order']) ? unserialize($data['order']) : $data['order'] : array();
     }
 
-}<?php 
+}

@@ -650,5 +650,4 @@ class PubdataDoctrine extends \Doctrine_Record
         // update the meta values
         $pub->clipValues();
     }
-
 }

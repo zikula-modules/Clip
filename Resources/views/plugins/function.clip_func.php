@@ -1,4 +1,5 @@
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team

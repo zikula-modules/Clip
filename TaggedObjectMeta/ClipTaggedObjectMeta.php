@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,6 +8,7 @@
  * @package    Clip
  * @subpackage TaggedObjectMeta
  */
+
 namespace Clip\TaggedObjectMeta;
 
 use Clip_Url;
@@ -15,7 +16,8 @@ use Clip_Util;
 use ModUtil;
 use DateUtil;
 use UserUtil;
-class ClipTaggedObjectMeta extends \\Tag_AbstractTaggedObjectMeta
+
+class ClipTaggedObjectMeta extends \Tag_AbstractTaggedObjectMeta
 {
     public function __construct(
         $objectId,
@@ -58,4 +60,4 @@ class ClipTaggedObjectMeta extends \\Tag_AbstractTaggedObjectMeta
         $this->author = UserUtil::getVar('uname', $uid);
     }
 
-}<?php 
+}

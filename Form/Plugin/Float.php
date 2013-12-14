@@ -1,4 +1,5 @@
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -7,10 +8,12 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
+
 namespace Clip\Form\Plugin;
 
 use ZLanguage;
-class Float extends \\Zikula_Form_Plugin_FloatInput
+
+class Float extends \Zikula_Form_Plugin_FloatInput
 {
     // plugin definition
     public $pluginTitle;

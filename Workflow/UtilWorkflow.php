@@ -22,7 +22,6 @@ use System;
 use Doctrine_Core;
 use Clip_Workflow_Util;
 use Clip_Util_Plugins;
-use ;
 use Clip_Model_WorkflowVars;
 use DBUtil;
 use UserUtil;

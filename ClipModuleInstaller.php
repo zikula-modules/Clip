@@ -36,7 +36,6 @@ use System;
 use ServiceUtil;
 use DoctrineUtil;
 use Clip_Model_Pubrelation;
-use ;
 use Doctrine_Manager;
 use DataUtil;
 
@@ -993,5 +992,4 @@ class ClipInstaller extends \Zikula_AbstractInstaller
             Doctrine_Core::getTable('ClipModels_Pubdata' . $tid)->changeTable();
         }
     }
-
 }

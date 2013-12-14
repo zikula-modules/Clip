@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,11 +8,13 @@
  * @package    Clip
  * @subpackage Workflow
  */
+
 namespace Clip\Workflow;
 
 use ServiceUtil;
 use LogUtil;
-class ParserWorkflow extends \\Zikula_AbstractBase
+
+class ParserWorkflow extends \Zikula_AbstractBase
 {
     /**
      * XML parser object.
@@ -392,4 +394,4 @@ class ParserWorkflow extends \\Zikula_AbstractBase
         return $this->__f('Unexpected %1$s tag in %2$s state.', array($name, $state));
     }
 
-}<?php 
+}

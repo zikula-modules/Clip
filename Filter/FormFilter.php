@@ -11,13 +11,13 @@
 
 namespace Clip\Filter;
 
-
 /**
  * Clip manager for Form Filters.
  */
 class FormFilter
 {
     const INPUTVAR = 'filter';
+
     public $id;
     // form id
     public $tid;

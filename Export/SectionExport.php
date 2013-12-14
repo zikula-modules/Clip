@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,9 +8,11 @@
  * @package    Clip
  * @subpackage Export
  */
+
 namespace Clip\Export;
 
 use Doctrine_Core;
+
 class SectionExport
 {
     protected $idfield = 'id';
@@ -21,6 +23,7 @@ class SectionExport
     protected $addfrom = array();
     protected $page = 0;
     protected $ids = array();
+
     /**
      * Constructor.
      *
@@ -138,4 +141,4 @@ class SectionExport
         return $result;
     }
 
-}<?php 
+}

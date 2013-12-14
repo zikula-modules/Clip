@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,6 +8,7 @@
  * @package    Clip
  * @subpackage Installer
  */
+
 namespace Clip\ContentType;
 
 use ModUtil;
@@ -15,7 +16,8 @@ use Clip_Access;
 use DataUtil;
 use LogUtil;
 use Clip_Util;
-class ClipPublistContentType extends \\Content_AbstractContentType
+
+class ClipPublistContentType extends \Content_AbstractContentType
 {
     protected $tid;
     protected $orderby;
@@ -25,6 +27,7 @@ class ClipPublistContentType extends \\Content_AbstractContentType
     protected $offset;
     protected $tpl;
     protected $clt;
+
     // Properties getters and setters
     public function getTid()
     {
@@ -162,5 +165,4 @@ class ClipPublistContentType extends \\Content_AbstractContentType
         // default values
         return array('tid' => '', 'orderby' => '', 'orderdir' => 0, 'filter' => '', 'numitems' => 5, 'offset' => 0, 'tpl' => '', 'clt' => null);
     }
-
-}<?php 
+}

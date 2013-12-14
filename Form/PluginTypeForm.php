@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,13 +8,15 @@
  * @package    Clip
  * @subpackage Form
  */
+
 namespace Clip\Form;
 
 use Clip_Util_Selectors;
 use ZLanguage;
 use Clip_Util_Plugins;
 use PageUtil;
-class PluginTypeForm extends \\Zikula_Form_Plugin_DropdownList
+
+class PluginTypeForm extends \Zikula_Form_Plugin_DropdownList
 {
     public function getFilename()
     {
@@ -68,4 +70,4 @@ class PluginTypeForm extends \\Zikula_Form_Plugin_DropdownList
         return $result . $config . $script;
     }
 
-}<?php 
+}

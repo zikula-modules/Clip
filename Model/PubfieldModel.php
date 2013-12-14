@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,11 +8,13 @@
  * @package    Clip
  * @subpackage Model
  */
+
 namespace Clip\Model;
 
 use Doctrine_Core;
 use Clip_Generator;
-class PubfieldModel extends \\Doctrine_Record
+
+class PubfieldModel extends \Doctrine_Record
 {
     /**
      * Set table definition.
@@ -185,4 +178,4 @@ class PubfieldModel extends \\Doctrine_Record
         }
     }
 
-}<?php 
+}

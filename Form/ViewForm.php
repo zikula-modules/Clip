@@ -1,11 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -14,6 +8,7 @@
  * @package    Clip
  * @subpackage Form
  */
+
 namespace Clip\Form;
 
 use Zikula_Exception_Fatal;
@@ -25,7 +20,8 @@ use Clip_Form_Plugin_Text;
 use ModUtil;
 use PageUtil;
 use Exception;
-class ViewForm extends \\Zikula_Form_View
+
+class ViewForm extends \Zikula_Form_View
 {
     protected $response;
     /**
@@ -197,4 +193,4 @@ class ViewForm extends \\Zikula_Form_View
         return $result;
     }
 
-}<?php 
+}

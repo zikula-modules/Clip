@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,9 +8,11 @@
  * @package    Clip
  * @subpackage Import
  */
+
 namespace Clip\Import;
 
 use Doctrine_Core;
+
 class SectionImport
 {
     protected $idfield = 'id';
@@ -136,4 +138,4 @@ class SectionImport
         return $result;
     }
 
-}<?php 
+}

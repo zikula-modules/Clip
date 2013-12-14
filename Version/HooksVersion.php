@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,13 +8,14 @@
  * @package    Clip
  * @subpackage Version
  */
+
 namespace Clip\Version;
 
-class HooksVersion extends \\Clip_Version
+class HooksVersion extends \Clip_Version
 {
     protected function setupHookBundles()
     {
         
     }
 
-}<?php 
+}

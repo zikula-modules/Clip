@@ -1,4 +1,5 @@
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright   Zikula Foundation 2009 - Zikula Application Framework

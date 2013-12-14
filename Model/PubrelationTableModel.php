@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,9 +8,10 @@
  * @package    Clip
  * @subpackage Model
  */
+
 namespace Clip\Model;
 
-class PubrelationTableModel extends \\Clip_Doctrine_Table
+class PubrelationTableModel extends \Clip_Doctrine_Table
 {
     public function getClipRelations()
     {
@@ -32,4 +24,4 @@ class PubrelationTableModel extends \\Clip_Doctrine_Table
         return $result;
     }
 
-}<?php 
+}

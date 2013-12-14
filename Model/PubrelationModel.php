@@ -1,14 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -17,13 +8,15 @@
  * @package    Clip
  * @subpackage Model
  */
+
 namespace Clip\Model;
 
 use Clip_Generator;
 use Doctrine_Core;
 use Clip_Util;
 use ModUtil;
-class PubrelationModel extends \\Doctrine_Record
+
+class PubrelationModel extends \Doctrine_Record
 {
     /**
      * Set table definition.
@@ -147,4 +140,4 @@ class PubrelationModel extends \\Doctrine_Record
         }
     }
 
-}<?php 
+}

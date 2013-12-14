@@ -11,7 +11,6 @@
 
 namespace Clip\EventHandler;
 
-
 /**
  * Listeners EventHandler.
  */

@@ -1,17 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -57,9 +45,11 @@ function Clip_operation_notify(&$pub, $params)
             $pub = Clip_Event::notify('data.edit.operation.notify', $pub, $params)->getData();
             $message = $view->assign($params)->assign('pubtype', $pubtype)->assign('pubdata', $pub)->fetch($tplpath);
             // convention: first line is the subject
-            list($subject, $message) = preg_split('/((?
+            list($subject, $message) = preg_split('/((
+?
 )|(
-?))/', $message, 2);
+?
+))/', $message, 2);
             if (ModUtil::available('Mailer')) {
                 $ok = ModUtil::apiFunc('Mailer', 'user', 'sendmessage', array('toaddress' => $recipients, 'subject' => $subject, 'body' => $message, 'html' => true));
             } else {
@@ -78,4 +68,4 @@ function Clip_operation_notify(&$pub, $params)
         LogUtil::log(__f('Notification template [%s] not found.', $tplpath, $dom));
     }
     return true;
-}<?php 
+}

@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,11 +8,13 @@
  * @package    Clip
  * @subpackage Api
  */
+
 namespace Clip\Api;
 
 use ModUtil;
 use Clip_Access;
-class AdminApi extends \\Zikula_AbstractApi
+
+class AdminApi extends \Zikula_AbstractApi
 {
     /**
      * Get admin panel links.
@@ -33,5 +35,4 @@ class AdminApi extends \\Zikula_AbstractApi
         }
         return $links;
     }
-
-}<?php 
+}

@@ -17,7 +17,6 @@ use ZLanguage;
 use ServiceUtil;
 use Clip_Util;
 use InvalidArgumentException;
-use ;
 use Zikula_Form_AbstractPlugin;
 use Doctrine_Collection;
 use Doctrine_Record;

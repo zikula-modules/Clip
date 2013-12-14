@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,9 +8,11 @@
  * @package    Clip
  * @subpackage Export_Formatter
  */
+
 namespace Clip\Export\Formatter;
 
 use XMLWriter;
+
 class XML
 {
     protected $writer;
@@ -78,4 +80,4 @@ class XML
         return $xml;
     }
 
-}<?php 
+}

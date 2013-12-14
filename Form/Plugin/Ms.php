@@ -1,8 +1,5 @@
-<?php?>
-<?php?>
-<?php 
-?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -11,11 +8,13 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
+
 namespace Clip\Form\Plugin;
 
 use ZLanguage;
 use CategoryUtil;
-class Ms extends \\Zikula_Form_Plugin_TextInput
+
+class Ms extends \Zikula_Form_Plugin_TextInput
 {
     // plugin definition
     public $pluginTitle;
@@ -26,6 +25,7 @@ class Ms extends \\Zikula_Form_Plugin_TextInput
     public $rid;
     public $pid;
     public $field;
+
     public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));
@@ -91,4 +91,4 @@ class Ms extends \\Zikula_Form_Plugin_TextInput
         $pub[$fieldname] = $cat;
     }
 
-}<?php 
+}

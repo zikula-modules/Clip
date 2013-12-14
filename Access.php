@@ -278,5 +278,4 @@ class Access
     {
         return in_array($context, array('access', 'exec')) || strpos($context, 'edit') === 0;
     }
-
-}<?php 
+}

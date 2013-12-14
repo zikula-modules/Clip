@@ -1,4 +1,5 @@
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -10,7 +11,8 @@
 namespace Clip\Form\Plugin;
 
 use ZLanguage;
-class String extends \\Zikula_Form_Plugin_TextInput
+
+class String extends \Zikula_Form_Plugin_TextInput
 {
     // plugin definition
     public $pluginTitle;
@@ -21,6 +23,7 @@ class String extends \\Zikula_Form_Plugin_TextInput
     public $rid;
     public $pid;
     public $field;
+
     public function setup()
     {
         $this->setDomain(ZLanguage::getModuleDomain('Clip'));

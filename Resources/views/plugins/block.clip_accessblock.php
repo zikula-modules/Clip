@@ -1,4 +1,5 @@
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -7,6 +8,7 @@
  * @package    Clip
  * @subpackage View_Plugins
  */
+
 /**
  * Block to perform a Clip's permission check.
  *

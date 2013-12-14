@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,6 +8,7 @@
  * @package    Clip
  * @subpackage Import_Parser
  */
+
 namespace Clip\Import\Parser;
 
 use XMLReader;
@@ -16,10 +17,13 @@ use DataUtil;
 use LogUtil;
 use Clip_Util;
 use Clip_Import_Parser_XML;
+
 class XML
 {
     const SKIP = '__DISCARDEDNODE__';
+
     protected $reader = null;
+
     /**
      * Constructor.
      */
@@ -150,4 +154,4 @@ class XML
         return $array;
     }
 
-}<?php 
+}

@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,7 +8,8 @@
  * @package    Clip
  * @subpackage Form_Plugin
  */
-namespace Clip\Form\Plugin;
+
+    namespace Clip\Form\Plugin;
 
 use ZLanguage;
 use ModUtil;
@@ -17,7 +18,8 @@ use SecurityUtil;
 use CategoryUtil;
 use Clip_Util;
 use CategoryRegistryUtil;
-class RadioList extends \\Zikula_Form_Plugin_CategorySelector
+
+class RadioList extends \Zikula_Form_Plugin_CategorySelector
 {
     // plugin definition
     public $pluginTitle;
@@ -230,4 +232,4 @@ class RadioList extends \\Zikula_Form_Plugin_CategorySelector
         $this->config = array('cat' => $typedata[0] ? (int) $typedata[0] : Clip_Util::getDefaultCategoryID(), 'edit' => isset($typedata[1]) ? (bool) $typedata[1] : false);
     }
 
-}<?php 
+}

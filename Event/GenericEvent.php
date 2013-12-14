@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,10 +8,12 @@
  * @package    Clip
  * @subpackage Event
  */
+
 namespace Clip\Event;
 
 use InvalidArgumentException;
-class GenericEvent extends \\Zikula_Event
+
+class GenericEvent extends \Zikula_Event
 {
     /**
          * EventManager instance.
@@ -97,4 +99,4 @@ class GenericEvent extends \\Zikula_Event
         return isset($this->subject[$field]) && $this->subject[$field] == $value;
     }
 
-}<?php 
+}

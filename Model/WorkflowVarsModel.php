@@ -1,5 +1,5 @@
-<?php?>
-<?php/**
+<?php
+/**
  * Clip
  *
  * @copyright  (c) Clip Team
@@ -8,9 +8,10 @@
  * @package    Clip
  * @subpackage Model
  */
+
 namespace Clip\Model;
 
-class WorkflowVarsModel extends \\Doctrine_Record
+class WorkflowVarsModel extends \Doctrine_Record
 {
     /**
      * Set table definition.
@@ -62,4 +63,4 @@ class WorkflowVarsModel extends \\Doctrine_Record
         
     }
 
-}<?php 
+}

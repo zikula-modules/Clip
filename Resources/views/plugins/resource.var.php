@@ -1,4 +1,5 @@
-<?php/**
+<?php
+/**
  * Smarty resource
  * 
  * @copyright  (c) Zikula Development Team
