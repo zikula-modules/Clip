@@ -208,6 +208,7 @@ class Clip_Controller_User extends Zikula_AbstractController
      * @param string  $args['template']      Custom publication type template to use.
      * @param string  $args['filter']        Filter string.
      * @param string  $args['orderby']       OrderBy string.
+     * @param string  $args['groupby']       GroupBy string.
      * @param integer $args['startnum']      Offset item to start from.
      * @param integer $args['page']          Offset page to start from.
      * @param integer $args['itemsperpage']  Number of items to retrieve.
@@ -240,6 +241,7 @@ class Clip_Controller_User extends Zikula_AbstractController
             'itemsperpage'  => (isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && (int)$args['itemsperpage'] >= 0) ? (int)$args['itemsperpage'] : (int)$pubtype['itemsperpage'],
             'filter'        => isset($args['filter']) ? $args['filter'] : null,
             'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),
+            'groupby'       => isset($args['groupby']) ? $args['groupby'] : FormUtil::getPassedValue('groupby'),
             'handleplugins' => isset($args['handleplugins']) ? (bool)$args['handleplugins'] : true,
             'loadworkflow'  => isset($args['loadworkflow']) ? (bool)$args['loadworkflow'] : false,
             'checkperm'     => false,
