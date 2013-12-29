@@ -1,5 +1,5 @@
 {
-    "name": "autenti/clip-module",
+    "name": "matheo/clip-module",
     "description": "Dynamic content publishing platform for Zikula.",
     "type": "zikula-module",
     "license": "MIT",
@@ -11,14 +11,14 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Autenti\\Clip\\": "" }
+        "psr-0": { "Matheo\\Clip\\": "" }
     },
     "require": {
         "php": ">5.3.3"
     },
     "extra": {
         "zikula": {
-            "class": "Autenti\\Clip\\AutentiClipModule"
+            "class": "Matheo\\Clip\\MatheoClipModule"
         }
     }
 }
