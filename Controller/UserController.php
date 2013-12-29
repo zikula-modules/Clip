@@ -180,6 +180,7 @@ class UserController extends \Zikula_AbstractController
      * @param string  $args['template']      Custom publication type template to use.
      * @param string  $args['filter']        Filter string.
      * @param string  $args['orderby']       OrderBy string.
+     * @param string  $args['groupby']       GroupBy string.
      * @param integer $args['startnum']      Offset item to start from.
      * @param integer $args['page']          Offset page to start from.
      * @param integer $args['itemsperpage']  Number of items to retrieve.
@@ -203,7 +204,7 @@ class UserController extends \Zikula_AbstractController
         $clipvalues = array();
         Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
         // define the arguments
-        $apiargs = array('tid' => $pubtype['tid'], 'itemsperpage' => isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && (int) $args['itemsperpage'] >= 0 ? (int) $args['itemsperpage'] : (int) $pubtype['itemsperpage'], 'filter' => isset($args['filter']) ? $args['filter'] : null, 'orderby' => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'), 'handleplugins' => isset($args['handleplugins']) ? (bool) $args['handleplugins'] : true, 'loadworkflow' => isset($args['loadworkflow']) ? (bool) $args['loadworkflow'] : false, 'checkperm' => false, 'countmode' => 'both', 'rel' => $pubtype['config']['list']);
+        $apiargs = array('tid' => $pubtype['tid'], 'itemsperpage' => isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && (int) $args['itemsperpage'] >= 0 ? (int) $args['itemsperpage'] : (int) $pubtype['itemsperpage'], 'orderby'       => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'),  'filter' => isset($args['filter']) ? $args['filter'] : null, 'orderby' => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'), 'handleplugins' => isset($args['handleplugins']) ? (bool) $args['handleplugins'] : true, 'loadworkflow' => isset($args['loadworkflow']) ? (bool) $args['loadworkflow'] : false, 'checkperm' => false, 'countmode' => 'both', 'rel' => $pubtype['config']['list']);
         $args = array('template' => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'), 'startnum' => isset($args['startnum']) && is_numeric($args['startnum']) ? (int) $args['startnum'] : (int) FormUtil::getPassedValue('startnum', 0), 'page' => isset($args['page']) && is_numeric($args['page']) ? (int) $args['page'] : (int) abs(FormUtil::getPassedValue('page', 1)), 'cachelifetime' => isset($args['cachelifetime']) ? (int) $args['cachelifetime'] : $pubtype['cachelifetime']);
         // sets the function parameter (navbar)
         $this->view->assign('func', 'list');
