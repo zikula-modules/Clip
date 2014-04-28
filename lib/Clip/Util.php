@@ -134,7 +134,8 @@ class Clip_Util
      */
     public static function createOrderBy($orderby, $relfields = array())
     {
-        $orderbylist = !is_array($orderby) ? explode(',', $orderby) : $orderby;
+        $sepp = strpos($orderby, ',') !== false ? ',' : ';';
+        $orderbylist = !is_array($orderby) ? explode($sepp, $orderby) : $orderby;
         $orderbylist = array_map('trim', $orderbylist);
 
         $orderby = '';
