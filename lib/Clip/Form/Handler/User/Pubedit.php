@@ -115,7 +115,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // Pagelock: Set locker when editing existing pub
         if ($this->pub->exists() && ModUtil::available('PageLock')) {
-            //$returnUrl = ($returnurl) ? $returnurl : 
             ModUtil::apiFunc('PageLock', 'user', 'pageLock', array('lockName' => "clipEditPub{$this->tid}-{$this->pid}",
                                                                    'returnUrl' => System::getCurrentUrl() ));
         }
