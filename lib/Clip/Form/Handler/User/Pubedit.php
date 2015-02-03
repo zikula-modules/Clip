@@ -113,6 +113,12 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $returnurl));
         }
 
+        // Pagelock: Set locker when editing existing pub
+        if ($this->pub->exists() && ModUtil::available('PageLock')) {
+            ModUtil::apiFunc('PageLock', 'user', 'pageLock', array('lockName' => "clipEditPub{$this->tid}-{$this->pid}",
+                                                                   'returnUrl' => System::getCurrentUrl() ));
+        }
+
         return true;
     }
 
@@ -129,6 +135,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         // cancel processing
         if ($args['commandName'] == 'cancel') {
+            // Pagelock: Release lock
+            if (ModUtil::available('PageLock')) {
+                ModUtil::apiFunc( 'PageLock', 'user', 'releaseLock', array('lockName' => "clipEditPub{$this->tid}-{$this->pid}"));
+            }
+            
             if ($isAjax) {
                 return new Zikula_Response_Ajax_Json(array('cancel' => true));
             }
@@ -236,6 +247,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // notify the finalization of the edition
         $mainpub = Clip_Event::notify('data.edit.post', $mainpub, $this->pub)->getData();
 
+        // Pagelock: Release lock right after the finalization of the edition and before the redirection
+        if (ModUtil::available('PageLock')) {
+            ModUtil::apiFunc( 'PageLock', 'user', 'releaseLock', array('lockName' => "clipEditPub{$this->tid}-{$this->pid}"));
+        }
+        
         // check a limited stepmode
         if (preg_match('/^stepmode(\d+)(-(\w+))?$/', $this->goto, $matches)) {
             $next = isset($matches[3]) ? $matches[3] : '';
