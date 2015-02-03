@@ -819,6 +819,8 @@ class Clip_Api_User extends Zikula_AbstractApi
 			} else {
 				$tplhtml = $this->getVar('shorturls');
 			}
+		} else {
+			$tplhtml = false;
 		}
 
         unset($_['tid'], $_['template']);
