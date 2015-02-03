@@ -191,7 +191,7 @@ class Clip_Filter_Handler_Date extends FilterUtil_AbstractPlugin implements Filt
                 $time = str_replace('_', ' ', $date);
             }
 
-            if (strptime($date, DATEFORMAT_FIXED) === false) {
+            if (strptime($time, DATEFORMAT_FIXED) === false) {
                 return false;
             }
         }
