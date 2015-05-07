@@ -261,8 +261,9 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         }
 
         // core operations goto processing
-        $goto = $this->processGoto($mainpub);
-        $this->goto = $goto ? $goto : $this->goto;
+        if (empty($this->goto)) {
+            $this->goto = $this->processGoto($mainpub);
+        }
 
         // check the goto parameter
         switch ($this->goto)
@@ -314,9 +315,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
             default:
                 // if goto is empty or not an url then go to referer
-                if (!$this->goto) {
-                    $this->goto = $this->referer;
-                }
+                $this->goto = $this->referer;
         }
 
         // stop here if the request is ajax based
