@@ -501,6 +501,36 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * Relation parameter processing.
+     *
+     * @param string $rel Relation field.
+     * @param mixed  $val Value to load.
+     *
+     * @return $this
+     */
+    public function clipRelFill($rel, $val)
+    {
+        if ($info = $this->getRelation($rel)) {
+            $reference = $this->$rel;
+
+            if ($reference instanceof Doctrine_Record) {
+                $this->$rel = $reference->getTable()->find($val);
+
+            } elseif ($reference instanceof Doctrine_Collection) {
+                // FIXME optimize query for multiple ids once
+                if (strpos($val, ',') !== false) {
+                    $val = explode(',', $val);
+                }
+                foreach ((array)$val as $v) {
+                    $this->$rel->add($reference->getTable()->find($v));
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Validates if the passed field name is a valid column.
      *
      * @return boolean

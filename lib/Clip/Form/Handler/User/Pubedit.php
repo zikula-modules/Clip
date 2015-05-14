@@ -67,16 +67,18 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
             // check for set_* parameters from $_GET if its a new publication
             if (!$this->pub->exists()) {
-                $rels = $this->pub->getRelationFields();
+                $fields = $this->pub->pubFields();
 
                 $get = $this->request->getGet();
                 foreach (array_keys($get->getCollection()) as $param) {
                     if (strpos($param, 'set_') === 0) {
                         $field = substr($param, 4);
-                        if (isset($rels[$field])) {
-                            $this->pub[$rels[$field]] = $get->filter($param);
-                        } else if ($this->pub->contains($field)) {
-                            $this->pub[$field] = $get->filter($param);
+                        if (isset($fields[$field])) {
+                            if ($fields[$field] == 'relation') {
+                                $this->pub->clipRelFill($field, $get->filter($param));
+                            } else if ($this->pub->contains($field)) {
+                                $this->pub[$field] = $get->filter($param);
+                            }
                         }
                     }
                 }
