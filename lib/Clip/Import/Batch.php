@@ -149,27 +149,9 @@ class Clip_Import_Batch
                 $obj->fromArray($args['pubtype']);
                 // assign the default grouptype
                 $obj->grouptype = Clip_Util::getDefaultGrouptype();
-                // see if we have the next tid already
-                static $nexttid;
-                if (!isset($nexttid)) {
-                    // get the connection name to figure our the database name in use
-                    $tablename = Doctrine_Core::getTable('Clip_Model_Pubtype')->getTableName();
-                    $statement = Doctrine_Manager::getInstance()->connection();
-                    $connname  = $statement->getName();
-                    // get the databases list
-                    $serviceManager = ServiceUtil::getManager();
-                    $databases = $serviceManager['databases'];
-                    $result    = $statement->execute("SELECT AUTO_INCREMENT
-                                                        FROM information_schema.TABLES
-                                                       WHERE TABLE_NAME = '$tablename'
-                                                         AND TABLE_SCHEMA = '{$databases[$connname]['dbname']}'");
-                    $nexttid = (int)$result->fetchColumn();
-                } else {
-                    $nexttid++;
-                }
                 // save the pubtype and create the table
                 $obj->save();
-                self::$idmap['tids'][$oid] = $nexttid;
+                self::$idmap['tids'][$oid] = $obj->getOid();
                 break;
 
             case 'pubfields':
