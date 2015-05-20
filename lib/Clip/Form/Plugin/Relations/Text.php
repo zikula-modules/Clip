@@ -106,11 +106,17 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
             // check if the main pub received relations on get parameters
             if ($this->alias == 'clipmain') {
                 $pubdata = $view->getTplVar('pubdata');
-                $relflds = $pubdata->getRelationFields();
 
-                if (isset($relflds[$this->field]) && $pubdata->clipModified($relflds[$this->field])) {
-                    $old = $pubdata->clipOldValues($relflds[$this->field]);
-                    $ids = !is_null($old) ? array($old) : array();
+                if (!$pubdata->exists()) {
+                    $ids = array();
+                } else {
+                    $relflds = $pubdata->getRelationFields();
+
+                    if (isset($relflds[$this->field]) && $pubdata->clipModified($relflds[$this->field])) {
+                        // owned single relation
+                        $old = $pubdata->clipOldValues($relflds[$this->field]);
+                        $ids = !is_null($old) ? array($old) : array();
+                    }
                 }
             }
 
