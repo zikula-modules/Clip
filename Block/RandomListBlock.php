@@ -90,7 +90,7 @@ class RandomListBlock extends \Zikula_Controller_AbstractBlock
             $this->view->setCaching(Zikula_View::CACHE_DISABLED);
         }
         //// Execution
-        $vars['limit'] = isset($vars['limit']) && (int) $vars['limit'] > 1 ? (int) $vars['limit'] : 1;
+        $vars['limit'] = isset($vars['limit']) && (int) $vars['limit'] >= 1 ? (int) $vars['limit'] : 3;
         $vars['filter'] = isset($vars['filter']) && !empty($vars['filter']) ? $vars['filter'] : '()';
         $vars['where'] = array();
         $vars['where'][] = array('core_online = ?', 1);
@@ -159,7 +159,7 @@ class RandomListBlock extends \Zikula_Controller_AbstractBlock
     public function update($blockinfo)
     {
         $vars = array('tid' => FormUtil::getPassedValue('tid'), 'filter' => FormUtil::getPassedValue('filter'), 'limit' => FormUtil::getPassedValue('limit'), 'template' => FormUtil::getPassedValue('template'), 'cachelifetime' => FormUtil::getPassedValue('cachelifetime'));
-        $vars['limit'] = (int) $vars['limit'] > 1 ? (int) $vars['limit'] : 1;
+        $vars['limit'] = (int) $vars['limit'] >= 1 ? (int) $vars['limit'] : 3;
         $blockinfo['content'] = BlockUtil::varsToContent($vars);
         return $blockinfo;
     }
