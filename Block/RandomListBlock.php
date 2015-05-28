@@ -137,7 +137,7 @@ class RandomListBlock extends \Zikula_Controller_AbstractBlock
             $vars['filter'] = '';
         }
         if (!isset($vars['limit']) || (int) $vars['limit'] < 1) {
-            $vars['limit'] = 1;
+            $vars['limit'] = 3;
         }
         if (!isset($vars['template'])) {
             $vars['template'] = '';
