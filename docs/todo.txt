@@ -1,6 +1,9 @@
 
   TODO
 
+    CSS:
+      Support bootstrap 3 by default
+
     EDITOR PANEL
       Adjustments to review the own publications + revisions
 

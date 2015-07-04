@@ -27,6 +27,36 @@ class Clip_Doctrine_Pubdata extends Doctrine_Record
     }
 
     /**
+     * This method is used for setting up relations and attributes.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $event = new Zikula_Event(Clip_Event::getName('pub.listeners'), null, array(), new ArrayObject());
+        $data = EventUtil::notify($event)->getData();
+
+        // details in docs/examples/PubListener.php
+        foreach ($data as $realm => $listeners) {
+            if ($realm == '-' || (is_numeric($realm) && $realm == $this->getTid()) || (!is_numeric($realm) && Clip_Util::getPubType($realm, 'tid') == $this->getTid())) {
+                foreach ($listeners as $listener) {
+                    $this->addListener(is_object($listener) ? $listener : new $listener);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the pubtype tid.
+     *
+     * @return integer
+     */
+    public function getTid()
+    {
+        return Clip_Util::getTidFromString(get_class($this));
+    }
+
+    /**
      * Returns the publication as an array.
      *
      * @param boolean $deep      Whether to include relations.

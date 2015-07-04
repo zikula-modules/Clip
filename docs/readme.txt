@@ -1,4 +1,4 @@
 
   WARNING
 
-    There's no upgrade path for Pagesetter yet.
+    There's no complete upgrade path for Pagesetter.

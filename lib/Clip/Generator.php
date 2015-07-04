@@ -510,6 +510,8 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
      */
     public function setUp()
     {
+        parent::setUp();
+
         \$this->actAs('Zikula_Doctrine_Template_StandardFields');
         $hasRelations
     }
