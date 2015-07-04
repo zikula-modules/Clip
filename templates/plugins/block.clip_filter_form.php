@@ -57,6 +57,8 @@ function smarty_block_clip_filter_form($params, $content, Zikula_View &$view)
 
     $dom    = ZLanguage::getModuleDomain('Clip');
     $action = System::getBaseUrl().System::getVar('entrypoint', 'index.php');
+    $clipVars = $view->getTplVar('clipargs');
+    $template = $clipVars['list']['template'];
 
     $output = '<div class="'.$class.'">'."\n".
                    '<fieldset id="'.$filter->getId().'wrapper" class="z-linear" style="display: none">'."\n".
@@ -66,7 +68,8 @@ function smarty_block_clip_filter_form($params, $content, Zikula_View &$view)
                            '<input type="hidden" name="module" value="Clip" />'."\n".
                            '<input type="hidden" name="type" value="'.$type.'" />'."\n".
                            '<input type="hidden" name="func" value="list" />'."\n".
-                           '<input type="hidden" name="tid" value="'.$view->getTplVar('pubtype')->tid.'" />'."\n";
+                           '<input type="hidden" name="tid" value="'.$view->getTplVar('pubtype')->tid.'" />'."\n".
+                           '<input type="hidden" name="template" value="'.$template.'" />'."\n";
 
     foreach ($filter->getFilterNames() as $id => $filterName) {
         $output .= '<input type="hidden" id="'.$id.'" name="'.$filterName.'" value="" />'."\n";
