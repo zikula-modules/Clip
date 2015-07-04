@@ -228,11 +228,6 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                     if (!$res) {
                         return false;
                     }
-
-                    // store the main result to process the goto
-                    if ($alias == $this->alias) {
-                        $mainpub = $res;
-                    }
                 }
             }
         }
@@ -247,7 +242,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $view->clear_cache(null, 'tid_'.$this->tid.'/list');
 
         // notify the finalization of the edition
-        $mainpub = Clip_Event::notify('data.edit.post', $mainpub, $this->pub)->getData();
+        $mainpub = Clip_Event::notify('data.edit.post', $this->pub)->getData();
 
         // Pagelock: Release lock right after the finalization of the edition and before the redirection
         if (ModUtil::available('PageLock')) {
@@ -272,11 +267,11 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
-                $this->goto = Clip_Util::urlobj($mainpub, 'edit', isset($aurl) ? $aurl : array('goto' => 'stepmode'));
+                $this->goto = Clip_Util::urlobj($this->pub, 'edit', isset($aurl) ? $aurl : array('goto' => 'stepmode'));
                 break;
 
             case 'edit':
-                $this->goto = Clip_Util::urlobj($mainpub, 'edit');
+                $this->goto = Clip_Util::urlobj($this->pub, 'edit');
                 break;
 
             case 'form':
@@ -288,7 +283,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 break;
 
             case 'display':
-                $this->goto = Clip_Util::urlobj($mainpub, 'display');
+                $this->goto = Clip_Util::urlobj($this->pub, 'display');
                 break;
 
             case 'main':
