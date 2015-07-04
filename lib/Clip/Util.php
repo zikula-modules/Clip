@@ -715,6 +715,9 @@ class Clip_Util
                 }
             }
 
+        } else if (!is_numeric($obj)) {
+            $args['tid'] = Clip_Util::getPubType($obj, 'tid');
+
         } else {
             $args['tid'] = $obj;
         }
@@ -747,6 +750,9 @@ class Clip_Util
                 }
                 $args['urltitle'] = $obj['core_urltitle'];
             }
+
+        } else if (!is_numeric($obj)) {
+            $args['tid'] = Clip_Util::getPubType($obj, 'tid');
 
         } else {
             $args['tid'] = $obj;

@@ -78,6 +78,9 @@ function smarty_function_clip_url($params, Zikula_View &$view)
     if (!isset($params['tid'])) {
         $pubtype = $view->getTplVar('pubtype');
         $params['tid'] = $pubtype['tid'];
+
+    } elseif (!is_numeric($params['tid'])) {
+        $params['tid'] = Clip_Util::getPubType($params['tid'], 'tid');
     }
 
     // dispatch any non-ajax request with modurl
