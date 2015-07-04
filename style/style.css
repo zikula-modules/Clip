@@ -627,7 +627,8 @@ pre.clip-generatorcode {
 
 
 /*** Zikula.Autocompleter CSS ***/
-div.z-formrow {
+div.z-formrow,
+.form-group {
   position: relative;
 }
 ul.z-auto-holder {
@@ -722,7 +723,7 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   padding: 0 !important;
   position: relative;
 }
-.z-form div.z-formrow > div.z-auto-container {
+div.z-auto-container {
   background: #eee;
   display: none;
   /*margin-left: 27.5% !important;*/
@@ -733,7 +734,7 @@ ul.z-auto-holder li.z-auto-bit-box-focus a.z-auto-closebutton:hover {
   width: 71%;
   z-index: 9999;
 }
-.z-form .z-linear div.z-formrow > div.z-auto-container {
+.z-linear div.z-auto-container {
   margin-left: 0 !important;
   width: 100%;
 }
