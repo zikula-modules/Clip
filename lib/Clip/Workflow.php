@@ -162,7 +162,7 @@ class Clip_Workflow extends Zikula_AbstractBase
         // adds the translated state title
         $states = Clip_Workflow_Util::getStatesMap($this->module, $this->schema);
 
-        $workflow['statetitle'] = isset($states[$workflow['state']]) ? $states[$workflow['state']]['title'] : $this->__('Invalid');
+        $workflow['statetitle'] = isset($states[$workflow['state']]) ? $states[$workflow['state']]['title'] : ($workflow['state'] == 'initial' ? $this->__('Initial') : $this->__('Invalid'));
 
         // attach workflow to object
         $this->obj->mapValue('__WORKFLOW__', $workflow);
@@ -213,7 +213,19 @@ class Clip_Workflow extends Zikula_AbstractBase
         $rec = array('id'    => $this->obj['__WORKFLOW__']['id'],
                      'state' => $stateID);
 
-        return (bool)DBUtil::updateObject($rec, 'workflows');
+        if (DBUtil::updateObject($rec, 'workflows')) {
+            if (isset($this->obj['__WORKFLOW__'])) {
+                $workflow = $this->obj['__WORKFLOW__'];
+                $workflow['state'] = $stateID;
+                $this->obj->mapValue('__WORKFLOW__', $workflow);
+            }
+
+            $this->obj->mapValue('core_approvalstate', $stateID);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
