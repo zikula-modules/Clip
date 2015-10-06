@@ -36,7 +36,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $pubtype = Util::getPubType($this->tid);
 
         // get the pubfields table
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
+        $tableObj = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield');
 
         // set the field information
         if ($this->id) {
@@ -84,7 +84,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
             return $view->redirect($this->referer);
         }
 
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
+        $tableObj = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield');
 
         // get the data set in the form
         $data = $view->getValues();

@@ -9,11 +9,9 @@
  * @subpackage Model
  */
 
-namespace Matheo\Clip\Model;
-
 use Matheo\Clip\Doctrine\TableDoctrine;
 
-class PubfieldModelTable extends TableDoctrine
+class Matheo_Clip_Model_PubfieldTable extends TableDoctrine
 {
     
 }

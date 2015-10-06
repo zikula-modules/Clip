@@ -9,12 +9,9 @@
  * @subpackage Model
  */
 
-namespace Matheo\Clip\Model;
-
-use Doctrine_Core;
 use Matheo\Clip\Generator;
 
-class PubfieldModel extends \Doctrine_Record
+class Matheo_Clip_Model_Pubfield extends \Doctrine_Record
 {
     /**
      * Set table definition.
@@ -148,7 +145,7 @@ class PubfieldModel extends \Doctrine_Record
     {
         $pubfield = $event->getInvoker();
         $where = array(array('tid = ?', $pubfield->tid));
-        $max_lineno = (int) Doctrine_Core::getTable('Matheo\Clip\Model\PubfieldModel')->selectFieldFunction(
+        $max_lineno = (int) Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectFieldFunction(
             'lineno',
             'MAX',
             $where

@@ -9,9 +9,7 @@
  * @subpackage Model
  */
 
-namespace Matheo\Clip\Model;
-
-class WorkflowVarsModel extends \Doctrine_Record
+class Matheo_Clip_Model_WorkflowVars extends \Doctrine_Record
 {
     /**
      * Set table definition.

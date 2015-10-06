@@ -64,7 +64,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
             if (!$gid) {
                 return new Zikula_Response_Ajax_BadData($this->__f('Error! Cannot determine valid \'%1$s\' for edit in \'%2$s\'.', array('gid', 'editgroup')));
             }
-            $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
+            $group = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->find($gid);
             $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
         } else {
             // new item mode
@@ -104,7 +104,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
         }
         unset($data);
         // build a map of the existing tree
-        $grouptypes = Doctrine_Core::getTable('Clip_Model_Grouptype')->getTree()->fetchTree();
+        $grouptypes = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->getTree()->fetchTree();
         $parents = array(0 => 1);
         $original = array(1 => array());
         foreach ($grouptypes as $item) {
@@ -135,7 +135,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
             $keys = array_keys($diffs);
             // validate that there's only one change at time
             if (count($keys) == 1 && count($diffs[$keys[0]]) == 1) {
-                $tbl = Doctrine_Core::getTable('Clip_Model_Grouptype');
+                $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype');
                 foreach ($diffs as $gid => $diff) {
                     $newpos = key($diff);
                     $maxpos = count($map[$gid]) - 1;
@@ -163,7 +163,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
         $udiffs = array_filter($udiffs);
         if (count($udiffs) == 1) {
             // validate that there's only one change at time
-            $tbl = Doctrine_Core::getTable('Clip_Model_Grouptype');
+            $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype');
             foreach ($udiffs as $gid => $udiff) {
                 $maxpos = count($original[$gid]) - 1;
                 // check the first item

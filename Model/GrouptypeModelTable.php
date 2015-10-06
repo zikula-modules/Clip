@@ -9,11 +9,9 @@
  * @subpackage Model
  */
 
-namespace Matheo\Clip\Model;
-
 use Matheo\Clip\Doctrine\TableDoctrine;
 
-class GrouptypeModelTable extends TableDoctrine
+class Matheo_Clip_Model_GrouptypeTable extends TableDoctrine
 {
     
 }

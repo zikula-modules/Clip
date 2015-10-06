@@ -9,22 +9,14 @@
  * @subpackage Model
  */
 
-namespace Matheo\Clip\Model;
-
-use Doctrine_Core;
-use FileUtil;
 use Matheo\Clip\Generator;
 use Matheo\Clip\ClipVersion;
 use Matheo\Clip\Util;
-use Zikula_HookManager_SubscriberBundle;
-use HookUtil;
-use ModUtil;
-use DBUtil;
 
 /**
  * This is the model class that define the entity structure and behaviours.
  */
-class PubtypeModel extends \Doctrine_Record
+class Matheo_Clip_Model_Pubtype extends \Doctrine_Record
 {
     /**
      * Set table definition.
@@ -142,7 +134,7 @@ class PubtypeModel extends \Doctrine_Record
     public function setUp()
     {
         $this->actAs('Zikula_Doctrine_Template_StandardFields');
-        $this->hasOne('Matheo\Clip\Model\GrouptypeModel as group', array('local' => 'grouptype', 'foreign' => 'gid'));
+        $this->hasOne('Matheo_Clip_Model_Grouptype as group', array('local' => 'grouptype', 'foreign' => 'gid'));
     }
     
     /**
@@ -150,7 +142,7 @@ class PubtypeModel extends \Doctrine_Record
      */
     public function getTitleField()
     {
-        return Doctrine_Core::getTable('Matheo\Clip\Model\PubdataModel' . $this->tid)->getRecord()->core_titlefield;
+        return Doctrine_Core::getTable('Matheo_Clip_Model_Pubdata' . $this->tid)->getRecord()->core_titlefield;
     }
     
     public function getTableName()
@@ -179,7 +171,7 @@ class PubtypeModel extends \Doctrine_Record
     
     public function getRelations($onlyown = true, $field = null)
     {
-        return call_user_func_array(array('ClipModels_Pubdata' . $this->tid . 'Table', 'clipRelations'), array($onlyown, $field));
+        return call_user_func_array(array('Matheo_Clip_Model_Pubdata' . $this->tid . 'Table', 'clipRelations'), array($onlyown, $field));
     }
     
     public function getRelation($alias)
@@ -340,9 +332,9 @@ class PubtypeModel extends \Doctrine_Record
         Util::getPubFields($this->tid)->delete();
         // delete any relation
         $where = array("tid1 = '{$pubtype->tid}' OR tid2 = '{$pubtype->tid}'");
-        Doctrine_Core::getTable('Matheo\Clip\Model\PubrelationModel')->deleteWhere($where);
+        Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->deleteWhere($where);
         // delete the data table
-        Doctrine_Core::getTable('Matheo\Clip\Model\PubdataModel' . $pubtype->tid)->dropTable();
+        Doctrine_Core::getTable('Matheo_Clip_Model_Pubdata' . $pubtype->tid)->dropTable();
         // delete the model file
         Generator::deleteModel($pubtype->tid);
         // delete workflows

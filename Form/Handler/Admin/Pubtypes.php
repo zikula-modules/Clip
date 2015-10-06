@@ -75,7 +75,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         }
 
         // get the table object for utility purposes
-        $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
+        $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype');
 
         // creates and fill a Pubtype instance
         if ($this->tid) {

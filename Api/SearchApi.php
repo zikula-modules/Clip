@@ -55,7 +55,7 @@ class SearchApi extends \Zikula_AbstractApi
         $pubtypes = self::get_searchable();
         foreach ($pubtypes as $pubtype) {
             if ($search_tid == '' || isset($search_tid[$pubtype->tid])) {
-                $where_arr = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectFieldArray('name', "issearchable = '1' AND tid = '{$pubtype->tid}'");
+                $where_arr = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectFieldArray('name', "issearchable = '1' AND tid = '{$pubtype->tid}'");
                 $where = Search_Api_User::construct_where($args, $where_arr, 'core_language');
                 $where .= ' AND core_visible = \'1\'
                             AND core_online = \'1\'
@@ -97,7 +97,7 @@ class SearchApi extends \Zikula_AbstractApi
     {
         // Looking for pubtype with at least one searchable field
         $pubtypes = Util::getPubType(-1);
-        $searchable = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectFieldArray(
+        $searchable = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectFieldArray(
             'tid',
             'issearchable = \'1\'',
             '',

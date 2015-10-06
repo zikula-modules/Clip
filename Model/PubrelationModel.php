@@ -9,14 +9,10 @@
  * @subpackage Model
  */
 
-namespace Matheo\Clip\Model;
-
 use Matheo\Clip\Generator;
-use Doctrine_Core;
 use Matheo\Clip\Util;
-use ModUtil;
 
-class PubrelationModel extends \Doctrine_Record
+class Matheo_Clip_Model_Pubrelation extends \Doctrine_Record
 {
     /**
      * Set table definition.
@@ -102,7 +98,7 @@ class PubrelationModel extends \Doctrine_Record
         if ($relation->type == 3) {
             Generator::createRelationsModels();
             // create the relation table
-            Doctrine_Core::getTable('Matheo\Clip\Model\RelationModel' . $relation->id)->createTable();
+            Doctrine_Core::getTable('Matheo_Clip_Model_Relation' . $relation->id)->createTable();
         }
         // update the related pubtypes tables
         $relation->updatePubtypes();
@@ -118,7 +114,7 @@ class PubrelationModel extends \Doctrine_Record
         $relation = $event->getInvoker();
         // delete the relation table if it's m2m
         if ($relation->type == 3) {
-            Doctrine_Core::getTable('Matheo\Clip\Model\RelationModel' . $relation->id)->dropTable();
+            Doctrine_Core::getTable('Matheo_Clip_Model_Relation' . $relation->id)->dropTable();
         }
         // delete the model file
         Generator::deleteModel($relation->id, 'Relation');

@@ -17,7 +17,7 @@ use DataUtil;
 use LogUtil;
 use UserUtil;
 use Matheo\Clip\Util;
-use Matheo\Clip\Model\PubtypeModel;
+use Matheo_Clip_Model_Pubtype;
 use Matheo\Clip\Workflow;
 use Exception;
 use ModUtil;
@@ -86,7 +86,7 @@ class Access
         $component = 'Clip::';
         $instance = '::';
         $permlvl = ACCESS_ADMIN;
-        // be sure to have a Clip_Model_Pubtype instance
+        // be sure to have a Matheo_Clip_Model_Pubtype instance
         if ($pubtype) {
             if (!$pubtype instanceof PubtypeModel) {
                 if (!Util::validateTid($pubtype)) {
@@ -185,7 +185,7 @@ class Access
         $state = '';
         $action = $action ? $action : '';
         // be sure to have a Clip_Model_Pubtype instance
-        if (!$pubtype instanceof PubtypeModel) {
+        if (!$pubtype instanceof Matheo_Clip_Model_Pubtype) {
             if (!Util::validateTid($pubtype)) {
                 return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Access::toPub', DataUtil::formatForDisplay($pubtype)), $dom));
             }

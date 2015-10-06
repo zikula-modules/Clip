@@ -16,11 +16,11 @@ use LogUtil;
 use ZLanguage;
 use DataUtil;
 use Matheo\Clip\Util;
-use Matheo\Clip\Model\PubtypeModel;
+use Matheo_Clip_Model_Pubtype;
 use System;
 use Doctrine_Core;
 use Matheo\Clip\Util\PluginsUtil;
-use Matheo\Clip\Model\WorkflowVarsModel;
+use Matheo_Clip_Model_WorkflowVars;
 use DBUtil;
 use UserUtil;
 use ThemeUtil;
@@ -299,7 +299,7 @@ class UtilWorkflow
             $pubtype = Util::getPubType($pubtype);
         }
         if (self::hasVar($pubtype, $name)) {
-            Doctrine_Core::getTable('Clip_Model_WorkflowVars')->createQuery()->update()->set('value', serialize($value))->where('setting = ?', $name)->andWhere('tid = ?', $pubtype->tid)->andWhere('workflow = ?', $pubtype->workflow)->execute();
+            Doctrine_Core::getTable('Matheo_Clip_Model_WorkflowVars')->createQuery()->update()->set('value', serialize($value))->where('setting = ?', $name)->andWhere('tid = ?', $pubtype->tid)->andWhere('workflow = ?', $pubtype->workflow)->execute();
         } else {
             $var = new WorkflowVarsModel();
             $var->fromArray(array('tid' => $pubtype->tid, 'workflow' => $pubtype->workflow, 'setting' => $name, 'value' => serialize($value)));
@@ -329,7 +329,7 @@ class UtilWorkflow
         }
         // clean the old values
         $where = array(array('tid = ?', $pubtype->tid), array('workflow = ?', $pubtype->workflow));
-        Doctrine_Core::getTable('Clip_Model_WorkflowVars')->deleteWhere($where);
+        Doctrine_Core::getTable('Matheo_Clip_Model_WorkflowVars')->deleteWhere($where);
         // set the passed values
         $ok = true;
         foreach ($vars as $k => $v) {

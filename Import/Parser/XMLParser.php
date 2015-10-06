@@ -17,7 +17,7 @@ use DataUtil;
 use LogUtil;
 use Matheo\Clip\Util;
 
-class XML
+class XMLParser
 {
     const SKIP = '__DISCARDEDNODE__';
 
@@ -87,10 +87,10 @@ class XML
     /**
      * DOMNode2Array conversor.
      *
-     * @param \DOMElement $DomNode $node DOMNode to convert.
+     * @param $DomNode $node DOMNode to convert.
      * @return array
      */
-    public static function DOMtoArray(\DOMElement $DomNode = null)
+    public static function DOMtoArray($DomNode = null)
     {
         $array = array();
         if (!$DomNode) {

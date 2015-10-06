@@ -48,7 +48,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
         $tid2 = is_array($tid2) ? current($tid2) : (in_array($tid2, $tids) ? $tid2 : null);
 
         // get the table object for utility purposes
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
+        $tableObj = Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation');
 
         if ($this->id) {
             $relation = $tableObj->find($this->id);
@@ -180,7 +180,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                     return $view->setPluginErrorMsg('alias1', $this->__('The aliases cannot be the same.'));
                 }
 
-                $previous = $this->id ? Doctrine_Core::getTable('Clip_Model_Pubrelation')->find($this->id) : null;
+                $previous = $this->id ? Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->find($this->id) : null;
 
                 // verify unique alias1
                 if (!$this->id || $relation->alias1 != $previous->alias1) {
@@ -226,7 +226,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
             // delete the relation
             case 'delete':
-                $relation = Doctrine_Core::getTable('Clip_Model_Pubrelation')->find($this->id);
+                $relation = Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->find($this->id);
 
                 if ($relation->delete()) {
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));

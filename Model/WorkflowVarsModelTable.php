@@ -9,11 +9,9 @@
  * @subpackage Model
  */
 
-namespace Matheo\Clip\Model;
-
 use Matheo\Clip\Doctrine\TableDoctrine;
 
-class WorkflowVarsModelTable extends TableDoctrine
+class Matheo_Clip_Model_WorkflowVarsTable extends TableDoctrine
 {
     
 }

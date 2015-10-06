@@ -28,12 +28,12 @@ use LogUtil;
 use Categories_DBObject_Category;
 use FormUtil;
 use Categories_DBObject_Registry;
-use Matheo\Clip\Model\GrouptypeModel;
+use Matheo_Clip_Model_Grouptype;
 use CacheUtil;
 use System;
 use ServiceUtil;
 use DoctrineUtil;
-use Matheo\Clip\Model\PubrelationModel;
+use Matheo_Clip_Model_Pubrelation;
 use Doctrine_Manager;
 use DataUtil;
 
@@ -48,7 +48,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
     public function install()
     {
         // create tables
-        $tables = array('Matheo\Clip\Model\PubfieldModel', 'Matheo\Clip\Model\PubtypeModel', 'Matheo\Clip\Model\GrouptypeModel', 'Matheo\Clip\Model\PubrelationModel', 'Matheo\Clip\Model\WorkflowVarsModel');
+        $tables = array('Matheo_Clip_Model_Pubfield', 'Matheo_Clip_Model_Pubtype', 'Matheo_Clip_Model_Grouptype', 'Matheo_Clip_Model_Pubrelation', 'Matheo_Clip_Model_WorkflowVars');
         foreach ($tables as $table) {
             if (!Doctrine_Core::getTable($table)->createTable()) {
                 // delete previously created tables
@@ -78,8 +78,8 @@ class ClipInstaller extends \Zikula_AbstractInstaller
             Content_Installer::updateContentType('Clip');
         }
         // register persistent event listeners (handlers)
-        EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Clip_EventHandler_Listeners', 'getFilterClasses'));
-        EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Clip_EventHandler_Listeners', 'getContentTypes'));
+        EventUtil::registerPersistentModuleHandler('Clip', 'zikula.filterutil.get_plugin_classes', array('Matheo\Clip\EventHandler\ListenersEventHandler', 'getFilterClasses'));
+        EventUtil::registerPersistentModuleHandler('Clip', 'module.content.gettypes', array('Matheo\Clip\EventHandler\ListenersEventHandler', 'getContentTypes'));
         return true;
     }
     
@@ -115,24 +115,24 @@ class ClipInstaller extends \Zikula_AbstractInstaller
             //self::updatePubTables();
             case '0.4.8':
             case '0.4.9':
-                if (!Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->changeTable(true)) {
+                if (!Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->changeTable(true)) {
                     return '0.4.9';
                 }
-                if (!Doctrine_Core::getTable('Matheo\Clip\Model\PubrelationModel')->changeTable(true)) {
+                if (!Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->changeTable(true)) {
                     return '0.4.9';
                 }
             case '0.4.10':
-                if (!Doctrine_Core::getTable('Clip_Model_Pubfield')->changeTable(true)) {
+                if (!Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->changeTable(true)) {
                     return '0.4.10';
                 }
             case '0.4.11':
             case '0.4.12':
                 $this->createCategoryTree();
             case '0.4.13':
-                if (!Doctrine_Core::getTable('Matheo\Clip\Model\GrouptypeModel')->createTable()) {
+                if (!Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->createTable()) {
                     return '0.4.13';
                 }
-                if (!Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->changeTable()) {
+                if (!Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->changeTable()) {
                     return '0.4.13';
                 }
                 $this->createGrouptypesTree();
@@ -154,7 +154,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
             case '0.4.16':
                 $this->setVar('shorturls', 'htm');
             case '0.4.17':
-                if (!Doctrine_Core::getTable('Clip_Model_WorkflowVars')->createTable()) {
+                if (!Doctrine_Core::getTable('Matheo_Clip_Model_WorkflowVars')->createTable()) {
                     return '0.4.17';
                 }
                 if (!$this->upgradeDBpre09()) {
@@ -199,7 +199,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
         // loads the pubdata models
         ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
         // drop pubtype tables
-        $pubtypes = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->findAll();
+        $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->findAll();
         foreach ($pubtypes as $pubtype) {
             if (!$pubtype->delete()) {
                 return false;
@@ -221,7 +221,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
         $this->version->setupPubtypeBundles();
         HookUtil::unregisterSubscriberBundles($this->version->getHookSubscriberBundles());
         // drop base tables
-        $tables = array('Clip_Model_Pubfield', 'Matheo\Clip\Model\PubtypeModel', 'Matheo\Clip\Model\GrouptypeModel', 'Matheo\Clip\Model\PubrelationModel', 'Clip_Model_WorkflowVars');
+        $tables = array('Clip_Model_Pubfield', 'Matheo_Clip_Model_Pubtype', 'Matheo_Clip_Model_Grouptype', 'Matheo_Clip_Model_Pubrelation', 'Matheo_Clip_Model_WorkflowVars');
         foreach ($tables as $table) {
             if (!Doctrine_Core::getTable($table)->dropTable()) {
                 return false;
@@ -329,15 +329,15 @@ class ClipInstaller extends \Zikula_AbstractInstaller
     {
         $lang = ZLanguage::getLanguageCode();
         // Create the Root and the 'Ungrouped' root category and adds there all the existing pubtypes
-        $tids = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->selectFieldArray('tid');
-        $tree = Doctrine_Core::getTable('Matheo\Clip\Model\GrouptypeModel')->getTree();
+        $tids = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectFieldArray('tid');
+        $tree = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->getTree();
         // root
-        $root = new GrouptypeModel();
+        $root = new Matheo_Clip_Model_Grouptype();
         $root->name = '__ROOT__';
         $root->save();
         $tree->createRoot($root);
         // ungrouped
-        $ungr = new GrouptypeModel();
+        $ungr = new Matheo_Clip_Model_Grouptype();
         //! name of the Default group of pubtypes
         $ungr->name = array($lang => $this->__('Contents'));
         $ungr->description = array($lang => $this->__('Publication contents of this site.'));
@@ -400,13 +400,13 @@ class ClipInstaller extends \Zikula_AbstractInstaller
         if (in_array($tables['pagemaster_relations'], $existingtables)) {
             DBUtil::dropTable('pagemaster_relations');
         }
-        Doctrine_Core::getTable('Matheo\Clip\Model\PubrelationModel')->createTable();
+        Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->createTable();
         // rename the others
         DBUtil::renameTable('pagemaster_pubfields', 'clip_pubfields');
         DBUtil::renameTable('pagemaster_pubtypes', 'clip_pubtypes');
         // ensure tid is not pm_tid
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_tid', 'tid');
-        $pubtypes = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->selectFieldArray('tid');
+        $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             if (in_array(DBUtil::getLimitedTablename('pagemaster_pubdata' . $tid), $existingtables)) {
                 $tables['pagemaster_pubdata' . $tid] = DBUtil::getLimitedTablename('pagemaster_pubdata' . $tid);
@@ -468,7 +468,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
             }
         }
         // rename the filename/formname columns
-        $ptcols = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->getFieldNames();
+        $ptcols = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->getFieldNames();
         if (in_array('pm_filename', $ptcols)) {
             DoctrineUtil::renameColumn('clip_pubtypes', 'pm_filename', 'pm_outputset');
         }
@@ -482,7 +482,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
         // ensure tid is not pm_tid
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_tid', 'tid');
         // fills the empty publish dates
-        $pubtypes = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->selectFieldArray('tid');
+        $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectFieldArray('tid');
         if (!empty($pubtypes)) {
             // update each pubdata table
             // and update the new field value with the good old pm_cr_uid
@@ -506,24 +506,24 @@ class ClipInstaller extends \Zikula_AbstractInstaller
     private function migratePubField()
     {
         self::upgradeDBpre09();
-        if (!Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->changeTable()) {
+        if (!Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->changeTable()) {
             return false;
         }
-        if (!Doctrine_Core::getTable('Clip_Model_Pubfield')->changeTable()) {
+        if (!Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->changeTable()) {
             return false;
         }
         // create the modelspath to be able to build the relations models
         $dirs = self::createDirectories(array('models'), true);
         $this->setVar('modelspath', $dirs['models']);
         ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left($dirs['models'], -11)));
-        $pubtypes = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->selectFieldArray(
+        $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectFieldArray(
             'folder',
             null,
             '',
             false,
             'tid'
         );
-        $fields = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection('fieldplugin = \'Pub\'', 'tid');
+        $fields = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectCollection('fieldplugin = \'Pub\'', 'tid');
         // 1. map all the existing 'Publication' fields
         $tid = 0;
         $relations = array();
@@ -704,7 +704,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
             return true;
         }
         $done = true;
-        $ptcols = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->getFieldNames();
+        $ptcols = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->getFieldNames();
         // pubtypes
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_tid', 'tid');
         DoctrineUtil::renameColumn('clip_pubtypes', 'pm_title', 'title');
@@ -752,7 +752,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
             return true;
         }
         $done = true;
-        $pfcols = Doctrine_Core::getTable('Clip_Model_Pubfield')->getFieldNames();
+        $pfcols = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->getFieldNames();
         // pubfields
         DoctrineUtil::renameColumn('clip_pubfields', 'pm_id', 'id');
         DoctrineUtil::alterColumn('clip_pubfields', 'pm_tid', array('type' => 'integer', 'options' => array('length' => 4, 'notnull' => false)));
@@ -807,7 +807,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
             DoctrineUtil::renameColumn('clip_grouptypes', 'c_order', 'sortorder');
         }
         // relations
-        $rlcols = Doctrine_Core::getTable('Matheo\Clip\Model\PubrelationModel')->getFieldNames();
+        $rlcols = Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->getFieldNames();
         if (in_array('pm_id', $rlcols)) {
             DoctrineUtil::renameColumn('clip_relations', 'pm_id', 'id');
             DoctrineUtil::alterColumn('clip_relations', 'pm_type', array('type' => 'integer', 'options' => array('length' => 2, 'notnull' => true, 'default' => 1)));
@@ -912,7 +912,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
         Generator::resetModels();
         Generator::checkModels(true);
         // update the database
-        $pubtypes = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->selectFieldArray('tid');
+        $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             $cols = Doctrine_Core::getTable('ClipModels_Pubdata' . $tid)->getFieldNames();
             if (!in_array('urltitle', $cols)) {
@@ -988,7 +988,7 @@ class ClipInstaller extends \Zikula_AbstractInstaller
         Generator::resetModels();
         Generator::checkModels(true);
         // update the database
-        $pubtypes = Doctrine_Core::getTable('Matheo\Clip\Model\PubtypeModel')->selectFieldArray('tid');
+        $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectFieldArray('tid');
         foreach ($pubtypes as $tid) {
             Doctrine_Core::getTable('ClipModels_Pubdata' . $tid)->changeTable();
         }

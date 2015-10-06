@@ -41,7 +41,7 @@ class GrouptypesUtil
         $withPubtypes = true
     ) {
         $dom = ZLanguage::getModuleDomain('Clip');
-        $tbl = Doctrine_Core::getTable('Clip_Model_Grouptype');
+        $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype');
         $treeObj = $tbl->getTree();
         if ($withPubtypes) {
             $q = $tbl->createQuery('g')->select('g.*, p.tid, p.title, p.description, p.workflow')->leftJoin('g.pubtypes p');

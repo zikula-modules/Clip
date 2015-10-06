@@ -780,7 +780,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 
         $where  = $tid ? array(array('tid = ?', (int)$tid)) : '' ;
 
-        $pubfields = \Doctrine_Core::getTable('Clip_Model_Pubfield')
+        $pubfields = \Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')
                      ->selectCollection($where, 'tid ASC, lineno ASC');
 
         if ($pubfields === false) {
@@ -862,7 +862,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         if (!$tid) {
             // validates the existence of all the pubdata tables
             // to ensure the creation of all the pubdata model classes
-            $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+            $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectFieldArray('tid');
             foreach ($pubtypes as $tid) {
                 if (!isset($tables["clip_pubdata{$tid}"])) {
                     self::_addtable($tables, $tid, $tableColumnCore, $tableDefCore);
@@ -936,7 +936,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         // refresh the pubtypes definitions
         self::addtables();
 
-        $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectFieldArray('tid');
+        $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectFieldArray('tid');
 
         foreach ($pubtypes as $tid) {
             self::updateModel($tid, false);

@@ -9,11 +9,9 @@
  * @subpackage Model
  */
 
-namespace Matheo\Clip\Model;
-
 use Matheo\Clip\Doctrine\TableDoctrine;
 
-class PubrelationModelTable extends TableDoctrine
+class Matheo_Clip_Model_PubrelationTable extends TableDoctrine
 {
     public function getClipRelations()
     {

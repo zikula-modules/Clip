@@ -12,7 +12,7 @@
 namespace Matheo\Clip;
 
 use Matheo\Clip\Event\GenericEvent;
-use Matheo\Clip\Model\PubtypeModel;
+use Matheo_Clip_Model_Pubtype;
 use Matheo\Clip\Doctrine\PubdataDoctrine;
 use Matheo\Clip\Util;
 use Zikula_View;

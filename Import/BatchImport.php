@@ -83,7 +83,7 @@ class BatchImport
     {
         foreach (self::$idmap['tids'] as $tid) {
             if (!isset(self::$idmap['updt'][$tid])) {
-                Doctrine_Core::getTable('Clip_Model_Pubtype')->find($tid)->updateTable(true);
+                Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->find($tid)->updateTable(true);
                 self::$idmap['updt'][$tid] = true;
             }
         }
@@ -97,7 +97,7 @@ class BatchImport
     public function execute()
     {
         // TODO validate the existance of the parser class
-        $classname = 'Clip_Import_Parser_' . $this->format;
+        $classname = 'Matheo\Clip\Import\Parser\\' . $this->format . 'Parser';
         $parser = new $classname($this->file);
         // disable the Doctrine_Manager validation for the import
         $manager = Doctrine_Manager::getInstance();
@@ -126,7 +126,7 @@ class BatchImport
     {
         switch (Util::getStringPrefix($args['section'])) {
             case 'pubtypes':
-                $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
+                $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype');
                 $obj = $tbl->getRecord()->copy();
                 $oid = (int) $args['pubtype']['tid'];
                 unset($args['pubtype']['tid']);
@@ -142,7 +142,7 @@ class BatchImport
                 static $nexttid;
                 if (!isset($nexttid)) {
                     // get the connection name to figure our the database name in use
-                    $tablename = Doctrine_Core::getTable('Clip_Model_Pubtype')->getTableName();
+                    $tablename = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->getTableName();
                     $statement = Doctrine_Manager::getInstance()->connection();
                     $connname = $statement->getName();
                     // get the databases list
@@ -162,7 +162,7 @@ class BatchImport
                 if (!isset(self::$idmap['tids'][$tid])) {
                     continue;
                 }
-                $tbl = Doctrine_Core::getTable('Clip_Model_Pubfield');
+                $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield');
                 $obj = $tbl->getRecord()->copy();
                 $oid = (int) $args['pubfield']['id'];
                 unset($args['pubfield']['id']);

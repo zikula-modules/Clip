@@ -12,7 +12,7 @@
 namespace Matheo\Clip;
 
 use Doctrine_Record;
-use Matheo\Clip\Model\PubtypeModel;
+use Matheo_Clip_Model_Pubtype;
 use ServiceUtil;
 use DBUtil;
 use DataUtil;
@@ -86,10 +86,10 @@ class Workflow extends \Zikula_AbstractBase
     /**
      * Constructor with publication type.
      *
-     * @param PubtypeModel $pubtype Publication type of the object.
+     * @param Matheo_Clip_Model_Pubtype $pubtype Publication type of the object.
      * @param Doctrine_Record    $obj     Object to process its workflow.
      */
-    public function __construct(Clip_Model_Pubtype $pubtype, Doctrine_Record &$obj = null)
+    public function __construct(Matheo_Clip_Model_Pubtype $pubtype, Doctrine_Record &$obj = null)
     {
         parent::__construct(ServiceUtil::getManager());
         $this->setup($pubtype, $obj);
@@ -98,12 +98,12 @@ class Workflow extends \Zikula_AbstractBase
     /**
      * Setup.
      *
-     * @param PubtypeModel $pubtype Publication type of the object.
+     * @param Matheo_Clip_Model_Pubtype $pubtype Publication type of the object.
      * @param Doctrine_Record    $obj     Object to process its workflow.
      *
      * @return void
      */
-    public function setup(PubtypeModel $pubtype, Doctrine_Record &$obj = null)
+    public function setup(Matheo_Clip_Model_Pubtype $pubtype, Doctrine_Record &$obj = null)
     {
         $this->module = 'Clip';
         $this->schema = $pubtype->getSchema();

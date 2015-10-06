@@ -30,7 +30,7 @@ use ServiceUtil;
 use Zikula_View_Resource;
 use Matheo\Clip\Util\ViewUtil;
 use Matheo\Clip\Doctrine\PubdataDoctrine;
-use Matheo\Clip\Model\PubtypeModel;
+use Matheo_Clip_Model_Pubtype;
 
 class Util
 {
@@ -102,7 +102,7 @@ class Util
     {
         static $id;
         if (!isset($id)) {
-            $id = (int) Doctrine_Core::getTable('Clip_Model_Grouptype')->createQuery()->select('gid')->orderBy('gid')->where('gid > ?', 1)->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
+            $id = (int) Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->createQuery()->select('gid')->orderBy('gid')->where('gid > ?', 1)->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
         }
         return $id;
     }
@@ -324,7 +324,7 @@ class Util
      *
      * @param integer $tid Pubtype ID or urltitle.
      *
-     * @return \Matheo\Clip\Model\PubtypeModel Information of one or all the pubtypes.
+     * @return Matheo_Clip_Model_Pubtype Information of one or all the pubtypes.
      */
     public static function getPubType(
         $tid = -1,
@@ -333,7 +333,7 @@ class Util
     ) {
         static $pubtypes, $urltitles;
         if (!isset($pubtypes) || $force) {
-            $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
+            $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->getPubtypes();
             $urltitles = $pubtypes->toKeyValueArray('urltitle', 'tid');
         }
         if ($tid == -1) {
@@ -382,7 +382,7 @@ class Util
     ) {
         static $relation_arr;
         if (!isset($relation_arr) || $force) {
-            $relation_arr = Doctrine_Core::getTable('Clip_Model_Pubrelation')->getClipRelations();
+            $relation_arr = Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->getClipRelations();
         }
         $own = $owningSide ? 'own' : 'not';
         if ($tid == -1) {
@@ -410,7 +410,7 @@ class Util
         static $pubfields_arr;
         $tid = (int) $tid;
         if ($tid && !isset($pubfields_arr[$tid])) {
-            $pubfields_arr[$tid] = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection(
+            $pubfields_arr[$tid] = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectCollection(
                 "tid = '{$tid}'",
                 $orderBy,
                 -1,
@@ -473,7 +473,7 @@ class Util
      */
     public static function getTitleField($tid)
     {
-        $titlefield = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectField('name', "tid = '{$tid}' AND istitle = '1'");
+        $titlefield = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectField('name', "tid = '{$tid}' AND istitle = '1'");
         return $titlefield ? $titlefield : 'id';
     }
     
@@ -509,14 +509,14 @@ class Util
         $defaults = array('blog', 'staticpages');
         foreach ($defaults as $default) {
             // check if the pubtype exists
-            $pubtype = Doctrine_Core::getTable('Clip_Model_Pubtype')->findByUrltitle($default);
+            $pubtype = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->findByUrltitle($default);
             if (count($pubtype)) {
                 LogUtil::registerStatus(__f('There is already a \'%s\' publication type.', $default, $dom));
             } else {
                 // import the default XML
-                $file = "modules/Clip/docs/xml/{$lang}/{$default}.xml";
+                $file = "modules/matheo/clip-module/Resources/docs/xml/{$lang}/{$default}.xml";
                 if (!file_exists($file)) {
-                    $file = "modules/Clip/docs/xml/en/{$default}.xml";
+                    $file = "modules/matheo/clip-module/Resources/docs/xml/en/{$default}.xml";
                 }
                 if ($batch->setup(array('url' => $file)) && $batch->execute()) {
                     LogUtil::registerStatus(__f('Default \'%s\' publication type created successfully.', $default, $dom));

@@ -57,7 +57,7 @@ class ImportController extends \Zikula_AbstractController
             ModUtil::apiFunc('Clip', 'import', 'importps' . $step);
         }
         // check if there are pubtypes already
-        $numpubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectCount();
+        $numpubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectCount();
         // build and return the output
         $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false);
         return $this->view->fetch('import_pagesetter.tpl');
