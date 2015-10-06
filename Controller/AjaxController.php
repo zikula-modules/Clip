@@ -9,12 +9,12 @@
  * @subpackage Controller
  */
 
-namespace Clip\Controller;
+namespace Matheo\Clip\Controller;
 
 use ModUtil;
 use Zikula_Response_Ajax_Plain;
 use Zikula_Response_Ajax_AbstractBase;
-use Clip_Access;
+use Matheo\Clip\Access;
 use Zikula_Response_Ajax_BadData;
 use Doctrine_Core;
 use Clip_Model_Grouptype;
@@ -25,8 +25,8 @@ use Zikula_Response_Ajax;
 use FormUtil;
 use DataUtil;
 use LogUtil;
-use Clip_Util;
-use Clip_Util_Response_Download;
+use Matheo\Clip\Util;
+use Util_Response_Download;
 
 /**
  * Ajax Controller.
@@ -55,7 +55,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
         $this->checkAjaxToken();
         $mode = $this->request->getPost()->get('mode', 'add');
         // FIXME SECURITY check this
-        $this->throwForbiddenUnless(Clip_Access::toClip($mode == 'edit' ? ACCESS_EDIT : ACCESS_ADD));
+        $this->throwForbiddenUnless(Access::toClip($mode == 'edit' ? ACCESS_EDIT : ACCESS_ADD));
         $gid = $this->request->getPost()->get('gid', 0);
         $pos = $this->request->getPost()->get('pos', 'root');
         $parent = $this->request->getPost()->get('parent', 1);
@@ -85,7 +85,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
     {
         $this->checkAjaxToken();
         // FIXME SECURITY check this
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_EDIT));
         // build a map of the input data
         $data = json_decode($this->request->getPost()->get('data'), true);
         $tids = array();
@@ -215,10 +215,10 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
         //// Pubtype
         // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Parameters
         // define the arguments
         $apiargs = array('tid' => $pubtype['tid'], 'pid' => isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid'), 'id' => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'), 'checkperm' => false, 'handleplugins' => true, 'loadworkflow' => false, 'rel' => array());
@@ -230,7 +230,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
             if (!$record->isPubField($args['count'])) {
                 return LogUtil::registerError($this->__('Error! Invalid field requested.'));
             }
-            if (!Clip_Util::getPubFieldData($apiargs['tid'], $args['count'], 'iscounter')) {
+            if (!Util::getPubFieldData($apiargs['tid'], $args['count'], 'iscounter')) {
                 return LogUtil::registerError($this->__('Error! Invalid field to increment was passed.'));
             }
         }
@@ -249,13 +249,13 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
             $apiargs['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $apiargs);
         }
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], 'display'));
+        $this->throwForbiddenUnless(Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], 'display'));
         // setup an admin flag
-        $isadmin = Clip_Access::toPubtype($pubtype);
+        $isadmin = Access::toPubtype($pubtype);
         //// Execution
         // fill the conditions of the item to get
         $apiargs['where'] = array();
-        if (!Clip_Access::toPubtype($apiargs['tid'], 'editor')) {
+        if (!Access::toPubtype($apiargs['tid'], 'editor')) {
             $apiargs['where'][] = array('core_online = ?', 1);
             $apiargs['where'][] = array('core_intrash = ?', 0);
         }
@@ -281,7 +281,7 @@ class AjaxController extends \Zikula_Controller_AbstractAjax
             if (!$fileinfo['file_name'] || !file_exists($filepath)) {
                 return LogUtil::registerError($this->__('The requested file does not exists.'));
             }
-            $output = new Clip_Util_Response_Download($filepath, $fileinfo['orig_name']);
+            $output = new Util_Response_Download($filepath, $fileinfo['orig_name']);
         }
         // check if there's a field requested to increment
         if ($args['count']) {

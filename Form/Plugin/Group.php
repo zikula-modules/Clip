@@ -9,12 +9,12 @@
  * @subpackage Form_Plugin
  */
 
-namespace Clip\Form\Plugin;
+namespace Matheo\Clip\Form\Plugin;
 
 use ZLanguage;
 use PageUtil;
 use DataUtil;
-use Clip_Access;
+use Matheo\Clip\Access;
 use UserUtil;
 use ModUtil;
 use DBUtil;
@@ -149,7 +149,7 @@ class Group extends \Zikula_Form_Plugin_TextInput
     ) {
         $filterArgs['plugins'][$this->filterClass]['fields'][] = $field['name'];
         // includes a operator restriction for normal users
-        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
+        if (!Access::toPubtype($args['tid'], 'editor')) {
             $filterArgs['restrictions'][$field['name']][] = 'me';
         }
     }

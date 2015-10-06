@@ -9,11 +9,11 @@
  * @subpackage Form_Plugin
  */
 
-namespace Clip\Form\Plugin;
+namespace Matheo\Clip\Form\Plugin;
 
 use ZLanguage;
 use CategoryUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use CategoryRegistryUtil;
 
 class List extends \Zikula_Form_Plugin_CategorySelector
@@ -149,7 +149,7 @@ class List extends \Zikula_Form_Plugin_CategorySelector
                     if ($F(\'clipplugin_categorylist\') != null) {
                         $(\'typedata\').value = $F(\'clipplugin_categorylist\');
                     } else {
-                        $(\'typedata\').value = ' . Clip_Util::getDefaultCategoryID() . ';
+                        $(\'typedata\').value = ' . Util::getDefaultCategoryID() . ';
                     }
                     $(\'typedata\').value += \',\'+Number($F(\'clipplugin_categoryempty\'))+\',\'+Number($F(\'clipplugin_editlink\'));
 
@@ -196,7 +196,7 @@ class List extends \Zikula_Form_Plugin_CategorySelector
     {
         // config string: "(int)categoryID,(bool)includeEmpty,(bool)editLink"
         $typedata = explode(',', $typedata);
-        $this->config = array(0 => !empty($typedata[0]) ? (int) $typedata[0] : Clip_Util::getDefaultCategoryID(), 1 => isset($typedata[1]) ? (bool) $typedata[1] : false, 2 => isset($typedata[2]) ? (bool) $typedata[2] : false);
+        $this->config = array(0 => !empty($typedata[0]) ? (int) $typedata[0] : Util::getDefaultCategoryID(), 1 => isset($typedata[1]) ? (bool) $typedata[1] : false, 2 => isset($typedata[2]) ? (bool) $typedata[2] : false);
     }
 
 }

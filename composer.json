@@ -5,13 +5,13 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Mateo Tibaquirá",
+            "name": "Mateo TibaquirÃ¡",
             "homepage": "http://blanktheme.org/",
             "email": "mateo@zikula.org"
         }
     ],
     "autoload": {
-        "psr-0": { "Matheo\\Clip\\": "" }
+        "psr-4": { "Matheo\\Clip\\": "" }
     },
     "require": {
         "php": ">5.3.3"

@@ -9,7 +9,7 @@
  * @subpackage Workflow
  */
 
-namespace Clip\Workflow;
+namespace Matheo\Clip\Workflow;
 
 use ServiceUtil;
 use LogUtil;

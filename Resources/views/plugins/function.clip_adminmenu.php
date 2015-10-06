@@ -28,7 +28,7 @@ function smarty_function_clip_adminmenu($params, Zikula_View &$view)
     include_once 'modules/Clip/templates/plugins/function.clip_url.php';
     $pubtype = $view->getTplVar('pubtype');
     $tid = isset($params['tid']) ? (int) $params['tid'] : ($pubtype ? $pubtype['tid'] : $view->getTplVar('tid'));
-    if (!$tid || !Clip_Util::validateTid($tid)) {
+    if (!$tid || !Util::validateTid($tid)) {
         return;
     }
     // build the output

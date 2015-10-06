@@ -9,14 +9,15 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
+namespace Matheo\Clip\Filter\Plugin;
 
+use Matheo\Clip\Filter\FormFilter;
 use ZLanguage;
 use CategoryUtil;
 use StringUtil;
 use ModUtil;
-use Clip_Util;
-use Clip_Util_Plugins;
+use Matheo\Clip\Util;
+use Matheo\Clip\Util\PluginsUtil;
 
 /**
  * List category selector plugin.
@@ -24,7 +25,7 @@ use Clip_Util_Plugins;
  * This plugin creates a category selector using a drop down list.
  * The selected value of the base drop down list will be set to ID of the selected category.
  */
-class List extends \Clip_Filter_Plugin_ListDropdown
+class List extends ListDropdown
 {
     /**
      * Base category.
@@ -70,7 +71,7 @@ class List extends \Clip_Filter_Plugin_ListDropdown
      * @param object           &$list               The list object (here: $this).
      * @param boolean          $includeEmptyElement Whether or not to include an empty null item.
      * @param array            $params              The parameters passed from the Smarty plugin.
-     * @param Clip_Filter_Form $filter              Clip filter form manager instance.
+     * @param FormFilter       $filter              Clip filter form manager instance.
      *
      * @return void
      */
@@ -168,8 +169,8 @@ class List extends \Clip_Filter_Plugin_ListDropdown
         $this->includeEmptyElement = isset($params['includeEmptyElement']) ? $params['includeEmptyElement'] : true;
         $this->op = array_key_exists('op', $params) ? $params['op'] : 'eq';
         if (!isset($params['category']) || !$params['category']) {
-            $field = Clip_Util::getPubFields($filter->getTid(), $this->field);
-            $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+            $field = Util::getPubFields($filter->getTid(), $this->field);
+            $plugin = PluginsUtil::get($field['fieldplugin']);
             $params['category'] = $plugin->getRootCategoryID($field['typedata']);
         }
         self::loadParameters($this, $this->includeEmptyElement, $params, $filter);
@@ -179,11 +180,11 @@ class List extends \Clip_Filter_Plugin_ListDropdown
     /**
      * Render event handler.
      *
-     * @param Zikula_View $view Reference to Zikula_View object.
+     * @param \Zikula_View $view Reference to Zikula_View object.
      *
      * @return string The rendered output
      */
-    public function render(Zikula_View $view)
+    public function render(\Zikula_View $view)
     {
         // adds the form observer
         $filter = $view->get_registered_object('clip_filter');

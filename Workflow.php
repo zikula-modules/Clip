@@ -9,12 +9,14 @@
  * @subpackage Workflow
  */
 
-namespace Clip;
+namespace Matheo\Clip;
 
+use Doctrine_Record;
+use Matheo\Clip\Model\PubtypeModel;
 use ServiceUtil;
 use DBUtil;
 use DataUtil;
-use Clip_Workflow_Util;
+use Matheo\Clip\Workflow\UtilWorkflow;
 use LogUtil;
 
 class Workflow extends \Zikula_AbstractBase
@@ -66,7 +68,7 @@ class Workflow extends \Zikula_AbstractBase
     public function __construct(array $args, Doctrine_Record &$obj = null)
     {
         if (!isset($args['schema']) || !isset($args['module']) || !isset($args['table']) || !isset($args['idcolumn'])) {
-            throw new Exception('Missing required parameter for Clip_Workflow');
+            throw new Exception('Missing required parameter for Workflow');
         }
     
         parent::__construct(ServiceUtil::getManager());
@@ -84,7 +86,7 @@ class Workflow extends \Zikula_AbstractBase
     /**
      * Constructor with publication type.
      *
-     * @param Clip_Model_Pubtype $pubtype Publication type of the object.
+     * @param PubtypeModel $pubtype Publication type of the object.
      * @param Doctrine_Record    $obj     Object to process its workflow.
      */
     public function __construct(Clip_Model_Pubtype $pubtype, Doctrine_Record &$obj = null)
@@ -96,12 +98,12 @@ class Workflow extends \Zikula_AbstractBase
     /**
      * Setup.
      *
-     * @param Clip_Model_Pubtype $pubtype Publication type of the object.
+     * @param PubtypeModel $pubtype Publication type of the object.
      * @param Doctrine_Record    $obj     Object to process its workflow.
      *
      * @return void
      */
-    public function setup(Clip_Model_Pubtype $pubtype, Doctrine_Record &$obj = null)
+    public function setup(PubtypeModel $pubtype, Doctrine_Record &$obj = null)
     {
         $this->module = 'Clip';
         $this->schema = $pubtype->getSchema();
@@ -138,7 +140,7 @@ class Workflow extends \Zikula_AbstractBase
             $workflow = array('state' => 'initial', 'schemaname' => $this->schema, 'module' => $this->module, 'obj_table' => $this->table, 'obj_idcolumn' => $this->idcolumn, 'obj_id' => null);
         }
         // adds the translated state title
-        $states = Clip_Workflow_Util::getStatesMap($this->module, $this->schema);
+        $states = Workflow_Util::getStatesMap($this->module, $this->schema);
         $workflow['statetitle'] = isset($states[$workflow['state']]) ? $states[$workflow['state']]['title'] : $this->__('Invalid');
         // attach workflow to object
         $this->obj->mapValue('__WORKFLOW__', $workflow);
@@ -204,7 +206,7 @@ class Workflow extends \Zikula_AbstractBase
     public function executeAction($actionID, $params = array())
     {
         $stateID = $this->getWorkflow('state');
-        $actionMap = Clip_Workflow_Util::getActionsMap($this->module, $this->schema, $stateID);
+        $actionMap = UtilWorkflow::getActionsMap($this->module, $this->schema, $stateID);
         // check if state exists
         if (!$actionMap) {
             return LogUtil::registerError($this->__f('State [%s] not found.', $stateID));
@@ -215,7 +217,7 @@ class Workflow extends \Zikula_AbstractBase
         }
         $action = $actionMap[$actionID];
         // permission check
-        if (!Clip_Workflow_Util::permissionCheck($this->obj, $this->module, $this->schema, $action['permission'], $actionID)) {
+        if (!UtilWorkflow::permissionCheck($this->obj, $this->module, $this->schema, $action['permission'], $actionID)) {
             return LogUtil::registerError($this->__f('No permission to execute the [%s] action.', $actionID));
         }
         // define the next state to be passed to the operations
@@ -274,7 +276,7 @@ class Workflow extends \Zikula_AbstractBase
         if (!function_exists($function)) {
             // test if operation file exists
             $file = "operations/function.{$operation['name']}.php";
-            $path = Clip_Workflow_Util::findPath($file, $this->module);
+            $path = UtilWorkflow::findPath($file, $this->module);
             if (!$path) {
                 return LogUtil::registerError($this->__f('Workflow operation file [%s] does not exist', $operation['name']));
             }
@@ -287,7 +289,7 @@ class Workflow extends \Zikula_AbstractBase
         // execute operation and return the result
         $result = $function($this->obj, $params);
         // checks for an valid next state value
-        $states = array_keys(Clip_Workflow_Util::getStatesMap($this->module, $this->schema));
+        $states = array_keys(UtilWorkflow::getStatesMap($this->module, $this->schema));
         if (isset($params['nextstate']) && in_array($params['nextstate'], $states)) {
             $nextState = $params['nextstate'];
         }
@@ -299,7 +301,7 @@ class Workflow extends \Zikula_AbstractBase
      * Workflow actions filtered by mode.
      *
      * @param array   $actions Actions to filter.
-     * @param integer $mode    One of the Clip_Workflow modes.
+     * @param integer $mode    One of the Workflow modes.
      *
      * @return array Filtered actions.
      */
@@ -343,7 +345,7 @@ class Workflow extends \Zikula_AbstractBase
     /**
      * Workflow actions available for the current object and user.
      *
-     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param integer $mode  One of the Workflow modes.
      * @param string  $state State actions to retrieve, default = object's state.
      *
      * @return array Allowed actions.
@@ -354,7 +356,7 @@ class Workflow extends \Zikula_AbstractBase
             $state = $this->getWorkflow('state');
         }
         // load up the workflow actions
-        $actions = Clip_Workflow_Util::getActionsMap($this->module, $this->schema, $state);
+        $actions = UtilWorkflow::getActionsMap($this->module, $this->schema, $state);
         if (!$actions) {
             return false;
         }
@@ -373,7 +375,7 @@ class Workflow extends \Zikula_AbstractBase
                     }
                 }
                 // unset it if restricted or the user has no access to it
-                if ($skip || !Clip_Workflow_Util::permissionCheck($this->obj, $this->module, $this->schema, $action['permission'], $id)) {
+                if ($skip || !UtilWorkflow::permissionCheck($this->obj, $this->module, $this->schema, $action['permission'], $id)) {
                     unset($actions[$id]);
                 }
             }
@@ -387,7 +389,7 @@ class Workflow extends \Zikula_AbstractBase
      * Returns allowed action ids and titles only, for given state.
      *
      * @param string  $field Field to retrieve (title, description, permission, state, nextState).
-     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param integer $mode  One of the Workflow modes.
      * @param string  $state State actions to retrieve, default = object's state.
      *
      * @return mixed Array of allowed actions on the form $action[id] => $action[$field] or false on failure.
@@ -414,7 +416,7 @@ class Workflow extends \Zikula_AbstractBase
      *
      * @param integer $level Level to get (default: 0 - minimum).
      * @param string  $state State to evaluate, default = object's state.
-     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param integer $mode  One of the Workflow modes.
      *
      * @return integer The level requested inside the available state permissions.
      */
@@ -444,7 +446,7 @@ class Workflow extends \Zikula_AbstractBase
      * Get the highest allowed action for a given state.
      *
      * @param string  $field Optional field to retrieve (title, description, permission, state, nextState).
-     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param integer $mode  One of the Workflow modes.
      * @param string  $state State actions to retrieve, default = object's state.
      *
      * @return mixed Highest allowed actions or false on failure.
@@ -483,7 +485,7 @@ class Workflow extends \Zikula_AbstractBase
      * Get the first allowed action for a given state.
      *
      * @param string  $field Optional field to retrieve (title, description, permission, state, nextState).
-     * @param integer $mode  One of the Clip_Workflow modes.
+     * @param integer $mode  One of the Workflow modes.
      * @param string  $state State actions to retrieve, default = object's state.
      *
      * @return mixed First allowed actions or false on failure.
@@ -514,7 +516,7 @@ class Workflow extends \Zikula_AbstractBase
      */
     public function isValidState($state)
     {
-        $states = array_keys(Clip_Workflow_Util::getStatesMap($this->module, $this->schema));
+        $states = array_keys(UtilWorkflow::getStatesMap($this->module, $this->schema));
         return in_array($state, $states);
     }
     

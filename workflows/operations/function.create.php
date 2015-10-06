@@ -44,7 +44,7 @@ function Clip_operation_create(&$pub, $params)
         // hooks: let know that a publication was created
         $pub->notifyHooks('process_edit');
         // event: notify the operation data
-        $pub = Clip_Event::notify('data.edit.operation.create', $pub, $params)->getData();
+        $pub = Matheo\Clip\EventHelper::notify('data.edit.operation.create', $pub, $params)->getData();
     }
     // goto handling
     if ($result) {

@@ -9,13 +9,13 @@
  * @subpackage Lib
  */
 
-namespace Clip\Util;
+namespace Matheo\Clip\Util;
 
 use Zikula_Event;
 use EventUtil;
 use ZLanguage;
 use ServiceUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use InvalidArgumentException;
 use Zikula_Form_AbstractPlugin;
 use Doctrine_Collection;
@@ -70,7 +70,7 @@ class PluginsUtil
         $dom = ZLanguage::getModuleDomain('Clip');
         $sm = ServiceUtil::getManager();
         if (!$sm->hasService("clip.plugin.{$pluginID}")) {
-            $view = Clip_Util::newForm();
+            $view = Util::newForm();
             $pluginClass = self::getClasses($pluginID);
             if (!$pluginClass) {
                 throw new InvalidArgumentException(__f('Plugin ID [%s] not found in the available plugins.', $pluginID, $dom));
@@ -141,7 +141,7 @@ class PluginsUtil
             return;
         }
         // process the fields
-        $pubfields = Clip_Util::getPubFields($tid);
+        $pubfields = Util::getPubFields($tid);
         foreach ($pubfields as $fieldname => $field) {
             $plugin = self::get($field['fieldplugin']);
             if (method_exists($plugin, 'postRead')) {

@@ -235,7 +235,7 @@ class Clip_Form_Plugin_MultiCheck extends Zikula_Form_Plugin_CategoryCheckboxLis
         $typedata = explode('|', $typedata);
 
         $this->config = array(
-            'cat'  => $typedata[0] ? (int)$typedata[0] : Clip_Util::getDefaultCategoryID(),
+            'cat'  => $typedata[0] ? (int)$typedata[0] : Util::getDefaultCategoryID(),
             'edit' => isset($typedata[1]) ? (bool)$typedata[1] : false
         );
     }

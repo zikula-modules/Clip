@@ -9,18 +9,29 @@
  * @subpackage Lib
  */
 
+namespace Matheo\Clip;
+use DBUtil;
+use Doctrine_Core;
+use FileUtil;
+use LogUtil;
+use Matheo\Clip\Util\PluginsUtil;
+use ModUtil;
+use ServiceUtil;
+use System;
+use Zikula_View;
+
 /**
  * Clip Template Generator.
  */
-class Clip_Generator
+class Generator
 {
     public static function listfilter($tid, $pubfields = null)
     {
         if (is_null($pubfields)) {
-            $pubfields = Clip_Util::getPubFields($tid)->toArray();
+            $pubfields = Util::getPubFields($tid)->toArray();
         }
 
-        $view = Zikula_View::getInstance('Clip');
+        $view = \Zikula_View::getInstance('Clip');
 
         $code = '';
 
@@ -53,7 +64,7 @@ class Clip_Generator
         // get the record fields
         $recfields = $pubdata->pubFields();
 
-        $pubfields = Clip_Util::getPubFields($tid);
+        $pubfields = Util::getPubFields($tid);
 
         $code = '';
         foreach ($recfields as $name => $recfield)
@@ -84,7 +95,7 @@ class Clip_Generator
                 $rowcode['label'] = '{$pubfields.'.$name.'|clip_translate}:';
 
                 // process the postRead and getPluginOutput
-                $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+                $plugin = Util_Plugins::get($field['fieldplugin']);
 
                 if (method_exists($plugin, 'postRead')) {
                     $plugin->postRead($pubdata, $field);
@@ -226,7 +237,7 @@ class Clip_Generator
     public static function pubedit($tid)
     {
         // publication fields
-        $pubfields = Clip_Util::getPubFields($tid);
+        $pubfields = Util::getPubFields($tid);
 
         $code = '';
         foreach ($pubfields as $name => $pubfield) {
@@ -244,7 +255,7 @@ class Clip_Generator
 
             // specific edit parameters
             // process the getPluginEdit of the plugin
-            $plugin = Clip_Util_Plugins::get($formplugin);
+            $plugin = PluginsUtil::get($formplugin);
 
             $plugadd = '';
             $plugres = null;
@@ -308,7 +319,7 @@ class Clip_Generator
         $hasRelations = '';
 
         // owning side
-        $relations = Clip_Util::getRelations($tid, true, $force);
+        $relations = Util::getRelations($tid, true, $force);
         foreach ($relations as $relation) {
             // set the method to use
             switch ($relation['type']) {
@@ -367,7 +378,7 @@ class Clip_Generator
         }
 
         // owned side
-        $relations = Clip_Util::getRelations($tid, false);
+        $relations = Util::getRelations($tid, false);
         foreach ($relations as $relation) {
             // set the method to use
             switch ($relation['type']) {
@@ -473,7 +484,7 @@ class Clip_Generator
         );";
 
         // title field
-        $titlefield = Clip_Util::getTitleField($tid);
+        $titlefield = Util::getTitleField($tid);
 
         // generate the model code
         $code = "
@@ -586,7 +597,7 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
         $allRelations = '';
 
         // owning side
-        $relations = Clip_Util::getRelations($tid, true, $force);
+        $relations = Util::getRelations($tid, true, $force);
         foreach ($relations as $relation) {
             // add the relation array field
             $ownRelations .= "
@@ -605,7 +616,7 @@ class ClipModels_Pubdata{$tid} extends Clip_Doctrine_Pubdata
         }
 
         // owned side
-        $relations = Clip_Util::getRelations($tid, false);
+        $relations = Util::getRelations($tid, false);
         foreach ($relations as $relation) {
             // add the relation array field
             $allRelations .= "
@@ -698,7 +709,7 @@ class ClipModels_Pubdata{$tid}Table extends Clip_Doctrine_Table
         }
         unset($files);
 
-        $allrelations = Clip_Util::getRelations(-1, false, true);
+        $allrelations = Util::getRelations(-1, false, true);
 
         $code = '';
         foreach ($allrelations as $tid => $relations) {
@@ -769,7 +780,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
 
         $where  = $tid ? array(array('tid = ?', (int)$tid)) : '' ;
 
-        $pubfields = Doctrine_Core::getTable('Clip_Model_Pubfield')
+        $pubfields = \Doctrine_Core::getTable('Clip_Model_Pubfield')
                      ->selectCollection($where, 'tid ASC, lineno ASC');
 
         if ($pubfields === false) {
@@ -912,11 +923,11 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         $path = ModUtil::getVar('Clip', 'modelspath');
 
         $file = "$path/Pubdata{$tid}.php";
-        $code = Clip_Generator::pubmodel($tid, $forcerels);
+        $code = Generator::pubmodel($tid, $forcerels);
         file_put_contents($file, '<?php'.$code);
 
         $file = "$path/Pubdata{$tid}Table.php";
-        $code = Clip_Generator::pubtable($tid);
+        $code = Generator::pubtable($tid);
         file_put_contents($file, '<?php'.$code);
     }
 
@@ -941,7 +952,7 @@ class ClipModels_Relation{$relation['id']}Table extends Clip_Doctrine_Table
         if (!isset($checked) || $force) {
             $checked = true;
 
-            $tid  = Clip_Util::getPubType()->getFirst()->tid;
+            $tid  = Util::getPubType()->getFirst()->tid;
             $path = ModUtil::getVar('Clip', 'modelspath');
             $file = $path."/Pubdata$tid.php";
 

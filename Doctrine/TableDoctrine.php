@@ -9,9 +9,9 @@
  * @subpackage Doctrine
  */
 
-namespace Clip\Doctrine;
+namespace Matheo\Clip\Doctrine;
 
-use Clip_Util;
+use Matheo\Clip\Util;
 use Doctrine_Core;
 use Exception;
 use Doctrine_Manager;
@@ -51,8 +51,8 @@ class TableDoctrine extends \Doctrine_Table
             }
         }
         // add the core_title as another filter field
-        $tid = Clip_Util::getTidFromString($this->getTableName());
-        $columns['core_title'] = Clip_Util::getPubType($tid)->getTitleField();
+        $tid = Util::getTidFromString($this->getTableName());
+        $columns['core_title'] = Util::getPubType($tid)->getTitleField();
         return $columns;
     }
     

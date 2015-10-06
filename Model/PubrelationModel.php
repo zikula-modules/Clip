@@ -9,11 +9,11 @@
  * @subpackage Model
  */
 
-namespace Clip\Model;
+namespace Matheo\Clip\Model;
 
-use Clip_Generator;
+use Matheo\Clip\Generator;
 use Doctrine_Core;
-use Clip_Util;
+use Matheo\Clip\Util;
 use ModUtil;
 
 class PubrelationModel extends \Doctrine_Record
@@ -100,9 +100,9 @@ class PubrelationModel extends \Doctrine_Record
         $relation = $event->getInvoker();
         // if m2m regenerate the models files
         if ($relation->type == 3) {
-            Clip_Generator::createRelationsModels();
+            Generator::createRelationsModels();
             // create the relation table
-            Doctrine_Core::getTable('ClipModels_Relation' . $relation->id)->createTable();
+            Doctrine_Core::getTable('Matheo\Clip\Model\RelationModel' . $relation->id)->createTable();
         }
         // update the related pubtypes tables
         $relation->updatePubtypes();
@@ -118,10 +118,10 @@ class PubrelationModel extends \Doctrine_Record
         $relation = $event->getInvoker();
         // delete the relation table if it's m2m
         if ($relation->type == 3) {
-            Doctrine_Core::getTable('ClipModels_Relation' . $relation->id)->dropTable();
+            Doctrine_Core::getTable('Matheo\Clip\Model\RelationModel' . $relation->id)->dropTable();
         }
         // delete the model file
-        Clip_Generator::deleteModel($relation->id, 'Relation');
+        Generator::deleteModel($relation->id, 'Relation');
         // update the related pubtypes tables
         $relation->updatePubtypes();
     }
@@ -133,9 +133,9 @@ class PubrelationModel extends \Doctrine_Record
     {
         // update the tables if not upgrading
         if (ModUtil::available('Clip')) {
-            Clip_Util::getPubType($this->tid1)->updateTable(false);
+            Util::getPubType($this->tid1)->updateTable(false);
             if ($this->tid2 != $this->tid1) {
-                Clip_Util::getPubType($this->tid2)->updateTable(false);
+                Util::getPubType($this->tid2)->updateTable(false);
             }
         }
     }

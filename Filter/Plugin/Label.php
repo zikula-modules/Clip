@@ -9,8 +9,9 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
+namespace Matheo\Clip\Filter\Plugin;
 
+use Matheo\Clip\Filter\FormFilter;
 use ZLanguage;
 
 /**
@@ -24,7 +25,7 @@ use ZLanguage;
  * The rendered output is an HTML label element with the "for" value
  * set to the supplied id.
  */
-class Label extends \Clip_Filter_Plugin_AbstractPlugin
+class Label extends AbstractPlugin
 {
     /**
      * Text to show as label.
@@ -58,7 +59,7 @@ class Label extends \Clip_Filter_Plugin_AbstractPlugin
      * Create event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -71,11 +72,11 @@ class Label extends \Clip_Filter_Plugin_AbstractPlugin
     /**
      * Render event handler.
      *
-     * @param Zikula_View $view Reference to Zikula_View object.
+     * @param \Zikula_View $view Reference to Zikula_View object.
      *
      * @return string The rendered output
      */
-    public function render(Zikula_View $view)
+    public function render(\Zikula_View $view)
     {
         $attrs = $this->renderAttributes();
         $output = "<label for=\"{$this->for}\"{$attrs}>{$this->text}";

@@ -9,20 +9,20 @@
  * @subpackage Lib
  */
 
-namespace Clip;
+namespace Matheo\Clip;
 
 use SecurityUtil;
 use ZLanguage;
 use DataUtil;
 use LogUtil;
 use UserUtil;
-use Clip_Util;
-use Clip_Model_Pubtype;
-use Clip_Workflow;
+use Matheo\Clip\Util;
+use Matheo\Clip\Model\PubtypeModel;
+use Matheo\Clip\Workflow;
 use Exception;
 use ModUtil;
 use DBUtil;
-use Clip_Doctrine_Pubdata;
+use Matheo\Clip\Doctrine\PubdataDoctrine;
 
 class Access
 {
@@ -54,7 +54,7 @@ class Access
     {
         $dom = ZLanguage::getModuleDomain('Clip');
         if (!$gid) {
-            return LogUtil::registerError(__f('%1$s: Invalid grouptype ID passed [%2$s].', array('Clip_Access::toGrouptype', DataUtil::formatForDisplay($gid)), $dom));
+            return LogUtil::registerError(__f('%1$s: Invalid grouptype ID passed [%2$s].', array('Access::toGrouptype', DataUtil::formatForDisplay($gid)), $dom));
         }
         // evaluate the access
         return SecurityUtil::checkPermission("Clip:g{$gid}:", '::', ACCESS_OVERVIEW);
@@ -88,11 +88,11 @@ class Access
         $permlvl = ACCESS_ADMIN;
         // be sure to have a Clip_Model_Pubtype instance
         if ($pubtype) {
-            if (!$pubtype instanceof Clip_Model_Pubtype) {
-                if (!Clip_Util::validateTid($pubtype)) {
-                    return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPubtype', DataUtil::formatForDisplay($pubtype)), $dom));
+            if (!$pubtype instanceof PubtypeModel) {
+                if (!Util::validateTid($pubtype)) {
+                    return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Access::toPubtype', DataUtil::formatForDisplay($pubtype)), $dom));
                 }
-                $pubtype = Clip_Util::getPubType($pubtype);
+                $pubtype = Util::getPubType($pubtype);
             }
             $component = "Clip:{$pubtype->tid}:";
         } else {
@@ -117,7 +117,7 @@ class Access
                 if ($pubtype['enableeditown'] != 1) {
                     $component .= 'edit';
                     // TODO consider edit.own and not for pubs submitted by guests
-                    $workflow = new Clip_Workflow($pubtype);
+                    $workflow = new Workflow($pubtype);
                     // assumes level 1 as the first moderator permission
                     $permlvl = $workflow->getPermissionLevel(1, 'initial');
                     if (!$permlvl) {
@@ -130,7 +130,7 @@ class Access
                 // submit new content
                 $component .= 'edit';
                 $instance = ':initial:';
-                $workflow = new Clip_Workflow($pubtype);
+                $workflow = new Workflow($pubtype);
                 // assumes level 0 as the basic submit permission
                 $permlvl = $workflow->getPermissionLevel(0, 'initial');
                 break;
@@ -144,7 +144,7 @@ class Access
                 // TODO Use a reverse method to detect the available permissions rules
                 break;
             default:
-                throw new Exception(__f('%1$s: Invalid context passed [%2$s].', array('Clip_Access::toPubtype', DataUtil::formatForDisplay($context)), $dom));
+                throw new Exception(__f('%1$s: Invalid context passed [%2$s].', array('Access::toPubtype', DataUtil::formatForDisplay($context)), $dom));
         }
         // check the cached results
         static $cache = array();
@@ -185,14 +185,14 @@ class Access
         $state = '';
         $action = $action ? $action : '';
         // be sure to have a Clip_Model_Pubtype instance
-        if (!$pubtype instanceof Clip_Model_Pubtype) {
-            if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Access::toPub', DataUtil::formatForDisplay($pubtype)), $dom));
+        if (!$pubtype instanceof PubtypeModel) {
+            if (!Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Access::toPub', DataUtil::formatForDisplay($pubtype)), $dom));
             }
-            $pubtype = Clip_Util::getPubType($pubtype);
+            $pubtype = Util::getPubType($pubtype);
         }
         // when it's an instance we can do a complete check
-        if ($pub instanceof Clip_Doctrine_Pubdata) {
+        if ($pub instanceof PubdataDoctrine) {
             // check an already stored record
             if ($pub->exists()) {
                 $pid = $pub['core_pid'];
@@ -225,7 +225,7 @@ class Access
                 // query for the state
                 $dbtables = DBUtil::getTables();
                 $wfcolumn = $dbtables['workflows_column'];
-                $where = "WHERE {$wfcolumn['module']} = 'Clip' AND {$wfcolumn['obj_table']} = '{$pubtype->getTableName()}'\r\n                            AND {$wfcolumn['obj_idcolumn']} = 'id' AND {$wfcolumn['obj_id']} = '" . DataUtil::formatForStore($id) . '\'';
+                $where = "WHERE {$wfcolumn['module']} = 'Clip' AND {$wfcolumn['obj_table']} = '{$pubtype->getTableName()}' AND {$wfcolumn['obj_idcolumn']} = 'id' AND {$wfcolumn['obj_id']} = '" . DataUtil::formatForStore($id) . '\'';
                 $state = (string) DBUtil::selectField('workflows', 'state', $where);
             }
         }
@@ -258,8 +258,8 @@ class Access
             case 'execinline':
                 if (!$permlvl) {
                     // gets the minimum state permission level
-                    $workflow = $pub instanceof Clip_Doctrine_Pubdata ? new Clip_Workflow($pubtype, $pub) : new Clip_Workflow($pubtype);
-                    $mode = $context == 'execinline' ? Clip_Workflow::ACTIONS_ALL : Clip_Workflow::ACTIONS_FORM;
+                    $workflow = $pub instanceof PubdataDoctrine ? new Workflow($pubtype, $pub) : new Workflow($pubtype);
+                    $mode = $context == 'execinline' ? Workflow::ACTIONS_ALL : Workflow::ACTIONS_FORM;
                     $permlvl = $workflow->getPermissionLevel(
                         0,
                         $state,

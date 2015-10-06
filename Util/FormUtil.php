@@ -9,10 +9,13 @@
  * @subpackage Util
  */
 
-namespace Clip\Util;
+namespace Matheo\Clip\Util;
 
-use Clip_Util;
+use Matheo\Clip\Util;
 use ModUtil;
+use Zikula_Form_AbstractHandler;
+use Zikula_Form_View;
+use Zikula_View;
 use ZLanguage;
 use DataUtil;
 
@@ -194,7 +197,7 @@ class FormUtil
         $args['handleplugins'] = false;
         $args['loadworkflow'] = false;
         $args['rel'] = array('load' => isset($args['loadrels']) ? (bool) $args['loadrels'] : false, 'onlyown' => isset($args['onlyown']) ? (bool) $args['onlyown'] : true);
-        $args['rel'] = Clip_Util::getPubtypeConfig('edit', $args['rel']);
+        $args['rel'] = Util::getPubtypeConfig('edit', $args['rel']);
         if (!isset($args['pid']) || empty($args['pid'])) {
             $args['pid'] = ModUtil::apiFunc('Clip', 'user', 'getPid', $args);
         }
@@ -242,7 +245,7 @@ class FormUtil
         $args['handleplugins'] = false;
         $args['loadworkflow'] = false;
         $args['rel'] = array('load' => isset($args['loadrels']) ? (bool) $args['loadrels'] : false, 'onlyown' => isset($args['onlyown']) ? (bool) $args['onlyown'] : true);
-        $args['rel'] = Clip_Util::getPubtypeConfig('edit', $args['rel']);
+        $args['rel'] = Util::getPubtypeConfig('edit', $args['rel']);
         $args['where'] = array();
         $args['where'][] = array('core_online = ?', 1);
         $args['where'][] = array('core_visible = ?', 1);
@@ -293,10 +296,10 @@ class FormUtil
         $field = isset($args['field']) ? (string) $args['field'] : null;
         $value = isset($args['value']) ? $args['value'] : null;
         if (!$field) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->loadvalue', 'field')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->loadvalue', 'field')));
         }
         if (!$value) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->loadvalue', 'value')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->loadvalue', 'value')));
         }
         $alias = isset($args['alias']) ? $args['alias'] : $this->alias;
         $tid = isset($args['tid']) ? $args['tid'] : $this->tid;

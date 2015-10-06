@@ -9,9 +9,11 @@
  * @subpackage Model
  */
 
-namespace Clip\Model;
+namespace Matheo\Clip\Model;
 
-class PubtypeTableModel extends \Clip_Doctrine_Table
+use Matheo\Clip\Doctrine\TableDoctrine;
+
+class PubtypeModelTable extends TableDoctrine
 {
     public function getPubtypes()
     {

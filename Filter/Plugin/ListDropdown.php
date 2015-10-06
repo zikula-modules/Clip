@@ -9,16 +9,17 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
+namespace Matheo\Clip\Filter\Plugin;
 
 use DataUtil;
+use Matheo\Clip\Filter\FormFilter;
 
 /**
  * List drop down plugin.
  *
  * Renders an HTML <select> element with the supplied items.
  */
-class ListDropdown extends \Clip_Filter_Plugin_ListBase
+class ListDropdown extends ListBase
 {
     /**
      * Selection mode.
@@ -67,7 +68,7 @@ class ListDropdown extends \Clip_Filter_Plugin_ListBase
      * Create event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -81,7 +82,7 @@ class ListDropdown extends \Clip_Filter_Plugin_ListBase
      * Load event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -103,11 +104,11 @@ class ListDropdown extends \Clip_Filter_Plugin_ListBase
     /**
      * Render event handler.
      *
-     * @param Zikula_View $view Reference to Zikula_View object.
+     * @param \Zikula_View $view Reference to Zikula_View object.
      *
      * @return string The rendered output
      */
-    public function render(Zikula_View $view)
+    public function render(\Zikula_View $view)
     {
         $idHtml = $this->getIdHtml();
         $nameHtml = " name=\"{$this->inputName}[]\"";

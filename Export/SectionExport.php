@@ -9,19 +9,30 @@
  * @subpackage Export
  */
 
-namespace Clip\Export;
+namespace Matheo\Clip\Export;
 
 use Doctrine_Core;
+use Doctrine_Query;
 
 class SectionExport
 {
     protected $idfield = 'id';
+
     protected $name;
+
     protected $rowname;
+
     protected $pagesize = 0;
+
+    /**
+     * @var Doctrine_Query
+     */
     protected $query;
+
     protected $addfrom = array();
+
     protected $page = 0;
+
     protected $ids = array();
 
     /**
@@ -90,7 +101,7 @@ class SectionExport
     /**
      * Query setter.
      *
-     * @return this
+     * @return $this
      */
     public function setQuery(Doctrine_Query $query)
     {

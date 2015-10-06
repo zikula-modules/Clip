@@ -9,7 +9,7 @@
  * @subpackage Filter
  */
 
-namespace Clip\Filter\Handler;
+namespace Matheo\Clip\Filter\Handler;
 
 use CategoryUtil;
 

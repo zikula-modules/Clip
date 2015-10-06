@@ -9,10 +9,10 @@
  * @subpackage Api
  */
 
-namespace Clip\Api;
+namespace Matheo\Clip\Api;
 
 use ModUtil;
-use Clip_Access;
+use Matheo\Clip\Access;
 
 class AdminApi extends \Zikula_AbstractApi
 {
@@ -24,10 +24,10 @@ class AdminApi extends \Zikula_AbstractApi
     public function getlinks()
     {
         $links = array();
-        if (Clip_Access::toClip(ACCESS_ADMIN, 'ANY')) {
+        if (Access::toClip(ACCESS_ADMIN, 'ANY')) {
             $links[] = array('url' => ModUtil::url('Clip', 'admin', 'main'), 'text' => $this->__('Index'));
         }
-        if (Clip_Access::toClip(ACCESS_ADMIN)) {
+        if (Access::toClip(ACCESS_ADMIN)) {
             $links[] = array('url' => ModUtil::url('Clip', 'admin', 'relations'), 'text' => $this->__('Relations'));
             $links[] = array('url' => ModUtil::url('Clip', 'admin', 'clipexport'), 'text' => $this->__('Export'));
             $links[] = array('url' => ModUtil::url('Clip', 'admin', 'clipimport'), 'text' => $this->__('Import'));

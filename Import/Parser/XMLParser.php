@@ -9,14 +9,13 @@
  * @subpackage Import_Parser
  */
 
-namespace Clip\Import\Parser;
+namespace Matheo\Clip\Import\Parser;
 
 use XMLReader;
 use ZLanguage;
 use DataUtil;
 use LogUtil;
-use Clip_Util;
-use Clip_Import_Parser_XML;
+use Matheo\Clip\Util;
 
 class XML
 {
@@ -63,7 +62,7 @@ class XML
             }
             if (!$section && $this->reader->nodeType == 1) {
                 // detect the start of a section
-                if (!in_array(Clip_Util::getStringPrefix($this->reader->name), $sections)) {
+                if (!in_array(Util::getStringPrefix($this->reader->name), $sections)) {
                     return LogUtil::registerError(__f('Unexpected section found [%s].', DataUtil::formatForDisplay($this->reader->name), $dom));
                 }
                 $section = $this->reader->name;
@@ -84,15 +83,14 @@ class XML
         }
         return true;
     }
-    
+
     /**
      * DOMNode2Array conversor.
      *
-     * @param DOMNode $node DOMNode to convert.
-     *
+     * @param \DOMElement $DomNode $node DOMNode to convert.
      * @return array
      */
-    public static function DOMtoArray(DOMNode $DomNode = null)
+    public static function DOMtoArray(\DOMElement $DomNode = null)
     {
         $array = array();
         if (!$DomNode) {
@@ -114,7 +112,7 @@ class XML
                     }
                 }
                 $mValue = self::DOMtoArray($oChildNode);
-                if ($mValue != Clip_Import_Parser_XML::SKIP) {
+                if ($mValue != self::SKIP) {
                     $mValue = is_array($mValue) ? $mValue[$oChildNode->nodeName] : $mValue;
                     $sKey = $oChildNode->nodeName[0] == '#' ? 0 : $oChildNode->nodeName;
                     // this will give us a clue as to what the result structure should be
@@ -149,7 +147,7 @@ class XML
         if (isset($array['#text']) && ($array['#text'] === '
   ' || $array['#text'] === '
    ')) {
-            $array = Clip_Import_Parser_XML::SKIP;
+            $array = self::SKIP;
         }
         return $array;
     }

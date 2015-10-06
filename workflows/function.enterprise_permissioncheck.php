@@ -20,9 +20,9 @@
  *
  * @return bool True if allowed to execute the action, false otherwise.
  */
-function Clip_workflow_enterprise_permissioncheck($pub, $permLevel, $currentUser, $actionId)
+function Workflow_enterprise_permissioncheck($pub, $permLevel, $currentUser, $actionId)
 {
-    $pubtype = Clip_Util::getPubType($pub->core_tid);
+    $pubtype = Matheo\Clip\Util::getPubType($pub->core_tid);
     if ($pubtype->enableeditown == 1 && strpos($actionId, 'author') === 0) {
         // check existing publication author
         if (!$pub->exists() || $pub->core_author == $currentUser) {
@@ -30,9 +30,9 @@ function Clip_workflow_enterprise_permissioncheck($pub, $permLevel, $currentUser
             return true;
         }
     }
-    return Clip_Access::toPub($pubtype, $pub, null, 'exec', null, $permLevel, $currentUser, $actionId);
+    return Matheo\Clip\Access::toPub($pubtype, $pub, null, 'exec', null, $permLevel, $currentUser, $actionId);
 }
-function Clip_workflow_enterprise_gettextstrings()
+function Workflow_enterprise_gettextstrings()
 {
     no__('Are you sure you want to delete this publication?');
     no__('Authors recipients');

@@ -91,8 +91,8 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
         }
     }
     if (!isset($html)) {
-        $pubfield = Clip_Util::getPubFields($tid, $field);
-        $plugin = Clip_Util_Plugins::get($pubfield['fieldplugin']);
+        $pubfield = Util::getPubFields($tid, $field);
+        $plugin = Util_Plugins::get($pubfield['fieldplugin']);
         $id = $plugin->getRootCategoryID($pubfield['typedata']);
         $cats = CategoryUtil::getSubCategories($id);
         if (!$cats) {
@@ -149,10 +149,10 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
             }
             $args = $params;
             if ($new_filter == '') {
-                $url = Clip_Util::url($tid, 'list', $args);
+                $url = Util::url($tid, 'list', $args);
             } else {
                 $args['filter'] = $new_filter;
-                $url = Clip_Util::url($tid, 'list', $args);
+                $url = Util::url($tid, 'list', $args);
             }
             if ($count) {
                 if (isset($count_arr[$filter_act])) {
@@ -170,17 +170,17 @@ function smarty_function_clip_category_browser($params, Zikula_View &$view)
         if ($includenulllink) {
             $args = $params;
             $args['filter'] = $field . '^null';
-            $nullcat = array(-1 => array('fullTitle' => $view->__('Uncategorized'), 'url' => Clip_Util::url($tid, 'list', $args), 'depth' => 0, 'selected' => 0));
+            $nullcat = array(-1 => array('fullTitle' => $view->__('Uncategorized'), 'url' => Util::url($tid, 'list', $args), 'depth' => 0, 'selected' => 0));
             $cats = array_merge($nullcat, $cats);
         }
         if ($includealllink) {
             $args = $params;
-            $nullcat = array(-2 => array('fullTitle' => $view->__('All'), 'url' => Clip_Util::url($tid, 'list', $args), 'depth' => 0, 'selected' => 0));
+            $nullcat = array(-2 => array('fullTitle' => $view->__('All'), 'url' => Util::url($tid, 'list', $args), 'depth' => 0, 'selected' => 0));
             $cats = array_merge($nullcat, $cats);
         }
         $view->assign('cats', $cats);
         // assign the plugin options
-        $options = array('tid' => $tid, 'urltitle' => Clip_Util::getPubType($tid, 'urltitle'), 'field' => $field, 'count' => $count, 'togglediv' => $togglediv, 'selected' => $one_selected);
+        $options = array('tid' => $tid, 'urltitle' => Util::getPubType($tid, 'urltitle'), 'field' => $field, 'count' => $count, 'togglediv' => $togglediv, 'selected' => $one_selected);
         $view->assign('options', $options);
         $html = $view->fetch($template, $cache ? $cache_id : null);
     }

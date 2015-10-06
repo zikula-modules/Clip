@@ -28,11 +28,11 @@ function Clip_operation_delete(&$pub, $params)
     // process the deletion
     $result = false;
     // utility vars
-    $pubtype = Clip_Util::getPubType($pub['core_tid']);
-    $workflow = new Clip_Workflow($pubtype, $pub);
+    $pubtype = Matheo\Clip\Util::getPubType($pub['core_tid']);
+    $workflow = new Matheo\Clip\Workflow($pubtype, $pub);
     if ($workflow->deleteWorkflow()) {
         // event: notify the operation data
-        $pub = Clip_Event::notify('data.edit.operation.delete', $pub, $params)->getData();
+        $pub = Matheo\Clip\EventHelper::notify('data.edit.operation.delete', $pub, $params)->getData();
         $result = array($pub['core_uniqueid'] => true);
         $tbl = Doctrine_Core::getTable('ClipModels_Pubdata' . $pub['core_tid']);
         // checks if there's any other revision of this publication

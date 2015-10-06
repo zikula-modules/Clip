@@ -24,11 +24,11 @@ Zikula.Clip.Generator =
     CleanCode: function()
     {
         // cleanup browser intervention on the generated code
-        $('clip_generatorcode').innerHTML = $('clip_generatorcode').innerHTML.gsub(/href="(.*?)"/, function (match) {
+        $('Generatorcode').innerHTML = $('Generatorcode').innerHTML.gsub(/href="(.*?)"/, function (match) {
             match[1] = match[1].replace(Zikula.Config.baseURL, '');
             return 'href="'+match[1]+'"';
         });
-        $('clip_generatorcode').innerHTML = $('clip_generatorcode').innerHTML.gsub(/src="(.*?)"/, function (match) {
+        $('Generatorcode').innerHTML = $('Generatorcode').innerHTML.gsub(/src="(.*?)"/, function (match) {
             match[1] = match[1].replace(Zikula.Config.baseURL, '');
             return 'src="'+match[1]+'"';
         });

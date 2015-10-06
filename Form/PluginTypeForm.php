@@ -9,11 +9,11 @@
  * @subpackage Form
  */
 
-namespace Clip\Form;
+namespace Matheo\Clip\Form;
 
-use Clip_Util_Selectors;
+use Util_Selectors;
 use ZLanguage;
-use Clip_Util_Plugins;
+use Util_Plugins;
 use PageUtil;
 
 class PluginTypeForm extends \Zikula_Form_Plugin_DropdownList
@@ -26,7 +26,7 @@ class PluginTypeForm extends \Zikula_Form_Plugin_DropdownList
     public function __construct($view, &$params)
     {
         $this->autoPostBack = true;
-        $this->items = Clip_Util_Selectors::plugins();
+        $this->items = Util_Selectors::plugins();
         parent::__construct($view, $params);
     }
     
@@ -43,7 +43,7 @@ class PluginTypeForm extends \Zikula_Form_Plugin_DropdownList
         $result = parent::render($render);
         $config = $script = '';
         if (!empty($this->selectedValue) && !empty($this->items)) {
-            $plugin = Clip_Util_Plugins::get($this->selectedValue);
+            $plugin = Util_Plugins::get($this->selectedValue);
             if (method_exists($plugin, 'getConfigHtml')) {
                 PageUtil::addVar('javascript', 'zikula.ui');
                 $script = '<script type="text/javascript">

@@ -1,4 +1,4 @@
-{clip_access assign='auth_admin'}
+{Access assign='auth_admin'}
 
 {* breadcrumbs *}
 <div class="z-menu">
@@ -16,20 +16,20 @@
             </a>
         </span>
         {/if}
-        {clip_accessblock context='editor'}
+        {Accessblock context='editor'}
         <span class="clip-breadlink">
             <a href="{clip_url type='editor' func='list'}">
                 {img width='12' height='12' modname='core' src='lists.png' set='icons/extrasmall' alt='' __title='Editor panel'}
             </a>
         </span>
-        {/clip_accessblock}
-        {clip_accessblock context='submit'}
+        {/Accessblock}
+        {Accessblock context='submit'}
         <span class="clip-breadlink">
             <a href="{clip_url type='user' func='edit'}">
                 {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Submit a publication'}
             </a>
         </span>
-        {/clip_accessblock}
+        {/Accessblock}
 
         <span class="text_separator">&raquo;</span>
 
@@ -68,13 +68,13 @@
                     <span class="clip-breadtext" title="{$pubdata.core_title}">
                         {$pubdata.core_title|truncate:40|safetext}
                     </span>
-                    {clip_accessblock pub=$pubdata context='edit'}
+                    {Accessblock pub=$pubdata context='edit'}
                     <span class="clip-breadlink">
                         <a href="{clip_url func='edit' pub=$pubdata}">
                             {img width='12' height='12' modname='core' src='edit.png' set='icons/extrasmall' __title='Edit this publication' __alt='Edit'}
                         </a>
                     </span>
-                    {/clip_accessblock}
+                    {/Accessblock}
                 {/if}
 
                 {if $func neq 'display'}

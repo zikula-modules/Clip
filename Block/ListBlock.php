@@ -9,16 +9,16 @@
  * @subpackage Block
  */
 
-namespace Clip\Block;
+namespace Matheo\Clip\Block;
 
 use SecurityUtil;
-use Clip_Access;
+use Matheo\Clip\Access;
 use BlockUtil;
 use DataUtil;
 use LogUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use ModUtil;
-use Clip_Util_Selectors;
+use Matheo\Clip\Util\SelectorsUtil;
 use FormUtil;
 
 /**
@@ -47,20 +47,20 @@ class ListBlock extends \Zikula_Controller_AbstractBlock
      */
     public function display($blockinfo)
     {
-        $alert = $this->getVar('devmode', false) && Clip_Access::toClip(ACCESS_ADMIN);
+        $alert = $this->getVar('devmode', false) && Access::toClip(ACCESS_ADMIN);
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
         // validation of required parameters
         if (!isset($vars['tid']) || empty($vars['tid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
         }
-        if (!Clip_Util::validateTid($vars['tid'])) {
+        if (!Util::validateTid($vars['tid'])) {
             return $alert ? LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($vars['tid']))) : null;
         }
         // security check
-        // FIXME SECURITY centralize on Clip_Access
+        // FIXME SECURITY centralize on Access
         if (!SecurityUtil::checkPermission('Clip:block:list', "{$blockinfo['bid']}:{$vars['tid']}:", ACCESS_OVERVIEW)) {
-            return;
+            return '';
         }
         // default values
         $template = isset($vars['template']) && !empty($vars['template']) ? $vars['template'] : '';
@@ -69,7 +69,7 @@ class ListBlock extends \Zikula_Controller_AbstractBlock
         $args = array('tid' => $vars['tid'], 'orderby' => $orderstr, 'filter' => isset($vars['listfilter']) && !empty($vars['listfilter']) ? $vars['listfilter'] : '()', 'itemsperpage' => isset($vars['listCount']) && (int) $vars['listCount'] > 0 ? $vars['listCount'] : 5, 'startnum' => isset($vars['listOffset']) ? $vars['listOffset'] : 0, 'template' => $template ? 'block_' . $template : 'block', 'cachelifetime' => isset($vars['cachelifetime']) ? $vars['cachelifetime'] : null);
         $blockinfo['content'] = ModUtil::func('Clip', 'user', 'list', $args);
         if (empty($blockinfo['content'])) {
-            return;
+            return '';
         }
         return BlockUtil::themeBlock($blockinfo);
     }
@@ -107,8 +107,8 @@ class ListBlock extends \Zikula_Controller_AbstractBlock
             $vars['cachelifetime'] = 0;
         }
         // builds the pubtypes selector
-        $pubtypes = Clip_Util::getPubType(-1)->toKeyValueArray('tid', 'title');
-        $fields = Clip_Util_Selectors::fields($vars['tid']);
+        $pubtypes = Util::getPubType(-1)->toKeyValueArray('tid', 'title');
+        $fields = SelectorsUtil::fields($vars['tid']);
         $pubfields = array();
         foreach (array_keys($fields) as $k) {
             $pubfields[$fields[$k]['value']] = $fields[$k]['text'];

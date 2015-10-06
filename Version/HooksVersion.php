@@ -9,13 +9,14 @@
  * @subpackage Version
  */
 
-namespace Clip\Version;
+namespace Matheo\Clip\Version;
 
-class HooksVersion extends \Clip_Version
+use Matheo\Clip\ClipVersion;
+
+class HooksVersion extends ClipVersion
 {
     protected function setupHookBundles()
     {
         
     }
-
 }

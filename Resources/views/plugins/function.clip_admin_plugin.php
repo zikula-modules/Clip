@@ -34,7 +34,7 @@ function smarty_function_clip_admin_plugin($params, Zikula_Form_View &$render)
     $plugin = $params['plugin'];
     unset($params['plugin']);
     // get the admin plugin classname
-    $plugin = Clip_Util_Plugins::getAdminClassname($plugin);
+    $plugin = Util_Plugins::getAdminClassname($plugin);
     // validate that the class exists
     if (!$plugin) {
         $render->trigger_error($render->__f('Error! The specified plugin class [%s] does not exists.', $plugin));

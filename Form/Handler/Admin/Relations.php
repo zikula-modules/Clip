@@ -23,7 +23,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
      */
     public function initialize(Zikula_Form_View $view)
     {
-        $pubtypes = Clip_Util::getPubType(-1);
+        $pubtypes = Util::getPubType(-1);
 
         if (count($pubtypes) == 0) {
             LogUtil::registerError($this->__('There are no publication types to relate.'));
@@ -113,7 +113,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
         // fill the view
         $view->assign('pubtypes', $pubtypes->toArray())
-             ->assign('typeselector', Clip_Util_Selectors::pubtypes(true, true))
+             ->assign('typeselector', Util_Selectors::pubtypes(true, true))
              ->assign('relations', $relations)
              ->assign('reltypes', array($reltype1, $reltype2))
              ->assign('ops', $ops)
@@ -184,7 +184,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
                 // verify unique alias1
                 if (!$this->id || $relation->alias1 != $previous->alias1) {
-                    if (!Clip_Util::validateTid($relation->tid1)) {
+                    if (!Util::validateTid($relation->tid1)) {
                         return $view->setPluginErrorMsg('tid1', $this->__('Invalid owning publication type passed.'));
                     } else {
                         $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$relation->tid1)->getRecord();
@@ -196,7 +196,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
                 // verify unique alias2
                 if (!$this->id || $relation->alias2 != $previous->alias2) {
-                    if (!Clip_Util::validateTid($relation->tid2)) {
+                    if (!Util::validateTid($relation->tid2)) {
                         return $view->setPluginErrorMsg('tid2', $this->__('Invalid related publication type passed.'));
                     } else {
                         $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$relation->tid2)->getRecord();

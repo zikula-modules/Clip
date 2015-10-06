@@ -34,7 +34,7 @@ function Clip_operation_update(&$pub, &$params)
     $tbl = Doctrine_Core::getTable('ClipModels_Pubdata' . $pub['core_tid']);
     // overrides newrevision in pubtype. gives the dev. the possibility to not generate a new revision
     // e.g. when the revision is pending (waiting state) and will be updated
-    $pubtype = Clip_Util::getPubType($pub['core_tid']);
+    $pubtype = Matheo\Clip\Util::getPubType($pub['core_tid']);
     // checks if there are fixed operation values to update
     foreach ($params as $key => $val) {
         if (!in_array($key, array('newrevision', 'silent', 'nextstate')) && $pub->contains($key)) {
@@ -62,7 +62,7 @@ function Clip_operation_update(&$pub, &$params)
             $result = array($pub['core_uniqueid'] => true);
             // register the new workflow, return false if failure
             $rev->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
-            $workflow = new Clip_Workflow($pubtype, $rev);
+            $workflow = new Matheo\Clip\Workflow($pubtype, $rev);
             if (!$workflow->registerWorkflow($params['nextstate'])) {
                 $result = false;
                 // delete the previously inserted record
@@ -83,7 +83,7 @@ function Clip_operation_update(&$pub, &$params)
         // hooks: let know that the publication was updated
         $pub->notifyHooks('process_edit');
         // event: notify the operation data
-        $pub = Clip_Event::notify('data.edit.operation.update', $pub, $params)->getData();
+        $pub = Matheo\Clip\EventHelper::notify('data.edit.operation.update', $pub, $params)->getData();
     }
     // goto handling
     if ($result && $params['goto']) {

@@ -9,12 +9,12 @@
  * @subpackage Lib
  */
 
-namespace Clip\Util;
+namespace Matheo\Clip\Util;
 
 use ZLanguage;
 use Doctrine_Core;
 use DataUtil;
-use Clip_Access;
+use Matheo\Clip\Access;
 use Zikula_Tree;
 use System;
 use ModUtil;
@@ -100,12 +100,12 @@ class GrouptypesUtil
         }
         // checks the permissions for the remaining ones
         foreach ($grouptypes as $k => $g) {
-            if (!Clip_Access::toGrouptype($g['gid'])) {
+            if (!Access::toGrouptype($g['gid'])) {
                 unset($grouptypes[$k]);
             }
             if ($withPubtypes) {
                 foreach ($g['pubtypes'] as $j => $pubtype) {
-                    if (!Clip_Access::toPubtype($pubtype['tid'], $context)) {
+                    if (!Access::toPubtype($pubtype['tid'], $context)) {
                         unset($grouptypes[$k][$j]);
                     }
                 }

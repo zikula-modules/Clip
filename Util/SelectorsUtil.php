@@ -9,12 +9,12 @@
  * @subpackage Lib
  */
 
-namespace Clip\Util;
+namespace Matheo\Clip\Util;
 
 use FileUtil;
 use ZLanguage;
-use Clip_Util;
-use Clip_Util_Plugins;
+use Matheo\Clip\Util;
+use Matheo\Clip\Util\PluginsUtil;
 
 /**
  * Clip Util for Selectors.
@@ -79,7 +79,7 @@ class SelectorsUtil
             $array[$format] = array('text' => strtoupper($format), 'value' => $format);
         }
         $array = array_values(array_filter($array));
-        uasort($array, 'Clip_Util_Selectors::sortByTitle');
+        uasort($array, 'Util_Selectors::sortByTitle');
         return $array;
     }
     
@@ -94,7 +94,7 @@ class SelectorsUtil
     public static function pubtypes($includetid = false, $includeempty = true)
     {
         $dom = ZLanguage::getModuleDomain('Clip');
-        $pubtypes = Clip_Util::getPubType()->toKeyValueArray('tid', 'title');
+        $pubtypes = Util::getPubType()->toKeyValueArray('tid', 'title');
         // build the selector
         $array = array();
         if ($includeempty) {
@@ -118,8 +118,8 @@ class SelectorsUtil
         $dom = ZLanguage::getModuleDomain('Clip');
         $arraysort = array('core_empty' => array(), 'core_title' => array(), 'core_cr_date' => array(), 'core_pu_date' => array(), 'core_hitcount' => array());
         $array = array('core_empty' => array('text' => '', 'value' => ''), 'core_pid' => array('text' => __('Publication ID', $dom), 'value' => 'core_pid'), 'core_cr_date' => array('text' => __('Creation date', $dom), 'value' => 'cr_date'), 'core_lu_date' => array('text' => __('Update date', $dom), 'value' => 'lu_date'), 'core_cr_uid' => array('text' => __('Creator', $dom), 'value' => 'core_author'), 'core_lu_uid' => array('text' => __('Updater', $dom), 'value' => 'lu_uid'), 'core_pu_date' => array('text' => __('Publish date', $dom), 'value' => 'core_publishdate'), 'core_ex_date' => array('text' => __('Expire date', $dom), 'value' => 'core_expiredate'), 'core_language' => array('text' => __('Language', $dom), 'value' => 'core_language'), 'core_hitcount' => array('text' => __('Number of reads', $dom), 'value' => 'core_hitcount'));
-        if (Clip_Util::validateTid($tid)) {
-            $pubfields = Clip_Util::getPubFields($tid);
+        if (Util::validateTid($tid)) {
+            $pubfields = Util::getPubFields($tid);
             foreach ($pubfields as $fieldname => $pubfield) {
                 $index = $pubfield['istitle'] == 1 ? 'core_title' : $fieldname;
                 $array[$index] = array('text' => $pubfield['title'], 'value' => $fieldname);
@@ -151,13 +151,13 @@ class SelectorsUtil
      */
     public static function plugins()
     {
-        $availablePlugins = Clip_Util_Plugins::getClasses();
+        $availablePlugins = PluginsUtil::getClasses();
         $plugins = array();
         foreach ($availablePlugins as $id => $className) {
-            $plugin = Clip_Util_Plugins::get($id);
+            $plugin = PluginsUtil::get($id);
             $plugins[] = array('text' => $plugin, 'value' => $id);
         }
-        uasort($plugins, 'Clip_Util_Selectors::sortPlugins');
+        uasort($plugins, 'Util_Selectors::sortPlugins');
         foreach ($plugins as $id => $plugin) {
             $plugins[$id]['text'] = $plugin['text']->pluginTitle;
         }

@@ -9,13 +9,13 @@
  * @subpackage Installer
  */
 
-namespace Clip\ContentType;
+namespace Matheo\Clip\ContentType;
 
 use ModUtil;
-use Clip_Access;
+use Matheo\Clip\Access;
 use DataUtil;
 use LogUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 
 class ClipPubContentType extends \Content_AbstractContentType
 {
@@ -93,7 +93,7 @@ class ClipPubContentType extends \Content_AbstractContentType
         if (!ModUtil::available('Clip') || !ModUtil::load('Clip')) {
             return;
         }
-        $alert = ModUtil::getVar('Clip', 'devmode', false) && Clip_Access::toClip(ACCESS_ADMIN);
+        $alert = ModUtil::getVar('Clip', 'devmode', false) && Access::toClip(ACCESS_ADMIN);
         // validation of required parameters
         if (empty($this->tid)) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
@@ -101,7 +101,7 @@ class ClipPubContentType extends \Content_AbstractContentType
         if (empty($this->pid)) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'pid') : null;
         }
-        if (!Clip_Util::validateTid($this->tid)) {
+        if (!Util::validateTid($this->tid)) {
             return $alert ? LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($this->tid))) : null;
         }
         $args = array('tid' => $this->tid, 'pid' => $this->pid, 'template' => !empty($this->tpl) ? $this->tpl : 'block', 'cachelifetime' => !empty($this->clt) ? $this->clt : null);

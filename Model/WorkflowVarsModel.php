@@ -9,7 +9,7 @@
  * @subpackage Model
  */
 
-namespace Clip\Model;
+namespace Matheo\Clip\Model;
 
 class WorkflowVarsModel extends \Doctrine_Record
 {
@@ -20,7 +20,7 @@ class WorkflowVarsModel extends \Doctrine_Record
      */
     public function setTableDefinition()
     {
-        $this->setTableName('clip_workflowvars');
+        $this->setTableName('Workflowvars');
         $this->hasColumn(
             'id as id',
             'integer',

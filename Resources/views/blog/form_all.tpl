@@ -36,7 +36,7 @@
                 </div>
             </fieldset>
 
-            {clip_accessblock context='editor'}
+            {Accessblock context='editor'}
             {if $relations}
             <fieldset>
                 <legend>{gt text='Related publications'}</legend>
@@ -89,7 +89,7 @@
                     <em class="z-formnote z-sub">{gt text='If enabled, the publication will be closed for changes'}</em>
                 </div>
             </fieldset>
-            {/clip_accessblock}
+            {/Accessblock}
 
             <div class="clip-hooks-edit">
                 {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') urlObject=$pubdata->clipUrl() id=$pubdata.core_pid}

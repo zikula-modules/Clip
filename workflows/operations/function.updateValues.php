@@ -47,7 +47,7 @@ function Clip_operation_updateValues(&$pub, $params)
         }
         $q->execute();
         // notify the operation data
-        $pub = Clip_Event::notify('data.edit.operation.updatevalues', $pub, $params)->getData();
+        $pub = Matheo\Clip\EventHelper::notify('data.edit.operation.updatevalues', $pub, $params)->getData();
     }
     if ($result) {
         $result = array($pub['core_uniqueid'] => true);

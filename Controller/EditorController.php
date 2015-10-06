@@ -9,14 +9,14 @@
  * @subpackage Controller
  */
 
-namespace Clip\Controller;
+namespace Matheo\Clip\Controller;
 
 use Zikula_View;
-use Clip_Access;
+use Matheo\Clip\Access;
 use FormUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use Clip_Model_Pubtype;
-use Clip_Util_Grouptypes;
+use Util_Grouptypes;
 use DataUtil;
 use LogUtil;
 use UserUtil;
@@ -63,14 +63,14 @@ class EditorController extends \Zikula_AbstractController
     public function indexAction()
     {
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_EDIT));
         // checks if there is a pubtype selected
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        $pubtype = Clip_Util::validateTid($args['tid']) ? Clip_Util::getPubType($args['tid']) : new Clip_Model_Pubtype();
+        $pubtype = Util::validateTid($args['tid']) ? Util::getPubType($args['tid']) : new Clip_Model_Pubtype();
         // get the tree of pubtypes with edit access
-        $grouptypes = Clip_Util_Grouptypes::getTree('edit', false);
-        // register clip_util
-        Clip_Util::register_utilities($this->view);
+        $grouptypes = Util_Grouptypes::getTree('edit', false);
+        // register Util
+        Util::register_utilities($this->view);
         //// Output
         $this->view->assign('pubtype', $pubtype)->assign('grouptypes', $grouptypes);
         return $this->view->fetch('editor_main.tpl');
@@ -84,12 +84,12 @@ class EditorController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Security
-        $this->throwForbiddenUnless(UserUtil::isLoggedIn() && Clip_Access::toPubtype($pubtype, 'editor'));
+        $this->throwForbiddenUnless(UserUtil::isLoggedIn() && Access::toPubtype($pubtype, 'editor'));
         // define the arguments
         $apiargs = array('tid' => $args['tid'], 'filter' => isset($args['filter']) ? $args['filter'] : FormUtil::getPassedValue('filter', ''), 'orderby' => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby', 'core_pid:desc'), 'itemsperpage' => isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && $args['itemsperpage'] >= 0 ? (int) $args['itemsperpage'] : abs((int) FormUtil::getPassedValue('itemsperpage', $pubtype['itemsperpage'])), 'handleplugins' => isset($args['handleplugins']) ? (bool) $args['handleplugins'] : false, 'loadworkflow' => isset($args['loadworkflow']) ? (bool) $args['loadworkflow'] : true, 'restrict' => false, 'checkperm' => false, 'countmode' => 'both', 'rel' => $pubtype['config']['list']);
         $args = array('startnum' => isset($args['startnum']) && is_numeric($args['startnum']) ? (int) $args['startnum'] : (int) FormUtil::getPassedValue('startnum', 0), 'page' => isset($args['page']) && is_numeric($args['page']) ? (int) $args['page'] : (int) abs(FormUtil::getPassedValue('page', 1)));
@@ -105,18 +105,18 @@ class EditorController extends \Zikula_AbstractController
         //// Execution
         // fill the conditions of the list to get
         $apiargs['where'] = array();
-        if ($pubtype['enableeditown'] == 1 && !Clip_Access::toPubtype($pubtype, 'admin')) {
+        if ($pubtype['enableeditown'] == 1 && !Access::toPubtype($pubtype, 'admin')) {
             $apiargs['where'][] = array('core_author = ?', array(UserUtil::getVar('uid')));
         }
         // uses the API to get the list of publications
         $result = ModUtil::apiFunc('Clip', 'user', 'getall', $apiargs);
         // store the arguments used
-        Clip_Util::setArgs('editorlist', $args);
-        // register clip_util
-        Clip_Util::register_utilities($this->view);
+        Util::setArgs('editorlist', $args);
+        // register Util
+        Util::register_utilities($this->view);
         //// Output
         // assign the output variables
-        $this->view->assign('pubtype', $pubtype)->assign('publist', $result['publist'])->assign('clipargs', Clip_Util::getArgs());
+        $this->view->assign('pubtype', $pubtype)->assign('publist', $result['publist'])->assign('clipargs', Util::getArgs());
         // assign the pager values
         $this->view->assign('pager', array('numitems' => $result['pubcount'], 'itemsperpage' => $apiargs['itemsperpage']));
         // custom pubtype template check
@@ -135,10 +135,10 @@ class EditorController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Parameters
         // define the arguments
         $args = array('tid' => $args['tid'], 'pid' => isset($args['pid']) ? (int) $args['pid'] : (int) FormUtil::getPassedValue('pid'));
@@ -148,7 +148,7 @@ class EditorController extends \Zikula_AbstractController
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'pid'));
         }
         //// Security
-        // FIXME rework with Clip_Access to check the online/latest revision state access
+        // FIXME rework with Access to check the online/latest revision state access
         $this->throwForbiddenUnless(SecurityUtil::checkPermission('Clip:edit:', "{$args['tid']}:{$args['pid']}:", ACCESS_EDIT));
         //// Execution
         // get the collection of pubs
@@ -156,8 +156,8 @@ class EditorController extends \Zikula_AbstractController
         for ($i = 0; $i < count($publist); $i++) {
             $publist[$i]->clipProcess(array('handleplugins' => true, 'loadworkflow' => true));
         }
-        // register clip_util
-        Clip_Util::register_utilities($this->view);
+        // register Util
+        Util::register_utilities($this->view);
         //// Output
         $this->view->assign('pubtype', $pubtype)->assign('publist', $publist);
         return $this->view->fetch('clip_base_history.tpl');

@@ -9,7 +9,7 @@
  * @subpackage Export
  */
 
-namespace Clip\Export;
+namespace Matheo\Clip\Export;
 
 use DateUtil;
 use System;
@@ -26,6 +26,7 @@ class BatchExport
     protected $filename;
     protected $sections = array();
     protected $output = '';
+
     /**
      * Constructor.
      *
@@ -51,11 +52,11 @@ class BatchExport
     /**
      * Add a section to the batch.
      *
-     * @param Clip_Export_Section $section Section to add.
+     * @param SectionExport $section Section to add.
      *
      * @return void
      */
-    public function addSection(Clip_Export_Section $section)
+    public function addSection(SectionExport $section)
     {
         $this->sections[$section->getName()] = $section;
     }
@@ -68,7 +69,7 @@ class BatchExport
     public function execute()
     {
         // TODO validate existance of the formatter class
-        $classname = 'Clip_Export_Formatter_' . $this->format;
+        $classname = 'Clip\Export\Formatter' . $this->format . 'Formatter';
         $formatter = new $classname();
         $this->output .= $formatter->insertHeader();
         $t = count($this->sections);

@@ -9,15 +9,14 @@
  * @subpackage Import
  */
 
-namespace Clip\Import;
+namespace Matheo\Clip\Import;
 
 use LogUtil;
 use FileUtil;
 use Doctrine_Core;
-use ;
 use Doctrine_Manager;
 use ModUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use ServiceUtil;
 use DBUtil;
 
@@ -54,7 +53,7 @@ class BatchImport
         }
         $this->reset();
         if (empty($this->file) && empty($this->url)) {
-            return LogUtil::registerError($this->__('You must specify a file to import from.'));
+            return LogUtil::registerError(__('You must specify a file to import from.', \ZLanguage::getModuleDomain('MatheoClipModule')));
         } else {
             $this->filename = !empty($this->url) ? $this->url : $this->file['name'];
             $this->file = !empty($this->url) ? $this->url : $this->file['tmp_name'];
@@ -114,6 +113,7 @@ class BatchImport
         }
         // reset this object for later clean use
         $this->reset();
+
         return $result;
     }
     
@@ -124,7 +124,7 @@ class BatchImport
      */
     public function parseSection($args)
     {
-        switch (Clip_Util::getStringPrefix($args['section'])) {
+        switch (Util::getStringPrefix($args['section'])) {
             case 'pubtypes':
                 $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
                 $obj = $tbl->getRecord()->copy();
@@ -137,7 +137,7 @@ class BatchImport
                 // process the record
                 $obj->fromArray($args['pubtype']);
                 // assign the default grouptype
-                $obj->grouptype = Clip_Util::getDefaultGrouptype();
+                $obj->grouptype = Util::getDefaultGrouptype();
                 // see if we have the next tid already
                 static $nexttid;
                 if (!isset($nexttid)) {
@@ -148,7 +148,7 @@ class BatchImport
                     // get the databases list
                     $serviceManager = ServiceUtil::getManager();
                     $databases = $serviceManager['databases'];
-                    $result = $statement->execute("SELECT AUTO_INCREMENT\r\n                                                        FROM information_schema.TABLES\r\n                                                       WHERE TABLE_NAME = '{$tablename}'\r\n                                                         AND TABLE_SCHEMA = '{$databases[$connname]['dbname']}'");
+                    $result = $statement->execute("SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_NAME = '{$tablename}' AND TABLE_SCHEMA = '{$databases[$connname]['dbname']}'");
                     $nexttid = (int) $result->fetchColumn();
                 } else {
                     $nexttid++;
@@ -179,7 +179,7 @@ class BatchImport
                 break;
             case 'pubdata':
                 $this->updateTables();
-                $tid = Clip_Util::getTidFromString($args['section']);
+                $tid = Util::getTidFromString($args['section']);
                 if (!isset(self::$idmap['tids'][$tid])) {
                     continue;
                 }
@@ -202,7 +202,7 @@ class BatchImport
                 self::$idmap['pids'][$oid] = (int) $obj['id'];
                 break;
             case 'workflows':
-                $tid = Clip_Util::getTidFromString($args['section']);
+                $tid = Util::getTidFromString($args['section']);
                 $newtid = self::$idmap['tids'][$tid];
                 // update the new id refs
                 $args['workflow']['obj_id'] = self::$idmap['pids'][$args['workflow']['obj_id']];

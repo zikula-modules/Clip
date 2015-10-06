@@ -9,20 +9,20 @@
  * @subpackage Controller
  */
 
-namespace Clip\Controller;
+namespace Matheo\Clip\Controller;
 
 use FormUtil;
 use ModUtil;
 use System;
 use DataUtil;
 use LogUtil;
-use Clip_Util;
-use Clip_Access;
+use Matheo\Clip\Util;
+use Matheo\Clip\Access;
 use UserUtil;
 use Zikula_View;
 use Clip_Event;
-use Clip_Generator;
-use Clip_Workflow;
+use Matheo\Clip\Generator;
+use Matheo\Clip\Workflow;
 use Clip_Form_Handler_User_Pubedit;
 use Doctrine_Core;
 
@@ -66,14 +66,14 @@ class UserController extends \Zikula_AbstractController
         if (!$args['tid'] && $this->getVar('pubtype')) {
             System::redirect(ModUtil::url('Clip', 'user', 'main', array('tid' => $this->getVar('pubtype'))));
         }
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Parameters
         // extract the clip arguments
         $clipvalues = array();
-        Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
+        Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
         // define the arguments
         $args = array('tid' => $pubtype['tid'], 'template' => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'), 'cachelifetime' => isset($args['cachelifetime']) ? (int) $args['cachelifetime'] : $pubtype['cachelifetime']);
         // sets the function parameter (navbar)
@@ -82,21 +82,21 @@ class UserController extends \Zikula_AbstractController
         // checks for the input template value
         $args['template'] = DataUtil::formatForOS($args['template']);
         // cleans it of not desired parameters
-        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
+        $args['template'] = preg_replace(Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $args['templateid'] = 'clipdefault';
             $args['templatefile'] = 'main.tpl';
         } else {
             $args['templateid'] = "{$args['template']}";
-            if (Clip_Util::isSimpleTemplate($args['template'])) {
-                $args['templatefile'] = Clip_Util::isSimpleTemplate($args['template']);
+            if (Util::isSimpleTemplate($args['template'])) {
+                $args['templatefile'] = Util::isSimpleTemplate($args['template']);
                 $args['templatesimple'] = "simple_{$args['templatefile']}.tpl";
             } else {
                 $args['templatefile'] = "main_{$args['template']}.tpl";
             }
         }
         //// Security
-        $this->throwForbiddenUnless(isset($args['templatesimple']) || Clip_Access::toPubtype($pubtype, 'main', $args['templateid']));
+        $this->throwForbiddenUnless(isset($args['templatesimple']) || Access::toPubtype($pubtype, 'main', $args['templateid']));
         // fetch simple templates
         if (isset($args['templatesimple'])) {
             // make sure the simple template exists
@@ -113,7 +113,7 @@ class UserController extends \Zikula_AbstractController
             return $this->view->assign('clip_simple_tpl', true)->assign('clipvalues', $clipvalues)->assign('pubtype', $pubtype)->fetch($args['templatesimple']);
         }
         // alert pubtype admins only
-        $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+        $alert = $this->getVar('devmode', false) && Access::toPubtype($pubtype);
         //// Cache
         // validate the template existance, if not defaults to the general one
         if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'] . '/' . $args['templatefile'])) {
@@ -128,7 +128,7 @@ class UserController extends \Zikula_AbstractController
         if (!$this->view->template_exists($args['templatefile'])) {
             // skip main if there's no template
             if ($args['templateid'] == 'clipdefault') {
-                return $this->redirect(Clip_Util::url($args['tid'], 'list'));
+                return $this->redirect(Util::url($args['tid'], 'list'));
             }
             // auto-generate it only on development mode
             if (!$this->getVar('devmode', false)) {
@@ -138,7 +138,7 @@ class UserController extends \Zikula_AbstractController
         // check if cache is enabled and this view is cached
         if (!empty($args['cachelifetime']) && $this->view->template_exists($args['templatefile'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
-            Clip_Util::register_nocache_plugins($this->view);
+            Util::register_nocache_plugins($this->view);
             $cacheid = 'tid_' . $args['tid'] . '/main' . '/' . UserUtil::getGidCacheString() . '/tpl_' . $args['templateid'];
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
@@ -152,14 +152,14 @@ class UserController extends \Zikula_AbstractController
             $this->view->setCaching(Zikula_View::CACHE_DISABLED);
         }
         // store the arguments used
-        Clip_Util::setArgs('main', $args);
-        // register clip_util
-        Clip_Util::register_utilities($this->view);
+        Util::setArgs('main', $args);
+        // register Util
+        Util::register_utilities($this->view);
         // resolve the permalink
-        $returnurl = Clip_Util::url($pubtype['tid'], 'main', array(), null, null, true);
+        $returnurl = Util::url($pubtype['tid'], 'main', array(), null, null, true);
         //// Output
         // assign the data to the output
-        $this->view->assign('clipvalues', $clipvalues)->assign('pubtype', $pubtype)->assign('clipargs', Clip_Util::getArgs())->assign('returnurl', $returnurl);
+        $this->view->assign('clipvalues', $clipvalues)->assign('pubtype', $pubtype)->assign('clipargs', Util::getArgs())->assign('returnurl', $returnurl);
         // notify the ui main screen
         $this->view = Clip_Event::notify('ui.main', $this->view, $args)->getData();
         // check if the template is available to render it
@@ -195,14 +195,14 @@ class UserController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Parameters
         // extract the clip arguments
         $clipvalues = array();
-        Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
+        Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
         // define the arguments
         $apiargs = array('tid' => $pubtype['tid'], 'itemsperpage' => isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) && (int) $args['itemsperpage'] >= 0 ? (int) $args['itemsperpage'] : (int) $pubtype['itemsperpage'],  'filter' => isset($args['filter']) ? $args['filter'] : null, 'orderby' => isset($args['orderby']) ? $args['orderby'] : FormUtil::getPassedValue('orderby'), 'groupby' => isset($args['groupby']) ? $args['groupby'] : FormUtil::getPassedValue('groupby'), 'handleplugins' => isset($args['handleplugins']) ? (bool) $args['handleplugins'] : true, 'loadworkflow' => isset($args['loadworkflow']) ? (bool) $args['loadworkflow'] : false, 'checkperm' => false, 'countmode' => 'both', 'rel' => $pubtype['config']['list']);
         $args = array('template' => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'), 'startnum' => isset($args['startnum']) && is_numeric($args['startnum']) ? (int) $args['startnum'] : (int) FormUtil::getPassedValue('startnum', 0), 'page' => isset($args['page']) && is_numeric($args['page']) ? (int) $args['page'] : (int) abs(FormUtil::getPassedValue('page', 1)), 'cachelifetime' => isset($args['cachelifetime']) ? (int) $args['cachelifetime'] : $pubtype['cachelifetime']);
@@ -218,7 +218,7 @@ class UserController extends \Zikula_AbstractController
         // checks for the input template value
         $args['template'] = DataUtil::formatForOS($args['template']);
         // cleans it of not desired parameters
-        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
+        $args['template'] = preg_replace(Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = 'clipdefault';
             $args['templatefile'] = 'list.tpl';
@@ -227,9 +227,9 @@ class UserController extends \Zikula_AbstractController
             $args['templatefile'] = "list_{$args['template']}.tpl";
         }
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'list', $apiargs['templateid']));
+        $this->throwForbiddenUnless(Access::toPubtype($pubtype, 'list', $apiargs['templateid']));
         // alert pubtype admins only
-        $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+        $alert = $this->getVar('devmode', false) && Access::toPubtype($pubtype);
         //// Cache
         // validate the template existance, if not defaults to the general one
         if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'] . '/' . $args['templatefile'])) {
@@ -248,8 +248,8 @@ class UserController extends \Zikula_AbstractController
         // check if cache is enabled and this view is cached
         if (!empty($args['cachelifetime']) && $this->view->template_exists($args['templatefile'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
-            Clip_Util::register_nocache_plugins($this->view);
-            $filterid = $apiargs['filter'] ? Clip_Util::getFilterCacheString($apiargs['filter']) : Clip_Util::getFilterCacheId();
+            Util::register_nocache_plugins($this->view);
+            $filterid = $apiargs['filter'] ? Util::getFilterCacheString($apiargs['filter']) : Util::getFilterCacheId();
             $cacheid = 'tid_' . $apiargs['tid'] . '/list' . '/' . UserUtil::getGidCacheString() . '/tpl_' . $apiargs['templateid'] . '/perpage_' . $apiargs['itemsperpage'] . '/filter_' . (!empty($filterid) ? $filterid : 'clipnone') . '/order_' . (!empty($orderby) ? str_replace(array(':', ','), array('', ''), $apiargs['orderby']) : 'clipnone') . '/start_' . (!empty($apiargs['startnum']) ? $apiargs['startnum'] : '0');
             // set the output info
             $this->view->setCaching(Zikula_View::CACHE_INDIVIDUAL)->setCacheId($cacheid);
@@ -273,14 +273,14 @@ class UserController extends \Zikula_AbstractController
         // notify the collection data
         $publist = Clip_Event::notify('data.list', $publist, array_merge($args, $apiargs))->getData();
         // store the arguments used
-        Clip_Util::setArgs('list', $args);
-        // register clip_util
-        Clip_Util::register_utilities($this->view);
+        Util::setArgs('list', $args);
+        // register Util
+        Util::register_utilities($this->view);
         // resolve the permalink
-        $returnurl = Clip_Util::url($pubtype['tid'], 'list', array(), null, null, true);
+        $returnurl = Util::url($pubtype['tid'], 'list', array(), null, null, true);
         //// Output
         // assign the data to the output
-        $this->view->assign('clipvalues', $clipvalues)->assign('pubtype', $pubtype)->assign('publist', $publist)->assign('pubfields', Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))->assign('clipargs', Clip_Util::getArgs())->assign('returnurl', $returnurl);
+        $this->view->assign('clipvalues', $clipvalues)->assign('pubtype', $pubtype)->assign('publist', $publist)->assign('pubfields', Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))->assign('clipargs', Util::getArgs())->assign('returnurl', $returnurl);
         // assign the pager values
         $this->view->assign('pager', array('numitems' => $pubcount, 'itemsperpage' => $apiargs['itemsperpage']));
         // notify the ui list
@@ -318,14 +318,14 @@ class UserController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Parameters
         // extract the clip arguments
         $clipvalues = array();
-        Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
+        Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
         // define the arguments
         $apiargs = array('tid' => $pubtype['tid'], 'pid' => isset($args['pid']) ? $args['pid'] : FormUtil::getPassedValue('pid'), 'id' => isset($args['id']) ? $args['id'] : FormUtil::getPassedValue('id'), 'checkperm' => false, 'handleplugins' => true, 'loadworkflow' => true, 'rel' => $pubtype['config']['display']);
         $args = array('template' => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'), 'cachelifetime' => isset($args['cachelifetime']) ? (int) $args['cachelifetime'] : $pubtype['cachelifetime']);
@@ -344,7 +344,7 @@ class UserController extends \Zikula_AbstractController
         // checks for the input template value
         $args['template'] = DataUtil::formatForOS($args['template']);
         // cleans it of not desired parameters
-        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
+        $args['template'] = preg_replace(Util::REGEX_TEMPLATE, '', $args['template']);
         if (empty($args['template'])) {
             $apiargs['templateid'] = 'clipdefault';
             $args['templatefile'] = 'display.tpl';
@@ -353,9 +353,9 @@ class UserController extends \Zikula_AbstractController
             $args['templatefile'] = "display_{$args['template']}.tpl";
         }
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], 'display', $apiargs['templateid']));
+        $this->throwForbiddenUnless(Access::toPub($pubtype, $apiargs['pid'], $apiargs['id'], 'display', $apiargs['templateid']));
         // alert pubtype admins only
-        $alert = $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+        $alert = $this->getVar('devmode', false) && Access::toPubtype($pubtype);
         //// Cache
         // validate the template existance, if not defaults to the general one
         if (!$this->getVar('commontpls', false) || $this->view->template_exists($pubtype['folder'] . '/' . $args['templatefile'])) {
@@ -374,7 +374,7 @@ class UserController extends \Zikula_AbstractController
         // check if cache is enabled and this view is cached
         if (!empty($args['cachelifetime']) && $this->view->template_exists($args['templatefile'])) {
             $this->view->setCacheLifetime($args['cachelifetime']);
-            Clip_Util::register_nocache_plugins($this->view);
+            Util::register_nocache_plugins($this->view);
             $cacheid = 'tid_' . $apiargs['tid'] . '/display' . '/pid' . $apiargs['pid'] . '/id' . $apiargs['id'] . '/tpl_' . $apiargs['templateid'] . '/' . UserUtil::getGidCacheString();
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
@@ -390,14 +390,14 @@ class UserController extends \Zikula_AbstractController
         //// Execution
         // fill the conditions of the item to get
         $apiargs['where'] = array();
-        if (!Clip_Access::toPubtype($apiargs['tid'], 'editor')) {
+        if (!Access::toPubtype($apiargs['tid'], 'editor')) {
             $apiargs['where'][] = array('core_online = ?', 1);
             $apiargs['where'][] = array('core_intrash = ?', 0);
         }
         // get the publication from the database
         $pubdata = ModUtil::apiFunc('Clip', 'user', 'get', $apiargs);
         if (!$pubdata) {
-            if (Clip_Access::toPubtype($pubtype)) {
+            if (Access::toPubtype($pubtype)) {
                 // detailed error message for the admin only
                 return LogUtil::registerError($this->__f('No such publication [tid: %1$s - pid: %2$s; id: %3$s] found.', array($apiargs['tid'], $apiargs['pid'], $apiargs['id'])), 404);
             } else {
@@ -409,15 +409,15 @@ class UserController extends \Zikula_AbstractController
         // notify the publication data
         $pub = Clip_Event::notify('data.display', $pub)->getData();
         // store the arguments used
-        Clip_Util::setArgs('display', $args);
-        // register clip_util
-        Clip_Util::register_utilities($this->view);
+        Util::setArgs('display', $args);
+        // register Util
+        Util::register_utilities($this->view);
         // resolve the permalink
-        $apiargs = Clip_Util::getArgs('getapi');
-        $returnurl = Clip_Util::url($pub, 'display', array(), null, null, true);
+        $apiargs = Util::getArgs('getapi');
+        $returnurl = Util::url($pub, 'display', array(), null, null, true);
         //// Output
         // assign the pubdata and pubtype to the output
-        $this->view->assign('clipvalues', $clipvalues)->assign('pubdata', $pub)->assign('relations', $pub->getRelations(false, 'title'))->assign('returnurl', $returnurl)->assign('pubtype', $pubtype)->assign('pubfields', Clip_Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))->assign('clipargs', Clip_Util::getArgs());
+        $this->view->assign('clipvalues', $clipvalues)->assign('pubdata', $pub)->assign('relations', $pub->getRelations(false, 'title'))->assign('returnurl', $returnurl)->assign('pubtype', $pubtype)->assign('pubfields', Util::getPubFields($apiargs['tid'])->toKeyValueArray('name', 'title'))->assign('clipargs', Util::getArgs());
         // notify the ui display
         $this->view = Clip_Event::notify('ui.display', $this->view, array_merge($args, $apiargs))->getData();
         // check if template is not available
@@ -429,7 +429,7 @@ class UserController extends \Zikula_AbstractController
             $isblock = strpos($apiargs['templateid'], 'block') === 0;
             $args['templatefile'] = 'var:template_generic_code';
             // settings for the autogenerated display template
-            $this->view->setForceCompile(true)->setCaching(Zikula_View::CACHE_DISABLED)->assign('clip_generic_tpl', true)->assign('template_generic_code', Clip_Generator::pubdisplay($apiargs['tid'], true, $isblock));
+            $this->view->setForceCompile(true)->setCaching(Zikula_View::CACHE_DISABLED)->assign('clip_generic_tpl', true)->assign('template_generic_code', Generator::pubdisplay($apiargs['tid'], true, $isblock));
         }
         return $this->view->fetch($args['templatefile'], $cacheid);
     }
@@ -449,21 +449,21 @@ class UserController extends \Zikula_AbstractController
         //// Pubtype
         // get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Parameters
         // extract the clip arguments
         $clipvalues = array();
-        Clip_Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
+        Util::getClipArgs($clipvalues, $this->request->getGet(), $args);
         // define the arguments
         $args = array('tid' => $pubtype['tid'], 'pid' => isset($args['pid']) ? (int) $args['pid'] : FormUtil::getPassedValue('pid'), 'id' => isset($args['id']) ? (int) $args['id'] : FormUtil::getPassedValue('id'), 'template' => isset($args['template']) ? $args['template'] : FormUtil::getPassedValue('template'), 'lastrev' => true);
         // sets the function parameter (navbar)
         $this->view->assign('func', 'edit');
         //// Validation
         // check for the pubfields
-        $pubfields = Clip_Util::getPubFields($args['tid'])->toArray(false);
+        $pubfields = Util::getPubFields($args['tid'])->toArray(false);
         if (empty($pubfields)) {
             LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
@@ -478,7 +478,7 @@ class UserController extends \Zikula_AbstractController
         // checks for the input template value
         $args['template'] = DataUtil::formatForOS($args['template']);
         // cleans it of not desired parameters
-        $args['template'] = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $args['template']);
+        $args['template'] = preg_replace(Util::REGEX_TEMPLATE, '', $args['template']);
         $args['templateid'] = empty($args['template']) ? 'clipdefault' : $args['template'];
         //// Publication processing
         // process a new or existing pub, and it's available actions
@@ -494,10 +494,10 @@ class UserController extends \Zikula_AbstractController
             $pubdata = new $classname();
         }
         // get the workflow state
-        $workflow = new Clip_Workflow($pubtype, $pubdata);
+        $workflow = new Workflow($pubtype, $pubdata);
         $args['state'] = $workflow->getWorkflow('state');
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPub($pubtype, $pubdata, null, 'form', $args['templateid']));
+        $this->throwForbiddenUnless(Access::toPub($pubtype, $pubdata, null, 'form', $args['templateid']));
         // notify the publication data
         $pubdata = Clip_Event::notify('data.edit', $pubdata)->getData();
         //// Form Handler
@@ -513,18 +513,18 @@ class UserController extends \Zikula_AbstractController
         );
         //// Output
         // create the output object
-        $render = Clip_Util::newForm($this, true);
+        $render = Util::newForm($this, true);
         // compatibility prefilter for the 0.9 series only
         $render->load_filter('pre', 'clip_form_compat');
         // store the arguments used
-        Clip_Util::setArgs('edit', $args);
-        // register clip_util
-        Clip_Util::register_utilities($render);
-        $render->assign('clipvalues', $clipvalues)->assign('clipargs', Clip_Util::getArgs())->assign('pubtype', $pubtype);
+        Util::setArgs('edit', $args);
+        // register Util
+        Util::register_utilities($render);
+        $render->assign('clipvalues', $clipvalues)->assign('clipargs', Util::getArgs())->assign('pubtype', $pubtype);
         // notify the ui edition
         $render = Clip_Event::notify('ui.edit', $render, $args)->getData();
         // alert pubtype admins only
-        $alert = !$render->isPostBack() && $this->getVar('devmode', false) && Clip_Access::toPubtype($pubtype);
+        $alert = !$render->isPostBack() && $this->getVar('devmode', false) && Access::toPubtype($pubtype);
         // resolve the template to use
         // 1. custom template
         if (!empty($args['template'])) {
@@ -554,7 +554,7 @@ class UserController extends \Zikula_AbstractController
             }
             $template = 'var:template_generic_code';
             // settings for the autogenerated edit template
-            $render->setForceCompile(true)->assign('clip_generic_tpl', true)->assign('template_generic_code', Clip_Generator::pubedit($args['tid']));
+            $render->setForceCompile(true)->assign('clip_generic_tpl', true)->assign('template_generic_code', Generator::pubedit($args['tid']));
         }
         return $render->execute($template, $handler);
     }
@@ -574,10 +574,10 @@ class UserController extends \Zikula_AbstractController
         //// Pubtype
         // get the publication type first
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])), 404);
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Parameters
         // old commandName parameter (will be removed on Clip 1.0)
         $args['commandName'] = isset($args['commandName']) ? (bool) $args['commandName'] : FormUtil::getPassedValue('commandName');
@@ -597,7 +597,7 @@ class UserController extends \Zikula_AbstractController
         // load the publication values and workflow
         $pub->clipPostRead()->clipWorkflow();
         // create the workflow object and execute the action
-        $workflow = new Clip_Workflow($pubtype, $pub);
+        $workflow = new Workflow($pubtype, $pub);
         // be sure to have a valid action
         if (empty($args['action']) || !$workflow->isValidAction($args['action'])) {
             return LogUtil::registerError($this->__('Error! Invalid action passed.'), 404);
@@ -610,17 +610,17 @@ class UserController extends \Zikula_AbstractController
         }
         //// Redirect
         // figure out the redirect
-        $displayUrl = Clip_Util::url($pub, 'display');
+        $displayUrl = Util::url($pub, 'display');
         $returnurl = System::serverGetVar('HTTP_REFERER', $displayUrl);
         switch ($args['goto']) {
             case 'stepmode':
-                $goto = Clip_Util::url($pub, 'edit', array('goto' => 'stepmode'));
+                $goto = Util::url($pub, 'edit', array('goto' => 'stepmode'));
                 break;
             case 'edit':
-                $goto = Clip_Util::url($pub, 'edit');
+                $goto = Util::url($pub, 'edit');
                 break;
             case 'list':
-                $goto = Clip_Util::url($args['tid'], 'list');
+                $goto = Util::url($args['tid'], 'list');
                 break;
             case 'display':
                 $goto = $displayUrl;

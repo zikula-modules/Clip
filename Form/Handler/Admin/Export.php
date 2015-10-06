@@ -42,8 +42,8 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
             )
         );
 
-        $view->assign('pubtypes', Clip_Util_Selectors::pubtypes())
-             ->assign('formats', Clip_Util_Selectors::exportFormats(false))
+        $view->assign('pubtypes', Util_Selectors::pubtypes())
+             ->assign('formats', Util_Selectors::exportFormats(false))
              ->assign('outputs', $outputs);
 
         return true;
@@ -80,7 +80,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                 }
 
                 // get the url of the pubtype as name of the filename
-                $pubtype = Clip_Util::getPubType($data['tid']);
+                $pubtype = Util::getPubType($data['tid']);
                 $data['name'] = $pubtype['urltitle'];
 
                 // build the export instance

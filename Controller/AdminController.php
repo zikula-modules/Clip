@@ -9,19 +9,19 @@
  * @subpackage Controller
  */
 
-namespace Clip\Controller;
+namespace Matheo\Clip\Controller;
 
 use Zikula_View;
-use Clip_Access;
-use Clip_Util_Grouptypes;
+use Matheo\Clip\Access;
+use Matheo\Clip\Util\GrouptypesUtil;
 use FormUtil;
 use DataUtil;
 use LogUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use Clip_Form_Handler_Admin_Pubtypes;
 use Clip_Form_Handler_Admin_Pubfields;
 use Clip_Form_Handler_Admin_Relations;
-use Clip_Generator;
+use Matheo\Clip\Generator;
 use Clip_Form_Handler_Admin_Export;
 use Clip_Form_Handler_Admin_Import;
 use ModUtil;
@@ -50,8 +50,8 @@ class AdminController extends \Zikula_AbstractController
     public function indexAction()
     {
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
-        $treejscode = Clip_Util_Grouptypes::getTreeJS(null, false, true, array('sortable' => true), 'admin');
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN));
+        $treejscode = GrouptypesUtil::getTreeJS(null, false, true, array('sortable' => true), 'admin');
         //// Output
         $this->view->assign('treejscode', $treejscode);
         return $this->view->fetch('clip_admin_main.tpl');
@@ -65,12 +65,12 @@ class AdminController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type first
         $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
-        if (!Clip_Util::validateTid($tid)) {
+        if (!Util::validateTid($tid)) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
         }
-        $pubtype = Clip_Util::getPubType($tid);
+        $pubtype = Util::getPubType($tid);
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'admin'));
+        $this->throwForbiddenUnless(Access::toPubtype($pubtype, 'admin'));
         // sort the relations by alias
         $relations = $pubtype->getRelations(false);
         uasort($relations, function ($a, $b) {
@@ -88,13 +88,13 @@ class AdminController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type first
         $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
-        if ($tid && !Clip_Util::validateTid($tid)) {
+        if ($tid && !Util::validateTid($tid)) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
         }
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || Clip_Access::toPubtype($tid, 'admin'));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN) || Access::toPubtype($tid, 'admin'));
         //// Output
-        return Clip_Util::newForm($this, true)->execute('clip_base_pubtype.tpl', new Clip_Form_Handler_Admin_Pubtypes());
+        return Util::newForm($this, true)->execute('clip_base_pubtype.tpl', new Clip_Form_Handler_Admin_Pubtypes());
     }
     
     /**
@@ -105,13 +105,13 @@ class AdminController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type first
         $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
-        if (!Clip_Util::validateTid($tid)) {
+        if (!Util::validateTid($tid)) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
         }
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || Clip_Access::toPubtype($tid, 'admin'));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN) || Access::toPubtype($tid, 'admin'));
         //// Output
-        return Clip_Util::newForm($this, true)->execute('clip_base_pubfields.tpl', new Clip_Form_Handler_Admin_Pubfields());
+        return Util::newForm($this, true)->execute('clip_base_pubfields.tpl', new Clip_Form_Handler_Admin_Pubfields());
     }
     
     /**
@@ -122,13 +122,13 @@ class AdminController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type first
         $tid = FormUtil::getPassedValue('tid', null, 'GETPOST', FILTER_SANITIZE_NUMBER_INT);
-        if ($tid && !Clip_Util::validateTid($tid)) {
+        if ($tid && !Util::validateTid($tid)) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($tid)));
         }
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || $tid && Clip_Access::toPubtype($tid, 'admin'));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN) || $tid && Access::toPubtype($tid, 'admin'));
         //// Output
-        return Clip_Util::newForm($this, true)->execute('clip_base_relations.tpl', new Clip_Form_Handler_Admin_Relations());
+        return Util::newForm($this, true)->execute('clip_base_relations.tpl', new Clip_Form_Handler_Admin_Relations());
     }
     
     /**
@@ -139,11 +139,11 @@ class AdminController extends \Zikula_AbstractController
         //// Pubtype
         // validate and get the publication type
         $args['tid'] = isset($args['tid']) ? $args['tid'] : FormUtil::getPassedValue('tid');
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN) || Clip_Access::toPubtype($args['tid'], 'admin'));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN) || Access::toPubtype($args['tid'], 'admin'));
         //// Parameters
         $args = array('tid' => $args['tid'], 'code' => isset($args['code']) ? $args['code'] : FormUtil::getPassedValue('code', 'edit'));
         //// Validation
@@ -162,7 +162,7 @@ class AdminController extends \Zikula_AbstractController
                 $output = file_get_contents($path . '/generic_list.tpl');
                 break;
             case 'filter':
-                $pubfields = Clip_Util::getPubFields($args['tid'])->toArray();
+                $pubfields = Util::getPubFields($args['tid'])->toArray();
                 foreach ($pubfields as $k => &$pubfield) {
                     // check that the field be filterable and has a default template at least
                     $tpl = "pubfields/filters/{$pubfield['fieldplugin']}_default.tpl";
@@ -180,27 +180,27 @@ class AdminController extends \Zikula_AbstractController
                 }
                 // include the core fields
                 $pubfields['core_author'] = array('name' => 'core_author', 'title' => $this->__('Publication author'), 'fieldplugin' => 'core', 'tpl' => 'author', 'gen' => (bool) $this->request->getPost()->filter('gen_core_author'));
-                $output = Clip_Generator::listfilter($args['tid'], $pubfields);
+                $output = Generator::listfilter($args['tid'], $pubfields);
                 $this->view->assign('pubfields', $pubfields);
                 break;
             case 'display':
-                $output = Clip_Generator::pubdisplay($args['tid'], false);
+                $output = Generator::pubdisplay($args['tid'], false);
                 break;
             case 'edit':
-                $output = Clip_Generator::pubedit($args['tid']);
+                $output = Generator::pubedit($args['tid']);
                 break;
             case 'blocklist':
                 $path = $this->view->get_template_path('generic_blocklist.tpl');
                 $output = file_get_contents($path . '/generic_blocklist.tpl');
                 break;
             case 'blockpub':
-                $output = Clip_Generator::pubdisplay($args['tid'], false, true);
+                $output = Generator::pubdisplay($args['tid'], false, true);
                 break;
         }
         // code cleaning
         $output = str_replace("\n", '', $output);
         //// Output
-        $this->view->assign('code', $args['code'])->assign('output', $output)->assign('pubtype', Clip_Util::getPubType($args['tid']));
+        $this->view->assign('code', $args['code'])->assign('output', $output)->assign('pubtype', Util::getPubType($args['tid']));
         return $this->view->fetch('clip_base_generator.tpl');
     }
     
@@ -210,7 +210,7 @@ class AdminController extends \Zikula_AbstractController
     public function clipexportAction()
     {
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN));
         //// Output
         return FormUtil::newForm('Clip', $this)->execute('clip_admin_export.tpl', new Clip_Form_Handler_Admin_Export());
     }
@@ -221,7 +221,7 @@ class AdminController extends \Zikula_AbstractController
     public function clipimportAction()
     {
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN));
         //// Output
         return FormUtil::newForm('Clip', $this)->execute('clip_admin_import.tpl', new Clip_Form_Handler_Admin_Import());
     }
@@ -232,15 +232,15 @@ class AdminController extends \Zikula_AbstractController
     public function clipresetAction()
     {
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN));
         //// Cleanup
-        if (Clip_Generator::resetModels()) {
+        if (Generator::resetModels()) {
             LogUtil::registerStatus($this->__('The models were cleaned.'));
         } else {
             LogUtil::registerError($this->__('Error! The models could not be cleaned.'));
         }
         //// Redirect
-        return System::redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
+        System::redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
     }
     
     /**
@@ -249,7 +249,7 @@ class AdminController extends \Zikula_AbstractController
     public function modifyconfigAction()
     {
         //// Security
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN));
         //// Output
         return FormUtil::newForm('Clip', $this)->execute('clip_admin_modifyconfig.tpl', new Clip_Form_Handler_Admin_ModifyConfig());
     }

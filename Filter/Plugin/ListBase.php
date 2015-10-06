@@ -9,13 +9,13 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
-
+namespace Matheo\Clip\Filter\Plugin;
+use Matheo\Clip\Filter\FormFilter;
 
 /**
  * Base implementation for dropdown list.
  */
-class ListBase extends \Clip_Filter_Plugin_AbstractPlugin
+class ListBase extends AbstractPlugin
 {
     /**
      * HTML input name for this plugin. Defaults to the ID of the plugin.
@@ -66,7 +66,7 @@ class ListBase extends \Clip_Filter_Plugin_AbstractPlugin
      * Create event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -82,7 +82,7 @@ class ListBase extends \Clip_Filter_Plugin_AbstractPlugin
      * Load event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */

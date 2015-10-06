@@ -22,7 +22,7 @@
     Event notifications on strategic points included
     Added support to $clipvalues from the URL to the template
     Form handling rework to support the edition of multiple publications on the same form
-    Added template utilities like the clip_util and clip_form objects, and the clip_include and clip_func plugins
+    Added template utilities like the Util and clip_form objects, and the clip_include and clip_func plugins
     Introduced a new Editor Panel to separate the content administration
     Deprecated editlist*
     Extended workflow support

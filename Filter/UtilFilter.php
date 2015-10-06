@@ -9,7 +9,7 @@
  * @subpackage Lib
  */
 
-namespace Clip\Filter;
+namespace Matheo\Clip\Filter;
 
 use FilterUtil_Config;
 use FilterUtil_PluginManager;
@@ -64,9 +64,9 @@ class UtilFilter extends \FilterUtil_AbstractBase
      *  plugins: Set of plugins to load.
      *  varname: Name of filters in $_REQUEST. Default: filter.
      *
-     * @param string                $module Module name.
-     * @param string|Doctrine_Table $table  Table name.
-     * @param array                 $args   Mixed arguments.
+     * @param string                 $module Module name.
+     * @param string|\Doctrine_Table $table  Table name.
+     * @param array                  $args   Mixed arguments.
      */
     public function __construct(
         $module,

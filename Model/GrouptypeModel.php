@@ -9,7 +9,7 @@
  * @subpackage Model
  */
 
-namespace Clip\Model;
+namespace Matheo\Clip\Model;
 
 use DataUtil;
 
@@ -57,7 +57,7 @@ class GrouptypeModel extends \Doctrine_Record
     public function setUp()
     {
         $this->actAs('NestedSet');
-        $this->hasMany('Clip_Model_Pubtype as pubtypes', array('local' => 'gid', 'foreign' => 'grouptype'));
+        $this->hasMany('Matheo\Clip\Model\PubtypeModel as pubtypes', array('local' => 'gid', 'foreign' => 'grouptype'));
     }
     
     /**

@@ -9,15 +9,14 @@
  * @subpackage Model
  */
 
-namespace Clip\Model;
+namespace Matheo\Clip\Model;
 
 use Doctrine_Core;
 use FileUtil;
-use Clip_Generator;
-use Clip_Util;
-use ;
+use Matheo\Clip\Generator;
+use Matheo\Clip\ClipVersion;
+use Matheo\Clip\Util;
 use Zikula_HookManager_SubscriberBundle;
-use Clip_Version_Hooks;
 use HookUtil;
 use ModUtil;
 use DBUtil;
@@ -143,7 +142,7 @@ class PubtypeModel extends \Doctrine_Record
     public function setUp()
     {
         $this->actAs('Zikula_Doctrine_Template_StandardFields');
-        $this->hasOne('Clip_Model_Grouptype as group', array('local' => 'grouptype', 'foreign' => 'gid'));
+        $this->hasOne('Matheo\Clip\Model\GrouptypeModel as group', array('local' => 'grouptype', 'foreign' => 'gid'));
     }
     
     /**
@@ -151,7 +150,7 @@ class PubtypeModel extends \Doctrine_Record
      */
     public function getTitleField()
     {
-        return Doctrine_Core::getTable('ClipModels_Pubdata' . $this->tid)->getRecord()->core_titlefield;
+        return Doctrine_Core::getTable('Matheo\Clip\Model\PubdataModel' . $this->tid)->getRecord()->core_titlefield;
     }
     
     public function getTableName()
@@ -167,15 +166,15 @@ class PubtypeModel extends \Doctrine_Record
     public function updateTable($reloadfields = true)
     {
         // update the pubtype's model file
-        Clip_Generator::updateModel($this->tid, $reloadfields, true);
+        Generator::updateModel($this->tid, $reloadfields, true);
         // update the pubtype's table
-        $classname = Clip_Generator::createTempModel($this->tid);
+        $classname = Generator::createTempModel($this->tid);
         Doctrine_Core::getTable($classname)->changeTable(true);
     }
     
     public function getFields($attrs = false)
     {
-        return $this->tid ? Clip_Util::getPubFields($this->tid, null, 'lineno', $attrs) : array();
+        return $this->tid ? Util::getPubFields($this->tid, null, 'lineno', $attrs) : array();
     }
     
     public function getRelations($onlyown = true, $field = null)
@@ -255,11 +254,7 @@ class PubtypeModel extends \Doctrine_Record
      *
      * @return void
      */
-    public function registerHookBundles(
-        Clip_Version &$clipVersion,
-        $tid = null,
-        $name = null
-    ) {
+    public function registerHookBundles(ClipVersion &$clipVersion, $tid = null, $name = null) {
         $tid = $tid ? $tid : $this->tid;
         $name = $name ? $name : $this->title;
         // display/edit hooks
@@ -288,7 +283,7 @@ class PubtypeModel extends \Doctrine_Record
         // make sure it belongs to a group (the first one after root)
         if (!$this->grouptype) {
             // TODO make this select-able on the pubtype form
-            $this->grouptype = Clip_Util::getDefaultGrouptype();
+            $this->grouptype = Util::getDefaultGrouptype();
         }
     }
     
@@ -299,7 +294,7 @@ class PubtypeModel extends \Doctrine_Record
      */
     public function postInsert($event)
     {
-        $clipVersion = new Clip_Version_Hooks();
+        $clipVersion = new ClipVersion();
         // register hook bundles
         $pubtype = $event->getInvoker();
         $this->registerHookBundles(
@@ -309,8 +304,8 @@ class PubtypeModel extends \Doctrine_Record
         );
         HookUtil::registerSubscriberBundles($clipVersion->getHookSubscriberBundles());
         // create the pubtype table
-        Clip_Generator::updateModel($pubtype->tid);
-        $classname = Clip_Generator::createTempModel($pubtype->tid);
+        Generator::updateModel($pubtype->tid);
+        $classname = Generator::createTempModel($pubtype->tid);
         Doctrine_Core::getTable($classname)->createTable();
     }
     
@@ -322,7 +317,7 @@ class PubtypeModel extends \Doctrine_Record
     public function preSave($event)
     {
         // purge the folder names of undesired chars
-        $this->folder = preg_replace(Clip_Util::REGEX_FOLDER, '', $this->folder);
+        $this->folder = preg_replace(Util::REGEX_FOLDER, '', $this->folder);
         if (is_array($this->config)) {
             $this->config = serialize($this->config);
         }
@@ -342,17 +337,17 @@ class PubtypeModel extends \Doctrine_Record
             ModUtil::setVar('Clip', 'pubtype', null);
         }
         // delete its pubfields
-        Clip_Util::getPubFields($this->tid)->delete();
+        Util::getPubFields($this->tid)->delete();
         // delete any relation
         $where = array("tid1 = '{$pubtype->tid}' OR tid2 = '{$pubtype->tid}'");
-        Doctrine_Core::getTable('Clip_Model_Pubrelation')->deleteWhere($where);
+        Doctrine_Core::getTable('Matheo\Clip\Model\PubrelationModel')->deleteWhere($where);
         // delete the data table
-        Doctrine_Core::getTable('ClipModels_Pubdata' . $pubtype->tid)->dropTable();
+        Doctrine_Core::getTable('Matheo\Clip\Model\PubdataModel' . $pubtype->tid)->dropTable();
         // delete the model file
-        Clip_Generator::deleteModel($pubtype->tid);
+        Generator::deleteModel($pubtype->tid);
         // delete workflows
         DBUtil::deleteWhere('workflows', "module = 'Clip' AND obj_table = 'clip_pubdata{$pubtype->tid}'");
-        $clipVersion = new Clip_Version_Hooks();
+        $clipVersion = new ClipVersion();
         // unregister hook bundles
         $pubtype->registerHookBundles(
             $clipVersion,

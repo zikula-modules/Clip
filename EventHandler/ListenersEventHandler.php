@@ -9,7 +9,8 @@
  * @subpackage EventHandler
  */
 
-namespace Clip\EventHandler;
+namespace Matheo\Clip\EventHandler;
+use Zikula_Event;
 
 /**
  * Listeners EventHandler.
@@ -25,6 +26,7 @@ class ListenersEventHandler
     {
         // intercept the Admin Controller output only
         if (get_class($event->getSubject()) == 'Clip_Controller_Admin') {
+            /** @var \Zikula_View $view */
             $view = $event->getSubject()->getView();
             // acts only when the request type is 'admin'
             if ($view->getRequest()->getControllerName() == 'admin') {

@@ -22,7 +22,7 @@ class Clip_Form_Plugin_Content_Pubtypes extends Zikula_Form_Plugin_DropdownList
     function load(Zikula_Form_View $view, &$params)
     {
         if (!$view->isPostBack()) {
-            $this->setItems(Clip_Util_Selectors::pubtypes());
+            $this->setItems(Util_Selectors::pubtypes());
         }
 
         parent::load($view, $params);

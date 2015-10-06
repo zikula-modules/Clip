@@ -26,28 +26,28 @@
  * Examples:
  *
  *  For Clip access check:
- *  <samp>{clip_access permlvl=ACCESS_ADMIN}</samp>
+ *  <samp>{Access permlvl=ACCESS_ADMIN}</samp>
  *
  *  For Grouptype access check:
- *  <samp>{clip_access gid=$gid}</samp>
+ *  <samp>{Access gid=$gid}</samp>
  *
  *  For Pubtype access check:
  *  (available contexts: access, main, list, edit, editor, submit, admin)
- *  <samp>{clip_access context='editor'}</samp>
+ *  <samp>{Access context='editor'}</samp>
  *
  *  For Publication edit access check:
  *  (available contexts: access, display, form, edit, exec, execinline)
- *  <samp>{clip_access pub=$pubdata context='edit'}</samp>
+ *  <samp>{Access pub=$pubdata context='edit'}</samp>
  *
  *  For Publication action execution check:
- *  <samp>{clip_access pub=$pubdata context='exec' action='update'}</samp>
+ *  <samp>{Access pub=$pubdata context='exec' action='update'}</samp>
  *
  * @param array       $params All parameters passed to this plugin from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
  *
  * @return boolean
  */
-function smarty_function_clip_access($params, Zikula_View &$view)
+function smarty_function_Access($params, Zikula_View &$view)
 {
     if (isset($params['pub'])) {
         $params['tid'] = $params['pub']['core_tid'];
@@ -67,18 +67,18 @@ function smarty_function_clip_access($params, Zikula_View &$view)
     // check the parameters and figure out the method to use
     if ($permlvl) {
         // module check
-        $result = Clip_Access::toClip($permlvl);
+        $result = Access::toClip($permlvl);
     } else {
         if (isset($params['gid'])) {
             // grouptype check
-            $result = Clip_Access::toGrouptype($params['gid']);
+            $result = Access::toGrouptype($params['gid']);
         } else {
             if (isset($params['pid']) || isset($params['id'])) {
                 // pub check
-                $result = Clip_Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl, null, $action);
+                $result = Access::toPub($params['tid'], $params['pid'], $params['id'], $context, $tplid, $permlvl, null, $action);
             } else {
                 // pubtype check
-                $result = Clip_Access::toPubtype($params['tid'], $context, $tplid);
+                $result = Access::toPubtype($params['tid'], $context, $tplid);
             }
         }
     }

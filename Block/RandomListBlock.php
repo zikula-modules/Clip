@@ -9,14 +9,14 @@
  * @subpackage Block
  */
 
-namespace Clip\Block;
+namespace Matheo\Clip\Block;
 
 use SecurityUtil;
-use Clip_Access;
+use Matheo\Clip\Access;
 use BlockUtil;
 use DataUtil;
 use LogUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use UserUtil;
 use Zikula_View;
 use ModUtil;
@@ -48,34 +48,34 @@ class RandomListBlock extends \Zikula_Controller_AbstractBlock
      */
     public function display($blockinfo)
     {
-        $alert = $this->getVar('devmode', false) && Clip_Access::toClip(ACCESS_ADMIN);
+        $alert = $this->getVar('devmode', false) && Access::toClip(ACCESS_ADMIN);
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
         // validation of required parameters
         if (!isset($vars['tid']) || empty($vars['tid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'tid') : null;
         }
-        if (!Clip_Util::validateTid($vars['tid'])) {
+        if (!Util::validateTid($vars['tid'])) {
             return $alert ? LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($vars['tid']))) : null;
         }
         // security check
-        // FIXME SECURITY centralize on Clip_Access
+        // FIXME SECURITY centralize on Access
         if (!SecurityUtil::checkPermission('Clip:block:randomlist', "{$blockinfo['bid']}:{$vars['tid']}:", ACCESS_OVERVIEW)) {
-            return;
+            return '';
         }
         // default values
         $tpl = isset($vars['template']) && !empty($vars['template']) ? $vars['template'] : 'list';
         $cachelt = isset($vars['cachelifetime']) ? (int) $vars['cachelifetime'] : null;
-        $pubtype = Clip_Util::getPubType($vars['tid']);
+        $pubtype = Util::getPubType($vars['tid']);
         $template = "{$pubtype['folder']}/random_{$tpl}.tpl";
         // check if the common does not exist
         if (!$this->view->template_exists($template) && !$this->getVar('devmode', false)) {
-            return;
+            return '';
         }
         // check if cache is enabled and this block is cached
         if (!empty($cachelt)) {
             $this->view->setCacheLifetime($cachelt);
-            Clip_Util::register_nocache_plugins($this->view);
+            Util::register_nocache_plugins($this->view);
             $cacheid = 'tid_' . $vars['tid'] . '/randomlist' . '/bid_' . $blockinfo['bid'] . '/' . UserUtil::getGidCacheString();
             // FIXME PLUGINS Add plugin specific cache sections
             // $cacheid .= '|field'.id.'|'.output
@@ -99,10 +99,10 @@ class RandomListBlock extends \Zikula_Controller_AbstractBlock
         // get the random list
         $publist = ModUtil::apiFunc('Clip', 'user', 'getrandom', $vars);
         if (!$publist->count()) {
-            return;
+            return '';
         }
-        // register clip_util
-        Clip_Util::register_utilities($this->view);
+        // register Util
+        Util::register_utilities($this->view);
         //// Output
         // assign the pubdata and pubtype to the output
         $this->view->assign('publist', $publist)->assign('pubtype', $pubtype);
@@ -117,7 +117,7 @@ class RandomListBlock extends \Zikula_Controller_AbstractBlock
         }
         $blockinfo['content'] = $this->view->fetch($template, $cacheid);
         if (empty($blockinfo['content'])) {
-            return;
+            return '';
         }
         return BlockUtil::themeBlock($blockinfo);
     }
@@ -146,7 +146,7 @@ class RandomListBlock extends \Zikula_Controller_AbstractBlock
             $vars['cachelifetime'] = 0;
         }
         // builds the pubtypes selector
-        $pubtypes = Clip_Util::getPubType(-1)->toKeyValueArray('tid', 'title');
+        $pubtypes = Util::getPubType(-1)->toKeyValueArray('tid', 'title');
         // builds the output
         $this->view->assign('vars', $vars)->assign('pubtypes', $pubtypes);
         // return output

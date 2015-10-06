@@ -50,7 +50,7 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
     // form framework parameters adjustment
     $params['id'] = "clip_{$params['alias']}_{$params['tid']}_{$params['rid']}_{$params['pid']}_{$params['field']}";
     $params['group'] = 'clipdata';
-    $field = Clip_Util::getPubFieldData($params['tid'], $params['field']);
+    $field = Util::getPubFieldData($params['tid'], $params['field']);
     if (!$field) {
         $render->trigger_error($render->__f('Error! The publication field \'%s\' does not exist.', DataUtil::formatForDisplay($params['field'])));
     }
@@ -64,7 +64,7 @@ function smarty_block_clip_form_block($params, $content, Zikula_Form_View &$rend
     // setup the main field configuration
     $params['fieldconfig'] = $field['typedata'];
     // plugin instance
-    $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+    $plugin = Util_Plugins::get($field['fieldplugin']);
     // check if it's needed to remove some parameters
     $vars = array_keys(get_object_vars($plugin));
     if (!in_array('maxLength', $vars)) {

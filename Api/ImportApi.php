@@ -9,7 +9,7 @@
  * @subpackage Api
  */
 
-namespace Clip\Api;
+namespace Matheo\Clip\Api;
 
 use ModUtil;
 use CategoryUtil;
@@ -18,7 +18,7 @@ use ZLanguage;
 use DBUtil;
 use Categories_DBObject_Category;
 use DataUtil;
-use Clip_Util_Plugins;
+use Matheo\Clip\Util\PluginsUtil;
 
 class ImportApi extends \Zikula_AbstractApi
 {
@@ -30,7 +30,7 @@ class ImportApi extends \Zikula_AbstractApi
     public function importps1()
     {
         // convert list's
-        ModUtil::load('pagesetter');
+        \ModUtil::load('pagesetter');
         function guppy_translate($str)
         {
             if (strlen($str) > 0 && $str[0] != '_') {
@@ -122,7 +122,7 @@ class ImportApi extends \Zikula_AbstractApi
             DBUtil::insertObject($datatype, 'clip_pubtypes');
             //$pubfields = DBUtil::selectObjectArray('pagesetter_pubfields', 'pg_tid = '.$pubtype['id'], '', -1, -1, 'name');
             $pstable = DBUtil::getLimitedTablename('pagesetter_pubfields');
-            $sql = "SELECT pf.pg_id AS id,\r\n                       pf.pg_tid AS tid,\r\n                       pf.pg_name AS name,\r\n                       pf.pg_title AS title,\r\n                       pf.pg_description AS description,\r\n                       pf.pg_type AS type,\r\n                       pf.pg_typedata AS typeData,\r\n                       pf.pg_istitle AS isTitle,\r\n                       pf.pg_ispageable AS isPageable,\r\n                       pf.pg_issearchable AS isSearchable,\r\n                       pf.pg_ismandatory AS isMandatory,\r\n                       pf.pg_lineno AS lineno\r\n                  FROM {$pstable} pf\r\n                 WHERE pg_tid = '{$pubtype['id']}'";
+            $sql = "SELECT pf.pg_id AS id, pf.pg_tid AS tid, pf.pg_name AS name, pf.pg_title AS title, pf.pg_description AS description, pf.pg_type AS type, pf.pg_typedata AS typeData, pf.pg_istitle AS isTitle, pf.pg_ispageable AS isPageable, pf.pg_issearchable AS isSearchable, pf.pg_ismandatory AS isMandatory, pf.pg_lineno AS lineno FROM {$pstable} WHERE pg_tid = '{$pubtype['id']}'";
             $result = DBUtil::executeSQL($sql);
             if (!$result) {
                 LogUtil::registerError('Error in SQL: ' . $sql);
@@ -214,7 +214,7 @@ class ImportApi extends \Zikula_AbstractApi
                             LogUtil::registerError($this->__f('Error! Unsupported field type [%s].', $pubfield['type']));
                         }
                 }
-                $plugin = Clip_Util_Plugins::get($datafield['fieldplugin']);
+                $plugin = PluginsUtil::get($datafield['fieldplugin']);
                 $datafield['fieldtype'] = $plugin->columnDef;
                 $datafield['istitle'] = $pubfield['isTitle'];
                 $datafield['ispageable'] = $pubfield['isPageable'];
@@ -239,7 +239,7 @@ class ImportApi extends \Zikula_AbstractApi
         foreach ($pubtypes as $pubtype) {
             $ret = ModUtil::apiFunc('Clip', 'admin', 'updatetabledef', array('tid' => $pubtype['tid']));
             if (!$ret) {
-                LogUtil::registerError($this->__('Cannot create the database for tid [%1$s (%2$s)].', array($pubtype['title'], $pubtype['tid'])));
+                LogUtil::registerError($this->__f('Cannot create the database for tid [%1$s (%2$s)].', array($pubtype['title'], $pubtype['tid'])));
             }
         }
         return LogUtil::registerStatus($this->__('Database update succeded!'));

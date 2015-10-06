@@ -14,10 +14,10 @@
         <li>
             <a href="{clip_url func='list'}">{gt text='Go to the list'}</a>
         </li>
-        {clip_accessblock context='submit'}
+        {Accessblock context='submit'}
         <li>
             <a href="{clip_url func='edit'}">{gt text='Submit a publication'}</a>
         </li>
-        {/clip_accessblock}
+        {/Accessblock}
     </ul>
 </div>

@@ -24,7 +24,7 @@ class Clip_Form_Plugin_Content_Pubfields extends Zikula_Form_Plugin_DropdownList
         if (!$view->isPostBack()) {
             $data = $view->getTplVar('data');
             $tid = isset($data['tid']) && $data['tid'] ? $data['tid'] : null;
-            $this->setItems(Clip_Util_Selectors::fields($tid));
+            $this->setItems(Util_Selectors::fields($tid));
         }
 
         parent::load($view, $params);

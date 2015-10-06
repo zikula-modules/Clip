@@ -9,11 +9,12 @@
  * @subpackage Event
  */
 
-namespace Clip;
+namespace Matheo\Clip;
 
-use Clip_Model_Pubtype;
-use Clip_Doctrine_Pubdata;
-use Clip_Util;
+use Matheo\Clip\Event\GenericEvent;
+use Matheo\Clip\Model\PubtypeModel;
+use Matheo\Clip\Doctrine\PubdataDoctrine;
+use Matheo\Clip\Util;
 use Zikula_View;
 use InvalidArgumentException;
 use EventUtil;
@@ -25,7 +26,7 @@ class EventHelper
     /**
      * Clip Event name resolver.
      *
-     * @param $name Name abbreviation (i.e. ui.display, data.list).
+     * @param string $name Name abbreviation (i.e. ui.display, data.list).
      *
      * @return string
      */
@@ -37,9 +38,9 @@ class EventHelper
     /**
      * Clip Event invoker.
      *
-     * @param $name Name abbreviation (i.e. ui.display, data.list).
-     * @param $data Data to process.
-     * @param $args Context arguments.
+     * @param string $name Name abbreviation (i.e. ui.display, data.list).
+     * @param mixed  $data Data to process.
+     * @param array  $args Context arguments.
      *
      * @throws InvalidArgumentException When the subject cannot be resolved.
      *
@@ -56,18 +57,18 @@ class EventHelper
         // resolve the subject
         if ($data instanceof Zikula_View) {
             $pubtype = $data->getTplVar('pubtype');
-            if ($pubtype instanceof Clip_Model_Pubtype) {
+            if ($pubtype instanceof PubtypeModel) {
                 $subject = $pubtype;
             }
 
-        } elseif ($data instanceof Clip_Doctrine_Pubdata) {
-            $subject = Clip_Util::getPubType($data['core_tid']);
+        } elseif ($data instanceof PubdataDoctrine) {
+            $subject = Util::getPubType($data['core_tid']);
 
-        } elseif ($args instanceof Clip_Doctrine_Pubdata) {
-            $subject = Clip_Util::getPubType($args['core_tid']);
+        } elseif ($args instanceof PubdataDoctrine) {
+            $subject = Util::getPubType($args['core_tid']);
 
         } elseif (isset($args['tid'])) {
-            $subject = Clip_Util::getPubType($args['tid']);
+            $subject = Util::getPubType($args['tid']);
         }
 
         if (empty($subject)) {

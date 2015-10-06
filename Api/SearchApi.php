@@ -9,17 +9,17 @@
  * @subpackage Api
  */
 
-namespace Clip\Api;
+namespace Matheo\Clip\Api;
 
 use Zikula_View;
-use Clip_Access;
+use Matheo\Clip\Access;
 use ModUtil;
 use FormUtil;
 use Doctrine_Core;
 use Search_Api_User;
 use LogUtil;
 use DBUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 
 class SearchApi extends \Zikula_AbstractApi
 {
@@ -36,7 +36,7 @@ class SearchApi extends \Zikula_AbstractApi
      */
     public function options($args)
     {
-        if (Clip_Access::toClip(ACCESS_READ)) {
+        if (Access::toClip(ACCESS_READ)) {
             $render = Zikula_View::getInstance('Clip');
             $render->assign('pubtypes', self::get_searchable());
             return $render->fetch('clip_search_options.tpl');
@@ -84,7 +84,7 @@ class SearchApi extends \Zikula_AbstractApi
     {
         $datarow =& $args['datarow'];
         $extra = unserialize($datarow['extra']);
-        $datarow['url'] = Clip_Util::url($extra['tid'], 'display', array('pid' => $extra['pid']));
+        $datarow['url'] = Util::url($extra['tid'], 'display', array('pid' => $extra['pid']));
         return true;
     }
     
@@ -96,7 +96,7 @@ class SearchApi extends \Zikula_AbstractApi
     public static function get_searchable()
     {
         // Looking for pubtype with at least one searchable field
-        $pubtypes = Clip_Util::getPubType(-1);
+        $pubtypes = Util::getPubType(-1);
         $searchable = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectFieldArray(
             'tid',
             'issearchable = \'1\'',
