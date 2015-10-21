@@ -9,11 +9,11 @@
  * @subpackage Controller
  */
 
-namespace Clip\Controller;
+namespace Matheo\Clip\Controller;
 
 use ServiceUtil;
-use Clip_Access;
-use Clip_Util;
+use Matheo\Clip\Access;
+use Matheo\Clip\Util;
 use ModUtil;
 use FormUtil;
 use Doctrine_Core;
@@ -41,8 +41,8 @@ class ImportController extends \Zikula_AbstractController
      */
     public function defaultypesAction()
     {
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
-        Clip_Util::installDefaultypes();
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN));
+        Util::installDefaultypes();
         $this->redirect(ModUtil::url('Clip', 'admin', 'modifyconfig'));
     }
     
@@ -51,13 +51,13 @@ class ImportController extends \Zikula_AbstractController
      */
     public function importpsAction()
     {
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN));
         $step = FormUtil::getPassedValue('step');
         if (!empty($step)) {
             ModUtil::apiFunc('Clip', 'import', 'importps' . $step);
         }
         // check if there are pubtypes already
-        $numpubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->selectCount();
+        $numpubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->selectCount();
         // build and return the output
         $this->view->assign('alreadyexists', $numpubtypes > 0 ? true : false);
         return $this->view->fetch('import_pagesetter.tpl');

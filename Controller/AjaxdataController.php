@@ -9,12 +9,12 @@
  * @subpackage Controller
  */
 
-namespace Clip\Controller;
+namespace Matheo\Clip\Controller;
 
 use DataUtil;
 use LogUtil;
-use Clip_Util;
-use Clip_Access;
+use Matheo\Clip\Util;
+use Matheo\Clip\Access;
 use ModUtil;
 use Zikula_Response_Ajax_Json;
 use DBUtil;
@@ -50,12 +50,12 @@ class AjaxdataController extends \Zikula_Controller_AbstractAjax
         //// Pubtype
         // validate and get the publication type first
         $args['tid'] = (int) $this->request->getPost()->get('tid', null);
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         // Security check
-        $this->throwForbiddenUnless(Clip_Access::toPubtype($pubtype, 'list'));
+        $this->throwForbiddenUnless(Access::toPubtype($pubtype, 'list'));
         //// Parameters
         $args = array('tid' => $pubtype['tid'], 'keyword' => $this->request->getPost()->get('keyword', null), 'op' => $this->request->getPost()->get('op', 'likefirst'), 'filter' => $this->request->getPost()->get('filter', null), 'orderby' => $this->request->getPost()->get('orderby', null), 'startnum' => $this->request->getPost()->get('startnum', null), 'startnum' => $this->request->getPost()->get('startnum', null), 'itemsperpage' => $pubtype['itemsperpage'], 'handleplugins' => $this->request->getPost()->get('handleplugins', true), 'loadworkflow' => $this->request->getPost()->get('loadworkflow', false), 'countmode' => 'no', 'checkperm' => false);
         if ($args['itemsperpage'] == 0) {

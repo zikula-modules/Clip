@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-namespace Clip\Form\Plugin;
+namespace Matheo\Clip\Form\Plugin;
 
 class RadioButton extends \Zikula_Form_Plugin_RadioButton
 {

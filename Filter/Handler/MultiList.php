@@ -9,11 +9,11 @@
  * @subpackage Filter
  */
 
-namespace Clip\Filter\Handler;
+namespace Matheo\Clip\Filter\Handler;
 
 use CategoryUtil;
 
-class MultiList extends \Clip_Filter_Handler_List
+class MultiList extends \Matheo\Clip\Filter\Handler\List
 {
     /**
      * Returns the operators the plugin can handle.

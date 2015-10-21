@@ -9,9 +9,10 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
+namespace Matheo\Clip\Filter\Plugin;
 
 use DataUtil;
+use Matheo\Clip\Filter\FormFilter;
 
 /**
  * Clip filter form string.
@@ -21,7 +22,7 @@ use DataUtil;
  * {clip_filter_plugin p='String' id='core_title' maxLength='100' width='30em'}
  * </code>
  */
-class String extends \Clip_Filter_Plugin_AbstractPlugin
+class String extends AbstractPlugin
 {
     /**
      * HTML input name for this plugin. Defaults to the ID of the plugin.
@@ -103,7 +104,7 @@ class String extends \Clip_Filter_Plugin_AbstractPlugin
      * Create event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @see    Zikula_Form_AbstractPlugin
      * @return void
@@ -124,7 +125,7 @@ class String extends \Clip_Filter_Plugin_AbstractPlugin
      * Load event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -139,11 +140,11 @@ class String extends \Clip_Filter_Plugin_AbstractPlugin
     /**
      * Render event handler.
      *
-     * @param Zikula_View $view Reference to Zikula_View object.
+     * @param \Zikula_View $view Reference to Zikula_View object.
      *
      * @return string The rendered output
      */
-    public function render(Zikula_View $view)
+    public function render(\Zikula_View $view)
     {
         // adds the form observer
         $filter = $view->get_registered_object('clip_filter');

@@ -9,7 +9,8 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
+namespace Matheo\Clip\Filter\Plugin;
+use Matheo\Clip\Filter\FormFilter;
 
 
 /**
@@ -18,7 +19,7 @@ namespace Clip\Filter\Plugin;
  * This plugin creates a yes/no selector using a drop down list.
  * The selected value of the base drop down list will be set to 1/ respectively
  */
-class YesNo extends \Clip_Filter_Plugin_ListDropdown
+class YesNo extends ListDropdown
 {
     /**
      * Enable inclusion of an empty null value element.
@@ -40,7 +41,7 @@ class YesNo extends \Clip_Filter_Plugin_ListDropdown
      * Create event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -58,11 +59,11 @@ class YesNo extends \Clip_Filter_Plugin_ListDropdown
     /**
      * Render event handler.
      *
-     * @param Zikula_View $view Reference to Zikula_View object.
+     * @param \Zikula_View $view Reference to Zikula_View object.
      *
      * @return string The rendered output
      */
-    public function render(Zikula_View $view)
+    public function render(\Zikula_View $view)
     {
         // adds the form observer
         $filter = $view->get_registered_object('clip_filter');

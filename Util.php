@@ -9,27 +9,28 @@
  * @subpackage Lib
  */
 
-namespace Clip;
+namespace Matheo\Clip;
 
+use Matheo\Clip\Form\ViewForm;
 use ModUtil;
 use StringUtil;
+use Zikula_AbstractController;
+use Zikula_View;
 use ZLoader;
-use Clip_Generator;
+use Matheo\Clip\Generator;
 use CategoryRegistryUtil;
 use Doctrine_Core;
 use DataUtil;
 use FormUtil;
-use Clip_Util_Plugins;
+use Matheo\Clip\Util\PluginsUtil;
 use ZLanguage;
-use Clip_Import_Batch;
+use Matheo\Clip\Import\BatchImport;
 use LogUtil;
 use ServiceUtil;
-use Clip_Form_View;
 use Zikula_View_Resource;
-use Clip_Util_View;
-use Clip_Doctrine_Pubdata;
-use Clip_Model_Pubtype;
-use Clip_Url;
+use Matheo\Clip\Util\ViewUtil;
+use Matheo\Clip\Doctrine\PubdataDoctrine;
+use Matheo_Clip_Model_Pubtype;
 
 class Util
 {
@@ -73,7 +74,7 @@ class Util
             // add the dynamic models path
             ZLoader::addAutoloader('ClipModels', realpath(StringUtil::left(ModUtil::getVar('Clip', 'modelspath'), -11)));
             // check if the models are already created
-            Clip_Generator::checkModels();
+            Generator::checkModels();
             $booted = true;
         }
     }
@@ -101,7 +102,7 @@ class Util
     {
         static $id;
         if (!isset($id)) {
-            $id = (int) Doctrine_Core::getTable('Clip_Model_Grouptype')->createQuery()->select('gid')->orderBy('gid')->where('gid > ?', 1)->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
+            $id = (int) Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->createQuery()->select('gid')->orderBy('gid')->where('gid > ?', 1)->fetchOne(array(), Doctrine_Core::HYDRATE_SINGLE_SCALAR);
         }
         return $id;
     }
@@ -323,7 +324,7 @@ class Util
      *
      * @param integer $tid Pubtype ID or urltitle.
      *
-     * @return Clip_Model_Pubtype Information of one or all the pubtypes.
+     * @return Matheo_Clip_Model_Pubtype Information of one or all the pubtypes.
      */
     public static function getPubType(
         $tid = -1,
@@ -332,7 +333,7 @@ class Util
     ) {
         static $pubtypes, $urltitles;
         if (!isset($pubtypes) || $force) {
-            $pubtypes = Doctrine_Core::getTable('Clip_Model_Pubtype')->getPubtypes();
+            $pubtypes = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->getPubtypes();
             $urltitles = $pubtypes->toKeyValueArray('urltitle', 'tid');
         }
         if ($tid == -1) {
@@ -381,7 +382,7 @@ class Util
     ) {
         static $relation_arr;
         if (!isset($relation_arr) || $force) {
-            $relation_arr = Doctrine_Core::getTable('Clip_Model_Pubrelation')->getClipRelations();
+            $relation_arr = Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->getClipRelations();
         }
         $own = $owningSide ? 'own' : 'not';
         if ($tid == -1) {
@@ -409,7 +410,7 @@ class Util
         static $pubfields_arr;
         $tid = (int) $tid;
         if ($tid && !isset($pubfields_arr[$tid])) {
-            $pubfields_arr[$tid] = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectCollection(
+            $pubfields_arr[$tid] = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectCollection(
                 "tid = '{$tid}'",
                 $orderBy,
                 -1,
@@ -426,7 +427,7 @@ class Util
                     // already loaded
                     break;
                 }
-                $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+                $plugin = PluginsUtil::get($field['fieldplugin']);
                 $field->mapValue('attrs', method_exists($plugin, 'clipAttributes') ? (array) $plugin->clipAttributes($field) : array());
             }
         }
@@ -451,7 +452,7 @@ class Util
             return null;
         }
         if (strpos($name, 'core_') === 0) {
-            return Clip_Util_Plugins::getCoreFieldData($name, $property);
+            return PluginsUtil::getCoreFieldData($name, $property);
         }
         $pubfield = self::getPubFields($tid, $name);
         if (!$pubfield) {
@@ -472,7 +473,7 @@ class Util
      */
     public static function getTitleField($tid)
     {
-        $titlefield = Doctrine_Core::getTable('Clip_Model_Pubfield')->selectField('name', "tid = '{$tid}' AND istitle = '1'");
+        $titlefield = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectField('name', "tid = '{$tid}' AND istitle = '1'");
         return $titlefield ? $titlefield : 'id';
     }
     
@@ -504,18 +505,18 @@ class Util
     {
         $dom = ZLanguage::getModuleDomain('Clip');
         $lang = ZLanguage::getLanguageCode();
-        $batch = new Clip_Import_Batch();
+        $batch = new BatchImport();
         $defaults = array('blog', 'staticpages');
         foreach ($defaults as $default) {
             // check if the pubtype exists
-            $pubtype = Doctrine_Core::getTable('Clip_Model_Pubtype')->findByUrltitle($default);
+            $pubtype = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype')->findByUrltitle($default);
             if (count($pubtype)) {
                 LogUtil::registerStatus(__f('There is already a \'%s\' publication type.', $default, $dom));
             } else {
                 // import the default XML
-                $file = "modules/Clip/docs/xml/{$lang}/{$default}.xml";
+                $file = "modules/matheo/clip-module/Resources/docs/xml/{$lang}/{$default}.xml";
                 if (!file_exists($file)) {
-                    $file = "modules/Clip/docs/xml/en/{$default}.xml";
+                    $file = "modules/matheo/clip-module/Resources/docs/xml/en/{$default}.xml";
                 }
                 if ($batch->setup(array('url' => $file)) && $batch->execute()) {
                     LogUtil::registerStatus(__f('Default \'%s\' publication type created successfully.', $default, $dom));
@@ -529,11 +530,11 @@ class Util
     /**
      * Form view instance builder.
      *
-     * @param Zikula_Controller $controller Related controller.
+     * @param Zikula_AbstractController $controller Related controller.
      * @param boolean           $force      Wheter to force the creation of a new instance or not.
      * @see FormUtil::newForm
      *
-     * @return Clip_Form_View Form view instance.
+     * @return ViewForm Form view instance.
      */
     public static function newForm($controller = null, $force = false)
     {
@@ -543,7 +544,7 @@ class Util
             $serviceManager->detachService($serviceId);
         }
         if ($force || !$serviceManager->hasService($serviceId)) {
-            $form = new Clip_Form_View($serviceManager, 'Clip');
+            $form = new ViewForm($serviceManager, 'Clip');
             $serviceManager->attachService($serviceId, $form);
         } else {
             $form = $serviceManager->getService($serviceId);
@@ -585,15 +586,15 @@ class Util
         $delayed_load = true;
         $cacheable = false;
         /* blocks */
-        // clip_accessblock
-        Zikula_View_Resource::register($view, 'block', 'clip_accessblock', $delayed_load, $cacheable, array('gid', 'tid', 'pub', 'pid', 'id', 'context', 'tplid', 'permlvl'));
+        // Accessblock
+        Zikula_View_Resource::register($view, 'block', 'Accessblock', $delayed_load, $cacheable, array('gid', 'tid', 'pub', 'pid', 'id', 'context', 'tplid', 'permlvl'));
         /* plugins */
-        // clip_access
-        Zikula_View_Resource::register($view, 'function', 'clip_access', $delayed_load, $cacheable, array('gid', 'tid', 'pub', 'pid', 'id', 'context', 'tplid', 'permlvl', 'assign'));
+        // Access
+        Zikula_View_Resource::register($view, 'function', 'Access', $delayed_load, $cacheable, array('gid', 'tid', 'pub', 'pid', 'id', 'context', 'tplid', 'permlvl', 'assign'));
         // clip_filter
         Zikula_View_Resource::register($view, 'function', 'clip_filter', $delayed_load, $cacheable, array('template'));
         // clip_hitcount
-        Zikula_View_Resource::register($view, 'function', 'clip_access', $delayed_load, $cacheable, array('gid', 'tid', 'pub', 'pid', 'id', 'context', 'tplid', 'permlvl', 'assign'));
+        Zikula_View_Resource::register($view, 'function', 'Access', $delayed_load, $cacheable, array('gid', 'tid', 'pub', 'pid', 'id', 'context', 'tplid', 'permlvl', 'assign'));
     }
     
     /**
@@ -617,10 +618,10 @@ class Util
         }
         // clip pubtype IDs array
         $view->assign('cliptids', $tids)->assign('clipdirs', $dirs);
-        // clip_util
-        if (!isset($view->_reg_objects['clip_util'])) {
-            $clip_util = new Clip_Util_View();
-            $view->register_object('clip_util', $clip_util);
+        // Util
+        if (!isset($view->_reg_objects['Util'])) {
+            $Util = new ViewUtil();
+            $view->register_object('Util', $Util);
         }
     }
     
@@ -649,10 +650,10 @@ class Util
         $forcelongurl = false,
         $forcelang = false
     ) {
-        if ($obj instanceof Clip_Model_Pubtype) {
+        if ($obj instanceof PubtypeModel) {
             $args['tid'] = $obj['tid'];
         } else {
-            if ($obj instanceof Clip_Doctrine_Pubdata) {
+            if ($obj instanceof PubdataDoctrine) {
                 $args['tid'] = $obj['core_tid'];
                 if ($func == 'display' || $func == 'edit') {
                     if ($obj['core_pid']) {
@@ -690,10 +691,10 @@ class Util
         $language = null,
         $fragment = null
     ) {
-        if ($obj instanceof Clip_Model_Pubtype) {
+        if ($obj instanceof PubtypeModel) {
             $args['tid'] = $obj['tid'];
         } else {
-            if ($obj instanceof Clip_Doctrine_Pubdata) {
+            if ($obj instanceof PubdataDoctrine) {
                 $args['tid'] = $obj['core_tid'];
                 if ($func == 'display' || $func == 'edit') {
                     $args['pid'] = $obj['core_pid'];
@@ -706,7 +707,6 @@ class Util
                 $args['tid'] = $obj;
             }
         }
-        return new Clip_Url('Clip', 'user', $func, $args, $language, $fragment);
+        return new Url('Clip', 'user', $func, $args, $language, $fragment);
     }
-
 }

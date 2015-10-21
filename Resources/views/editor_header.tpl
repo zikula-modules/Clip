@@ -1,5 +1,5 @@
-{clip_access permlvl=ACCESS_ADMIN assign='clip_admin'}
-{clip_access context='admin' assign='auth_admin'}
+{Access permlvl=ACCESS_ADMIN assign='clip_admin'}
+{Access context='admin' assign='auth_admin'}
 
 {switch expr=$func}
     {case expr='main'}
@@ -43,13 +43,13 @@
         </span>
         {/if}
         {if $pubtype.tid|default:false}
-        {clip_accessblock context='submit'}
+        {Accessblock context='submit'}
         <span class="clip-breadlink">
             <a href="{clip_url type='user' func='edit'}">
                 {img width='12' height='12' modname='core' src='filenew.png' set='icons/extrasmall' alt='' __title='Submit a publication'}
             </a>
         </span>
-        {/clip_accessblock}
+        {/Accessblock}
         {/if}
 
         <span class="text_separator">&raquo;</span>

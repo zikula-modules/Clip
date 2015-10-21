@@ -9,7 +9,7 @@
  * @subpackage Lib
  */
 
-namespace Clip;
+namespace Matheo\Clip;
 
 use ZLanguage;
 use DataUtil;

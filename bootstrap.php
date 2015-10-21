@@ -11,7 +11,7 @@
 
 // boot Clip if it's active
 if (ModUtil::available('Clip')) {
-    Clip_Util::boot();
+    Matheo\Clip\Util::boot();
 }
 
 if (FormUtil::getPassedValue('type') == 'admin') {

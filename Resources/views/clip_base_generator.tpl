@@ -10,7 +10,7 @@
 
 <hr />
 
-{clip_copytoclipboard id='clip_generatorcode' class='tooltips'}
+{clip_copytoclipboard id='Generatorcode' class='tooltips'}
 
 {switch expr=$code}
     {case expr='main'}
@@ -106,7 +106,7 @@
 {if $code eq 'filter'}{include file='clip_base_genfilter.tpl'}{/if}
 
 {* HTML workaround: SCRIPT is the unique that do not scape HTML nor any Chars *}
-<script id="clip_generatorcode" type="text/html">{{$output}}</script>
+<script id="Generatorcode" type="text/html">{{$output}}</script>
 
 <pre class="clip-generatorcode">
 {$output|safetext}

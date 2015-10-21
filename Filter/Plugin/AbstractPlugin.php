@@ -9,7 +9,8 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
+namespace Matheo\Clip\Filter\Plugin;
+use Matheo\Clip\Filter\FormFilter;
 
 
 /**
@@ -91,7 +92,7 @@ abstract class AbstractPlugin implements \Zikula_TranslatableInterface
      * Constructor.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter $filter Clip filter form manager instance.
      */
     public function __construct($params, $filter)
     {
@@ -200,7 +201,7 @@ abstract class AbstractPlugin implements \Zikula_TranslatableInterface
      * (in {@link readParameters()}). Default action is to do nothing.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -215,7 +216,7 @@ abstract class AbstractPlugin implements \Zikula_TranslatableInterface
      * This fires once, immediately <i>after</i> the create event. Default action is to do nothing.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -286,11 +287,11 @@ abstract class AbstractPlugin implements \Zikula_TranslatableInterface
      *
      * Default action is to return an empty string.
      *
-     * @param Zikula_View $view Reference to Zikula_View object.
+     * @param \Zikula_View $view Reference to Zikula_View object.
      *
      * @return string The rendered output.
      */
-    public function render(Zikula_View $view)
+    public function render(\Zikula_View $view)
     {
         return '';
     }

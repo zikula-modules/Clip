@@ -38,7 +38,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         $this->goto = FormUtil::getPassedValue('goto', '');
 
         //// Actions
-        $actions = $this->workflow->getActions(Clip_Workflow::ACTIONS_FORM);
+        $actions = $this->workflow->getActions(Workflow::ACTIONS_FORM);
         // if there are no actions the user is not allowed to execute anything.
         // we will redirect the user to the list page
         if (!count($actions)) {
@@ -48,7 +48,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
                 LogUtil::registerError($this->__('You have no authorization to submit publications.'));
             }
 
-            return $view->redirect(Clip_Util::url($this->tid, 'list'));
+            return $view->redirect(Util::url($this->tid, 'list'));
         }
 
         //// Processing
@@ -103,13 +103,13 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
              ->assign('actions',   $actions);
 
         // create and register clip_form
-        $clip_form = new Clip_Util_Form($view);
+        $clip_form = new Util_Form($view);
 
         $view->register_object('clip_form', $clip_form, array('get', 'set', 'reset', 'newId', 'getprefix', 'getvalue', 'loadone', 'loadmany', 'loadvalue', 'resolveId', 'resolvePid'));
 
         // stores the first referer and the item URL
         if (!$view->getStateData('referer')) {
-            $returnurl = Clip_Util::url($this->pub, $this->pub->core_pid ? 'display' : 'main', array(), null, null, true);
+            $returnurl = Util::url($this->pub, $this->pub->core_pid ? 'display' : 'main', array(), null, null, true);
             $view->setStateData('referer', System::serverGetVar('HTTP_REFERER', $returnurl));
         }
 
@@ -122,7 +122,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     public function handleCommand(Zikula_Form_View $view, &$args)
     {
         // clear theme caching of the edit forms
-        Clip_Util::clearThemeCache('Clip/user/edit');
+        Util::clearThemeCache('Clip/user/edit');
 
         $isAjax = $view->getType() == 'ajax';
         $this->referer = $view->getStateData('referer');
@@ -164,7 +164,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
 
         foreach ($data['clipdata'] as $alias => $a) {
             foreach ($a as $tid => $b) {
-                $pubtype = Clip_Util::getPubType($tid);
+                $pubtype = Util::getPubType($tid);
 
                 foreach ($b as $id => $pubdata) {
                     $pid = key($pubdata);
@@ -227,7 +227,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         // clear the cached templates
         // see http://www.smarty.net/manual/en/caching.groups.php
         // clear all Clip's cache
-        Clip_Util::clearThemeCache('Clip');
+        Util::clearThemeCache('Clip');
         // clear the displays of the current publication
         $view->clear_cache(null, 'tid_'.$this->tid.'/display/pid'.$this->pid);
         // clear all lists
@@ -253,31 +253,31 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         {
             case 'stepmode':
                 // stepmode can be used to go automatically from one workflowstep to the next
-                $this->goto = Clip_Util::urlobj($mainpub, 'edit', isset($aurl) ? $aurl : array('goto' => 'stepmode'));
+                $this->goto = Util::urlobj($mainpub, 'edit', isset($aurl) ? $aurl : array('goto' => 'stepmode'));
                 break;
 
             case 'edit':
-                $this->goto = Clip_Util::urlobj($mainpub, 'edit');
+                $this->goto = Util::urlobj($mainpub, 'edit');
                 break;
 
             case 'form':
-                $this->goto = Clip_Util::urlobj($this->tid, 'edit', array('goto' => 'form'));
+                $this->goto = Util::urlobj($this->tid, 'edit', array('goto' => 'form'));
                 break;
 
             case 'list':
-                $this->goto = Clip_Util::urlobj($this->tid, 'list');
+                $this->goto = Util::urlobj($this->tid, 'list');
                 break;
 
             case 'display':
-                $this->goto = Clip_Util::urlobj($mainpub, 'display');
+                $this->goto = Util::urlobj($mainpub, 'display');
                 break;
 
             case 'main':
-                $this->goto = Clip_Util::urlobj($this->tid, 'main');
+                $this->goto = Util::urlobj($this->tid, 'main');
                 break;
 
             case 'pending':
-                $this->goto = Clip_Util::urlobj($this->tid, 'main', array('template' => 'pending'));
+                $this->goto = Util::urlobj($this->tid, 'main', array('template' => 'pending'));
                 break;
 
             case 'editor':
@@ -342,7 +342,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if ($pubfields) {
             $this->pubfields = $pubfields;
         } else {
-            $this->pubfields = Clip_Util::getPubFields($this->tid)->toArray(false);
+            $this->pubfields = Util::getPubFields($this->tid)->toArray(false);
         }
 
         // publication assignment
@@ -382,7 +382,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
     public function validateHooks($commandName)
     {
         $hooktype  = $commandName == 'delete' ? 'validate_delete' : 'validate_edit';
-        $eventname = Clip_Util::getPubType($this->tid)->getHooksEventName($hooktype);
+        $eventname = Util::getPubType($this->tid)->getHooksEventName($hooktype);
 
         $valhook  = new Zikula_ValidationHook($eventname, new Zikula_Hook_ValidationProviders());
         $this->notifyHooks($valhook);
@@ -401,10 +401,10 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
             return $goto;
         }
 
-        $this->itemurl = Clip_Util::url($data, 'display');
+        $this->itemurl = Util::url($data, 'display');
 
         // on urltitle change, correct the referer if needed
-        if ($data->clipModified('core_urltitle') && strpos($this->referer, Clip_Util::url($this->pub, 'display')) !== false) {
+        if ($data->clipModified('core_urltitle') && strpos($this->referer, Util::url($this->pub, 'display')) !== false) {
             $this->referer = $this->itemurl;
         }
 
@@ -419,7 +419,7 @@ class Clip_Form_Handler_User_Pubedit extends Zikula_Form_AbstractHandler
         if (isset($ops['delete'][$uniqueid])) {
             // if the item was deleted
             if (!isset($ops['delete']['goto'])) {
-                $url = (Clip_Access::toPubtype($data['core_tid'], 'list')) ? 'list' : 'home';
+                $url = (Access::toPubtype($data['core_tid'], 'list')) ? 'list' : 'home';
                 // check if the user comes of the display screen or not
                 $goto = (strpos($this->referer, $this->itemurl) === false) ? $this->referer : $url;
             } else {

@@ -1,4 +1,4 @@
-{clip_access context='editor' assign='isEditor'}
+{Access context='editor' assign='isEditor'}
 
 <div class="clip-wrapper clip-edit clip-edit-{$pubtype.urltitle} clip-edit-{$pubtype.urltitle}-{$clipargs.edit.state}">
     {include file='generic_navbar.tpl'}

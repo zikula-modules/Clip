@@ -9,7 +9,7 @@
  * @subpackage Filter
  */
 
-namespace Clip\Filter\Handler;
+namespace Matheo\Clip\Filter\Handler;
 
 use DateUtil;
 use DateTime;
@@ -27,12 +27,14 @@ class Date extends \FilterUtil_AbstractPlugin implements
      * @var array
      */
     protected $ops = array();
+
     /**
      * Fields to use the plugin for.
      *
      * @var array
      */
     protected $fields = array();
+
     /**
      * Constructor.
      *
@@ -174,7 +176,7 @@ class Date extends \FilterUtil_AbstractPlugin implements
             try {
                 $date = new DateTime($date);
                 $time = DateUtil::getDatetime($date->getTimestamp());
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $time = str_replace('_', ' ', $date);
             }
             if (strptime($date, DATEFORMAT_FIXED) === false) {
@@ -233,7 +235,10 @@ class Date extends \FilterUtil_AbstractPlugin implements
                 $from = mktime($datearray['hours'], $datearray['minutes'], 0, $datearray['mon'], $datearray['mday'], $datearray['year']);
                 $to = $from + 60;
                 break;
+            default:
+                throw new \RuntimeException();
         }
+
         return array($from, $to);
     }
     

@@ -9,16 +9,16 @@
  * @subpackage Base_Class
  */
 
-namespace Clip\Doctrine;
+namespace Matheo\Clip\Doctrine;
 
 use Doctrine_Null;
 use ZLanguage;
 use Exception;
-use Clip_Util;
+use Matheo\Clip\Util;
 use UserUtil;
-use Clip_Util_Plugins;
-use Clip_Workflow;
-use Clip_Access;
+use Matheo\Clip\Util\PluginsUtil;
+use Matheo\Clip\Workflow;
+use Matheo\Clip\Access;
 use Doctrine_Collection;
 use Doctrine_Record;
 use Doctrine_Inflector;
@@ -155,7 +155,7 @@ class PubdataDoctrine extends \Doctrine_Record
      */
     public function clipUrl()
     {
-        return !$this->exists() ? '' : Clip_Util::urlobj($this, 'display');
+        return !$this->exists() ? '' : Util::urlobj($this, 'display');
     }
     
     /**
@@ -298,7 +298,7 @@ class PubdataDoctrine extends \Doctrine_Record
     {
         if (!$this->clip_state) {
             $this->clip_state = true;
-            Clip_Util_Plugins::postRead($this);
+            PluginsUtil::postRead($this);
         }
         return $this;
     }
@@ -315,8 +315,8 @@ class PubdataDoctrine extends \Doctrine_Record
         if (isset($this['__WORKFLOW__'])) {
             return $field && array_key_exists($field, $this['__WORKFLOW__']) ? $this['__WORKFLOW__'][$field] : $this;
         }
-        $pubtype = Clip_Util::getPubType($this['core_tid']);
-        $workflow = new Clip_Workflow($pubtype, $this);
+        $pubtype = Util::getPubType($this['core_tid']);
+        $workflow = new Workflow($pubtype, $this);
         $workflow->getWorkflow();
         $this->mapValue('core_approvalstate', isset($this['__WORKFLOW__']['state']) ? $this['__WORKFLOW__']['state'] : null);
         return $field && array_key_exists($field, $this['__WORKFLOW__']) ? $this['__WORKFLOW__'][$field] : $this;
@@ -338,18 +338,18 @@ class PubdataDoctrine extends \Doctrine_Record
         // process a record
         if ($this[$alias] instanceof Doctrine_Record) {
             // check the list and individual permission if needed
-            if ($checkperm && (!Clip_Access::toPubtype($relation['tid'], 'list') || !Clip_Access::toPub($relation['tid'], $this[$alias], null, 'display'))) {
+            if ($checkperm && (!Access::toPubtype($relation['tid'], 'list') || !Access::toPub($relation['tid'], $this[$alias], null, 'display'))) {
                 $this[$alias] = false;
             }
             return (bool) $this[$alias];
         } elseif ($this[$alias] instanceof Doctrine_Collection) {
             // check the list permission if needed
-            if ($checkperm && !Clip_Access::toPubtype($relation['tid'], 'list')) {
+            if ($checkperm && !Access::toPubtype($relation['tid'], 'list')) {
                 $this[$alias] = false;
             } else {
                 // process each related publication permission
                 foreach ($this[$alias] as $k => $v) {
-                    if ($checkperm && !Clip_Access::toPub($relation['tid'], $this[$alias][$k], null, 'display')) {
+                    if ($checkperm && !Access::toPub($relation['tid'], $this[$alias][$k], null, 'display')) {
                         unset($this[$alias][$k]);
                     }
                 }
@@ -517,8 +517,8 @@ class PubdataDoctrine extends \Doctrine_Record
      */
     public function notifyHooks($hooktype)
     {
-        $event = Clip_Util::getPubType($this->core_tid)->getHooksEventName($hooktype);
-        $urlobj = Clip_Util::urlobj($this, 'display');
+        $event = Util::getPubType($this->core_tid)->getHooksEventName($hooktype);
+        $urlobj = Util::urlobj($this, 'display');
         // describes how to retrieve this object by URL metadata
         // build and notify the process hook
         $hook = new Zikula_ProcessHook($event, $this->core_pid, $urlobj);
@@ -565,13 +565,13 @@ class PubdataDoctrine extends \Doctrine_Record
         $valid = true;
         // invoke the isValid hook on pubfields
         if (isset($this['core_tid'])) {
-            $pubfields = Clip_Util::getPubFields($this['core_tid']);
+            $pubfields = Util::getPubFields($this['core_tid']);
             $modified = array_keys($this->getModified());
             foreach ($pubfields as $fieldname => $field) {
                 if (!in_array($fieldname, $modified)) {
                     continue;
                 }
-                $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+                $plugin = PluginsUtil::get($field['fieldplugin']);
                 if (method_exists($plugin, 'isValid')) {
                     $valid = $valid && $plugin->isValid($this->toArray(false), $field);
                 }
@@ -625,13 +625,13 @@ class PubdataDoctrine extends \Doctrine_Record
         // invoke the preSave hook on pubfields
         if (isset($pub['core_tid'])) {
             // FIXME move to a non-util method? internal recognition
-            $pubfields = Clip_Util::getPubFields($pub['core_tid']);
+            $pubfields = Util::getPubFields($pub['core_tid']);
             $modified = array_keys($pub->getModified());
             foreach ($pubfields as $fieldname => $field) {
                 if (!in_array($fieldname, $modified)) {
                     continue;
                 }
-                $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+                $plugin = PluginsUtil::get($field['fieldplugin']);
                 if (method_exists($plugin, 'preSave')) {
                     $pub[$fieldname] = $plugin->preSave($pub, $field);
                 }

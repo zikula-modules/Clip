@@ -37,7 +37,7 @@ function smarty_function_clip_filter($params, Zikula_View &$view)
     if ($view->template_exists($tpl)) {
         $output = $view->fetch($tpl);
     } else {
-        $code = Clip_Generator::listfilter($pubtype->tid);
+        $code = Generator::listfilter($pubtype->tid);
         if (!$code) {
             // no filterable fields
             return;

@@ -9,16 +9,16 @@
  * @subpackage Controller
  */
 
-namespace Clip\Controller;
+namespace Matheo\Clip\Controller;
 
-use Clip_Access;
+use Matheo\Clip\Access;
 use FormUtil;
 use Doctrine_Query;
 use AjaxUtil;
-use Clip_Generator;
+use Matheo\Clip\Generator;
 use Doctrine_Core;
 use Clip_Model_Grouptype;
-use Clip_Util_Grouptypes;
+use Util_Grouptypes;
 use Zikula_Response_Ajax;
 
 /**
@@ -35,7 +35,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
     {
         $this->checkAjaxToken();
         // FIXME SECURITY check this
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_ADMIN));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_ADMIN));
         $pubfields = FormUtil::getPassedValue('pubfieldlist');
         $tid = FormUtil::getPassedValue('tid');
         foreach ($pubfields as $key => $value) {
@@ -49,7 +49,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
             }
         }
         // update the model with the sorted fields
-        Clip_Generator::updateModel($tid);
+        Generator::updateModel($tid);
         return array('result' => true);
     }
     
@@ -58,7 +58,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
         $this->checkAjaxToken();
         $mode = $this->request->getPost()->get('mode', 'new');
         // FIXME SECURITY check this
-        $this->throwForbiddenUnless(Clip_Access::toClip($mode == 'edit' ? ACCESS_EDIT : ACCESS_ADD));
+        $this->throwForbiddenUnless(Access::toClip($mode == 'edit' ? ACCESS_EDIT : ACCESS_ADD));
         $pos = $this->request->getPost()->get('pos', 'root');
         $data = $this->request->getPost()->get('group');
         if ($mode == 'add') {
@@ -71,20 +71,20 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
                     $method = 'insertAsNextSiblingOf';
                     break;
             }
-            $parent = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($data['parent']);
+            $parent = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->find($data['parent']);
             $group = new Clip_Model_Grouptype();
             $group->fromArray($data);
             $group->gid = (int) $data['gid'];
             $group->getNode()->{$method}($parent);
         } else {
-            $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($data['gid']);
+            $group = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->find($data['gid']);
             $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
             $group->synchronizeWithArray($data);
             $group->save();
         }
         $node = array($group->toArray());
         $options = array('withWraper' => false, 'sortable' => true);
-        $nodejscode = Clip_Util_Grouptypes::getTreeJS($node, true, true, $options);
+        $nodejscode = Util_Grouptypes::getTreeJS($node, true, true, $options);
         $result = array('action' => $mode, 'pos' => $pos, 'gid' => $group['gid'], 'parent' => $data['parent'], 'node' => $nodejscode, 'result' => true);
         return new Zikula_Response_Ajax($result);
     }
@@ -93,9 +93,9 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
     {
         $this->checkAjaxToken();
         // FIXME SECURITY check this
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_DELETE));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_DELETE));
         $gid = $this->request->getPost()->get('gid');
-        $group = Doctrine_Core::getTable('Clip_Model_Grouptype')->find($gid);
+        $group = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->find($gid);
         $this->throwNotFoundUnless($group, $this->__('Sorry! No such group found.'));
         $group->getNode()->delete();
         $result = array('action' => 'delete', 'gid' => $gid, 'result' => true);
@@ -109,7 +109,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
     {
         $this->checkAjaxToken();
         // FIXME SECURITY check this
-        $this->throwForbiddenUnless(Clip_Access::toClip(ACCESS_EDIT));
+        $this->throwForbiddenUnless(Access::toClip(ACCESS_EDIT));
         // build a map of the input data
         $data = json_decode($this->request->getPost()->get('data'), true);
         $tids = array();
@@ -128,7 +128,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
         }
         unset($data);
         // build a map of the existing tree
-        $grouptypes = Doctrine_Core::getTable('Clip_Model_Grouptype')->getTree()->fetchTree();
+        $grouptypes = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype')->getTree()->fetchTree();
         $parents = array(0 => 1);
         $original = array(1 => array());
         foreach ($grouptypes as $item) {
@@ -159,7 +159,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
             $keys = array_keys($diffs);
             // validate that there's only one change at time
             if (count($keys) == 1 && count($diffs[$keys[0]]) == 1) {
-                $tbl = Doctrine_Core::getTable('Clip_Model_Grouptype');
+                $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype');
                 foreach ($diffs as $gid => $diff) {
                     $newpos = key($diff);
                     $maxpos = count($gids[$gid]) - 1;
@@ -187,7 +187,7 @@ class AjaxexecController extends \Zikula_Controller_AbstractAjax
         $udiffs = array_filter($udiffs);
         if (count($udiffs) == 1) {
             // validate that there's only one change at time
-            $tbl = Doctrine_Core::getTable('Clip_Model_Grouptype');
+            $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Grouptype');
             foreach ($udiffs as $gid => $udiff) {
                 $maxpos = count($original[$gid]) - 1;
                 // check the first item

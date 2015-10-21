@@ -9,7 +9,7 @@
  * @subpackage Form_Plugin
  */
 
-namespace Clip\Form\Plugin;
+namespace Matheo\Clip\Form\Plugin;
 
 use ZLanguage;
 

@@ -25,28 +25,28 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         $this->tid = FormUtil::getPassedValue('tid', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
 
         // validate the tid if exists
-        if ($this->tid && !Clip_Util::validateTid($this->tid)) {
+        if ($this->tid && !Util::validateTid($this->tid)) {
             $view->setErrorMsg($this->__f('Error! Invalid publication type ID passed [%s].', $this->tid));
             return $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
         }
 
         // edit a pubtype or create one
         if ($this->tid) {
-            $pubtype = Clip_Util::getPubType($this->tid);
+            $pubtype = Util::getPubType($this->tid);
 
             // assigns the pubfields for the sort configuration
-            $view->assign('pubfields', Clip_Util_Selectors::fields($this->tid))
+            $view->assign('pubfields', Util_Selectors::fields($this->tid))
                 ->assign('config', $this->configPreProcess($pubtype['config']))
-                ->assign('wfvars', Clip_Workflow_Util::getSchemaVar($pubtype->getSchema()))
-                ->assign('workflow', Clip_Workflow_Util::getVar($pubtype));
+                ->assign('wfvars', Workflow_Util::getSchemaVar($pubtype->getSchema()))
+                ->assign('workflow', Workflow_Util::getVar($pubtype));
 
         } else {
             $pubtype = new Clip_Model_Pubtype();
 
-            $view->assign('config', $this->configPreProcess(Clip_Util::getPubtypeConfig()));
+            $view->assign('config', $this->configPreProcess(Util::getPubtypeConfig()));
         }
 
-        $view->assign('clipworkflows', Clip_Util_Selectors::workflows())
+        $view->assign('clipworkflows', Util_Selectors::workflows())
              ->assign('pubtype', $pubtype->toArray());
 
         // stores the return URL
@@ -75,7 +75,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
         }
 
         // get the table object for utility purposes
-        $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
+        $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype');
 
         // creates and fill a Pubtype instance
         if ($this->tid) {
@@ -110,10 +110,10 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 }
 
                 // reserved words check
-                if (Clip_Util::validateReservedWord($pubtype->title)) {
+                if (Util::validateReservedWord($pubtype->title)) {
                     return $view->setPluginErrorMsg('title', $this->__('The submitted value is a reserved word. Please choose a different one.'), array('text' => $pubtype->title));
                 }
-                if (Clip_Util::validateReservedWord($pubtype->urltitle)) {
+                if (Util::validateReservedWord($pubtype->urltitle)) {
                     return $view->setPluginErrorMsg('urltitle', $this->__('The submitted value is a reserved word. Please choose a different one.'), array('text' => $pubtype->urltitle));
                 }
 
@@ -133,7 +133,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 $mod = $pubtype->getLastModified(true);
 
                 if (!isset($mod['workflow']) && isset($data['workflow'])) {
-                    Clip_Workflow_Util::setVars($pubtype, $data['workflow']);
+                    Workflow_Util::setVars($pubtype, $data['workflow']);
                 }
 
                 // create/update status messages
@@ -151,16 +151,16 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
             // clone the current pubtype
             case 'clone':
                 // clone the pubtype info
-                $pubtype = Clip_Util::getPubType($this->tid);
+                $pubtype = Util::getPubType($this->tid);
 
                 $newpubtype = $pubtype->copy(true);
                 $newpubtype->title = $this->__f('%s Clon', $pubtype->title);
                 // be sure that title is unique
-                while ($tbl->findBy('title', $newpubtype->title)->count() || Clip_Util::validateReservedWord($newpubtype->title)) {
+                while ($tbl->findBy('title', $newpubtype->title)->count() || Util::validateReservedWord($newpubtype->title)) {
                     $newpubtype->title++;
                 }
                 // and also the urltitle
-                while ($tbl->findBy('urltitle', $newpubtype->urltitle)->count() || Clip_Util::validateReservedWord($newpubtype->urltitle)) {
+                while ($tbl->findBy('urltitle', $newpubtype->urltitle)->count() || Util::validateReservedWord($newpubtype->urltitle)) {
                     $newpubtype->urltitle++;
                 }
 
@@ -168,7 +168,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
                 $newpubtype->save();
 
                 // clone the pubtype fields
-                $pubfields = Clip_Util::getPubFields($this->tid);
+                $pubfields = Util::getPubFields($this->tid);
                 if ($pubfields) {
                     foreach ($pubfields as $pubfield) {
                         $pubfield = $pubfield->copy();
@@ -190,7 +190,7 @@ class Clip_Form_Handler_Admin_Pubtypes extends Zikula_Form_AbstractHandler
             // delete this pubtype
             case 'delete':
                 // delete the pubtype
-                Clip_Util::getPubType($this->tid)->delete();
+                Util::getPubType($this->tid)->delete();
 
                 // status message
                 LogUtil::registerStatus($this->__('Done! Publication type deleted.'));

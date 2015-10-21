@@ -42,8 +42,8 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
             )
         );
 
-        $view->assign('pubtypes', Clip_Util_Selectors::pubtypes())
-             ->assign('formats', Clip_Util_Selectors::exportFormats(false))
+        $view->assign('pubtypes', Util_Selectors::pubtypes())
+             ->assign('formats', Util_Selectors::exportFormats(false))
              ->assign('outputs', $outputs);
 
         return true;
@@ -80,7 +80,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                 }
 
                 // get the url of the pubtype as name of the filename
-                $pubtype = Clip_Util::getPubType($data['tid']);
+                $pubtype = Util::getPubType($data['tid']);
                 $data['name'] = $pubtype['urltitle'];
 
                 // build the export instance
@@ -89,7 +89,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                 // select and add the sections to export
 
                 // * pubtype
-                $tbl = Doctrine_Core::getTable('Clip_Model_Pubtype');
+                $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Pubtype');
                 $query = $tbl->createQuery();
                 $query->where('tid = ?', $data['tid']);
                 $params = array(
@@ -102,7 +102,7 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                 $batch->addSection($section);
 
                 // * pubfields
-                $tbl = Doctrine_Core::getTable('Clip_Model_Pubfield');
+                $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield');
                 $query = $tbl->createQuery();
                 $query->where('tid = ?', $data['tid'])
                       ->orderBy('lineno');
@@ -131,8 +131,8 @@ class Clip_Form_Handler_Admin_Export extends Zikula_Form_AbstractHandler
                     $batch->addSection($section);
 
                     // * workflows
-                    DBUtil::loadDBUtilDoctrineModel('workflows', 'Clip_Model_Workflow');
-                    $tbl = Doctrine_Core::getTable('Clip_Model_Workflow');
+                    DBUtil::loadDBUtilDoctrineModel('workflows', 'Matheo_Clip_Model_Workflow');
+                    $tbl = Doctrine_Core::getTable('Matheo_Clip_Model_Workflow');
                     $query = $tbl->createQuery();
                     $query->where('module = ?', 'Clip')
                           ->where('obj_table = ?', 'clip_pubdata'.$data['tid']);

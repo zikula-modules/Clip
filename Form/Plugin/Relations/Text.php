@@ -64,7 +64,7 @@ class Clip_Form_Plugin_Relations_Text extends Zikula_Form_Plugin_TextInput
     public function load($view, &$params)
     {
         if (!$this->relation) {
-            $this->relation = Clip_Util::getPubType($this->tid)->getRelation($this->field);
+            $this->relation = Util::getPubType($this->tid)->getRelation($this->field);
         }
 
         $this->reldata = array();

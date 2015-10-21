@@ -9,13 +9,14 @@
  * @subpackage TaggedObjectMeta
  */
 
-namespace Clip\TaggedObjectMeta;
+namespace Matheo\Clip\TaggedObjectMeta;
 
-use Clip_Url;
-use Clip_Util;
+use Matheo\Clip\Url;
+use Matheo\Clip\Util;
 use ModUtil;
 use DateUtil;
 use UserUtil;
+use Zikula\Core\ModUrl;
 
 class ClipTaggedObjectMeta extends \Tag_AbstractTaggedObjectMeta
 {
@@ -24,16 +25,16 @@ class ClipTaggedObjectMeta extends \Tag_AbstractTaggedObjectMeta
         $areaId,
         $module,
         $urlString = null,
-        Zikula_ModUrl $urlObject = null
+        ModUrl $urlObject = null
     ) {
         parent::__construct($objectId, $areaId, $module, $urlString, $urlObject);
-        if (!$urlObject instanceof Clip_Url) {
+        if (!$urlObject instanceof Url) {
             return;
         }
-        Clip_Util::boot();
+        Util::boot();
         $apiargs = array('tid' => $urlObject->getArg('tid'), 'pid' => $urlObject->getArg('pid'), 'array' => true, 'checkperm' => true, 'handleplugins' => false, 'loadworkflow' => false, 'rel' => array());
         $apiargs['where'] = array();
-        //if (!Clip_Access::toPubtype($apiargs['tid'], 'editor')) {
+        //if (!Access::toPubtype($apiargs['tid'], 'editor')) {
         $apiargs['where'][] = array('core_online = ?', 1);
         $apiargs['where'][] = array('core_intrash = ?', 0);
         //}

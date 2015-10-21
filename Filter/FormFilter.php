@@ -9,7 +9,8 @@
  * @subpackage Lib
  */
 
-namespace Clip\Filter;
+namespace Matheo\Clip\Filter;
+use Matheo\Clip\Filter\Plugin\AbstractPlugin;
 
 /**
  * Clip manager for Form Filters.
@@ -33,10 +34,10 @@ class FormFilter
     /**
      * Constructor.
      *
-     * @param array       $params Parameters passed from the Smarty plugin function.
-     * @param Zikula_View $view   View instance.
+     * @param array        $params Parameters passed from the Smarty plugin function.
+     * @param \Zikula_View $view   View instance.
      */
-    public function __construct(&$params, Zikula_View $view)
+    public function __construct(&$params, \Zikula_View $view)
     {
         $this->id = uniqid('cf');
         $this->tid = $view->getTplVar('pubtype')->tid;
@@ -99,7 +100,7 @@ class FormFilter
     /**
      * Attach a plugin to the form.
      *
-     * @param Clip_Filter_AbstractPlugin $plugin Filter name.
+     * @param AbstractPlugin $plugin Filter name.
      *
      * @return void
      */

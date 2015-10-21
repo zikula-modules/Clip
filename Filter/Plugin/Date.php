@@ -9,8 +9,9 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
+namespace Matheo\Clip\Filter\Plugin;
 
+use Matheo\Clip\Filter\FormFilter;
 use ZI18n;
 use DateUtil;
 use ZLanguage;
@@ -20,7 +21,7 @@ use DataUtil;
 /**
  * Date filter plugin.
  */
-class Date extends \Clip_Filter_Plugin_String
+class Date extends String
 {
     /**
      * Enable or disable input of time in addition to the date.
@@ -83,7 +84,7 @@ class Date extends \Clip_Filter_Plugin_String
      * Create event handler.
      *
      * @param array             $params Parameters passed from the Smarty plugin function.
-     *  @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter        $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -104,11 +105,11 @@ class Date extends \Clip_Filter_Plugin_String
     /**
      * Render event handler.
      *
-     * @param Zikula_View $view Reference to Zikula_View object.
+     * @param \Zikula_View $view Reference to Zikula_View object.
      *
      * @return string The rendered output
      */
-    public function render(Zikula_View $view)
+    public function render(\Zikula_View $view)
     {
         static $firstTime = true;
         $i18n = ZI18n::getInstance();

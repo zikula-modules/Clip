@@ -9,17 +9,18 @@
  * @subpackage Api
  */
 
-namespace Clip\Api;
+namespace Matheo\Clip\Api;
 
+use Doctrine_Record;
 use LogUtil;
 use DataUtil;
-use Clip_Util;
-use Clip_Access;
+use Matheo\Clip\Util;
+use Matheo\Clip\Access;
 use Doctrine_Core;
-use Clip_Util_Plugins;
-use Clip_Filter_Util;
+use Matheo\Clip\Util\PluginsUtil;
+use Matheo\Clip\Filter\UtilFilter;
 use ZLanguage;
-use Clip_Workflow;
+use Matheo\Clip\Workflow;
 use Doctrine_Collection;
 use ModUtil;
 use System;
@@ -55,11 +56,11 @@ class UserApi extends \Zikula_AbstractApi
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
-        $pubfields = Clip_Util::getPubFields($pubtype['tid']);
+        $pubtype = Util::getPubType($args['tid']);
+        $pubfields = Util::getPubFields($pubtype['tid']);
         if (!$pubfields) {
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
@@ -69,12 +70,12 @@ class UserApi extends \Zikula_AbstractApi
         $args['handlePluginF'] = isset($args['handlePluginFields']) ? (bool) $args['handlePluginFields'] : true;
         $args['getApprovalS'] = isset($args['getApprovalState']) ? (bool) $args['getApprovalState'] : false;
         // define the arguments
-        $args = array('tid' => $pubtype['tid'], 'where' => isset($args['where']) ? $args['where'] : array(), 'filter' => isset($args['filter']) ? $args['filter'] : null, 'distinct' => isset($args['distinct']) ? $args['distinct'] : null, 'function' => isset($args['function']) ? $args['function'] : null, 'groupby' => isset($args['groupby']) ? $args['groupby'] : null, 'orderby' => isset($args['orderby']) ? $args['orderby'] : null, 'startnum' => isset($args['startnum']) && is_numeric($args['startnum']) ? (int) abs($args['startnum']) : 1, 'itemsperpage' => isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) ? (int) abs($args['itemsperpage']) : 0, 'countmode' => isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both')) ? $args['countmode'] : 'no', 'array' => isset($args['array']) ? (bool) $args['array'] : false, 'fetchone' => isset($args['fetchone']) ? (bool) $args['fetchone'] : false, 'restrict' => isset($args['restrict']) ? (bool) $args['restrict'] : true, 'limitdate' => isset($args['limitdate']) ? (bool) $args['limitdate'] : !Clip_Access::toPubtype($args['tid'], 'editor'), 'checkperm' => isset($args['checkperm']) ? (bool) $args['checkperm'] : $args['checkPerm'], 'handleplugins' => isset($args['handleplugins']) ? (bool) $args['handleplugins'] : $args['handlePluginF'], 'loadworkflow' => isset($args['loadworkflow']) ? (bool) $args['loadworkflow'] : $args['getApprovalS'], 'rel' => isset($args['rel']) ? $args['rel'] : null);
+        $args = array('tid' => $pubtype['tid'], 'where' => isset($args['where']) ? $args['where'] : array(), 'filter' => isset($args['filter']) ? $args['filter'] : null, 'distinct' => isset($args['distinct']) ? $args['distinct'] : null, 'function' => isset($args['function']) ? $args['function'] : null, 'groupby' => isset($args['groupby']) ? $args['groupby'] : null, 'orderby' => isset($args['orderby']) ? $args['orderby'] : null, 'startnum' => isset($args['startnum']) && is_numeric($args['startnum']) ? (int) abs($args['startnum']) : 1, 'itemsperpage' => isset($args['itemsperpage']) && is_numeric($args['itemsperpage']) ? (int) abs($args['itemsperpage']) : 0, 'countmode' => isset($args['countmode']) && in_array($args['countmode'], array('no', 'just', 'both')) ? $args['countmode'] : 'no', 'array' => isset($args['array']) ? (bool) $args['array'] : false, 'fetchone' => isset($args['fetchone']) ? (bool) $args['fetchone'] : false, 'restrict' => isset($args['restrict']) ? (bool) $args['restrict'] : true, 'limitdate' => isset($args['limitdate']) ? (bool) $args['limitdate'] : !Access::toPubtype($args['tid'], 'editor'), 'checkperm' => isset($args['checkperm']) ? (bool) $args['checkperm'] : $args['checkPerm'], 'handleplugins' => isset($args['handleplugins']) ? (bool) $args['handleplugins'] : $args['handlePluginF'], 'loadworkflow' => isset($args['loadworkflow']) ? (bool) $args['loadworkflow'] : $args['getApprovalS'], 'rel' => isset($args['rel']) ? $args['rel'] : null);
         if (!$args['itemsperpage']) {
             $args['itemsperpage'] = $pubtype['itemsperpage'] > 0 ? $pubtype['itemsperpage'] : $this->getVar('maxperpage', 100);
         }
         //// Security
-        if ($args['checkperm'] && !Clip_Access::toPubtype($args['tid'], 'list')) {
+        if ($args['checkperm'] && !Access::toPubtype($args['tid'], 'list')) {
             return false;
         }
         //// Misc values
@@ -100,7 +101,7 @@ class UserApi extends \Zikula_AbstractApi
                 $args['orderby'] = 'core_publishdate DESC';
             }
         } else {
-            $args['orderby'] = Clip_Util::createOrderBy($args['orderby'], $relfields);
+            $args['orderby'] = Util::createOrderBy($args['orderby'], $relfields);
         }
         //// Query setup
         $args['queryalias'] = $queryalias = "pub_{$args['tid']}";
@@ -138,7 +139,7 @@ class UserApi extends \Zikula_AbstractApi
         // resolve the FilterUtil arguments
         $filter['args'] = array('alias' => $args['queryalias'], 'plugins' => array('clipdate' => array('fields' => array('core_publishdate', 'core_expiredate', 'cr_date', 'lu_date'))));
         foreach ($pubfields as $field) {
-            $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+            $plugin = PluginsUtil::get($field['fieldplugin']);
             // enrich the filter parameters for restrictions and configurations
             if (method_exists($plugin, 'enrichFilterArgs')) {
                 $plugin->enrichFilterArgs(
@@ -157,7 +158,7 @@ class UserApi extends \Zikula_AbstractApi
             }
         }
         // filter instance
-        $filter['obj'] = new Clip_Filter_Util('Clip', $tableObj, $filter['args']);
+        $filter['obj'] = new UtilFilter('Clip', $tableObj, $filter['args']);
         if (!empty($args['filter'])) {
             $filter['obj']->setFilter($args['filter']);
         } elseif (!$filter['obj']->getFilter() && !empty($pubtype['defaultfilter'])) {
@@ -168,7 +169,7 @@ class UserApi extends \Zikula_AbstractApi
         }
         //// Relations
         // filters will be limited to the loaded relations
-        $args['rel'] = isset($args['rel']) ? Clip_Util::getPubtypeConfig('list', $args['rel']) : array();
+        $args['rel'] = isset($args['rel']) ? Util::getPubtypeConfig('list', $args['rel']) : array();
         if ($args['rel'] && $args['rel']['load']) {
             // adds the relations data
             foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
@@ -241,7 +242,7 @@ class UserApi extends \Zikula_AbstractApi
                     $args['orderby'] = str_replace('core_title', $pubtype->getTitleField(), $args['orderby']);
                 }
                 // check if some plugin specific orderby has to be done
-                $args['orderby'] = Clip_Util_Plugins::handleOrderBy($args['orderby'], $pubfields, $args['queryalias'] . '.');
+                $args['orderby'] = PluginsUtil::handleOrderBy($args['orderby'], $pubfields, $args['queryalias'] . '.');
                 // add the orderby to the query
                 if ($args['orderby']) {
                     $query->orderBy($args['orderby']);
@@ -278,7 +279,7 @@ class UserApi extends \Zikula_AbstractApi
                     $publist = $query->execute(array(), $args['array'] ? Doctrine_Core::HYDRATE_ARRAY : Doctrine_Core::HYDRATE_RECORD);
                     foreach ($publist as $i => $pub) {
                         // FIXME fetch additional ones when unset?
-                        if (Clip_Access::toPub($pubtype, $pub, null, 'display')) {
+                        if (Access::toPub($pubtype, $pub, null, 'display')) {
                             if (is_object($publist[$i])) {
                                 $publist[$i]->clipProcess($args);
                             }
@@ -287,7 +288,7 @@ class UserApi extends \Zikula_AbstractApi
                         }
                     }
                     // store the arguments used
-                    Clip_Util::setArgs('getallapi', $args);
+                    Util::setArgs('getallapi', $args);
                     if ($args['fetchone']) {
                         $publist = $publist->getFirst();
                     }
@@ -320,13 +321,13 @@ class UserApi extends \Zikula_AbstractApi
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
         if (!isset($args['id']) && !isset($args['pid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'id | pid'));
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
+        $pubtype = Util::getPubType($args['tid']);
         //// Parameters
         // old parameters (will be removed on Clip 1.0)
         $args['checkPerm'] = isset($args['checkPerm']) ? (bool) $args['checkPerm'] : false;
@@ -347,7 +348,7 @@ class UserApi extends \Zikula_AbstractApi
         // query for the current user language
         $query->andWhere('(core_language = ? OR core_language = ?)', array(ZLanguage::getLanguageCode(), ''));
         // restrictions for non-editors
-        if (!Clip_Access::toPubtype($args['tid'], 'editor')) {
+        if (!Access::toPubtype($args['tid'], 'editor')) {
             $query->andWhere('(core_publishdate IS NULL OR core_publishdate <= ?)', date('Y-m-d H:i:s', time()));
             $query->andWhere('(core_expiredate IS NULL OR core_expiredate >= ?)', date('Y-m-d H:i:s', time()));
         }
@@ -363,7 +364,7 @@ class UserApi extends \Zikula_AbstractApi
             }
         }
         //// Relations
-        $args['rel'] = isset($args['rel']) ? Clip_Util::getPubtypeConfig('display', $args['rel']) : array();
+        $args['rel'] = isset($args['rel']) ? Util::getPubtypeConfig('display', $args['rel']) : array();
         // adds the relations data
         if ($args['rel'] && $args['rel']['load']) {
             $record = $tableObj->getRecordInstance();
@@ -381,7 +382,7 @@ class UserApi extends \Zikula_AbstractApi
         }
         //// Security
         // check permissions if needed
-        if ($args['checkperm'] && !Clip_Access::toPub($args['tid'], $pubdata, null, 'access', $args['templateid'])) {
+        if ($args['checkperm'] && !Access::toPub($args['tid'], $pubdata, null, 'access', $args['templateid'])) {
             return false;
         }
         //// Result
@@ -390,7 +391,7 @@ class UserApi extends \Zikula_AbstractApi
             $pubdata->clipProcess($args);
         }
         // store the arguments used
-        Clip_Util::setArgs('getapi', $args);
+        Util::setArgs('getapi', $args);
         return $pubdata;
     }
     
@@ -415,8 +416,8 @@ class UserApi extends \Zikula_AbstractApi
         // assign for easy handling of the data
         $obj = $args['data'];
         // create the workflow and executes the action
-        $pubtype = Clip_Util::getPubType($obj['core_tid']);
-        $workflow = new Clip_Workflow($pubtype, $obj);
+        $pubtype = Util::getPubType($obj['core_tid']);
+        $workflow = new Workflow($pubtype, $obj);
         $ret = $workflow->executeAction($args['commandName']);
         // checks for a failure
         if ($ret === false) {
@@ -446,11 +447,11 @@ class UserApi extends \Zikula_AbstractApi
         if (!isset($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Missing argument [%s].', 'tid'));
         }
-        if (!Clip_Util::validateTid($args['tid'])) {
+        if (!Util::validateTid($args['tid'])) {
             return LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($args['tid'])));
         }
-        $pubtype = Clip_Util::getPubType($args['tid']);
-        $pubfields = Clip_Util::getPubFields($pubtype['tid']);
+        $pubtype = Util::getPubType($args['tid']);
+        $pubfields = Util::getPubFields($pubtype['tid']);
         if (!$pubfields) {
             return LogUtil::registerError($this->__('Error! No publication fields found.'));
         }
@@ -472,7 +473,7 @@ class UserApi extends \Zikula_AbstractApi
         // resolve the FilterUtil arguments
         $filter['args'] = array('alias' => $args['queryalias'], 'plugins' => array());
         foreach ($pubfields as $field) {
-            $plugin = Clip_Util_Plugins::get($field['fieldplugin']);
+            $plugin = PluginsUtil::get($field['fieldplugin']);
             // enrich the filter parameters for restrictions and configurations
             if (method_exists($plugin, 'enrichFilterArgs')) {
                 $plugin->enrichFilterArgs(
@@ -491,11 +492,11 @@ class UserApi extends \Zikula_AbstractApi
             }
         }
         // filter instance
-        $filter['obj'] = new Clip_Filter_Util('Clip', $tableObj, $filter['args']);
+        $filter['obj'] = new UtilFilter('Clip', $tableObj, $filter['args']);
         $filter['obj']->setFilter($args['filter']);
         //// Relations
         // filters will be limited to the loaded relations
-        $args['rel'] = isset($args['rel']) ? Clip_Util::getPubtypeConfig('list', $args['rel']) : array();
+        $args['rel'] = isset($args['rel']) ? Util::getPubtypeConfig('list', $args['rel']) : array();
         if ($args['rel'] && $args['rel']['load']) {
             // adds the relations data
             foreach ($record->getRelations($args['rel']['onlyown']) as $ralias => $rinfo) {
@@ -545,7 +546,7 @@ class UserApi extends \Zikula_AbstractApi
                 $query->offset($pos);
                 // get the publication and add it to the collection
                 $pub = $query->execute()->getFirst();
-                if (Clip_Access::toPub($pubtype, $pub, null, 'display')) {
+                if (Access::toPub($pubtype, $pub, null, 'display')) {
                     $pub->clipProcess($args);
                     $publist->add($pub);
                 }
@@ -625,7 +626,7 @@ class UserApi extends \Zikula_AbstractApi
      */
     public function encodeurl($args)
     {
-        if (!isset($args['args']['tid']) || !Clip_Util::validateTid($args['args']['tid'])) {
+        if (!isset($args['args']['tid']) || !Util::validateTid($args['args']['tid'])) {
             return false;
         }
         $supportedfunctions = array('main', 'list', 'display', 'edit', 'exec', 'view', 'publist', 'viewpub', 'pubedit', 'executecommand');
@@ -636,11 +637,11 @@ class UserApi extends \Zikula_AbstractApi
         $_ = $args['args'];
         // pubtype id
         $tid = $_['tid'];
-        $tidtitle = Clip_Util::getPubType($tid, 'urltitle');
+        $tidtitle = Util::getPubType($tid, 'urltitle');
         // template parameter
         $tpl = '';
         if (isset($_['template'])) {
-            $tpl = preg_replace(Clip_Util::REGEX_TEMPLATE, '', $_['template']);
+            $tpl = preg_replace(Util::REGEX_TEMPLATE, '', $_['template']);
             if ($tpl != $_['template']) {
                 // do not build shortURLs for faulty templates
                 return false;

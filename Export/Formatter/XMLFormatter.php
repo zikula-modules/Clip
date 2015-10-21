@@ -9,13 +9,18 @@
  * @subpackage Export_Formatter
  */
 
-namespace Clip\Export\Formatter;
+namespace Matheo\Clip\Export\Formatter;
 
+use Matheo\Clip\Export\SectionExport;
 use XMLWriter;
 
 class XML
 {
+    /**
+     * @var XMLWriter
+     */
     protected $writer;
+
     /**
      * Insert the header.
      *
@@ -56,11 +61,11 @@ class XML
     /**
      * Formats a section.
      *
-     * @param Clip_Export_Section $section Section to format.
+     * @param SectionExport $section Section to format.
      *
      * @return string
      */
-    public function formatSection(Clip_Export_Section $section)
+    public function formatSection(SectionExport $section)
     {
         $xml = '';
         do {

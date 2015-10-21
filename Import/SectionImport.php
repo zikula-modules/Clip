@@ -9,27 +9,38 @@
  * @subpackage Import
  */
 
-namespace Clip\Import;
+namespace Matheo\Clip\Import;
 
 use Doctrine_Core;
 
 class SectionImport
 {
     protected $idfield = 'id';
+
     protected $name;
+
     protected $rowname;
+
     protected $pagesize = 0;
+
+    /**
+     * @var \Doctrine_Query
+     */
     protected $query;
+
     protected $addfrom = array();
+
     protected $page = 0;
+
     protected $ids = array();
+
     /**
      * Constructor.
      *
-     * @param string         $args['name']     Name of the section.
-     * @param string         $args['rowname']  Name of each row/register.
-     * @param integer        $args['pagesize'] Size of the page to extract at time.
-     * @param Doctrine_Query $args['query']    Query object to process.
+     * @param string          $args['name']     Name of the section.
+     * @param string          $args['rowname']  Name of each row/register.
+     * @param integer         $args['pagesize'] Size of the page to extract at time.
+     * @param \Doctrine_Query $args['query']    Query object to process.
      *
      * @return void
      */
@@ -77,7 +88,7 @@ class SectionImport
     /**
      * Query getter.
      *
-     * @return Doctrine_Query Query of this section.
+     * @return \Doctrine_Query Query of this section.
      */
     public function getQuery()
     {
@@ -87,9 +98,9 @@ class SectionImport
     /**
      * Query setter.
      *
-     * @return this
+     * @return $this
      */
-    public function setQuery(Doctrine_Query $query)
+    public function setQuery(\Doctrine_Query $query)
     {
         $this->query = $query;
         return $this;

@@ -9,7 +9,7 @@
  * @subpackage Util_Response
  */
 
-namespace Clip\Util\Response;
+namespace Matheo\Clip\Util\Response;
 
 use FileUtil;
 

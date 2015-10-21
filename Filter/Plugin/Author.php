@@ -9,8 +9,9 @@
  * @subpackage Filter_Plugin
  */
 
-namespace Clip\Filter\Plugin;
+namespace Matheo\Clip\Filter\Plugin;
 
+use Matheo\Clip\Filter\FormFilter;
 use PageUtil;
 use DataUtil;
 use ModUtil;
@@ -24,7 +25,7 @@ use DBUtil;
  * {clip_filter_plugin p='Author' id='core_author'}
  * </code>
  */
-class Author extends \Clip_Filter_Plugin_String
+class Author extends String
 {
     // plugin custom vars
     public $operator;
@@ -33,6 +34,7 @@ class Author extends \Clip_Filter_Plugin_String
     public $maxitems;
     public $minchars;
     public $autotip;
+
     public function getFilename()
     {
         return __FILE__;
@@ -55,7 +57,7 @@ class Author extends \Clip_Filter_Plugin_String
      * Create event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @see    Zikula_Form_AbstractPlugin
      * @return void
@@ -76,7 +78,7 @@ class Author extends \Clip_Filter_Plugin_String
      * Load event handler.
      *
      * @param array            $params Parameters passed from the Smarty plugin function.
-     * @param Clip_Filter_Form $filter Clip filter form manager instance.
+     * @param FormFilter       $filter Clip filter form manager instance.
      *
      * @return void
      */
@@ -91,11 +93,11 @@ class Author extends \Clip_Filter_Plugin_String
     /**
      * Render event handler.
      *
-     * @param Zikula_View $view Reference to Zikula_View object.
+     * @param \Zikula_View $view Reference to Zikula_View object.
      *
      * @return string The rendered output
      */
-    public function render(Zikula_View $view)
+    public function render(\Zikula_View $view)
     {
         // build the autocompleter setup
         PageUtil::addVar('javascript', 'prototype');

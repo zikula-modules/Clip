@@ -27,16 +27,16 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $this->id  = FormUtil::getPassedValue('id', null, 'GET', FILTER_SANITIZE_NUMBER_INT);
 
         // validate the tid
-        if (!Clip_Util::validateTid($this->tid)) {
+        if (!Util::validateTid($this->tid)) {
             $view->setErrorMsg($this->__f('Error! Invalid publication type ID passed [%s].', $this->tid));
             return $view->redirect(ModUtil::url('Clip', 'admin', 'main'));
         }
 
         // get the pubtype object
-        $pubtype = Clip_Util::getPubType($this->tid);
+        $pubtype = Util::getPubType($this->tid);
 
         // get the pubfields table
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
+        $tableObj = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield');
 
         // set the field information
         if ($this->id) {
@@ -53,7 +53,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         }
 
         // assign all the existing fields
-        $pubfields = Clip_Util::getPubFields($this->tid)->toArray();
+        $pubfields = Util::getPubFields($this->tid)->toArray();
 
         $view->assign('pubfields', $pubfields)
              ->assign('pubtype', $pubtype)
@@ -84,7 +84,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
             return $view->redirect($this->referer);
         }
 
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubfield');
+        $tableObj = Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield');
 
         // get the data set in the form
         $data = $view->getValues();
@@ -101,7 +101,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
         $pubfield->fromArray($data['field']);
 
         // fill default data
-        $plugin = Clip_Util_Plugins::get($pubfield->fieldplugin);
+        $plugin = Util_Plugins::get($pubfield->fieldplugin);
 
         $pubfield->tid       = $this->tid;
         $pubfield->fieldtype = $plugin->columnDef;
@@ -125,7 +125,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                 $pubfield->name = DataUtil::formatForStore($pubfield->name);
 
                 // reserved names
-                if (Clip_Util::validateReservedWord($pubfield->name)) {
+                if (Util::validateReservedWord($pubfield->name)) {
                     return $view->setPluginErrorMsg('name', $this->__('The submitted name is reserved. Please choose a different one.'));
                 }
 
@@ -161,7 +161,7 @@ class Clip_Form_Handler_Admin_Pubfields extends Zikula_Form_AbstractHandler
                 $pubfield->save();
 
                 // update the pubtype table
-                Clip_Util::getPubType($this->tid)->updateTable();
+                Util::getPubType($this->tid)->updateTable();
 
                 // create/edit status messages
                 if (!$this->id) {

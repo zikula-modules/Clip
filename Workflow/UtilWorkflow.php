@@ -9,26 +9,24 @@
  * @subpackage Workflow
  */
 
-namespace Clip\Workflow;
+namespace Matheo\Clip\Workflow;
 
 use ModUtil;
 use LogUtil;
-use Clip_Workflow_Parser;
 use ZLanguage;
 use DataUtil;
-use Clip_Util;
-use Clip_Model_Pubtype;
+use Matheo\Clip\Util;
+use Matheo_Clip_Model_Pubtype;
 use System;
 use Doctrine_Core;
-use Clip_Workflow_Util;
-use Clip_Util_Plugins;
-use Clip_Model_WorkflowVars;
+use Matheo\Clip\Util\PluginsUtil;
+use Matheo_Clip_Model_WorkflowVars;
 use DBUtil;
 use UserUtil;
 use ThemeUtil;
 
 /**
- * Clip_Workflow_Util Class.
+ * UtilWorkflow Class.
  */
 class UtilWorkflow
 {
@@ -52,15 +50,15 @@ class UtilWorkflow
         // Get module info
         $modinfo = ModUtil::getInfoFromName($module);
         if (!$modinfo) {
-            return LogUtil::registerError(__f('%1$s: The specified module [%2$s] does not exist.', array('Clip_Workflow_Util::loadSchema', $module)));
+            return LogUtil::registerError(__f('%1$s: The specified module [%2$s] does not exist.', array('Workflow_Util::loadSchema', $module)));
         }
         $file = "{$schema}.xml";
         $path = self::findPath($file, $module);
         if (!$path) {
-            return LogUtil::registerError(__f('%1$s: Unable to find the workflow file [%2$s].', array('Clip_Workflow_Util::loadSchema', $file)));
+            return LogUtil::registerError(__f('%1$s: Unable to find the workflow file [%2$s].', array('Workflow_Util::loadSchema', $file)));
         }
         // instanciate Workflow Parser
-        $parser = new Clip_Workflow_Parser();
+        $parser = new ParserWorkflow();
         // parse workflow and return workflow object
         $workflowXML = file_get_contents($path);
         $data = $parser->parse(
@@ -145,11 +143,11 @@ class UtilWorkflow
     {
         $dom = ZLanguage::getModuleDomain('Clip');
         // validate the passed pubtype
-        if (!$pubtype instanceof Clip_Model_Pubtype) {
-            if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Workflow_Util::getVar', DataUtil::formatForDisplay($pubtype)), $dom));
+        if (!$pubtype instanceof PubtypeModel) {
+            if (!Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Workflow_Util::getVar', DataUtil::formatForDisplay($pubtype)), $dom));
             }
-            $pubtype = Clip_Util::getPubType($pubtype);
+            $pubtype = Util::getPubType($pubtype);
         }
         $name = isset($name) ? (string) $name : '';
         // validate the varname
@@ -183,11 +181,11 @@ class UtilWorkflow
     ) {
         $dom = ZLanguage::getModuleDomain('Clip');
         // validate the passed pubtype
-        if (!$pubtype instanceof Clip_Model_Pubtype) {
-            if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Workflow_Util::getVar', DataUtil::formatForDisplay($pubtype)), $dom));
+        if (!$pubtype instanceof PubtypeModel) {
+            if (!Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Workflow_Util::getVar', DataUtil::formatForDisplay($pubtype)), $dom));
             }
-            $pubtype = Clip_Util::getPubType($pubtype);
+            $pubtype = Util::getPubType($pubtype);
         }
         // if we haven't got vars for this pubtype yet then lets get them
         if (!array_key_exists($pubtype->tid, self::$variables)) {
@@ -251,9 +249,9 @@ class UtilWorkflow
                 return false;
             }
             self::$varvalues[$pubtype->tid] = array();
-            $wfvars = Clip_Workflow_Util::getSchemaVar($pubtype->getSchema());
+            $wfvars = UtilWorkflow::getSchemaVar($pubtype->getSchema());
             foreach ($wfvars as $k => $var) {
-                $classname = Clip_Util_Plugins::getAdminClassname($var['plugin']);
+                $classname = PluginsUtil::getAdminClassname($var['plugin']);
                 if (isset($vars[$k]) && $classname && method_exists($classname, 'postRead')) {
                     self::$varvalues[$pubtype->tid][$k] = $classname::postRead($vars[$k]);
                 } else {
@@ -294,16 +292,16 @@ class UtilWorkflow
     ) {
         $dom = ZLanguage::getModuleDomain('Clip');
         // validate the passed pubtype
-        if (!$pubtype instanceof Clip_Model_Pubtype) {
-            if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Workflow_Util::setVar', DataUtil::formatForDisplay($pubtype)), $dom));
+        if (!$pubtype instanceof PubtypeModel) {
+            if (!Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Workflow_Util::setVar', DataUtil::formatForDisplay($pubtype)), $dom));
             }
-            $pubtype = Clip_Util::getPubType($pubtype);
+            $pubtype = Util::getPubType($pubtype);
         }
         if (self::hasVar($pubtype, $name)) {
-            Doctrine_Core::getTable('Clip_Model_WorkflowVars')->createQuery()->update()->set('value', serialize($value))->where('setting = ?', $name)->andWhere('tid = ?', $pubtype->tid)->andWhere('workflow = ?', $pubtype->workflow)->execute();
+            Doctrine_Core::getTable('Matheo_Clip_Model_WorkflowVars')->createQuery()->update()->set('value', serialize($value))->where('setting = ?', $name)->andWhere('tid = ?', $pubtype->tid)->andWhere('workflow = ?', $pubtype->workflow)->execute();
         } else {
-            $var = new Clip_Model_WorkflowVars();
+            $var = new WorkflowVarsModel();
             $var->fromArray(array('tid' => $pubtype->tid, 'workflow' => $pubtype->workflow, 'setting' => $name, 'value' => serialize($value)));
             $var->save();
         }
@@ -323,15 +321,15 @@ class UtilWorkflow
     {
         $dom = ZLanguage::getModuleDomain('Clip');
         // validate the passed pubtype
-        if (!$pubtype instanceof Clip_Model_Pubtype) {
-            if (!Clip_Util::validateTid($pubtype)) {
-                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Clip_Workflow_Util::setVar', DataUtil::formatForDisplay($pubtype)), $dom));
+        if (!$pubtype instanceof PubtypeModel) {
+            if (!Util::validateTid($pubtype)) {
+                return LogUtil::registerError(__f('%1$s: Invalid publication type ID passed [%2$s].', array('Workflow_Util::setVar', DataUtil::formatForDisplay($pubtype)), $dom));
             }
-            $pubtype = Clip_Util::getPubType($pubtype);
+            $pubtype = Util::getPubType($pubtype);
         }
         // clean the old values
         $where = array(array('tid = ?', $pubtype->tid), array('workflow = ?', $pubtype->workflow));
-        Doctrine_Core::getTable('Clip_Model_WorkflowVars')->deleteWhere($where);
+        Doctrine_Core::getTable('Matheo_Clip_Model_WorkflowVars')->deleteWhere($where);
         // set the passed values
         $ok = true;
         foreach ($vars as $k => $v) {
@@ -443,7 +441,7 @@ class UtilWorkflow
         // Get module info
         $modinfo = ModUtil::getInfoFromName($module);
         if (!$modinfo) {
-            return LogUtil::registerError(__f('%1$s: The specified module [%2$s] does not exist.', array('Clip_Workflow_Util::findPath', $module)));
+            return LogUtil::registerError(__f('%1$s: The specified module [%2$s] does not exist.', array('Workflow_Util::findPath', $module)));
         }
         $moduledir = $modinfo['directory'];
         // determine which folder to look in (system or modules)
@@ -455,12 +453,12 @@ class UtilWorkflow
                 // non system module
                 $modulepath = "modules/{$moduledir}";
             } else {
-                return LogUtil::registerError(__f('%s: Unsupported module type.', 'Clip_Workflow_Util'));
+                return LogUtil::registerError(__f('%s: Unsupported module type.', 'Workflow_Util'));
             }
         }
         // ensure module is active
         if (!$modinfo['state'] == ModUtil::STATE_ACTIVE) {
-            return LogUtil::registerError(__f('%1$s: The module [%2$s] is not active.', array('Clip_Workflow_Util', $module)));
+            return LogUtil::registerError(__f('%1$s: The module [%2$s] is not active.', array('Workflow_Util', $module)));
         }
         $themeinfo = ThemeUtil::getInfo(ThemeUtil::getIDFromName(UserUtil::getTheme()));
         $paths = array('themepath' => DataUtil::formatForOS("themes/{$themeinfo['directory']}/workflows/{$moduledir}/{$file}"), 'configpath' => DataUtil::formatForOS("config/workflows/{$moduledir}/{$file}"), 'modulepath' => DataUtil::formatForOS("{$modulepath}/workflows/{$file}"));

@@ -9,14 +9,14 @@
  * @subpackage Block
  */
 
-namespace Clip\Block;
+namespace Matheo\Clip\Block;
 
 use SecurityUtil;
-use Clip_Access;
+use Matheo\Clip\Access;
 use BlockUtil;
 use DataUtil;
 use LogUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use ModUtil;
 use FormUtil;
 
@@ -46,7 +46,7 @@ class ViewpubBlock extends \Zikula_Controller_AbstractBlock
      */
     public function display($blockinfo)
     {
-        $alert = $this->getVar('devmode', false) && Clip_Access::toClip(ACCESS_ADMIN);
+        $alert = $this->getVar('devmode', false) && Access::toClip(ACCESS_ADMIN);
         // get variables from content block
         $vars = BlockUtil::varsFromContent($blockinfo['content']);
         // validation of required parameters
@@ -56,13 +56,13 @@ class ViewpubBlock extends \Zikula_Controller_AbstractBlock
         if (!isset($vars['pid']) || empty($vars['pid'])) {
             return $alert ? $this->__f('Required parameter [%s] not set or empty.', 'pid') : null;
         }
-        if (!Clip_Util::validateTid($vars['tid'])) {
+        if (!Util::validateTid($vars['tid'])) {
             return $alert ? LogUtil::registerError($this->__f('Error! Invalid publication type ID passed [%s].', DataUtil::formatForDisplay($vars['tid']))) : null;
         }
         // security check
-        // FIXME SECURITY centralize on Clip_Access
+        // FIXME SECURITY centralize on Access
         if (!SecurityUtil::checkPermission('Clip:block:viewpub', "{$blockinfo['bid']}:{$vars['tid']}:", ACCESS_OVERVIEW)) {
-            return;
+            return '';
         }
         // default values
         $template = isset($vars['template']) && !empty($vars['template']) ? $vars['template'] : '';
@@ -70,7 +70,7 @@ class ViewpubBlock extends \Zikula_Controller_AbstractBlock
         $args = array('tid' => $vars['tid'], 'pid' => $vars['pid'], 'template' => $template ? 'block_' . $template : 'block', 'cachelifetime' => $cachelt);
         $blockinfo['content'] = ModUtil::func('Clip', 'user', 'display', $args);
         if (empty($blockinfo['content'])) {
-            return;
+            return '';
         }
         return BlockUtil::themeBlock($blockinfo);
     }
@@ -96,7 +96,7 @@ class ViewpubBlock extends \Zikula_Controller_AbstractBlock
             $vars['cachelifetime'] = 0;
         }
         // builds the pubtypes selector
-        $pubtypes = Clip_Util::getPubType(-1)->toKeyValueArray('tid', 'title');
+        $pubtypes = Util::getPubType(-1)->toKeyValueArray('tid', 'title');
         // builds the output
         $this->view->assign('vars', $vars)->assign('pubtypes', $pubtypes);
         // return output

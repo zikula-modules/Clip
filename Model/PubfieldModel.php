@@ -9,12 +9,9 @@
  * @subpackage Model
  */
 
-namespace Clip\Model;
+use Matheo\Clip\Generator;
 
-use Doctrine_Core;
-use Clip_Generator;
-
-class PubfieldModel extends \Doctrine_Record
+class Matheo_Clip_Model_Pubfield extends \Doctrine_Record
 {
     /**
      * Set table definition.
@@ -148,7 +145,7 @@ class PubfieldModel extends \Doctrine_Record
     {
         $pubfield = $event->getInvoker();
         $where = array(array('tid = ?', $pubfield->tid));
-        $max_lineno = (int) Doctrine_Core::getTable('Clip_Model_Pubfield')->selectFieldFunction(
+        $max_lineno = (int) Doctrine_Core::getTable('Matheo_Clip_Model_Pubfield')->selectFieldFunction(
             'lineno',
             'MAX',
             $where
@@ -170,9 +167,9 @@ class PubfieldModel extends \Doctrine_Record
             // FIXME detect if the field was updated and is a sort field
             // FIXME detect if the field was deleted and a sort field
             // update the pubtype's model file
-            Clip_Generator::updateModel($pubfield->tid);
+            Generator::updateModel($pubfield->tid);
             // update the pubtype's table
-            $classname = Clip_Generator::createTempModel($pubfield->tid);
+            $classname = Generator::createTempModel($pubfield->tid);
             Doctrine_Core::getTable($classname)->changeTable(true);
             $once[$pubfield->tid] = true;
         }

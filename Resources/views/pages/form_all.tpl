@@ -37,7 +37,7 @@
                 </div>
             </fieldset>
 
-            {clip_accessblock context='editor'}
+            {Accessblock context='editor'}
             <fieldset>
                 <legend>
                     <a id="clip_pagesettings_collapse" href="javascript:void(0);">{gt text='Page settings'}</a>
@@ -94,7 +94,7 @@
 
             </fieldset>
             {/if}
-            {/clip_accessblock}
+            {/Accessblock}
 
             <div class="clip-hooks-edit">
                 {notifydisplayhooks eventname=$pubtype->getHooksEventName('form_edit') urlObject=$pubdata->clipUrl() id=$pubdata.core_pid}
@@ -111,7 +111,7 @@
     {/form}
 </div>
 
-{clip_accessblock context='editor'}
+{Accessblock context='editor'}
 {ajaxheader}
 {pageaddvarblock name='header'}
 <script type="text/javascript">
@@ -137,4 +137,4 @@
 // ]]>
 </script>
 {/pageaddvarblock}
-{/clip_accessblock}
+{/Accessblock}

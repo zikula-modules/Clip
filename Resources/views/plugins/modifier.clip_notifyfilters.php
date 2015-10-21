@@ -27,9 +27,9 @@
  */
 function smarty_modifier_clip_notifyfilters($content, $pubtype, $hooktype = 'filter', $category = 'filter_hooks', $subarea = '')
 {
-    // NOTE: notifyfilters core modifier is added on Clip_Util::register_utilities
+    // NOTE: notifyfilters core modifier is added on Util::register_utilities
     if (!is_object($pubtype)) {
-        $pubtype = Clip_Util::getPubType($pubtype);
+        $pubtype = Util::getPubType($pubtype);
     }
     $eventName = $pubtype->getHooksEventName(
         $hooktype,

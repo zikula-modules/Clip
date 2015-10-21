@@ -9,14 +9,14 @@
  * @subpackage Form_Plugin
  */
 
-    namespace Clip\Form\Plugin;
+    namespace Matheo\Clip\Form\Plugin;
 
 use ZLanguage;
 use ModUtil;
 use DataUtil;
 use SecurityUtil;
 use CategoryUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use CategoryRegistryUtil;
 
 class RadioList extends \Zikula_Form_Plugin_CategorySelector
@@ -188,7 +188,7 @@ class RadioList extends \Zikula_Form_Plugin_CategorySelector
                     if ($F(\'clipplugin_categorylist\') != null) {
                         $(\'typedata\').value = $F(\'clipplugin_categorylist\');
                     } else {
-                        $(\'typedata\').value = ' . Clip_Util::getDefaultCategoryID() . ';
+                        $(\'typedata\').value = ' . Util::getDefaultCategoryID() . ';
                     }
                     $(\'typedata\').value += \'|\'+Number($F(\'clipplugin_editlink\'));
 
@@ -229,7 +229,7 @@ class RadioList extends \Zikula_Form_Plugin_CategorySelector
     {
         // config string: "(int)categoryID|(int)editLink"
         $typedata = explode('|', $typedata);
-        $this->config = array('cat' => $typedata[0] ? (int) $typedata[0] : Clip_Util::getDefaultCategoryID(), 'edit' => isset($typedata[1]) ? (bool) $typedata[1] : false);
+        $this->config = array('cat' => $typedata[0] ? (int) $typedata[0] : Util::getDefaultCategoryID(), 'edit' => isset($typedata[1]) ? (bool) $typedata[1] : false);
     }
 
 }

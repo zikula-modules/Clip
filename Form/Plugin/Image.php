@@ -273,7 +273,7 @@ class Clip_Form_Plugin_Image extends Zikula_Form_Plugin_UploadInput
         // process the upload if there's one
         if ($newUpload) {
             $data['orig_name'] = $newData['name'];
-            $filename = $this->config[6] ? DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])) : Clip_Util::getNewFileReference();
+            $filename = $this->config[6] ? DataUtil::formatPermalink(FileUtil::getFilebase($newData['name'])) : Util::getNewFileReference();
             $data['file_name'] = "$filename.$extension";
 
             if ($this->config[6] && file_exists("{$uploadpath}/{$data['file_name']}")) {

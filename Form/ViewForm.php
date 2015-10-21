@@ -9,7 +9,7 @@
  * @subpackage Form
  */
 
-namespace Clip\Form;
+namespace Matheo\Clip\Form;
 
 use Zikula_Exception_Fatal;
 use Zikula_Form_AbstractHandler;

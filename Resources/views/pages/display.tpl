@@ -27,7 +27,7 @@
             <span class="clip-page-date">{gt text='Posted by %1$s on %2$s' tag1=$author tag2=$pubdata.core_publishdate|dateformat:'datelong'}</span>
 
             <br />
-            {clip_accessblock pub=$pubdata context='edit'}
+            {Accessblock pub=$pubdata context='edit'}
             {strip}
             <span class="clip-page-edit-link">
                 <span class="z-nowrap">
@@ -37,7 +37,7 @@
             {/strip}
 
             <span class="text_separator">|</span>
-            {/clip_accessblock}
+            {/Accessblock}
 
             <span class="clip-page-reads">{gt text='%s read' plural='%s reads' count=$pubdata.core_hitcount tag1=$pubdata.core_hitcount}</span>
 

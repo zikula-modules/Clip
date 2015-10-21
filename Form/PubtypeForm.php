@@ -9,9 +9,9 @@
  * @subpackage Form
  */
 
-namespace Clip\Form;
+namespace Matheo\Clip\Form;
 
-use Clip_Util;
+use Matheo\Clip\Util;
 
 class PubtypeForm extends \Zikula_Form_Plugin_DropdownList
 {
@@ -23,7 +23,7 @@ class PubtypeForm extends \Zikula_Form_Plugin_DropdownList
     public function load(Zikula_Form_View $view, &$params)
     {
         $this->addItem('', 0);
-        $pubtypes = Clip_Util::getPubType();
+        $pubtypes = Util::getPubType();
         foreach ($pubtypes as $pubtype) {
             $this->addItem($pubtype['title'], $pubtype['tid']);
         }

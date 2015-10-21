@@ -8,6 +8,7 @@
  * @package    Clip
  * @subpackage Workflows_Operations
  */
+
 /**
  * clone operation.
  *
@@ -44,11 +45,11 @@ function Clip_operation_clone(&$pub, $params)
     if ($copy->isValid()) {
         $copy->trySave();
         // event: notify the operation data
-        $copy = Clip_Event::notify('data.edit.operation.clone.pre', $copy, $params)->getData();
+        $copy = Matheo\Clip\EventHelper::notify('data.edit.operation.clone.pre', $copy, $params)->getData();
         // register the new workflow
         $copy->mapValue('__WORKFLOW__', $pub['__WORKFLOW__']);
-        $pubtype = Clip_Util::getPubType($pub['core_tid']);
-        $workflow = new Clip_Workflow($pubtype, $copy);
+        $pubtype = Matheo\Clip\Util::getPubType($pub['core_tid']);
+        $workflow = new Matheo\Clip\Workflow($pubtype, $copy);
         // be sure that the state is valid
         $params['state'] = $workflow->isValidState($params['state']) ? $params['state'] : 'initial';
         if ($workflow->registerWorkflow($params['state'])) {
@@ -56,7 +57,7 @@ function Clip_operation_clone(&$pub, $params)
             // hooks: let know that a publication was created
             $copy->notifyHooks('process_edit');
             // event: notify the operation data
-            $copy = Clip_Event::notify('data.edit.operation.clone.post', $copy, $params)->getData();
+            $copy = Matheo\Clip\EventHelper::notify('data.edit.operation.clone.post', $copy, $params)->getData();
         } else {
             // delete the previously inserted record
             $copy->delete();

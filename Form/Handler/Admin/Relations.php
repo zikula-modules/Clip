@@ -23,7 +23,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
      */
     public function initialize(Zikula_Form_View $view)
     {
-        $pubtypes = Clip_Util::getPubType(-1);
+        $pubtypes = Util::getPubType(-1);
 
         if (count($pubtypes) == 0) {
             LogUtil::registerError($this->__('There are no publication types to relate.'));
@@ -48,7 +48,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
         $tid2 = is_array($tid2) ? current($tid2) : (in_array($tid2, $tids) ? $tid2 : null);
 
         // get the table object for utility purposes
-        $tableObj = Doctrine_Core::getTable('Clip_Model_Pubrelation');
+        $tableObj = Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation');
 
         if ($this->id) {
             $relation = $tableObj->find($this->id);
@@ -113,7 +113,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
         // fill the view
         $view->assign('pubtypes', $pubtypes->toArray())
-             ->assign('typeselector', Clip_Util_Selectors::pubtypes(true, true))
+             ->assign('typeselector', Util_Selectors::pubtypes(true, true))
              ->assign('relations', $relations)
              ->assign('reltypes', array($reltype1, $reltype2))
              ->assign('ops', $ops)
@@ -180,11 +180,11 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
                     return $view->setPluginErrorMsg('alias1', $this->__('The aliases cannot be the same.'));
                 }
 
-                $previous = $this->id ? Doctrine_Core::getTable('Clip_Model_Pubrelation')->find($this->id) : null;
+                $previous = $this->id ? Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->find($this->id) : null;
 
                 // verify unique alias1
                 if (!$this->id || $relation->alias1 != $previous->alias1) {
-                    if (!Clip_Util::validateTid($relation->tid1)) {
+                    if (!Util::validateTid($relation->tid1)) {
                         return $view->setPluginErrorMsg('tid1', $this->__('Invalid owning publication type passed.'));
                     } else {
                         $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$relation->tid1)->getRecord();
@@ -196,7 +196,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
                 // verify unique alias2
                 if (!$this->id || $relation->alias2 != $previous->alias2) {
-                    if (!Clip_Util::validateTid($relation->tid2)) {
+                    if (!Util::validateTid($relation->tid2)) {
                         return $view->setPluginErrorMsg('tid2', $this->__('Invalid related publication type passed.'));
                     } else {
                         $pub = Doctrine_Core::getTable('ClipModels_Pubdata'.$relation->tid2)->getRecord();
@@ -226,7 +226,7 @@ class Clip_Form_Handler_Admin_Relations extends Zikula_Form_AbstractHandler
 
             // delete the relation
             case 'delete':
-                $relation = Doctrine_Core::getTable('Clip_Model_Pubrelation')->find($this->id);
+                $relation = Doctrine_Core::getTable('Matheo_Clip_Model_Pubrelation')->find($this->id);
 
                 if ($relation->delete()) {
                     LogUtil::registerStatus($this->__('Done! Relation deleted.'));

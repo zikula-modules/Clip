@@ -9,10 +9,10 @@
  * @subpackage Version
  */
 
-namespace Clip;
+namespace Matheo\Clip;
 
 use ModUtil;
-use Clip_Util;
+use Matheo\Clip\Util;
 use HookUtil;
 
 class ClipVersion extends \Zikula_AbstractVersion
@@ -24,13 +24,13 @@ class ClipVersion extends \Zikula_AbstractVersion
             $this->setupPubtypeBundles();
         }
     }
-    
+
     public function setupPubtypeBundles()
     {
         static $loaded = false;
         // paranoic check for module upgrade
         if (!$loaded) {
-            $pubtypes = Clip_Util::getPubType();
+            $pubtypes = Util::getPubType();
             foreach ($pubtypes as $pubtype) {
                 $pubtype->registerHookBundles($this);
             }
@@ -43,12 +43,12 @@ class ClipVersion extends \Zikula_AbstractVersion
         $meta = array();
         $meta['displayname'] = $this->__('Clip');
         $meta['description'] = $this->__('Dynamic content publishing platform for Zikula.');
-        $meta['oldnames'] = array('PageMaster');
+        $meta['oldnames'] = array('PageMaster', 'Clip');
         //! module name that appears in URL
         $meta['url'] = $this->__('clip');
         $meta['version'] = '0.9.4';
-        $meta['core_min'] = '1.3.2';
-        $meta['core_max'] = '1.3.99';
+        $meta['core_min'] = '1.4.1';
+        $meta['core_max'] = '1.4.99';
         // Capabilities
         $meta['capabilities'] = array(HookUtil::SUBSCRIBER_CAPABLE => array('enabled' => true, HookUtil::SUBSCRIBE_OWN => true));
         // Permissions schema

@@ -9,10 +9,12 @@
  * @subpackage Util
  */
 
-namespace Clip\Util;
+namespace Matheo\Clip\Util;
 
 use ModUtil;
 use Doctrine_Collection;
+use Zikula_Form_View;
+use Zikula_View;
 use ZLanguage;
 use CategoryUtil;
 
@@ -42,10 +44,10 @@ class ViewUtil
      *
      *  Store an utility value to be used later on a Clip template:
      *
-     *  <samp>{clip_util->store var='myvar' value=$myvar}</samp>
+     *  <samp>{Util->store var='myvar' value=$myvar}</samp>
      *
-     * @param array       $params All parameters passed to this plugin from the template.
-     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     * @param array            $params All parameters passed to this plugin from the template.
+     * @param Zikula_Form_View $view   Reference to the {@link Zikula_View} object.
      *
      * @return void
      */
@@ -68,10 +70,10 @@ class ViewUtil
      *
      *  Retrieve an utility value stored previously:
      *
-     *  <samp>{clip_util->retrieve var='myvar' assign='retrieved'}</samp>
+     *  <samp>{Util->retrieve var='myvar' assign='retrieved'}</samp>
      *
-     * @param array       $params All parameters passed to this plugin from the template.
-     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     * @param array            $params All parameters passed to this plugin from the template.
+     * @param Zikula_Form_View $view   Reference to the {@link Zikula_View} object.
      *
      * @return mixed
      */
@@ -92,10 +94,10 @@ class ViewUtil
      *
      *  Delete an utility value stored previously:
      *
-     *  <samp>{clip_util->pop var='myvar' assign='deleted'}</samp>
+     *  <samp>{Util->pop var='myvar' assign='deleted'}</samp>
      *
-     * @param array       $params All parameters passed to this plugin from the template.
-     * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
+     * @param array            $params All parameters passed to this plugin from the template.
+     * @param Zikula_Form_View $view   Reference to the {@link Zikula_View} object.
      *
      * @return mixed
      */
@@ -127,7 +129,7 @@ class ViewUtil
      *
      *  Get a specific publication of the pubtype #1 and assign it to the template variable $pub:
      *
-     *  <samp>{clip_util->getone tid=1 id=$pubdata.relation assign='pub'}</samp>
+     *  <samp>{Util->getone tid=1 id=$pubdata.relation assign='pub'}</samp>
      *
      * @param array       $params All parameters passed to this plugin from the template.
      * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -173,7 +175,7 @@ class ViewUtil
      *
      *  Get a filtered list of publications of the blog pubtype and assign it to the template variable $pubs:
      *
-     *  <samp>{clip_util->getmany tid='blog' filter="relation:eq:`$pubdata.id`" assign='pubs'}</samp>
+     *  <samp>{Util->getmany tid='blog' filter="relation:eq:`$pubdata.id`" assign='pubs'}</samp>
      *
      * @param array       $params All parameters passed to this plugin from the template.
      * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -222,7 +224,7 @@ class ViewUtil
      *
      *  Get a the number of publications of the pubtype #3 related with the current one:
      *
-     *  <samp>{clip_util->count tid=3 filter="relation:eq:`$pubdata.id`"}</samp>
+     *  <samp>{Util->count tid=3 filter="relation:eq:`$pubdata.id`"}</samp>
      *
      * @param array       $params All parameters passed to this plugin from the template.
      * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -270,7 +272,7 @@ class ViewUtil
      *
      *  Get an array of values ready to tabulate:
      *
-     *  <samp>{clip_util->match keys=$list values=$data assign='listdata'}</samp>
+     *  <samp>{Util->match keys=$list values=$data assign='listdata'}</samp>
      *
      * @param array       $args All parameters passed to this plugin from the template.
      * @param Zikula_View $view Reference to the {@link Zikula_View} object.
@@ -280,10 +282,10 @@ class ViewUtil
     public function match($args, Zikula_View &$view)
     {
         if (!isset($args['keys'])) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->match', 'keys')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->match', 'keys')));
         }
         if (!isset($args['values'])) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->match', 'values')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->match', 'values')));
         }
         $index = isset($args['index']) ? $args['index'] : false;
         $data = array();
@@ -309,7 +311,7 @@ class ViewUtil
      *
      *  Get an array of values ready to tabulate:
      *
-     *  <samp>{clip_util->tab var='collection' a='date' b='category' c='value' assign='table'}</samp>
+     *  <samp>{Util->tab var='collection' a='date' b='category' c='value' assign='table'}</samp>
      *
      * @param array       $args All parameters passed to this plugin from the template.
      * @param Zikula_View $view Reference to the {@link Zikula_View} object.
@@ -320,10 +322,10 @@ class ViewUtil
     {
         $var = isset($args['var']) ? $args['var'] : null;
         if (!$var) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tab', 'var')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->tab', 'var')));
         }
         if (!isset($args['a'])) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->tab', '"a"')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->tab', '"a"')));
         }
         // gets and validates the data to tabulate
         $list = $view->getTplVar($var);
@@ -333,7 +335,7 @@ class ViewUtil
             if (is_array($list)) {
                 $record = reset($list);
             } else {
-                $view->trigger_error(__f('Error! in %1$s: the variable [%2$s] is not a collection or array.', array('clip_util->tab', $var)));
+                $view->trigger_error(__f('Error! in %1$s: the variable [%2$s] is not a collection or array.', array('Util->tab', $var)));
             }
         }
         // collects and validates the required fields
@@ -341,7 +343,7 @@ class ViewUtil
         $name = 'a';
         do {
             if (!isset($record[$args[$name]])) {
-                return $view->trigger_error(__f('Error! in %1$s: the parameter [%2$s] specifies a non existing field in the data to tabulate.', array('clip_util->tabulate', $name)));
+                return $view->trigger_error(__f('Error! in %1$s: the parameter [%2$s] specifies a non existing field in the data to tabulate.', array('Util->tabulate', $name)));
             }
             $columns[] = $args[$name];
             $name++;
@@ -398,7 +400,7 @@ class ViewUtil
      *
      *  Get the tid of a given collection and assign it to the template variable $tid:
      *
-     *  <samp>{clip_util->getfield list=$publist field='core_tid' assign='tid'}</samp>
+     *  <samp>{Util->getfield list=$publist field='core_tid' assign='tid'}</samp>
      *
      * @param array       $params All parameters passed to this plugin from the template.
      * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -410,7 +412,7 @@ class ViewUtil
         $list = isset($params['list']) ? $params['list'] : array();
         $field = isset($params['field']) ? (string) $params['field'] : '';
         if (!$field) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->getvalue', 'field')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->getvalue', 'field')));
         }
         if (!$list) {
             return;
@@ -421,12 +423,12 @@ class ViewUtil
                 if (is_array($list)) {
                     $record = reset($list);
                 } else {
-                    $view->trigger_error(__f('Error! in %1$s: the passed list is not a Doctrine_Collection nor an array.', 'clip_util->getvalue'));
+                    $view->trigger_error(__f('Error! in %1$s: the passed list is not a Doctrine_Collection nor an array.', 'Util->getvalue'));
                 }
             }
         }
         if (!isset($record[$field])) {
-            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] does not exist on a list record.', array('clip_util->getvalue', 'field')));
+            $view->trigger_error(__f('Error! in %1$s: the field [%2$s] does not exist on a list record.', array('Util->getvalue', 'field')));
         }
         return $record[$field];
     }
@@ -443,11 +445,11 @@ class ViewUtil
      *
      *  Get the category on $pub.cat and assign it to the template variable $category:
      *
-     *  <samp>{clip_util->getcategory cid=$pub.cat assign='category'}</samp>
+     *  <samp>{Util->getcategory cid=$pub.cat assign='category'}</samp>
      *
      *  Get the dsplay name of $pub.cat:
      *
-     *  <samp>{clip_util->getcategory cid=$pub.cat field='fullTitle'}</samp>
+     *  <samp>{Util->getcategory cid=$pub.cat field='fullTitle'}</samp>
      *
      * @param array       $params All parameters passed to this plugin from the template.
      * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -459,7 +461,7 @@ class ViewUtil
         $cid = isset($params['cid']) ? (int) $params['cid'] : 0;
         $field = isset($params['field']) ? $params['field'] : null;
         if (!$cid) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->getcategory', 'cid')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->getcategory', 'cid')));
         }
         $lang = ZLanguage::getLanguageCode();
         $cat = CategoryUtil::getCategoryByID($cid);
@@ -488,7 +490,7 @@ class ViewUtil
      *
      *  Get the subcategories of category #1 and assign it to the template variable $categories:
      *
-     *  <samp>{clip_util->getsubcategories cid=1 assign='categories'}</samp>
+     *  <samp>{Util->getsubcategories cid=1 assign='categories'}</samp>
      *
      * @param array       $params All parameters passed to this plugin from the template.
      * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -508,7 +510,7 @@ class ViewUtil
         $assocKey = isset($params['assocKey']) ? $params['assocKey'] : 'id';
         $sortField = isset($params['sortField']) ? $params['sortField'] : 'sort_value';
         if (!$cid) {
-            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('clip_util->getsubcategories', 'cid')));
+            $view->trigger_error(__f('Error! in %1$s: the %2$s parameter must be specified.', array('Util->getsubcategories', 'cid')));
         }
         $lang = ZLanguage::getLanguageCode();
         $cats = CategoryUtil::getSubCategories($cid, $recurse, $relative, $includeRoot, $includeLeaf, $all, $excludeCid, $assocKey, null, $sortField, null);

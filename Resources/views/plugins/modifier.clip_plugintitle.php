@@ -22,6 +22,6 @@
  */
 function smarty_modifier_clip_plugintitle($pluginID)
 {
-    $plugin = Clip_Util_Plugins::get($pluginID);
+    $plugin = Util_Plugins::get($pluginID);
     return $plugin->pluginTitle;
 }

@@ -255,7 +255,7 @@ class Clip_Form_Plugin_MultiList extends Zikula_Form_Plugin_CategorySelector
         $typedata = explode('|', $typedata);
 
         $this->config = array(
-            0 => !empty($typedata[0]) ? (int)$typedata[0] : Clip_Util::getDefaultCategoryID(),
+            0 => !empty($typedata[0]) ? (int)$typedata[0] : Util::getDefaultCategoryID(),
             1 => (isset($typedata[1]) && !empty($typedata[1]) && $typedata[1] != '~') ? (int)$typedata[1] : null,
             2 => isset($typedata[2]) ? (bool)$typedata[2] : false
         );

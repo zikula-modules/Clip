@@ -32,19 +32,19 @@ function smarty_function_clip_editoractions($params, Zikula_View &$view)
     }
     $pub = $params['pub'];
     $assign = isset($params['assign']) ? $params['assign'] : null;
-    $pubtype = Clip_Util::getPubType($pub['core_tid']);
-    $workflow = new Clip_Workflow($pubtype, $pub);
-    $actions = $workflow->getActions(Clip_Workflow::ACTIONS_EXEC);
+    $pubtype = Util::getPubType($pub['core_tid']);
+    $workflow = new Workflow($pubtype, $pub);
+    $actions = $workflow->getActions(Workflow::ACTIONS_EXEC);
     // common action exec arguments
     $token = SecurityUtil::generateCsrfToken();
     $args = array('tid' => $pub['core_tid'], 'id' => $pub['id']);
     $links = array();
     // adds the edit link if has access to the form
-    if (Clip_Access::toPub($pubtype, $pub, null, 'exec')) {
+    if (Access::toPub($pubtype, $pub, null, 'exec')) {
         $editargs = array_merge($args, array('goto' => 'referer'));
         $links[] = '<span class="clip-ac-editform">' . '  <a href="' . DataUtil::formatForDisplay(ModUtil::url('Clip', 'user', 'edit', $editargs)) . '" title="' . $view->__('Edit this publication') . '">' . $view->__('Edit') . '</a>' . '</span>';
     }
-    $links[] = '<span class="clip-ac-editform">' . '  <a target="_blank" href="' . DataUtil::formatForDisplay(Clip_Util::url($pub, 'display', array('id' => $pub['id']))) . '" title="' . $view->__('Preview this publication') . '">' . $view->__('Preview') . '</a>' . '</span>';
+    $links[] = '<span class="clip-ac-editform">' . '  <a target="_blank" href="' . DataUtil::formatForDisplay(Util::url($pub, 'display', array('id' => $pub['id']))) . '" title="' . $view->__('Preview this publication') . '">' . $view->__('Preview') . '</a>' . '</span>';
     // loop the actions building their output
     if ($actions) {
         foreach ($actions as $aid => $action) {
