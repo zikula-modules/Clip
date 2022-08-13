@@ -1,5 +1,8 @@
-Clip
-===================================
+# Deprecated
+
+This module has been deprecated as part of [Zikula 4 slimming diet](https://github.com/zikula/core/blob/main/ZIKULA-4.0.md).
+
+# Clip
 
 Flexible content publishing platform for Zikula Core 1.3.x. 
 
